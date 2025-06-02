@@ -1,0 +1,37 @@
+<div class="sidebar">
+  <div class="menu">
+    <h2>Bienvenida <span class="color">{{ usucod }}</span>, perfil: <span class="color">{{ perfil }}</span></h2>
+    <button (click)="logout()">Desconectarse</button>
+  </div>
+
+  <div class="drop-down-menu">
+    <div class="menu">
+      <a class="choice">Proveedores</a>
+      <div class="menu-content">
+        <div class="menu-item">
+          <a class="acTer" [class.disabled]="isDisabled('acTer')">Gestión de Proveedores</a>
+          <a class="acCoTer" [class.disabled]="isDisabled('acCoTer')">Consulta de Proveedores</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="menu">
+      <a class="choice">Gestion de credito</a>
+      <div class="menu-content">
+        <div class="menu-item">
+          <a class="acGBS" [class.disabled]="isDisabled('acGBS')">Bolsas de crédito</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="menu">
+      <a class="choice">Contabilización</a>
+      <div class="menu-content">
+        <div class="menu-item">
+          <a class="acFac" [class.disabled]="isDisabled('acFac')">Facturas</a>
+          <a class="acMCon" [class.disabled]="isDisabled('acMCon')">Monitor de contabilización</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

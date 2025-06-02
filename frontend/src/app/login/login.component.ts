@@ -13,7 +13,7 @@ import { CommonModule } from '@angular/common';
 export class LoginComponent {
   email: string = '';
   password: string = '';
-  errorMessage: string = '';
+  errormessage: string = '';
 
   constructor(private http: HttpClient, private router: Router) {}
 
@@ -25,11 +25,13 @@ export class LoginComponent {
 
     this.http.post('http://localhost:8080/api/login', body).subscribe(
       response => {
-      console.log('Login response:', response); 
+      console.log('Login response:', response);
+      sessionStorage.setItem('email', this.email);
+      this.router.navigate(['/pua']); 
       },
       error => {
         console.error('Login failed', error);
-        this.errorMessage = 'Invalid email or password';
+        this.errormessage = 'Invalid email or password';
       }
     );
   }

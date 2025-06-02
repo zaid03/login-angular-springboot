@@ -21,7 +21,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("http://localhost:4200")); // Angular URL
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true); // if you want to allow cookies or auth headers
 
@@ -37,17 +37,17 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-        .securityMatcher("/api/**") // protect API endpoints
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http
+        .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/api/register", "/api/login").permitAll()
+            .requestMatchers("/api/register", "/api/login", "/api/validate-usucod", "/api/filter", "/api/mnucods").permitAll()
             .anyRequest().authenticated()
         )
-        .csrf(csrf -> csrf.disable()) 
-        .httpBasic(Customizer.withDefaults())
-        ;
+        .httpBasic(Customizer.withDefaults());
+
+    System.out.println("Security filter chain configured.");
 
     return http.build();
-    }
+}
 }

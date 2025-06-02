@@ -15,7 +15,7 @@
     width: 300px;
 }
 
-.login-form h2, .login-form label, .login-form .register-link{
+.login-form h2, .login-form label{
     font-family: 'Courier New', Courier, monospace;
     color: #333;
 }
@@ -33,8 +33,7 @@
     font-weight: bold;
 }
 
-.login-form input[type="email"],
-.login-form input[type="password"],
+.login-form input[type="text"],
 .login-form input[type="submit"] {
     box-sizing: border-box;
     width: 100%;
@@ -44,8 +43,7 @@
     margin-bottom: 15px;
 }
 
-.login-form input[type="email"]:focus,
-.login-form input[type="password"]:focus {
+.login-form input[type="text"]:focus {
     border: 1px solid #ccc;
     outline: none;
     box-shadow: 0 0 5px #ccc;
@@ -70,19 +68,3 @@
     margin-top: -10px;
     margin-bottom: 10px;
 }
-
-.login-form .register-link {
-    text-align: center;
-    margin-top: 10px;
-}
-
-.login-form .register-link a {
-    color: #6c757d;
-    text-decoration: none;
-}
-
-.login-form .register-link a:hover {
-    text-decoration: underline;
-    cursor: pointer;
-}
-

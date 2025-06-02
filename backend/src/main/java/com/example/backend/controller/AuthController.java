@@ -24,22 +24,16 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         Optional<User> userOpt = userRepository.findByEmail(loginRequest.getEmail());
-
         if (userOpt.isPresent()) {
             User user = userOpt.get();
-
-            // Check password with BCrypt
             if (passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-                // Successful login
                 return ResponseEntity.ok(Map.of("message", "Login successful"));
             }
         }
-
-        // If user not found or password incorrect
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
     .body(Map.of("error", "Invalid email or password"));
-
     }
+
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User user) {
@@ -50,5 +44,6 @@ public class AuthController {
         userRepository.save(user);
         return ResponseEntity.ok("User registered successfully");
     }
+
 
 }
