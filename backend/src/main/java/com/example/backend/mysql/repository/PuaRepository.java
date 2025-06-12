@@ -1,11 +1,13 @@
-package com.example.backend.repository;
+package com.example.backend.mysql.repository;
 
-import com.example.backend.model.Pua;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import java.util.List;
+
+import com.example.backend.mysql.model.Pua;
 
 @Repository
 public interface PuaRepository extends JpaRepository<Pua, Long> {

@@ -84,8 +84,8 @@ body, :host {
 
 .menu-content {
     display: none;
-    position: static; /* Changed from absolute */
-    min-width: 100%;  /* Full width of parent */
+    position: static;
+    min-width: 100%;
     background: #fff;
     box-shadow: 0 2px 10px rgba(0,0,0,0.08);
     border-radius: 0 0 8px 8px;
@@ -118,6 +118,7 @@ body, :host {
     width: 100%;
     box-sizing: border-box;
     white-space: normal;
+    cursor: pointer;
 }
 
 .menu-item a:last-child {

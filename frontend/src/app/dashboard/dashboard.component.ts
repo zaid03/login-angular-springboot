@@ -64,4 +64,7 @@ export class DashboardComponent {
   return !this.allowedMnucods.includes(code);
   }
 
+  proveedorees(): void {
+    this.router.navigate(['/proveedorees']);
+  }
 }

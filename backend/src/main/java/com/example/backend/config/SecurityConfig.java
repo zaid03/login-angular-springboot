@@ -41,7 +41,7 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
     http
         .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/api/register", "/api/login", "/api/validate-usucod", "/api/filter", "/api/mnucods").permitAll()
+            .requestMatchers("/api/register", "/api/login", "/api/validate-usucod", "/api/filter", "/api/mnucods", "/api/ter/**", "/api/more/**").permitAll()
             .anyRequest().authenticated()
         )
         .httpBasic(Customizer.withDefaults());

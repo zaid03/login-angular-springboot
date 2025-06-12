@@ -3,6 +3,7 @@ import { LoginComponent } from './login/login.component';
 import { PuaComponent } from './pua/pua.component';
 import { EntComponent } from './ent/ent.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { ProveedoreesComponent } from './proveedorees/proveedorees.component';
 import { NgModule } from '@angular/core';
 
 export const routes: Routes = [
@@ -10,6 +11,7 @@ export const routes: Routes = [
     { path: 'pua', component: PuaComponent },
     { path: 'ent', component: EntComponent },
     { path: 'dashboard', component: DashboardComponent },
+    { path: 'proveedorees', component: ProveedoreesComponent },
     { path: '', redirectTo: '/login', pathMatch: 'full' }, //la route par default
 ];
 
