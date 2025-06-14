@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { SidebarComponent } from '../sidebar/sidebar.component';
 
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -10,7 +11,7 @@ import autoTable from 'jspdf-autotable';
 @Component({
   selector: 'app-proveedorees',
   standalone: true,
-  imports: [ CommonModule ,FormsModule],
+  imports: [ CommonModule ,FormsModule, SidebarComponent],
   templateUrl: './proveedorees.component.html',
   styleUrls: ['./proveedorees.component.css']
 })
@@ -456,4 +457,8 @@ export class ProveedoreesComponent {
       } 
     });
   }
+
+  sidebarOpen = false;
+  toggleSidebar() { this.sidebarOpen = !this.sidebarOpen; }
+  closeSidebar() { this.sidebarOpen = false; }
 }

@@ -1,232 +1,242 @@
-<div class="proveedores-container">
-    <h2>Lista de Proveedores</h2>  
-    <div class="proveedores-search">
-        <form class="search-form" (ngSubmit)="search()">
-            <input type="text" class="search-bar" placeholder="Buscar proveedor" name="search" [(ngModel)]="searchTerm"/>
-            <div class="search-options">
-                <label>
-                    <input type="radio" name="optiones" class="test" value="Todos" [(ngModel)]="filterOption"/> Todos
-                    <input type="radio" name="optiones" class="test" value="noBloqueados" [(ngModel)]="filterOption" /> No Bloqueados
-                    <input type="radio" name="optiones" class="test" value="Bloqueados" [(ngModel)]="filterOption"  /> Bloqueados
-                </label>
-            </div>
-            <button type="submit" class="search-button">Buscar</button>
-        </form>
-    </div> 
+    
+<div class="proveedores-page">
+  <div 
+    class="sidebar-backdrop" 
+    *ngIf="!sidebar.collapsed" 
+    (click)="sidebar.collapsed = true">
+  </div>
+  <app-sidebar #sidebar></app-sidebar>
+    <div class="proveedores-container" [class.blurred]="!sidebar.collapsed">
+        <h2>Lista de Proveedores</h2>  
+        <div class="proveedores-search">
+            <form class="search-form" (ngSubmit)="search()">
+                <input type="text" class="search-bar" placeholder="Buscar proveedor" name="search" [(ngModel)]="searchTerm"/>
+                <div class="search-options">
+                    <label>
+                        <input type="radio" name="optiones" class="test" value="Todos" [(ngModel)]="filterOption"/> Todos
+                        <input type="radio" name="optiones" class="test" value="noBloqueados" [(ngModel)]="filterOption" /> No Bloqueados
+                        <input type="radio" name="optiones" class="test" value="Bloqueados" [(ngModel)]="filterOption"  /> Bloqueados
+                    </label>
+                </div>
+                <button type="submit" class="search-button">Buscar</button>
+            </form>
+        </div> 
 
-    <div class="proveedores-download">
-        <button class="download-btn" (click)="DownloadPDF()">Descargar como PDF</button>
-        <button class="download-btn" (click)="DownloadCSV()">Descargar como CSV</button>
-    </div>
+        <div class="proveedores-download">
+            <button class="download-btn" (click)="DownloadPDF()">Descargar como PDF</button>
+            <button class="download-btn" (click)="DownloadCSV()">Descargar como CSV</button>
+        </div>
 
-    <div class="proveedores-list">
-        <h1 style="font-family: inherit; color: red; font-size: inherit;" id="error">{{ error }}</h1>
-        <table>
-            <thead>
-                <tr>
-                    <th>Código</th>
-                    <th>Nombre</th>
-                    <th>Alias</th>
-                    <th>NIF</th>
-                    <th>Domicilio</th>
-                    <th>Código Postal</th>
-                    <th>Municipio</th>
-                    <th>Teléfono</th>
-                    <th>Fax</th>
-                    <th>Web</th>
-                    <th>Correo electrónico</th>
-                    <th>Observaciones</th>
-                    <th>Código contable</th>
-                </tr>
-            </thead>
-            <tbody>
-                    <tr *ngFor="let p of paginatedProveedores">
-                        <td>{{ p.tercod }}</td>
-                        <td class="truncate" title="{{ p.ternom }}" (click)="showDetails(p)" style="cursor: pointer;">{{ p.ternom }}</td>
-                        <td class="truncate" title="{{ p.terali }}">{{ p.terali }}</td>
-                        <td class="truncate" title="{{ p.ternif }}">{{ p.ternif }}</td>
-                        <td class="truncate" title="{{ p.terdom }}">{{ p.terdom }}</td>
-                        <td class="truncate" title="{{ p.tercpo }}">{{ p.tercpo }}</td>
-                        <td class="truncate" title="{{ p.terpob }}">{{ p.terpob }}</td>
-                        <td class="truncate" title="{{ p.tertel }}">{{ p.tertel }}</td>
-                        <td class="truncate" title="{{ p.terfax }}">{{ p.terfax }}</td>
-                        <td class="truncate" title="{{ p.terweb }}">{{ p.terweb }}</td>
-                        <td class="truncate" title="{{ p.tercoe }}">{{ p.tercoe }}</td>
-                        <td class="truncate" title="{{ p.terobs }}">{{ p.terobs }}</td>
-                        <td class="truncate" title="{{ p.terayt }}">{{ p.terayt }}</td>
+        <div class="proveedores-list">
+            <h1 style="font-family: inherit; color: red; font-size: inherit;" id="error">{{ error }}</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Nombre</th>
+                        <th>Alias</th>
+                        <th>NIF</th>
+                        <th>Domicilio</th>
+                        <th>Código Postal</th>
+                        <th>Municipio</th>
+                        <th>Teléfono</th>
+                        <th>Fax</th>
+                        <th>Web</th>
+                        <th>Correo electrónico</th>
+                        <th>Observaciones</th>
+                        <th>Código contable</th>
                     </tr>
-            </tbody>
-        </table>
-        <div class="pagination-controls">
-            <button (click)="prevPage()" [disabled]="page === 0">Anterior</button>
-            <span>Página</span>
-            <input
-            type="number"
-            min="1"
-            [max]="totalPages"
-            [value]="page + 1"
-            (change)="goToPage($event)"
-            class="pagination-input"
-            />
-            <span>de {{ totalPages }}</span>
-            <button (click)="nextPage()" [disabled]="page + 1 >= totalPages">Siguiente</button>
-        </div>
-        <div class="modal-backdrop" *ngIf="selectedProveedor" (click)="closeDetails()">
-        </div>
-        <div class="display" >
-            <div class="modal" *ngIf="selectedProveedor">
-                <button class="close-btn" (click)="closeDetails()">×</button>
-                <h3>Detalles del Proveedor</h3>
+                </thead>
+                <tbody>
+                        <tr *ngFor="let p of paginatedProveedores">
+                            <td>{{ p.tercod }}</td>
+                            <td class="truncate" title="{{ p.ternom }}" (click)="showDetails(p)" style="cursor: pointer;">{{ p.ternom }}</td>
+                            <td class="truncate" title="{{ p.terali }}">{{ p.terali }}</td>
+                            <td class="truncate" title="{{ p.ternif }}">{{ p.ternif }}</td>
+                            <td class="truncate" title="{{ p.terdom }}">{{ p.terdom }}</td>
+                            <td class="truncate" title="{{ p.tercpo }}">{{ p.tercpo }}</td>
+                            <td class="truncate" title="{{ p.terpob }}">{{ p.terpob }}</td>
+                            <td class="truncate" title="{{ p.tertel }}">{{ p.tertel }}</td>
+                            <td class="truncate" title="{{ p.terfax }}">{{ p.terfax }}</td>
+                            <td class="truncate" title="{{ p.terweb }}">{{ p.terweb }}</td>
+                            <td class="truncate" title="{{ p.tercoe }}">{{ p.tercoe }}</td>
+                            <td class="truncate" title="{{ p.terobs }}">{{ p.terobs }}</td>
+                            <td class="truncate" title="{{ p.terayt }}">{{ p.terayt }}</td>
+                        </tr>
+                </tbody>
+            </table>
+            <div class="pagination-controls">
+                <button (click)="prevPage()" [disabled]="page === 0">Anterior</button>
+                <span>Página</span>
+                <input
+                type="number"
+                min="1"
+                [max]="totalPages"
+                [value]="page + 1"
+                (change)="goToPage($event)"
+                class="pagination-input"
+                />
+                <span>de {{ totalPages }}</span>
+                <button (click)="nextPage()" [disabled]="page + 1 >= totalPages">Siguiente</button>
+            </div>
+            <div class="modal-backdrop" *ngIf="selectedProveedor" (click)="closeDetails()">
+            </div>
+            <div class="display" >
+                <div class="modal" *ngIf="selectedProveedor">
+                    <button class="close-btn" (click)="closeDetails()">×</button>
+                    <h3>Detalles del Proveedor</h3>
 
-                <div class="modal-row">
+                    <div class="modal-row">
 
-                    <div>
+                        <div>
 
-                        <strong>Código:</strong>
-                        <input [(ngModel)]="selectedProveedor.tercod" />
+                            <strong>Código:</strong>
+                            <input [(ngModel)]="selectedProveedor.tercod" />
+                        </div>
+
+                        <div>
+
+                            <strong>Nombre:</strong>
+                            <input [(ngModel)]="selectedProveedor.ternom" />
+                        </div>
                     </div>
 
-                    <div>
+                    <div class="modal-row">
+                        <div>
 
-                        <strong>Nombre:</strong>
-                        <input [(ngModel)]="selectedProveedor.ternom" />
-                    </div>
-                </div>
+                            <strong>Alias:</strong>
+                            <input [(ngModel)]="selectedProveedor.terali" />
+                        </div>
 
-                <div class="modal-row">
-                    <div>
+                        <div>
 
-                        <strong>Alias:</strong>
-                        <input [(ngModel)]="selectedProveedor.terali" />
-                    </div>
-
-                    <div>
-
-                        <strong>NIF:</strong>
-                        <input [(ngModel)]="selectedProveedor.ternif" />
-                    </div>
-                </div>
-
-                <div class="modal-row">
-                    <div>
-
-                        <strong>Dirección:</strong>
-                        <input [(ngModel)]="selectedProveedor.terdom" />
+                            <strong>NIF:</strong>
+                            <input [(ngModel)]="selectedProveedor.ternif" />
+                        </div>
                     </div>
 
-                    <div>
+                    <div class="modal-row">
+                        <div>
 
-                        <strong>Código contable:</strong>
-                        <input [(ngModel)]="selectedProveedor.terayt" />
-                    </div>
-                </div>
+                            <strong>Dirección:</strong>
+                            <input [(ngModel)]="selectedProveedor.terdom" />
+                        </div>
 
-                <div class="modal-row">
-                    <div>
-                        <strong>Código Postal:</strong>
-                        <input [(ngModel)]="selectedProveedor.tercpo" class="postal" />
-                        <strong>Provincia:</strong>
-                        <input [(ngModel)]="selectedProveedor.terpob" class="small"/>
-                        <input class="big"/>
-                        <input type="checkbox" [(ngModel)]="selectedProveedor.bloqueado" />
-                            Bloqueado
-                    </div>
-                </div>
+                        <div>
 
-                <div class="modal-row">
-                    <div>
-
-                        <strong>Población:</strong>
-                        <input [(ngModel)]="selectedProveedor.terpob" />
-                    </div>
-                </div>
-
-                <div class="modal-row">
-                    <div>
-
-                        <strong>Teléfono:</strong>
-                        <input [(ngModel)]="selectedProveedor.tertel" />
+                            <strong>Código contable:</strong>
+                            <input [(ngModel)]="selectedProveedor.terayt" />
+                        </div>
                     </div>
 
-                    <div>
-
-                        <strong>Fax:</strong>
-                        <input [(ngModel)]="selectedProveedor.terfax" />
+                    <div class="modal-row">
+                        <div>
+                            <strong>Código Postal:</strong>
+                            <input [(ngModel)]="selectedProveedor.tercpo" class="postal" />
+                            <strong>Provincia:</strong>
+                            <input [(ngModel)]="selectedProveedor.terpob" class="small"/>
+                            <input class="big"/>
+                            <input type="checkbox" [(ngModel)]="selectedProveedor.bloqueado" />
+                                Bloqueado
+                        </div>
                     </div>
 
-                    <div>
+                    <div class="modal-row">
+                        <div>
 
-                        <strong>Web:</strong>
-                        <input [(ngModel)]="selectedProveedor.terweb" />
+                            <strong>Población:</strong>
+                            <input [(ngModel)]="selectedProveedor.terpob" />
+                        </div>
                     </div>
-                </div>
 
-                <div class="modal-row">
-                    <div>
+                    <div class="modal-row">
+                        <div>
 
-                        <strong>Correo electrónico:</strong>
-                        <input [(ngModel)]="selectedProveedor.tercoe" class="correo"/>
-                        <strong>Observaciones:</strong>
-                        <textarea [(ngModel)]="selectedProveedor.terobs"></textarea>
+                            <strong>Teléfono:</strong>
+                            <input [(ngModel)]="selectedProveedor.tertel" />
+                        </div>
+
+                        <div>
+
+                            <strong>Fax:</strong>
+                            <input [(ngModel)]="selectedProveedor.terfax" />
+                        </div>
+
+                        <div>
+
+                            <strong>Web:</strong>
+                            <input [(ngModel)]="selectedProveedor.terweb" />
+                        </div>
                     </div>
-                </div>
 
-                <div class="more">
-                    <button class="pers-btn" (click)="showContactPersons(selectedProveedor)">Personas de Contacto</button>
-                    <button class="Articulo-btn" (click)="showArticulos(selectedProveedor)">Articulo</button>
-                </div>
-                <div class="custom-grid-modal" *ngIf="showContactPersonsGrid">
-                    <h3>Personas de Contacto</h3>
-                    <h1 style="font-family: inherit; color: red; font-size: inherit;" id="message">{{ message }}</h1>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>TPENOM</th>
-                                <th>TPETEL</th>
-                                <th>TPETMO</th>
-                                <th>TPECOE</th>
-                                <th>TPEOBS</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngIf="contactPersons">
-                                <td>{{ contactPersons.tpenom }}</td>
-                                <td>{{ contactPersons.tpetel }}</td>
-                                <td>{{ contactPersons.tpetmo }}</td>
-                                <td>{{ contactPersons.tpecoe }}</td>
-                                <td>{{ contactPersons.tpeobs }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="custom-grid-modal" *ngIf="showArticulosGrid">
-                    <h3>Artículos</h3>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>AFACOD</th>
-                                <th>ASUCOD</th>
-                                <th>ARTCOD</th>
-                                <th>APRREF</th>
-                                <th>APRPRE</th>
-                                <th>APRUEM</th>
-                                <th>APROBS</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngIf="articulos">
-                                <td>{{ articulos.afacod }}</td>
-                                <td>{{ articulos.asucod }}</td>
-                                <td>{{ articulos.artcod }}</td>
-                                <td>{{ articulos.aprref }}</td>
-                                <td>{{ articulos.aprpre }}</td>
-                                <td>{{ articulos.apruem }}</td>
-                                <td>{{ articulos.aprobs }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="modal-row">
+                        <div>
+
+                            <strong>Correo electrónico:</strong>
+                            <input [(ngModel)]="selectedProveedor.tercoe" class="correo"/>
+                            <strong>Observaciones:</strong>
+                            <textarea [(ngModel)]="selectedProveedor.terobs"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="more">
+                        <button class="pers-btn" (click)="showContactPersons(selectedProveedor)">Personas de Contacto</button>
+                        <button class="Articulo-btn" (click)="showArticulos(selectedProveedor)">Articulo</button>
+                    </div>
+                    <div class="custom-grid-modal" *ngIf="showContactPersonsGrid">
+                        <h3>Personas de Contacto</h3>
+                        <h1 style="font-family: inherit; color: red; font-size: inherit;" id="message">{{ message }}</h1>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>TPENOM</th>
+                                    <th>TPETEL</th>
+                                    <th>TPETMO</th>
+                                    <th>TPECOE</th>
+                                    <th>TPEOBS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngIf="contactPersons">
+                                    <td>{{ contactPersons.tpenom }}</td>
+                                    <td>{{ contactPersons.tpetel }}</td>
+                                    <td>{{ contactPersons.tpetmo }}</td>
+                                    <td>{{ contactPersons.tpecoe }}</td>
+                                    <td>{{ contactPersons.tpeobs }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="custom-grid-modal" *ngIf="showArticulosGrid">
+                        <h3>Artículos</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>AFACOD</th>
+                                    <th>ASUCOD</th>
+                                    <th>ARTCOD</th>
+                                    <th>APRREF</th>
+                                    <th>APRPRE</th>
+                                    <th>APRUEM</th>
+                                    <th>APROBS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngIf="articulos">
+                                    <td>{{ articulos.afacod }}</td>
+                                    <td>{{ articulos.asucod }}</td>
+                                    <td>{{ articulos.artcod }}</td>
+                                    <td>{{ articulos.aprref }}</td>
+                                    <td>{{ articulos.aprpre }}</td>
+                                    <td>{{ articulos.apruem }}</td>
+                                    <td>{{ articulos.aprobs }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+

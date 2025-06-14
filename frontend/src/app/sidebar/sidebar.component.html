@@ -1,0 +1,45 @@
+<button class="burger-btn" (click)="toggleSidebar()" [attr.aria-label]="collapsed ? 'Expand sidebar' : 'Collapse sidebar'">
+    &#9776;
+  </button>
+<div class="sidebar" [class.collapsed]="collapsed">
+
+  <div class="sidebar-inner">
+    <div class="menu">
+      <h2>
+        Bienvenida <span class="color">{{ usucod }}</span>, perfil: <span class="color">{{ perfil }}</span>
+      </h2>
+      <button (click)="logout()">Desconectarse</button>
+    </div>
+
+    <a class="choice" (click)="dashboard()">Panel Principale</a>
+
+    <div class="drop-down-menu">
+      <div class="menu">
+        <a class="choice">Proveedores</a>
+        <div class="menu-content">
+          <div class="menu-item">
+            <a class="acTer" [class.disabled]="isDisabled('acTer')" (click)="proveedorees()">Gestión de Proveedores</a>
+            <a class="acCoTer" [class.disabled]="isDisabled('acCoTer')">Consulta de Proveedores</a>
+          </div>
+        </div>
+      </div>
+      <div class="menu">
+        <a class="choice">Gestion de credito</a>
+        <div class="menu-content">
+          <div class="menu-item">
+            <a class="acGBS" [class.disabled]="isDisabled('acGBS')">Bolsas de crédito</a>
+          </div>
+        </div>
+      </div>
+      <div class="menu">
+        <a class="choice">Contabilización</a>
+        <div class="menu-content">
+          <div class="menu-item">
+            <a class="acFac" [class.disabled]="isDisabled('acFac')">Facturas</a>
+            <a class="acMCon" [class.disabled]="isDisabled('acMCon')">Monitor de contabilización</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
