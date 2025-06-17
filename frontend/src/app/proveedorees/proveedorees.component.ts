@@ -32,14 +32,13 @@ export class ProveedoreesComponent {
   constructor(private http: HttpClient, private router: Router) {}
 
   ngOnInit(): void {
-    const email = sessionStorage.getItem('email');
     const entidad = sessionStorage.getItem('Entidad');
     let entcod: number | null = null;
 
     if (entidad) {
       entcod = JSON.parse(entidad).entcod;
     }
-    if (!email || !entidad || entcod === null) {
+    if (!entidad || entcod === null) {
       alert('You must be logged in to access this page.');
       this.router.navigate(['/login']);
       return;

@@ -18,10 +18,10 @@ export class EntComponent {
 
   
   ngOnInit(): void {
-    const email = sessionStorage.getItem('email');
-    console.log('Email from session:', email);
+    const USUCOD = sessionStorage.getItem('USUCOD');
+    console.log('USUCOD from session:', USUCOD);
 
-    if (!email) {
+    if (!USUCOD) {
       alert('You must be logged in to access this page.');
       this.router.navigate(['/login']);
       return;

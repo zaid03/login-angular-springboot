@@ -18,8 +18,8 @@ export class DashboardComponent {
   constructor(private router: Router) {}
 
   ngOnInit(): void {
-    const email = sessionStorage.getItem('email');
-    const usucod = sessionStorage.getItem('usucod');
+    const usucod = sessionStorage.getItem('USUCOD');
+    console.log('USUCOD from session:', usucod);
     const entidad = sessionStorage.getItem('Entidad');
     const perfil = sessionStorage.getItem('Perfil');
     const menus = sessionStorage.getItem('puaData');
@@ -32,7 +32,7 @@ export class DashboardComponent {
     console.warn('No menus found in sessionStorage');
     }
 
-    if (!email || !usucod || !entidad || !perfil) {
+    if (!usucod || !entidad || !perfil) {
       alert('Missing session data. You must be logged in.');
       this.router.navigate(['/login']);
       return;
@@ -40,7 +40,6 @@ export class DashboardComponent {
 
     this.usucod = usucod;
     this.perfil = JSON.parse(perfil).perfil;
-    console.log('Email from session:', email);
     console.log('User code from session:', usucod);
 
     const entcod = JSON.parse(entidad).entcod;

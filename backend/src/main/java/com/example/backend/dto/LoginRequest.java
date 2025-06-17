@@ -1,29 +1,34 @@
 package com.example.backend.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class LoginRequest {
-    
-    private String email;
-    private String password;
+
+    @JsonProperty("USUCOD")
+    private String USUCOD;
+    @JsonProperty("USUPASS")
+    private String USUPASS;
 
     // Constructors
     public LoginRequest() {}
 
-    public LoginRequest(String email, String password) {
-        this.email = email;
-        this.password = password;
+    public LoginRequest(String USUCOD, String USUPASS) {
+        this.USUCOD = USUCOD;
+        this.USUPASS = USUPASS;
     }
 
     // Getters and Setters
-    public String getEmail() {
-        return email;
+    public String getUSUCOD() {
+        return USUCOD;
     }
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUSUCOD(String USUCOD) {
+        this.USUCOD = USUCOD;
     }
-    public String getPassword() {
-        return password;
+
+    public String getUSUPASS() {
+        return USUPASS;
     }
-    public void setPassword(String password) {
-        this.password = password;
+    public void setUSUPASS(String USUPASS) {
+        this.USUPASS = USUPASS;
     }
 }

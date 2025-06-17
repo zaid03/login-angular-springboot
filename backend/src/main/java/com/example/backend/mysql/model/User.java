@@ -1,5 +1,7 @@
 package com.example.backend.mysql.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -11,10 +13,12 @@ public class User {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String email;
+    @JsonProperty("USUCOD")
+    private String USUCOD;
 
     @Column(nullable = false)
-    private String password;
+    @JsonProperty("USUPASS")
+    private String USUPASS;
 
     // Getters and setters
 
@@ -25,17 +29,18 @@ public class User {
         this.id = id;
     }
 
-    public String getEmail() {
-        return email;
+    public String getUSUCOD() {
+        return USUCOD;
     }
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUSUCOD(String USUCOD) {
+        this.USUCOD = USUCOD;
     }
 
-    public String getPassword() {
-        return password;
+    public String getUSUPASS() {
+        return USUPASS;
     }
-    public void setPassword(String password) {
-        this.password = password;
+    public void setUSUPASS(String USUPASS) {
+        this.USUPASS = USUPASS;
     }
 }
+    

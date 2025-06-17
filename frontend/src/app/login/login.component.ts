@@ -11,28 +11,41 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
-  email: string = '';
-  password: string = '';
+  USUCOD: string = '';
+  USUPASS: string = '';
   errormessage: string = '';
 
   constructor(private http: HttpClient, private router: Router) {}
 
   login() {
     const body = {
-      email: this.email,
-      password: this.password
+      USUCOD: this.USUCOD,
+      USUPASS: this.USUPASS
     };
 
     this.http.post('http://localhost:8080/api/login', body).subscribe(
       response => {
       console.log('Login response:', response);
-      sessionStorage.setItem('email', this.email);
-      this.router.navigate(['/pua']); 
+      sessionStorage.setItem('USUCOD', this.USUCOD);
+
+      this.http.get<any>('http://localhost:8080/api/filter', { params: { usucod: this.USUCOD } })
+        .subscribe({
+          next: (filterResponse) => {
+            if (filterResponse.error) {
+              this.errormessage = filterResponse.error;
+            } else {
+              sessionStorage.setItem('puaData', JSON.stringify(filterResponse));
+              this.router.navigate(['/ent']);
+            }
+          },
+          error: (err) => {
+            this.errormessage = 'Server error: ' + (err.message || err.statusText);
+          }
+        });
       },
-      error => {
-        console.error('Login failed', error);
-        this.errormessage = 'Invalid email or password';
-      }
-    );
+    error => {
+      this.errormessage = 'Usucod o usupass inválido';
+    }
+  );
   }
 }
