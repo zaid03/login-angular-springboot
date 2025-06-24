@@ -28,6 +28,16 @@ export class ProveedoreesComponent {
   contactPersons: any = null;
   articulos: any = null;
   message: string = '';
+  showHelloGrid = false;
+  selectedFamilia: string = '';
+  selectedSubfamilia: string = '';
+  selectedArticulo: string = '';
+  anadirDescripcion: string = '';
+  anadirRefProv: string = '';
+  anadirUdsEmbalaje: number | null = null;
+  anadirObservaciones: string = '';
+  anadirAcuerdo: boolean = false;
+  anadirPrecioAcuerdo: number | null = null;
 
   constructor(private http: HttpClient, private router: Router) {}
 
@@ -407,6 +417,7 @@ export class ProveedoreesComponent {
 
   showContactPersons(proveedore: any){
     this.selectedProveedor = proveedore;
+    this.contactMessage = ''; 
     const entidad = sessionStorage.getItem('Entidad');
     let entcod: number | null = null;
     if (entidad) {
@@ -460,4 +471,229 @@ export class ProveedoreesComponent {
   sidebarOpen = false;
   toggleSidebar() { this.sidebarOpen = !this.sidebarOpen; }
   closeSidebar() { this.sidebarOpen = false; }
+
+  messages: string = '';
+  isError: boolean = false;
+  saveChanges() {
+    const updateFields ={
+      TERWEB : this.selectedProveedor.terweb,
+      TEROBS : this.selectedProveedor.terobs,
+      TERBLO : this.selectedProveedor.terblo,
+      TERACU : this.selectedProveedor.teracu
+    }
+
+    this.http.put(`http://localhost:8080/api/ter/updateFields/${this.selectedProveedor.tercod}`, 
+    updateFields,
+    { responseType: 'text' }
+    ).subscribe({
+        next: (res) => {
+          console.log('Success:', res);
+          this.messages = 'Proveedor actualizado correctamente';
+          this.isError = false;
+        },
+        error: (err) => {
+          console.error('Error:', err);
+          this.messages = 'Error al guardar el proveedor';
+          this.isError = true;
+        }
+      });
+  }
+
+  onCheckboxGeneric(event: Event, field: string) {
+    const checked = (event.target as HTMLInputElement).checked;
+    if (this.selectedProveedor && field in this.selectedProveedor) {
+      (this.selectedProveedor as any)[field] = checked ? 1 : 0;
+    }
+    if (this.articulos && field in this.articulos) {
+      (this.articulos as any)[field] = checked ? 1 : 0;
+    }
+  }
+
+  contactMessage: string = '';
+  contactIsError: boolean = false;
+  updatepersonas(){
+    const updateFields = {
+      TPENOM : this.contactPersons.tpenom,
+      TPETEL : this.contactPersons.tpetel,
+      TPETMO : this.contactPersons.tpetmo,
+      TPECOE : this.contactPersons.tpecoe,
+      TPEOBS : this.contactPersons.tpeobs
+    }
+    this.http.put(
+      `http://localhost:8080/api/more/modify/${this.selectedProveedor.tercod}`,
+      updateFields,
+      { responseType: 'text' }
+    ).subscribe({
+      next: (res) => {
+        console.log('Success:', res);
+        this.contactMessage = 'Persona de contacto actualizada correctamente';
+        this.contactIsError = false;
+      },
+      error: (err) => {
+        console.error('Error:', err);
+        this.contactMessage = 'Error al guardar la persona de contacto';
+        this.contactIsError = true;
+      }
+    });
+  }
+
+  deletepersona(){
+    this.http.delete(
+      `http://localhost:8080/api/more/delete/${this.selectedProveedor.tercod}`,
+      { responseType: 'text' }).subscribe({
+        next: (res) => {
+        console.log('Success:', res);
+        this.contactMessage = 'Persona de contacto eliminada correctamente';
+        this.contactIsError = false;
+        this.contactPersons = null; 
+        },
+        error: (err) => {
+          console.error('Error:', err);
+          this.contactMessage = 'Error al eliminar la persona de contacto';
+          this.contactIsError = true;
+        }
+      });
+  }
+
+  articulosMessage: string = '';
+  articleIsError: boolean = false;
+  updatearticulos(articulo: any){
+    const updateFields = {
+      ENT: JSON.parse(sessionStorage.getItem('Entidad') || '{}').entcod,
+      TERCOD: this.selectedProveedor.tercod,
+      AFACOD : articulo.afacod,
+      ASUCOD : articulo.asucod,
+      ARTCOD : articulo.artcod,
+      APRREF : articulo.aprref,
+      APRUEM : articulo.apruem,
+      APROBS : articulo.aprobs,
+      APRACU : articulo.apracu,
+      APRPRE : articulo.aprpre
+    }
+    this.http.put(
+      `http://localhost:8080/api/more/update-apr`,
+      updateFields,
+      { responseType: 'text' }
+    ).subscribe({
+      next: (res) => {
+        console.log('Success:', res);
+        this.articulosMessage = 'Artículo actualizado correctamente';
+        this.articleIsError = false;
+      },
+      error: (err) => {
+        console.error('Error:', err);
+        this.articulosMessage = 'Error al guardar el artículo';
+        this.articleIsError = true;
+      }
+    });
+  }
+
+  deletearticulo(articulo: any){
+    const params = [
+    `ent=${articulo.ent}`,
+    `tercod=${articulo.tercod}`,
+    `afacod=${articulo.afacod}`,
+    `asucod=${articulo.asucod}`,
+    `artcod=${articulo.artcod}`
+  ].join('&');
+
+    this.http.delete(
+      `http://localhost:8080/api/more/delete-apr?${ params}`,
+      { responseType: 'text' }).subscribe({
+        next: (res) => {
+        console.log('Success:', res);
+        this.articulosMessage = 'Artículo eliminado correctamente';
+        this.articleIsError = false;
+        this.articulos = this.articulos.filter((a: any) =>
+        !(a.ent === articulo.ent &&
+          a.tercod === articulo.tercod &&
+          a.afacod === articulo.afacod &&
+          a.asucod === articulo.asucod &&
+          a.artcod === articulo.artcod)
+      );
+        },
+        error: (err) => {
+          console.error('Error:', err);
+          this.articulosMessage = 'Error al eliminar el artículo';
+          this.articleIsError = true;
+        }
+      });
+  }
+
+  afas: any[] = [];
+  asus: any[] = [];
+  arts: any[] = [];
+
+  showHello() {
+    this.showHelloGrid = true;
+    const ent = JSON.parse(sessionStorage.getItem('Entidad') || '{}').entcod;
+    this.http.get<any[]>(`http://localhost:8080/api/afa/by-ent/${ent}`)
+      .subscribe(data => this.afas = data);
+
+      this.selectedFamilia = '';
+      this.selectedSubfamilia = '';
+      this.selectedArticulo = '';
+      this.asus = [];
+      this.arts = [];
+  }
+  hideHello() {
+    this.showHelloGrid = false;
+  }
+  anadirmessage: string = '';
+  anadirIsError: boolean = false;
+  addArticulo(){
+    const newArticulo = {
+      ENT: JSON.parse(sessionStorage.getItem('Entidad') || '{}').entcod,
+      TERCOD: this.selectedProveedor.tercod,
+      AFACOD: this.selectedFamilia || '*',
+      ASUCOD: this.selectedSubfamilia || '*',
+      ARTCOD: this.selectedArticulo || '*',
+      APRREF: this.anadirRefProv || '',
+      APRUEM: this.anadirUdsEmbalaje ?? 0,
+      APROBS: this.anadirObservaciones || '',
+      APRACU: this.anadirAcuerdo ? 1 : 0,
+      APRPRE: this.anadirPrecioAcuerdo ?? 0
+    };
+
+    this.http.post(
+      `http://localhost:8080/api/more/add-apr`,
+      newArticulo,
+      { responseType: 'text' }
+    ).subscribe({
+      next: (res) => {
+        console.log('Success:', res);
+        this.anadirmessage = 'Artículo añadido correctamente';
+        this.anadirIsError = false;
+      },
+      error: (err) => {
+        console.error('Error:', err);
+        this.anadirmessage = 'Error al añadir el artículo';
+        this.anadirIsError = true;
+      }
+    });
+  }
+
+  onFamiliaChange() {
+    console.log("here");
+    this.selectedSubfamilia = '';
+    this.selectedArticulo = '';
+    this.arts = [];
+    if (this.selectedFamilia) {
+      const ent = JSON.parse(sessionStorage.getItem('Entidad') || '{}').entcod;
+      this.http.get<any[]>(`http://localhost:8080/api/asu/by-ent-afacod?ent=${ent}&afacod=${this.selectedFamilia}`)
+        .subscribe(data => this.asus = data);
+    } else {
+      this.asus = [];
+    }
+  }
+  onSubfamiliaChange() {
+    this.selectedArticulo = '';
+    if (this.selectedSubfamilia) {
+      const ent = JSON.parse(sessionStorage.getItem('Entidad') || '{}').entcod;
+      this.http.get<any[]>(`http://localhost:8080/api/art/by-ent-afacod-asucod?ent=${ent}&afacod=${this.selectedFamilia}&asucod=${this.selectedSubfamilia}`)
+        .subscribe(data => this.arts = data);
+    } else {
+      this.arts = [];
+    }
+  }
 }

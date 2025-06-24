@@ -11,8 +11,9 @@ public class AprDto {
     private Double APRPRE;
     private Double APRUEM;
     private String APROBS;
+    private Integer APRACU;
 
-    public AprDto(Integer ENT, Integer TERCOD, String AFACOD, String ASUCOD, String ARTCOD, String APRREF, Double APRPRE, Double APRUEM, String APROBS) {
+    public AprDto(Integer ENT, Integer TERCOD, String AFACOD, String ASUCOD, String ARTCOD, String APRREF, Double APRPRE, Double APRUEM, String APROBS, Integer APRACU) {
         this.ENT = ENT;
         this.TERCOD = TERCOD;
         this.AFACOD = AFACOD;
@@ -22,6 +23,7 @@ public class AprDto {
         this.APRPRE = APRPRE;
         this.APRUEM = APRUEM;
         this.APROBS = APROBS;
+        this.APRACU = APRACU; 
     }
 
     public Integer getENT() {
@@ -85,5 +87,12 @@ public class AprDto {
     }
     public void setAPROBS(String APROBS) {
         this.APROBS = APROBS;
+    }
+
+    public Integer getAPRACU() {
+        return APRACU;
+    }
+    public void setAPRACU(Integer APRACU) {
+        this.APRACU = APRACU;
     }
 }

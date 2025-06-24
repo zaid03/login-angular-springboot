@@ -1,11 +1,14 @@
 package com.example.backend.controller;
 
 import com.example.backend.sqlserver.model.Ter;
+import com.example.backend.dto.TerDto;
 import com.example.backend.sqlserver.repository.TerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/ter")
@@ -28,8 +31,12 @@ public class TerController {
 
     //for the list filtered by TERCOD and option no bloqueado
     @GetMapping("/by-ent/{ent}/tercod/{tercod}/terblo-not/{terblo}")
-    public List<Ter> getByENTAndTERCODAndTERBLONot(@PathVariable int ent, @PathVariable Integer tercod) {
-        return terRepository.findByENTAndTERCODAndTERBLONot(ent, tercod);
+    public List<Ter> getByENTAndTERCODAndTERBLONot(
+        @PathVariable int ent,
+        @PathVariable Integer tercod,
+        @PathVariable Integer terblo
+    ) {
+        return terRepository.findByENTAndTERCODAndTERBLONot(ent, tercod, terblo);
     }
 
     //for the list filtered by TERNIF and option bloqueado
@@ -40,8 +47,8 @@ public class TerController {
 
     //for the list filtered by TERNIF and option no bloqueado 
     @GetMapping("/by-ent/{ent}/ternif/{ternif}/terblo-not/{terblo}")
-    public List<Ter> getByENTAndTERNIFAndTERBLONot(@PathVariable int ent, @PathVariable String ternif) {
-        return terRepository.findByENTAndTERNIFContainingAndTERBLONot(ent, ternif);
+    public List<Ter> getByENTAndTERNIFAndTERBLONot(@PathVariable int ent, @PathVariable String ternif, @PathVariable Integer terblo) {
+        return terRepository.findByENTAndTERNIFContainingAndTERBLONot(ent, ternif, terblo);
     }
 
     //for the list filtered by TerNIF and TERNOM and TERALI bloqueado
@@ -57,9 +64,10 @@ public class TerController {
     @GetMapping("/by-ent/{ent}/search-by-term")
     public List<Ter> searchByTerm(
             @PathVariable int ent,
-            @RequestParam String term
+            @RequestParam String term,
+            @RequestParam(required = false, defaultValue = "0") Integer terblo
     ) {
-        return terRepository.searchByTerm(ent, term);
+        return terRepository.searchByTerm(ent, term, terblo);
     }
 
     //for the list filtered by TERNIF and TERNOM and TERALI bloqueado
@@ -75,9 +83,10 @@ public class TerController {
     @GetMapping("/by-ent/{ent}/findMatchingNomOrAli")
     public List<Ter> findMatchingNomOrAli(
             @PathVariable int ent,
-            @RequestParam String term
+            @RequestParam String term,
+            @RequestParam(required = false, defaultValue = "0") Integer terblo
     ) {
-        return terRepository.findMatchingNomOrAli(ent, term);
+        return terRepository.findMatchingNomOrAli(ent, term, terblo);
     }
 
     // For TERCOD, no TERBLO filter
@@ -99,5 +108,30 @@ public class TerController {
             @RequestParam String term
     ) {
         return terRepository.searchTodos(ent, term);
+    }
+
+    //for modifying a Ter record
+    @PutMapping("/updateFields/{tercod}")
+    public ResponseEntity<?> updateTerFields(@PathVariable Integer tercod, @RequestBody TerDto update) {
+        Optional<Ter> optionalTer = terRepository.findByTERCOD(tercod);
+
+        if (optionalTer.isPresent()) {
+            Ter ter = optionalTer.get();
+            ter.setTERWEB(update.getTERWEB());
+            ter.setTEROBS(update.getTEROBS());
+            ter.setTERBLO(update.getTERBLO());
+            ter.setTERACU(update.getTERACU());
+            System.out.println("TERWEB: " + ter.getTERWEB());
+            System.out.println("TEROBS: " + ter.getTEROBS());
+            System.out.println("TERBLO: " + ter.getTERBLO());
+            System.out.println("TERACU: " + ter.getTERACU());
+
+            System.out.println("Before save: " + ter);
+            terRepository.save(ter); 
+
+            return ResponseEntity.ok("Fields updated successfully.");   
+        } else {
+            return ResponseEntity.status(404).body("Ter not found.");
+        }
     }
 }

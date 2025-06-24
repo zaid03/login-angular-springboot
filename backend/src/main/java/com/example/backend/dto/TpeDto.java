@@ -1,13 +1,21 @@
 package com.example.backend.dto;
 
 public class TpeDto {
+
+    private Integer TERCOD;
+
     private String TPENOM;
+
     private String TPETEL;
+
     private String TPETMO;
+
     private String TPECOE;
+
     private String TPEOBS;
 
-    public TpeDto(String TPENOM, String TPETEL, String TPETMO, String TPECOE, String TPEOBS) {
+    public TpeDto(Integer TERCOD, String TPENOM, String TPETEL, String TPETMO, String TPECOE, String TPEOBS) {
+        this.TERCOD = TERCOD;
         this.TPENOM = TPENOM;
         this.TPETEL = TPETEL;
         this.TPETMO = TPETMO;
@@ -15,6 +23,13 @@ public class TpeDto {
         this.TPEOBS = TPEOBS;
     }
 
+    
+    public Integer getTERCOD() { 
+        return TERCOD; 
+    }
+    public void setTERCOD(Integer TERCOD) { 
+        this.TERCOD = TERCOD; 
+    }
 
     public String getTPENOM() { 
         return TPENOM; 

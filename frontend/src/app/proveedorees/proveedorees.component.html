@@ -48,7 +48,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                        <tr *ngFor="let p of paginatedProveedores">
+                        <tr *ngFor="let p of paginatedProveedores" [class.grey-row]="p.terblo == 1">
                             <td>{{ p.tercod }}</td>
                             <td class="truncate" title="{{ p.ternom }}" (click)="showDetails(p)" style="cursor: pointer;">{{ p.ternom }}</td>
                             <td class="truncate" title="{{ p.terali }}">{{ p.terali }}</td>
@@ -88,16 +88,16 @@
 
                     <div class="modal-row">
 
-                        <div>
+                        <div class="modal-col">
 
                             <strong>Código:</strong>
-                            <input [(ngModel)]="selectedProveedor.tercod" />
+                            <h1>{{ selectedProveedor.tercod }}</h1>
                         </div>
 
                         <div>
 
                             <strong>Nombre:</strong>
-                            <input [(ngModel)]="selectedProveedor.ternom" />
+                            <h1>{{ selectedProveedor.ternom }}</h1>
                         </div>
                     </div>
 
@@ -105,13 +105,13 @@
                         <div>
 
                             <strong>Alias:</strong>
-                            <input [(ngModel)]="selectedProveedor.terali" />
+                            <h1>{{ selectedProveedor.terali }}</h1>
                         </div>
 
                         <div>
 
                             <strong>NIF:</strong>
-                            <input [(ngModel)]="selectedProveedor.ternif" />
+                           <h1>{{ selectedProveedor.ternif }}</h1>
                         </div>
                     </div>
 
@@ -119,53 +119,58 @@
                         <div>
 
                             <strong>Dirección:</strong>
-                            <input [(ngModel)]="selectedProveedor.terdom" />
+                            <h1>{{ selectedProveedor.terdom }}</h1>
                         </div>
 
                         <div>
 
                             <strong>Código contable:</strong>
-                            <input [(ngModel)]="selectedProveedor.terayt" />
+                            <h1>{{ selectedProveedor.terayt }}</h1>
                         </div>
                     </div>
 
                     <div class="modal-row">
                         <div>
                             <strong>Código Postal:</strong>
-                            <input [(ngModel)]="selectedProveedor.tercpo" class="postal" />
-                            <strong>Provincia:</strong>
-                            <input [(ngModel)]="selectedProveedor.terpob" class="small"/>
-                            <input class="big"/>
-                            <input type="checkbox" [(ngModel)]="selectedProveedor.bloqueado" />
+                            <h1>{{ selectedProveedor.tercpo }}</h1>          
+                                <strong>Provincia:</strong>
+                                <h1>{{ selectedProveedor.procod }}</h1>
+                                <h1>{{ selectedProveedor.terpob }}</h1>              
+                            <label style="display: flex; align-items: center; gap: 2px;">
+                                <input type="checkbox"
+                                [checked]="selectedProveedor.terblo == 1"
+                                (change)="onCheckboxGeneric($event, 'terblo')"
+                                class="checkbox" />
                                 Bloqueado
+                            </label>
                         </div>
                     </div>
-
+<!-- 
                     <div class="modal-row">
                         <div>
-
                             <strong>Población:</strong>
                             <input [(ngModel)]="selectedProveedor.terpob" />
                         </div>
-                    </div>
+                    </div> 
+-->
 
                     <div class="modal-row">
                         <div>
 
                             <strong>Teléfono:</strong>
-                            <input [(ngModel)]="selectedProveedor.tertel" />
+                            <h1>{{ selectedProveedor.tertel }}</h1>
                         </div>
 
                         <div>
 
                             <strong>Fax:</strong>
-                            <input [(ngModel)]="selectedProveedor.terfax" />
+                            <h1>{{ selectedProveedor.terfax }}</h1>
                         </div>
 
                         <div>
 
                             <strong>Web:</strong>
-                            <input [(ngModel)]="selectedProveedor.terweb" />
+                            <input [(ngModel)]="selectedProveedor.terweb" type="text" />
                         </div>
                     </div>
 
@@ -173,12 +178,24 @@
                         <div>
 
                             <strong>Correo electrónico:</strong>
-                            <input [(ngModel)]="selectedProveedor.tercoe" class="correo"/>
+                            <h1 class="correo">{{ selectedProveedor.tercoe }}</h1>
                             <strong>Observaciones:</strong>
                             <textarea [(ngModel)]="selectedProveedor.terobs"></textarea>
                         </div>
                     </div>
 
+                    <div class="modal-row">
+                        <div>
+
+                            <input type="checkbox"
+                            [checked]="selectedProveedor.teracu == 1"
+                            (change)="onCheckboxGeneric($event, 'teracu')"
+                            class="checkbox" />
+                             Tiene acuerdo marco
+                        </div>
+                    </div>
+                   <h1 *ngIf="message" [ngClass]="{'message': !isError, 'error-message': isError}">{{ messages }}</h1>
+                    <button class="guardar-btn" (click)="saveChanges()">Guardar</button>
                     <div class="more">
                         <button class="pers-btn" (click)="showContactPersons(selectedProveedor)">Personas de Contacto</button>
                         <button class="Articulo-btn" (click)="showArticulos(selectedProveedor)">Articulo</button>
@@ -189,54 +206,173 @@
                         <table>
                             <thead>
                                 <tr>
-                                    <th>TPENOM</th>
-                                    <th>TPETEL</th>
-                                    <th>TPETMO</th>
-                                    <th>TPECOE</th>
-                                    <th>TPEOBS</th>
+                                    <th>Nombre</th>
+                                    <th>Teléfono</th>
+                                    <th>Móvil</th>
+                                    <th>Correo electrónico</th>
+                                    <th>Observaciones</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr *ngIf="contactPersons">
-                                    <td>{{ contactPersons.tpenom }}</td>
-                                    <td>{{ contactPersons.tpetel }}</td>
-                                    <td>{{ contactPersons.tpetmo }}</td>
-                                    <td>{{ contactPersons.tpecoe }}</td>
-                                    <td>{{ contactPersons.tpeobs }}</td>
+                                    
+                                    <td>
+                                        <input type="text" [(ngModel)]="contactPersons.tpenom" placeholder="Nombre" />
+                                    </td>
+
+                                    <td>
+                                        <input type="text" [(ngModel)]="contactPersons.tpetel" placeholder="Teléfono" />
+                                    </td>
+                                    
+                                    <td>
+                                        <input type="text" [(ngModel)]="contactPersons.tpetmo" placeholder="Móvil" />
+                                    </td>
+                                    <td>
+                                        <input type="email" [(ngModel)]="contactPersons.tpecoe" placeholder="Correo electrónico" />
+                                    </td>
+                                    <td>
+                                        <input type="text" [(ngModel)]="contactPersons.tpeobs" placeholder="Observaciones" />
+                                    </td>
+                                    <td>
+                                        <button (click)="deletepersona()">-</button>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
+                        <h1 *ngIf="contactMessage" [ngClass]="{'message': !contactIsError, 'error-message': contactIsError}">
+                        {{ contactMessage }}
+                        </h1>
+                        <button class="guardar-btn" (click)="updatepersonas()">Guardar</button>
+
                     </div>
+                    
                     <div class="custom-grid-modal" *ngIf="showArticulosGrid">
                         <h3>Artículos</h3>
+                        <h1 style="font-family: inherit; color: red; font-size: inherit;" id="message">{{ message }}</h1>
                         <table>
                             <thead>
                                 <tr>
-                                    <th>AFACOD</th>
-                                    <th>ASUCOD</th>
-                                    <th>ARTCOD</th>
-                                    <th>APRREF</th>
-                                    <th>APRPRE</th>
-                                    <th>APRUEM</th>
-                                    <th>APROBS</th>
+                                    <th>Familia</th>
+                                    <th>Subfamilia</th>
+                                    <th>Artículo</th>
+                                    <th>Descripcion</th>
+                                    <th>Ref Prov</th>
+                                    <th>Uds. embalaje</th>
+                                    <th>Observaciones</th>
+                                    <th>Acuerdo</th>
+                                    <th>Precio acuerdo</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr *ngIf="articulos">
-                                    <td>{{ articulos.afacod }}</td>
-                                    <td>{{ articulos.asucod }}</td>
-                                    <td>{{ articulos.artcod }}</td>
-                                    <td>{{ articulos.aprref }}</td>
-                                    <td>{{ articulos.aprpre }}</td>
-                                    <td>{{ articulos.apruem }}</td>
-                                    <td>{{ articulos.aprobs }}</td>
+                                <tr *ngFor="let articulo of articulos">
+                                    <td>
+                                        <input type="text" [(ngModel)]="articulo.afacod" placeholder="Familia" />
+                                    </td>
+
+                                    <td>
+                                        <input type="text" [(ngModel)]="articulo.asucod" placeholder="Subfamilia" />
+                                    </td>
+
+                                    <td>
+                                        <input type="text" [(ngModel)]="articulo.artcod" placeholder="Artículo" />
+                                    </td>
+
+                                    <td>
+                                        <textarea>descripcion (later)</textarea>
+                                    </td>
+
+                                    <td>
+                                        <input type="text" [(ngModel)]="articulo.aprref" placeholder="Referencia Prov." />
+                                    </td>
+
+                                    <td>
+                                        <input type="number" [(ngModel)]="articulo.apruem" placeholder="Unidades en embalaje" />
+                                    </td>
+
+                                    <td>
+                                        <input type="text" [(ngModel)]="articulo.aprobs" placeholder="Observaciones" />
+                                    </td>
+
+                                    <td>
+                                        <input type="checkbox"
+                                        [checked]="articulo.apracu == 1"
+                                        (change)="onCheckboxGeneric($event, 'apracu')"
+                                        class="checkbox" />
+                                    </td>
+
+                                    <td>
+                                        <input type="number" [(ngModel)]="articulo.aprpre" placeholder="Precio acuerdo" />
+                                    </td>
+
+                                    <td>
+                                        <button class="dele" (click)="deletearticulo(articulo)">-</button>
+                                         <button (click)="updatearticulos(articulo)">💾</button>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
+                        <h1 *ngIf="articulosMessage" [ngClass]="{'message': !articleIsError, 'error-message': articleIsError}">
+                        {{ articulosMessage }}
+                        </h1>
+                        <!-- <button class="guardar-btn" (click)="updatearticulos(articulo)">Guardar</button> -->
+                        <button class="add-btn" (click)="showHello()">Añadir</button>
                     </div>
                 </div>
             </div>
+            
         </div>
     </div>
 </div>
 
+<div class="modal-backdrop" *ngIf="showHelloGrid" (click)="hideHello()"></div>
+<div class="hello-modal" *ngIf="showHelloGrid">
+    <button class="close-btn" (click)="hideHello()">×</button>
+    <form class="anadir-articulo-form">
+        <div class="anadir-articulo-row">
+            <select [(ngModel)]="selectedFamilia" name="familia" required (change)="onFamiliaChange()">
+                <option value="" disabled>Elige una familia</option>
+                <option *ngFor="let afa of afas" [value]="afa.afacod">{{ afa.afacod }}</option>
+            </select>
+            <select [(ngModel)]="selectedSubfamilia" name="subfamilia" [disabled]="!selectedFamilia" (change)="onSubfamiliaChange()">
+                <option value="" disabled>Elige una subfamilia</option>
+                <option *ngFor="let asu of asus" [value]="asu.asucod">{{ asu.asucod }}</option>
+            </select>
+            <select [(ngModel)]="selectedArticulo" name="articulo" [disabled]="!selectedSubfamilia">
+                <option value="" disabled>Elige un artículo</option>
+                <option *ngFor="let art of arts" [value]="art.artcod">{{ art.artcod }}</option>
+            </select>
+        </div>
+        <div class="anadir-articulo-row">
+            <input type="text" 
+            placeholder="Descripción" 
+            [(ngModel)]="anadirDescripcion" 
+            name="anadirDescripcion" />
+            <input type="text" 
+            placeholder="Referencia Proveedor"
+            [(ngModel)]="anadirRefProv" 
+            name="anadirRefProv" />
+            <input type="number" 
+            placeholder="Unidades embalaje"
+            [(ngModel)]="anadirUdsEmbalaje" 
+            name="anadirUdsEmbalaje"  />
+            <input type="text" 
+            placeholder="Observaciones" 
+            [(ngModel)]="anadirObservaciones" 
+            name="anadirObservaciones" />
+            <label>
+                <input type="checkbox"
+                [(ngModel)]="anadirAcuerdo" 
+                name="anadirAcuerdo"
+                 /> Acuerdo
+            </label>
+            <input type="number" 
+            placeholder="Precio acuerdo"
+            [(ngModel)]="anadirPrecioAcuerdo" 
+            name="anadirPrecioAcuerdo" />
+        </div>
+        <h1 *ngIf="anadirmessage" [ngClass]="{'message': !anadirIsError, 'error-message': contactIsError}">
+            {{ anadirmessage }}
+        </h1>
+        <button class="guardar-btn" (click)="addArticulo()" type="submit">Añadir</button>
+    </form>
+</div>

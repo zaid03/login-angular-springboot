@@ -3,40 +3,39 @@ package com.example.backend.sqlserver.model;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
 import jakarta.persistence.Table;
 
 @Entity
+@IdClass(AprId.class)
 @Table(name = "APR", schema = "dbo")
 public class Apr {
     
-    @Column(nullable = false)
-    private Integer ENT;
-
     @Id
-    @Column(nullable = false)
+    private Integer ENT;
+    @Id
     private Integer TERCOD;
-
-    @Column(nullable = false)
+    @Id
     private String AFACOD;
-
-    @Column(nullable = false)
+    @Id
     private String ASUCOD;
-
-    @Column(nullable = false)
+    @Id
     private String ARTCOD;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String APRREF;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Double APRPRE;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Double APRUEM;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String APROBS;
 
+    @Column(nullable = true)
+    private Integer APRACU;
 
     public Integer getENT() {
         return ENT;
@@ -99,5 +98,12 @@ public class Apr {
     }
     public void setAPROBS(String APROBS) {
         this.APROBS = APROBS;
+    }
+
+    public Integer getAPRACU() {
+        return APRACU;
+    }
+    public void setAPRACU(Integer APRACU) {
+        this.APRACU = APRACU;
     }
 }

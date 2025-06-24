@@ -1,6 +1,7 @@
 package com.example.backend.sqlserver.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -22,10 +23,11 @@ public interface TerRepository extends JpaRepository<Ter, Long> {
     );
 
     //for the list filtered by TERCOD and option no bloqueado
-    @Query("SELECT t FROM Ter t WHERE t.ENT = :ent AND t.TERCOD = :tercod AND t.TERBLO <> 0")
+    @Query("SELECT t FROM Ter t WHERE t.ENT = :ent AND t.TERCOD = :tercod AND (t.TERBLO <> :terblo OR t.TERBLO IS NULL)")
     List<Ter> findByENTAndTERCODAndTERBLONot(
         @Param("ent") int ent,
-        @Param("tercod") Integer tercod
+        @Param("tercod") Integer tercod,
+        @Param("terblo") Integer terblo
     );
 
     //for the list filtered by TERNIF and option bloqueado
@@ -36,10 +38,11 @@ public interface TerRepository extends JpaRepository<Ter, Long> {
     );
 
     //for the list filtered by TERNIF and option no bloqueado   
-    @Query("SELECT t FROM Ter t WHERE t.ENT = :ent AND t.TERNIF LIKE %:ternif% AND t.TERBLO <> 0")
+    @Query("SELECT t FROM Ter t WHERE t.ENT = :ent AND t.TERNIF LIKE %:ternif% AND (t.TERBLO <> :terblo OR t.TERBLO IS NULL)")
     List<Ter> findByENTAndTERNIFContainingAndTERBLONot(
         @Param("ent") int ent,
-        @Param("ternif") String ternif
+        @Param("ternif") String ternif,
+        @Param("terblo") Integer terblo
     );
 
     //for the list filtered by TERNIF and TERNOM and TERALI bloqueado
@@ -62,7 +65,9 @@ public interface TerRepository extends JpaRepository<Ter, Long> {
     @Query(value = """
         SELECT * FROM TER
         WHERE ENT = :ent 
-          AND TERBLO <> 0
+          AND (
+          TERBLO <> :terblo 
+          OR TERBLO IS NULL)
           AND (
             TERNIF LIKE '%' + :term + '%'
             OR TERNOM LIKE '%' + :term + '%'
@@ -71,7 +76,8 @@ public interface TerRepository extends JpaRepository<Ter, Long> {
         """, nativeQuery = true)
     List<Ter> searchByTerm(
         @Param("ent") int ent,
-        @Param("term") String term
+        @Param("term") String term,
+        @Param("terblo") Integer terblo
     );
 
     //for the list filtered by TERNIF and TERNOM and TERALI bloqueado
@@ -93,7 +99,7 @@ public interface TerRepository extends JpaRepository<Ter, Long> {
     @Query(value = """
     SELECT * FROM TER 
     WHERE ENT = :ent 
-      AND TERBLO <> 0
+      AND (TERBLO <> :terblo OR TERBLO IS NULL)
       AND (
         TERNOM LIKE '%' + :term + '%'
         OR TERALI LIKE '%' + :term + '%'
@@ -101,7 +107,8 @@ public interface TerRepository extends JpaRepository<Ter, Long> {
     """, nativeQuery = true)
     List<Ter> findMatchingNomOrAli(
         @Param("ent") int ent,
-        @Param("term") String term
+        @Param("term") String term,
+        @Param("terblo") Integer terblo
     );
 
     // For TERCOD, no TERBLO filter
@@ -116,5 +123,6 @@ public interface TerRepository extends JpaRepository<Ter, Long> {
     @Query("SELECT t FROM Ter t WHERE t.ENT = :ent AND (t.TERNIF LIKE %:term% OR t.TERNOM LIKE %:term% OR t.TERALI LIKE %:term%)")
     List<Ter> searchTodos(@Param("ent") int ent, @Param("term") String term);
 
-    
+    //for modifying a Ter record
+    Optional<Ter> findByTERCOD(Integer tercod);
 }

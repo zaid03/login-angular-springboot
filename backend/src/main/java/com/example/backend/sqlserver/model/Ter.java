@@ -9,51 +9,57 @@ import jakarta.persistence.Table;
 @Table(name = "TER", schema = "dbo")
 public class Ter {
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Integer ENT;
 
     @Id
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Integer TERCOD;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String TERNOM;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String TERALI;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String TERNIF;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String TERDOM;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String TERCPO;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String TERPOB;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String TERTEL;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String TERFAX;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String TERWEB;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String TERCOE;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String TEROBS;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Integer TERAYT;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Integer TERBLO;
+
+    @Column(nullable = true)
+    private String PROCOD;
+
+    @Column(nullable = true)
+    private Integer TERACU;
 
     public Integer getENT() {
         return ENT;
@@ -158,5 +164,19 @@ public class Ter {
     }
     public void setTERBLO(Integer TERBLO) {
         this.TERBLO = TERBLO;
+    }
+
+    public String getPROCOD() {
+        return PROCOD;
+    }
+    public void setPROCOD(String PROCOD) {
+        this.PROCOD = PROCOD;
+    }
+    
+    public Integer getTERACU() {
+        return TERACU;
+    }
+    public void setTERACU(Integer TERACU) {
+        this.TERACU = TERACU;
     }
 }
