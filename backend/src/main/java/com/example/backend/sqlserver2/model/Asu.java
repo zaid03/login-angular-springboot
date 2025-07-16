@@ -1,14 +1,17 @@
-package com.example.backend.sqlserver.model;
+package com.example.backend.sqlserver2.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.IdClass;
 
 @Entity
+@IdClass(AsuId.class)
 @Table(name = "ASU", schema = "dbo")
 public class Asu {
-    
+
+    @Id
     @Column(nullable = false)
     private Integer ENT;
 
@@ -16,6 +19,7 @@ public class Asu {
     @Column(nullable = false)
     private String AFACOD;
 
+    @Id
     @Column(nullable = false)
     private String ASUCOD;
 

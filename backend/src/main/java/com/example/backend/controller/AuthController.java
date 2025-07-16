@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.backend.dto.LoginRequest;
-import com.example.backend.mysql.model.User;
-import com.example.backend.mysql.repository.UserRepository;
+import com.example.backend.sqlserver1.model.User;
+import com.example.backend.sqlserver1.repository.UserRepository;
 
 @RestController
 @RequestMapping("/api")

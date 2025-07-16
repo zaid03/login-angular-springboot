@@ -1,4 +1,4 @@
-package com.example.backend.mysql.model;
+package com.example.backend.sqlserver1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -43,4 +43,3 @@ public class User {
         this.USUPASS = USUPASS;
     }
 }
-    

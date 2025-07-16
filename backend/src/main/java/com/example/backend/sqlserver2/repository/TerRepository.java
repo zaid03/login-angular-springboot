@@ -1,4 +1,4 @@
-package com.example.backend.sqlserver.repository;
+package com.example.backend.sqlserver2.repository;
 
 import java.util.List;
 import java.util.Optional;
@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.example.backend.sqlserver.model.Ter;
+import com.example.backend.sqlserver2.model.Ter;
 
 @Repository
 public interface TerRepository extends JpaRepository<Ter, Long> {

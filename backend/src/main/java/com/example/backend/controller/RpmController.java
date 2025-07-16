@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.backend.dto.MenuDto;
-import com.example.backend.mysql.repository.RpmRepository;
+import com.example.backend.sqlserver1.repository.RpmRepository;
 
 @RestController
 @RequestMapping("/api/mnucods")

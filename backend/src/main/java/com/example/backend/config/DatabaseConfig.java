@@ -24,45 +24,27 @@ import jakarta.persistence.EntityManagerFactory;
 @EnableTransactionManagement
 public class DatabaseConfig {
 
-    // MySQL DataSource (Primary)
+    // SQL Server DataSource 1 (Primary) - For User Authentication and Menu System
     @Primary
-    @Bean(name = "mysqlDataSource")
-    @ConfigurationProperties(prefix = "spring.datasource.mysql")
-    public DataSource mysqlDataSource() {
+    @Bean(name = "sqlServer1DataSource")
+    @ConfigurationProperties(prefix = "spring.datasource.sqlserver1")
+    public DataSource sqlServer1DataSource() {
         return DataSourceBuilder.create().build();
     }
 
-    // SQL Server DataSource (Secondary)
-    @Bean(name = "sqlServerDataSource")
-    @ConfigurationProperties(prefix = "spring.datasource.sqlserver")
-    public DataSource sqlServerDataSource() {
+    // SQL Server DataSource 2 (Secondary) - For IASS Business Data
+    @Bean(name = "sqlServer2DataSource")
+    @ConfigurationProperties(prefix = "spring.datasource.sqlserver2")
+    public DataSource sqlServer2DataSource() {
         return DataSourceBuilder.create().build();
     }
 
-    // MySQL EntityManagerFactory
+    // SQL Server 1 EntityManagerFactory
     @Primary
-    @Bean(name = "mysqlEntityManagerFactory")
-    public LocalContainerEntityManagerFactoryBean mysqlEntityManagerFactory(
+    @Bean(name = "sqlServer1EntityManagerFactory")
+    public LocalContainerEntityManagerFactoryBean sqlServer1EntityManagerFactory(
             EntityManagerFactoryBuilder builder,
-            @Qualifier("mysqlDataSource") DataSource dataSource) {
-        
-        Map<String, Object> properties = new HashMap<>();
-        properties.put("hibernate.dialect", "org.hibernate.dialect.MySQL8Dialect");
-        properties.put("hibernate.hbm2ddl.auto", "validate");
-        properties.put("hibernate.show_sql", true);
-        
-        return builder
-                .dataSource(dataSource)
-                .packages("com.example.backend.mysql.model") // <-- use full package                .persistenceUnit("mysql")
-                .properties(properties)
-                .build();
-    }
-
-    // SQL Server EntityManagerFactory
-    @Bean(name = "sqlServerEntityManagerFactory")
-    public LocalContainerEntityManagerFactoryBean sqlServerEntityManagerFactory(
-            EntityManagerFactoryBuilder builder,
-            @Qualifier("sqlServerDataSource") DataSource dataSource) {
+            @Qualifier("sqlServer1DataSource") DataSource dataSource) {
         
         Map<String, Object> properties = new HashMap<>();
         properties.put("hibernate.dialect", "org.hibernate.dialect.SQLServerDialect");
@@ -71,45 +53,64 @@ public class DatabaseConfig {
         
         return builder
                 .dataSource(dataSource)
-                .packages("com.example.backend.sqlserver.model") // Package for SQL Server entities
-                .persistenceUnit("sqlserver")
+                .packages("com.example.backend.sqlserver1.model") // Package for auth-related entities
+                .persistenceUnit("sqlserver1")
                 .properties(properties)
                 .build();
     }
 
-    // MySQL Transaction Manager
+    // SQL Server 2 EntityManagerFactory
+    @Bean(name = "sqlServer2EntityManagerFactory")
+    public LocalContainerEntityManagerFactoryBean sqlServer2EntityManagerFactory(
+            EntityManagerFactoryBuilder builder,
+            @Qualifier("sqlServer2DataSource") DataSource dataSource) {
+        
+        Map<String, Object> properties = new HashMap<>();
+        properties.put("hibernate.dialect", "org.hibernate.dialect.SQLServerDialect");
+        properties.put("hibernate.hbm2ddl.auto", "validate");
+        properties.put("hibernate.show_sql", true);
+        
+        return builder
+                .dataSource(dataSource)
+                .packages("com.example.backend.sqlserver2.model") // Package for business entities
+                .persistenceUnit("sqlserver2")
+                .properties(properties)
+                .build();
+    }
+
+    // SQL Server 1 Transaction Manager
     @Primary
-    @Bean(name = "mysqlTransactionManager")
-    public PlatformTransactionManager mysqlTransactionManager(
-            @Qualifier("mysqlEntityManagerFactory") EntityManagerFactory entityManagerFactory) {
+    @Bean(name = "sqlServer1TransactionManager")
+    public PlatformTransactionManager sqlServer1TransactionManager(
+            @Qualifier("sqlServer1EntityManagerFactory") EntityManagerFactory entityManagerFactory) {
         return new JpaTransactionManager(entityManagerFactory);
     }
 
-    // SQL Server Transaction Manager
-    @Bean(name = "sqlServerTransactionManager")
-    public PlatformTransactionManager sqlServerTransactionManager(
-            @Qualifier("sqlServerEntityManagerFactory") EntityManagerFactory entityManagerFactory) {
+    // SQL Server 2 Transaction Manager
+    @Bean(name = "sqlServer2TransactionManager")
+    public PlatformTransactionManager sqlServer2TransactionManager(
+            @Qualifier("sqlServer2EntityManagerFactory") EntityManagerFactory entityManagerFactory) {
                 
         return new JpaTransactionManager(entityManagerFactory);
     }
 }
 
-// MySQL Repository Configuration
+// SQL Server 1 Repository Configuration
 @Configuration
 @EnableJpaRepositories(
-        basePackages = "com.example.backend.mysql.repository", // <-- use full package
-        entityManagerFactoryRef = "mysqlEntityManagerFactory",
-        transactionManagerRef = "mysqlTransactionManager"
+        basePackages = "com.example.backend.sqlserver1.repository",
+        entityManagerFactoryRef = "sqlServer1EntityManagerFactory",
+        transactionManagerRef = "sqlServer1TransactionManager"
 )
-class MySQLRepositoryConfig {
+class SQLServer1RepositoryConfig {
 }
 
-// SQL Server Repository Configuration
+// SQL Server 2 Repository Configuration
 @Configuration
 @EnableJpaRepositories(
-        basePackages = "com.example.backend.sqlserver.repository",
-        entityManagerFactoryRef = "sqlServerEntityManagerFactory",
-        transactionManagerRef = "sqlServerTransactionManager"
+        basePackages = "com.example.backend.sqlserver2.repository",
+        entityManagerFactoryRef = "sqlServer2EntityManagerFactory",
+        transactionManagerRef = "sqlServer2TransactionManager"
 )
-class SQLServerRepositoryConfig {
+class SQLServer2RepositoryConfig {
 }

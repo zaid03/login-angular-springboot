@@ -1,4 +1,4 @@
-package com.example.backend.sqlserver.model;
+package com.example.backend.sqlserver2.model;
 
 import java.io.Serializable;
 import java.util.Objects;

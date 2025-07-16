@@ -1,8 +1,8 @@
 package com.example.backend.controller;
 
-import com.example.backend.sqlserver.model.Ter;
+import com.example.backend.sqlserver2.model.Ter;
 import com.example.backend.dto.TerDto;
-import com.example.backend.sqlserver.repository.TerRepository;
+import com.example.backend.sqlserver2.repository.TerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

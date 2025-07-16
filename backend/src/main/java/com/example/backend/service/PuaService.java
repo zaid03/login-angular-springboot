@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.backend.dto.PuaEntDTO;
-import com.example.backend.mysql.repository.PuaRepository;
+import com.example.backend.sqlserver1.repository.PuaRepository;
 @Service
 public class PuaService {
 

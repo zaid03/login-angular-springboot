@@ -248,6 +248,72 @@ app-sidebar {
   -webkit-backdrop-filter: blur(1px);
 }
 
+.delete-confirm-modal {
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  border-radius: 10px;
+  transform: translate(-50%, 0);
+  background: #fff;
+  border: 1px solid #aaa;
+  padding: 24px;
+  z-index: 5000;
+  min-width: 300px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.2);
+  text-align: center;
+}
+
+.delete-confirm-modal h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #c0392b;
+  margin-bottom: 18px;
+  letter-spacing: 0.5px;
+}
+
+.delete-confirm-modal div {
+  margin-bottom: 18px;
+}
+
+.delete-confirm-modal p {
+  margin: 6px 0;
+  font-size: 1.05rem;
+  color: #333;
+}
+
+.delete-confirm-modal strong {
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+.delete-confirm-modal button {
+  min-width: 110px;
+  padding: 8px 0;
+  margin: 0 10px 0 0;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.delete-confirm-modal button:first-of-type {
+  background: #c0392b;
+  color: #fff;
+}
+
+.delete-confirm-modal button:last-of-type {
+  background: #ecf0f1;
+  color: #333;
+  border: 1px solid #bbb;
+}
+
+.delete-confirm-modal button:hover {
+  filter: brightness(0.95);
+  box-shadow: 0 2px 8px rgba(44,62,80,0.07);
+}
+
 .display {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -523,7 +589,12 @@ app-sidebar {
 .custom-grid-modal tr:hover td {
   background: #eaf3fa;
 }
-
+.custom-grid-modal h2{
+  font-size: 1rem;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
 .custom-grid-modal input[type="text"],
 .custom-grid-modal input[type="email"],
 .custom-grid-modal input[type="number"],
@@ -683,60 +754,177 @@ textarea:focus {
   font-weight: bold;
 }
 
-/* anadir articulo items */
-.hello-modal form,
-.hello-modal .anadir-articulo-form {
+.anadir-articulo-form {
   display: flex;
   flex-direction: column;
+  align-items: stretch;
   gap: 18px;
   width: 100%;
-  align-items: stretch;
-  margin-top: 10px;
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 0;
 }
 
-.hello-modal .anadir-articulo-row {
+.anadir-articulo-form .search-anadir-input {
+  width: 100%;
+  margin: 0;
   display: flex;
-  flex-wrap: wrap;
-  gap: 14px;
   align-items: center;
-  justify-content: center;
+  gap: 0;
 }
 
-.hello-modal select,
-.hello-modal input[type="text"],
-.hello-modal input[type="number"] {
-  padding: 8px 12px;
-  border-radius: 6px;
-  border: 1px solid #bfc9d1;
-  font-size: 1rem;
-  background: #f7fafd;
+.anadir-articulo-form .search-bar {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: 20px;
+  border: 1px solid #bbb;
+  font-size: 16px;
+  background: #f7f7f7;
   transition: border-color 0.2s;
   font-family: inherit;
-  min-width: 140px;
-  max-width: 200px;
+  height: 18px;
 }
 
-.hello-modal select:focus,
-.hello-modal input[type="text"]:focus,
-.hello-modal input[type="number"]:focus {
+.anadir-articulo-form .search-bar:focus {
+  border-color: #1c5d8c;
+  outline: none;
+  background: #fff;
+}
+
+/* Radios next to the input */
+.anadir-articulo-form .search-anadir {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 0;
+  margin-right: 0;
+  padding: 0;
+}
+
+.anadir-articulo-form .search-anadir input[type="radio"].checkbox {
+  margin: 0 6px 0 0;
+  accent-color: #1c5d8c;
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+}
+
+.anadir-articulo-form .search-anadir label {
+  font-size: 1rem;
+  color: #333;
+  font-weight: 500;
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Message and button */
+.anadir-articulo-form h1 {
+  margin: 10px 0 0 0;
+  font-size: 1.1em;
+  text-align: center;
+}
+
+.anadir-articulo-form .guardar-btn {
+  margin: 18px auto 0 auto;
+  width: 60%;
+  min-width: 120px;
+  font-size: 1.1rem;
+  padding: 10px 0;
+  border-radius: 8px;
+  background: #1c5d8c;
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(44,62,80,0.10);
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+.hello-modal .anadir-articulo-form table {
+  width: 100%;  
+  border-collapse: collapse;
+  margin: 18px 0 0 0;
+  background: #f8fafc;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(44,62,80,0.07);
+}
+
+.hello-modal .anadir-articulo-form th,
+.hello-modal .anadir-articulo-form td {
+  padding: 10px 12px;
+  text-align: center;
+  font-size: 1rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.hello-modal .anadir-articulo-form th {
+  background: #eaf1fb;
+  color: #1c5d8c;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid #b3c6e0;
+}
+
+.hello-modal .anadir-articulo-form tr:last-child td {
+  border-bottom: none;
+}
+
+.hello-modal .anadir-articulo-form td {
+  background: #fff;
+  color: #222;
+}
+
+.hello-modal .anadir-articulo-form input[type="text"],
+.hello-modal .anadir-articulo-form input[type="number"] {
+  width: 90%;
+  padding: 6px 8px;
+  border-radius: 5px;
+  border: 1px solid #bbb;
+  font-size: 1em;
+  background: #f7f7f7;
+  transition: border-color 0.2s;
+}
+
+.hello-modal .anadir-articulo-form input[type="text"]:focus,
+.hello-modal .anadir-articulo-form input[type="number"]:focus {
   border-color: #1c5d8c;
   background: #fff;
   outline: none;
 }
 
-.hello-modal input[type="checkbox"] {
-  accent-color: #1c5d8c;
-  width: 18px;
-  height: 18px;
-  margin-right: 6px;
-  vertical-align: middle;
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 0;
 }
 
-.hello-modal label {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 1rem;
+.hello-modal .anadir-articulo-form tr.selected-row td {
+  background: #e3eaf3;
+  color: #1c5d8c;
+  font-weight: 600;
+  border-bottom: 2px solid #b3c6e0;
+  border-top: 2px solid #b3c6e0;
+  box-shadow: none;
+  transition: background 0.18s, color 0.18s;
+}
+
+.hello-modal .anadir-articulo-form tr.selected-row td:first-child {
+  border-left: 2px solid #b3c6e0;
+}
+
+.hello-modal .anadir-articulo-form tr.selected-row td:last-child {
+  border-right: 2px solid #b3c6e0;
+}
+
+.hello-modal .anadir-articulo-form tr:hover td {
+  background: #f0f7ff;
+  color: #1976d2;
+  cursor: pointer;
 }
 
 .hello-modal .guardar-btn {
@@ -746,6 +934,7 @@ textarea:focus {
   font-size: 1.1rem;
   padding: 10px 0;
 }
+
 
 /* Responsive */
 @media (min-width: 1367px) {

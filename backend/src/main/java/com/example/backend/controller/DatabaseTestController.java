@@ -16,37 +16,37 @@ import java.util.Map;
 @RequestMapping("/api/test")
 public class DatabaseTestController {
 
-    private final DataSource mysqlDataSource;
-    private final DataSource sqlServerDataSource;
+    private final DataSource sqlServer1DataSource;
+    private final DataSource sqlServer2DataSource;
 
     public DatabaseTestController(
-            @Qualifier("mysqlDataSource") DataSource mysqlDataSource,
-            @Qualifier("sqlServerDataSource") DataSource sqlServerDataSource) {
-        this.mysqlDataSource = mysqlDataSource;
-        this.sqlServerDataSource = sqlServerDataSource;
+            @Qualifier("sqlServer1DataSource") DataSource sqlServer1DataSource,
+            @Qualifier("sqlServer2DataSource") DataSource sqlServer2DataSource) {
+        this.sqlServer1DataSource = sqlServer1DataSource;
+        this.sqlServer2DataSource = sqlServer2DataSource;
     }
 
     @GetMapping("/db-connections")
     public Map<String, Object> testDatabaseConnections() {
         Map<String, Object> result = new HashMap<>();
         
-        // Test MySQL connection
-        result.put("mysql", testConnection(mysqlDataSource, "MySQL"));
+        // Test SQL Server 1 connection
+        result.put("sqlserver1", testConnection(sqlServer1DataSource, "SQL Server 1"));
         
-        // Test SQL Server connection
-        result.put("sqlserver", testConnection(sqlServerDataSource, "SQL Server"));
+        // Test SQL Server 2 connection
+        result.put("sqlserver2", testConnection(sqlServer2DataSource, "SQL Server 2"));
         
         return result;
     }
 
-    @GetMapping("/mysql")
-    public Map<String, Object> testMySQLConnection() {
-        return testConnection(mysqlDataSource, "MySQL");
+    @GetMapping("/sqlserver1")
+    public Map<String, Object> testSQLServer1Connection() {
+        return testConnection(sqlServer1DataSource, "SQL Server 1");
     }
 
-    @GetMapping("/sqlserver")
-    public Map<String, Object> testSQLServerConnection() {
-        return testConnection(sqlServerDataSource, "SQL Server");
+    @GetMapping("/sqlserver2")
+    public Map<String, Object> testSQLServer2Connection() {
+        return testConnection(sqlServer2DataSource, "SQL Server 2");
     }
 
     private Map<String, Object> testConnection(DataSource dataSource, String dbType) {
@@ -85,15 +85,15 @@ public class DatabaseTestController {
     public Map<String, Object> healthCheck() {
         Map<String, Object> health = new HashMap<>();
         
-        Map<String, Object> mysqlResult = testConnection(mysqlDataSource, "MySQL");
-        Map<String, Object> sqlServerResult = testConnection(sqlServerDataSource, "SQL Server");
+        Map<String, Object> sqlServer1Result = testConnection(sqlServer1DataSource, "SQL Server 1");
+        Map<String, Object> sqlServer2Result = testConnection(sqlServer2DataSource, "SQL Server 2");
         
-        boolean mysqlHealthy = "SUCCESS".equals(mysqlResult.get("status"));
-        boolean sqlServerHealthy = "SUCCESS".equals(sqlServerResult.get("status"));
+        boolean sqlServer1Healthy = "SUCCESS".equals(sqlServer1Result.get("status"));
+        boolean sqlServer2Healthy = "SUCCESS".equals(sqlServer2Result.get("status"));
         
-        health.put("overall_status", (mysqlHealthy && sqlServerHealthy) ? "HEALTHY" : "UNHEALTHY");
-        health.put("mysql_status", mysqlHealthy ? "UP" : "DOWN");
-        health.put("sqlserver_status", sqlServerHealthy ? "UP" : "DOWN");
+        health.put("overall_status", (sqlServer1Healthy && sqlServer2Healthy) ? "HEALTHY" : "UNHEALTHY");
+        health.put("sqlserver1_status", sqlServer1Healthy ? "UP" : "DOWN");
+        health.put("sqlserver2_status", sqlServer2Healthy ? "UP" : "DOWN");
         health.put("timestamp", java.time.LocalDateTime.now());
         
         return health;

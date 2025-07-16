@@ -1,4 +1,4 @@
-package com.example.backend.sqlserver.repository;
+package com.example.backend.sqlserver2.repository;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.backend.dto.AprDto;
-import com.example.backend.sqlserver.model.Apr;
+import com.example.backend.sqlserver2.model.Apr;
 
 @Repository
 public interface AprRepository extends JpaRepository<Apr, Integer> {

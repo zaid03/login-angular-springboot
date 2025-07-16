@@ -1,4 +1,4 @@
-package com.example.backend.mysql.model;
+package com.example.backend.sqlserver1.model;
 
 import jakarta.persistence.*;
 
@@ -18,8 +18,6 @@ public class Pua {
     private int ENTCOD;
     @Column(name = "PERCOD", nullable = false)
     private String PERCOD;
-    @Column(name = "DDM", nullable = false)
-    private String DDM;
 
     public Pua() {}
     public Long getId() {
@@ -55,12 +53,5 @@ public class Pua {
     }
     public void setPERCOD(String PERCOD) {
         this.PERCOD = PERCOD;
-    }
-
-    public String getDDM() {
-        return DDM;
-    }
-    public void setDDM(String DDM) {
-        this.DDM = DDM;
     }
 }

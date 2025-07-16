@@ -2,67 +2,37 @@ package com.example.backend.dto;
 
 public class TpeDto {
 
-    private Integer TERCOD;
+    private Integer tercod;
+    private String tpenom;
+    private String tpetel;
+    private String tpetmo;
+    private String tpecoe;
+    private String tpeobs;
 
-    private String TPENOM;
-
-    private String TPETEL;
-
-    private String TPETMO;
-
-    private String TPECOE;
-
-    private String TPEOBS;
-
-    public TpeDto(Integer TERCOD, String TPENOM, String TPETEL, String TPETMO, String TPECOE, String TPEOBS) {
-        this.TERCOD = TERCOD;
-        this.TPENOM = TPENOM;
-        this.TPETEL = TPETEL;
-        this.TPETMO = TPETMO;
-        this.TPECOE = TPECOE;
-        this.TPEOBS = TPEOBS;
+    public TpeDto(Integer tercod, String tpenom, String tpetel, String tpetmo, String tpecoe, String tpeobs) {
+        this.tercod = tercod;
+        this.tpenom = tpenom;
+        this.tpetel = tpetel;
+        this.tpetmo = tpetmo;
+        this.tpecoe = tpecoe;
+        this.tpeobs = tpeobs;
     }
 
-    
-    public Integer getTERCOD() { 
-        return TERCOD; 
-    }
-    public void setTERCOD(Integer TERCOD) { 
-        this.TERCOD = TERCOD; 
-    }
+    public Integer gettercod() { return tercod; }
+    public void settercod(Integer tercod) { this.tercod = tercod; }
 
-    public String getTPENOM() { 
-        return TPENOM; 
-    }
-    public void setTPENOM(String TPENOM) { 
-        this.TPENOM = TPENOM; 
-    }
+    public String gettpenom() { return tpenom; }
+    public void settpenom(String tpenom) { this.tpenom = tpenom; }
 
-    public String getTPETEL() { 
-        return TPETEL; 
-    }
-    public void setTPETEL(String TPETEL) { 
-        this.TPETEL = TPETEL; 
-    }
+    public String gettpetel() { return tpetel; }
+    public void settpetel(String tpetel) { this.tpetel = tpetel; }
 
-    public String getTPETMO() { 
-        return TPETMO; 
-    }
-    public void setTPETMO(String TPETMO) { 
-        this.TPETMO = TPETMO; 
-    }
+    public String gettpetmo() { return tpetmo; }
+    public void settpetmo(String tpetmo) { this.tpetmo = tpetmo; }
 
-    public String getTPECOE() { 
-        return TPECOE; 
-    }
-    public void setTPECOE(String TPECOE) { 
-        this.TPECOE = TPECOE; 
-    }
-    
-    public String getTPEOBS() { 
-        return TPEOBS; 
-    }
-    public void setTPEOBS(String TPEOBS) { 
-        this.TPEOBS = TPEOBS; 
-    }
+    public String gettpecoe() { return tpecoe; }
+    public void settpecoe(String tpecoe) { this.tpecoe = tpecoe; }
+
+    public String gettpeobs() { return tpeobs; }
+    public void settpeobs(String tpeobs) { this.tpeobs = tpeobs; }
 }

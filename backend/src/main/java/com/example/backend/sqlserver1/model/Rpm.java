@@ -1,4 +1,4 @@
-package com.example.backend.mysql.model;
+package com.example.backend.sqlserver1.model;
 
 import jakarta.persistence.*;
 
@@ -16,8 +16,6 @@ public class Rpm {
     private int APLCOD;
     @Column(name = "MNUCOD", nullable = false)
     private String MNUCOD;
-    @Column(name = "DDM", nullable = false)
-    private String DDM;
 
     public Rpm() {}
 
@@ -47,12 +45,5 @@ public class Rpm {
     }
     public void setMNUCOD(String MNUCOD) {
         this.MNUCOD = MNUCOD;
-    }
-
-    public String getDDM() {
-        return DDM;
-    }
-    public void setDDM(String DDM) {
-        this.DDM = DDM;
     }
 }

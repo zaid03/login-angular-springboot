@@ -1,7 +1,7 @@
 package com.example.backend.controller;
 
-import com.example.backend.sqlserver.model.Afa;
-import com.example.backend.sqlserver.repository.AfaRepository;
+import com.example.backend.sqlserver2.model.Afa;
+import com.example.backend.sqlserver2.repository.AfaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,8 +14,13 @@ public class AfaController {
     @Autowired
     private AfaRepository afaRepository;
 
-    @GetMapping("/by-ent/{ent}")
-    public List<Afa> getByEnt(@PathVariable int ent) {
-        return afaRepository.findByENT(ent);
+    @GetMapping("/by-ent/{ent}/{afacod}")
+    public List<Afa> getByEntAndAfacod(@PathVariable int ent, @PathVariable String afacod) {
+        return afaRepository.findByENTAndAFACOD(ent, afacod);
+    }
+
+    @GetMapping("/by-ent-like/{ent}/{afades}")
+    public List<Afa> getByEntAndAfadesLike(@PathVariable int ent, @PathVariable String afades) {
+        return afaRepository.findByENTAndAFADESContaining(ent, afades);
     }
 }

@@ -1,4 +1,4 @@
-package com.example.backend.sqlserver.model;
+package com.example.backend.sqlserver2.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

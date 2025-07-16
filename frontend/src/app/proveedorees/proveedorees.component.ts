@@ -38,6 +38,25 @@ export class ProveedoreesComponent {
   anadirObservaciones: string = '';
   anadirAcuerdo: boolean = false;
   anadirPrecioAcuerdo: number | null = null;
+  messages: string = '';
+  isError: boolean = false;
+  contactMessage: string = '';
+  contactIsError: boolean = false;
+  nocontactmessage: string = '';
+  articulosMessage: string = '';
+  articleIsError: boolean = false;
+  afas: any[] = [];
+  asus: any[] = [];
+  arts: any[] = [];
+  anadirmessage: string = '';
+  anadirIsError: boolean = false;
+  showDeleteConfirm = false;
+  articuloToDelete: any = null;
+  searchType: string = 'familia';
+  searchValue: string = '';
+  searchResults: any[] = [];
+  searchPage: number = 0;
+  searchPageSize: number = 5;
 
   constructor(private http: HttpClient, private router: Router) {}
 
@@ -113,14 +132,19 @@ export class ProveedoreesComponent {
   showDetails(proveedor: any) {
     this.selectedProveedor = proveedor;
   }
+
   closeDetails() {
-    this.selectedProveedor = null;
     this.selectedProveedor = null;
     this.contactPersons = null;
     this.articulos = null;
     this.message = '';
     this.showContactPersonsGrid = false;
     this.showArticulosGrid = false;
+    this.contactMessage = '';
+    this.contactIsError = false;
+    this.articulosMessage = '';
+    this.articleIsError = false;
+    this.page = 0;
   }
 
   search() {
@@ -418,6 +442,7 @@ export class ProveedoreesComponent {
   showContactPersons(proveedore: any){
     this.selectedProveedor = proveedore;
     this.contactMessage = ''; 
+    this.articulosMessage = '';
     const entidad = sessionStorage.getItem('Entidad');
     let entcod: number | null = null;
     if (entidad) {
@@ -431,12 +456,12 @@ export class ProveedoreesComponent {
       .subscribe({ next: (response) => {
         this.contactPersons = response;
         if (response.length === 0) {
-          this.message = 'No se encontraron personas de contacto.';
+          this.nocontactmessage = 'No se encontraron personas de contacto.';
         }
         this.page = 0;
       },
       error: (err) => {
-        this.message = 'No se encontraron personas de contacto.';
+        this.nocontactmessage = 'error al obtener las personas de contacto.';
       } 
     });
   }
@@ -454,16 +479,21 @@ export class ProveedoreesComponent {
     this.showArticulosGrid = true;
     this.showContactPersonsGrid = false;
 
+    this.nocontactmessage = '';
+    this.isError = false;
+    this.contactMessage = '';
+    this.contactIsError = false;
+    
     this.http.get<any[]>(`http://localhost:8080/api/more/by-apr/${entcod}/${tercod}`)
       .subscribe({ next: (response) => {
         this.articulos = response;
         if (response.length === 0) {
-          this.message = 'No se encontraron artículos.';
+          this.nocontactmessage = 'No se encontraron artículos.';
         }
         this.page = 0;
       },
       error: (err) => {
-        this.message = 'No se encontraron personas de contacto.';
+        this.nocontactmessage = 'error al obtener los artículos.';
       } 
     });
   }
@@ -472,8 +502,6 @@ export class ProveedoreesComponent {
   toggleSidebar() { this.sidebarOpen = !this.sidebarOpen; }
   closeSidebar() { this.sidebarOpen = false; }
 
-  messages: string = '';
-  isError: boolean = false;
   saveChanges() {
     const updateFields ={
       TERWEB : this.selectedProveedor.terweb,
@@ -509,8 +537,6 @@ export class ProveedoreesComponent {
     }
   }
 
-  contactMessage: string = '';
-  contactIsError: boolean = false;
   updatepersonas(){
     const updateFields = {
       TPENOM : this.contactPersons.tpenom,
@@ -555,8 +581,11 @@ export class ProveedoreesComponent {
       });
   }
 
-  articulosMessage: string = '';
-  articleIsError: boolean = false;
+  onApracuChange(articulo: any, event: Event) {
+    const input = event.target as HTMLInputElement;
+    articulo.apracu = input.checked ? 1 : 0;
+  }
+
   updatearticulos(articulo: any){
     const updateFields = {
       ENT: JSON.parse(sessionStorage.getItem('Entidad') || '{}').entcod,
@@ -570,6 +599,7 @@ export class ProveedoreesComponent {
       APRACU : articulo.apracu,
       APRPRE : articulo.aprpre
     }
+
     this.http.put(
       `http://localhost:8080/api/more/update-apr`,
       updateFields,
@@ -620,11 +650,10 @@ export class ProveedoreesComponent {
       });
   }
 
-  afas: any[] = [];
-  asus: any[] = [];
-  arts: any[] = [];
-
   showHello() {
+    this.searchValue = '';
+    this.searchResults = [];
+    this.searchType = 'familia';
     this.showHelloGrid = true;
     const ent = JSON.parse(sessionStorage.getItem('Entidad') || '{}').entcod;
     this.http.get<any[]>(`http://localhost:8080/api/afa/by-ent/${ent}`)
@@ -636,11 +665,23 @@ export class ProveedoreesComponent {
       this.asus = [];
       this.arts = [];
   }
+
   hideHello() {
     this.showHelloGrid = false;
+    this.searchValue = '';
+    this.searchResults = [];
+    this.searchType = 'familia';
+    this.searchPage = 0;
+    this.selectedFamilia = '';
+    this.selectedSubfamilia = '';
+    this.selectedArticulo = '';
+    this.anadirmessage = '';
+    this.anadirIsError = false;
+    this.afas = [];
+    this.asus = [];
+    this.arts = [];
   }
-  anadirmessage: string = '';
-  anadirIsError: boolean = false;
+
   addArticulo(){
     const newArticulo = {
       ENT: JSON.parse(sessionStorage.getItem('Entidad') || '{}').entcod,
@@ -648,11 +689,6 @@ export class ProveedoreesComponent {
       AFACOD: this.selectedFamilia || '*',
       ASUCOD: this.selectedSubfamilia || '*',
       ARTCOD: this.selectedArticulo || '*',
-      APRREF: this.anadirRefProv || '',
-      APRUEM: this.anadirUdsEmbalaje ?? 0,
-      APROBS: this.anadirObservaciones || '',
-      APRACU: this.anadirAcuerdo ? 1 : 0,
-      APRPRE: this.anadirPrecioAcuerdo ?? 0
     };
 
     this.http.post(
@@ -664,6 +700,17 @@ export class ProveedoreesComponent {
         console.log('Success:', res);
         this.anadirmessage = 'Artículo añadido correctamente';
         this.anadirIsError = false;
+
+        if (this.showArticulosGrid) {
+          if (!this.articulos) {
+            this.articulos = [];
+          }
+          this.articulos.push({
+            afacod: this.selectedFamilia,
+            asucod: this.selectedSubfamilia,
+            artcod: this.selectedArticulo,
+          });
+        }
       },
       error: (err) => {
         console.error('Error:', err);
@@ -673,27 +720,80 @@ export class ProveedoreesComponent {
     });
   }
 
-  onFamiliaChange() {
-    console.log("here");
-    this.selectedSubfamilia = '';
-    this.selectedArticulo = '';
-    this.arts = [];
-    if (this.selectedFamilia) {
-      const ent = JSON.parse(sessionStorage.getItem('Entidad') || '{}').entcod;
-      this.http.get<any[]>(`http://localhost:8080/api/asu/by-ent-afacod?ent=${ent}&afacod=${this.selectedFamilia}`)
-        .subscribe(data => this.asus = data);
-    } else {
-      this.asus = [];
+  openDeleteConfirm(articulo: any) {
+    this.articuloToDelete = articulo;
+    this.showDeleteConfirm = true;
+  }
+
+  closeDeleteConfirm() {
+    this.showDeleteConfirm = false;
+    this.articuloToDelete = null;
+    this.articulosMessage = '';
+    this.articleIsError = false;
+  }
+
+  confirmDelete() {
+    if (this.articuloToDelete) {
+      this.deletearticulo(this.articuloToDelete);
+      this.closeDeleteConfirm();
     }
   }
-  onSubfamiliaChange() {
-    this.selectedArticulo = '';
-    if (this.selectedSubfamilia) {
-      const ent = JSON.parse(sessionStorage.getItem('Entidad') || '{}').entcod;
-      this.http.get<any[]>(`http://localhost:8080/api/art/by-ent-afacod-asucod?ent=${ent}&afacod=${this.selectedFamilia}&asucod=${this.selectedSubfamilia}`)
-        .subscribe(data => this.arts = data);
-    } else {
-      this.arts = [];
+
+  onSearch() {
+    this.searchPage = 0;
+    this.searchResults = [];
+    if (!this.searchValue || !this.searchType) return;
+    console.log('Search initiated:', this.searchType, this.searchValue);
+    const entidad = sessionStorage.getItem('Entidad');
+    const entcod = entidad ? JSON.parse(entidad).entcod : null;
+    if (!entcod) return;
+    let url = '';
+    if (this.searchType === 'familia') {
+      if(/^\d+$/.test(this.searchValue)) {
+        url = `http://localhost:8080/api/afa/by-ent/${entcod}/${this.searchValue}`;
+      } else {
+        url = `http://localhost:8080/api/afa/by-ent-like/${entcod}/${this.searchValue}`;
+      }
+    } else if (this.searchType === 'subfamilia') {
+      if(/^\d+$/.test(this.searchValue)) {
+        url = `http://localhost:8080/api/asu/by-ent/${entcod}/${this.searchValue}/${this.searchValue}`;
+      } else {
+        url = `http://localhost:8080/api/asu/by-ent-like/${entcod}/${this.searchValue}`;
+      }
+    } else if (this.searchType === 'articulo') {
+      if(/^\d+$/.test(this.searchValue)) {
+        url = `http://localhost:8080/api/art/by-ent/${entcod}/${this.searchValue}/${this.searchValue}/${this.searchValue}`;
+      } else {
+        url = `http://localhost:8080/api/art/by-ent-like/${entcod}/${this.searchValue}`;
+      }
+      
     }
+    this.http.get<any[]>(url, { withCredentials: true }).subscribe({
+    next: (data) => {
+      this.searchResults = data;
+      console.log('Search results:', this.searchResults);
+    },error: (err) => {
+        console.error('Error fetching search results:', err);
+        this.searchResults = [];
+      }
+    });
+  }
+
+  get paginatedSearchResults() {
+    const start = this.searchPage * this.searchPageSize;
+    return this.searchResults.slice(start, start + this.searchPageSize);
+  }
+
+  get searchTotalPages() {
+    return Math.ceil(this.searchResults.length / this.searchPageSize);
+  }
+
+  selectedSearchRow: any = null;
+  selectSearchRow(item: any) {
+    this.selectedSearchRow = item;
+    this.selectedFamilia = item.afacod;
+    this.selectedSubfamilia = item.asucod;
+    this.selectedArticulo = item.artcod;
+    console.log('Selected search row:', this.selectedSearchRow);
   }
 }

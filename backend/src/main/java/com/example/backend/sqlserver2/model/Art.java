@@ -1,20 +1,25 @@
-package com.example.backend.sqlserver.model;
+package com.example.backend.sqlserver2.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.IdClass;
 
 @Entity
+@IdClass(ArtId.class)
 @Table(name = "ART", schema = "dbo")
 public class Art {
     
+    @Id
     @Column(nullable = false)
     private Integer ENT;
 
+    @Id
     @Column(nullable = false)
     private String AFACOD;
 
+    @Id
     @Column(nullable = false)
     private String ASUCOD;
 

@@ -2,11 +2,13 @@ package com.example.backend.controller;
 
 
 import com.example.backend.dto.TpeDto;
-import com.example.backend.sqlserver.repository.TpeRepository;
+import com.example.backend.sqlserver2.repository.TpeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 @RestController
 @RequestMapping("/api/more")
 public class TpeController {
@@ -15,26 +17,34 @@ public class TpeController {
     private TpeRepository tpeRepository;
 
     // Custom query to find Tpe by ENT and TERCOD
-    @GetMapping("/by-tpe/ent/{ent}/tercod/{tercod}")
-    public ResponseEntity<TpeDto> getByEntAndTercod(@PathVariable Integer ent, @PathVariable Integer tercod) {
-        return tpeRepository.findByENTAndTERCOD(ent, tercod)
-            .map(ResponseEntity::ok)
-            .orElse(ResponseEntity.notFound().build());
+    @GetMapping("/by-tpe/{ent}/{tercod}/{tpecod}")
+    public ResponseEntity<List<TpeDto>> getByEntAndTercodAndTpecod(
+        @PathVariable int ent,
+        @PathVariable int tercod,
+        @PathVariable int tpecod) {
+        List<TpeDto> result = tpeRepository.findDtoByEntAndTercodAndTpecod(ent, tercod, tpecod);
+        if (result.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok(result);
+        }
     }
 
     // modifying the data
-    @PutMapping("/modify/{TERCOD}")
+    @PutMapping("/modify/{ent}/{tercod}/{tpecod}")
     public ResponseEntity<?> modifyTpe(
-        @PathVariable Integer TERCOD,
+        @PathVariable Integer ent,
+        @PathVariable Integer tercod,
+        @PathVariable Integer tpecod,
         @RequestBody TpeDto update
     ) {
-        return tpeRepository.findByTERCOD(TERCOD)
+        return tpeRepository.findByEntAndTercodAndTpecod(ent, tercod, tpecod)
         .map(tpe -> {
-            tpe.setTPENOM(update.getTPENOM());
-            tpe.setTPETEL(update.getTPETEL());
-            tpe.setTPETMO(update.getTPETMO());
-            tpe.setTPECOE(update.getTPECOE());
-            tpe.setTPEOBS(update.getTPEOBS());
+            tpe.settpenom(update.gettpenom());
+            tpe.settpetel(update.gettpetel());
+            tpe.settpetmo(update.gettpetmo());
+            tpe.settpecoe(update.gettpecoe());
+            tpe.settpeobs(update.gettpeobs());
             tpeRepository.save(tpe);
             return ResponseEntity.ok("Tpe modified successfully");
         })
@@ -42,14 +52,14 @@ public class TpeController {
     }
 
     // Deleting data
-    @DeleteMapping("/delete/{TERCOD}")
+    @DeleteMapping("/delete/{ent}/{tercod}/{tpecod}")
     @Transactional
-    public ResponseEntity<String> deleteTpe(@PathVariable Integer TERCOD) {
-        return tpeRepository.findByTERCOD(TERCOD)
+    public ResponseEntity<String> deleteTpe(@PathVariable Integer ent, @PathVariable Integer tercod, @PathVariable Integer tpecod) {
+        return tpeRepository.findByEntAndTercodAndTpecod(ent, tercod, tpecod)
             .map(tpe -> {
                 tpeRepository.delete(tpe);
                 return ResponseEntity.ok("Tpe deleted successfully");
             })
-            .orElse(ResponseEntity.status(404).body("Tpe not found"));
+            .orElse(ResponseEntity.notFound().build());
     }
 }

@@ -1,4 +1,4 @@
-package com.example.backend.mysql.model;
+package com.example.backend.sqlserver1.model;
 
 import jakarta.persistence.*;
 
@@ -16,8 +16,6 @@ public class Ent {
     private String ENTNOM;
     @Column(name = "ENTNIF", nullable = false)
     private String ENTNIF;
-    @Column(name = "DDM", nullable = false)
-    private String DDM;
 
 
     public Ent() {}
@@ -48,12 +46,5 @@ public class Ent {
     }
     public void setENTNIF(String ENTNIF) {
         this.ENTNIF = ENTNIF;
-    }
-
-    public String getDDM() {
-        return DDM;
-    }
-    public void setDDM(String DDM) {
-        this.DDM = DDM;
     }
 }

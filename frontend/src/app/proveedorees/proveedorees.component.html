@@ -194,7 +194,7 @@
                              Tiene acuerdo marco
                         </div>
                     </div>
-                   <h1 *ngIf="message" [ngClass]="{'message': !isError, 'error-message': isError}">{{ messages }}</h1>
+                   <h1 *ngIf="message" [ngClass]="{'message': !isError, 'error-message': isError}">{{ message }}</h1>
                     <button class="guardar-btn" (click)="saveChanges()">Guardar</button>
                     <div class="more">
                         <button class="pers-btn" (click)="showContactPersons(selectedProveedor)">Personas de Contacto</button>
@@ -202,7 +202,7 @@
                     </div>
                     <div class="custom-grid-modal" *ngIf="showContactPersonsGrid">
                         <h3>Personas de Contacto</h3>
-                        <h1 style="font-family: inherit; color: red; font-size: inherit;" id="message">{{ message }}</h1>
+                        <h1 style="font-family: inherit; color: red; font-size: inherit;" id="proveedor-message">{{ nocontactmessage }}</h1>
                         <table>
                             <thead>
                                 <tr>
@@ -248,7 +248,7 @@
                     
                     <div class="custom-grid-modal" *ngIf="showArticulosGrid">
                         <h3>Artículos</h3>
-                        <h1 style="font-family: inherit; color: red; font-size: inherit;" id="message">{{ message }}</h1>
+                        <h1 style="font-family: inherit; color: red; font-size: inherit;" id="proveedor-message">{{ nocontactmessage }}</h1>
                         <table>
                             <thead>
                                 <tr>
@@ -266,19 +266,22 @@
                             <tbody>
                                 <tr *ngFor="let articulo of articulos">
                                     <td>
-                                        <input type="text" [(ngModel)]="articulo.afacod" placeholder="Familia" />
+                                        <h2>{{ articulo.afacod }}</h2>
+                                        <!-- <input type="text" [(ngModel)]="articulo.afacod" placeholder="Familia" disabled/> -->
                                     </td>
 
                                     <td>
-                                        <input type="text" [(ngModel)]="articulo.asucod" placeholder="Subfamilia" />
+                                        <h2>{{ articulo.asucod }}</h2>
+                                        <!-- <input type="text" [(ngModel)]="articulo.asucod" placeholder="Subfamilia" /> -->
                                     </td>
 
                                     <td>
-                                        <input type="text" [(ngModel)]="articulo.artcod" placeholder="Artículo" />
+                                        <h2>{{ articulo.artcod }}</h2>
+                                        <!-- <input type="text" [(ngModel)]="articulo.artcod" placeholder="Artículo" /> -->
                                     </td>
 
                                     <td>
-                                        <textarea>descripcion (later)</textarea>
+                                        <h2>later</h2>
                                     </td>
 
                                     <td>
@@ -296,7 +299,7 @@
                                     <td>
                                         <input type="checkbox"
                                         [checked]="articulo.apracu == 1"
-                                        (change)="onCheckboxGeneric($event, 'apracu')"
+                                          (change)="onApracuChange(articulo, $event)"
                                         class="checkbox" />
                                     </td>
 
@@ -305,12 +308,14 @@
                                     </td>
 
                                     <td>
-                                        <button class="dele" (click)="deletearticulo(articulo)">-</button>
-                                         <button (click)="updatearticulos(articulo)">💾</button>
+                                        <!-- (click)="deletearticulo(articulo)" -->
+                                        <button class="dele" (click)="openDeleteConfirm(articulo)">-</button>
+                                        <button (click)="updatearticulos(articulo)">💾</button>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
+                        
                         <h1 *ngIf="articulosMessage" [ngClass]="{'message': !articleIsError, 'error-message': articleIsError}">
                         {{ articulosMessage }}
                         </h1>
@@ -324,55 +329,65 @@
     </div>
 </div>
 
+
+<div class="modal-backdrop" *ngIf="showDeleteConfirm" (click)="closeDeleteConfirm()"></div>
+<div class="delete-confirm-modal" *ngIf="showDeleteConfirm">
+    <h3>¿Seguro que quieres eliminar este artículo?</h3>
+    <div *ngIf="articuloToDelete">
+        <p><strong>Familia:</strong> {{ articuloToDelete.afacod }}</p>
+        <p><strong>Subfamilia:</strong> {{ articuloToDelete.asucod }}</p>
+        <p><strong>Artículo:</strong> {{ articuloToDelete.artcod }}</p>
+    </div>
+    <button (click)="confirmDelete()">Sí, eliminar</button>
+    <button (click)="closeDeleteConfirm()">Cancelar</button>
+</div>
+
 <div class="modal-backdrop" *ngIf="showHelloGrid" (click)="hideHello()"></div>
 <div class="hello-modal" *ngIf="showHelloGrid">
     <button class="close-btn" (click)="hideHello()">×</button>
     <form class="anadir-articulo-form">
-        <div class="anadir-articulo-row">
-            <select [(ngModel)]="selectedFamilia" name="familia" required (change)="onFamiliaChange()">
-                <option value="" disabled>Elige una familia</option>
-                <option *ngFor="let afa of afas" [value]="afa.afacod">{{ afa.afacod }}</option>
-            </select>
-            <select [(ngModel)]="selectedSubfamilia" name="subfamilia" [disabled]="!selectedFamilia" (change)="onSubfamiliaChange()">
-                <option value="" disabled>Elige una subfamilia</option>
-                <option *ngFor="let asu of asus" [value]="asu.asucod">{{ asu.asucod }}</option>
-            </select>
-            <select [(ngModel)]="selectedArticulo" name="articulo" [disabled]="!selectedSubfamilia">
-                <option value="" disabled>Elige un artículo</option>
-                <option *ngFor="let art of arts" [value]="art.artcod">{{ art.artcod }}</option>
-            </select>
+        <div class="search-anadir">
+            <input type="radio" class="checkbox" [(ngModel)]="searchType" [value]="'familia'" value="familia" name="searchType" />Familia
+            <input type="radio" class="checkbox" [(ngModel)]="searchType" [value]="'subfamilia'" value="subfamilia" name="searchType" />Subfamilia
+            <input type="radio" class="checkbox" [(ngModel)]="searchType" [value]="'articulo'" value="articulo" name="searchType" />Artículo
+        </div>   
+        <div class="search-anadir-input">
+            <input 
+            type="text" 
+            class="search-bar"
+            placeholder="Buscar familia, subfamilia o artículo" 
+            name="search"
+            [(ngModel)]="searchValue"
+            (keyup.enter)="onSearch()"
+            />
         </div>
-        <div class="anadir-articulo-row">
-            <input type="text" 
-            placeholder="Descripción" 
-            [(ngModel)]="anadirDescripcion" 
-            name="anadirDescripcion" />
-            <input type="text" 
-            placeholder="Referencia Proveedor"
-            [(ngModel)]="anadirRefProv" 
-            name="anadirRefProv" />
-            <input type="number" 
-            placeholder="Unidades embalaje"
-            [(ngModel)]="anadirUdsEmbalaje" 
-            name="anadirUdsEmbalaje"  />
-            <input type="text" 
-            placeholder="Observaciones" 
-            [(ngModel)]="anadirObservaciones" 
-            name="anadirObservaciones" />
-            <label>
-                <input type="checkbox"
-                [(ngModel)]="anadirAcuerdo" 
-                name="anadirAcuerdo"
-                 /> Acuerdo
-            </label>
-            <input type="number" 
-            placeholder="Precio acuerdo"
-            [(ngModel)]="anadirPrecioAcuerdo" 
-            name="anadirPrecioAcuerdo" />
+
+        <table>
+            <thead>
+                <th>Familia</th>
+                <th>Subfamilia</th>
+                <th>Artículo</th>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of paginatedSearchResults" (click)="selectSearchRow(item)"
+                [class.selected-row]="item === selectedSearchRow" (click)="addArticulo()">
+                    <td class="test">{{ item.afacod }}</td>
+                    <td>{{ item.asucod }}</td>
+                    <td>{{ item.artcod }}</td>
+                </tr>
+                <tr *ngIf="searchResults.length === 0">
+                    <td colspan="3" style="text-align:center;">No hay resultados</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="pagination-controls" *ngIf="searchResults.length > searchPageSize">
+            <button (click)="searchPage = searchPage - 1" [disabled]="searchPage === 0">Anterior</button>
+            <span> {{ searchPage + 1 }} de {{ searchTotalPages }}</span>
+            <button (click)="searchPage = searchPage + 1" [disabled]="searchPage + 1 >= searchTotalPages">Siguiente</button>
         </div>
         <h1 *ngIf="anadirmessage" [ngClass]="{'message': !anadirIsError, 'error-message': contactIsError}">
             {{ anadirmessage }}
         </h1>
-        <button class="guardar-btn" (click)="addArticulo()" type="submit">Añadir</button>
+        <!-- <button class="guardar-btn" (click)="addArticulo()" (click)="hideHello()" type="button">Añadir</button> -->
     </form>
 </div>
