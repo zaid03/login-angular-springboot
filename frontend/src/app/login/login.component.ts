@@ -25,7 +25,7 @@ export class LoginComponent {
 
     this.http.post('http://localhost:8080/api/login', body).subscribe(
       response => {
-      console.log('Login response:', response);
+      // console.log('Login response:', response);
       sessionStorage.setItem('USUCOD', this.USUCOD);
 
       this.http.get<any>('http://localhost:8080/api/filter', { params: { usucod: this.USUCOD } })
@@ -35,6 +35,7 @@ export class LoginComponent {
               this.errormessage = filterResponse.error;
             } else {
               sessionStorage.setItem('puaData', JSON.stringify(filterResponse));
+              // console.log(filterResponse);  
               this.router.navigate(['/ent']);
             }
           },

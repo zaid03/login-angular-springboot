@@ -19,7 +19,7 @@ export class EntComponent {
   
   ngOnInit(): void {
     const USUCOD = sessionStorage.getItem('USUCOD');
-    console.log('USUCOD from session:', USUCOD);
+    // console.log('USUCOD from session:', USUCOD);
 
     if (!USUCOD) {
       alert('You must be logged in to access this page.');
@@ -28,19 +28,20 @@ export class EntComponent {
     }
 
     const data = sessionStorage.getItem('puaData');
+    // console.log(data);
     if (data) {
       this.tableData = JSON.parse(data);
-      console.log('Data from sessionStorage:', this.tableData);
+      // console.log('Data from sessionStorage:', this.tableData);
     } else {
       console.warn('No data found in sessionStorage');
     }
   }
 
   selectRow(item: any): void {
-    console.log('Selected row:', item);
+    // console.log('Selected row:', item);
     sessionStorage.setItem('Entidad', JSON.stringify({ entcod: item.entcod }));
     sessionStorage.setItem('Perfil', JSON.stringify({ perfil: item.percod }));
-    console.log('Entidad and Perfil are:', item.entcod, item.percod);
+    // console.log('Entidad and Perfil are:', item.entcod, item.percod);
 
     this.http.get<any>('http://localhost:8080/api/mnucods', { params: { PERCOD: item.percod } })
       .subscribe({
@@ -48,10 +49,11 @@ export class EntComponent {
           if (response.error) {
             alert('Error: ' + response.error);
           } else {
-            console.log('Response received:', response);
+            // console.log('Response received:', response);
             sessionStorage.setItem('puaData', JSON.stringify(response));
-            console.log('Data saved to sessionStorage:', response);
-            this.router.navigate(['/dashboard']);
+            // console.log('Data saved to sessionStorage:', response);
+            this.router.navigate(['/eje']);
+            // this.router.navigate(['/dashboard']);
           }
         },
         error: (err) => {
