@@ -56,5 +56,8 @@ export class EjeComponent {
     // this.router.navigate(['/']);
   }
   
-    
+  cancelar() {
+    sessionStorage.clear();
+    this.router.navigate(['/']);
+  }
 }
