@@ -34,7 +34,7 @@ export class EjeComponent {
             this.tableData = response;
           }else if (response && response.length === 1) {
             sessionStorage.setItem('selected_ejercicio', JSON.stringify({ eje : response[0]}));
-            // this.router.navigate(['/']);
+            this.router.navigate(['/centro-gestor']);
           }else {
             sessionStorage.clear();
             alert('No hay ejercicios activos (use la aplicación de escritorio para solucionarlo.');
@@ -53,7 +53,7 @@ export class EjeComponent {
     sessionStorage.setItem('selected_ejercicio', JSON.stringify({ eje: item }));
     console.log('Selected exercise:', item);
 
-    // this.router.navigate(['/']);
+    this.router.navigate(['/centro-gestor']);
   }
   
   cancelar() {
