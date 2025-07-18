@@ -32,6 +32,7 @@ export class SidebarComponent {
     }
 
     if (!usucod || !entidad || !perfil) {
+      sessionStorage.clear();
       alert('Missing session data. You must be logged in.');
       this.router.navigate(['/login']);
       return;

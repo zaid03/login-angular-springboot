@@ -68,6 +68,7 @@ export class ProveedoreesComponent {
       entcod = JSON.parse(entidad).entcod;
     }
     if (!entidad || entcod === null) {
+      sessionStorage.clear();
       alert('You must be logged in to access this page.');
       this.router.navigate(['/login']);
       return;

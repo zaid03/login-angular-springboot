@@ -51,7 +51,7 @@ export class EjeComponent {
 
   selectRow(item: string) {
     sessionStorage.setItem('selected_ejercicio', JSON.stringify({ eje: item }));
-    console.log('Selected exercise:', item);
+    // console.log('Selected exercise:', item);
 
     this.router.navigate(['/centro-gestor']);
   }

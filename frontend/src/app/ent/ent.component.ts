@@ -22,6 +22,7 @@ export class EntComponent {
     // console.log('USUCOD from session:', USUCOD);
 
     if (!USUCOD) {
+      sessionStorage.clear();
       alert('You must be logged in to access this page.');
       this.router.navigate(['/login']);
       return;
