@@ -1,24 +1,6 @@
 <div class="login-container">
     <div class="login-form">
         <h2>Login</h2>
-        <form (ngSubmit)="login()">
-            <div class="form-group">
-                <label for="USUCOD">USUCOD</label>
-                <input [(ngModel)]="USUCOD" name="USUCOD" type="text" required />
-            </div>
-            <div class="form-group">
-                <label for="USUPASS">USUPASS</label>
-                <input [(ngModel)]="USUPASS" name="USUPASS" type="password" required />
-            </div>
-            <div class="form-group">
-                <input type="submit" id="login" value="login" />
-            </div>
-            <div class="form-group">
-                <p class="error-message" *ngIf="errormessage">{{ errormessage }}</p>
-            </div>
-        </form>
-        <!-- <div class="register-link">
-            <p>¿No tienes una cuenta? <br><a routerLink="/register">Regístrate aquí</a></p>
-        </div> -->
+        <button class="tologin" (click)="goToCAS()">Conectar con cas</button>
     </div>
-</div>   
+</div>

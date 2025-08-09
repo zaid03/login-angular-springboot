@@ -19,5 +19,6 @@
         "titleBar.inactiveBackground": "#00800099",
         "titleBar.inactiveForeground": "#e7e7e799"
     },
-    "peacock.color": "green"
+    "peacock.color": "green",
+    "java.compile.nullAnalysis.mode": "automatic"
 }
