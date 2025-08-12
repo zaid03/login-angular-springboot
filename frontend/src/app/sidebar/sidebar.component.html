@@ -1,9 +1,11 @@
 <button class="burger-btn" (click)="toggleSidebar()" [attr.aria-label]="collapsed ? 'Expand sidebar' : 'Collapse sidebar'">
-    &#9776;
-  </button>
+&#9776;
+</button>
 <div class="sidebar" [class.collapsed]="collapsed">
-
   <div class="sidebar-inner">
+    <div class="logo-container">
+      <img [src]="logoPath" alt="Logo" class="login-logo">
+    </div>
     <div class="menu">
       <h2>
         Bienvenida <span class="color">{{ usucod }}</span>, perfil: <span class="color">{{ perfil }}</span>

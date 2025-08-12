@@ -8,10 +8,9 @@
 
 .styled-table {
     background-color: #fff;
-    /* border-radius: 20px; */
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     padding: 24px;
-    font-family: 'Courier New', Courier, monospace;
+    font-family: "Raleway", "Helvetica", "Tahoma", "Geneva", "Arial", "Apple Color Emoji", "Segoe UI", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
     width: 400px;
     border-collapse: collapse;
 }
@@ -42,7 +41,7 @@
 }
 
 .styled-table button {
-    background-color: #6c757d;
+    background-color: #094fa3;
     color: white;
     border: none;
     border-radius: 4px;
@@ -53,7 +52,7 @@
 }
 
 .styled-table button:hover {
-    background-color: #5a6268;
+    background-color: #888c94;
     transition: background-color 0.3s ease;
 }
 
@@ -71,7 +70,7 @@
     border-radius: 4px;
     padding: 10px 20px;
     cursor: pointer;
-    font-family: 'Courier New', Courier, monospace;
+    font-family: "Raleway", "Helvetica", "Tahoma", "Geneva", "Arial", "Apple Color Emoji", "Segoe UI", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
     font-size: 14px;
     font-weight: bold;
 }

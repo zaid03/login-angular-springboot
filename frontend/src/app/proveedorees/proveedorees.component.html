@@ -83,7 +83,7 @@
             </div>
             <div class="display" >
                 <div class="modal" *ngIf="selectedProveedor">
-                    <button class="close-btn" (click)="closeDetails()">×</button>
+                    <button class="close-btn" (click)="closeDetails()" style="background-color: red !important;">×</button>
                     <h3>Detalles del Proveedor</h3>
 
                     <div class="modal-row">
@@ -145,15 +145,6 @@
                             </label>
                         </div>
                     </div>
-<!-- 
-                    <div class="modal-row">
-                        <div>
-                            <strong>Población:</strong>
-                            <input [(ngModel)]="selectedProveedor.terpob" />
-                        </div>
-                    </div> 
--->
-
                     <div class="modal-row">
                         <div>
 

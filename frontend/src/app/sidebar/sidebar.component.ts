@@ -78,4 +78,5 @@ export class SidebarComponent {
     this.collapsed = !this.collapsed;
     this.collapsedChange.emit(this.collapsed);
   }
+  logoPath = 'assets/images/logo_iass.png';
 }

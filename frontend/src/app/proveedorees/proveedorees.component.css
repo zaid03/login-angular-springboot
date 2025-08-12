@@ -7,7 +7,7 @@ body, html {
   display: flex;
   min-height: 100vh;
   background: #f0f0f0;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: "Raleway", "Helvetica", "Tahoma", "Geneva", "Arial", "Apple Color Emoji", "Segoe UI", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
 }
 
 /* Sidebar */
@@ -64,7 +64,7 @@ app-sidebar {
 }
 
 .search-bar:focus {
-  border-color: #6c757d;
+  border-color: #094fa3;
   outline: none;
   background: #fff;
 }
@@ -78,7 +78,6 @@ app-sidebar {
   color: #444;
   padding: 8px 14px;
   border-radius: 16px;
-  border: 1px solid #eee;
   font-family: inherit;
 }
 
@@ -95,7 +94,7 @@ app-sidebar {
 }
 
 .search-button {
-  background-color: #6c757d;
+  background-color: #094fa3;
   color: white;
   border: none;
   border-radius: 4px;
@@ -103,6 +102,10 @@ app-sidebar {
   cursor: pointer;
   font-family: inherit;
   font-size: 15px;
+}
+
+.search-button:hover{
+  background-color: #888c94;
 }
 
 .proveedores-download {
@@ -113,7 +116,7 @@ app-sidebar {
 }
 
 .download-btn {
-  background: #6c757d;
+  background: #094fa3;
   color: #fff;
   border: none;
   padding: 10px 22px;
@@ -125,7 +128,7 @@ app-sidebar {
 }
 
 .download-btn:hover {
-  background: #1c5d8c;
+  background: #888c94;
   box-shadow: 0 4px 16px rgba(41,128,185,0.15);
 }
 
@@ -143,7 +146,7 @@ app-sidebar {
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   padding: 24px;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: "Raleway", "Helvetica", "Tahoma", "Geneva", "Arial", "Apple Color Emoji", "Segoe UI", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
   width: 700px;
   border-collapse: collapse;
   margin-bottom: 40px;
@@ -206,7 +209,7 @@ app-sidebar {
 }
 
 .pagination-controls button {
-  background-color: #6c757d;
+  background-color: #094fa3;
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -214,6 +217,10 @@ app-sidebar {
   font-size: 15px;
   cursor: pointer;
   transition: background-color 0.2s;
+}
+
+.pagination-controls button:hover{
+  background-color: #888c94;
 }
 
 .pagination-controls button:disabled {
@@ -243,7 +250,6 @@ app-sidebar {
   top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(44, 62, 80, 0.35);
   z-index: 1000;
-  /* z-index: 2999; */
   backdrop-filter: blur(1px);
   -webkit-backdrop-filter: blur(1px);
 }
@@ -353,7 +359,6 @@ app-sidebar {
   overflow-y: auto;
   font-family: inherit;
   animation: modalIn 0.22s cubic-bezier(.4,2,.6,1) both;
-  /* position: relative; */
   pointer-events: auto;
   display: flex;
   flex-direction: column;
@@ -377,14 +382,6 @@ app-sidebar {
   align-self: flex-start;
 }
 
-/* .modal-row > div h1 {
-  margin-left: 12px;
-  margin-top: 0;
-  margin-bottom: 0;
-  flex: 1;
-  align-self: flex-start;
-} */
-
 .modal-row label {
   margin-left: 50px !important;
   margin-bottom: 0;
@@ -404,12 +401,9 @@ app-sidebar {
   background: none;
   border: none;
   font-size: 2rem;
-  color: #888;
+  color: red;
   cursor: pointer;
   transition: color 0.2s;
-}
-.close-btn:hover {
-  color: #d32f2f;
 }
 
 .modal h3 {
@@ -519,7 +513,7 @@ app-sidebar {
 }
 
 .pers-btn, .Articulo-btn {
-  background: #1c5d8c;
+  background: #1c5d8c !important;
   color: #fff;
   border: none;
   border-radius: 6px;
@@ -708,7 +702,7 @@ textarea:focus {
 }
 
 .guardar-btn {
-  background: #1c5d8c;
+  background: #1c5d8c !important;
   color: #fff;
   border: none;
   border-radius: 8px;

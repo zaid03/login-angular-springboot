@@ -31,6 +31,7 @@
 .burger-btn:hover {
   color: #333;
 }
+
 .sidebar-inner {
   margin-top: 56px;
   padding: 24px 10px 24px 10px;
@@ -46,6 +47,14 @@
   padding: 24px 0 24px 0;
   align-items: center;
   gap: 12px;
+}
+
+.logo-container{
+  width: 100%;
+}
+
+.logo-container img{
+  width: 100%;
 }
 
 .menu h2 {
@@ -66,7 +75,7 @@
 }
 
 .menu button {
-  background-color: #6c757d;
+  background-color: #094fa3;
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -80,11 +89,11 @@
 }
 
 .menu button:hover {
-  background-color: #5a6268;
+  background-color: #666666;
 }
 
 .color {
-  color: #6c757d;
+  color: #094fa3;
   font-weight: bold;
 }
 
@@ -102,7 +111,7 @@
 .choice {
   display: block;
   padding: 12px 10px;
-  color: #333;
+  color: #666666;
   background: #f7f7f7;
   border-radius: 4px;
   text-decoration: none;
@@ -112,11 +121,11 @@
   transition: background 0.2s;
   width: 100%;
   box-sizing: border-box;
-  white-space: normal;
 }
 
 .choice:hover {
-  background: #e0e0e0;
+  background: #094fa3;
+  color: #f7f7f7;
 }
 
 .menu-content {
@@ -144,17 +153,18 @@
   width: 100%;
 }
 
-.menu-item a{
+.menu-item a {
   padding: 14px 22px;
-  color: #333;
+  color: #666666;
+  background: #f7f7f7;
   text-decoration: none;
+  border-radius: 8px;
   font-size: 16px;
   border-bottom: 1px solid #f0f0f0;
   background: #fff;
   transition: background 0.2s;
   width: 100%;
   box-sizing: border-box;
-  white-space: normal;
   cursor: pointer;
 }
 
@@ -162,9 +172,9 @@
   border-bottom: none;
 }
 
-.menu-item a:hover{
-  background: #f0f0f0;
-  color: #6c757d;
+.menu-item a:hover {
+  background: #094fa3;
+  color: #f7f7f7;
 }
 
 @keyframes fadeInDown {
@@ -178,7 +188,6 @@
   cursor: not-allowed;
 }
 
-/* Hide scrollbars for collapsed sidebar */
 .sidebar.collapsed .sidebar-inner {
   overflow: hidden;
 }

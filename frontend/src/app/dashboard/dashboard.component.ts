@@ -66,4 +66,6 @@ export class DashboardComponent {
   proveedorees(): void {
     this.router.navigate(['/proveedorees']);
   }
+
+  logoPath = 'assets/images/logo_iass.png';
 }
