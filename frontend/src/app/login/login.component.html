@@ -2,8 +2,13 @@
     <div class="logo-container">
        <img [src]="logoPath" alt="Logo" class="login-logo">
     </div>
-    <div class="login-form">
+    <div *ngIf="!isValidating" class="login-form">
         <h2>Para iniciar sesión</h2>
         <button class="tologin" (click)="goToCAS()">Conectar con cas</button>
     </div>
+    <div *ngIf="isValidating" class="validation-state">
+        <p>{{ loadingMessage }}</p>
+        <div class="spinner"></div>
+    </div>
+    <div *ngIf="errormessage" class="error">{{ errormessage }}</div>
 </div>
