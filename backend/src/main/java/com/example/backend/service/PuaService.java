@@ -24,7 +24,6 @@ public class PuaService {
             int ENTCOD = (Integer) row[2];
             String PERCOD = (String) row[3];
             String ENTNOM = (String) row[4];
-            // You can add ENTNIF if needed
 
             PuaEntDTO dto = new PuaEntDTO(USUCOD, APLCOD, ENTCOD, PERCOD, ENTNOM);
             result.add(dto);
