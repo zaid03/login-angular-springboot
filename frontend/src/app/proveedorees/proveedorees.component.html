@@ -13,9 +13,9 @@
                 <input type="text" class="search-bar" placeholder="Buscar proveedor" name="search" [(ngModel)]="searchTerm"/>
                 <div class="search-options">
                     <label>
-                        <input type="radio" name="optiones" class="test" value="Todos" [(ngModel)]="filterOption"/> Todos
-                        <input type="radio" name="optiones" class="test" value="noBloqueados" [(ngModel)]="filterOption" /> No Bloqueados
-                        <input type="radio" name="optiones" class="test" value="Bloqueados" [(ngModel)]="filterOption"  /> Bloqueados
+                        <input type="radio" name="optiones" value="Todos" [(ngModel)]="filterOption" /> Todos
+                        <input type="radio" name="optiones" value="noBloqueados" [(ngModel)]="filterOption" /> No Bloqueados
+                        <input type="radio" name="optiones" value="Bloqueados" [(ngModel)]="filterOption"  /> Bloqueados
                     </label>
                 </div>
                 <button type="submit" class="search-button">Buscar</button>
@@ -362,7 +362,7 @@
             <tbody>
                 <tr *ngFor="let item of paginatedSearchResults" (click)="selectSearchRow(item)"
                 [class.selected-row]="item === selectedSearchRow" (click)="addArticulo()">
-                    <td class="test">{{ item.afacod }}</td>
+                    <td>{{ item.afacod }}</td>
                     <td>{{ item.asucod }}</td>
                     <td>{{ item.artcod }}</td>
                 </tr>
