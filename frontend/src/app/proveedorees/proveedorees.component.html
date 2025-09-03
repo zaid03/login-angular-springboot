@@ -258,17 +258,14 @@
                                 <tr *ngFor="let articulo of articulos">
                                     <td>
                                         <h2>{{ articulo.afacod }}</h2>
-                                        <!-- <input type="text" [(ngModel)]="articulo.afacod" placeholder="Familia" disabled/> -->
                                     </td>
 
                                     <td>
                                         <h2>{{ articulo.asucod }}</h2>
-                                        <!-- <input type="text" [(ngModel)]="articulo.asucod" placeholder="Subfamilia" /> -->
                                     </td>
 
                                     <td>
                                         <h2>{{ articulo.artcod }}</h2>
-                                        <!-- <input type="text" [(ngModel)]="articulo.artcod" placeholder="Artículo" /> -->
                                     </td>
 
                                     <td>
@@ -299,7 +296,6 @@
                                     </td>
 
                                     <td>
-                                        <!-- (click)="deletearticulo(articulo)" -->
                                         <button class="dele" (click)="openDeleteConfirm(articulo)">-</button>
                                         <button (click)="updatearticulos(articulo)">💾</button>
                                     </td>
@@ -310,7 +306,6 @@
                         <h1 *ngIf="articulosMessage" [ngClass]="{'message': !articleIsError, 'error-message': articleIsError}">
                         {{ articulosMessage }}
                         </h1>
-                        <!-- <button class="guardar-btn" (click)="updatearticulos(articulo)">Guardar</button> -->
                         <button class="add-btn" (click)="showHello()">Añadir</button>
                     </div>
                 </div>
@@ -379,6 +374,5 @@
         <h1 *ngIf="anadirmessage" [ngClass]="{'message': !anadirIsError, 'error-message': contactIsError}">
             {{ anadirmessage }}
         </h1>
-        <!-- <button class="guardar-btn" (click)="addArticulo()" (click)="hideHello()" type="button">Añadir</button> -->
     </form>
 </div>
