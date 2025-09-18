@@ -5,13 +5,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "users")
+@Table(name = "USU", schema = "dbo")
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @Column(nullable = false, unique = true)
     @JsonProperty("USUCOD")
     private String USUCOD;
@@ -19,15 +16,6 @@ public class User {
     @Column(nullable = false)
     @JsonProperty("USUPASS")
     private String USUPASS;
-
-    // Getters and setters
-
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getUSUCOD() {
         return USUCOD;
