@@ -54,9 +54,13 @@ export class LoginComponent implements OnInit{
               next: (filterResponse) => {
                 if (filterResponse.error) {
                   this.errormessage = filterResponse.error;
-                } else {
+                  return;
+                } 
+                  if (Array.isArray(filterResponse) && filterResponse.length) {
                   sessionStorage.setItem('puaData', JSON.stringify(filterResponse));
                   this.router.navigate(['/ent']);
+                } else {
+                  this.errormessage = 'No data returned for user.';
                 }
               },
               error: (err) => {
