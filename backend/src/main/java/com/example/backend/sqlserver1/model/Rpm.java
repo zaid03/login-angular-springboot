@@ -3,28 +3,21 @@ package com.example.backend.sqlserver1.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "rpm")
+@IdClass(RpmId.class)
+@Table(name = "RPM", schema = "dbo")
 public class Rpm {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @Column(name = "PERCOD", nullable = false)
     private String PERCOD;
+
+    @Id
     @Column(name = "APLCOD", nullable = false)
-    private int APLCOD;
+    private Integer APLCOD;
+
+    @Id
     @Column(name = "MNUCOD", nullable = false)
     private String MNUCOD;
-
-    public Rpm() {}
-
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getPERCOD() {
         return PERCOD;
@@ -33,10 +26,10 @@ public class Rpm {
         this.PERCOD = PERCOD;
     }
 
-    public int getAPLCOD() {
+    public Integer getAPLCOD() {
         return APLCOD;
     }
-    public void setAPLCOD(int APLCOD) {
+    public void setAPLCOD(Integer APLCOD) {
         this.APLCOD = APLCOD;
     }
 

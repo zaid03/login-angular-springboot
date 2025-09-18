@@ -14,5 +14,4 @@ public interface RpmRepository extends JpaRepository<Rpm, Long> {
 
     @Query("SELECT r.MNUCOD FROM Rpm r WHERE r.PERCOD = :PERCOD AND r.APLCOD = 7")
     List<String> findMNUCODsByPERCOD(@Param("PERCOD") String PERCOD);
-
 }

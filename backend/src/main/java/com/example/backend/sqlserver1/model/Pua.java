@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 @IdClass(PuaId.class)
 public class Pua {
 
-   @Id
+    @Id
     @Column(name = "USUCOD", nullable = false)
     private String USUCOD;
 
