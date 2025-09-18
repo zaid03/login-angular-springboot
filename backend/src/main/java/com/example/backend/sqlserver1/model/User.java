@@ -14,8 +14,8 @@ public class User {
     private String USUCOD;
 
     @Column(nullable = false)
-    @JsonProperty("USUPASS")
-    private String USUPASS;
+    @JsonProperty("USUPAS")
+    private String USUPAS;
 
     public String getUSUCOD() {
         return USUCOD;
@@ -24,10 +24,10 @@ public class User {
         this.USUCOD = USUCOD;
     }
 
-    public String getUSUPASS() {
-        return USUPASS;
+    public String getUSUPAS() {
+        return USUPAS;
     }
-    public void setUSUPASS(String USUPASS) {
-        this.USUPASS = USUPASS;
+    public void setUSUPAS(String USUPAS) {
+        this.USUPAS = USUPAS;
     }
 }
