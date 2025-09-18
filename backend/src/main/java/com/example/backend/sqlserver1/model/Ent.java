@@ -3,12 +3,10 @@ package com.example.backend.sqlserver1.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "ent")
+@Table(name = "ENT")
 public class Ent {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
     @Column(name = "ENTCOD", nullable = false)
     private int ENTCOD;
@@ -19,13 +17,6 @@ public class Ent {
 
 
     public Ent() {}
-
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public int getENTCOD() {
         return ENTCOD;

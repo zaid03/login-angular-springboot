@@ -41,7 +41,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/register", "/api/login", "/api/login/cas", "/api/login/cas/callback", "/api/cas/validate", "/api/validate-usucod", "/api/filter", "/api/mnucods", "/api/ter/**", "/api/more/**", "/api/afa/**", "/api/asu/**", "/api/art/**", "/api/cfg/**", "/api/centrogestor/**", "/login/oauth2/**", "/oauth2/**").permitAll()
+                .requestMatchers("/api/register", "/api/login", "/api/login/cas", "/api/login/cas/callback", "/api/cas/validate", "/api/validate-usucod", "/api/filter", "/api/mnucods", "/api/ter/**", "/api/more/**", "/api/afa/**", "/api/asu/**", "/api/art/**", "/api/cfg/**", "/api/centrogestor/**", "/login/oauth2/**", "/oauth2/**", "/health/**").permitAll()
                 .anyRequest().authenticated()
             )
             .httpBasic(Customizer.withDefaults());

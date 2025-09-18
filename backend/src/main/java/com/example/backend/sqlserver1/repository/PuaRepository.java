@@ -8,14 +8,15 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.example.backend.sqlserver1.model.Pua;
+import com.example.backend.sqlserver1.model.PuaId;
 
 @Repository
-public interface PuaRepository extends JpaRepository<Pua, Long> {
+public interface PuaRepository extends JpaRepository<Pua, PuaId> {
 
     @Query(value = """
         SELECT 
             p.USUCOD, p.APLCOD, p.ENTCOD, p.PERCOD,
-            e.ENTNOM, e.ENTNIF
+            e.ENTNOM
         FROM 
             Pua p
         JOIN 
