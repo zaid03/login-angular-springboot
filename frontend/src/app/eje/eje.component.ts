@@ -1,10 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 type Ejercicio = number | string;
+
+function safeParse(raw: string | null) {
+  if (!raw) return {};
+  try { return JSON.parse(raw); } catch { return {}; }
+}
 
 @Component({
   selector: 'app-eje',
@@ -15,44 +20,46 @@ type Ejercicio = number | string;
 })
 export class EjeComponent implements OnInit {
   tableData: Ejercicio[] = [];
+  loading = false;
 
   constructor(private http: HttpClient, private router: Router) {}
 
   ngOnInit(): void {
     const USUCOD = sessionStorage.getItem('USUCOD');
-    const rawEntidad = sessionStorage.getItem('Entidad');
-    console.log('Raw Entidad from sessionStorage:', rawEntidad);
-    const entObj = safeParse(rawEntidad);
-    console.log('Parsed Entidad object:', entObj);
-    const ENTCOD = entObj?.ENTCOD;
-    console.log('ENTCOD =', ENTCOD, 'type:', typeof ENTCOD);
+    const entObj = safeParse(sessionStorage.getItem('Entidad'));
+    const ENTCOD = entObj.ENTCOD;
 
-    if (!USUCOD || ENTCOD == null) { 
-      sessionStorage.clear();
-      alert('You must be logged in to access this page.');
+    if (!USUCOD) {
+      alert('Login required.');
       this.router.navigate(['/login']);
       return;
     }
+    if (ENTCOD == null) {
+      alert('Select entidad first.');
+      this.router.navigate(['/ent']);
+      return;
+    }
 
+    this.loading = true;
     this.http.get<Ejercicio[]>(`http://localhost:8080/api/cfg/by-ent/${ENTCOD}`)
       .subscribe({
-        next: (response) => {
-          if (response?.length > 1) {
-            this.tableData = response;
-          } else if (response?.length === 1) {
-            sessionStorage.setItem('selected_ejercicio', JSON.stringify({ eje: response[0] }));
+        next: resp => {
+          if (resp?.length > 1) {
+            this.tableData = resp;
+          } else if (resp?.length === 1) {
+            sessionStorage.setItem('selected_ejercicio', JSON.stringify({ eje: resp[0] }));
             this.router.navigate(['/centro-gestor']);
           } else {
-            sessionStorage.clear();
-            alert('No hay ejercicios activos (use la aplicación de escritorio para solucionarlo).');
-            this.router.navigate(['/login']);
+            alert('Sin ejercicios.');
+            this.router.navigate(['/ent']);
           }
         },
-        error: (err) => {
-          console.error('Server error:', err);
-          alert('Error al cargar ejercicios.');
+        error: err => {
+          console.error('EJE error', err);
+          alert('Error cargando ejercicios.');
+          this.router.navigate(['/ent']);
         }
-      });
+      }).add(() => this.loading = false);
   }
 
   selectRow(item: Ejercicio): void {
@@ -61,12 +68,6 @@ export class EjeComponent implements OnInit {
   }
 
   cancelar(): void {
-    sessionStorage.clear();
-    this.router.navigate(['/']);
+    this.router.navigate(['/ent']);
   }
-}
-
-function safeParse(json: string | null): any {
-  if (!json) return null;
-  try { return JSON.parse(json); } catch { return null; }
 }

@@ -26,9 +26,8 @@ export class SidebarComponent {
     if (menus) {
       const parsed = JSON.parse(menus);
       this.allowedMnucods = parsed.map((item: any) => item.mnucod);
-      console.log('Allowed mnucods:', this.allowedMnucods);
     } else {
-    console.warn('No menus found in sessionStorage');
+      console.warn('No menus found in sessionStorage');
     }
 
     if (!usucod || !entidad || !perfil) {
@@ -40,13 +39,9 @@ export class SidebarComponent {
 
     this.usucod = usucod;
     this.perfil = JSON.parse(perfil).perfil;
-    console.log('User code from session:', usucod);
 
     const entcod = JSON.parse(entidad).entcod;
     const percod = JSON.parse(perfil).perfil;
-
-    console.log('Entidad (entcod):', entcod);
-    console.log('Perfil (percod):', percod);
   }
 
   logout(): void {
@@ -55,8 +50,7 @@ export class SidebarComponent {
   }
 
   navigateTo(code: string): void {
-  console.log('Menú selected:', code);
-  
+    
   }
 
   isDisabled(code: string): boolean {

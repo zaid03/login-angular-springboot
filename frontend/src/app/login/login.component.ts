@@ -57,8 +57,15 @@ export class LoginComponent implements OnInit{
                   return;
                 } 
                   if (Array.isArray(filterResponse) && filterResponse.length) {
-                  sessionStorage.setItem('puaData', JSON.stringify(filterResponse));
-                  this.router.navigate(['/ent']);
+                    const normalized = filterResponse.map((r: any) => ({
+                      USUCOD: r.USUCOD ?? r.usucod,
+                      APLCOD: r.APLCOD ?? r.aplcod,
+                      ENTCOD: r.ENTCOD ?? r.entcod,
+                      PERCOD: r.PERCOD ?? r.percod,
+                      ENTNOM: r.ENTNOM ?? r.entnom
+                  }));
+                    sessionStorage.setItem('puaData', JSON.stringify(normalized));
+                    this.router.navigate(['/ent']);
                 } else {
                   this.errormessage = 'No data returned for user.';
                 }

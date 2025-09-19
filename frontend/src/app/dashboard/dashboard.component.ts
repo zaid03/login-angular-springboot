@@ -1,7 +1,12 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+
+function safeParse(raw: string | null) {
+  if (!raw) return {};
+  try { return JSON.parse(raw); } catch { return {}; }
+}
 
 @Component({
   selector: 'app-dashboard',
@@ -10,43 +15,61 @@ import { CommonModule } from '@angular/common';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
   usucod: string | null = null;
   perfil: string | null = null;
-
+  entcod: number | null = null;
+  cgecod: number | null = null;
   allowedMnucods: string[] = [];
+
+  logoPath = 'assets/images/logo_iass.png';
+
   constructor(private router: Router) {}
 
   ngOnInit(): void {
-    const usucod = sessionStorage.getItem('USUCOD');
-    console.log('USUCOD from session:', usucod);
-    const entidad = sessionStorage.getItem('Entidad');
-    const perfil = sessionStorage.getItem('Perfil');
-    const menus = sessionStorage.getItem('puaData');
+    const rawEntidad = sessionStorage.getItem('Entidad');
+    const rawPerfil  = sessionStorage.getItem('Perfil');
+    const rawMnus    = sessionStorage.getItem('mnucods');
 
-    if (menus) {
-      const parsed = JSON.parse(menus);
-      this.allowedMnucods = parsed.map((item: any) => item.mnucod);
-      console.log('Allowed mnucods:', this.allowedMnucods);
-    } else {
-    console.warn('No menus found in sessionStorage');
-    }
+    const entidadObj = safeParse(rawEntidad);
+    const perfilObj  = safeParse(rawPerfil);
+    const cgObj      = safeParse(sessionStorage.getItem('selected_centro_gestor'));
 
-    if (!usucod || !entidad || !perfil) {
-      alert('Missing session data. You must be logged in.');
+    this.usucod = sessionStorage.getItem('USUCOD');
+    this.entcod = entidadObj.ENTCOD ?? null;
+    this.perfil = perfilObj.PERCOD ?? null;
+    this.cgecod = cgObj?.cgecod ?? null;
+
+    if (!this.usucod || this.entcod == null || !this.perfil) {
+      alert('Missing session data. Restart flow.');
       this.router.navigate(['/login']);
       return;
     }
 
-    this.usucod = usucod;
-    this.perfil = JSON.parse(perfil).perfil;
-    console.log('User code from session:', usucod);
+    if (rawMnus) {
+      try {
+        const parsed = JSON.parse(rawMnus);
+        this.allowedMnucods = parsed
+          .map((m: any) =>
+            typeof m === 'string'
+              ? m
+              : (m.MNUCOD ?? m.mnucod ?? m.MENUCOD ?? m.code ?? m.codigo ?? m.id))
+          .filter(Boolean);
+      } catch {
+        console.warn('Invalid mnucods JSON');
+      }
+    }
+  }
 
-    const entcod = JSON.parse(entidad).entcod;
-    const percod = JSON.parse(perfil).perfil;
+  isDisabled(code: string): boolean {
+    return !this.allowedMnucods.includes(code);
+  }
 
-    console.log('Entidad (entcod):', entcod);
-    console.log('Perfil (percod):', percod);
+  navigateTo(code: string): void {
+    if (this.isDisabled(code)) {
+      console.warn('Not allowed:', code);
+      return;
+    }
   }
 
   logout(): void {
@@ -54,18 +77,12 @@ export class DashboardComponent {
     this.router.navigate(['/login']);
   }
 
-  navigateTo(code: string): void {
-  console.log('Menú selected:', code);
-  
-  }
-
-  isDisabled(code: string): boolean {
-  return !this.allowedMnucods.includes(code);
-  }
-
   proveedorees(): void {
+    // optional: enforce permission before navigating
+    if (this.isDisabled('acTer')) {
+      console.warn('Not allowed: acTer');
+      return;
+    }
     this.router.navigate(['/proveedorees']);
   }
-
-  logoPath = 'assets/images/logo_iass.png';
 }

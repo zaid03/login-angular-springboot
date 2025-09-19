@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
 
 interface PuaRow {
   USUCOD: string;
@@ -21,68 +21,54 @@ interface PuaRow {
 })
 export class EntComponent implements OnInit {
   tableData: PuaRow[] = [];
+  loading = false;
+  errorMsg = '';
 
   constructor(private http: HttpClient, private router: Router) {}
 
   ngOnInit(): void {
     const USUCOD = sessionStorage.getItem('USUCOD');
     if (!USUCOD) {
-      sessionStorage.clear();
-      alert('You must be logged in to access this page.');
+      alert('No session. Login.');
       this.router.navigate(['/login']);
       return;
     }
-
     const raw = sessionStorage.getItem('puaData');
     if (!raw) {
-      console.warn('No puaData in sessionStorage');
+      this.errorMsg = 'No data (puaData) in session.';
       return;
     }
     try {
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed)) {
-        this.tableData = parsed.map((r: any) => ({
-          USUCOD: r.USUCOD ?? r.usucod,
-          APLCOD: r.APLCOD ?? r.aplcod,
-            ENTCOD: r.ENTCOD ?? r.entcod,
-          PERCOD: r.PERCOD ?? r.percod,
-          ENTNOM: r.ENTNOM ?? r.entnom
-        }));
+        this.tableData = parsed;
       } else {
-        console.warn('puaData not an array');
+        this.errorMsg = 'Invalid puaData format.';
       }
     } catch {
-      console.warn('Invalid puaData JSON');
+      this.errorMsg = 'Corrupt puaData JSON.';
     }
   }
 
-  selectRow(item: PuaRow): void {
-    if (!item) return;
-    console.log('Selected row:', item, 'keys:', Object.keys(item));
-
-    const entcod = item.ENTCOD;
-    if (entcod == null || item.PERCOD == null) {
+  selectRow(row: PuaRow): void {
+    if (!row || row.ENTCOD == null || !row.PERCOD) {
       alert('Row missing ENTCOD/PERCOD');
       return;
     }
+    sessionStorage.setItem('Entidad', JSON.stringify({ ENTCOD: row.ENTCOD }));
+    sessionStorage.setItem('Perfil', JSON.stringify({ PERCOD: row.PERCOD }));
 
-    sessionStorage.setItem('Entidad', JSON.stringify({ ENTCOD: entcod }));
-    sessionStorage.setItem('Perfil', JSON.stringify({ PERCOD: item.PERCOD }));
-
-    this.http.get<any>('http://localhost:8080/api/mnucods', { params: { PERCOD: item.PERCOD } })
+    this.loading = true;
+    this.http.get<any[]>('http://localhost:8080/api/mnucods', { params: { PERCOD: row.PERCOD } })
       .subscribe({
-        next: (resp) => {
-          if (resp?.error) {
-            alert('Error: ' + resp.error);
-            return;
-          }
-          sessionStorage.setItem('mnucods', JSON.stringify(resp));
-          console.log('mnucods stored, navigating to /eje');
+        next: resp => {
+            sessionStorage.setItem('mnucods', JSON.stringify(resp));
           this.router.navigate(['/eje']);
         },
-        error: (err) => {
-          alert('Server error: ' + (err.message || err.statusText));
+        error: err => {
+          console.error('mnucods error', err);
+          alert('Error loading menus.');
         }
-      });
+      }).add(() => this.loading = false);
   }
 }

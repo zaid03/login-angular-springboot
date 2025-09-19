@@ -1,8 +1,8 @@
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Component, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 
 function safeParse(raw: string | null) {
   if (!raw) return {};
@@ -16,99 +16,74 @@ function safeParse(raw: string | null) {
   templateUrl: './centrogestor.component.html',
   styleUrls: ['./centrogestor.component.css']
 })
-
-export class CentrogestorComponent implements OnInit{
+export class CentrogestorComponent implements OnInit {
   tableData: any[] = [];
+  loading = false;
 
   constructor(private http: HttpClient, private router: Router) {}
 
   ngOnInit(): void {
     const USUCOD = sessionStorage.getItem('USUCOD');
-    const entidadObj = safeParse(sessionStorage.getItem('Entidad'));   // { ENTCOD: ... }
-    const perfilObj  = safeParse(sessionStorage.getItem('Perfil'));    // { PERCOD: ... }
-    const ejeObj     = safeParse(sessionStorage.getItem('selected_ejercicio')); // { eje: ... }
+    const entObj = safeParse(sessionStorage.getItem('Entidad'));
+    const perObj = safeParse(sessionStorage.getItem('Perfil'));
+    const ejeObj = safeParse(sessionStorage.getItem('selected_ejercicio'));
 
-    const ENTCOD = entidadObj.ENTCOD;
-    const PERCOD = perfilObj.PERCOD;
-    const EJE    = ejeObj.eje;
+    const ENTCOD = entObj.ENTCOD;
+    const PERCOD = perObj.PERCOD;
+    const EJE = ejeObj.eje;
 
-    console.log('CentroGestor init ->', { USUCOD, ENTCOD, PERCOD, EJE });
+    if (!USUCOD) { this.fail('/login','Login required'); return; }
+    if (ENTCOD == null) { this.fail('/ent','Entidad missing'); return; }
+    if (PERCOD == null) { this.fail('/ent','Perfil missing'); return; }
+    if (EJE == null)    { this.fail('/eje','Ejercicio missing'); return; }
 
-    if (!USUCOD) {
-      alert('Missing USUCOD. Login again.');
-      this.router.navigate(['/login']);
-      return;
-    }
-    if (ENTCOD == null) {
-      alert('Entidad not selected.');
-      this.router.navigate(['/ent']);
-      return;
-    }
-    if (EJE == null) {
-      alert('Ejercicio not selected.');
-      this.router.navigate(['/eje']);
-      return;
-    }
-    if (PERCOD == null) {
-      alert('Perfil not selected.');
-      this.router.navigate(['/ent']);
-      return;
-    }
-
+    this.loading = true;
     this.http.get<any[]>(`http://localhost:8080/api/centrogestor/percod/${PERCOD}/ent/${ENTCOD}/eje/${EJE}`)
       .subscribe({
-        next: (response) => {
-          console.log('CentroGestor response:', response);
-          if (response && response.length > 1) {
-            this.tableData = response;
-            console.log(response);
-          }else if (response && response.length === 1) {
-            sessionStorage.setItem('selected_centro_gestor', JSON.stringify({
-              cgecod: response[0][0], 
-              cgedes: response[0][1] 
-             }));
-             console.log(JSON.stringify({
-              cgecod: response[0][0], 
-              cgedes: response[0][1] 
-             }));
-            this.router.navigate(['dashboard']);
+        next: resp => {
+          if (resp?.length > 1) {
+            this.tableData = resp;
+          } else if (resp?.length === 1) {
+            this.storeAndGo(resp[0]);
           } else {
-              sessionStorage.setItem('selected_centro_gestor', JSON.stringify({ 
-                cgecod: null, 
-                cgedes: null 
-              }));
-              console.log('all null (centro gestor)');
-              this.router.navigate(['/dashboard']);  
-          } 
+            // Proceed with null center (business decision)
+            sessionStorage.setItem('selected_centro_gestor', JSON.stringify({ cgecod: null, cgedes: null }));
+            this.router.navigate(['/dashboard']);
+          }
         },
-        error: (err) => {
-          console.log('Server error: ' + (err.message || err.statusText));
-          sessionStorage.clear();
-          this.router.navigate(['/login']);
+        error: err => {
+          console.error('CentroGestor error', err);
+          alert('Error cargando centro gestor.');
+          this.router.navigate(['/dashboard']);
         }
-      });
+      }).add(() => this.loading = false);
   }
 
-  selectRow(item: any[]) {
-    if (!item) return;
-    
-    sessionStorage.setItem('selected_centro_gestor', JSON.stringify({ 
-      cgecod: item[0], 
-      cgedes: item[1] 
+  private fail(route: string, msg: string) {
+    alert(msg);
+    this.router.navigate([route]);
+  }
+
+  private storeAndGo(item: any) {
+    sessionStorage.setItem('selected_centro_gestor', JSON.stringify({
+      cgecod: item[0],
+      cgedes: item[1]
     }));
     this.router.navigate(['/dashboard']);
   }
 
-  cancelar() {
-    sessionStorage.clear();
-    this.router.navigate(['/']);
+  selectRow(item: any) {
+    if (!item) return;
+    this.storeAndGo(item);
   }
 
-  next() {
-    sessionStorage.setItem('selected_centro_gestor', JSON.stringify({ 
-      cgecod: null, 
-      cgedes: null 
-    }));
+  cancelar() {
+    sessionStorage.clear();
+    this.router.navigate(['/login']);
+  }
+
+  continuarSin() {
+    sessionStorage.setItem('selected_centro_gestor', JSON.stringify({ cgecod: null, cgedes: null }));
     this.router.navigate(['/dashboard']);
   }
 }
