@@ -6,15 +6,20 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.security.config.Customizer;
 
 import java.util.List;
 
 @Configuration
 public class SecurityConfig {
+
+    private final JwtAuthFilter jwtAuthFilter;
+    public SecurityConfig(JwtAuthFilter jwtAuthFilter) {
+        this.jwtAuthFilter = jwtAuthFilter;
+    }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -41,12 +46,20 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/register", "/api/login", "/api/login/cas", "/api/login/cas/callback", "/api/cas/validate", "/api/validate-usucod", "/api/filter", "/api/mnucods", "/api/ter/**", "/api/more/**", "/api/afa/**", "/api/asu/**", "/api/art/**", "/api/cfg/**", "/api/centrogestor/**", "/login/oauth2/**", "/oauth2/**", "/health/**").permitAll()
-                .anyRequest().authenticated()
+                .requestMatchers(
+                    "/api/login/**",
+                    "/api/cas/**",
+                    "/api/filter/**",
+                    "/api/validate-usucod/**",
+                    "/health/**"
+            ).permitAll()
+            .anyRequest().authenticated()
             )
-            .httpBasic(Customizer.withDefaults());
+            .httpBasic(h -> h.disable())
+            .formLogin(f -> f.disable());
 
         System.out.println("Basic Security filter chain configured.");
+        http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

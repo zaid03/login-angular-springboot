@@ -47,6 +47,7 @@ export class LoginComponent implements OnInit{
         });
         
         if (response.success) {
+          sessionStorage.setItem('JWT', response.token);
           sessionStorage.setItem('USUCOD', response.username);
           
           this.http.get<any>('http://localhost:8080/api/filter', { params: { usucod: response.username } })
