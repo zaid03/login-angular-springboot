@@ -57,26 +57,26 @@ export class ProveedoreesComponent {
   searchResults: any[] = [];
   searchPage: number = 0;
   searchPageSize: number = 5;
+  private entcod: number | null = null;
 
   constructor(private http: HttpClient, private router: Router) {}
 
   ngOnInit(): void {
     const entidad = sessionStorage.getItem('Entidad');
-    let entcod: number | null = null;
 
     if (entidad) {
       const parsed = JSON.parse(entidad);
-      entcod = parsed.ENTCOD;
+      this.entcod = parsed.ENTCOD || parsed.entcod;
     }
 
-    if (!entidad || entcod === null) {
+    if (!entidad || this.entcod === null) {
       sessionStorage.clear();
       alert('You must be logged in to access this page.');
       this.router.navigate(['/login']);
       return;
     }
 
-    this.http.get<any>(`http://localhost:8080/api/ter/by-ent/${entcod}`)
+    this.http.get<any>(`http://localhost:8080/api/ter/by-ent/${this.entcod}`)
       .subscribe({
         next: (response) => {
           if (response.error) {
@@ -153,25 +153,15 @@ export class ProveedoreesComponent {
   search() {
     console.log('here');
     this.error = null;
-    const entidad = sessionStorage.getItem('Entidad');
-    let entcod: number | null = null;
-
     if (this.searchTerm.trim() === '') {
       this.proveedores = [];
-      return;
-    }
-    if (entidad) {
-      entcod = JSON.parse(entidad).entcod;
-    }
-    if (entcod === null) {
-      alert('No encontrada entidad.');
       return;
     }
 
     if ((/^\d+$/.test(this.searchTerm) && this.filterOption === 'Bloqueados') && (this.searchTerm.length <= 5)) { 
       const tercod = this.searchTerm;
       const terblo = 0;
-      this.http.get<any[]>(`http://localhost:8080/api/ter/by-ent/${entcod}/tercod/${tercod}/terblo/${terblo}`)
+      this.http.get<any[]>(`http://localhost:8080/api/ter/by-ent/${this.entcod}/tercod/${tercod}/terblo/${terblo}`)
         .subscribe({
           next: (response) => {
             this.proveedores = response;
@@ -189,7 +179,7 @@ export class ProveedoreesComponent {
     if (/^\d+$/.test(this.searchTerm) && this.filterOption === 'noBloqueados' && (this.searchTerm.length <= 5)) {
       const tercod = this.searchTerm;
       const terblo = 0;
-      this.http.get<any[]>(`http://localhost:8080/api/ter/by-ent/${entcod}/tercod/${tercod}/terblo-not/${terblo}`)
+      this.http.get<any[]>(`http://localhost:8080/api/ter/by-ent/${this.entcod}/tercod/${tercod}/terblo-not/${terblo}`)
         .subscribe({
           next: (response) => {
             this.proveedores = response;
@@ -207,7 +197,7 @@ export class ProveedoreesComponent {
     if (/^\d+$/.test(this.searchTerm) && this.filterOption === 'Bloqueados' && (this.searchTerm.length > 5)) {
       const ternif = this.searchTerm;
       const terblo = 0;
-      this.http.get<any[]>(`http://localhost:8080/api/ter/by-ent/${entcod}/ternif/${ternif}/terblo/${terblo}`)
+      this.http.get<any[]>(`http://localhost:8080/api/ter/by-ent/${this.entcod}/ternif/${ternif}/terblo/${terblo}`)
         .subscribe({
           next: (response) => {
             this.proveedores = response;
@@ -225,7 +215,7 @@ export class ProveedoreesComponent {
     if (/^\d+$/.test(this.searchTerm) && this.filterOption === 'noBloqueados' && (this.searchTerm.length > 5)) {
       const ternif = this.searchTerm;
       const terblo = 0;
-      this.http.get<any[]>(`http://localhost:8080/api/ter/by-ent/${entcod}/ternif/${ternif}/terblo-not/${terblo}`)
+      this.http.get<any[]>(`http://localhost:8080/api/ter/by-ent/${this.entcod}/ternif/${ternif}/terblo-not/${terblo}`)
         .subscribe({
           next: (response) => {
             this.proveedores = response;
@@ -242,7 +232,7 @@ export class ProveedoreesComponent {
     }
     if (/^[a-zA-Z0-9]+$/.test(this.searchTerm) && this.filterOption === 'Bloqueados' && (this.searchTerm.length > 5)) {
       const term = this.searchTerm;
-      this.http.get<any[]>(`http://localhost:8080/api/ter/by-ent/${entcod}/search?term=${term}`)
+      this.http.get<any[]>(`http://localhost:8080/api/ter/by-ent/${this.entcod}/search?term=${term}`)
         .subscribe({
           next: (response) => {
             this.proveedores = response;
@@ -259,7 +249,7 @@ export class ProveedoreesComponent {
     }
     if (/^[a-zA-Z0-9]+$/.test(this.searchTerm) && this.filterOption === 'noBloqueados' && (this.searchTerm.length > 5)) {
       const term = this.searchTerm;
-      this.http.get<any[]>(`http://localhost:8080/api/ter/by-ent/${entcod}/search-by-term?term=${term}`)
+      this.http.get<any[]>(`http://localhost:8080/api/ter/by-ent/${this.entcod}/search-by-term?term=${term}`)
         .subscribe({
           next: (response) => {
             this.proveedores = response;
@@ -278,7 +268,7 @@ export class ProveedoreesComponent {
 
     if (this.filterOption === 'Bloqueados') {
       const term = this.searchTerm;
-      this.http.get<any[]>(`http://localhost:8080/api/ter/by-ent/${entcod}/searchByNomOrAli?term=${term}`)
+      this.http.get<any[]>(`http://localhost:8080/api/ter/by-ent/${this.entcod}/searchByNomOrAli?term=${term}`)
         .subscribe({
           next: (response) => {
             this.proveedores = response;
@@ -296,7 +286,7 @@ export class ProveedoreesComponent {
 
     if (this.filterOption === 'noBloqueados') {
       const term = this.searchTerm;
-      this.http.get<any[]>(`http://localhost:8080/api/ter/by-ent/${entcod}/findMatchingNomOrAli?term=${term}`)
+      this.http.get<any[]>(`http://localhost:8080/api/ter/by-ent/${this.entcod}/findMatchingNomOrAli?term=${term}`)
         .subscribe({
           next: (response) => {
             this.proveedores = response;
@@ -316,7 +306,7 @@ export class ProveedoreesComponent {
 
       if (/^\d+$/.test(this.searchTerm) && this.searchTerm.length <= 5) {
         const tercod = this.searchTerm;
-        this.http.get<any[]>(`http://localhost:8080/api/ter/by-ent/${entcod}/tercod/${tercod}`)
+        this.http.get<any[]>(`http://localhost:8080/api/ter/by-ent/${this.entcod}/tercod/${tercod}`)
           .subscribe({ 
               next: (response) => {
               this.proveedores = response;
@@ -334,7 +324,7 @@ export class ProveedoreesComponent {
 
       if (/^\d+$/.test(this.searchTerm) && this.searchTerm.length > 5) {
         const ternif = this.searchTerm;
-          this.http.get<any[]>(`http://localhost:8080/api/ter/by-ent/${entcod}/ternif/${ternif}`)
+          this.http.get<any[]>(`http://localhost:8080/api/ter/by-ent/${this.entcod}/ternif/${ternif}`)
           .subscribe({ next: (response) => {
             this.proveedores = response;
             if (response.length === 0) {
@@ -349,7 +339,7 @@ export class ProveedoreesComponent {
         return;
       }
         const term = this.searchTerm;
-        this.http.get<any[]>(`http://localhost:8080/api/ter/by-ent/${entcod}/search-todos?term=${term}`)
+        this.http.get<any[]>(`http://localhost:8080/api/ter/by-ent/${this.entcod}/search-todos?term=${term}`)
           .subscribe({ next: (response) => {
             this.proveedores = response;
             if (response.length === 0) {
@@ -446,16 +436,11 @@ export class ProveedoreesComponent {
     this.selectedProveedor = proveedore;
     this.contactMessage = ''; 
     this.articulosMessage = '';
-    const entidad = sessionStorage.getItem('Entidad');
-    let entcod: number | null = null;
-    if (entidad) {
-      entcod = JSON.parse(entidad).entcod;
-    }
     const tercod = proveedore.tercod;
     this.showContactPersonsGrid = true;
     this.showArticulosGrid = false;
 
-    this.http.get<any[]>(`http://localhost:8080/api/more/by-tpe/ent/${entcod}/tercod/${tercod}`)
+    this.http.get<any[]>(`http://localhost:8080/api/more/by-tpe/ent/${this.entcod}/tercod/${tercod}`)
       .subscribe({ next: (response) => {
         this.contactPersons = response;
         if (response.length === 0) {
@@ -473,12 +458,7 @@ export class ProveedoreesComponent {
     
     this.selectedProveedor = proveedore;
     sessionStorage.setItem('tercod', proveedore.tercod);
-    const entidad = sessionStorage.getItem('Entidad');
     const tercod = sessionStorage.getItem('tercod');
-    let entcod: number | null = null;
-    if (entidad) {
-      entcod = JSON.parse(entidad).entcod;
-    }
     this.showArticulosGrid = true;
     this.showContactPersonsGrid = false;
 
@@ -487,7 +467,7 @@ export class ProveedoreesComponent {
     this.contactMessage = '';
     this.contactIsError = false;
     
-    this.http.get<any[]>(`http://localhost:8080/api/more/by-apr/${entcod}/${tercod}`)
+    this.http.get<any[]>(`http://localhost:8080/api/more/by-apr/${this.entcod}/${tercod}`)
       .subscribe({ next: (response) => {
         this.articulos = response;
         if (response.length === 0) {
@@ -591,7 +571,7 @@ export class ProveedoreesComponent {
 
   updatearticulos(articulo: any){
     const updateFields = {
-      ENT: JSON.parse(sessionStorage.getItem('Entidad') || '{}').entcod,
+      ENT: this.entcod,
       TERCOD: this.selectedProveedor.tercod,
       AFACOD : articulo.afacod,
       ASUCOD : articulo.asucod,
@@ -658,8 +638,7 @@ export class ProveedoreesComponent {
     this.searchResults = [];
     this.searchType = 'familia';
     this.showHelloGrid = true;
-    const ent = JSON.parse(sessionStorage.getItem('Entidad') || '{}').entcod;
-    this.http.get<any[]>(`http://localhost:8080/api/afa/by-ent/${ent}`)
+    this.http.get<any[]>(`http://localhost:8080/api/afa/by-ent/${this.entcod}`)
       .subscribe(data => this.afas = data);
 
       this.selectedFamilia = '';
@@ -687,7 +666,7 @@ export class ProveedoreesComponent {
 
   addArticulo(){
     const newArticulo = {
-      ENT: JSON.parse(sessionStorage.getItem('Entidad') || '{}').entcod,
+      ENT: this.entcod,
       TERCOD: this.selectedProveedor.tercod,
       AFACOD: this.selectedFamilia || '*',
       ASUCOD: this.selectedSubfamilia || '*',
@@ -747,27 +726,24 @@ export class ProveedoreesComponent {
     this.searchResults = [];
     if (!this.searchValue || !this.searchType) return;
     console.log('Search initiated:', this.searchType, this.searchValue);
-    const entidad = sessionStorage.getItem('Entidad');
-    const entcod = entidad ? JSON.parse(entidad).entcod : null;
-    if (!entcod) return;
     let url = '';
     if (this.searchType === 'familia') {
       if(/^\d+$/.test(this.searchValue)) {
-        url = `http://localhost:8080/api/afa/by-ent/${entcod}/${this.searchValue}`;
+        url = `http://localhost:8080/api/afa/by-ent/${this.entcod}/${this.searchValue}`;
       } else {
-        url = `http://localhost:8080/api/afa/by-ent-like/${entcod}/${this.searchValue}`;
+        url = `http://localhost:8080/api/afa/by-ent-like/${this.entcod}/${this.searchValue}`;
       }
     } else if (this.searchType === 'subfamilia') {
       if(/^\d+$/.test(this.searchValue)) {
-        url = `http://localhost:8080/api/asu/by-ent/${entcod}/${this.searchValue}/${this.searchValue}`;
+        url = `http://localhost:8080/api/asu/by-ent/${this.entcod}/${this.searchValue}/${this.searchValue}`;
       } else {
-        url = `http://localhost:8080/api/asu/by-ent-like/${entcod}/${this.searchValue}`;
+        url = `http://localhost:8080/api/asu/by-ent-like/${this.entcod}/${this.searchValue}`;
       }
     } else if (this.searchType === 'articulo') {
       if(/^\d+$/.test(this.searchValue)) {
-        url = `http://localhost:8080/api/art/by-ent/${entcod}/${this.searchValue}/${this.searchValue}/${this.searchValue}`;
+        url = `http://localhost:8080/api/art/by-ent/${this.entcod}/${this.searchValue}/${this.searchValue}/${this.searchValue}`;
       } else {
-        url = `http://localhost:8080/api/art/by-ent-like/${entcod}/${this.searchValue}`;
+        url = `http://localhost:8080/api/art/by-ent-like/${this.entcod}/${this.searchValue}`;
       }
       
     }
