@@ -30,53 +30,64 @@ export class LoginComponent implements OnInit{
 
   validateCASTicket(ticket: string) {
     this.isValidating = true;
-    const validateUrl = `http://localhost:8080/api/cas/validate`;
-    const body = { 
-      ticket: ticket,
-      service: 'http://localhost:4200/login'
-    };
+    const validateUrl = `https://d-cas.iass.es:8443/validate?ticket=${ticket}&service=http://localhost:4200/login`;
 
-    this.http.post(validateUrl, body).subscribe({
-      next: (response: any) => {
+    this.http.get(validateUrl, { responseType: 'text' }).subscribe({
+      next: (response: string) => {
         this.isValidating = false;
-        
         this.router.navigate([], {
           relativeTo: this.route,
           queryParams: {},
           replaceUrl: true
         });
         
-        if (response.success) {
-          sessionStorage.setItem('JWT', response.token);
-          sessionStorage.setItem('USUCOD', response.username);
+        if (response.startsWith('yes')) {
+          const lines = response.split('\n');
+          const username = lines.length > 1 ? lines[1] : 'unknown';
           
-          this.http.get<any>('http://localhost:8080/api/filter', { params: { usucod: response.username } })
-            .subscribe({
-              next: (filterResponse) => {
-                if (filterResponse.error) {
-                  this.errormessage = filterResponse.error;
-                  return;
-                } 
-                  if (Array.isArray(filterResponse) && filterResponse.length) {
-                    const normalized = filterResponse.map((r: any) => ({
-                      USUCOD: r.USUCOD ?? r.usucod,
-                      APLCOD: r.APLCOD ?? r.aplcod,
-                      ENTCOD: r.ENTCOD ?? r.entcod,
-                      PERCOD: r.PERCOD ?? r.percod,
-                      ENTNOM: r.ENTNOM ?? r.entnom
-                  }));
-                    sessionStorage.setItem('puaData', JSON.stringify(normalized));
-                    this.router.navigate(['/ent']);
-                } else {
-                  this.errormessage = 'No data returned for user.';
-                }
-              },
-              error: (err) => {
-                this.errormessage = 'Server error: ' + (err.message || err.statusText);
+          this.http.post('http://localhost:8080/api/cas/validate', {
+            username: username, 
+            validated: true
+          }).subscribe({
+            next: (backendResponse: any) => {
+              if (backendResponse.success) {
+                sessionStorage.setItem('JWT', backendResponse.token);
+                sessionStorage.setItem('USUCOD', backendResponse.username);
+                  this.http.get<any>('http://localhost:8080/api/filter', { params: { usucod: backendResponse.username } })
+                  .subscribe({
+                    next: (filterResponse) => {
+                      if (filterResponse.error) {
+                        this.errormessage = filterResponse.error;
+                        return;
+                      } 
+                      if (Array.isArray(filterResponse) && filterResponse.length) {
+                        const normalized = filterResponse.map((r: any) => ({
+                          USUCOD: r.USUCOD ?? r.usucod,
+                          APLCOD: r.APLCOD ?? r.aplcod,
+                          ENTCOD: r.ENTCOD ?? r.entcod,
+                          PERCOD: r.PERCOD ?? r.percod,
+                          ENTNOM: r.ENTNOM ?? r.entnom
+                        }));
+                        sessionStorage.setItem('puaData', JSON.stringify(normalized));
+                        this.router.navigate(['/ent']);
+                      } else {
+                        this.errormessage = 'No data returned for user.';
+                      }
+                    },
+                    error: (err) => {
+                      this.errormessage = 'Server error: ' + (err.message || err.statusText);
+                    }
+                  });
+              } else {
+                this.errormessage = 'Backend validation failed';
               }
-            });
+            },
+            error: (err) => {
+              this.errormessage = 'Backend validation error: ' + err.message;
+            }
+          });
         } else {
-          this.errormessage = 'CAS validation failed';
+          this.errormessage = 'CAS validation failed: ' + response;
         }
       },
       error: (error) => {
@@ -85,7 +96,6 @@ export class LoginComponent implements OnInit{
           queryParams: {},
           replaceUrl: true
         });
-        
         this.errormessage = 'CAS validation error: ' + error.message;
       }
     });
@@ -94,6 +104,6 @@ export class LoginComponent implements OnInit{
   logoPath = 'assets/images/logo_iass.png';
 
   goToCAS() {
-    window.location.href = 'http://localhost:8081/cas/login?service=http://localhost:4200/login';
+    window.location.href = 'https://d-cas.iass.es:8443/login?service=http://localhost:4200/login';
   }
 }

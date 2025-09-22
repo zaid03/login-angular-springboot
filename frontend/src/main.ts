@@ -11,7 +11,11 @@ bootstrapApplication(AppComponent, {
       withInterceptors([
         (req, next) => {
           const token = sessionStorage.getItem('JWT');
-          if (token && !req.headers.has('Authorization')) {
+          const isPublicEndpoint = req.url.includes('/api/cas/validate') || 
+                                  req.url.includes('/api/login/') ||
+                                  req.url.includes('/api/filter');
+
+          if (token && !req.headers.has('Authorization') && !req.headers.has('Skip-Auth') && !isPublicEndpoint) {
             req = req.clone({ setHeaders: { Authorization: `Bearer ${token}` } });
           }
           return next(req);

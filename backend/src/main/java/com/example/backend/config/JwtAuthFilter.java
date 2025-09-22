@@ -27,20 +27,24 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain)
-        throws ServletException, IOException {
+    throws ServletException, IOException {
 
-        String path = req.getRequestURI();
+    String path = req.getRequestURI();
+    System.out.println("JwtAuthFilter: Processing path=" + path + " method=" + req.getMethod());
 
-        if ("OPTIONS".equalsIgnoreCase(req.getMethod())) {
-            res.setStatus(HttpServletResponse.SC_OK);
-            chain.doFilter(req, res);
-            return;
-        }
+    if ("OPTIONS".equalsIgnoreCase(req.getMethod())) {
+        res.setStatus(HttpServletResponse.SC_OK);
+        chain.doFilter(req, res);
+        return;
+    }
 
-        if (isPublic(path)) {
-            chain.doFilter(req, res);
-            return;
-        }
+    if (isPublic(path)) {
+        System.out.println("JwtAuthFilter: Public path, skipping auth for " + path);
+        chain.doFilter(req, res);
+        return;
+    }
+
+    System.out.println("JwtAuthFilter: Protected path, checking JWT for " + path);
 
         String auth = req.getHeader(HttpHeaders.AUTHORIZATION);
         if (auth == null || !auth.startsWith("Bearer ")) {

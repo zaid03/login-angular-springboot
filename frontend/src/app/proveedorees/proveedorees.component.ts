@@ -65,8 +65,10 @@ export class ProveedoreesComponent {
     let entcod: number | null = null;
 
     if (entidad) {
-      entcod = JSON.parse(entidad).entcod;
+      const parsed = JSON.parse(entidad);
+      entcod = parsed.ENTCOD;
     }
+
     if (!entidad || entcod === null) {
       sessionStorage.clear();
       alert('You must be logged in to access this page.');

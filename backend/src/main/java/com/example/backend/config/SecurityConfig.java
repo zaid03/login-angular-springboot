@@ -48,6 +48,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
                     "/api/login/**",
+                    "/api/cas/validate",
                     "/api/cas/**",
                     "/api/filter/**",
                     "/api/validate-usucod/**",
