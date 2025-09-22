@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-
+import { environment } from '../../environments/environment';
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -30,7 +30,7 @@ export class LoginComponent implements OnInit{
 
   validateCASTicket(ticket: string) {
     this.isValidating = true;
-    const validateUrl = `https://d-cas.iass.es:8443/validate?ticket=${ticket}&service=http://localhost:4200/login`;
+    const validateUrl = `${environment.casValidateUrl}?ticket=${ticket}&service=${environment.frontendUrl}/login`;
 
     this.http.get(validateUrl, { responseType: 'text' }).subscribe({
       next: (response: string) => {
@@ -45,7 +45,7 @@ export class LoginComponent implements OnInit{
           const lines = response.split('\n');
           const username = lines.length > 1 ? lines[1] : 'unknown';
           
-          this.http.post('http://localhost:8080/api/cas/validate', {
+          this.http.post(`${environment.backendUrl}/api/cas/validate`, {
             username: username, 
             validated: true
           }).subscribe({
@@ -53,7 +53,7 @@ export class LoginComponent implements OnInit{
               if (backendResponse.success) {
                 sessionStorage.setItem('JWT', backendResponse.token);
                 sessionStorage.setItem('USUCOD', backendResponse.username);
-                  this.http.get<any>('http://localhost:8080/api/filter', { params: { usucod: backendResponse.username } })
+                  this.http.get<any>(`${environment.backendUrl}/api/filter`, { params: { usucod: backendResponse.username } })
                   .subscribe({
                     next: (filterResponse) => {
                       if (filterResponse.error) {
@@ -104,6 +104,6 @@ export class LoginComponent implements OnInit{
   logoPath = 'assets/images/logo_iass.png';
 
   goToCAS() {
-    window.location.href = 'https://d-cas.iass.es:8443/login?service=http://localhost:4200/login';
+    window.location.href = `${environment.casLoginUrl}?service=${environment.frontendUrl}/login`;
   }
 }
