@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { environment } from '../../environments/environment';
 
 function safeParse(raw: string | null) {
   if (!raw) return {};
@@ -74,7 +75,7 @@ export class DashboardComponent implements OnInit {
 
   logout(): void {
     sessionStorage.clear();
-    this.router.navigate(['/login']);
+    window.location.href = `${environment.casLoginUrl.replace('/login', '/logout')}?service=${environment.frontendUrl}/login`;
   }
 
   proveedorees(): void {

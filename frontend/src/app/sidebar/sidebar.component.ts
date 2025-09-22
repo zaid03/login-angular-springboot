@@ -2,6 +2,7 @@ import { Component, Output, EventEmitter } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-sidebar',
@@ -46,7 +47,7 @@ export class SidebarComponent {
 
   logout(): void {
     sessionStorage.clear();
-    this.router.navigate(['/login']);
+    window.location.href = `${environment.casLoginUrl.replace('/login', '/logout')}?service=${environment.frontendUrl}/login`;
   }
 
   navigateTo(code: string): void {
