@@ -2,9 +2,9 @@ package com.example.sical;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
-import java.util.Random;
 import java.util.Date;
 
 public class CryptoSical {
@@ -52,7 +52,8 @@ public class CryptoSical {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
         String created = sdf.format(new Date());
 
-        int nonce = new Random().nextInt(999999999); // up to 9 digits
+        SecureRandom random = new SecureRandom();
+        long nonce = Math.abs(random.nextLong());
         String nonceStr = String.valueOf(nonce);
 
         String origin = nonceStr + created + publicKey;

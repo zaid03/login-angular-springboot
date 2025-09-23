@@ -52,7 +52,8 @@ public class SecurityConfig {
                     "/api/cas/**",
                     "/api/filter/**",
                     "/api/validate-usucod/**",
-                    "/health/**"
+                    "/health/**",
+                    "api/sical/**"
             ).permitAll()
             .anyRequest().authenticated()
             )
