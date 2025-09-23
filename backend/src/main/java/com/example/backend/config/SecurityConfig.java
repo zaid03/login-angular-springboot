@@ -53,7 +53,7 @@ public class SecurityConfig {
                     "/api/filter/**",
                     "/api/validate-usucod/**",
                     "/health/**",
-                    "api/sical/**"
+                    "/api/sical/**"
             ).permitAll()
             .anyRequest().authenticated()
             )

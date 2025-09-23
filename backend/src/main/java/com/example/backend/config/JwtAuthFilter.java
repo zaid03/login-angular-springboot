@@ -20,7 +20,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         "/api/cas",
         "/api/filter",
         "/api/validate-usucod",
-        "/health"
+        "/health",
+        "/api/sical"
     );
 
     public JwtAuthFilter(JwtUtil jwt){ this.jwt = jwt; }

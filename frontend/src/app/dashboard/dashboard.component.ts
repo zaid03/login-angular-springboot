@@ -42,7 +42,7 @@ export class DashboardComponent implements OnInit {
     this.cgecod = cgObj?.cgecod ?? null;
 
     if (!this.usucod || this.entcod == null || !this.perfil) {
-      alert('Missing session data. Restart flow.');
+      alert('Missing session data. reiniciar el flujo.');
       this.router.navigate(['/login']);
       return;
     }
