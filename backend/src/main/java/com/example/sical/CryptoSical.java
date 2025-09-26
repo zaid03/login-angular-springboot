@@ -53,7 +53,7 @@ public class CryptoSical {
         String created = sdf.format(new Date());
 
         SecureRandom random = new SecureRandom();
-        long nonce = Math.abs(random.nextLong());
+        int nonce = random.nextInt(1_000_000_000);
         String nonceStr = String.valueOf(nonce);
 
         String origin = nonceStr + created + publicKey;

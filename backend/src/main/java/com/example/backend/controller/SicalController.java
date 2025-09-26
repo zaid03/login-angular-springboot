@@ -59,4 +59,5 @@ public class SicalController {
             return ResponseEntity.status(500).body(Map.of("error", err.getMessage()));
         }
     }
+
 }

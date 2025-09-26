@@ -10,6 +10,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.w3c.dom.Document;
@@ -23,7 +24,7 @@ import com.example.sical.CryptoSical;
 @Service
 public class SicalService {
 
-  @Value("${sical.ws.url}")           // ADD THESE
+  @Value("${sical.ws.url}")           
     private String wsUrl;
     
     @Value("${sical.username}")
@@ -38,61 +39,85 @@ public class SicalService {
     @Value("${sical.org.code}")
     private String orgCode;
 
+    @Value("${sical.entidad}")
+    private String entidad;
+
+    @Value("${sical.eje}")
+    private String eje;
+
     public List<Tercero> getTerceros(String nif, String nom, String apell) throws Exception {
-        CryptoSical.SecurityFields sec = CryptoSical.calculateSecurityFields(publicKey);
+      CryptoSical.SecurityFields sec = CryptoSical.calculateSecurityFields(publicKey);
 
-        String fecha = sec.created;
-        String nonce = sec.nonce;
-        String token = sec.token;
-        String tokenSha1 = CryptoSical.encodeSha1Base64(sec.origin);
+      String fecha = sec.created;
+      String nonce = sec.nonce;
+      String token = sec.token;
+      String tokenSha1 = CryptoSical.encodeSha1Base64(sec.origin);
 
-        String xml =
-            "<e>" +
-              "<ope><apl>SNP</apl><tobj>TercerosyCuentas</tobj><cmd>LST</cmd><ver>2.0</ver></ope>" +
-              "<sec>" +
-                "<cli>SAGE-AYTOS</cli>" +
-                "<org> 0000000000 </org>" +
-                "<ent> 0000000001 </ent>" +
-                "<eje>2024</eje>" +
-                "<usu>" + username + "</usu>" +
-                "<pwd>" + CryptoSical.encodeSha1Base64(password) + "</pwd>" +
-                "<fecha>" + fecha + "</fecha>" +
-                "<nonce>" + nonce + "</nonce>" +
-                "<token>" + token + "</token>" +
-                "<tokenSha1>" + tokenSha1 + "</tokenSha1>" +
-              "</sec>" +
-              "<par><l_tercero><tercero>" +
-                "<portal>S</portal>" +
-                (nif != null ? "<NIFtercero>" + nif + "</NIFtercero>" : "") +
-                (nom != null ? "<nomTercero>" + nom + "</nomTercero>" : "") +
-                (apell != null ? "<apellTercero>" + apell + "</apellTercero>" : "") +
-                "<indice>0</indice><NumRegDev>50</NumRegDev>" +
-              "</tercero></l_tercero></par>" +
-            "</e>";
+      String xml =
+          "<e>" +
+            "<ope><apl>SNP</apl><tobj>TercerosyCuentas</tobj><cmd>LST</cmd><ver>2.0</ver></ope>" +
+            "<sec>" +
+              "<cli>SAGE-AYTOS</cli>" +
+              "<org>" + CryptoSical.encodeBase64(orgCode) + "</org>" +
+              "<ent>" + CryptoSical.encodeBase64(entidad) + "</ent>" +
+              "<eje>" + CryptoSical.encodeBase64(eje) + "</eje>" +
+              "<usu>" + CryptoSical.encodeBase64(username) + "</usu>" +
+              "<pwd>" + CryptoSical.encodeSha1Base64(password) + "</pwd>" +
+              "<fecha>" + fecha + "</fecha>" +
+              "<nonce>" + nonce + "</nonce>" +
+              "<token>" + token + "</token>" +
+              "<tokenSha1>" + tokenSha1 + "</tokenSha1>" +
+            "</sec>" +
+            "<par>" +
+              "<ruta></ruta>" +                                      
+              "<l_tercero>" + 
+                "<tercero>" +
+                  "<portal>Uw==</portal>" +
+                  "<idenTercero></idenTercero>" + 
+                  (nif   != null ? "<NIFtercero>"   + CryptoSical.encodeBase64(nif)   + "</NIFtercero>"   : "") +
+                  (nom   != null ? "<nomTercero>"  + CryptoSical.encodeBase64(nom)   + "</nomTercero>"  : "") +
+                  (apell != null ? "<apellTercero>"+ CryptoSical.encodeBase64(apell) + "</apellTercero>": "") +
+                  "<indice>0</indice>" +
+                  "<NumRegDev>50</NumRegDev>" +
+                "</tercero>" + 
+              "</l_tercero>" +
+            "</par>"+
+          "</e>";
 
-        String soapEnvelope =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-            "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ci=\"http://ci.sw.aytos\">" +
-              "<soapenv:Header/>" +
-              "<soapenv:Body>" +
-                "<ci:servicio>" +
-                   "<ci:in0><![CDATA[" + xml + "]]></ci:in0>" +
-                "</ci:servicio>" +
-              "</soapenv:Body>" +
-            "</soapenv:Envelope>";
+      System.out.println("=== USERNAME SENT: " + username);
+      System.out.println("=== PASSWORD (plain): " + password);
+      System.out.println("=== PASSWORD (SHA1): " + CryptoSical.encodeSha1Base64(password));
+      System.out.println("=== XML BEING SENT ===");
+      System.out.println(xml);
+      System.out.println("=== END XML ===");
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_TYPE, "text/xml; charset=utf-8");
-        headers.add(HttpHeaders.ACCEPT, "text/xml");
-        headers.add("SOAPAction", "");
+      String soapEnvelope =
+          "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+          "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:impl=\"http://desa-sical-ws:8080/services/Ci\">" +
+            "<soapenv:Header/>" +
+            "<soapenv:Body>" +
+              "<impl:servicio>" +
+                "<impl:in0><![CDATA[" + xml + "]]></impl:in0>" +
+              "</impl:servicio>" +
+            "</soapenv:Body>" +
+          "</soapenv:Envelope>";
 
-        HttpEntity<String> request = new HttpEntity<>(soapEnvelope, headers);
+      HttpHeaders headers = new HttpHeaders();
+      headers.add(HttpHeaders.CONTENT_TYPE, "text/xml; charset=utf-8");
+      headers.add(HttpHeaders.ACCEPT, "text/xml");
+      headers.add("SOAPAction", "\"servicio\"");
 
-        RestTemplate restTemplate = new RestTemplate();
-        String responseXml = restTemplate.postForObject(wsUrl, request, String.class);
+      HttpEntity<String> request = new HttpEntity<>(soapEnvelope, headers);
 
-        return parseTerceros(responseXml);
-    }
+      RestTemplate restTemplate = new RestTemplate();
+      String responseXml = restTemplate.postForObject(wsUrl, request, String.class);
+
+      System.out.println("=== SICAL RAW RESPONSE ===");
+      System.out.println(responseXml);
+      System.out.println("=== END RESPONSE ===");
+
+      return parseTerceros(responseXml);
+  }
 
     private List<Tercero> parseTerceros(String xml) throws Exception {
         List<Tercero> result = new ArrayList<>();
@@ -103,6 +128,8 @@ public class SicalService {
         Document doc = builder.parse(new ByteArrayInputStream(xml.getBytes()));
 
         NodeList tercerosNodes = doc.getElementsByTagName("tercero");
+
+        System.out.println("Found " + tercerosNodes.getLength() + " tercero nodes");
         for (int i = 0; i < tercerosNodes.getLength(); i++) {
             Element e = (Element) tercerosNodes.item(i);
             Tercero t = new Tercero();
@@ -123,4 +150,5 @@ public class SicalService {
         }
         return null;
     }
+
 }
