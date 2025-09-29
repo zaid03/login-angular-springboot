@@ -10,7 +10,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.w3c.dom.Document;
@@ -70,16 +69,16 @@ public class SicalService {
             "</sec>" +
             "<par>" +
               "<ruta></ruta>" +                                      
-              "<l_tercero>" + 
+              "<l_tercero>" +
                 "<tercero>" +
-                  "<portal>Uw==</portal>" +
-                  "<idenTercero></idenTercero>" + 
+                  "<portal>S</portal>" + 
+                  "<idenTercero></idenTercero>" +
                   (nif   != null ? "<NIFtercero>"   + CryptoSical.encodeBase64(nif)   + "</NIFtercero>"   : "") +
-                  (nom   != null ? "<nomTercero>"  + CryptoSical.encodeBase64(nom)   + "</nomTercero>"  : "") +
-                  (apell != null ? "<apellTercero>"+ CryptoSical.encodeBase64(apell) + "</apellTercero>": "") +
+                  (nom   != null ? "<nomTercero>"   + CryptoSical.encodeBase64(nom)   + "</nomTercero>"   : "") +
+                  (apell != null ? "<apellTercero>" + CryptoSical.encodeBase64(apell) + "</apellTercero>" : "") +
                   "<indice>0</indice>" +
                   "<NumRegDev>50</NumRegDev>" +
-                "</tercero>" + 
+                "</tercero>" +
               "</l_tercero>" +
             "</par>"+
           "</e>";
@@ -103,9 +102,9 @@ public class SicalService {
           "</soapenv:Envelope>";
 
       HttpHeaders headers = new HttpHeaders();
-      headers.add(HttpHeaders.CONTENT_TYPE, "text/xml; charset=utf-8");
+      headers.add(HttpHeaders.CONTENT_TYPE, "text/xml");
       headers.add(HttpHeaders.ACCEPT, "text/xml");
-      headers.add("SOAPAction", "\"servicio\"");
+      headers.add("SOAPAction", "");
 
       HttpEntity<String> request = new HttpEntity<>(soapEnvelope, headers);
 
