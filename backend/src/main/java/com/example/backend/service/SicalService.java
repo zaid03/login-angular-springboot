@@ -57,9 +57,9 @@ public class SicalService {
             "<ope><apl>SNP</apl><tobj>TercerosyCuentas</tobj><cmd>LST</cmd><ver>2.0</ver></ope>" +
             "<sec>" +
               "<cli>SAGE-AYTOS</cli>" +
-              "<org>" + CryptoSical.encodeBase64(orgCode) + "</org>" +
-              "<ent>" + CryptoSical.encodeBase64(entidad) + "</ent>" +
-              "<eje>" + CryptoSical.encodeBase64(eje) + "</eje>" +
+              "<org>" + orgCode + "</org>" +
+              "<ent>" + entidad + "</ent>" +
+              "<eje>" + eje + "</eje>" +
               "<usu>" + CryptoSical.encodeBase64(username) + "</usu>" +
               "<pwd>" + CryptoSical.encodeSha1Base64(password) + "</pwd>" +
               "<fecha>" + fecha + "</fecha>" +
