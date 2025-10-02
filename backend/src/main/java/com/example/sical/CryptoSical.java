@@ -12,7 +12,7 @@ public class CryptoSical {
     // helper for generating a hashed + encoded string
     public static String encodeSha1Base64(String input) throws Exception {
         MessageDigest md = MessageDigest.getInstance("SHA-1");
-        byte[] digest = md.digest(input.getBytes(StandardCharsets.UTF_8));
+        byte[] digest = md.digest(input.getBytes());
         return Base64.getEncoder().encodeToString(digest);
     }
 

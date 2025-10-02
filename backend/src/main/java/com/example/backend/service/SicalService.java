@@ -60,7 +60,7 @@ public class SicalService {
               "<org>" + orgCode + "</org>" +
               "<ent>" + entidad + "</ent>" +
               "<eje>" + eje + "</eje>" +
-              "<usu>" + CryptoSical.encodeBase64(username) + "</usu>" +
+              "<usu>" + username + "</usu>" +
               "<pwd>" + CryptoSical.encodeSha1Base64(password) + "</pwd>" +
               "<fecha>" + fecha + "</fecha>" +
               "<nonce>" + nonce + "</nonce>" +
