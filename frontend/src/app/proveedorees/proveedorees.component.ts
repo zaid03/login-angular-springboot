@@ -786,5 +786,55 @@ export class ProveedoreesComponent {
     this.showProveedorModal = false;
   }
 
+  searchAdd: string = 'nif';
+  searchProveedor: string = '';
+  anadirProveedorIsError = false;
+  anadirMessageProveedor = '';
+  contactProveedorIsError = false;
+  proveedoresSearchResults: any[] = [];
+  
+  onProveedorSearch(){
+    if (!this.searchAdd || !this.searchProveedor){
+      this.anadirProveedorIsError = true;
+      this.anadirMessageProveedor = 'Introduce valor y tipo de búsqueda'
+      return
+    }
 
+    console.log('Search for proveedor initiated:', this.searchProveedor, this.searchAdd);
+    let url = '';
+    const term = encodeURIComponent(this.searchProveedor.trim());
+    
+    if(this.searchAdd === 'nif'){
+      url = `http://localhost:8080/api/sical/terceros?nif=${term}`;
+    }
+
+    if (this.searchAdd === 'nom'){
+      url = `http://localhost:8080/api/sical/terceros?nom=${term}`
+    }
+
+    if (this.searchAdd === 'apell') {
+      url = `http://localhost:8080/api/sical/terceros?apell=${term}`
+    }
+
+    if (!url) {
+      this.anadirProveedorIsError = true;
+      this.anadirMessageProveedor = 'Tipo de búsqueda inválido';
+      return;
+    }
+
+    this.http.get<any[]>(url, { withCredentials: true}).subscribe({
+      next:(data) => {
+        console.log('Search results:', data);
+        this.proveedoresSearchResults = Array.isArray(data) ? data : [];
+        if (this.proveedoresSearchResults.length === 0) {
+          this.anadirMessageProveedor = 'No se encontraron proveedores.';
+          this.anadirProveedorIsError = false;
+        }
+      }, error: (e) => {
+        console.log('Error fetching search results:', e);
+        this.anadirProveedorIsError = true;
+        this.anadirMessageProveedor = `${e}`;
+      }
+    });
+  }
 }

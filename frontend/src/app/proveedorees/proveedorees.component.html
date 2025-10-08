@@ -392,24 +392,35 @@
                 type="text" 
                 class="search-bar"
                 placeholder="Buscar NIF, NOM o APELL" 
+                name="search"
+                [(ngModel)]="searchProveedor"
+                (keyup.enter)="onProveedorSearch()"
                 />
 
                 <input 
                 type="radio" 
                 class="checkbox" 
+                name="searchAdd"
+                [(ngModel)]="searchAdd"
+                [value]="'nif'" 
                 />
                 NIF
 
                 <input 
                 type="radio" 
                 class="checkbox" 
-                
+                name="searchAdd"
+                [(ngModel)]="searchAdd" 
+                [value]="'nom'" 
                 />
                 NOM
 
                 <input 
                 type="radio" 
                 class="checkbox"
+                name="searchAdd"
+                [(ngModel)]="searchAdd" 
+                [value]="'apell'" 
                 />
                 APELL
             </div>   
@@ -427,12 +438,24 @@
                 </tr>
             </thead>
             <tbody>
-                
+                <tr *ngFor="let p of proveedoresSearchResults">
+                    <td>{{ p.tercod }}</td>
+                    <td>{{ p.ternom }}</td>
+                    <td>{{ p.terali }}</td>
+                    <td>{{ p.ternif }}</td>
+                    <td>{{ p.terpob }}</td>
+                    <td>{{ p.tercoe }}</td>
+                </tr>
+                <tr *ngIf="proveedoresSearchResults.length === 0">
+                    <td colspan="6" style="text-align:center">No hay resultados</td>
+                </tr>
             </tbody>
         </table>
+        <h1 *ngIf="anadirMessageProveedor" [ngClass]="{'message': !anadirProveedorIsError, 'errorMessage': contactProveedorIsError}">
+            {{ anadirMessageProveedor }}
+        </h1>
     </div>
     <div class="modal-actions">
     <button >Guardar</button>
-    <button >Cancelar</button>
   </div>
 </div>
