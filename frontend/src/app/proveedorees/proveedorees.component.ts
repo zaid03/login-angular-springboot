@@ -775,4 +775,16 @@ export class ProveedoreesComponent {
     this.selectedArticulo = item.artcod;
     console.log('Selected search row:', this.selectedSearchRow);
   }
+
+  showProveedorModal = false;
+  
+  openProveedorModal(): void {
+    this.showProveedorModal = true;
+  }
+
+  closeProveedorModal(): void {
+    this.showProveedorModal = false;
+  }
+
+
 }

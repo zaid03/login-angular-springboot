@@ -79,6 +79,9 @@
                 <span>de {{ totalPages }}</span>
                 <button (click)="nextPage()" [disabled]="page + 1 >= totalPages">Siguiente</button>
             </div>
+            <div class="add-container">
+                <button  class="add-btn" (click)="openProveedorModal()">Añadir</button>
+            </div>
             <div class="modal-backdrop" *ngIf="selectedProveedor" (click)="closeDetails()">
             </div>
             <div class="display" >
@@ -375,4 +378,15 @@
             {{ anadirmessage }}
         </h1>
     </form>
+</div>
+
+<div class="modal-backdrop" *ngIf="showProveedorModal" (click)="closeProveedorModal()"></div>
+<div class="proveedor-grid-modal" *ngIf="showProveedorModal">
+    <button class="close-btn-pv" (click)="closeProveedorModal()">×</button>
+    <h3>Añadir un Proveedor</h3>
+
+    <div class="modal-actions">
+    <button >Guardar</button>
+    <button >Cancelar</button>
+  </div>
 </div>
