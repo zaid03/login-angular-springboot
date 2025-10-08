@@ -385,6 +385,52 @@
     <button class="close-btn-pv" (click)="closeProveedorModal()">×</button>
     <h3>Añadir un Proveedor</h3>
 
+    <div class="content-container-for-proveedor">
+        <form class="proveedor-anadir-form">
+            <div class="search-anadir">
+                <input 
+                type="text" 
+                class="search-bar"
+                placeholder="Buscar NIF, NOM o APELL" 
+                />
+
+                <input 
+                type="radio" 
+                class="checkbox" 
+                />
+                NIF
+
+                <input 
+                type="radio" 
+                class="checkbox" 
+                
+                />
+                NOM
+
+                <input 
+                type="radio" 
+                class="checkbox"
+                />
+                APELL
+            </div>   
+        </form>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Codigo</th>
+                    <th>Nombre</th>
+                    <th>Alias</th>
+                    <th>NIF</th>
+                    <th>Municipio</th>
+                    <th>Correo electrónico	</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+            </tbody>
+        </table>
+    </div>
     <div class="modal-actions">
     <button >Guardar</button>
     <button >Cancelar</button>

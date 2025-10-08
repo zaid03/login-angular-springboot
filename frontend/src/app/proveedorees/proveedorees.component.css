@@ -991,6 +991,107 @@ textarea:focus {
   border: 1px solid #d0d7de;
 }
 
+.proveedor-grid-modal .proveedor-anadir-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+  background: linear-gradient(180deg, rgba(28,93,140,0.03), rgba(20,72,95,0.01));
+  border-radius: 8px;
+  border: 1px solid #e6edf3;
+  box-shadow: 0 6px 18px rgba(17,48,71,0.06);
+}
+
+.proveedor-grid-modal .search-anadir {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.proveedor-grid-modal .search-anadir .search-bar {
+  flex: 1 1 360px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid #dce7f1;
+  background: #fbfeff;
+  color: #162a3a;
+  font-size: 0.96rem;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+}
+
+.proveedor-grid-modal .search-anadir .search-bar:focus {
+  outline: none;
+  border-color: #1c5d8c;
+  box-shadow: 0 0 0 4px rgba(28,93,140,0.06);
+}
+
+.proveedor-grid-modal .search-anadir .checkbox {
+  accent-color: #1c5d8c;
+  width: 16px;
+  height: 16px;
+  margin: 0 6px 0 4px;
+  vertical-align: middle;
+}
+.proveedor-grid-modal .search-anadir label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #6b7c8f;
+  font-size: 0.96rem;
+}
+
+.proveedor-grid-modal table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  background: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+  font-size: 0.95rem;
+  min-width: 720px;
+}
+
+.proveedor-grid-modal th,
+.proveedor-grid-modal td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #f0f5f9;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.proveedor-grid-modal thead th {
+  background: linear-gradient(180deg, rgba(30,88,140,0.06), rgba(28,93,140,0.02));
+  color: #1c5d8c;
+  font-weight: 700;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.proveedor-grid-modal tbody tr:hover {
+  background: rgba(28,93,140,0.03);
+}
+
+.proveedor-grid-modal tbody tr.empty-row td {
+  text-align: center;
+  color: #6b7c8f;
+  padding: 24px 12px;
+}
+
+.proveedor-grid-modal .truncate {
+  max-width: 220px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 880px) {
+  .proveedor-grid-modal .search-anadir { flex-direction: column; align-items: stretch; }
+  .proveedor-grid-modal table { min-width: 0; font-size: 0.92rem; }
+}
+
 
 /* Responsive */
 @media (min-width: 1367px) {
