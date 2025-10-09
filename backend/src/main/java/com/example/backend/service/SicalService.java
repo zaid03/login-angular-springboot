@@ -1,6 +1,7 @@
 package com.example.backend.service;
 
 import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +20,7 @@ import org.w3c.dom.NodeList;
 import com.example.backend.dto.Tercero;
 import com.example.sical.CryptoSical;
 
+import org.apache.commons.text.StringEscapeUtils;
 
 @Service
 public class SicalService {
@@ -121,10 +123,33 @@ public class SicalService {
     private List<Tercero> parseTerceros(String xml) throws Exception {
         List<Tercero> result = new ArrayList<>();
 
+        String inner = null;
+        int start = xml != null ? xml.indexOf("<servicioReturn") : -1;
+        if (start >= 0) {
+            int gt = xml.indexOf(">", start);
+            int end = xml.indexOf("</servicioReturn>", gt);
+            if (gt >= 0 && end >= 0) {
+                inner = xml.substring(gt + 1, end);
+            }
+        }
+        if (inner == null) {
+            inner = xml == null ? "" : xml;
+        }
+
+        String sml = inner
+                .replace("&lt;", "<")
+                .replace("&gt;", ">")
+                .replace("&quot;", "\"")
+                .replace("&apos;", "'");
+
+        System.out.println("=== UNESCAPED SML ===");
+        System.out.println(sml);
+        System.out.println("=== END SML ===");
+
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setNamespaceAware(true);
+        factory.setNamespaceAware(false);
         DocumentBuilder builder = factory.newDocumentBuilder();
-        Document doc = builder.parse(new ByteArrayInputStream(xml.getBytes()));
+        Document doc = builder.parse(new ByteArrayInputStream(sml.getBytes(StandardCharsets.UTF_8)));
 
         NodeList tercerosNodes = doc.getElementsByTagName("tercero");
 
@@ -132,17 +157,33 @@ public class SicalService {
         for (int i = 0; i < tercerosNodes.getLength(); i++) {
             Element e = (Element) tercerosNodes.item(i);
             Tercero t = new Tercero();
-            t.setIdenTercero(getTagValue(e, "idenTercero"));
-            t.setNIFtercero(getTagValue(e, "NIFtercero"));
-            t.setNomTercero(getTagValue(e, "nomTercero"));
-            t.setApellTercero(getTagValue(e, "apellTercero"));
+t
+            NodeList detterNodes = e.getElementsByTagName("detter");
+            if (detterNodes.getLength() > 0) {
+                String detter = detterNodes.item(0).getTextContent();
+                String normalized = detter.replace("-@-", "@");
+                String[] parts = normalized.split("@", -1);
+
+                if (parts.length > 0) t.setIdenTercero(parts[0].trim());
+                if (parts.length > 1) t.setNIFtercero(parts[1].trim());
+                if (parts.length > 4) t.setNomTercero(parts[4].trim());
+                if (parts.length > 22 && (t.getApellTercero() == null || t.getApellTercero().isEmpty())) {
+                    t.setApellTercero(parts[22].trim());
+                }
+            } else {
+                t.setIdenTercero(getTagValue(e, "idenTercero"));
+                t.setNIFtercero(getTagValue(e, "NIFtercero"));
+                t.setNomTercero(getTagValue(e, "nomTercero"));
+                t.setApellTercero(getTagValue(e, "apellTercero"));
+            }
+
             result.add(t);
         }
 
         return result;
     }
 
-    private String getTagValue(Element parent, String tag) {
+   private String getTagValue(Element parent, String tag) {
         NodeList nodes = parent.getElementsByTagName(tag);
         if (nodes.getLength() > 0) {
             return nodes.item(0).getTextContent();
