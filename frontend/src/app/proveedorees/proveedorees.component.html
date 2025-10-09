@@ -429,31 +429,32 @@
         <table>
             <thead>
                 <tr>
-                    <th>Codigo</th>
+                    <th>Id</th>
                     <th>Nombre</th>
-                    <th>Alias</th>
+                    <th>appelido</th>
                     <th>NIF</th>
-                    <th>Municipio</th>
-                    <th>Correo electrónico	</th>
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let p of proveedoresSearchResults">
-                    <td>{{ p.tercod }}</td>
-                    <td>{{ p.ternom }}</td>
-                    <td>{{ p.terali }}</td>
-                    <td>{{ p.ternif }}</td>
-                    <td>{{ p.terpob }}</td>
-                    <td>{{ p.tercoe }}</td>
+                <tr *ngFor="let p of paginatedProveedoresSearchResults">
+                    <td>{{ p.idenTercero }}</td>
+                    <td>{{ p.nomTercero }}</td>
+                    <td>{{ p.apellTercero }}</td>
+                    <td>{{ p.niftercero }}</td>
                 </tr>
                 <tr *ngIf="proveedoresSearchResults.length === 0">
                     <td colspan="6" style="text-align:center">No hay resultados</td>
                 </tr>
             </tbody>
         </table>
-        <h1 *ngIf="anadirMessageProveedor" [ngClass]="{'message': !anadirProveedorIsError, 'errorMessage': contactProveedorIsError}">
+        <h1 class="errorMessageProveedor" *ngIf="anadirMessageProveedor" [ngClass]="{'message': !anadirProveedorIsError, 'errorMessage': contactProveedorIsError}">
             {{ anadirMessageProveedor }}
         </h1>
+        <div class="pagination-controls" *ngIf="proveedoresSearchResults.length > proveedoresSearchPageSize">
+            <button (click)="proveedoresSearchPrev()" [disabled]="proveedoresSearchPage === 0">Anterior</button>
+            <span> {{ proveedoresSearchPage + 1 }} de {{ proveedoresSearchTotalPages }}</span>
+            <button (click)="proveedoresSearchNext()" [disabled]="proveedoresSearchPage + 1 >= proveedoresSearchTotalPages">Siguiente</button>
+        </div>
     </div>
     <div class="modal-actions">
     <button >Guardar</button>

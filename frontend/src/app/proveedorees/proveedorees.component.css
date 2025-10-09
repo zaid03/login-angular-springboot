@@ -1087,51 +1087,7 @@ textarea:focus {
   text-overflow: ellipsis;
 }
 
-@media (max-width: 880px) {
-  .proveedor-grid-modal .search-anadir { flex-direction: column; align-items: stretch; }
-  .proveedor-grid-modal table { min-width: 0; font-size: 0.92rem; }
-}
-
-
-/* Responsive */
-@media (min-width: 1367px) {
-  .truncate {
-    max-width: 140px;
-  }
-}
-
-@media (max-width: 900px) {
-  .dashboard-layout {
-    flex-direction: column;
-  }
-  app-sidebar {
-    width: 100vw !important;
-    min-width: 0 !important;
-    max-width: 100vw !important;
-  }
-  .proveedores-container {
-    padding: 0 0 40px 0;
-  }
-}
-
-@media (max-width: 600px) {
-  .modal {
-    padding: 10px 2vw 8px 2vw;
-    min-width: 0;
-    max-width: 98vw;
-  }
-  .modal-row > div {
-    min-width: 90vw;
-    max-width: 100vw;
-    padding: 6px 4px;
-  }
-  .modal-row {
-    flex-direction: column;
-    gap: 6px;
-  }
-  .more {
-    flex-direction: column;
-    gap: 8px;
-    align-items: stretch;
-  }
+.errorMessageProveedor{
+  color: red;
+  font-size: 15px;
 }

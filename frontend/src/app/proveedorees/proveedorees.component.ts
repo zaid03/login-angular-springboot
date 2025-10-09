@@ -780,10 +780,36 @@ export class ProveedoreesComponent {
   
   openProveedorModal(): void {
     this.showProveedorModal = true;
+    this.resetProveedorModalState();
+    this.onProveedorFetch();
   }
 
   closeProveedorModal(): void {
     this.showProveedorModal = false;
+    this.resetProveedorModalState();
+  }
+
+  private resetProveedorModalState(): void {
+    this.searchProveedor = '';
+    this.anadirMessageProveedor = '';
+    this.anadirProveedorIsError = false;
+    this.contactProveedorIsError = false;
+    this.proveedoresSearchPage = 0;
+    if (this.fullProveedoresSearchResults && this.fullProveedoresSearchResults.length) {
+      this.proveedoresSearchResults = [...this.fullProveedoresSearchResults];
+    } else {
+      this.proveedoresSearchResults = [];
+    }
+  }
+
+  onProveedorSearchChange(): void {
+    const q = (this.searchProveedor || '').toString().trim();
+    if (q.length === 0) {
+      this.proveedoresSearchResults = [...(this.fullProveedoresSearchResults || [])];
+      this.proveedoresSearchPage = 0;
+      this.anadirMessageProveedor = '';
+      this.anadirProveedorIsError = false;
+    }
   }
 
   searchAdd: string = 'nif';
@@ -792,40 +818,33 @@ export class ProveedoreesComponent {
   anadirMessageProveedor = '';
   contactProveedorIsError = false;
   proveedoresSearchResults: any[] = [];
-  
-  onProveedorSearch(){
-    if (!this.searchAdd || !this.searchProveedor){
-      this.anadirProveedorIsError = true;
-      this.anadirMessageProveedor = 'Introduce valor y tipo de búsqueda'
-      return
-    }
+  proveedoresSearchPage: number = 0;
+  proveedoresSearchPageSize: number = 10;
+  fullProveedoresSearchResults: any[] = [];
 
-    console.log('Search for proveedor initiated:', this.searchProveedor, this.searchAdd);
-    let url = '';
-    const term = encodeURIComponent(this.searchProveedor.trim());
-    
-    if(this.searchAdd === 'nif'){
-      url = `http://localhost:8080/api/sical/terceros?nif=${term}`;
-    }
+  get paginatedProveedoresSearchResults() {
+    const start = this.proveedoresSearchPage * this.proveedoresSearchPageSize;
+    return this.proveedoresSearchResults.slice(start, start + this.proveedoresSearchPageSize);
+  }
 
-    if (this.searchAdd === 'nom'){
-      url = `http://localhost:8080/api/sical/terceros?nom=${term}`
-    }
+  get proveedoresSearchTotalPages() {
+    return Math.ceil(this.proveedoresSearchResults.length / this.proveedoresSearchPageSize) || 1;
+  }
 
-    if (this.searchAdd === 'apell') {
-      url = `http://localhost:8080/api/sical/terceros?apell=${term}`
-    }
+  proveedoresSearchPrev() {
+    if (this.proveedoresSearchPage > 0) this.proveedoresSearchPage--;
+  }
 
-    if (!url) {
-      this.anadirProveedorIsError = true;
-      this.anadirMessageProveedor = 'Tipo de búsqueda inválido';
-      return;
-    }
+  proveedoresSearchNext() {
+    if (this.proveedoresSearchPage + 1 < this.proveedoresSearchTotalPages) this.proveedoresSearchPage++;
+  }
 
-    this.http.get<any[]>(url, { withCredentials: true}).subscribe({
+  onProveedorFetch(){
+    this.http.get<any[]>(`http://localhost:8080/api/sical/terceros`, { withCredentials: true}).subscribe({
       next:(data) => {
         console.log('Search results:', data);
-        this.proveedoresSearchResults = Array.isArray(data) ? data : [];
+        this.fullProveedoresSearchResults = Array.isArray(data) ? data: [];
+        this.proveedoresSearchResults = [...this.fullProveedoresSearchResults];
         if (this.proveedoresSearchResults.length === 0) {
           this.anadirMessageProveedor = 'No se encontraron proveedores.';
           this.anadirProveedorIsError = false;
@@ -836,5 +855,48 @@ export class ProveedoreesComponent {
         this.anadirMessageProveedor = `${e}`;
       }
     });
+  }
+
+  onProveedorSearch(){
+    const q = (this.searchProveedor || '').toString().trim();
+
+    if (!this.searchAdd) {
+      this.anadirProveedorIsError = true;
+      this.anadirMessageProveedor = 'Selecciona tipo de búsqueda';
+      return;
+    }
+    
+    if (q.length === 0) {
+      this.proveedoresSearchResults = [...(this.fullProveedoresSearchResults || [])];
+      this.proveedoresSearchPage = 0;
+      this.anadirProveedorIsError = false;
+      this.anadirMessageProveedor = '';
+      return;
+    }
+
+    const applyFilter = () => {
+      const term = q.toLowerCase();
+      let filtered: any[] = [];
+      if (this.searchAdd === 'nif') {
+        filtered = this.fullProveedoresSearchResults.filter(p => (p.niftercero || p.ternif || '').toString().toLowerCase().includes(term));
+      } else if (this.searchAdd === 'nom') {
+        filtered = this.fullProveedoresSearchResults.filter(p => (p.nomTercero || p.ternom || '').toString().toLowerCase().includes(term));
+      } else if (this.searchAdd === 'apell') {
+        filtered = this.fullProveedoresSearchResults.filter(p => (p.apellTercero || '').toString().toLowerCase().includes(term));
+      } else {
+        filtered = this.fullProveedoresSearchResults.filter(p =>
+          (p.niftercero || p.ternif || '').toString().toLowerCase().includes(term) ||
+          (p.nomTercero || p.ternom || '').toString().toLowerCase().includes(term) ||
+          (p.apellTercero || '').toString().toLowerCase().includes(term)
+        );
+      }
+
+      this.proveedoresSearchResults = filtered;
+      this.proveedoresSearchPage = 0;
+      this.anadirProveedorIsError = false;
+      this.anadirMessageProveedor = filtered.length === 0 ? 'No se encontraron proveedores.' : '';
+    };
+
+    applyFilter();
   }
 }
