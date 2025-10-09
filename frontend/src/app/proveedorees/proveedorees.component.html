@@ -358,8 +358,9 @@
                 <th>Artículo</th>
             </thead>
             <tbody>
-                <tr *ngFor="let item of paginatedSearchResults" (click)="selectSearchRow(item)"
-                [class.selected-row]="item === selectedSearchRow" (click)="addArticulo()">
+                <tr *ngFor="let item of paginatedSearchResults"
+                    (click)="selectSearchRow(item); addArticulo()"
+                    [class.selected-row]="item === selectedSearchRow">
                     <td>{{ item.afacod }}</td>
                     <td>{{ item.asucod }}</td>
                     <td>{{ item.artcod }}</td>
@@ -395,6 +396,7 @@
                 name="search"
                 [(ngModel)]="searchProveedor"
                 (keyup.enter)="onProveedorSearch()"
+                (input)="onProveedorSearchChange()"
                 />
 
                 <input 
@@ -436,11 +438,16 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let p of paginatedProveedoresSearchResults">
-                    <td>{{ p.idenTercero }}</td>
-                    <td>{{ p.nomTercero }}</td>
-                    <td>{{ p.apellTercero }}</td>
-                    <td>{{ p.niftercero }}</td>
+                <tr 
+                 *ngFor="let p of paginatedProveedoresSearchResults"
+                  (click)="selectProveedor(p)"
+                  [class.selected-row]="isProveedorSelected(p)"
+                  style="cursor: pointer;"
+                >
+                    <td>{{ p.ENT }}</td>
+                    <td>{{ p.TERNOM }}</td>
+                    <td>{{ p.TERALI }}</td>
+                    <td>{{ p.NIF }}</td>
                 </tr>
                 <tr *ngIf="proveedoresSearchResults.length === 0">
                     <td colspan="6" style="text-align:center">No hay resultados</td>
@@ -457,6 +464,10 @@
         </div>
     </div>
     <div class="modal-actions">
-    <button >Guardar</button>
-  </div>
+        <div class="selection-summary" style="display:flex;gap:8px;align-items:center;">
+            <span>Seleccionados: {{ selectedProveediresFromResults.length }}</span>
+            <button (click)="clearSelectedProveedores()" [disabled]="selectedProveediresFromResults.length === 0">Limpiar</button>
+        </div>
+        <button >Guardar</button>
+    </div>
 </div>

@@ -822,7 +822,7 @@ export class ProveedoreesComponent {
   proveedoresSearchPageSize: number = 10;
   fullProveedoresSearchResults: any[] = [];
   selectedProveediresFromResults: any[] = [];
-  
+
   get paginatedProveedoresSearchResults() {
     const start = this.proveedoresSearchPage * this.proveedoresSearchPageSize;
     return this.proveedoresSearchResults.slice(start, start + this.proveedoresSearchPageSize);
@@ -846,6 +846,15 @@ export class ProveedoreesComponent {
         console.log('Search results:', data);
         this.fullProveedoresSearchResults = Array.isArray(data) ? data: [];
         this.proveedoresSearchResults = [...this.fullProveedoresSearchResults];
+        const normalized = (Array.isArray(data) ? data : []).map(d => ({
+          ENT: d.idenTercero ?? d.tercod ?? null,
+          TERNOM: d.nomTercero ?? d.ternom ?? '',
+          TERALI: d.apellTercero ?? '',
+          NIF: d.niftercero ?? d.ternif ?? '',
+          __raw: d
+          }));
+        this.fullProveedoresSearchResults = normalized;
+        this.proveedoresSearchResults = [...normalized];
         if (this.proveedoresSearchResults.length === 0) {
           this.anadirMessageProveedor = 'No se encontraron proveedores.';
           this.anadirProveedorIsError = false;
@@ -879,16 +888,16 @@ export class ProveedoreesComponent {
       const term = q.toLowerCase();
       let filtered: any[] = [];
       if (this.searchAdd === 'nif') {
-        filtered = this.fullProveedoresSearchResults.filter(p => (p.niftercero || p.ternif || '').toString().toLowerCase().includes(term));
+        filtered = this.fullProveedoresSearchResults.filter(p => (p.NIF || p.ternif || '').toString().toLowerCase().includes(term));
       } else if (this.searchAdd === 'nom') {
-        filtered = this.fullProveedoresSearchResults.filter(p => (p.nomTercero || p.ternom || '').toString().toLowerCase().includes(term));
+        filtered = this.fullProveedoresSearchResults.filter(p => (p.TERNOM || p.ternom || '').toString().toLowerCase().includes(term));
       } else if (this.searchAdd === 'apell') {
-        filtered = this.fullProveedoresSearchResults.filter(p => (p.apellTercero || '').toString().toLowerCase().includes(term));
+        filtered = this.fullProveedoresSearchResults.filter(p => (p.TERALI || '').toString().toLowerCase().includes(term));
       } else {
         filtered = this.fullProveedoresSearchResults.filter(p =>
-          (p.niftercero || p.ternif || '').toString().toLowerCase().includes(term) ||
-          (p.nomTercero || p.ternom || '').toString().toLowerCase().includes(term) ||
-          (p.apellTercero || '').toString().toLowerCase().includes(term)
+          (p.NIF || p.ternif || '').toString().toLowerCase().includes(term) ||
+          (p.TERNOM || p.ternom || '').toString().toLowerCase().includes(term) ||
+          (p.TERALI || '').toString().toLowerCase().includes(term)
         );
       }
 
@@ -899,5 +908,28 @@ export class ProveedoreesComponent {
     };
 
     applyFilter();
+  }
+
+  isProveedorSelected(p: any): boolean {
+    if (!this.selectedProveediresFromResults?.length) return false;
+    const key = (x: any) => (x.ENT).toString();
+    return this.selectedProveediresFromResults.some(s => key(s) === key(p));
+  }
+
+  selectProveedor(item: any){
+    console.log('Selected proveedores:', this.selectedProveediresFromResults);
+    const key = (it: any) => (it.ENT || '').toString();
+    const idx = this.selectedProveediresFromResults.findIndex(s => (s.ENT || '') .toString() === key(item));
+    if (idx === -1) {
+      this.selectedProveediresFromResults.push(item);
+    }else {
+      this.selectedProveediresFromResults.splice(idx, 1);
+    }
+    console.log('Selected proveedores (accumulated):', this.selectedProveediresFromResults);
+  }
+
+  clearSelectedProveedores() {
+    this.selectedProveediresFromResults = [];
+    console.log('Selected proveedores cleared');
   }
 }

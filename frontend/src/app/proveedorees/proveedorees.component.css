@@ -1091,3 +1091,5 @@ textarea:focus {
   color: red;
   font-size: 15px;
 }
+
+.selected-row { background: #e6f0ff; }
