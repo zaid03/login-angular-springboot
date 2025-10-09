@@ -457,6 +457,9 @@
         <h1 class="errorMessageProveedor" *ngIf="anadirMessageProveedor" [ngClass]="{'message': !anadirProveedorIsError, 'errorMessage': contactProveedorIsError}">
             {{ anadirMessageProveedor }}
         </h1>
+        <h1 class="successMessageProveedor" *ngIf="guardarMessageProveedor" [ngClass]="{'message': !guardarProveedorIssuccess, 'successMessage': contactProveedorIssuccess}">
+            {{ guardarMessageProveedor }}
+        </h1>
         <div class="pagination-controls" *ngIf="proveedoresSearchResults.length > proveedoresSearchPageSize">
             <button (click)="proveedoresSearchPrev()" [disabled]="proveedoresSearchPage === 0">Anterior</button>
             <span> {{ proveedoresSearchPage + 1 }} de {{ proveedoresSearchTotalPages }}</span>
@@ -468,6 +471,6 @@
             <span>Seleccionados: {{ selectedProveediresFromResults.length }}</span>
             <button (click)="clearSelectedProveedores()" [disabled]="selectedProveediresFromResults.length === 0">Limpiar</button>
         </div>
-        <button >Guardar</button>
+        <button (click)="saveProveedorees()">Guardar</button>
     </div>
 </div>

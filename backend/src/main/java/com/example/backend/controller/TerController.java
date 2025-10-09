@@ -10,7 +10,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Optional;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 @RestController
 @RequestMapping("/api/ter")
@@ -138,21 +142,40 @@ public class TerController {
     }
 
     //for selected proveedores to be added from sicalwin
-    @PostMapping("/save-proveedor/{ent}")
+    @PostMapping("/save-proveedores/{ent}")
     @Transactional
-    public ResponseEntity<Ter> createForEnt(@PathVariable int ent, @RequestBody TerDto dto) {
+    public ResponseEntity<List<Ter>> createMultipleForEnt(@PathVariable int ent, @RequestBody JsonNode body) {
+        ObjectMapper mapper = new ObjectMapper();
+        List<TerDto> dtos = new ArrayList<>();
+        try {
+            if (body.isArray()) {
+                for (JsonNode node : body) {
+                    dtos.add(mapper.treeToValue(node, TerDto.class));
+                }
+            } else {
+                dtos.add(mapper.treeToValue(body, TerDto.class));
+            }
+        } catch (JsonProcessingException e) {
+            // bad payload
+            return ResponseEntity.badRequest().build();
+        }
+
         Integer next = terRepository.findNextTercodForEnt(ent);
         if (next == null) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
 
-        Ter t = new Ter();
-        t.setENT(ent);
-        t.setTERCOD(next);
-        t.setTERNOM(dto.getTERNOM());
-        t.setTERALI(dto.getTERALI());
-        t.setTERNIF(dto.getTERNIF());
-        Ter saved = terRepository.save(t);
+        List<Ter> saved = new ArrayList<>();
+        for (TerDto dto : dtos) {
+            Ter t = new Ter();
+            t.setENT(ent);
+            t.setTERCOD(next++);
+            t.setTERNOM(dto.getTERNOM());
+            t.setTERALI(dto.getTERALI());
+            t.setTERNIF(dto.getTERNIF());
+            saved.add(terRepository.save(t));
+        }
+
         return ResponseEntity.ok(saved);
     }
 }

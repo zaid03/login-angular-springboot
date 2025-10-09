@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -815,7 +815,10 @@ export class ProveedoreesComponent {
   searchAdd: string = 'nif';
   searchProveedor: string = '';
   anadirProveedorIsError = false;
+  guardarProveedorIssuccess = false;
   anadirMessageProveedor = '';
+  guardarMessageProveedor = '';
+  contactProveedorIssuccess = false;
   contactProveedorIsError = false;
   proveedoresSearchResults: any[] = [];
   proveedoresSearchPage: number = 0;
@@ -932,4 +935,43 @@ export class ProveedoreesComponent {
     this.selectedProveediresFromResults = [];
     console.log('Selected proveedores cleared');
   }
+
+  saveProveedorees() {
+    console.log(this.selectedProveediresFromResults);
+    const ent = this.entcod;
+    if (!ent) {
+      alert('Entidad no disponible. Vuelve a iniciar sesión.')
+      return
+    }
+
+    if (!this.selectedProveediresFromResults || this.selectedProveediresFromResults.length === 0) {
+      alert('No hay proveedores seleccionados.');
+      return;
+    }
+
+    const payload = this.selectedProveediresFromResults.map(p => ({
+      TERNOM: p.TERNOM ?? p.TERNOM ?? p.ternom ?? '',
+      TERALI: p.TERALI ?? p.TERALI ?? p.terali ?? '',
+      TERNIF: p.NIF ?? p.NIF ?? p.ternif ?? ''
+    }));
+
+    const token = sessionStorage.getItem('JWT');
+    console.log(token);
+    const options = token ? { headers: new HttpHeaders({ 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }) } : { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) };
+
+    this.http.post<any[]>(`http://localhost:8080/api/ter/save-proveedores/${ent}`, payload, options)
+      .subscribe({
+        next: (res) => {
+          console.log('saved proveedores:', res);
+          this.clearSelectedProveedores();
+          this.guardarProveedorIssuccess = true
+          this.guardarMessageProveedor = 'Proveedores guardados correctamente.';
+        },
+        error: (e) => {
+          console.error('Error saving proveedores:', e);
+          this.anadirMessageProveedor = 'Proveedores guardados correctamente.';
+        }
+      })
+  }
+//still need to add a check for the proveedor if it exists in db then dont fucking add it
 }
