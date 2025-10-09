@@ -4,7 +4,9 @@ import com.example.backend.sqlserver2.model.Ter;
 import com.example.backend.dto.TerDto;
 import com.example.backend.sqlserver2.repository.TerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -133,5 +135,24 @@ public class TerController {
         } else {
             return ResponseEntity.status(404).body("Ter not found.");
         }
+    }
+
+    //for selected proveedores to be added from sicalwin
+    @PostMapping("/save-proveedor/{ent}")
+    @Transactional
+    public ResponseEntity<Ter> createForEnt(@PathVariable int ent, @RequestBody TerDto dto) {
+        Integer next = terRepository.findNextTercodForEnt(ent);
+        if (next == null) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+
+        Ter t = new Ter();
+        t.setENT(ent);
+        t.setTERCOD(next);
+        t.setTERNOM(dto.getTERNOM());
+        t.setTERALI(dto.getTERALI());
+        t.setTERNIF(dto.getTERNIF());
+        Ter saved = terRepository.save(t);
+        return ResponseEntity.ok(saved);
     }
 }
