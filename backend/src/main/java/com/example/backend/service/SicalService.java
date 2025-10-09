@@ -157,7 +157,7 @@ public class SicalService {
         for (int i = 0; i < tercerosNodes.getLength(); i++) {
             Element e = (Element) tercerosNodes.item(i);
             Tercero t = new Tercero();
-t
+
             NodeList detterNodes = e.getElementsByTagName("detter");
             if (detterNodes.getLength() > 0) {
                 String detter = detterNodes.item(0).getTextContent();

@@ -821,7 +821,8 @@ export class ProveedoreesComponent {
   proveedoresSearchPage: number = 0;
   proveedoresSearchPageSize: number = 10;
   fullProveedoresSearchResults: any[] = [];
-
+  selectedProveediresFromResults: any[] = [];
+  
   get paginatedProveedoresSearchResults() {
     const start = this.proveedoresSearchPage * this.proveedoresSearchPageSize;
     return this.proveedoresSearchResults.slice(start, start + this.proveedoresSearchPageSize);
@@ -865,7 +866,7 @@ export class ProveedoreesComponent {
       this.anadirMessageProveedor = 'Selecciona tipo de búsqueda';
       return;
     }
-    
+
     if (q.length === 0) {
       this.proveedoresSearchResults = [...(this.fullProveedoresSearchResults || [])];
       this.proveedoresSearchPage = 0;
