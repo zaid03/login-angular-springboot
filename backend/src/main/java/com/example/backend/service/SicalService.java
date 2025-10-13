@@ -20,6 +20,8 @@ import org.w3c.dom.NodeList;
 import com.example.backend.dto.Tercero;
 import com.example.sical.CryptoSical;
 
+import java.util.regex.Pattern;
+import java.util.Arrays;
 import org.apache.commons.text.StringEscapeUtils;
 
 @Service
@@ -142,10 +144,6 @@ public class SicalService {
                 .replace("&quot;", "\"")
                 .replace("&apos;", "'");
 
-        System.out.println("=== UNESCAPED SML ===");
-        System.out.println(sml);
-        System.out.println("=== END SML ===");
-
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(false);
         DocumentBuilder builder = factory.newDocumentBuilder();
@@ -153,7 +151,6 @@ public class SicalService {
 
         NodeList tercerosNodes = doc.getElementsByTagName("tercero");
 
-        System.out.println("Found " + tercerosNodes.getLength() + " tercero nodes");
         for (int i = 0; i < tercerosNodes.getLength(); i++) {
             Element e = (Element) tercerosNodes.item(i);
             Tercero t = new Tercero();
@@ -161,22 +158,50 @@ public class SicalService {
             NodeList detterNodes = e.getElementsByTagName("detter");
             if (detterNodes.getLength() > 0) {
                 String detter = detterNodes.item(0).getTextContent();
-                String normalized = detter.replace("-@-", "@");
-                String[] parts = normalized.split("@", -1);
+                String[] parts = detter.split(Pattern.quote("-@-"), -1);
 
-                if (parts.length > 0) t.setIdenTercero(parts[0].trim());
-                if (parts.length > 1) t.setNIFtercero(parts[1].trim());
-                if (parts.length > 4) t.setNomTercero(parts[4].trim());
-                if (parts.length > 22 && (t.getApellTercero() == null || t.getApellTercero().isEmpty())) {
-                    t.setApellTercero(parts[22].trim());
+                t.setIdenTercero(unescapePart(parts, 0));          
+                t.setNIFtercero(unescapePart(parts, 1));         
+                t.setTipoDocumento(unescapePart(parts, 2));      
+                t.setAlias(unescapePart(parts, 3));            
+                t.setNomTercero(unescapePart(parts, 4));         
+                t.setDomicilio(unescapePart(parts, 5));          
+                t.setPoblacion(unescapePart(parts, 6));           
+                t.setCodigoPostal(unescapePart(parts, 7));        
+                t.setProvincia(unescapePart(parts, 8));          
+                t.setTelefono(unescapePart(parts, 9));          
+                t.setFax(unescapePart(parts, 10));               
+                t.setTipoTercero(unescapePart(parts, 11));        
+                t.setObservaciones(unescapePart(parts, 18));    
+                t.setEmbargado(unescapePart(parts, 19));         
+                t.setEmail(unescapePart(parts, 20));             
+                t.setNombreCompleto(unescapePart(parts, 21));    
+                t.setApellido1(unescapePart(parts, 22));         
+                t.setApellido2(unescapePart(parts, 23));       
+
+                if ((t.getApellTercero() == null || t.getApellTercero().isEmpty())) {
+                    String a1 = t.getApellido1();
+                    String a2 = t.getApellido2();
+                    if ((a1 != null && !a1.isEmpty()) || (a2 != null && !a2.isEmpty())) {
+                        String combined = ((a1 == null ? "" : a1) + " " + (a2 == null ? "" : a2)).trim();
+                        t.setApellTercero(combined);
+                    } else if (t.getNombreCompleto() != null && !t.getNombreCompleto().isEmpty()) {
+                        String[] nm = t.getNombreCompleto().trim().split("\\s+");
+                        if (nm.length > 1) {
+                            t.setApellTercero(nm[nm.length - 1]);
+                            t.setNomTercero(String.join(" ", Arrays.copyOfRange(nm, 0, nm.length - 1)));
+                        } else {
+                            t.setNomTercero(t.getNombreCompleto());
+                        }
+                    }
                 }
+
             } else {
                 t.setIdenTercero(getTagValue(e, "idenTercero"));
                 t.setNIFtercero(getTagValue(e, "NIFtercero"));
                 t.setNomTercero(getTagValue(e, "nomTercero"));
                 t.setApellTercero(getTagValue(e, "apellTercero"));
             }
-
             result.add(t);
         }
 
@@ -191,4 +216,10 @@ public class SicalService {
         return null;
     }
 
+    private String unescapePart(String[] parts, int idx) {
+        if (idx < 0 || idx >= parts.length) return null;
+        String v = parts[idx];
+        if (v == null) return null;
+        return StringEscapeUtils.unescapeXml(v.trim());
+    }
 }
