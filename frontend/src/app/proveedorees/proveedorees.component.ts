@@ -965,25 +965,32 @@ export class ProveedoreesComponent {
 
     const payload = this.selectedProveediresFromResults.map(p => ({
       ENT: ent,
-      TERNOM: p.nomTercero ?? '',
-      TERALI: p.apellTercero ?? '',
-      TERNIF: p.niftercero ?? '',
-      TERDOM: p.domicilio ?? '',
-      TERCPO: p.codigoPostal ?? '',
-      TERTEL: p.telefono ?? '',
-      TERFAX: p.fax ?? '',
-      TERWEB: p.web ?? '',
-      TERCOE: p.email ?? '',
-      TEROBS: p.observaciones ?? '',
-      TERPOB: p.poblacion ?? '',
-      __raw: p
+      TERNOM: p.TERNOM ?? '',
+      TERALI: p.TERALI ?? '',
+      TERNIF: p.NIF ?? '',
+      TERDOM: p.TERDOM ?? '',
+      TERCPO: p.TERCPO ?? '',
+      TERTEL: p.TERTEL ?? '',
+      TERFAX: p.TERFAX ?? '',
+      TERWEB: p.TERWEB ?? '',
+      TERCOE: p.TERCOE ?? '',
+      TEROBS: p.TEROBS ?? '',
+      TERPOB: p.TERPOB ?? '',
     }));
+
+    console.log('>>> outgoing payload (first 2000 chars):', JSON.stringify(payload).slice(0,2000));
+
+    // const token = sessionStorage.getItem('JWT');
+    // console.log(token);
+    // const options = token ? { headers: new HttpHeaders({ 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }) } : { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) };
 
     const token = sessionStorage.getItem('JWT');
     console.log(token);
-    const options = token ? { headers: new HttpHeaders({ 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }) } : { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) };
+    const headers = token
+      ? new HttpHeaders({ 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' })
+      : new HttpHeaders({ 'Content-Type': 'application/json' });
 
-    this.http.post<any[]>(`http://localhost:8080/api/ter/save-proveedores/${ent}`, payload, options)
+    this.http.post<any[]>(`http://localhost:8080/api/ter/save-proveedores/${ent}`, payload, { headers, observe: 'response', responseType: 'text' as 'json' })
       .subscribe({
         next: (res) => {
           console.log('saved proveedores:', res);
@@ -991,9 +998,9 @@ export class ProveedoreesComponent {
           this.guardarProveedorIssuccess = true
           this.guardarMessageProveedor = 'Proveedores guardados correctamente.';
         },
-        error: (e) => {
-          console.error('Error saving proveedores:', e);
-          this.anadirMessageProveedor = 'Proveedores guardados correctamente.';
+        error: (err) => {
+          console.error('HTTP error status=', err.status, 'body=', err.error);
+          this.anadirMessageProveedor = 'Error al salvar los  proveedorees.';
         }
       })
   }

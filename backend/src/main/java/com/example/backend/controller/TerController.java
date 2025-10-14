@@ -16,6 +16,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import org.springframework.http.ResponseEntity;
 @RestController
 @RequestMapping("/api/ter")
 public class TerController {
@@ -184,5 +189,14 @@ public class TerController {
         }
 
         return ResponseEntity.ok(saved);
+    }
+
+    @PostMapping(value = "/debug/save-proveedores/{ent}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> debugSaveRaw(@PathVariable int ent, @RequestBody(required = false) String raw) {
+        System.out.println("=== DEBUG raw body ===");
+        System.out.println("ENT path = " + ent);
+        System.out.println(raw);
+        System.out.println("=== END DEBUG raw body ===");
+        return ResponseEntity.ok("received length=" + (raw==null?0:raw.length()));
     }
 }
