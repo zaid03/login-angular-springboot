@@ -475,6 +475,13 @@
             <span>Seleccionados: {{ selectedProveediresFromResults.length }}</span>
             <button (click)="clearSelectedProveedores()" [disabled]="selectedProveediresFromResults.length === 0">Limpiar</button>
         </div>
-        <button (click)="saveProveedorees()">Guardar</button>
+        <button (click)="saveProveedorees()" [disabled]="isSaving || selectedProveediresFromResults.length === 0">
+            <span *ngIf="!isSaving">Guardar</span>
+            <span *ngIf="isSaving">Guardando...</span>
+        </button>
+    </div>
+    <div class="save-messages" style="margin-top:8px;">
+      <p *ngIf="saveSuccess" class="successMessageProveedor">{{ saveSuccess }}</p>
+      <p *ngIf="saveError" class="errorMessageProveedor">{{ saveError }}</p>
     </div>
 </div>

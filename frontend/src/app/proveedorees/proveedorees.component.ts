@@ -927,27 +927,35 @@ export class ProveedoreesComponent {
     applyFilter();
   }
 
-  isProveedorSelected(p: any): boolean {
-    if (!this.selectedProveediresFromResults?.length) return false;
-    const key = (x: any) => (x.ENT).toString();
-    return this.selectedProveediresFromResults.some(s => key(s) === key(p));
+  private proveedorKey(p: any): string {
+    const ent = (p?.ENT ?? '').toString();
+    const ternom = (p?.TERNOM ?? p?.nomTercero ?? '').toString().trim();
+    const ternif = (p?.NIF ?? p?.TERNIF ?? p?.niftercero ?? '').toString().trim();
+    return `${ent}|${ternom}|${ternif}`;
   }
 
+  isProveedorSelected(p: any): boolean {
+    if (!this.selectedProveediresFromResults?.length) return false;
+    const k = this.proveedorKey(p);
+    return this.selectedProveediresFromResults.some(s => this.proveedorKey(s) === k);
+   }
+
   selectProveedor(item: any){
-    console.log('Selected proveedores:', this.selectedProveediresFromResults);
-    const key = (it: any) => (it.ENT || '').toString();
-    const idx = this.selectedProveediresFromResults.findIndex(s => (s.ENT || '') .toString() === key(item));
+    console.log('Selected proveedores (before):', this.selectedProveediresFromResults);
+    const k = this.proveedorKey(item);
+    const idx = this.selectedProveediresFromResults.findIndex(s => this.proveedorKey(s) === k);
     if (idx === -1) {
       this.selectedProveediresFromResults.push(item);
-    }else {
+    } else {
       this.selectedProveediresFromResults.splice(idx, 1);
     }
-    console.log('Selected proveedores (accumulated):', this.selectedProveediresFromResults);
+    console.log('Selected proveedores (after):', this.selectedProveediresFromResults);
   }
 
   clearSelectedProveedores() {
     this.selectedProveediresFromResults = [];
     console.log('Selected proveedores cleared');
+    this.clearMessages();
   }
 
   saveProveedorees() {
@@ -990,19 +998,62 @@ export class ProveedoreesComponent {
       ? new HttpHeaders({ 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' })
       : new HttpHeaders({ 'Content-Type': 'application/json' });
 
+    this.isSaving = true;
+    this.clearMessages();
     this.http.post<any[]>(`http://localhost:8080/api/ter/save-proveedores/${ent}`, payload, { headers, observe: 'response', responseType: 'text' as 'json' })
       .subscribe({
         next: (res) => {
           console.log('saved proveedores:', res);
+          this.isSaving = false;
+          const savedCount = Array.isArray(res.body) ? res.body.length : this.selectedProveediresFromResults.length;
           this.clearSelectedProveedores();
-          this.guardarProveedorIssuccess = true
-          this.guardarMessageProveedor = 'Proveedores guardados correctamente.';
+          this.guardarProveedorIssuccess = true;
+          this.guardarMessageProveedor = `Proveedores guardados correctamente (${savedCount}).`;
+          this.showMessage(this.guardarMessageProveedor, false, 4000);
         },
         error: (err) => {
           console.error('HTTP error status=', err.status, 'body=', err.error);
-          this.anadirMessageProveedor = 'Error al salvar los  proveedorees.';
+        this.isSaving = false;
+        const msg = err && err.error ? (typeof err.error === 'string' ? err.error : JSON.stringify(err.error)) : `Error al salvar los proveedores (status ${err.status})`;
+        this.showMessage(msg, true, 8000);
         }
       })
+  }
+
+  isSaving = false;
+  saveError = '';
+  saveSuccess = '';
+  private messageTimeout: any = null;
+
+  private showMessage(message: string, isError = false, timeoutMs = 5000) {
+    this.clearMessages();
+    if (isError) this.saveError = message; else this.saveSuccess = message;
+    this.messageTimeout = window.setTimeout(() => this.clearMessages(), timeoutMs);
+  }
+
+  private clearMessages() {
+    this.saveError = '';
+    this.saveSuccess = '';
+    if (this.messageTimeout) {
+      clearTimeout(this.messageTimeout);
+      this.messageTimeout = null;
+    }
+  }
+
+  confirmDeleteSelected() {
+    if (!this.selectedProveediresFromResults || this.selectedProveediresFromResults.length === 0) {
+      this.showMessage('No hay elementos seleccionados para eliminar.', true);
+      return;
+    }
+    const ok = confirm(`Eliminar ${this.selectedProveediresFromResults.length} proveedor(es) de la lista local? Esta acción solo afecta la lista local.`);
+    if (ok) this.deleteSelectedFromResults();
+  }
+  deleteSelectedFromResults() {
+    const toRemove = new Set(this.selectedProveediresFromResults.map((s: any) => `${s.ENT}|${s.TERNOM}|${s.TERNIF}`));
+    this.proveedoresSearchResults = this.proveedoresSearchResults.filter((p: any) => !toRemove.has(`${p.ENT}|${p.TERNOM}|${p.NIF || p.TERNIF}`));
+    this.fullProveedoresSearchResults = this.fullProveedoresSearchResults.filter((p: any) => !toRemove.has(`${p.ENT}|${p.TERNOM}|${p.NIF || p.TERNIF}`));
+    this.clearSelectedProveedores();
+    this.showMessage('Elementos eliminados de la lista local.', false, 3000);
   }
 //still need to add a check for the proveedor if it exists in db then dont fucking add it
 }
