@@ -431,10 +431,12 @@
         <table>
             <thead>
                 <tr>
-                    <th>Id</th>
+                    <th>Codigo</th>
                     <th>Nombre</th>
-                    <th>appelido</th>
+                    <th>Alias</th>
                     <th>NIF</th>
+                    <th>Domicilio</th>
+                    <th>Codigo Postal</th>
                 </tr>
             </thead>
             <tbody>
@@ -448,6 +450,8 @@
                     <td>{{ p.TERNOM }}</td>
                     <td>{{ p.TERALI }}</td>
                     <td>{{ p.NIF }}</td>
+                    <td>{{ p.TERDOM }}</td>
+                    <td>{{ p.TERCPO }}</td>
                 </tr>
                 <tr *ngIf="proveedoresSearchResults.length === 0">
                     <td colspan="6" style="text-align:center">No hay resultados</td>

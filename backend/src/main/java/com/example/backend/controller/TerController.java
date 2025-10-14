@@ -156,7 +156,6 @@ public class TerController {
                 dtos.add(mapper.treeToValue(body, TerDto.class));
             }
         } catch (JsonProcessingException e) {
-            // bad payload
             return ResponseEntity.badRequest().build();
         }
 
@@ -173,6 +172,14 @@ public class TerController {
             t.setTERNOM(dto.getTERNOM());
             t.setTERALI(dto.getTERALI());
             t.setTERNIF(dto.getTERNIF());
+            t.setTERDOM(dto.getTERDOM());
+            t.setTERCPO(dto.getTERCPO());
+            t.setTERTEL(dto.getTERTEL());
+            t.setTERFAX(dto.getTERFAX());
+            t.setTERWEB(dto.getTERWEB());
+            t.setTERCOE(dto.getTERCOE());
+            t.setTEROBS(dto.getTEROBS());
+            t.setTERPOB(dto.getTERPOB());
             saved.add(terRepository.save(t));
         }
 

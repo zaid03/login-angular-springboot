@@ -844,16 +844,30 @@ export class ProveedoreesComponent {
   }
 
   onProveedorFetch(){
+    const ent = this.entcod;
+    if (!ent) {
+      alert('Entidad no disponible. Vuelve a iniciar sesión.')
+      return
+    }
+
     this.http.get<any[]>(`http://localhost:8080/api/sical/terceros`, { withCredentials: true}).subscribe({
       next:(data) => {
         console.log('Search results:', data);
         this.fullProveedoresSearchResults = Array.isArray(data) ? data: [];
         this.proveedoresSearchResults = [...this.fullProveedoresSearchResults];
         const normalized = (Array.isArray(data) ? data : []).map(d => ({
-          ENT: d.idenTercero ?? d.tercod ?? null,
-          TERNOM: d.nomTercero ?? d.ternom ?? '',
+          ENT: ent,
+          TERNOM: d.nomTercero ?? '',
           TERALI: d.apellTercero ?? '',
           NIF: d.niftercero ?? d.ternif ?? '',
+          TERDOM: d.domicilio ?? '',
+          TERCPO: d.codigoPostal ?? '',
+          TERTEL: d.telefono ?? '',
+          TERFAX: d.fax ?? '',
+          TERWEB: d.web ?? '',
+          TERCOE: d.email ?? '',
+          TEROBS: d.observaciones ?? '',
+          TERPOB: d.poblacion ?? '',
           __raw: d
           }));
         this.fullProveedoresSearchResults = normalized;
@@ -950,9 +964,19 @@ export class ProveedoreesComponent {
     }
 
     const payload = this.selectedProveediresFromResults.map(p => ({
-      TERNOM: p.TERNOM ?? p.TERNOM ?? p.ternom ?? '',
-      TERALI: p.TERALI ?? p.TERALI ?? p.terali ?? '',
-      TERNIF: p.NIF ?? p.NIF ?? p.ternif ?? ''
+      ENT: ent,
+      TERNOM: p.nomTercero ?? '',
+      TERALI: p.apellTercero ?? '',
+      TERNIF: p.niftercero ?? '',
+      TERDOM: p.domicilio ?? '',
+      TERCPO: p.codigoPostal ?? '',
+      TERTEL: p.telefono ?? '',
+      TERFAX: p.fax ?? '',
+      TERWEB: p.web ?? '',
+      TERCOE: p.email ?? '',
+      TEROBS: p.observaciones ?? '',
+      TERPOB: p.poblacion ?? '',
+      __raw: p
     }));
 
     const token = sessionStorage.getItem('JWT');

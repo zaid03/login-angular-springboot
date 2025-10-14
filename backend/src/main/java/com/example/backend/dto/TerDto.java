@@ -25,6 +25,24 @@ public class TerDto {
     @JsonProperty("TERNIF")
     private String TERNIF;
 
+    @JsonProperty("TERDOM")
+    private String TERDOM;
+
+    @JsonProperty("TERCPO")
+    private String TERCPO;
+
+    @JsonProperty("TERTEL")
+    private String TERTEL;
+
+    @JsonProperty("TERFAX")
+    private String TERFAX;
+
+    @JsonProperty("TERCOE")
+    private String TERCOE;
+
+    @JsonProperty("TERPOB")
+    private String TERPOB;
+
     public String getTERWEB() { return TERWEB; }
     public void setTERWEB(String TERWEB) { this.TERWEB = TERWEB; }
 
@@ -45,4 +63,22 @@ public class TerDto {
 
     public String getTERNIF() { return TERNIF; }
     public void setTERNIF(String TERNIF) { this.TERNIF = TERNIF; }
+
+    public String getTERDOM() { return TERDOM; }
+    public void setTERDOM(String TERDOM) { this.TERDOM = TERDOM; }
+
+    public String getTERCPO() { return TERCPO; }
+    public void setTERCPO(String TERCPO) { this.TERCPO = TERCPO; }
+
+    public String getTERTEL() { return TERTEL; }
+    public void setTERTEL(String TERTEL) { this.TERTEL = TERTEL; }
+
+    public String getTERFAX() { return TERFAX; }
+    public void setTERFAX(String TERFAX) { this.TERFAX = TERFAX; }
+
+    public String getTERCOE() { return TERCOE; }
+    public void setTERCOE(String TERCOE) { this.TERCOE = TERCOE; }
+
+    public String getTERPOB() { return TERPOB; }
+    public void setTERPOB(String TERPOB) { this.TERPOB = TERPOB; }
 }
