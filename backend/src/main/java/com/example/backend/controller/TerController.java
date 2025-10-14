@@ -5,6 +5,7 @@ import com.example.backend.dto.TerDto;
 import com.example.backend.sqlserver2.repository.TerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -12,15 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Optional;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.core.JsonProcessingException;
-
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import com.fasterxml.jackson.databind.exc.InvalidFormatException;
-import org.springframework.http.ResponseEntity;
 @RestController
 @RequestMapping("/api/ter")
 public class TerController {
@@ -147,48 +139,44 @@ public class TerController {
     }
 
     //for selected proveedores to be added from sicalwin
-    @PostMapping("/save-proveedores/{ent}")
+@PostMapping(value = "/save-proveedores/{ent}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
-    public ResponseEntity<List<Ter>> createMultipleForEnt(@PathVariable int ent, @RequestBody JsonNode body) {
-        ObjectMapper mapper = new ObjectMapper();
-        List<TerDto> dtos = new ArrayList<>();
+    public ResponseEntity<?> createMultipleForEnt(@PathVariable int ent, @RequestBody(required = false) List<TerDto> dtos) {
         try {
-            if (body.isArray()) {
-                for (JsonNode node : body) {
-                    dtos.add(mapper.treeToValue(node, TerDto.class));
-                }
-            } else {
-                dtos.add(mapper.treeToValue(body, TerDto.class));
+            if (dtos == null || dtos.isEmpty()) {
+                System.out.println("save-proveedores: empty or null body received");
+                return ResponseEntity.badRequest().body("Empty request body");
             }
-        } catch (JsonProcessingException e) {
-            return ResponseEntity.badRequest().build();
-        }
 
-        Integer next = terRepository.findNextTercodForEnt(ent);
-        if (next == null) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+            Integer next = terRepository.findNextTercodForEnt(ent);
+            if (next == null) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            }
 
-        List<Ter> saved = new ArrayList<>();
-        for (TerDto dto : dtos) {
-            Ter t = new Ter();
-            t.setENT(ent);
-            t.setTERCOD(next++);
-            t.setTERNOM(dto.getTERNOM());
-            t.setTERALI(dto.getTERALI());
-            t.setTERNIF(dto.getTERNIF());
-            t.setTERDOM(dto.getTERDOM());
-            t.setTERCPO(dto.getTERCPO());
-            t.setTERTEL(dto.getTERTEL());
-            t.setTERFAX(dto.getTERFAX());
-            t.setTERWEB(dto.getTERWEB());
-            t.setTERCOE(dto.getTERCOE());
-            t.setTEROBS(dto.getTEROBS());
-            t.setTERPOB(dto.getTERPOB());
-            saved.add(terRepository.save(t));
-        }
+            List<Ter> saved = new ArrayList<>();
+            for (TerDto dto : dtos) {
+                Ter t = new Ter();
+                t.setENT(ent);
+                t.setTERCOD(next++);
+                t.setTERNOM(dto.getTERNOM());
+                t.setTERALI(dto.getTERALI());
+                t.setTERNIF(dto.getTERNIF());
+                t.setTERDOM(dto.getTERDOM());
+                t.setTERCPO(dto.getTERCPO());
+                t.setTERTEL(dto.getTERTEL());
+                t.setTERFAX(dto.getTERFAX());
+                t.setTERWEB(dto.getTERWEB());
+                t.setTERCOE(dto.getTERCOE());
+                t.setTEROBS(dto.getTEROBS());
+                t.setTERPOB(dto.getTERPOB());
+                saved.add(terRepository.save(t));
+            }
 
-        return ResponseEntity.ok(saved);
+            return ResponseEntity.ok(saved);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Server error: " + e.getClass().getSimpleName() + " - " + e.getMessage());
+        }
     }
 
     @PostMapping(value = "/debug/save-proveedores/{ent}", consumes = MediaType.APPLICATION_JSON_VALUE)
