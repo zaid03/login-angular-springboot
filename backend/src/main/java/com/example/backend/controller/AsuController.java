@@ -1,11 +1,15 @@
 package com.example.backend.controller;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.example.backend.sqlserver2.model.Asu;
 import com.example.backend.sqlserver2.repository.AsuRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/asu")
@@ -30,4 +34,14 @@ public class AsuController {
             @PathVariable String asudes) {
         return asuRepository.findByENTAndASUDESContaining(ent, asudes);
     }
+
+    //find an art name
+    @GetMapping("/art-name/{ent}/{afacod}/{asucod}")
+    public List<Asu> getArtName(
+        @PathVariable int ent,
+        @PathVariable String afacod,
+        @PathVariable String asucod) 
+        {
+            return asuRepository.getArtName(ent, afacod, asucod);
+        }
 }
