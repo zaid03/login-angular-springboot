@@ -23,4 +23,13 @@ public class AfaController {
     public List<Afa> getByEntAndAfadesLike(@PathVariable int ent, @PathVariable String afades) {
         return afaRepository.findByENTAndAFADESContaining(ent, afades);
     }
+
+    //find an art name 
+    @GetMapping("/art-name/{ent}/{afacod}")
+    public List<Afa> getArtName(
+        @PathVariable int ent,
+        @PathVariable String afacod) 
+        {
+            return afaRepository.getArtName(ent, afacod);
+        }
 }
