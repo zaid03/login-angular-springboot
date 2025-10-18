@@ -31,4 +31,15 @@ public class ArtController {
             @PathVariable String artdes) {
         return artRepository.findByENTAndARTDESContaining(ent, artdes);
     }
+
+    //find an art name
+    @GetMapping("/art-name/{ent}/{afacod}/{asucod}/{artcod}")
+    public List<Art> getArtName(
+        @PathVariable int ent,
+        @PathVariable String afacod,
+        @PathVariable String asucod,
+        @PathVariable String artcod) 
+        {
+        return artRepository.findArtName(ent, afacod, asucod, artcod);
+        }
 }
