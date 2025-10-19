@@ -16,16 +16,15 @@ import com.example.backend.sqlserver2.model.TpeId;
 public interface TpeRepository extends JpaRepository<Tpe, TpeId> {
 
     // Custom query to find Tpe by ENT and TERCOD
-   @Query("SELECT new com.example.backend.dto.TpeDto(t.tercod, t.tpenom, t.tpetel, t.tpetmo, t.tpecoe, t.tpeobs) FROM Tpe t WHERE t.ent = :ent AND t.tercod = :tercod AND t.tpecod = :tpecod")
-    List<TpeDto> findDtoByEntAndTercodAndTpecod(
+   @Query("SELECT new com.example.backend.dto.TpeDto(t.tercod, t.tpenom, t.tpetel, t.tpetmo, t.tpecoe, t.tpeobs) FROM Tpe t WHERE t.ent = :ent AND t.tercod = :tercod")
+    List<TpeDto> findDtoByEntAndTercod(
         @Param("ent") Integer ent,
-        @Param("tercod") Integer tercod,
-        @Param("tpecod") Integer tpecod
+        @Param("tercod") Integer tercod
     );
 
     // modifying the data
-    Optional<Tpe> findByEntAndTercodAndTpecod(Integer ENT, Integer TERCOD, Integer TPECOD);
+    List<Tpe> findByEntAndTercod(Integer ent, Integer tercod);
 
     // Deleting data
-    void deleteByEntAndTercodAndTpecod(Integer ENT, Integer TERCOD, Integer TPECOD);
+    void deleteByEntAndTercod(Integer ent, Integer tercod);
 }

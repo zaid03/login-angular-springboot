@@ -454,16 +454,27 @@ export class ProveedoreesComponent {
     this.showContactPersonsGrid = true;
     this.showArticulosGrid = false;
 
-    this.http.get<any[]>(`http://localhost:8080/api/more/by-tpe/ent/${this.entcod}/tercod/${tercod}`)
+    this.http.get<any[]>(`http://localhost:8080/api/more/by-tpe/${this.entcod}/${tercod}`)
       .subscribe({ next: (response) => {
-        this.contactPersons = response;
-        if (response.length === 0) {
+        this.contactPersons = Array.isArray(response) ? response : (response ? [response] : []);
+        if (!this.contactPersons || this.contactPersons.length === 0) {
           this.nocontactmessage = 'No se encontraron personas de contacto.';
+          this.contactPersons = [];
+        } else {
+          this.nocontactmessage = '';
         }
         this.page = 0;
       },
       error: (err) => {
-        this.nocontactmessage = 'error al obtener las personas de contacto.';
+        console.error('Error fetching contact persons', err);
+        if (err && err.status === 404) {
+          const backendMsg = err.error && (err.error.message || err.error.msg || err.error);
+          this.nocontactmessage = backendMsg ? String(backendMsg) : 'No se encontraron personas de contacto.';
+        } else {
+          this.nocontactmessage = 'Error al obtener las personas de contacto.';
+        }
+        this.contactPersons = [];
+        this.page = 0;
       } 
     });
   }
