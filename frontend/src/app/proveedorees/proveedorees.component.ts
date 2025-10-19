@@ -456,14 +456,15 @@ export class ProveedoreesComponent {
 
     this.http.get<any[]>(`http://localhost:8080/api/more/by-tpe/${this.entcod}/${tercod}`)
       .subscribe({ next: (response) => {
-        this.contactPersons = Array.isArray(response) ? response : (response ? [response] : []);
-        if (!this.contactPersons || this.contactPersons.length === 0) {
+        const respArray = Array.isArray(response) ? response : (response ? [response] : []);
+        if (respArray.length === 0) { 
+          this.contactPersons = null;           
           this.nocontactmessage = 'No se encontraron personas de contacto.';
-          this.contactPersons = [];
         } else {
+          this.contactPersons = respArray[0];
           this.nocontactmessage = '';
-        }
-        this.page = 0;
+         }
+          this.page = 0;
       },
       error: (err) => {
         console.error('Error fetching contact persons', err);
