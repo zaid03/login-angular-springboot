@@ -9,8 +9,8 @@
     <div class="proveedores-container" [class.blurred]="!sidebar.collapsed">
         <h2>Lista de Proveedores</h2>  
         <div class="proveedores-search">
-            <form class="search-form" (ngSubmit)="search()">
-                <input type="text" class="search-bar" placeholder="Buscar proveedor" name="search" [(ngModel)]="searchTerm"/>
+            <form class="search-form" (submit)="onSearchFormSubmit($event)">
+                <input type="text" class="search-bar" placeholder="Buscar proveedor" name="search" [(ngModel)]="searchTerm" (keyup.enter)="search()"/>
                 <div class="search-options">
                     <label>
                         <input type="radio" name="optiones" value="Todos" [(ngModel)]="filterOption" /> Todos
@@ -18,7 +18,8 @@
                         <input type="radio" name="optiones" value="Bloqueados" [(ngModel)]="filterOption"  /> Bloqueados
                     </label>
                 </div>
-                <button type="submit" class="search-button">Buscar</button>
+                <button type="button" class="search-button" (click)="search()">Buscar</button>
+                <button type="button" class="search-button" (click)="clearSearch()">Volver</button>
             </form>
         </div> 
 
@@ -29,7 +30,7 @@
 
         <div class="proveedores-list">
             <h1 style="font-family: inherit; color: red; font-size: inherit;" id="error">{{ error }}</h1>
-            <table>
+            <table class="main-table">
                 <thead>
                     <tr>
                         <th>Código</th>
@@ -272,7 +273,7 @@
                                     </td>
 
                                     <td>
-                                        <h2>later</h2>
+                                        <h2 >{{ articulo.description}}</h2>
                                     </td>
 
                                     <td>

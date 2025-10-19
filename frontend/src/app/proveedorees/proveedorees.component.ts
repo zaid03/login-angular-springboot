@@ -17,6 +17,7 @@ import autoTable from 'jspdf-autotable';
 })
 export class ProveedoreesComponent {
   proveedores: any[] = [];
+  private backupProveedores: any[] = [];
   searchTerm: string = '';
   filterOption: string = 'noBloqueados';
   page = 0;
@@ -83,6 +84,7 @@ export class ProveedoreesComponent {
             alert('Error: ' + response.error);
           } else {
             this.proveedores = response;
+            this.backupProveedores = Array.isArray(response) ? [...response] : [];
             this.page = 0;
           }
         },
@@ -147,6 +149,18 @@ export class ProveedoreesComponent {
     this.contactIsError = false;
     this.articulosMessage = '';
     this.articleIsError = false;
+    this.page = 0;
+  }
+
+  onSearchFormSubmit(event: Event) {
+    event.preventDefault();
+    this.search();
+  }
+
+  clearSearch() {
+    this.searchTerm = '';
+    this.error = null;
+    this.proveedores = [...this.backupProveedores];
     this.page = 0;
   }
 
@@ -455,7 +469,6 @@ export class ProveedoreesComponent {
   }
 
   showArticulos(proveedore: any){
-    
     this.selectedProveedor = proveedore;
     sessionStorage.setItem('tercod', proveedore.tercod);
     const tercod = sessionStorage.getItem('tercod');
@@ -469,7 +482,43 @@ export class ProveedoreesComponent {
     
     this.http.get<any[]>(`http://localhost:8080/api/more/by-apr/${this.entcod}/${tercod}`)
       .subscribe({ next: (response) => {
-        this.articulos = response;
+        this.articulos = Array.isArray(response) ? response : (response ? [response] : []);
+
+        this.articulos.forEach((row: any, index: number) => {
+          const artcod = String(row?.artcod ?? '').trim();
+          const afacod = String(row?.afacod ?? '').trim();
+          const asucod = String(row?.asucod?? '').trim();
+          console.log(`row ${index}: artcod="${artcod}", afacod="${afacod}", asucod="${asucod}"`, row);
+
+          if (artcod === '*'){
+            if(asucod === '*') {
+              console.log(`row ${index}: artcod="*" and asucod="*"`, row);
+              this.http.get<any[]>(`http://localhost:8080/api/afa/art-name/${this.entcod}/${afacod}`).subscribe({ next: (response) => {
+                const respArray = Array.isArray(response) ? response : (response ? [response] : []);
+                const afades = respArray[0]?.afades;
+                console.log(afades);
+                row.description = String(afades).trim();
+              }})
+            } else {
+              console.log(`row ${index}: artcod="*" but asucod="${asucod}"`, row);
+              this.http.get<any[]>(`http://localhost:8080/api/asu/art-name/${this.entcod}/${afacod}/${asucod}`).subscribe({ next: (response) => {
+                const respArray = Array.isArray(response) ? response : (response ? [response] : []);
+                const asudes = respArray[0]?.asudes;
+                console.log(asudes);
+                row.description = String(asudes).trim();
+              }})
+            }
+          } else {
+            console.log(`row ${index}: artcod="${artcod}", afacod="${afacod}", asucod="${asucod}"`, row);
+            this.http.get<any>(`http://localhost:8080/api/art/art-name/${this.entcod}/${afacod}/${asucod}/${artcod}`).subscribe({ next: (response) => {
+              const respArray = Array.isArray(response) ? response : (response ? [response] : []);
+              const afades = respArray[0]?.artdes;
+              console.log(afades);
+              row.description = String(afades).trim();
+            }})
+          }
+        });
+
         if (response.length === 0) {
           this.nocontactmessage = 'No se encontraron artículos.';
         }
@@ -1055,5 +1104,5 @@ export class ProveedoreesComponent {
     this.clearSelectedProveedores();
     this.showMessage('Elementos eliminados de la lista local.', false, 3000);
   }
-//still need to add a check for the proveedor if it exists in db then dont fucking add it
+//still need to add a check for the proveedor if it exists in db then dont add it
 }
