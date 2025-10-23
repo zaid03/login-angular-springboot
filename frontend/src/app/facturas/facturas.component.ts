@@ -4,6 +4,9 @@ import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { SidebarComponent } from '../sidebar/sidebar.component';
+
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 @Component({
   selector: 'app-proveedorees',
   standalone: true,
@@ -88,6 +91,74 @@ export class FacturasComponent {
     if (inputPage >= 1 && inputPage <= this.totalPages) {
       this.page = inputPage - 1;
     }
+  }
+
+  DownloadPDF() {
+    const doc = new jsPDF({orientation: 'landscape', unit: 'mm', format: 'a4'});
+    const columns = [
+      { header: 'Número Registro', dataKey: 'facnum'},
+      { header: 'Fecha contable', dataKey: 'facfco'},
+      { header: 'ADO', dataKey: 'facado'},
+      { header: 'R.C.F', dataKey: 'factdc'},
+      { header: 'Núm. Factura', dataKey: 'facdoc'},
+      { header: 'Proveedor', dataKey: 'tercod'},
+      { header: 'Fecha Factura', dataKey: 'facdat'},
+      { header: 'C.gestor', dataKey: 'cgecod'},
+      { header: 'F.Registro', dataKey: 'facfre'},
+      { header: 'Total Factura', dataKey: 'facimp'}
+    ];
+
+    const formatDate = (v: any) => {
+      if (!v && v !== 0) return '';
+      const s = String(v);
+      const d = new Date(s);
+      if (!isNaN(d.getTime())) return d.toLocaleDateString();
+      return s;
+    };
+
+    const rows = (this.facturas || []).map((f: any) => ({
+      facnum: f.facnum,
+      facfco: formatDate(f.facfco),
+      facado: f.facado,
+      factdc: f.factdc,
+      facdoc: f.facdoc,
+      tercod: f.tercod,
+      facdat: formatDate(f.facdat),
+      cgecod: f.cgecod,
+      facfre: formatDate(f.facfre),
+      facimp: f.facimp
+    }));
+
+    autoTable(doc, {
+      columns,
+      body: rows,
+      startY: 16,
+      styles: { fontSize: 7 },
+      headStyles: { fillColor: [15, 76, 117] },
+      margin: { left: 8, right: 8 },
+      columnStyles: {
+        facnum: { cellWidth: 15 },
+        facfco: { cellWidth: 35 },
+        facado: { cellWidth: 20 },
+        factdc: { cellWidth: 15 },
+        facdoc: { cellWidth: 45 },
+        tercod: { cellWidth: 35 },
+        facdat: { cellWidth: 15 },
+        cgecod: { cellWidth: 35 },
+        facfre: { cellWidth: 35 },
+        facimp: { cellWidth: 15 }
+      },
+      didDrawPage: (dataArg) => {
+        doc.setFontSize(11);
+        doc.text('Lista de Facturas', 12, 10);
+        const pageCount = doc.getNumberOfPages();
+        doc.setFontSize(8);
+        const pageStr = `Página ${pageCount}`;
+        doc.text(pageStr, doc.internal.pageSize.getWidth() - 20, 10);
+      }
+    });
+
+    doc.save('Facturas.pdf');
   }
 
 }
