@@ -56,6 +56,8 @@ export class FacturasComponent {
           console.log(this.facturas);
           this.backupFacturas = Array.isArray(response) ? [...response] : [];
           this.page = 0;
+          console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
+        console.log('raw facturas sample:', this.facturas[0]);
         }
       }, error: (err) => {
         console.error('Facturas fetch error:', err);
@@ -65,6 +67,7 @@ export class FacturasComponent {
       }
     });
   }
+  
 
   get paginatedFacturas(): any[] {
     if (!this.facturas || this.facturas.length === 0) return [];
@@ -80,8 +83,11 @@ export class FacturasComponent {
   nextPage(): void {
     if (this.page < this.totalPages - 1) this.page++;
   }
-  goToPage(n: number): void {
-    if (n >= 0 && n < this.totalPages) this.page = n;
+  goToPage(event: any): void {
+    const inputPage = Number(event.target.value);
+    if (inputPage >= 1 && inputPage <= this.totalPages) {
+      this.page = inputPage - 1;
+    }
   }
 
 }

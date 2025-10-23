@@ -25,7 +25,7 @@
         </div>
 
         <div class="facturas-list">
-            <h1 style="font-family: inherit; color: red; font-size: inherit;" id="error">error</h1>
+            <h1 style="font-family: inherit; color: red; font-size: inherit;" id="error">{{facturaMessage}}</h1>
             <table class="facturas-table">
                 <thead>
                     <tr>
@@ -35,25 +35,36 @@
                         <th>R.C.F.</th>
                         <th>Núm. Factura</th>
                         <th>Proveedor</th>
-                        <th>NIF Prov.</th>
                         <th>Fecha Factura</th>
+                        <th>C.gestor</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr *ngFor="let p of paginatedFacturas">
-                        <td>{{ p.tercod }}</td>
+                        <td>{{ p.facnum }}</td>
+                        <td>{{ p.facfco }}</td>
+                        <td>{{ p.facado }}</td>
+                        <td>{{ p.factdc || p.facann || p.facfac  }}</td>
+                        <td>{{ p.facdoc }}</td>
+                        <td>{{ p.tercod  }}</td>
+                        <td>{{ p.facdat }}</td>
+                        <td>{{ p.cgecod }}</td>
                     </tr>
                 </tbody>
             </table>
-            <div class="pagination" style="display:flex;gap:8px;align-items:center;margin-top:12px;">
-              <button (click)="prevPage()" [disabled]="page === 0">« Prev</button>
-              <ng-container *ngFor="let i of [].constructor(totalPages); let idx = index">
-                <button (click)="goToPage(idx)" [disabled]="page === idx" [class.active]="page === idx">{{ idx + 1 }}</button>
-              </ng-container>
-              <button (click)="nextPage()" [disabled]="page >= totalPages - 1">Next »</button>
-              <div style="margin-left:12px;font-size:0.9em;color:#666;">
-                Mostrando {{ page * pageSize + 1 }} - {{ Math.min((page + 1) * pageSize, facturas.length) }} de {{ facturas.length }}
-              </div>
+            <div class="pagination-controls">
+                <button (click)="prevPage()" [disabled]="page === 0">Anterior</button>
+                <span>Página</span>
+                <input
+                type="number"
+                min="1"
+                [max]="totalPages"
+                [value]="page + 1"
+                (change)="goToPage($event)"
+                class="pagination-input"
+                />
+                <span>de {{ totalPages }}</span>
+                <button (click)="nextPage()" [disabled]="page + 1 >= totalPages">Siguiente</button>
             </div>
         </div>
     </div>

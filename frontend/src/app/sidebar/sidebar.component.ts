@@ -31,7 +31,6 @@ export class SidebarComponent {
         const arr = Array.isArray(parsed) ? parsed : (parsed.menus || parsed.items || []);
         // normalize codes to trimmed strings (keep case if your checks are case-sensitive)
         this.allowedMnucods = arr.map((item: any) => (item?.mnucod ?? item?.mnucod?.toString() ?? '').toString().trim()).filter((s: string) => s);
-        console.log('sidebar allowedMnucods=', this.allowedMnucods);
       } catch (e) {
         console.warn('Failed to parse puaData:', e);
         this.allowedMnucods = [];
