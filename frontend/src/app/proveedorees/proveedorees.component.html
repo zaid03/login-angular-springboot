@@ -49,21 +49,21 @@
                     </tr>
                 </thead>
                 <tbody>
-                        <tr *ngFor="let p of paginatedProveedores" [class.grey-row]="p.terblo == 1">
-                            <td>{{ p.tercod }}</td>
-                            <td class="truncate" title="{{ p.ternom }}" (click)="showDetails(p)" style="cursor: pointer;">{{ p.ternom }}</td>
-                            <td class="truncate" title="{{ p.terali }}">{{ p.terali }}</td>
-                            <td class="truncate" title="{{ p.ternif }}">{{ p.ternif }}</td>
-                            <td class="truncate" title="{{ p.terdom }}">{{ p.terdom }}</td>
-                            <td class="truncate" title="{{ p.tercpo }}">{{ p.tercpo }}</td>
-                            <td class="truncate" title="{{ p.terpob }}">{{ p.terpob }}</td>
-                            <td class="truncate" title="{{ p.tertel }}">{{ p.tertel }}</td>
-                            <td class="truncate" title="{{ p.terfax }}">{{ p.terfax }}</td>
-                            <td class="truncate" title="{{ p.terweb }}">{{ p.terweb }}</td>
-                            <td class="truncate" title="{{ p.tercoe }}">{{ p.tercoe }}</td>
-                            <td class="truncate" title="{{ p.terobs }}">{{ p.terobs }}</td>
-                            <td class="truncate" title="{{ p.terayt }}">{{ p.terayt }}</td>
-                        </tr>
+                    <tr *ngFor="let p of paginatedProveedores" [class.grey-row]="p.terblo == 1">
+                        <td>{{ p.tercod }}</td>
+                        <td class="truncate" title="{{ p.ternom }}" (click)="showDetails(p)" style="cursor: pointer;">{{ p.ternom }}</td>
+                        <td class="truncate" title="{{ p.terali }}">{{ p.terali }}</td>
+                        <td class="truncate" title="{{ p.ternif }}">{{ p.ternif }}</td>
+                        <td class="truncate" title="{{ p.terdom }}">{{ p.terdom }}</td>
+                        <td class="truncate" title="{{ p.tercpo }}">{{ p.tercpo }}</td>
+                        <td class="truncate" title="{{ p.terpob }}">{{ p.terpob }}</td>
+                        <td class="truncate" title="{{ p.tertel }}">{{ p.tertel }}</td>
+                        <td class="truncate" title="{{ p.terfax }}">{{ p.terfax }}</td>
+                        <td class="truncate" title="{{ p.terweb }}">{{ p.terweb }}</td>
+                        <td class="truncate" title="{{ p.tercoe }}">{{ p.tercoe }}</td>
+                        <td class="truncate" title="{{ p.terobs }}">{{ p.terobs }}</td>
+                        <td class="truncate" title="{{ p.terayt }}">{{ p.terayt }}</td>
+                    </tr>
                 </tbody>
             </table>
             <div class="pagination-controls">

@@ -1,0 +1,33 @@
+body, html {
+  overflow-x: hidden;
+}
+
+.proveedores-page {
+  display: flex;
+  min-height: 100vh;
+  background: #f0f0f0;
+  font-family: "Raleway", "Helvetica", "Tahoma", "Geneva", "Arial", "Apple Color Emoji", "Segoe UI", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+}
+
+app-sidebar {
+  flex-shrink: 0;
+  z-index: 2000;
+}
+
+.sidebar-backdrop {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 1500;
+}
+
+.facturas-container.blurred {
+  filter: blur(1.2px);
+  pointer-events: none;
+  user-select: none;
+}
+
+.sidebar-backdrop {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 1500;
+}
