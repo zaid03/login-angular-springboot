@@ -9,7 +9,7 @@
     <div class="facturas-container" [class.blurred]="!sidebar.collapsed">
         <h2>Lista de Facturas</h2> 
         <div class="facturas-search">
-            <form>
+            <form class="search-form">
                 <input type="text" class="search-bar" placeholder="Buscar factura" name="search">
                 <div class="seach-options">
                     <input type="radio" name="optiones" value="Registro" /> Registro
@@ -37,6 +37,7 @@
                         <th>Proveedor</th>
                         <th>Fecha Factura</th>
                         <th>C.gestor</th>
+                        <th>F. Registro</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -49,6 +50,7 @@
                         <td>{{ p.tercod  }}</td>
                         <td>{{ p.facdat }}</td>
                         <td>{{ p.cgecod }}</td>
+                        <td>{{ p.facfre }}</td>
                     </tr>
                 </tbody>
             </table>
