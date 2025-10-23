@@ -1,5 +1,5 @@
 import { Component, Output, EventEmitter } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
+import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { environment } from '../../environments/environment';
@@ -51,15 +51,25 @@ export class SidebarComponent {
   }
 
   navigateTo(code: string): void {
-    
+    if (this.isDisabled(code)) {
+      console.warn('Not allowed:', code);
+      return;
+    }
+
+    switch (code) {
+      case 'acTer':
+        this.router.navigate(['/proveedorees']);
+        break;
+      case 'acFac':
+        this.router.navigate(['/facturas']);
+        break;
+      default:
+        console.warn('No route configured for code:', code);
+    }
   }
 
   isDisabled(code: string): boolean {
-  return !this.allowedMnucods.includes(code);
-  }
-
-  proveedorees(): void {
-    this.router.navigate(['/proveedorees']);
+    return !this.allowedMnucods.includes(code);
   }
 
   dashboard(): void {

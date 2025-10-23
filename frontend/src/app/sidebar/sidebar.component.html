@@ -20,7 +20,7 @@
         <a class="choice">Proveedores</a>
         <div class="menu-content">
           <div class="menu-item">
-            <a class="acTer" [class.disabled]="isDisabled('acTer')" (click)="proveedorees()">Gestión de Proveedores</a>
+            <a class="acTer" [class.disabled]="isDisabled('acTer')" (click)="navigateTo('acTer')">Gestión de Proveedores</a>
             <a class="acCoTer" [class.disabled]="isDisabled('acCoTer')">Consulta de Proveedores</a>
           </div>
         </div>
@@ -37,7 +37,7 @@
         <a class="choice">Contabilización</a>
         <div class="menu-content">
           <div class="menu-item">
-            <a class="acFac" [class.disabled]="isDisabled('acFac')">Facturas</a>
+            <a class="acFac" [class.disabled]="isDisabled('acFac')" (click)="navigateTo('acFac')">Gestión de Facturas</a>
             <a class="acMCon" [class.disabled]="isDisabled('acMCon')">Monitor de contabilización</a>
           </div>
         </div>
