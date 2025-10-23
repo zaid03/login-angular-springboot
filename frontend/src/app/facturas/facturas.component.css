@@ -10,13 +10,11 @@ body, html {
 }
 
 app-sidebar {
-    border: 1px solid red;
     flex-shrink: 0;
     z-index: 2000;
 }
 
 .sidebar-backdrop {
-    border: 1px solid red;
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
     z-index: 1500;
@@ -38,7 +36,6 @@ app-sidebar {
     padding: 0 0 40px 0;
     min-height: 100vh;
     z-index: 1;
-    border: 1px solid green;
 }
 
 .facturas-container h2 {
@@ -47,7 +44,6 @@ app-sidebar {
 }
 
 .facturas-search {
-    border: 1px solid lawngreen;
     display: flex;
     align-items: center;
     gap: 16px;
@@ -124,7 +120,6 @@ app-sidebar {
 }
 
 .facturas-list {
-    border: 1px solid lime;
     width: 80%;
     display: flex;
     flex-direction: column;
@@ -174,7 +169,6 @@ app-sidebar {
 }
 
 .pagination-controls {
-    border: 1px solid navy;
     display: flex;
     align-items: center;
     gap: 12px;
