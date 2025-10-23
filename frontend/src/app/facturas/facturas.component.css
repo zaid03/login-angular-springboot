@@ -278,7 +278,7 @@ app-sidebar {
   to   { opacity: 1; transform: none;}
 }
 
-.close-btn {
+.close-btn-fct {
   position: absolute;
   top: 16px;
   right: 18px;
@@ -297,6 +297,14 @@ app-sidebar {
   text-align: center;
   letter-spacing: 1px;
   font-weight: 600;
+}
+
+.modal h1 {
+    font-size: 18px;
+    margin-bottom: 18px;
+    text-align: center;
+    letter-spacing: 1px;
+    font-weight: 600;
 }
 
 .modal-row {

@@ -70,8 +70,8 @@
             </div>
             <div class="modal-backdrop" *ngIf="selectedFacturas" (click)="closeDetails()"></div>
             <div class="display" >
-                <div class="modal" *ngIf="selectedProveedor">
-                    <button class="close-btn" (click)="closeDetails()" style="background-color: red !important;">×</button>
+                <div class="modal" *ngIf="selectedFacturas">
+                    <button class="close-btn-fct" (click)="closeDetails()">×</button>
                     <h3>Detalles de Factura</h3>
 
                     <div class="modal-row">
@@ -79,39 +79,34 @@
                             <strong>Número Registro:</strong>
                             <h1>{{ selectedFacturas.facnum }}</h1>
                         </div>
-
                         <div class="modal-col">
                             <strong>F.contable:</strong>
-                            <h1>{{  }}</h1>
+                            <h1>{{ selectedFacturas.facfco }}</h1>
                         </div>
-
                         <div>
                             <strong>ADO:</strong>
                             <h1>{{ selectedFacturas.facado }}</h1>
                         </div>
-
-                        <div>
-                            <strong>Fecha contable:</strong>
-                            <h1>{{ selectedFacturas.facfco }}</h1>
-                        </div>
                         <div>
                             <strong>Total Factura:</strong>
-                            <h1>{{ selectedFacturas.terdom }}</h1>
+                            <h1>{{ selectedFacturas.facimp }}</h1>
                         </div>
                     </div>
 
                     <div class="modal-row">
                         <div>
                             <strong>R.C.F:</strong>
-                            <h1>{{ selectedFacturas.ternif }}</h1>
+                            <h1>{{ selectedFacturas.facfac }}</h1>
+                            <h1>{{ selectedFacturas.facann }}</h1>
+                            <h1>{{ selectedFacturas.factdc }}</h1>
                         </div>
                         <div>
-                            <strong>Núm. Factura:</strong>
-                            <h1>{{ selectedFacturas.terdom }}</h1>
+                            <strong>Núm.Factura:</strong>
+                            <h1>{{ selectedFacturas.facdoc }}</h1>
                         </div>
                         <div>
                             <strong>Aplicado:</strong>
-                            <h1>{{  }}</h1>
+                            <h1>{{ selectedFacturas.faciec }}</h1>
                         </div>
                     </div>
 
@@ -119,25 +114,44 @@
                         <div>
                             <strong>Proveedor:</strong>
                             <h1>{{ selectedFacturas.tercod }}</h1>
-                            <h1>{{ selectedFacturas.terdom }}</h1>
+                            <h1>{{ selectedFacturas.ternom }}</h1> 
                         </div>
                         <div>
                             <strong>Apl. diferencias:</strong>
-                            <h1>{{ selectedFacturas.terayt }}</h1>
+                            <h1>{{ selectedFacturas.facidi }}</h1>
+                        </div>
+                    </div>
+
+                    <div class="modal-row">
+                        <div>
+                            <strong>NIF</strong>
+                            <h1>{{selectedFacturas.ternif }}</h1>
+                        </div>
+                        <div>
+                            <strong>Fecha Factura</strong>
+                            <h1>{{ selectedFacturas.facdat }}</h1>
+                        </div>
+                        <div>
+                            <strong>C.Gestor</strong>
+                            <h1>{{ selectedFacturas.cgecod }}</h1>
+                        </div>
+                        <div>
+                            <strong>Pte.Aplicar</strong>
+                            <h1>{{ getPendingApply(selectedFacturas) }}</h1>
                         </div>
                     </div>
 
                     <div class="modal-row">
                         <div>
                             <strong>Des.Fact/ADO:</strong>
-                            <h1>{{ selectedProveedor.tercpo }}</h1>          
+                            <h1>{{ selectedFacturas.factxt }}</h1>  
                         </div>
                     </div>
 
                     <div class="modal-row">
                         <div>
                             <strong>Observaciones:</strong>
-                            <h1>{{ selectedProveedor.tercpo }}</h1>          
+                            <h1>{{ selectedFacturas.facobs }}</h1>          
                         </div>
                     </div>
                 </div>

@@ -232,6 +232,23 @@ export class FacturasComponent {
   closeDetails() {
     this.selectedFacturas = null;
     this.detallesMessage = '';
-    this.page = 0;
+  }
+
+  public getPendingApply(f: any): string {
+    if (!f) return '';
+    const toNum = (v: any) => {
+      if (v === null || v === undefined || v === '') return 0;
+      const n = Number(v);
+      return isNaN(n) ? 0 : n;
+    };
+    const facimp = toNum(f.facimp);
+    console.log(facimp);
+    const faciec = toNum(f.faciec);
+    console.log(faciec);
+    const facidi = toNum(f.facidi);
+    console.log(facidi);
+    const pending = facimp - (faciec + facidi);
+    console.log(pending);
+    return pending.toFixed(2);
   }
 }
