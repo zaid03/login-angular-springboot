@@ -22,6 +22,6 @@ public class FacController {
         @PathVariable Integer ent,
         @PathVariable Integer eje) 
     {
-        return facRepository.findByENTAndEJE(ent, eje);
+        return ResponseEntity.ok().body(facRepository.findByENTAndEJE(ent, eje));
     }
 }
