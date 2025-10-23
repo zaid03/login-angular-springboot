@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -219,5 +219,19 @@ export class FacturasComponent {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+  }
+
+  selectedFacturas: any = null;
+  detallesMessage: String = '';
+  fettalesIsError: boolean = false;
+
+  showDetails(factura: any) {
+    this.selectedFacturas = factura;
+  }
+
+  closeDetails() {
+    this.selectedFacturas = null;
+    this.detallesMessage = '';
+    this.page = 0;
   }
 }

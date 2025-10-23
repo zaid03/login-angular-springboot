@@ -43,7 +43,7 @@
                 <tbody>
                     <tr *ngFor="let p of paginatedFacturas">
                         <td>{{ p.facnum }}</td>
-                        <td>{{ p.facfco }}</td>
+                        <td (click)="showDetails(p)" style="cursor: pointer;">{{ p.facfco }}</td>
                         <td>{{ p.facado }}</td>
                         <td>{{ p.factdc || p.facann || p.facfac  }}</td>
                         <td>{{ p.facdoc }}</td>
@@ -67,6 +67,80 @@
                 />
                 <span>de {{ totalPages }}</span>
                 <button (click)="nextPage()" [disabled]="page + 1 >= totalPages">Siguiente</button>
+            </div>
+            <div class="modal-backdrop" *ngIf="selectedFacturas" (click)="closeDetails()"></div>
+            <div class="display" >
+                <div class="modal" *ngIf="selectedProveedor">
+                    <button class="close-btn" (click)="closeDetails()" style="background-color: red !important;">×</button>
+                    <h3>Detalles de Factura</h3>
+
+                    <div class="modal-row">
+                        <div class="modal-col">
+                            <strong>Número Registro:</strong>
+                            <h1>{{ selectedFacturas.facnum }}</h1>
+                        </div>
+
+                        <div class="modal-col">
+                            <strong>F.contable:</strong>
+                            <h1>{{  }}</h1>
+                        </div>
+
+                        <div>
+                            <strong>ADO:</strong>
+                            <h1>{{ selectedFacturas.facado }}</h1>
+                        </div>
+
+                        <div>
+                            <strong>Fecha contable:</strong>
+                            <h1>{{ selectedFacturas.facfco }}</h1>
+                        </div>
+                        <div>
+                            <strong>Total Factura:</strong>
+                            <h1>{{ selectedFacturas.terdom }}</h1>
+                        </div>
+                    </div>
+
+                    <div class="modal-row">
+                        <div>
+                            <strong>R.C.F:</strong>
+                            <h1>{{ selectedFacturas.ternif }}</h1>
+                        </div>
+                        <div>
+                            <strong>Núm. Factura:</strong>
+                            <h1>{{ selectedFacturas.terdom }}</h1>
+                        </div>
+                        <div>
+                            <strong>Aplicado:</strong>
+                            <h1>{{  }}</h1>
+                        </div>
+                    </div>
+
+                    <div class="modal-row">
+                        <div>
+                            <strong>Proveedor:</strong>
+                            <h1>{{ selectedFacturas.tercod }}</h1>
+                            <h1>{{ selectedFacturas.terdom }}</h1>
+                        </div>
+                        <div>
+                            <strong>Apl. diferencias:</strong>
+                            <h1>{{ selectedFacturas.terayt }}</h1>
+                        </div>
+                    </div>
+
+                    <div class="modal-row">
+                        <div>
+                            <strong>Des.Fact/ADO:</strong>
+                            <h1>{{ selectedProveedor.tercpo }}</h1>          
+                        </div>
+                    </div>
+
+                    <div class="modal-row">
+                        <div>
+                            <strong>Observaciones:</strong>
+                            <h1>{{ selectedProveedor.tercpo }}</h1>          
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
