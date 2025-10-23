@@ -22,13 +22,23 @@ export class SidebarComponent {
     const usucod = sessionStorage.getItem('USUCOD');
     const entidad = sessionStorage.getItem('Entidad');
     const perfil = sessionStorage.getItem('Perfil');
-    const menus = sessionStorage.getItem('puaData');
+    const menus = sessionStorage.getItem('mnucods');
 
     if (menus) {
-      const parsed = JSON.parse(menus);
-      this.allowedMnucods = parsed.map((item: any) => item.mnucod);
+      try {
+        const parsed = JSON.parse(menus);
+        // parsed might be array or object - normalize to array
+        const arr = Array.isArray(parsed) ? parsed : (parsed.menus || parsed.items || []);
+        // normalize codes to trimmed strings (keep case if your checks are case-sensitive)
+        this.allowedMnucods = arr.map((item: any) => (item?.mnucod ?? item?.mnucod?.toString() ?? '').toString().trim()).filter((s: string) => s);
+        console.log('sidebar allowedMnucods=', this.allowedMnucods);
+      } catch (e) {
+        console.warn('Failed to parse puaData:', e);
+        this.allowedMnucods = [];
+      }
     } else {
-      console.warn('No menus found in sessionStorage');
+      console.warn('No menus found in sessionStorage (puaData missing)');
+      this.allowedMnucods = [];
     }
 
     if (!usucod || !entidad || !perfil) {
@@ -69,7 +79,9 @@ export class SidebarComponent {
   }
 
   isDisabled(code: string): boolean {
-    return !this.allowedMnucods.includes(code);
+    if (!code) return true;
+    const normalized = code.toString().trim();
+    return !this.allowedMnucods.some((c: string) => c === normalized);
   }
 
   dashboard(): void {
@@ -83,5 +95,6 @@ export class SidebarComponent {
     this.collapsed = !this.collapsed;
     this.collapsedChange.emit(this.collapsed);
   }
+
   logoPath = 'assets/images/logo_iass.png';
 }
