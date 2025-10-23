@@ -66,13 +66,6 @@ export class DashboardComponent implements OnInit {
     return !this.allowedMnucods.includes(code);
   }
 
-  navigateTo(code: string): void {
-    if (this.isDisabled(code)) {
-      console.warn('Not allowed:', code);
-      return;
-    }
-  }
-
   logout(): void {
     sessionStorage.clear();
     window.location.href = `${environment.casLoginUrl.replace('/login', '/logout')}?service=${environment.frontendUrl}/login`;
@@ -81,9 +74,35 @@ export class DashboardComponent implements OnInit {
   proveedorees(): void {
     // optional: enforce permission before navigating
     if (this.isDisabled('acTer')) {
-      console.warn('Not allowed: acTer');
+      console.warn('Not allowed');
       return;
     }
     this.router.navigate(['/proveedorees']);
+  }
+
+  facturas(): void{
+    if (this.isDisabled('acFac')) {
+      console.warn('Not allowed');
+      return;
+    }
+    this.router.navigate(['/facturas']);
+  }
+
+  navigateTo(code: string): void {
+    if (this.isDisabled(code)) {
+      console.warn('Not allowed:', code);
+      return;
+    }
+
+    switch (code) {
+      case 'acTer':
+        this.router.navigate(['/proveedorees']);
+        break;
+      case 'acFac':
+        this.router.navigate(['/facturas']);
+        break;
+      default:
+        console.warn('No route configured for code:', code);
+    }
   }
 }
