@@ -161,4 +161,63 @@ export class FacturasComponent {
     doc.save('Facturas.pdf');
   }
 
+  DownloadCSV() {
+    interface Column { header: string; dataKey: string; }
+
+    const columns: Column[] = [
+      { header: 'Número Registro', dataKey: 'facnum' },
+      { header: 'Fecha contable', dataKey: 'facfco' },
+      { header: 'ADO', dataKey: 'facado' },
+      { header: 'R.C.F', dataKey: 'factdc' },
+      { header: 'Núm. Factura', dataKey: 'facdoc' },
+      { header: 'Proveedor', dataKey: 'tercod' },
+      { header: 'Fecha Factura', dataKey: 'facdat' },
+      { header: 'C.gestor', dataKey: 'cgecod' },
+      { header: 'F.Registro', dataKey: 'facfre' },
+      { header: 'Total Factura', dataKey: 'facimp' }
+    ];
+
+    const formatDate = (v: any) => {
+      if (v === null || v === undefined || v === '') return '';
+      const s = String(v);
+      const d = new Date(s);
+      if (!isNaN(d.getTime())) return d.toLocaleDateString();
+      return s;
+    };
+
+    const rows = (this.facturas || []).map((f: any) => ({
+      facnum: f.facnum ?? f.FACNUM ?? f.facfac ?? f.FACFAC ?? '',
+      facfco: formatDate(f.facfco ?? f.FACFCO ?? f.FACFCO),
+      facado: f.facado ?? f.FACADO ?? '',
+      factdc: f.factdc ?? f.FACTDC ?? '',
+      facdoc: f.facdoc ?? f.FACDOC ?? '',
+      tercod: f.tercod ?? f.TERCOD ?? '',
+      facdat: formatDate(f.facdat ?? f.FACDAT ?? f.FACDAT),
+      cgecod: f.cgecod ?? f.CGECOD ?? '',
+      facfre: formatDate(f.facfre ?? f.FACFRE ?? f.facfre),
+      facimp: (f.facimp ?? f.FACIMP ?? f.facimp ?? '').toString()
+    }));
+
+    const escapeCsv = (val: any) => {
+      if (val === null || val === undefined) return '';
+      let s = String(val);
+      s = s.replace(/"/g, '""');
+      if (/[,"\r\n]/.test(s)) s = `"${s}"`;
+      return s;
+    };
+
+    const header = columns.map(c => escapeCsv(c.header)).join(',');
+    const bodyLines = rows.map(r => columns.map(c => escapeCsv((r as any)[c.dataKey])).join(','));
+
+    const csvContent = '\uFEFF' + [header, ...bodyLines].join('\r\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'Facturas.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
 }
