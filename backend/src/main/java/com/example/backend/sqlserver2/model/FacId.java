@@ -6,11 +6,11 @@ import java.util.Objects;
 public class FacId implements Serializable{
     private Integer ENT;
     private String EJE;
-    private String FACNUM;
+    private Integer FACNUM;
 
     public FacId(){}
 
-    public FacId(Integer ENT, String EJE, String FACNUM){
+    public FacId(Integer ENT, String EJE, Integer FACNUM){
         this.ENT = ENT;
         this.EJE = EJE;
         this.FACNUM = FACNUM;
@@ -20,8 +20,8 @@ public class FacId implements Serializable{
     public void setENT(Integer ENT) { this.ENT = ENT; }
     public String getEJE() {return EJE;}
     public void setEJE(String EJE) {this.EJE = EJE;}
-    public String getFACNUM() { return FACNUM; }
-    public void setFACNUM(String FACNUM) { this.FACNUM = FACNUM; }
+    public Integer getFACNUM() { return FACNUM; }
+    public void setFACNUM(Integer FACNUM) { this.FACNUM = FACNUM; }
 
     @Override
     public boolean equals(Object o){

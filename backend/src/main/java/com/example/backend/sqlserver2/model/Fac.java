@@ -12,7 +12,7 @@ import jakarta.persistence.IdClass;
 
 @Entity
 @IdClass(FacId.class)
-@Table(name = "Fac", schema = "dbo")
+@Table(name = "FAC", schema = "dbo")
 public class Fac {
     @Id
     @Column(nullable = false)
@@ -24,7 +24,7 @@ public class Fac {
 
     @Id
     @Column(nullable = false)
-    private String FACNUM;
+    private Integer FACNUM;
 
     @Column(nullable = true)
     private Integer TERCOD;
@@ -101,8 +101,8 @@ public class Fac {
     public void setENT(Integer ENT) { this.ENT = ENT; }
     public String getEJE() { return EJE; }
     public void setEJE(String EJE){ this.EJE = EJE; }
-    public String getFACNUM() { return FACNUM; }
-    public void setFACNUM(String FACNUM) { this.FACNUM = FACNUM; }
+    public Integer getFACNUM() { return FACNUM; }
+    public void setFACNUM(Integer FACNUM) { this.FACNUM = FACNUM; }
     public Integer getTERCOD() { return TERCOD; }
     public void setTERCOD(Integer TERCOD) { this.TERCOD = TERCOD; }
     public String getCGECOD() { return CGECOD; }

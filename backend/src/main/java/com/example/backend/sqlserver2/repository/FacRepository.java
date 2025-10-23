@@ -10,5 +10,5 @@ import com.example.backend.sqlserver2.model.Fac;
 @Repository
 public interface FacRepository extends JpaRepository<Fac, Integer>{
     //for the main list
-    List<Fac> findByENTAndEJE(Integer ENT, Integer EJE);
+    List<Fac> findByENTAndEJE(Integer ENT, String EJE);
 }
