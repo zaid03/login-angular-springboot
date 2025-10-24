@@ -1,17 +1,36 @@
 package com.example.backend.sqlserver2.repository;
 
+import java.time.LocalDateTime;
+
 public interface FacWithTerProjection {
-    Integer getFacnum();
-    String  getFacdat();
-    String  getFacfco();
-    String  getFacdoc();
-    Integer getFacfac();
-    Integer getTercod();
-    String  getTernom();
-    String  getTernif(); 
-    String  getCgecod();
-    Double  getFacimp();
-    Double  getFaciec();
-    Double  getFacidi();
-    String  getFacfre();
+    Integer getENT();
+    String  getEJE();
+    Integer getFACNUM();
+    Integer getTERCOD();
+    String  getCGECOD();
+    String  getFACOBS();
+    Double  getFACIMP();
+    Double  getFACIEC();
+    Double  getFACIDI();
+    String  getFACTDC();
+    Integer getFACANN();
+    Integer getFACFAC();
+    String  getFACDOC();
+    LocalDateTime getFACDAT();
+    LocalDateTime getFACFCO();
+    String  getFACADO();
+    String  getFACTXT();
+    LocalDateTime getFACFRE();
+    String  getCONCTP();
+    String  getCONCPR();
+    String  getCONCCR();
+    Integer getFACOCT();
+    String  getFACFPG();
+    String  getFACOPG();
+    String  getFACTPG();
+    Double  getFACDTO();
+
+    // fields from TER
+    String  getTERNOM();
+    String  getTERNIF();
 }
