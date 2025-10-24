@@ -106,4 +106,419 @@ public class FacController {
         }
         return ResponseEntity.ok(result);
     }
+
+    // desde contabilizadas
+    @GetMapping("/facfre-desde-facado-notnull/{ent}/{eje}/{fromDate}")
+    public ResponseEntity<List<Map<String,Object>>> facfreDesdeFacadoNotNull(
+            @PathVariable int ent, @PathVariable String eje, @PathVariable String fromDate) {
+        List<Object[]> rows = facRepository.filterFacfreDesdeFacadoNotNull(ent, eje, fromDate);
+        List<Map<String,Object>> res = new ArrayList<>();
+        for (Object[] r: rows) res.add(rowToMap(r));
+        return ResponseEntity.ok(res);
+    }
+
+    // desde no contabilizadas
+    @GetMapping("/facfre-desde-facado-null/{ent}/{eje}/{fromDate}")
+    public ResponseEntity<List<Map<String,Object>>> facfreDesdeFacadoNull(
+            @PathVariable int ent, @PathVariable String eje, @PathVariable String fromDate) {
+        List<Object[]> rows = facRepository.filterFacfreDesdeFacadoNull(ent, eje, fromDate);
+        List<Map<String,Object>> res = new ArrayList<>();
+        for (Object[] r: rows) res.add(rowToMap(r));
+        return ResponseEntity.ok(res);
+    }
+
+    // desde aplicadas (FACIMP == FACIEC+FACIDI)
+    @GetMapping("/facfre-desde-facado-aplicadas/{ent}/{eje}/{fromDate}")
+    public ResponseEntity<List<Map<String,Object>>> facfreDesdeFacadoAplicadas(
+            @PathVariable int ent, @PathVariable String eje, @PathVariable String fromDate) {
+        List<Object[]> rows = facRepository.filterFacfreDesdeFacadoAndAplicadas(ent, eje, fromDate);
+        List<Map<String,Object>> res = new ArrayList<>();
+        for (Object[] r: rows) res.add(rowToMap(r));
+        return ResponseEntity.ok(res);
+    }
+
+    // desde sin aplicadas (FACIMP != FACIEC+FACIDI)
+    @GetMapping("/facfre-desde-facado-sinaplicadas/{ent}/{eje}/{fromDate}")
+    public ResponseEntity<List<Map<String,Object>>> facfreDesdeFacadoSinAplicadas(
+            @PathVariable int ent, @PathVariable String eje, @PathVariable String fromDate) {
+        List<Object[]> rows = facRepository.filterFacfreDesdeFacadoSinAplicadas(ent, eje, fromDate);
+        List<Map<String,Object>> res = new ArrayList<>();
+        for (Object[] r: rows) res.add(rowToMap(r));
+        return ResponseEntity.ok(res);
+    }
+
+    // hasta contabilizadas
+    @GetMapping("/facfre-hasta-facado-notnull/{ent}/{eje}/{toDate}")
+    public ResponseEntity<List<Map<String,Object>>> facfreHastaFacadoNotNull(
+            @PathVariable int ent, @PathVariable String eje, @PathVariable String toDate) {
+        List<Object[]> rows = facRepository.filterFacfreHastaFacadoNotNull(ent, eje, toDate);
+        List<Map<String,Object>> res = new ArrayList<>();
+        for (Object[] r: rows) res.add(rowToMap(r));
+        return ResponseEntity.ok(res);
+    }
+
+    // hasta no contabilizadas
+    @GetMapping("/facfre-hasta-facado-null/{ent}/{eje}/{toDate}")
+    public ResponseEntity<List<Map<String,Object>>> facfreHastaFacadoNull(
+            @PathVariable int ent, @PathVariable String eje, @PathVariable String toDate) {
+        List<Object[]> rows = facRepository.filterFacfreHastaFacadoNull(ent, eje, toDate);
+        List<Map<String,Object>> res = new ArrayList<>();
+        for (Object[] r: rows) res.add(rowToMap(r));
+        return ResponseEntity.ok(res);
+    }
+
+    // hasta aplicadas
+    @GetMapping("/facfre-hasta-facado-aplicadas/{ent}/{eje}/{toDate}")
+    public ResponseEntity<List<Map<String,Object>>> facfreHastaFacadoAplicadas(
+            @PathVariable int ent, @PathVariable String eje, @PathVariable String toDate) {
+        List<Object[]> rows = facRepository.filterFacfreHastaFacadoAndAplicadas(ent, eje, toDate);
+        List<Map<String,Object>> res = new ArrayList<>();
+        for (Object[] r: rows) res.add(rowToMap(r));
+        return ResponseEntity.ok(res);
+    }
+
+    // hasta sin aplicadas
+    @GetMapping("/facfre-hasta-facado-sinaplicadas/{ent}/{eje}/{toDate}")
+    public ResponseEntity<List<Map<String,Object>>> facfreHastaFacadoSinAplicadas(
+            @PathVariable int ent, @PathVariable String eje, @PathVariable String toDate) {
+        List<Object[]> rows = facRepository.filterFacfreHastaFacadoSinAplicadas(ent, eje, toDate);
+        List<Map<String,Object>> res = new ArrayList<>();
+        for (Object[] r: rows) res.add(rowToMap(r));
+        return ResponseEntity.ok(res);
+    }
+
+    // range (between) variants
+    @GetMapping("/facfre-range/{ent}/{eje}/{fromDate}/{toDate}")
+    public ResponseEntity<List<Map<String,Object>>> facfreRange(
+            @PathVariable int ent, @PathVariable String eje,
+            @PathVariable String fromDate, @PathVariable String toDate) {
+        List<Object[]> rows = facRepository.filterFacfreHastaDesde(ent, eje, fromDate, toDate);
+        List<Map<String,Object>> res = new ArrayList<>();
+        for (Object[] r: rows) res.add(rowToMap(r));
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/facfre-range-facado-notnull/{ent}/{eje}/{fromDate}/{toDate}")
+    public ResponseEntity<List<Map<String,Object>>> facfreRangeFacadoNotNull(
+            @PathVariable int ent, @PathVariable String eje,
+            @PathVariable String fromDate, @PathVariable String toDate) {
+        List<Object[]> rows = facRepository.filterFacfreDesdeHastaFacadoNotNull(ent, eje, fromDate, toDate);
+        List<Map<String,Object>> res = new ArrayList<>();
+        for (Object[] r: rows) res.add(rowToMap(r));
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/facfre-range-facado-null/{ent}/{eje}/{fromDate}/{toDate}")
+    public ResponseEntity<List<Map<String,Object>>> facfreRangeFacadoNull(
+            @PathVariable int ent, @PathVariable String eje,
+            @PathVariable String fromDate, @PathVariable String toDate) {
+        List<Object[]> rows = facRepository.filterFacfreDesdeHastaFacadoNull(ent, eje, fromDate, toDate);
+        List<Map<String,Object>> res = new ArrayList<>();
+        for (Object[] r: rows) res.add(rowToMap(r));
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/facfre-range-facado-aplicadas/{ent}/{eje}/{fromDate}/{toDate}")
+    public ResponseEntity<List<Map<String,Object>>> facfreRangeFacadoAplicadas(
+            @PathVariable int ent, @PathVariable String eje,
+            @PathVariable String fromDate, @PathVariable String toDate) {
+        List<Object[]> rows = facRepository.filterFacfreDesdeHastaFacadoAndAplicadas(ent, eje, fromDate, toDate);
+        List<Map<String,Object>> res = new ArrayList<>();
+        for (Object[] r: rows) res.add(rowToMap(r));
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/facfre-range-facado-sinaplicadas/{ent}/{eje}/{fromDate}/{toDate}")
+    public ResponseEntity<List<Map<String,Object>>> facfreRangeFacadoSinAplicadas(
+            @PathVariable int ent, @PathVariable String eje,
+            @PathVariable String fromDate, @PathVariable String toDate) {
+        List<Object[]> rows = facRepository.filterFacfreDesdeHastaFacadoSinAplicadas(ent, eje, fromDate, toDate);
+        List<Map<String,Object>> res = new ArrayList<>();
+        for (Object[] r: rows) res.add(rowToMap(r));
+        return ResponseEntity.ok(res);
+    }
+
+    // --- FACDAT controllers (same patterns) ---
+
+    @GetMapping("/facdat-desde/{ent}/{eje}/{fromDate}")
+    public ResponseEntity<List<Map<String,Object>>> facdatDesde(
+            @PathVariable int ent, @PathVariable String eje, @PathVariable String fromDate) {
+        List<Object[]> rows = facRepository.filterFacdatDesde(ent, eje, fromDate);
+        List<Map<String,Object>> res = new ArrayList<>();
+        for (Object[] r: rows) res.add(rowToMap(r));
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/facdat-desde-facado-notnull/{ent}/{eje}/{fromDate}")
+    public ResponseEntity<List<Map<String,Object>>> facdatDesdeFacadoNotNull(
+            @PathVariable int ent, @PathVariable String eje, @PathVariable String fromDate) {
+        List<Object[]> rows = facRepository.filterFacdatDesdeFacadoNotNull(ent, eje, fromDate);
+        List<Map<String,Object>> res = new ArrayList<>();
+        for (Object[] r: rows) res.add(rowToMap(r));
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/facdat-desde-facado-null/{ent}/{eje}/{fromDate}")
+    public ResponseEntity<List<Map<String,Object>>> facdatDesdeFacadoNull(
+            @PathVariable int ent, @PathVariable String eje, @PathVariable String fromDate) {
+        List<Object[]> rows = facRepository.filterFacdatDesdeFacadoNull(ent, eje, fromDate);
+        List<Map<String,Object>> res = new ArrayList<>();
+        for (Object[] r: rows) res.add(rowToMap(r));
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/facdat-desde-facado-aplicadas/{ent}/{eje}/{fromDate}")
+    public ResponseEntity<List<Map<String,Object>>> facdatDesdeFacadoAplicadas(
+            @PathVariable int ent, @PathVariable String eje, @PathVariable String fromDate) {
+        List<Object[]> rows = facRepository.filterFacdatDesdeFacadoAndAplicadas(ent, eje, fromDate);
+        List<Map<String,Object>> res = new ArrayList<>();
+        for (Object[] r: rows) res.add(rowToMap(r));
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/facdat-desde-facado-sinaplicadas/{ent}/{eje}/{fromDate}")
+    public ResponseEntity<List<Map<String,Object>>> facdatDesdeFacadoSinAplicadas(
+            @PathVariable int ent, @PathVariable String eje, @PathVariable String fromDate) {
+        List<Object[]> rows = facRepository.filterFacdatDesdeFacadoSinAplicadas(ent, eje, fromDate);
+        List<Map<String,Object>> res = new ArrayList<>();
+        for (Object[] r: rows) res.add(rowToMap(r));
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/facdat-hasta/{ent}/{eje}/{toDate}")
+    public ResponseEntity<List<Map<String,Object>>> facdatHasta(
+            @PathVariable int ent, @PathVariable String eje, @PathVariable String toDate) {
+        List<Object[]> rows = facRepository.filterFacdatHasta(ent, eje, toDate);
+        List<Map<String,Object>> res = new ArrayList<>();
+        for (Object[] r: rows) res.add(rowToMap(r));
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/facdat-hasta-facado-notnull/{ent}/{eje}/{toDate}")
+    public ResponseEntity<List<Map<String,Object>>> facdatHastaFacadoNotNull(
+            @PathVariable int ent, @PathVariable String eje, @PathVariable String toDate) {
+        List<Object[]> rows = facRepository.filterFacdatHastaFacadoNotNull(ent, eje, toDate);
+        List<Map<String,Object>> res = new ArrayList<>();
+        for (Object[] r: rows) res.add(rowToMap(r));
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/facdat-hasta-facado-null/{ent}/{eje}/{toDate}")
+    public ResponseEntity<List<Map<String,Object>>> facdatHastaFacadoNull(
+            @PathVariable int ent, @PathVariable String eje, @PathVariable String toDate) {
+        List<Object[]> rows = facRepository.filterFacdatHastaFacadoNull(ent, eje, toDate);
+        List<Map<String,Object>> res = new ArrayList<>();
+        for (Object[] r: rows) res.add(rowToMap(r));
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/facdat-hasta-facado-aplicadas/{ent}/{eje}/{toDate}")
+    public ResponseEntity<List<Map<String,Object>>> facdatHastaFacadoAplicadas(
+            @PathVariable int ent, @PathVariable String eje, @PathVariable String toDate) {
+        List<Object[]> rows = facRepository.filterFacdatHastaFacadoAndAplicadas(ent, eje, toDate);
+        List<Map<String,Object>> res = new ArrayList<>();
+        for (Object[] r: rows) res.add(rowToMap(r));
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/facdat-hasta-facado-sinaplicadas/{ent}/{eje}/{toDate}")
+    public ResponseEntity<List<Map<String,Object>>> facdatHastaFacadoSinAplicadas(
+            @PathVariable int ent, @PathVariable String eje, @PathVariable String toDate) {
+        List<Object[]> rows = facRepository.filterFacdatHastaFacadoSinAplicadas(ent, eje, toDate);
+        List<Map<String,Object>> res = new ArrayList<>();
+        for (Object[] r: rows) res.add(rowToMap(r));
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/facdat-range/{ent}/{eje}/{fromDate}/{toDate}")
+    public ResponseEntity<List<Map<String,Object>>> facdatRange(
+            @PathVariable int ent, @PathVariable String eje,
+            @PathVariable String fromDate, @PathVariable String toDate) {
+        List<Object[]> rows = facRepository.filterFacdatHastaDesde(ent, eje, fromDate, toDate);
+        List<Map<String,Object>> res = new ArrayList<>();
+        for (Object[] r: rows) res.add(rowToMap(r));
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/facdat-range-facado-notnull/{ent}/{eje}/{fromDate}/{toDate}")
+    public ResponseEntity<List<Map<String,Object>>> facdatRangeFacadoNotNull(
+            @PathVariable int ent, @PathVariable String eje,
+            @PathVariable String fromDate, @PathVariable String toDate) {
+        List<Object[]> rows = facRepository.filterFacdatDesdeHastaFacadoNotNull(ent, eje, fromDate, toDate);
+        List<Map<String,Object>> res = new ArrayList<>();
+        for (Object[] r: rows) res.add(rowToMap(r));
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/facdat-range-facado-null/{ent}/{eje}/{fromDate}/{toDate}")
+    public ResponseEntity<List<Map<String,Object>>> facdatRangeFacadoNull(
+            @PathVariable int ent, @PathVariable String eje,
+            @PathVariable String fromDate, @PathVariable String toDate) {
+        List<Object[]> rows = facRepository.filterFacdatDesdeHastaFacadoNull(ent, eje, fromDate, toDate);
+        List<Map<String,Object>> res = new ArrayList<>();
+        for (Object[] r: rows) res.add(rowToMap(r));
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/facdat-range-facado-aplicadas/{ent}/{eje}/{fromDate}/{toDate}")
+    public ResponseEntity<List<Map<String,Object>>> facdatRangeFacadoAplicadas(
+            @PathVariable int ent, @PathVariable String eje,
+            @PathVariable String fromDate, @PathVariable String toDate) {
+        List<Object[]> rows = facRepository.filterFacdatDesdeHastaFacadoAndAplicadas(ent, eje, fromDate, toDate);
+        List<Map<String,Object>> res = new ArrayList<>();
+        for (Object[] r: rows) res.add(rowToMap(r));
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/facdat-range-facado-sinaplicadas/{ent}/{eje}/{fromDate}/{toDate}")
+    public ResponseEntity<List<Map<String,Object>>> facdatRangeFacadoSinAplicadas(
+            @PathVariable int ent, @PathVariable String eje,
+            @PathVariable String fromDate, @PathVariable String toDate) {
+        List<Object[]> rows = facRepository.filterFacdatDesdeHastaFacadoSinAplicadas(ent, eje, fromDate, toDate);
+        List<Map<String,Object>> res = new ArrayList<>();
+        for (Object[] r: rows) res.add(rowToMap(r));
+        return ResponseEntity.ok(res);
+    }
+
+    // --- FACFCO controllers (same patterns) ---
+
+    @GetMapping("/facfco-desde/{ent}/{eje}/{fromDate}")
+    public ResponseEntity<List<Map<String,Object>>> facfcoDesde(
+            @PathVariable int ent, @PathVariable String eje, @PathVariable String fromDate) {
+        List<Object[]> rows = facRepository.filterFacfcoDesde(ent, eje, fromDate);
+        List<Map<String,Object>> res = new ArrayList<>();
+        for (Object[] r: rows) res.add(rowToMap(r));
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/facfco-desde-facado-notnull/{ent}/{eje}/{fromDate}")
+    public ResponseEntity<List<Map<String,Object>>> facfcoDesdeFacadoNotNull(
+            @PathVariable int ent, @PathVariable String eje, @PathVariable String fromDate) {
+        List<Object[]> rows = facRepository.filterFacfcoDesdeFacadoNotNull(ent, eje, fromDate);
+        List<Map<String,Object>> res = new ArrayList<>();
+        for (Object[] r: rows) res.add(rowToMap(r));
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/facfco-desde-facado-null/{ent}/{eje}/{fromDate}")
+    public ResponseEntity<List<Map<String,Object>>> facfcoDesdeFacadoNull(
+            @PathVariable int ent, @PathVariable String eje, @PathVariable String fromDate) {
+        List<Object[]> rows = facRepository.filterFacfcoDesdeFacadoNull(ent, eje, fromDate);
+        List<Map<String,Object>> res = new ArrayList<>();
+        for (Object[] r: rows) res.add(rowToMap(r));
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/facfco-desde-facado-aplicadas/{ent}/{eje}/{fromDate}")
+    public ResponseEntity<List<Map<String,Object>>> facfcoDesdeFacadoAplicadas(
+            @PathVariable int ent, @PathVariable String eje, @PathVariable String fromDate) {
+        List<Object[]> rows = facRepository.filterFacfcoDesdeFacadoAndAplicadas(ent, eje, fromDate);
+        List<Map<String,Object>> res = new ArrayList<>();
+        for (Object[] r: rows) res.add(rowToMap(r));
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/facfco-desde-facado-sinaplicadas/{ent}/{eje}/{fromDate}")
+    public ResponseEntity<List<Map<String,Object>>> facfcoDesdeFacadoSinAplicadas(
+            @PathVariable int ent, @PathVariable String eje, @PathVariable String fromDate) {
+        List<Object[]> rows = facRepository.filterFacfcoDesdeFacadoSinAplicadas(ent, eje, fromDate);
+        List<Map<String,Object>> res = new ArrayList<>();
+        for (Object[] r: rows) res.add(rowToMap(r));
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/facfco-hasta/{ent}/{eje}/{toDate}")
+    public ResponseEntity<List<Map<String,Object>>> facfcoHasta(
+            @PathVariable int ent, @PathVariable String eje, @PathVariable String toDate) {
+        List<Object[]> rows = facRepository.filterFacfcoHasta(ent, eje, toDate);
+        List<Map<String,Object>> res = new ArrayList<>();
+        for (Object[] r: rows) res.add(rowToMap(r));
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/facfco-hasta-facado-notnull/{ent}/{eje}/{toDate}")
+    public ResponseEntity<List<Map<String,Object>>> facfcoHastaFacadoNotNull(
+            @PathVariable int ent, @PathVariable String eje, @PathVariable String toDate) {
+        List<Object[]> rows = facRepository.filterFacfcoHastaFacadoNotNull(ent, eje, toDate);
+        List<Map<String,Object>> res = new ArrayList<>();
+        for (Object[] r: rows) res.add(rowToMap(r));
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/facfco-hasta-facado-null/{ent}/{eje}/{toDate}")
+    public ResponseEntity<List<Map<String,Object>>> facfcoHastaFacadoNull(
+            @PathVariable int ent, @PathVariable String eje, @PathVariable String toDate) {
+        List<Object[]> rows = facRepository.filterFacfcoHastaFacadoNull(ent, eje, toDate);
+        List<Map<String,Object>> res = new ArrayList<>();
+        for (Object[] r: rows) res.add(rowToMap(r));
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/facfco-hasta-facado-aplicadas/{ent}/{eje}/{toDate}")
+    public ResponseEntity<List<Map<String,Object>>> facfcoHastaFacadoAplicadas(
+            @PathVariable int ent, @PathVariable String eje, @PathVariable String toDate) {
+        List<Object[]> rows = facRepository.filterFacfcoHastaFacadoAndAplicadas(ent, eje, toDate);
+        List<Map<String,Object>> res = new ArrayList<>();
+        for (Object[] r: rows) res.add(rowToMap(r));
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/facfco-hasta-facado-sinaplicadas/{ent}/{eje}/{toDate}")
+    public ResponseEntity<List<Map<String,Object>>> facfcoHastaFacadoSinAplicadas(
+            @PathVariable int ent, @PathVariable String eje, @PathVariable String toDate) {
+        List<Object[]> rows = facRepository.filterFacfcoHastaFacadoSinAplicadas(ent, eje, toDate);
+        List<Map<String,Object>> res = new ArrayList<>();
+        for (Object[] r: rows) res.add(rowToMap(r));
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/facfco-range/{ent}/{eje}/{fromDate}/{toDate}")
+    public ResponseEntity<List<Map<String,Object>>> facfcoRange(
+            @PathVariable int ent, @PathVariable String eje,
+            @PathVariable String fromDate, @PathVariable String toDate) {
+        List<Object[]> rows = facRepository.filterFacfcoDesdeHasta(ent, eje, fromDate, toDate);
+        List<Map<String,Object>> res = new ArrayList<>();
+        for (Object[] r: rows) res.add(rowToMap(r));
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/facfco-range-facado-notnull/{ent}/{eje}/{fromDate}/{toDate}")
+    public ResponseEntity<List<Map<String,Object>>> facfcoRangeFacadoNotNull(
+            @PathVariable int ent, @PathVariable String eje,
+            @PathVariable String fromDate, @PathVariable String toDate) {
+        List<Object[]> rows = facRepository.filterFacfcoDesdeHastaFacadoNotNull(ent, eje, fromDate, toDate);
+        List<Map<String,Object>> res = new ArrayList<>();
+        for (Object[] r: rows) res.add(rowToMap(r));
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/facfco-range-facado-null/{ent}/{eje}/{fromDate}/{toDate}")
+    public ResponseEntity<List<Map<String,Object>>> facfcoRangeFacadoNull(
+            @PathVariable int ent, @PathVariable String eje,
+            @PathVariable String fromDate, @PathVariable String toDate) {
+        List<Object[]> rows = facRepository.filterFacfcoDesdeHastaFacadoNull(ent, eje, fromDate, toDate);
+        List<Map<String,Object>> res = new ArrayList<>();
+        for (Object[] r: rows) res.add(rowToMap(r));
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/facfco-range-facado-aplicadas/{ent}/{eje}/{fromDate}/{toDate}")
+    public ResponseEntity<List<Map<String,Object>>> facfcoRangeFacadoAplicadas(
+            @PathVariable int ent, @PathVariable String eje,
+            @PathVariable String fromDate, @PathVariable String toDate) {
+        List<Object[]> rows = facRepository.filterFacfcoDesdeHastaFacadoAndAplicadas(ent, eje, fromDate, toDate);
+        List<Map<String,Object>> res = new ArrayList<>();
+        for (Object[] r: rows) res.add(rowToMap(r));
+        return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/facfco-range-facado-sinaplicadas/{ent}/{eje}/{fromDate}/{toDate}")
+    public ResponseEntity<List<Map<String,Object>>> facfcoRangeFacadoSinAplicadas(
+            @PathVariable int ent, @PathVariable String eje,
+            @PathVariable String fromDate, @PathVariable String toDate) {
+        List<Object[]> rows = facRepository.filterFacfcoDesdeHastaFacadoSinAplicadas(ent, eje, fromDate, toDate);
+        List<Map<String,Object>> res = new ArrayList<>();
+        for (Object[] r: rows) res.add(rowToMap(r));
+        return ResponseEntity.ok(res);
+    }
 }

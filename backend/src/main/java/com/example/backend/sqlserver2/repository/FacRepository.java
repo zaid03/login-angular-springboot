@@ -93,7 +93,7 @@ public interface FacRepository extends JpaRepository<Fac, Integer>{
          AND f.TERCOD = t.TERCOD
         WHERE f.ENT = :ent
           AND f.EJE = :eje
-          AND CAST(f.FACFRE AS DATE) >= CAST(fromDate AS DATE)
+          AND CAST(f.FACFRE AS DATE) >= CAST(:fromDate AS DATE)
           AND FACADO is not null
         ORDER BY f.FACFRE ASC
         """, nativeQuery = true)
@@ -136,7 +136,7 @@ public interface FacRepository extends JpaRepository<Fac, Integer>{
          AND f.TERCOD = t.TERCOD
         WHERE f.ENT = :ent
           AND f.EJE = :eje
-          AND CAST(f.FACFRE AS DATE) >= CAST(fromDate AS DATE)
+          AND CAST(f.FACFRE AS DATE) >= CAST(:fromDate AS DATE)
           AND FACADO is null
         ORDER BY f.FACFRE ASC
         """, nativeQuery = true)
@@ -179,7 +179,7 @@ public interface FacRepository extends JpaRepository<Fac, Integer>{
          AND f.TERCOD = t.TERCOD
         WHERE f.ENT = :ent
           AND f.EJE = :eje
-          AND CAST(f.FACFRE AS DATE) >= CAST(fromDate AS DATE)
+          AND CAST(f.FACFRE AS DATE) >= CAST(:fromDate AS DATE)
           AND f.FACADO IS NULL
           AND ROUND(f.FACIMP, 2) = ROUND(COALESCE(f.FACIEC, 0) + COALESCE(f.FACIDI, 0), 2)
         ORDER BY f.FACFRE ASC
@@ -223,7 +223,7 @@ public interface FacRepository extends JpaRepository<Fac, Integer>{
          AND f.TERCOD = t.TERCOD
         WHERE f.ENT = :ent
           AND f.EJE = :eje
-          AND CAST(f.FACFRE AS DATE) >= CAST(fromDate AS DATE)
+          AND CAST(f.FACFRE AS DATE) >= CAST(:fromDate AS DATE)
           AND f.FACADO IS NULL
           AND ROUND(f.FACIMP, 2) <> ROUND(COALESCE(f.FACIEC, 0) + COALESCE(f.FACIDI, 0), 2)
         ORDER BY f.FACFRE ASC
@@ -270,7 +270,7 @@ public interface FacRepository extends JpaRepository<Fac, Integer>{
           AND CAST(f.FACFRE AS DATE) <= CAST(:toDate AS DATE)
         ORDER BY f.FACFRE ASC
         """, nativeQuery = true)
-    List<Object[]> filterFacfreHasta(@Param("ent") int ent, @Param("eje") String eje, @Param("toDate") String fromDate);
+    List<Object[]> filterFacfreHasta(@Param("ent") int ent, @Param("eje") String eje, @Param("toDate") String toDate);
 
     //Filter by facfre hasta and contabilizadas
     @Query(value = """
@@ -709,8 +709,39 @@ public interface FacRepository extends JpaRepository<Fac, Integer>{
 
     // desde contabilizadas (FACADO NOT NULL)
     @Query(value = """
-        SELECT /* same select list */
-        ...
+        SELECT
+        f.ENT    AS ENT,
+          f.EJE    AS EJE,
+          f.FACNUM AS FACNUM,
+          f.TERCOD AS TERCOD,
+          f.CGECOD AS CGECOD,
+          f.FACOBS AS FACOBS,
+          f.FACIMP AS FACIMP,
+          f.FACIEC AS FACIEC,
+          f.FACIDI AS FACIDI,
+          f.FACTDC AS FACTDC,
+          f.FACANN AS FACANN,
+          f.FACFAC AS FACFAC,
+          f.FACDOC AS FACDOC,
+          f.FACDAT AS FACDAT,
+          f.FACFCO AS FACFCO,
+          f.FACADO AS FACADO,
+          f.FACTXT AS FACTXT,
+          f.FACFRE AS FACFRE,
+          f.CONCTP AS CONCTP,
+          f.CONCPR AS CONCPR,
+          f.CONCCR AS CONCCR,
+          f.FACOCT AS FACOCT,
+          f.FACFPG AS FACFPG,
+          f.FACOPG AS FACOPG,
+          f.FACTPG AS FACTPG,
+          f.FACDTO AS FACDTO,
+          t.TERNOM AS TERNOM,
+          t.TERNIF AS TERNIF
+        FROM FAC f
+        INNER JOIN TER t
+            ON f.ENT = t.ENT
+            AND f.TERCOD = t.TERCOD
         WHERE f.ENT = :ent
           AND f.EJE = :eje
           AND CAST(f.FACDAT AS DATE) >= CAST(:fromDate AS DATE)
@@ -721,8 +752,38 @@ public interface FacRepository extends JpaRepository<Fac, Integer>{
 
     // desde no contabilizadas (FACADO IS NULL)
     @Query(value = """
-        SELECT /* same select list */
-        ...
+        SELECT f.ENT    AS ENT,
+          f.EJE    AS EJE,
+          f.FACNUM AS FACNUM,
+          f.TERCOD AS TERCOD,
+          f.CGECOD AS CGECOD,
+          f.FACOBS AS FACOBS,
+          f.FACIMP AS FACIMP,
+          f.FACIEC AS FACIEC,
+          f.FACIDI AS FACIDI,
+          f.FACTDC AS FACTDC,
+          f.FACANN AS FACANN,
+          f.FACFAC AS FACFAC,
+          f.FACDOC AS FACDOC,
+          f.FACDAT AS FACDAT,
+          f.FACFCO AS FACFCO,
+          f.FACADO AS FACADO,
+          f.FACTXT AS FACTXT,
+          f.FACFRE AS FACFRE,
+          f.CONCTP AS CONCTP,
+          f.CONCPR AS CONCPR,
+          f.CONCCR AS CONCCR,
+          f.FACOCT AS FACOCT,
+          f.FACFPG AS FACFPG,
+          f.FACOPG AS FACOPG,
+          f.FACTPG AS FACTPG,
+          f.FACDTO AS FACDTO,
+          t.TERNOM AS TERNOM,
+          t.TERNIF AS TERNIF
+        FROM FAC f
+        INNER JOIN TER t
+            ON f.ENT = t.ENT
+            AND f.TERCOD = t.TERCOD
         WHERE f.ENT = :ent
           AND f.EJE = :eje
           AND CAST(f.FACDAT AS DATE) >= CAST(:fromDate AS DATE)
@@ -733,8 +794,38 @@ public interface FacRepository extends JpaRepository<Fac, Integer>{
 
     // desde no contabilizadas + aplicadas (FACIMP == FACIEC+FACIDI rounded)
     @Query(value = """
-        SELECT /* same select list */
-        ...
+        SELECT f.ENT    AS ENT,
+          f.EJE    AS EJE,
+          f.FACNUM AS FACNUM,
+          f.TERCOD AS TERCOD,
+          f.CGECOD AS CGECOD,
+          f.FACOBS AS FACOBS,
+          f.FACIMP AS FACIMP,
+          f.FACIEC AS FACIEC,
+          f.FACIDI AS FACIDI,
+          f.FACTDC AS FACTDC,
+          f.FACANN AS FACANN,
+          f.FACFAC AS FACFAC,
+          f.FACDOC AS FACDOC,
+          f.FACDAT AS FACDAT,
+          f.FACFCO AS FACFCO,
+          f.FACADO AS FACADO,
+          f.FACTXT AS FACTXT,
+          f.FACFRE AS FACFRE,
+          f.CONCTP AS CONCTP,
+          f.CONCPR AS CONCPR,
+          f.CONCCR AS CONCCR,
+          f.FACOCT AS FACOCT,
+          f.FACFPG AS FACFPG,
+          f.FACOPG AS FACOPG,
+          f.FACTPG AS FACTPG,
+          f.FACDTO AS FACDTO,
+          t.TERNOM AS TERNOM,
+          t.TERNIF AS TERNIF
+        FROM FAC f
+        INNER JOIN TER t
+            ON f.ENT = t.ENT
+            AND f.TERCOD = t.TERCOD
         WHERE f.ENT = :ent
           AND f.EJE = :eje
           AND CAST(f.FACDAT AS DATE) >= CAST(:fromDate AS DATE)
@@ -746,8 +837,38 @@ public interface FacRepository extends JpaRepository<Fac, Integer>{
 
     // desde no contabilizadas + sin aplicadas (FACIMP != FACIEC+FACIDI rounded)
     @Query(value = """
-        SELECT /* same select list */
-        ...
+        SELECT f.ENT    AS ENT,
+          f.EJE    AS EJE,
+          f.FACNUM AS FACNUM,
+          f.TERCOD AS TERCOD,
+          f.CGECOD AS CGECOD,
+          f.FACOBS AS FACOBS,
+          f.FACIMP AS FACIMP,
+          f.FACIEC AS FACIEC,
+          f.FACIDI AS FACIDI,
+          f.FACTDC AS FACTDC,
+          f.FACANN AS FACANN,
+          f.FACFAC AS FACFAC,
+          f.FACDOC AS FACDOC,
+          f.FACDAT AS FACDAT,
+          f.FACFCO AS FACFCO,
+          f.FACADO AS FACADO,
+          f.FACTXT AS FACTXT,
+          f.FACFRE AS FACFRE,
+          f.CONCTP AS CONCTP,
+          f.CONCPR AS CONCPR,
+          f.CONCCR AS CONCCR,
+          f.FACOCT AS FACOCT,
+          f.FACFPG AS FACFPG,
+          f.FACOPG AS FACOPG,
+          f.FACTPG AS FACTPG,
+          f.FACDTO AS FACDTO,
+          t.TERNOM AS TERNOM,
+          t.TERNIF AS TERNIF
+        FROM FAC f
+        INNER JOIN TER t
+            ON f.ENT = t.ENT
+            AND f.TERCOD = t.TERCOD
         WHERE f.ENT = :ent
           AND f.EJE = :eje
           AND CAST(f.FACDAT AS DATE) >= CAST(:fromDate AS DATE)
@@ -759,8 +880,38 @@ public interface FacRepository extends JpaRepository<Fac, Integer>{
 
     // hasta (<= toDate)
     @Query(value = """
-        SELECT /* same select list */
-        ...
+        SELECT f.ENT    AS ENT,
+          f.EJE    AS EJE,
+          f.FACNUM AS FACNUM,
+          f.TERCOD AS TERCOD,
+          f.CGECOD AS CGECOD,
+          f.FACOBS AS FACOBS,
+          f.FACIMP AS FACIMP,
+          f.FACIEC AS FACIEC,
+          f.FACIDI AS FACIDI,
+          f.FACTDC AS FACTDC,
+          f.FACANN AS FACANN,
+          f.FACFAC AS FACFAC,
+          f.FACDOC AS FACDOC,
+          f.FACDAT AS FACDAT,
+          f.FACFCO AS FACFCO,
+          f.FACADO AS FACADO,
+          f.FACTXT AS FACTXT,
+          f.FACFRE AS FACFRE,
+          f.CONCTP AS CONCTP,
+          f.CONCPR AS CONCPR,
+          f.CONCCR AS CONCCR,
+          f.FACOCT AS FACOCT,
+          f.FACFPG AS FACFPG,
+          f.FACOPG AS FACOPG,
+          f.FACTPG AS FACTPG,
+          f.FACDTO AS FACDTO,
+          t.TERNOM AS TERNOM,
+          t.TERNIF AS TERNIF
+        FROM FAC f
+        INNER JOIN TER t
+            ON f.ENT = t.ENT
+            AND f.TERCOD = t.TERCOD
         WHERE f.ENT = :ent
           AND f.EJE = :eje
           AND CAST(f.FACDAT AS DATE) <= CAST(:toDate AS DATE)
@@ -770,8 +921,38 @@ public interface FacRepository extends JpaRepository<Fac, Integer>{
 
     // hasta contabilizadas
     @Query(value = """
-        SELECT /* same select list */
-        ...
+        SELECT f.ENT    AS ENT,
+          f.EJE    AS EJE,
+          f.FACNUM AS FACNUM,
+          f.TERCOD AS TERCOD,
+          f.CGECOD AS CGECOD,
+          f.FACOBS AS FACOBS,
+          f.FACIMP AS FACIMP,
+          f.FACIEC AS FACIEC,
+          f.FACIDI AS FACIDI,
+          f.FACTDC AS FACTDC,
+          f.FACANN AS FACANN,
+          f.FACFAC AS FACFAC,
+          f.FACDOC AS FACDOC,
+          f.FACDAT AS FACDAT,
+          f.FACFCO AS FACFCO,
+          f.FACADO AS FACADO,
+          f.FACTXT AS FACTXT,
+          f.FACFRE AS FACFRE,
+          f.CONCTP AS CONCTP,
+          f.CONCPR AS CONCPR,
+          f.CONCCR AS CONCCR,
+          f.FACOCT AS FACOCT,
+          f.FACFPG AS FACFPG,
+          f.FACOPG AS FACOPG,
+          f.FACTPG AS FACTPG,
+          f.FACDTO AS FACDTO,
+          t.TERNOM AS TERNOM,
+          t.TERNIF AS TERNIF
+        FROM FAC f
+        INNER JOIN TER t
+            ON f.ENT = t.ENT
+            AND f.TERCOD = t.TERCOD
         WHERE f.ENT = :ent
           AND f.EJE = :eje
           AND CAST(f.FACDAT AS DATE) <= CAST(:toDate AS DATE)
@@ -782,8 +963,38 @@ public interface FacRepository extends JpaRepository<Fac, Integer>{
 
     // hasta no contabilizadas
     @Query(value = """
-        SELECT /* same select list */
-        ...
+        SELECT f.ENT    AS ENT,
+          f.EJE    AS EJE,
+          f.FACNUM AS FACNUM,
+          f.TERCOD AS TERCOD,
+          f.CGECOD AS CGECOD,
+          f.FACOBS AS FACOBS,
+          f.FACIMP AS FACIMP,
+          f.FACIEC AS FACIEC,
+          f.FACIDI AS FACIDI,
+          f.FACTDC AS FACTDC,
+          f.FACANN AS FACANN,
+          f.FACFAC AS FACFAC,
+          f.FACDOC AS FACDOC,
+          f.FACDAT AS FACDAT,
+          f.FACFCO AS FACFCO,
+          f.FACADO AS FACADO,
+          f.FACTXT AS FACTXT,
+          f.FACFRE AS FACFRE,
+          f.CONCTP AS CONCTP,
+          f.CONCPR AS CONCPR,
+          f.CONCCR AS CONCCR,
+          f.FACOCT AS FACOCT,
+          f.FACFPG AS FACFPG,
+          f.FACOPG AS FACOPG,
+          f.FACTPG AS FACTPG,
+          f.FACDTO AS FACDTO,
+          t.TERNOM AS TERNOM,
+          t.TERNIF AS TERNIF
+        FROM FAC f
+        INNER JOIN TER t
+            ON f.ENT = t.ENT
+            AND f.TERCOD = t.TERCOD
         WHERE f.ENT = :ent
           AND f.EJE = :eje
           AND CAST(f.FACDAT AS DATE) <= CAST(:toDate AS DATE)
@@ -794,8 +1005,38 @@ public interface FacRepository extends JpaRepository<Fac, Integer>{
 
     // hasta no contabilizadas + aplicadas
     @Query(value = """
-        SELECT /* same select list */
-        ...
+        SELECT f.ENT    AS ENT,
+          f.EJE    AS EJE,
+          f.FACNUM AS FACNUM,
+          f.TERCOD AS TERCOD,
+          f.CGECOD AS CGECOD,
+          f.FACOBS AS FACOBS,
+          f.FACIMP AS FACIMP,
+          f.FACIEC AS FACIEC,
+          f.FACIDI AS FACIDI,
+          f.FACTDC AS FACTDC,
+          f.FACANN AS FACANN,
+          f.FACFAC AS FACFAC,
+          f.FACDOC AS FACDOC,
+          f.FACDAT AS FACDAT,
+          f.FACFCO AS FACFCO,
+          f.FACADO AS FACADO,
+          f.FACTXT AS FACTXT,
+          f.FACFRE AS FACFRE,
+          f.CONCTP AS CONCTP,
+          f.CONCPR AS CONCPR,
+          f.CONCCR AS CONCCR,
+          f.FACOCT AS FACOCT,
+          f.FACFPG AS FACFPG,
+          f.FACOPG AS FACOPG,
+          f.FACTPG AS FACTPG,
+          f.FACDTO AS FACDTO,
+          t.TERNOM AS TERNOM,
+          t.TERNIF AS TERNIF
+        FROM FAC f
+        INNER JOIN TER t
+            ON f.ENT = t.ENT
+            AND f.TERCOD = t.TERCOD
         WHERE f.ENT = :ent
           AND f.EJE = :eje
           AND CAST(f.FACDAT AS DATE) <= CAST(:toDate AS DATE)
@@ -807,8 +1048,38 @@ public interface FacRepository extends JpaRepository<Fac, Integer>{
 
     // hasta no contabilizadas + sin aplicadas
     @Query(value = """
-        SELECT /* same select list */
-        ...
+        SELECT f.ENT    AS ENT,
+          f.EJE    AS EJE,
+          f.FACNUM AS FACNUM,
+          f.TERCOD AS TERCOD,
+          f.CGECOD AS CGECOD,
+          f.FACOBS AS FACOBS,
+          f.FACIMP AS FACIMP,
+          f.FACIEC AS FACIEC,
+          f.FACIDI AS FACIDI,
+          f.FACTDC AS FACTDC,
+          f.FACANN AS FACANN,
+          f.FACFAC AS FACFAC,
+          f.FACDOC AS FACDOC,
+          f.FACDAT AS FACDAT,
+          f.FACFCO AS FACFCO,
+          f.FACADO AS FACADO,
+          f.FACTXT AS FACTXT,
+          f.FACFRE AS FACFRE,
+          f.CONCTP AS CONCTP,
+          f.CONCPR AS CONCPR,
+          f.CONCCR AS CONCCR,
+          f.FACOCT AS FACOCT,
+          f.FACFPG AS FACFPG,
+          f.FACOPG AS FACOPG,
+          f.FACTPG AS FACTPG,
+          f.FACDTO AS FACDTO,
+          t.TERNOM AS TERNOM,
+          t.TERNIF AS TERNIF
+        FROM FAC f
+        INNER JOIN TER t
+            ON f.ENT = t.ENT
+            AND f.TERCOD = t.TERCOD
         WHERE f.ENT = :ent
           AND f.EJE = :eje
           AND CAST(f.FACDAT AS DATE) <= CAST(:toDate AS DATE)
@@ -820,8 +1091,38 @@ public interface FacRepository extends JpaRepository<Fac, Integer>{
 
     // between (FACDAT BETWEEN fromDate AND toDate)
     @Query(value = """
-        SELECT /* same select list */
-        ...
+        SELECT f.ENT    AS ENT,
+          f.EJE    AS EJE,
+          f.FACNUM AS FACNUM,
+          f.TERCOD AS TERCOD,
+          f.CGECOD AS CGECOD,
+          f.FACOBS AS FACOBS,
+          f.FACIMP AS FACIMP,
+          f.FACIEC AS FACIEC,
+          f.FACIDI AS FACIDI,
+          f.FACTDC AS FACTDC,
+          f.FACANN AS FACANN,
+          f.FACFAC AS FACFAC,
+          f.FACDOC AS FACDOC,
+          f.FACDAT AS FACDAT,
+          f.FACFCO AS FACFCO,
+          f.FACADO AS FACADO,
+          f.FACTXT AS FACTXT,
+          f.FACFRE AS FACFRE,
+          f.CONCTP AS CONCTP,
+          f.CONCPR AS CONCPR,
+          f.CONCCR AS CONCCR,
+          f.FACOCT AS FACOCT,
+          f.FACFPG AS FACFPG,
+          f.FACOPG AS FACOPG,
+          f.FACTPG AS FACTPG,
+          f.FACDTO AS FACDTO,
+          t.TERNOM AS TERNOM,
+          t.TERNIF AS TERNIF
+        FROM FAC f
+        INNER JOIN TER t
+            ON f.ENT = t.ENT
+            AND f.TERCOD = t.TERCOD
         WHERE f.ENT = :ent
           AND f.EJE = :eje
           AND CAST(f.FACDAT AS DATE) BETWEEN CAST(:fromDate AS DATE) AND CAST(:toDate AS DATE)
@@ -831,8 +1132,38 @@ public interface FacRepository extends JpaRepository<Fac, Integer>{
 
     // between + facado not null
     @Query(value = """
-        SELECT /* same select list */
-        ...
+        SELECT f.ENT    AS ENT,
+          f.EJE    AS EJE,
+          f.FACNUM AS FACNUM,
+          f.TERCOD AS TERCOD,
+          f.CGECOD AS CGECOD,
+          f.FACOBS AS FACOBS,
+          f.FACIMP AS FACIMP,
+          f.FACIEC AS FACIEC,
+          f.FACIDI AS FACIDI,
+          f.FACTDC AS FACTDC,
+          f.FACANN AS FACANN,
+          f.FACFAC AS FACFAC,
+          f.FACDOC AS FACDOC,
+          f.FACDAT AS FACDAT,
+          f.FACFCO AS FACFCO,
+          f.FACADO AS FACADO,
+          f.FACTXT AS FACTXT,
+          f.FACFRE AS FACFRE,
+          f.CONCTP AS CONCTP,
+          f.CONCPR AS CONCPR,
+          f.CONCCR AS CONCCR,
+          f.FACOCT AS FACOCT,
+          f.FACFPG AS FACFPG,
+          f.FACOPG AS FACOPG,
+          f.FACTPG AS FACTPG,
+          f.FACDTO AS FACDTO,
+          t.TERNOM AS TERNOM,
+          t.TERNIF AS TERNIF
+        FROM FAC f
+        INNER JOIN TER t
+            ON f.ENT = t.ENT
+            AND f.TERCOD = t.TERCOD
         WHERE f.ENT = :ent
           AND f.EJE = :eje
           AND CAST(f.FACDAT AS DATE) BETWEEN CAST(:fromDate AS DATE) AND CAST(:toDate AS DATE)
@@ -843,8 +1174,38 @@ public interface FacRepository extends JpaRepository<Fac, Integer>{
 
     // between + facado null
     @Query(value = """
-        SELECT /* same select list */
-        ...
+        SELECTf.ENT    AS ENT,
+          f.EJE    AS EJE,
+          f.FACNUM AS FACNUM,
+          f.TERCOD AS TERCOD,
+          f.CGECOD AS CGECOD,
+          f.FACOBS AS FACOBS,
+          f.FACIMP AS FACIMP,
+          f.FACIEC AS FACIEC,
+          f.FACIDI AS FACIDI,
+          f.FACTDC AS FACTDC,
+          f.FACANN AS FACANN,
+          f.FACFAC AS FACFAC,
+          f.FACDOC AS FACDOC,
+          f.FACDAT AS FACDAT,
+          f.FACFCO AS FACFCO,
+          f.FACADO AS FACADO,
+          f.FACTXT AS FACTXT,
+          f.FACFRE AS FACFRE,
+          f.CONCTP AS CONCTP,
+          f.CONCPR AS CONCPR,
+          f.CONCCR AS CONCCR,
+          f.FACOCT AS FACOCT,
+          f.FACFPG AS FACFPG,
+          f.FACOPG AS FACOPG,
+          f.FACTPG AS FACTPG,
+          f.FACDTO AS FACDTO,
+          t.TERNOM AS TERNOM,
+          t.TERNIF AS TERNIF
+        FROM FAC f
+        INNER JOIN TER t
+            ON f.ENT = t.ENT
+            AND f.TERCOD = t.TERCOD
         WHERE f.ENT = :ent
           AND f.EJE = :eje
           AND CAST(f.FACDAT AS DATE) BETWEEN CAST(:fromDate AS DATE) AND CAST(:toDate AS DATE)
@@ -855,8 +1216,39 @@ public interface FacRepository extends JpaRepository<Fac, Integer>{
 
     // between + facado null + aplicadas
     @Query(value = """
-        SELECT /* same select list */
-        ...
+        SELECT
+            f.ENT    AS ENT,
+          f.EJE    AS EJE,
+          f.FACNUM AS FACNUM,
+          f.TERCOD AS TERCOD,
+          f.CGECOD AS CGECOD,
+          f.FACOBS AS FACOBS,
+          f.FACIMP AS FACIMP,
+          f.FACIEC AS FACIEC,
+          f.FACIDI AS FACIDI,
+          f.FACTDC AS FACTDC,
+          f.FACANN AS FACANN,
+          f.FACFAC AS FACFAC,
+          f.FACDOC AS FACDOC,
+          f.FACDAT AS FACDAT,
+          f.FACFCO AS FACFCO,
+          f.FACADO AS FACADO,
+          f.FACTXT AS FACTXT,
+          f.FACFRE AS FACFRE,
+          f.CONCTP AS CONCTP,
+          f.CONCPR AS CONCPR,
+          f.CONCCR AS CONCCR,
+          f.FACOCT AS FACOCT,
+          f.FACFPG AS FACFPG,
+          f.FACOPG AS FACOPG,
+          f.FACTPG AS FACTPG,
+          f.FACDTO AS FACDTO,
+          t.TERNOM AS TERNOM,
+          t.TERNIF AS TERNIF
+        FROM FAC f
+        INNER JOIN TER t
+            ON f.ENT = t.ENT
+            AND f.TERCOD = t.TERCOD
         WHERE f.ENT = :ent
           AND f.EJE = :eje
           AND CAST(f.FACDAT AS DATE) BETWEEN CAST(:fromDate AS DATE) AND CAST(:toDate AS DATE)
@@ -868,8 +1260,38 @@ public interface FacRepository extends JpaRepository<Fac, Integer>{
 
     // between + facado null + sin aplicadas
     @Query(value = """
-        SELECT /* same select list */
-        ...
+        SELECT f.ENT    AS ENT,
+          f.EJE    AS EJE,
+          f.FACNUM AS FACNUM,
+          f.TERCOD AS TERCOD,
+          f.CGECOD AS CGECOD,
+          f.FACOBS AS FACOBS,
+          f.FACIMP AS FACIMP,
+          f.FACIEC AS FACIEC,
+          f.FACIDI AS FACIDI,
+          f.FACTDC AS FACTDC,
+          f.FACANN AS FACANN,
+          f.FACFAC AS FACFAC,
+          f.FACDOC AS FACDOC,
+          f.FACDAT AS FACDAT,
+          f.FACFCO AS FACFCO,
+          f.FACADO AS FACADO,
+          f.FACTXT AS FACTXT,
+          f.FACFRE AS FACFRE,
+          f.CONCTP AS CONCTP,
+          f.CONCPR AS CONCPR,
+          f.CONCCR AS CONCCR,
+          f.FACOCT AS FACOCT,
+          f.FACFPG AS FACFPG,
+          f.FACOPG AS FACOPG,
+          f.FACTPG AS FACTPG,
+          f.FACDTO AS FACDTO,
+          t.TERNOM AS TERNOM,
+          t.TERNIF AS TERNIF
+        FROM FAC f
+        INNER JOIN TER t
+            ON f.ENT = t.ENT
+            AND f.TERCOD = t.TERCOD
         WHERE f.ENT = :ent
           AND f.EJE = :eje
           AND CAST(f.FACDAT AS DATE) BETWEEN CAST(:fromDate AS DATE) AND CAST(:toDate AS DATE)
@@ -879,9 +1301,8 @@ public interface FacRepository extends JpaRepository<Fac, Integer>{
         """, nativeQuery = true)
     List<Object[]> filterFacdatDesdeHastaFacadoSinAplicadas(@Param("ent") int ent, @Param("eje") String eje, @Param("fromDate") String fromDate, @Param("toDate") String toDate);
 
-    // --- end FACDAT variants ---
 
-        // --- FACFCO variants (same select list, filter/order by FACFCO) ---
+        // --- FACFCO variants ---
 
     // Filter by facfco desde (>= fromDate)
     @Query(value = """
@@ -916,8 +1337,8 @@ public interface FacRepository extends JpaRepository<Fac, Integer>{
           t.TERNIF AS TERNIF
         FROM FAC f
         INNER JOIN TER t
-          ON f.ENT = t.ENT
-         AND f.TERCOD = t.TERCOD
+            ON f.ENT = t.ENT
+            AND f.TERCOD = t.TERCOD
         WHERE f.ENT = :ent
           AND f.EJE = :eje
           AND CAST(f.FACFCO AS DATE) >= CAST(:fromDate AS DATE)
@@ -1533,3 +1954,4 @@ public interface FacRepository extends JpaRepository<Fac, Integer>{
 
     // --- end FACFCO variants ---
 }
+
