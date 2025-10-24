@@ -163,6 +163,11 @@ input.fecha-dato[type="radio"] {
     box-shadow: 0 0 0 4px rgba(9,79,163,0.06);
 }
 
+.more-search-options .btns{
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
 .estado{
     width: 100%;
     flex-wrap: wrap;
