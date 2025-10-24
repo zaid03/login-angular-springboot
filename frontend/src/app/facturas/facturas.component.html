@@ -8,15 +8,40 @@
     <app-sidebar #sidebar></app-sidebar>
     <div class="facturas-container" [class.blurred]="!sidebar.collapsed">
         <h2>Lista de Facturas</h2> 
-        <div class="facturas-search">
+        <div class="facturas-search">   
             <form class="search-form">
                 <input type="text" class="search-bar" placeholder="Buscar factura" name="search">
-                <div class="seach-options">
-                    <input type="radio" name="optiones" value="Registro" /> Registro
+                <div class="search-options">
+                    <label for="registro" class="ej-factura">Ej Factura</label>
+                    <input type="text" name="factura" class="option-search" placeholder="Ingrese EJE"/>
+                    <label for="registro">C.Gestor</label>
+                    <input type="text" name="Gestor" class="option-search" placeholder="Ingrese Centro Gestor"/>
                 </div>
-                <button type="button" class="search-button">Buscar</button>
-                <button type="button" class="search-button">Volver</button>
+                <div class="btns">
+                    <button type="button" class="search-button">Buscar</button>
+                    <button type="button" class="search-button">Volver</button>
+                </div>
             </form>
+            <div class="more-search-options">
+                <div class="fecha">
+                    <p>Fecha</p>
+                    <input type="radio" name="fecha-option" class="fecha-dato" > Registro
+                    <input type="radio" name="fecha-option" class="fecha-dato" > Factura
+                    <input type="radio" name="fecha-option" class="fecha-dato" > Contable
+                    <div class="fecha-dates">
+                        <input type="date" name="desde" class="fecha-dato" > Desde
+                        <input type="date" name="hasta" class="fecha-dato" > Hasta
+                    </div>
+                </div>
+                <div class="estado">
+                    <p>Estado</p>
+                    <input type="radio" name="contabilizadas" class="fecha-dato" > Contabilizadas
+                    <input type="radio" name="no-contabilizadas" class="fecha-dato" > No Contabilizadas
+                    <input type="radio" name="aplicadas" class="fecha-dato" > Ptes. Aplicadas
+                    <input type="radio" name="sin-aplicadas" class="fecha-dato" > Ptes. Sin aplicar
+                    <input type="radio" name="todas" class="fecha-dato" > Todas
+                </div>
+            </div>
         </div>
 
         <div class="facturas-download">

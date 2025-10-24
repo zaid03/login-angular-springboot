@@ -44,40 +44,57 @@ app-sidebar {
 }
 
 .facturas-search {
+    margin-top: 2%;
     display: flex;
+    width: 100%;
+    justify-content: center;
     align-items: center;
-    gap: 16px;
     margin-bottom: 24px;
     background: transparent;
 }
 
 .search-form {
+    width: 55%;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 20px;
 }
 
-.search-bar {
+.search-bar{
+    width: 290px;
+}
+
+.option-search{
+    width: 170px;
+}
+
+.search-bar, .option-search {
     padding: 10px 14px;
     border-radius: 20px;
     border: 1px solid #bbb;
     font-size: 16px;
-    width: 260px;
     background: #f7f7f7;
     transition: border-color 0.2s;
     font-family: inherit;
     height: 20px;
 }
 
-.search-bar:focus {
+.search-bar:focus, .option-search:focus {
     border-color: #094fa3;
     outline: none;
     background: #fff;
 }
 
 .search-options {
+    margin: 10px;
     display: flex;
+    gap: 10px;
     align-items: center;
+}
+
+.btns{
+    display: flex;
+    gap: 10px;
 }
 
 .search-button {
@@ -93,6 +110,62 @@ app-sidebar {
 
 .search-button:hover{
     background-color: #0b4f8a;
+}
+
+.more-search-options{
+    width: 45%;
+}
+
+.fecha{
+    flex-direction: column;
+}
+
+.fecha p, .estado p{
+    font-family: "Raleway", "Helvetica", "Tahoma", "Geneva", "Arial", sans-serif !important;
+    text-align: center;
+    padding: 10px;
+}
+
+input.fecha-dato[type="radio"] {
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+  vertical-align: middle;
+  accent-color: #094fa3;
+  -webkit-appearance: radio;
+  appearance: radio;
+}
+
+.more-search-options .fecha-dates {
+    margin: 10px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    font-size: 0.95rem;
+    color: #222;
+}
+
+.more-search-options .fecha-dates input.fecha-dato[type="date"] {
+    padding: 2px 2px;
+    height: 36px;
+    border-radius: 6px;
+    border: 1px solid #d0d0d0;
+    background: #fff;
+    color: #222;
+    font-family: inherit;
+    font-size: inherit;
+    margin-right: 6px;
+}
+
+.more-search-options .fecha-dates input.fecha-dato[type="date"]:focus {
+    outline: none;
+    border-color: #094fa3;
+    box-shadow: 0 0 0 4px rgba(9,79,163,0.06);
+}
+
+.estado{
+    width: 100%;
+    flex-wrap: wrap;
 }
 
 .facturas-download {
