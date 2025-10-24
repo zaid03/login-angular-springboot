@@ -315,7 +315,6 @@ export class FacturasComponent {
               } else {
                 this.facturas = response;
                 console.log("facturas with facado not null",this.facturas);
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
                 this.page = 0;
                 console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
                 console.log('raw facturas sample:', this.facturas[0]);
@@ -336,7 +335,6 @@ export class FacturasComponent {
               } else {
                 this.facturas = response;
                 console.log("facturas with no contabilizadas",this.facturas);
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
                 this.page = 0;
                 console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
                 console.log('raw facturas sample:', this.facturas[0]);
@@ -357,7 +355,6 @@ export class FacturasComponent {
               } else {
                 this.facturas = response;
                 console.log("facturas with no contabilizadas",this.facturas);
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
                 this.page = 0;
                 console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
                 console.log('raw facturas sample:', this.facturas[0]);
@@ -378,7 +375,6 @@ export class FacturasComponent {
               } else {
                 this.facturas = response;
                 console.log("facturas with no contabilizadas",this.facturas);
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
                 this.page = 0;
                 console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
                 console.log('raw facturas sample:', this.facturas[0]);
@@ -399,7 +395,6 @@ export class FacturasComponent {
               } else {
                 this.facturas = response;
                 console.log("facturas",this.facturas);
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
                 this.page = 0;
                 console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
                 console.log('raw facturas sample:', this.facturas[0]);
@@ -423,7 +418,6 @@ export class FacturasComponent {
               } else {
                 this.facturas = response;
                 console.log("facturas with facado not null",this.facturas);
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
                 this.page = 0;
                 console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
                 console.log('raw facturas sample:', this.facturas[0]);
@@ -444,7 +438,6 @@ export class FacturasComponent {
               } else {
                 this.facturas = response;
                 console.log("facturas with no contabilizadas",this.facturas);
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
                 this.page = 0;
                 console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
                 console.log('raw facturas sample:', this.facturas[0]);
@@ -465,7 +458,6 @@ export class FacturasComponent {
               } else {
                 this.facturas = response;
                 console.log("facturas with no contabilizadas",this.facturas);
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
                 this.page = 0;
                 console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
                 console.log('raw facturas sample:', this.facturas[0]);
@@ -486,7 +478,6 @@ export class FacturasComponent {
               } else {
                 this.facturas = response;
                 console.log("facturas with no contabilizadas",this.facturas);
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
                 this.page = 0;
                 console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
                 console.log('raw facturas sample:', this.facturas[0]);
@@ -507,7 +498,6 @@ export class FacturasComponent {
               } else {
                 this.facturas = response;
                 console.log("facturas hasta",this.facturas);
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
                 this.page = 0;
                 console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
                 console.log('raw facturas sample:', this.facturas[0]);
@@ -531,7 +521,6 @@ export class FacturasComponent {
               } else {
                 this.facturas = response;
                 console.log("facturas with facado not null",this.facturas);
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
                 this.page = 0;
                 console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
                 console.log('raw facturas sample:', this.facturas[0]);
@@ -552,7 +541,6 @@ export class FacturasComponent {
               } else {
                 this.facturas = response;
                 console.log("facturas with no contabilizadas",this.facturas);
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
                 this.page = 0;
                 console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
                 console.log('raw facturas sample:', this.facturas[0]);
@@ -573,7 +561,6 @@ export class FacturasComponent {
               } else {
                 this.facturas = response;
                 console.log("facturas with no contabilizadas",this.facturas);
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
                 this.page = 0;
                 console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
                 console.log('raw facturas sample:', this.facturas[0]);
@@ -594,7 +581,6 @@ export class FacturasComponent {
               } else {
                 this.facturas = response;
                 console.log("facturas with no contabilizadas",this.facturas);
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
                 this.page = 0;
                 console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
                 console.log('raw facturas sample:', this.facturas[0]);
@@ -615,7 +601,6 @@ export class FacturasComponent {
               } else {
                 this.facturas = response;
                 console.log("facturas desde hasta",this.facturas);
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
                 this.page = 0;
                 console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
                 console.log('raw facturas sample:', this.facturas[0]);
@@ -641,7 +626,6 @@ export class FacturasComponent {
               } else {
                 this.facturas = response;
                 console.log("facturas with facado not null",this.facturas);
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
                 this.page = 0;
                 console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
                 console.log('raw facturas sample:', this.facturas[0]);
@@ -662,7 +646,6 @@ export class FacturasComponent {
               } else {
                 this.facturas = response;
                 console.log("facturas with no contabilizadas",this.facturas);
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
                 this.page = 0;
                 console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
                 console.log('raw facturas sample:', this.facturas[0]);
@@ -683,7 +666,6 @@ export class FacturasComponent {
               } else {
                 this.facturas = response;
                 console.log("facturas with no contabilizadas",this.facturas);
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
                 this.page = 0;
                 console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
                 console.log('raw facturas sample:', this.facturas[0]);
@@ -704,7 +686,6 @@ export class FacturasComponent {
               } else {
                 this.facturas = response;
                 console.log("facturas with no contabilizadas",this.facturas);
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
                 this.page = 0;
                 console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
                 console.log('raw facturas sample:', this.facturas[0]);
@@ -725,7 +706,6 @@ export class FacturasComponent {
               } else {
                 this.facturas = response;
                 console.log("facturas",this.facturas);
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
                 this.page = 0;
                 console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
                 console.log('raw facturas sample:', this.facturas[0]);
@@ -749,7 +729,6 @@ export class FacturasComponent {
               } else {
                 this.facturas = response;
                 console.log("facturas with facado not null",this.facturas);
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
                 this.page = 0;
                 console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
                 console.log('raw facturas sample:', this.facturas[0]);
@@ -770,7 +749,6 @@ export class FacturasComponent {
               } else {
                 this.facturas = response;
                 console.log("facturas with no contabilizadas",this.facturas);
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
                 this.page = 0;
                 console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
                 console.log('raw facturas sample:', this.facturas[0]);
@@ -791,7 +769,6 @@ export class FacturasComponent {
               } else {
                 this.facturas = response;
                 console.log("facturas with no contabilizadas",this.facturas);
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
                 this.page = 0;
                 console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
                 console.log('raw facturas sample:', this.facturas[0]);
@@ -812,7 +789,6 @@ export class FacturasComponent {
               } else {
                 this.facturas = response;
                 console.log("facturas with no contabilizadas",this.facturas);
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
                 this.page = 0;
                 console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
                 console.log('raw facturas sample:', this.facturas[0]);
@@ -833,7 +809,6 @@ export class FacturasComponent {
               } else {
                 this.facturas = response;
                 console.log("facturas hasta",this.facturas);
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
                 this.page = 0;
                 console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
                 console.log('raw facturas sample:', this.facturas[0]);
@@ -857,7 +832,6 @@ export class FacturasComponent {
               } else {
                 this.facturas = response;
                 console.log("facturas with facado not null",this.facturas);
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
                 this.page = 0;
                 console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
                 console.log('raw facturas sample:', this.facturas[0]);
@@ -878,7 +852,6 @@ export class FacturasComponent {
               } else {
                 this.facturas = response;
                 console.log("facturas with no contabilizadas",this.facturas);
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
                 this.page = 0;
                 console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
                 console.log('raw facturas sample:', this.facturas[0]);
@@ -899,7 +872,6 @@ export class FacturasComponent {
               } else {
                 this.facturas = response;
                 console.log("facturas with no contabilizadas",this.facturas);
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
                 this.page = 0;
                 console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
                 console.log('raw facturas sample:', this.facturas[0]);
@@ -920,7 +892,6 @@ export class FacturasComponent {
               } else {
                 this.facturas = response;
                 console.log("facturas with no contabilizadas",this.facturas);
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
                 this.page = 0;
                 console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
                 console.log('raw facturas sample:', this.facturas[0]);
@@ -941,7 +912,6 @@ export class FacturasComponent {
               } else {
                 this.facturas = response;
                 console.log("facturas desde hasta",this.facturas);
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
                 this.page = 0;
                 console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
                 console.log('raw facturas sample:', this.facturas[0]);
@@ -966,7 +936,6 @@ export class FacturasComponent {
               } else {
                 this.facturas = response;
                 console.log("facturas with facado not null",this.facturas);
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
                 this.page = 0;
                 console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
                 console.log('raw facturas sample:', this.facturas[0]);
@@ -987,7 +956,6 @@ export class FacturasComponent {
               } else {
                 this.facturas = response;
                 console.log("facturas with no contabilizadas",this.facturas);
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
                 this.page = 0;
                 console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
                 console.log('raw facturas sample:', this.facturas[0]);
@@ -1008,7 +976,6 @@ export class FacturasComponent {
               } else {
                 this.facturas = response;
                 console.log("facturas with no contabilizadas",this.facturas);
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
                 this.page = 0;
                 console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
                 console.log('raw facturas sample:', this.facturas[0]);
@@ -1029,7 +996,6 @@ export class FacturasComponent {
               } else {
                 this.facturas = response;
                 console.log("facturas with no contabilizadas",this.facturas);
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
                 this.page = 0;
                 console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
                 console.log('raw facturas sample:', this.facturas[0]);
@@ -1050,7 +1016,6 @@ export class FacturasComponent {
               } else {
                 this.facturas = response;
                 console.log("facturas",this.facturas);
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
                 this.page = 0;
                 console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
                 console.log('raw facturas sample:', this.facturas[0]);
@@ -1074,7 +1039,6 @@ export class FacturasComponent {
               } else {
                 this.facturas = response;
                 console.log("facturas with facado not null",this.facturas);
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
                 this.page = 0;
                 console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
                 console.log('raw facturas sample:', this.facturas[0]);
@@ -1095,7 +1059,6 @@ export class FacturasComponent {
               } else {
                 this.facturas = response;
                 console.log("facturas with no contabilizadas",this.facturas);
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
                 this.page = 0;
                 console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
                 console.log('raw facturas sample:', this.facturas[0]);
@@ -1116,7 +1079,6 @@ export class FacturasComponent {
               } else {
                 this.facturas = response;
                 console.log("facturas with no contabilizadas",this.facturas);
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
                 this.page = 0;
                 console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
                 console.log('raw facturas sample:', this.facturas[0]);
@@ -1137,7 +1099,6 @@ export class FacturasComponent {
               } else {
                 this.facturas = response;
                 console.log("facturas with no contabilizadas",this.facturas);
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
                 this.page = 0;
                 console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
                 console.log('raw facturas sample:', this.facturas[0]);
@@ -1158,7 +1119,6 @@ export class FacturasComponent {
               } else {
                 this.facturas = response;
                 console.log("facturas hasta",this.facturas);
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
                 this.page = 0;
                 console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
                 console.log('raw facturas sample:', this.facturas[0]);
@@ -1182,7 +1142,6 @@ export class FacturasComponent {
               } else {
                 this.facturas = response;
                 console.log("facturas with facado not null",this.facturas);
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
                 this.page = 0;
                 console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
                 console.log('raw facturas sample:', this.facturas[0]);
@@ -1203,7 +1162,6 @@ export class FacturasComponent {
               } else {
                 this.facturas = response;
                 console.log("facturas with no contabilizadas",this.facturas);
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
                 this.page = 0;
                 console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
                 console.log('raw facturas sample:', this.facturas[0]);
@@ -1224,7 +1182,6 @@ export class FacturasComponent {
               } else {
                 this.facturas = response;
                 console.log("facturas with no contabilizadas",this.facturas);
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
                 this.page = 0;
                 console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
                 console.log('raw facturas sample:', this.facturas[0]);
@@ -1245,7 +1202,6 @@ export class FacturasComponent {
               } else {
                 this.facturas = response;
                 console.log("facturas with no contabilizadas",this.facturas);
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
                 this.page = 0;
                 console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
                 console.log('raw facturas sample:', this.facturas[0]);
@@ -1266,7 +1222,6 @@ export class FacturasComponent {
               } else {
                 this.facturas = response;
                 console.log("facturas desde hasta",this.facturas);
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
                 this.page = 0;
                 console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
                 console.log('raw facturas sample:', this.facturas[0]);
