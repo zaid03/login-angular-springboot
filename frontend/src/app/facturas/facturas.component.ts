@@ -272,6 +272,18 @@ export class FacturasComponent {
   fromDate: string = '';
   toDate: string = '';
   filterFacturaMessage: string = '';
+  facturaSearch: string = '';
+
+  onEjeInput(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const sanitized = input.value.replace(/\D+/g, '').slice(0, 4);
+    if (sanitized !== this.facturaSearch) {
+      this.facturaSearch = sanitized;
+    }
+    if (input.value !== sanitized) {
+      input.value = sanitized;
+    }
+  }
 
   filterFacturas(){
     this.facturaMessage = '';
@@ -281,6 +293,22 @@ export class FacturasComponent {
     console.log(estado);
     const desde = this.fromDate && this.fromDate.trim() ? this.fromDate : '';
     const hasta = this.toDate && this.toDate.trim() ? this.toDate : '';
+    const facann = this.facturaSearch;
+    console.log('facturaSearch:', this.facturaSearch);
+    console.log(facann);
+
+    if (facann && facann.toString().trim() !== '') {
+      const q = facann.toString().trim();
+      const source = (this.backupFacturas && this.backupFacturas.length) ? this.backupFacturas : this.facturas;
+      const filtered = source.filter(f => {
+        const val = (f.facann ?? f.FACANN ?? '').toString();
+        return val === q;
+      });
+      this.facturas = filtered;
+      this.page = 0;
+      this.filterFacturaMessage = `Filtrado local por FACANN = ${q}. ${filtered.length} registro(s).`;
+      return;
+    }
 
     if (!tipo) {
       this.filterFacturaMessage = 'No ha seleccionado un tipo de fecha (Registro, Factura o Contable).';

@@ -13,7 +13,17 @@
                 <input type="text" class="search-bar" placeholder="Buscar factura" name="search">
                 <div class="search-options">
                     <label for="registro" class="ej-factura">Ej Factura</label>
-                    <input type="text" name="factura" class="option-search" placeholder="Ingrese EJE"/>
+                    <input 
+                        type="text" 
+                        name="factura" 
+                        class="option-search" 
+                        placeholder="Ingrese EJE"
+                        [(ngModel)]="facturaSearch"
+                        maxlength="4"
+                        inputmode="numeric"
+                        pattern="[0-9]*"
+                        (input)="onEjeInput($event)"
+                    />
                     <label for="registro">C.Gestor</label>
                     <input 
                         type="text" 
