@@ -17,6 +17,7 @@ import autoTable from 'jspdf-autotable';
 export class FacturasComponent {
   private entcod: number | null = null;
   private eje: number | null = null;
+  public centroGestor: string = '';
   facturas: any[] = [];
   private backupFacturas: any[] = [];
   page = 0;
@@ -31,6 +32,20 @@ export class FacturasComponent {
     this.facturaIsError = false;
     const entidad = sessionStorage.getItem('Entidad');
     const eje = sessionStorage.getItem('selected_ejercicio');
+    const cge = sessionStorage.getItem("selected_centro_gestor");
+    try {
+      if (cge) {
+        const parsed = JSON.parse(cge);
+        if (parsed && typeof parsed === 'object') {
+          this.centroGestor = parsed.cgecod;
+        } else {
+          this.centroGestor = String(parsed);
+        }
+      }
+    } catch (e) {
+      console.warn('Failed to parse selected_centro_gestor:', e);
+    }
+    console.log(this.centroGestor);
 
     if (entidad) {
       const parsed = JSON.parse(entidad);
@@ -251,4 +266,6 @@ export class FacturasComponent {
     console.log(pending);
     return pending.toFixed(2);
   }
+
+
 }

@@ -15,7 +15,13 @@
                     <label for="registro" class="ej-factura">Ej Factura</label>
                     <input type="text" name="factura" class="option-search" placeholder="Ingrese EJE"/>
                     <label for="registro">C.Gestor</label>
-                    <input type="text" name="Gestor" class="option-search" placeholder="Ingrese Centro Gestor"/>
+                    <input 
+                        type="text" 
+                        name="Gestor" 
+                        class="option-search" 
+                        placeholder="Ingrese Centro Gestor"
+                        [(ngModel)]="centroGestor"
+                    />
                 </div>
                 <div class="btns">
                     <button type="button" class="search-button">Buscar</button>
