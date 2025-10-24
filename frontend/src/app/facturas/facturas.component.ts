@@ -267,5 +267,157 @@ export class FacturasComponent {
     return pending.toFixed(2);
   }
 
+  fechaTipo: 'registro' | 'factura' | 'contable' | '' = '';
+  estadoTipo: 'contabilizadas' | 'no-contabilizadas' | 'aplicadas' | 'sin-aplicadas' | '' = '';
+  fromDate: string = '';
+  toDate: string = '';
+  filterFacturaMessage: string = '';
 
+  filterFacturas(){
+    this.filterFacturaMessage = '';
+    const tipo = this.fechaTipo;
+    const estado = this.estadoTipo;
+    console.log(estado);
+    const desde = this.fromDate && this.fromDate.trim() ? this.fromDate : '';
+    const hasta = this.toDate && this.toDate.trim() ? this.toDate : '';
+
+    if (!tipo) {
+      this.filterFacturaMessage = 'No ha seleccionado un tipo de fecha (Registro, Factura o Contable).';
+      return;
+    }
+
+    console.log(this.fromDate);
+    console.log(desde);
+
+    if (!desde && !hasta) {
+      this.filterFacturaMessage = 'Por favor rellene al menos una fecha (Desde o Hasta) cuando selecciona un tipo de fecha.';
+      return;
+    }
+    
+    let datePart = '';
+    if (desde && hasta) {
+      datePart = `Desde: ${desde}. Hasta: ${hasta}.`;
+    } else if (desde) {
+      datePart = `Desde: ${desde}.`;
+    } else {
+      datePart = `Hasta: ${hasta}.`;
+    }
+
+    if (tipo === 'registro') {
+      this.filterFacturaMessage = `Ha seleccionado: Registro. ${datePart}`;
+      if (desde && !hasta) {
+        if (estado === 'contabilizadas') {
+          this.http.get<any>(`http://localhost:8080/api/fac/facfre-desde-facado-notnull/${this.entcod}/${this.eje}/${desde}`).subscribe({
+            next: (response) => {
+              if (response.error) {
+                alert('Error: ' + response.error);
+              } else {
+                this.facturas = response;
+                console.log("facturas with facado not null",this.facturas);
+                this.backupFacturas = Array.isArray(response) ? [...response] : [];
+                this.page = 0;
+                console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
+                console.log('raw facturas sample:', this.facturas[0]);
+              }
+            }, error: (err) => {
+              console.error('Facturas fetch error:', err);
+              this.facturaIsError = true;
+              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+              alert(this.facturaMessage);
+            }
+          });
+        } else if (estado === 'no-contabilizadas') {
+          console.log("no contabilizadas");
+          this.http.get<any>(`http://localhost:8080/api/fac/facfre-desde-facado-null/${this.entcod}/${this.eje}/${desde}`).subscribe({
+            next: (response) => {
+              if (response.error) {
+                alert('Error: ' + response.error);
+              } else {
+                this.facturas = response;
+                console.log("facturas with no contabilizadas",this.facturas);
+                this.backupFacturas = Array.isArray(response) ? [...response] : [];
+                this.page = 0;
+                console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
+                console.log('raw facturas sample:', this.facturas[0]);
+              }
+            }, error: (err) => {
+              console.error('Facturas fetch error:', err);
+              this.facturaIsError = true;
+              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+              alert(this.facturaMessage);
+            }
+          });
+        } else {
+            this.http.get<any>(`http://localhost:8080/api/fac/facfre-desde/${this.entcod}/${this.eje}/${desde}`).subscribe({
+            next: (response) => {
+              if (response.error) {
+                alert('Error: ' + response.error);
+              } else {
+                this.facturas = response;
+                console.log("facturas",this.facturas);
+                this.backupFacturas = Array.isArray(response) ? [...response] : [];
+                this.page = 0;
+                console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
+                console.log('raw facturas sample:', this.facturas[0]);
+              }
+            }, error: (err) => {
+              console.error('Facturas fetch error:', err);
+              this.facturaIsError = true;
+              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+              alert(this.facturaMessage);
+            }
+          });
+        }
+      }
+      if(!desde && hasta) {
+        this.http.get<any>(`http://localhost:8080/api/fac/facfre-hasta/${this.entcod}/${this.eje}/${hasta}`).subscribe({
+          next: (response) => {
+            if (response.error) {
+              alert('Error: ' + response.error);
+            } else {
+              this.facturas = response;
+              console.log("facturas hasta",this.facturas);
+              this.backupFacturas = Array.isArray(response) ? [...response] : [];
+              this.page = 0;
+              console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
+              console.log('raw facturas sample:', this.facturas[0]);
+            }
+          }, error: (err) => {
+            console.error('Facturas fetch error:', err);
+            this.facturaIsError = true;
+            this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+            alert(this.facturaMessage);
+          }
+        });
+      }
+    
+      if (desde && hasta){
+        this.http.get<any>(`http://localhost:8080/api/fac/facfre-hasta-desde/${this.entcod}/${this.eje}/${desde}/${hasta}`).subscribe({
+          next: (response) => {
+            if (response.error) {
+              alert('Error: ' + response.error);
+            } else {
+              this.facturas = response;
+              console.log("facturas desde hasta",this.facturas);
+              this.backupFacturas = Array.isArray(response) ? [...response] : [];
+              this.page = 0;
+              console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
+              console.log('raw facturas sample:', this.facturas[0]);
+            }
+          }, error: (err) => {
+            console.error('Facturas fetch error:', err);
+            this.facturaIsError = true;
+            this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+            alert(this.facturaMessage);
+          }
+        });
+      }
+    } else if (tipo === 'factura') {
+      this.filterFacturaMessage = `Ha seleccionado: Factura. ${datePart}`;
+    } else if (tipo === 'contable') {
+      this.filterFacturaMessage = `Ha seleccionado: Contable. ${datePart}`;
+    } else {
+      this.filterFacturaMessage = 'Tipo de fecha desconocido.';
+    }
+  }
 }

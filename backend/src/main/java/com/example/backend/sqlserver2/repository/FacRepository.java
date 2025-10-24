@@ -1174,7 +1174,8 @@ public interface FacRepository extends JpaRepository<Fac, Integer>{
 
     // between + facado null
     @Query(value = """
-        SELECTf.ENT    AS ENT,
+        SELECT
+            f.ENT    AS ENT,
           f.EJE    AS EJE,
           f.FACNUM AS FACNUM,
           f.TERCOD AS TERCOD,
@@ -1300,7 +1301,6 @@ public interface FacRepository extends JpaRepository<Fac, Integer>{
         ORDER BY f.FACDAT ASC
         """, nativeQuery = true)
     List<Object[]> filterFacdatDesdeHastaFacadoSinAplicadas(@Param("ent") int ent, @Param("eje") String eje, @Param("fromDate") String fromDate, @Param("toDate") String toDate);
-
 
         // --- FACFCO variants ---
 
