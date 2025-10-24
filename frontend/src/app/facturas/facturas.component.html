@@ -27,30 +27,35 @@
             <div class="more-search-options">
                 <div class="fecha">
                     <p>Fecha</p>
-                    <input 
-                        type="radio" 
-                        name="fecha-option" 
-                        class="fecha-dato" 
-                        [(ngModel)] = "fechaTipo"
-                        value="registro"
-                    > 
-                    Registro
-                    <input 
-                        type="radio" 
-                        name="fecha-option" 
-                        class="fecha-dato" 
-                        [(ngModel)] = "fechaTipo"
-                        value="factura"
-                    > 
-                    Factura
-                    <input 
-                        type="radio" 
-                        name="fecha-option" 
-                        class="fecha-dato" 
-                        [(ngModel)] = "fechaTipo"
-                        value="contable"
-                    > 
-                    Contable
+                    <div class="choice">
+                        <input 
+                            type="radio" 
+                            name="fecha-option" 
+                            class="fecha-dato" 
+                            [(ngModel)] = "fechaTipo"
+                            value="registro"
+                        > Registro
+                    </div>
+                    <div class="choice">
+                        <input 
+                            type="radio" 
+                            name="fecha-option" 
+                            class="fecha-dato" 
+                            [(ngModel)] = "fechaTipo"
+                            value="factura"
+                        > 
+                        Factura
+                    </div>
+                    <div class="choice">
+                        <input 
+                            type="radio" 
+                            name="fecha-option" 
+                            class="fecha-dato" 
+                            [(ngModel)] = "fechaTipo"
+                            value="contable"
+                        > 
+                        Contable
+                    </div>
                     <div class="fecha-dates">
                         <input 
                             type="date" 
@@ -70,50 +75,59 @@
                 </div>
                 <div class="estado">
                     <p>Estado</p>
-                    <input 
-                        type="radio" 
-                        name="contabilizadas" 
-                        class="fecha-dato"
-                        [(ngModel)] = "estadoTipo"
-                        value="contabilizadas" 
-                    > 
-                    Contabilizadas
-                    <input 
-                        type="radio" 
-                        name="no-contabilizadas" 
-                        class="fecha-dato" 
-                        [(ngModel)] = "estadoTipo"
-                        value="no-contabilizadas"
-                    > 
-                    No Contabilizadas
-                    <input 
-                        type="radio" 
-                        name="aplicadas" 
-                        class="fecha-dato" 
-                        [(ngModel)] = "estadoTipo"
-                        value="aplicadas"
-                    > 
-                    Ptes. Aplicadas
-                    <input 
-                        type="radio" 
-                        name="sin-aplicadas" 
-                        class="fecha-dato" 
-                        [(ngModel)] = "estadoTipo"
-                        value="sin-aplicadas" 
-                    > 
-                    Ptes. Sin aplicar
-                    <input 
-                        type="radio" 
-                        name="todas" 
-                        class="fecha-dato" 
-                        checked
-                    > 
-                    Todas
+                    <div class="option">
+                        <input 
+                            type="radio" 
+                            name="contabilizadas" 
+                            class="fecha-dato"
+                            [(ngModel)] = "estadoTipo"
+                            value="contabilizadas" 
+                        > 
+                        Contabilizadas
+                    </div>
+                    <div class="option">
+                        <input 
+                            type="radio" 
+                            name="no-contabilizadas" 
+                            class="fecha-dato" 
+                            [(ngModel)] = "estadoTipo"
+                            value="no-contabilizadas"
+                        > 
+                        No Contabilizadas
+                    </div>
+                    <div class="option">
+                        <input 
+                            type="radio" 
+                            name="aplicadas" 
+                            class="fecha-dato" 
+                            [(ngModel)] = "estadoTipo"
+                            value="aplicadas"
+                        > 
+                        Ptes. Aplicadas
+                    </div>
+                    <div class="option">
+                        <input 
+                            type="radio" 
+                            name="sin-aplicadas" 
+                            class="fecha-dato" 
+                            [(ngModel)] = "estadoTipo"
+                            value="sin-aplicadas" 
+                        > 
+                        Ptes. Sin aplicar
+                    </div>
+                    <div class="option">
+                        <input 
+                            type="radio" 
+                            name="todas" 
+                            class="fecha-dato" 
+                            checked
+                        > 
+                        Todas
+                    </div>
                 </div>
-                <h1 style="padding-top: 2%; font-family: inherit; color: red; font-size: inherit;">{{ filterFacturaMessage }}</h1>
-                
             </div>  
         </div>
+        <h1 style="margin: 2%; font-family: inherit; color: red; font-size: inherit;">{{ filterFacturaMessage }}</h1>
         <div class="btns">
             <button type="button" class="search-button" (click)="filterFacturas()">Buscar</button>
             <button type="button" class="search-button">Volver</button>
