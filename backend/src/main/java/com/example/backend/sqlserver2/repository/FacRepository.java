@@ -1176,41 +1176,41 @@ public interface FacRepository extends JpaRepository<Fac, Integer>{
     @Query(value = """
         SELECT
             f.ENT    AS ENT,
-          f.EJE    AS EJE,
-          f.FACNUM AS FACNUM,
-          f.TERCOD AS TERCOD,
-          f.CGECOD AS CGECOD,
-          f.FACOBS AS FACOBS,
-          f.FACIMP AS FACIMP,
-          f.FACIEC AS FACIEC,
-          f.FACIDI AS FACIDI,
-          f.FACTDC AS FACTDC,
-          f.FACANN AS FACANN,
-          f.FACFAC AS FACFAC,
-          f.FACDOC AS FACDOC,
-          f.FACDAT AS FACDAT,
-          f.FACFCO AS FACFCO,
-          f.FACADO AS FACADO,
-          f.FACTXT AS FACTXT,
-          f.FACFRE AS FACFRE,
-          f.CONCTP AS CONCTP,
-          f.CONCPR AS CONCPR,
-          f.CONCCR AS CONCCR,
-          f.FACOCT AS FACOCT,
-          f.FACFPG AS FACFPG,
-          f.FACOPG AS FACOPG,
-          f.FACTPG AS FACTPG,
-          f.FACDTO AS FACDTO,
-          t.TERNOM AS TERNOM,
-          t.TERNIF AS TERNIF
+            f.EJE    AS EJE,
+            f.FACNUM AS FACNUM,
+            f.TERCOD AS TERCOD,
+            f.CGECOD AS CGECOD,
+            f.FACOBS AS FACOBS,
+            f.FACIMP AS FACIMP,
+            f.FACIEC AS FACIEC,
+            f.FACIDI AS FACIDI,
+            f.FACTDC AS FACTDC,
+            f.FACANN AS FACANN,
+            f.FACFAC AS FACFAC,
+            f.FACDOC AS FACDOC,
+            f.FACDAT AS FACDAT,
+            f.FACFCO AS FACFCO,
+            f.FACADO AS FACADO,
+            f.FACTXT AS FACTXT,
+            f.FACFRE AS FACFRE,
+            f.CONCTP AS CONCTP,
+            f.CONCPR AS CONCPR,
+            f.CONCCR AS CONCCR,
+            f.FACOCT AS FACOCT,
+            f.FACFPG AS FACFPG,
+            f.FACOPG AS FACOPG,
+            f.FACTPG AS FACTPG,
+            f.FACDTO AS FACDTO,
+            t.TERNOM AS TERNOM,
+            t.TERNIF AS TERNIF
         FROM FAC f
         INNER JOIN TER t
             ON f.ENT = t.ENT
             AND f.TERCOD = t.TERCOD
         WHERE f.ENT = :ent
-          AND f.EJE = :eje
-          AND CAST(f.FACDAT AS DATE) BETWEEN CAST(:fromDate AS DATE) AND CAST(:toDate AS DATE)
-          AND f.FACADO IS NULL
+            AND f.EJE = :eje
+            AND CONVERT(date, f.FACDAT) BETWEEN CONVERT(date, :fromDate) AND CONVERT(date, :toDate)
+            AND f.FACADO IS NULL
         ORDER BY f.FACDAT ASC
         """, nativeQuery = true)
     List<Object[]> filterFacdatDesdeHastaFacadoNull(@Param("ent") int ent, @Param("eje") String eje, @Param("fromDate") String fromDate, @Param("toDate") String toDate);

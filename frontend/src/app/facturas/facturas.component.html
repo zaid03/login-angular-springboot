@@ -23,10 +23,6 @@
                         [(ngModel)]="centroGestor"
                     />
                 </div>
-                <div class="btns">
-                    <button type="button" class="search-button">Buscar</button>
-                    <button type="button" class="search-button">Volver</button>
-                </div>
             </form>
             <div class="more-search-options">
                 <div class="fecha">
@@ -115,11 +111,12 @@
                     Todas
                 </div>
                 <h1 style="padding-top: 2%; font-family: inherit; color: red; font-size: inherit;">{{ filterFacturaMessage }}</h1>
-                <div class="btns">
-                    <button type="button" class="search-button" (click)="filterFacturas()">Buscar</button>
-                    <button type="button" class="search-button">Volver</button>
-                </div>
-            </div>
+                
+            </div>  
+        </div>
+        <div class="btns">
+            <button type="button" class="search-button" (click)="filterFacturas()">Buscar</button>
+            <button type="button" class="search-button">Volver</button>
         </div>
 
         <div class="facturas-download">

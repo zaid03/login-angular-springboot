@@ -274,6 +274,7 @@ export class FacturasComponent {
   filterFacturaMessage: string = '';
 
   filterFacturas(){
+    this.facturaMessage = '';
     this.filterFacturaMessage = '';
     const tipo = this.fechaTipo;
     const estado = this.estadoTipo;
@@ -413,52 +414,872 @@ export class FacturasComponent {
         }
       }
       if(!desde && hasta) {
-        this.http.get<any>(`http://localhost:8080/api/fac/facfre-hasta/${this.entcod}/${this.eje}/${hasta}`).subscribe({
-          next: (response) => {
-            if (response.error) {
-              alert('Error: ' + response.error);
-            } else {
-              this.facturas = response;
-              console.log("facturas hasta",this.facturas);
-              this.backupFacturas = Array.isArray(response) ? [...response] : [];
-              this.page = 0;
-              console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
-              console.log('raw facturas sample:', this.facturas[0]);
+        if (estado === 'contabilizadas') {
+          console.log("contabilizada y hasta")
+          this.http.get<any>(`http://localhost:8080/api/fac/facfre-hasta-facado-notnull/${this.entcod}/${this.eje}/${hasta}`).subscribe({
+            next: (response) => {
+              if (response.error) {
+                alert('Error: ' + response.error);
+              } else {
+                this.facturas = response;
+                console.log("facturas with facado not null",this.facturas);
+                this.backupFacturas = Array.isArray(response) ? [...response] : [];
+                this.page = 0;
+                console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
+                console.log('raw facturas sample:', this.facturas[0]);
+              }
+            }, error: (err) => {
+              console.error('Facturas fetch error:', err);
+              this.facturaIsError = true;
+              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+              alert(this.facturaMessage);
             }
-          }, error: (err) => {
-            console.error('Facturas fetch error:', err);
-            this.facturaIsError = true;
-            this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-            alert(this.facturaMessage);
-          }
-        });
+          });
+        } else if (estado === 'no-contabilizadas') {
+          console.log("no contabilizadas y hasta");
+          this.http.get<any>(`http://localhost:8080/api/fac/facfre-hasta-facado-null/${this.entcod}/${this.eje}/${hasta}`).subscribe({
+            next: (response) => {
+              if (response.error) {
+                alert('Error: ' + response.error);
+              } else {
+                this.facturas = response;
+                console.log("facturas with no contabilizadas",this.facturas);
+                this.backupFacturas = Array.isArray(response) ? [...response] : [];
+                this.page = 0;
+                console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
+                console.log('raw facturas sample:', this.facturas[0]);
+              }
+            }, error: (err) => {
+              console.error('Facturas fetch error:', err);
+              this.facturaIsError = true;
+              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+              alert(this.facturaMessage);
+            }
+          });
+        } else if ( estado === 'aplicadas') {
+          console.log("aplicadas y hasta");
+          this.http.get<any>(`http://localhost:8080/api/fac/facfre-hasta-facado-aplicadas/${this.entcod}/${this.eje}/${hasta}`).subscribe({
+            next: (response) => {
+              if (response.error) {
+                alert('Error: ' + response.error);
+              } else {
+                this.facturas = response;
+                console.log("facturas with no contabilizadas",this.facturas);
+                this.backupFacturas = Array.isArray(response) ? [...response] : [];
+                this.page = 0;
+                console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
+                console.log('raw facturas sample:', this.facturas[0]);
+              }
+            }, error: (err) => {
+              console.error('Facturas fetch error:', err);
+              this.facturaIsError = true;
+              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+              alert(this.facturaMessage);
+            }
+          });
+        } else if (estado === 'sin-aplicadas') {
+          console.log("sin aplicadas y hasta");
+          this.http.get<any>(`http://localhost:8080/api/fac/facfre-hasta-facado-sinaplicadas/${this.entcod}/${this.eje}/${hasta}`).subscribe({
+            next: (response) => {
+              if (response.error) {
+                alert('Error: ' + response.error);
+              } else {
+                this.facturas = response;
+                console.log("facturas with no contabilizadas",this.facturas);
+                this.backupFacturas = Array.isArray(response) ? [...response] : [];
+                this.page = 0;
+                console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
+                console.log('raw facturas sample:', this.facturas[0]);
+              }
+            }, error: (err) => {
+              console.error('Facturas fetch error:', err);
+              this.facturaIsError = true;
+              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+              alert(this.facturaMessage);
+            }
+          });
+        } else {
+          console.log("hasta y no estados");
+            this.http.get<any>(`http://localhost:8080/api/fac/facfre-hasta/${this.entcod}/${this.eje}/${hasta}`).subscribe({
+            next: (response) => {
+              if (response.error) {
+                alert('Error: ' + response.error);
+              } else {
+                this.facturas = response;
+                console.log("facturas hasta",this.facturas);
+                this.backupFacturas = Array.isArray(response) ? [...response] : [];
+                this.page = 0;
+                console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
+                console.log('raw facturas sample:', this.facturas[0]);
+              }
+            }, error: (err) => {
+              console.error('Facturas fetch error:', err);
+              this.facturaIsError = true;
+              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+              alert(this.facturaMessage);
+            }
+          });
+        }
       }
-    
       if (desde && hasta){
-        this.http.get<any>(`http://localhost:8080/api/fac/facfre-hasta-desde/${this.entcod}/${this.eje}/${desde}/${hasta}`).subscribe({
-          next: (response) => {
-            if (response.error) {
-              alert('Error: ' + response.error);
-            } else {
-              this.facturas = response;
-              console.log("facturas desde hasta",this.facturas);
-              this.backupFacturas = Array.isArray(response) ? [...response] : [];
-              this.page = 0;
-              console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
-              console.log('raw facturas sample:', this.facturas[0]);
+        if (estado === 'contabilizadas') {
+          console.log("contabilizada y hasta y dsde")
+          this.http.get<any>(`http://localhost:8080/api/fac/facfre-range-facado-notnull/${this.entcod}/${this.eje}/${desde}/${hasta}`).subscribe({
+            next: (response) => {
+              if (response.error) {
+                alert('Error: ' + response.error);
+              } else {
+                this.facturas = response;
+                console.log("facturas with facado not null",this.facturas);
+                this.backupFacturas = Array.isArray(response) ? [...response] : [];
+                this.page = 0;
+                console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
+                console.log('raw facturas sample:', this.facturas[0]);
+              }
+            }, error: (err) => {
+              console.error('Facturas fetch error:', err);
+              this.facturaIsError = true;
+              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+              alert(this.facturaMessage);
             }
-          }, error: (err) => {
-            console.error('Facturas fetch error:', err);
-            this.facturaIsError = true;
-            this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-            alert(this.facturaMessage);
-          }
-        });
+          });
+        } else if (estado === 'no-contabilizadas') {
+          console.log("no contabilizadas y hasta y desde");
+          this.http.get<any>(`http://localhost:8080/api/fac/facfre-range-facado-null/${this.entcod}/${this.eje}/${desde}/${hasta}`).subscribe({
+            next: (response) => {
+              if (response.error) {
+                alert('Error: ' + response.error);
+              } else {
+                this.facturas = response;
+                console.log("facturas with no contabilizadas",this.facturas);
+                this.backupFacturas = Array.isArray(response) ? [...response] : [];
+                this.page = 0;
+                console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
+                console.log('raw facturas sample:', this.facturas[0]);
+              }
+            }, error: (err) => {
+              console.error('Facturas fetch error:', err);
+              this.facturaIsError = true;
+              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+              alert(this.facturaMessage);
+            }
+          });
+        } else if ( estado === 'aplicadas') {
+          console.log("aplicadas y hasta y hasta y desde");
+          this.http.get<any>(`http://localhost:8080/api/fac/facfre-range-facado-aplicadas/${this.entcod}/${this.eje}/${desde}/${hasta}`).subscribe({
+            next: (response) => {
+              if (response.error) {
+                alert('Error: ' + response.error);
+              } else {
+                this.facturas = response;
+                console.log("facturas with no contabilizadas",this.facturas);
+                this.backupFacturas = Array.isArray(response) ? [...response] : [];
+                this.page = 0;
+                console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
+                console.log('raw facturas sample:', this.facturas[0]);
+              }
+            }, error: (err) => {
+              console.error('Facturas fetch error:', err);
+              this.facturaIsError = true;
+              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+              alert(this.facturaMessage);
+            }
+          });
+        } else if (estado === 'sin-aplicadas') {
+          console.log("sin aplicadas y hasta y desde");
+          this.http.get<any>(`http://localhost:8080/api/fac/facfre-range-facado-sinaplicadas/${this.entcod}/${this.eje}/${desde}/${hasta}`).subscribe({
+            next: (response) => {
+              if (response.error) {
+                alert('Error: ' + response.error);
+              } else {
+                this.facturas = response;
+                console.log("facturas with no contabilizadas",this.facturas);
+                this.backupFacturas = Array.isArray(response) ? [...response] : [];
+                this.page = 0;
+                console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
+                console.log('raw facturas sample:', this.facturas[0]);
+              }
+            }, error: (err) => {
+              console.error('Facturas fetch error:', err);
+              this.facturaIsError = true;
+              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+              alert(this.facturaMessage);
+            }
+          });
+        } else {
+          console.log("desde y hasta no estado");
+          this.http.get<any>(`http://localhost:8080/api/fac/facfre-range/${this.entcod}/${this.eje}/${desde}/${hasta}`).subscribe({
+            next: (response) => {
+              if (response.error) {
+                alert('Error: ' + response.error);
+              } else {
+                this.facturas = response;
+                console.log("facturas desde hasta",this.facturas);
+                this.backupFacturas = Array.isArray(response) ? [...response] : [];
+                this.page = 0;
+                console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
+                console.log('raw facturas sample:', this.facturas[0]);
+              }
+            }, error: (err) => {
+              console.error('Facturas fetch error:', err);
+              this.facturaIsError = true;
+              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+              alert(this.facturaMessage);
+            }
+          });
+        }
       }
     } else if (tipo === 'factura') {
       this.filterFacturaMessage = `Ha seleccionado: Factura. ${datePart}`;
+      if (desde && !hasta) {
+        if (estado === 'contabilizadas') {
+          console.log(" con contabilizadaas");
+          this.http.get<any>(`http://localhost:8080/api/fac/facdat-desde-facado-notnull/${this.entcod}/${this.eje}/${desde}`).subscribe({
+            next: (response) => {
+              if (response.error) {
+                alert('Error: ' + response.error);
+              } else {
+                this.facturas = response;
+                console.log("facturas with facado not null",this.facturas);
+                this.backupFacturas = Array.isArray(response) ? [...response] : [];
+                this.page = 0;
+                console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
+                console.log('raw facturas sample:', this.facturas[0]);
+              }
+            }, error: (err) => {
+              console.error('Facturas fetch error:', err);
+              this.facturaIsError = true;
+              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+              alert(this.facturaMessage);
+            }
+          });
+        } else if (estado === 'no-contabilizadas') {
+          console.log("no contabilizadas");
+          this.http.get<any>(`http://localhost:8080/api/fac/facdat-desde-facado-null/${this.entcod}/${this.eje}/${desde}`).subscribe({
+            next: (response) => {
+              if (response.error) {
+                alert('Error: ' + response.error);
+              } else {
+                this.facturas = response;
+                console.log("facturas with no contabilizadas",this.facturas);
+                this.backupFacturas = Array.isArray(response) ? [...response] : [];
+                this.page = 0;
+                console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
+                console.log('raw facturas sample:', this.facturas[0]);
+              }
+            }, error: (err) => {
+              console.error('Facturas fetch error:', err);
+              this.facturaIsError = true;
+              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+              alert(this.facturaMessage);
+            }
+          });
+        } else if ( estado === 'aplicadas') {
+          console.log("aplicadas");
+          this.http.get<any>(`http://localhost:8080/api/fac/facdat-desde-facado-aplicadas/${this.entcod}/${this.eje}/${desde}`).subscribe({
+            next: (response) => {
+              if (response.error) {
+                alert('Error: ' + response.error);
+              } else {
+                this.facturas = response;
+                console.log("facturas with no contabilizadas",this.facturas);
+                this.backupFacturas = Array.isArray(response) ? [...response] : [];
+                this.page = 0;
+                console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
+                console.log('raw facturas sample:', this.facturas[0]);
+              }
+            }, error: (err) => {
+              console.error('Facturas fetch error:', err);
+              this.facturaIsError = true;
+              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+              alert(this.facturaMessage);
+            }
+          });
+        } else if (estado === 'sin-aplicadas') {
+          console.log("sin aplicadas");
+          this.http.get<any>(`http://localhost:8080/api/fac/facdat-desde-facado-sinaplicadas/${this.entcod}/${this.eje}/${desde}`).subscribe({
+            next: (response) => {
+              if (response.error) {
+                alert('Error: ' + response.error);
+              } else {
+                this.facturas = response;
+                console.log("facturas with no contabilizadas",this.facturas);
+                this.backupFacturas = Array.isArray(response) ? [...response] : [];
+                this.page = 0;
+                console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
+                console.log('raw facturas sample:', this.facturas[0]);
+              }
+            }, error: (err) => {
+              console.error('Facturas fetch error:', err);
+              this.facturaIsError = true;
+              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+              alert(this.facturaMessage);
+            }
+          });
+        } else {
+          console.log("no estado");
+            this.http.get<any>(`http://localhost:8080/api/fac/facdat-desde/${this.entcod}/${this.eje}/${desde}`).subscribe({
+            next: (response) => {
+              if (response.error) {
+                alert('Error: ' + response.error);
+              } else {
+                this.facturas = response;
+                console.log("facturas",this.facturas);
+                this.backupFacturas = Array.isArray(response) ? [...response] : [];
+                this.page = 0;
+                console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
+                console.log('raw facturas sample:', this.facturas[0]);
+              }
+            }, error: (err) => {
+              console.error('Facturas fetch error:', err);
+              this.facturaIsError = true;
+              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+              alert(this.facturaMessage);
+            }
+          });
+        }
+      }
+      if(!desde && hasta) {
+        if (estado === 'contabilizadas') {
+          console.log("contabilizada y hasta")
+          this.http.get<any>(`http://localhost:8080/api/fac/facdat-hasta-facado-notnull/${this.entcod}/${this.eje}/${hasta}`).subscribe({
+            next: (response) => {
+              if (response.error) {
+                alert('Error: ' + response.error);
+              } else {
+                this.facturas = response;
+                console.log("facturas with facado not null",this.facturas);
+                this.backupFacturas = Array.isArray(response) ? [...response] : [];
+                this.page = 0;
+                console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
+                console.log('raw facturas sample:', this.facturas[0]);
+              }
+            }, error: (err) => {
+              console.error('Facturas fetch error:', err);
+              this.facturaIsError = true;
+              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+              alert(this.facturaMessage);
+            }
+          });
+        } else if (estado === 'no-contabilizadas') {
+          console.log("no contabilizadas y hasta");
+          this.http.get<any>(`http://localhost:8080/api/fac/facdat-hasta-facado-null/${this.entcod}/${this.eje}/${hasta}`).subscribe({
+            next: (response) => {
+              if (response.error) {
+                alert('Error: ' + response.error);
+              } else {
+                this.facturas = response;
+                console.log("facturas with no contabilizadas",this.facturas);
+                this.backupFacturas = Array.isArray(response) ? [...response] : [];
+                this.page = 0;
+                console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
+                console.log('raw facturas sample:', this.facturas[0]);
+              }
+            }, error: (err) => {
+              console.error('Facturas fetch error:', err);
+              this.facturaIsError = true;
+              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+              alert(this.facturaMessage);
+            }
+          });
+        } else if ( estado === 'aplicadas') {
+          console.log("aplicadas y hasta");
+          this.http.get<any>(`http://localhost:8080/api/fac/facdat-hasta-facado-aplicadas/${this.entcod}/${this.eje}/${hasta}`).subscribe({
+            next: (response) => {
+              if (response.error) {
+                alert('Error: ' + response.error);
+              } else {
+                this.facturas = response;
+                console.log("facturas with no contabilizadas",this.facturas);
+                this.backupFacturas = Array.isArray(response) ? [...response] : [];
+                this.page = 0;
+                console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
+                console.log('raw facturas sample:', this.facturas[0]);
+              }
+            }, error: (err) => {
+              console.error('Facturas fetch error:', err);
+              this.facturaIsError = true;
+              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+              alert(this.facturaMessage);
+            }
+          });
+        } else if (estado === 'sin-aplicadas') {
+          console.log("sin aplicadas y hasta");
+          this.http.get<any>(`http://localhost:8080/api/fac/facdat-hasta-facado-sinaplicadas/${this.entcod}/${this.eje}/${hasta}`).subscribe({
+            next: (response) => {
+              if (response.error) {
+                alert('Error: ' + response.error);
+              } else {
+                this.facturas = response;
+                console.log("facturas with no contabilizadas",this.facturas);
+                this.backupFacturas = Array.isArray(response) ? [...response] : [];
+                this.page = 0;
+                console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
+                console.log('raw facturas sample:', this.facturas[0]);
+              }
+            }, error: (err) => {
+              console.error('Facturas fetch error:', err);
+              this.facturaIsError = true;
+              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+              alert(this.facturaMessage);
+            }
+          });
+        } else {
+          console.log("hasta y no estados");
+            this.http.get<any>(`http://localhost:8080/api/fac/facdat-hasta/${this.entcod}/${this.eje}/${hasta}`).subscribe({
+            next: (response) => {
+              if (response.error) {
+                alert('Error: ' + response.error);
+              } else {
+                this.facturas = response;
+                console.log("facturas hasta",this.facturas);
+                this.backupFacturas = Array.isArray(response) ? [...response] : [];
+                this.page = 0;
+                console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
+                console.log('raw facturas sample:', this.facturas[0]);
+              }
+            }, error: (err) => {
+              console.error('Facturas fetch error:', err);
+              this.facturaIsError = true;
+              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+              alert(this.facturaMessage);
+            }
+          });
+        }
+      }
+      if (desde && hasta){
+        if (estado === 'contabilizadas') {
+          console.log("contabilizada y hasta y dsde")
+          this.http.get<any>(`http://localhost:8080/api/fac/facdat-range-facado-notnull/${this.entcod}/${this.eje}/${desde}/${hasta}`).subscribe({
+            next: (response) => {
+              if (response.error) {
+                alert('Error: ' + response.error);
+              } else {
+                this.facturas = response;
+                console.log("facturas with facado not null",this.facturas);
+                this.backupFacturas = Array.isArray(response) ? [...response] : [];
+                this.page = 0;
+                console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
+                console.log('raw facturas sample:', this.facturas[0]);
+              }
+            }, error: (err) => {
+              console.error('Facturas fetch error:', err);
+              this.facturaIsError = true;
+              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+              alert(this.facturaMessage);
+            }
+          });
+        } else if (estado === 'no-contabilizadas') {
+          console.log("no contabilizadas y hasta y desde");
+          this.http.get<any>(`http://localhost:8080/api/fac/facdat-range-facado-null/${this.entcod}/${this.eje}/${desde}/${hasta}`).subscribe({
+            next: (response) => {
+              if (response.error) {
+                alert('Error: ' + response.error);
+              } else {
+                this.facturas = response;
+                console.log("facturas with no contabilizadas",this.facturas);
+                this.backupFacturas = Array.isArray(response) ? [...response] : [];
+                this.page = 0;
+                console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
+                console.log('raw facturas sample:', this.facturas[0]);
+              }
+            }, error: (err) => {
+              console.error('Facturas fetch error:', err);
+              this.facturaIsError = true;
+              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+              alert(this.facturaMessage);
+            }
+          });
+        } else if ( estado === 'aplicadas') {
+          console.log("aplicadas y hasta y hasta y desde");
+          this.http.get<any>(`http://localhost:8080/api/fac/facdat-range-facado-aplicadas/${this.entcod}/${this.eje}/${desde}/${hasta}`).subscribe({
+            next: (response) => {
+              if (response.error) {
+                alert('Error: ' + response.error);
+              } else {
+                this.facturas = response;
+                console.log("facturas with no contabilizadas",this.facturas);
+                this.backupFacturas = Array.isArray(response) ? [...response] : [];
+                this.page = 0;
+                console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
+                console.log('raw facturas sample:', this.facturas[0]);
+              }
+            }, error: (err) => {
+              console.error('Facturas fetch error:', err);
+              this.facturaIsError = true;
+              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+              alert(this.facturaMessage);
+            }
+          });
+        } else if (estado === 'sin-aplicadas') {
+          console.log("sin aplicadas y hasta y desde");
+          this.http.get<any>(`http://localhost:8080/api/fac/facdat-range-facado-sinaplicadas/${this.entcod}/${this.eje}/${desde}/${hasta}`).subscribe({
+            next: (response) => {
+              if (response.error) {
+                alert('Error: ' + response.error);
+              } else {
+                this.facturas = response;
+                console.log("facturas with no contabilizadas",this.facturas);
+                this.backupFacturas = Array.isArray(response) ? [...response] : [];
+                this.page = 0;
+                console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
+                console.log('raw facturas sample:', this.facturas[0]);
+              }
+            }, error: (err) => {
+              console.error('Facturas fetch error:', err);
+              this.facturaIsError = true;
+              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+              alert(this.facturaMessage);
+            }
+          });
+        } else {
+          console.log("desde y hasta no estado");
+          this.http.get<any>(`http://localhost:8080/api/fac/facdat-range/${this.entcod}/${this.eje}/${desde}/${hasta}`).subscribe({
+            next: (response) => {
+              if (response.error) {
+                alert('Error: ' + response.error);
+              } else {
+                this.facturas = response;
+                console.log("facturas desde hasta",this.facturas);
+                this.backupFacturas = Array.isArray(response) ? [...response] : [];
+                this.page = 0;
+                console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
+                console.log('raw facturas sample:', this.facturas[0]);
+              }
+            }, error: (err) => {
+              console.error('Facturas fetch error:', err);
+              this.facturaIsError = true;
+              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+              alert(this.facturaMessage);
+            }
+          });
+        }
+      }
     } else if (tipo === 'contable') {
-      this.filterFacturaMessage = `Ha seleccionado: Contable. ${datePart}`;
+      if (desde && !hasta) {
+        if (estado === 'contabilizadas') {
+          console.log(" con contabilizadaas");
+          this.http.get<any>(`http://localhost:8080/api/fac/facfco-desde-facado-notnull/${this.entcod}/${this.eje}/${desde}`).subscribe({
+            next: (response) => {
+              if (response.error) {
+                alert('Error: ' + response.error);
+              } else {
+                this.facturas = response;
+                console.log("facturas with facado not null",this.facturas);
+                this.backupFacturas = Array.isArray(response) ? [...response] : [];
+                this.page = 0;
+                console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
+                console.log('raw facturas sample:', this.facturas[0]);
+              }
+            }, error: (err) => {
+              console.error('Facturas fetch error:', err);
+              this.facturaIsError = true;
+              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+              alert(this.facturaMessage);
+            }
+          });
+        } else if (estado === 'no-contabilizadas') {
+          console.log("no contabilizadas");
+          this.http.get<any>(`http://localhost:8080/api/fac/facfco-desde-facado-null/${this.entcod}/${this.eje}/${desde}`).subscribe({
+            next: (response) => {
+              if (response.error) {
+                alert('Error: ' + response.error);
+              } else {
+                this.facturas = response;
+                console.log("facturas with no contabilizadas",this.facturas);
+                this.backupFacturas = Array.isArray(response) ? [...response] : [];
+                this.page = 0;
+                console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
+                console.log('raw facturas sample:', this.facturas[0]);
+              }
+            }, error: (err) => {
+              console.error('Facturas fetch error:', err);
+              this.facturaIsError = true;
+              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+              alert(this.facturaMessage);
+            }
+          });
+        } else if ( estado === 'aplicadas') {
+          console.log("aplicadas");
+          this.http.get<any>(`http://localhost:8080/api/fac/facfco-desde-facado-aplicadas/${this.entcod}/${this.eje}/${desde}`).subscribe({
+            next: (response) => {
+              if (response.error) {
+                alert('Error: ' + response.error);
+              } else {
+                this.facturas = response;
+                console.log("facturas with no contabilizadas",this.facturas);
+                this.backupFacturas = Array.isArray(response) ? [...response] : [];
+                this.page = 0;
+                console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
+                console.log('raw facturas sample:', this.facturas[0]);
+              }
+            }, error: (err) => {
+              console.error('Facturas fetch error:', err);
+              this.facturaIsError = true;
+              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+              alert(this.facturaMessage);
+            }
+          });
+        } else if (estado === 'sin-aplicadas') {
+          console.log("sin aplicadas");
+          this.http.get<any>(`http://localhost:8080/api/fac/facfco-desde-facado-sinaplicadas/${this.entcod}/${this.eje}/${desde}`).subscribe({
+            next: (response) => {
+              if (response.error) {
+                alert('Error: ' + response.error);
+              } else {
+                this.facturas = response;
+                console.log("facturas with no contabilizadas",this.facturas);
+                this.backupFacturas = Array.isArray(response) ? [...response] : [];
+                this.page = 0;
+                console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
+                console.log('raw facturas sample:', this.facturas[0]);
+              }
+            }, error: (err) => {
+              console.error('Facturas fetch error:', err);
+              this.facturaIsError = true;
+              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+              alert(this.facturaMessage);
+            }
+          });
+        } else {
+          console.log("no estado");
+            this.http.get<any>(`http://localhost:8080/api/fac/facfco-desde/${this.entcod}/${this.eje}/${desde}`).subscribe({
+            next: (response) => {
+              if (response.error) {
+                alert('Error: ' + response.error);
+              } else {
+                this.facturas = response;
+                console.log("facturas",this.facturas);
+                this.backupFacturas = Array.isArray(response) ? [...response] : [];
+                this.page = 0;
+                console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
+                console.log('raw facturas sample:', this.facturas[0]);
+              }
+            }, error: (err) => {
+              console.error('Facturas fetch error:', err);
+              this.facturaIsError = true;
+              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+              alert(this.facturaMessage);
+            }
+          });
+        }
+      }
+      if(!desde && hasta) {
+        if (estado === 'contabilizadas') {
+          console.log("contabilizada y hasta")
+          this.http.get<any>(`http://localhost:8080/api/fac/facfco-hasta-facado-notnull/${this.entcod}/${this.eje}/${hasta}`).subscribe({
+            next: (response) => {
+              if (response.error) {
+                alert('Error: ' + response.error);
+              } else {
+                this.facturas = response;
+                console.log("facturas with facado not null",this.facturas);
+                this.backupFacturas = Array.isArray(response) ? [...response] : [];
+                this.page = 0;
+                console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
+                console.log('raw facturas sample:', this.facturas[0]);
+              }
+            }, error: (err) => {
+              console.error('Facturas fetch error:', err);
+              this.facturaIsError = true;
+              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+              alert(this.facturaMessage);
+            }
+          });
+        } else if (estado === 'no-contabilizadas') {
+          console.log("no contabilizadas y hasta");
+          this.http.get<any>(`http://localhost:8080/api/fac/facfco-hasta-facado-null/${this.entcod}/${this.eje}/${hasta}`).subscribe({
+            next: (response) => {
+              if (response.error) {
+                alert('Error: ' + response.error);
+              } else {
+                this.facturas = response;
+                console.log("facturas with no contabilizadas",this.facturas);
+                this.backupFacturas = Array.isArray(response) ? [...response] : [];
+                this.page = 0;
+                console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
+                console.log('raw facturas sample:', this.facturas[0]);
+              }
+            }, error: (err) => {
+              console.error('Facturas fetch error:', err);
+              this.facturaIsError = true;
+              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+              alert(this.facturaMessage);
+            }
+          });
+        } else if ( estado === 'aplicadas') {
+          console.log("aplicadas y hasta");
+          this.http.get<any>(`http://localhost:8080/api/fac/facfco-hasta-facado-aplicadas/${this.entcod}/${this.eje}/${hasta}`).subscribe({
+            next: (response) => {
+              if (response.error) {
+                alert('Error: ' + response.error);
+              } else {
+                this.facturas = response;
+                console.log("facturas with no contabilizadas",this.facturas);
+                this.backupFacturas = Array.isArray(response) ? [...response] : [];
+                this.page = 0;
+                console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
+                console.log('raw facturas sample:', this.facturas[0]);
+              }
+            }, error: (err) => {
+              console.error('Facturas fetch error:', err);
+              this.facturaIsError = true;
+              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+              alert(this.facturaMessage);
+            }
+          });
+        } else if (estado === 'sin-aplicadas') {
+          console.log("sin aplicadas y hasta");
+          this.http.get<any>(`http://localhost:8080/api/fac/facfco-hasta-facado-sinaplicadas/${this.entcod}/${this.eje}/${hasta}`).subscribe({
+            next: (response) => {
+              if (response.error) {
+                alert('Error: ' + response.error);
+              } else {
+                this.facturas = response;
+                console.log("facturas with no contabilizadas",this.facturas);
+                this.backupFacturas = Array.isArray(response) ? [...response] : [];
+                this.page = 0;
+                console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
+                console.log('raw facturas sample:', this.facturas[0]);
+              }
+            }, error: (err) => {
+              console.error('Facturas fetch error:', err);
+              this.facturaIsError = true;
+              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+              alert(this.facturaMessage);
+            }
+          });
+        } else {
+          console.log("hasta y no estados");
+            this.http.get<any>(`http://localhost:8080/api/fac/facfco-hasta/${this.entcod}/${this.eje}/${hasta}`).subscribe({
+            next: (response) => {
+              if (response.error) {
+                alert('Error: ' + response.error);
+              } else {
+                this.facturas = response;
+                console.log("facturas hasta",this.facturas);
+                this.backupFacturas = Array.isArray(response) ? [...response] : [];
+                this.page = 0;
+                console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
+                console.log('raw facturas sample:', this.facturas[0]);
+              }
+            }, error: (err) => {
+              console.error('Facturas fetch error:', err);
+              this.facturaIsError = true;
+              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+              alert(this.facturaMessage);
+            }
+          });
+        }
+      }
+      if (desde && hasta){
+        if (estado === 'contabilizadas') {
+          console.log("contabilizada y hasta y dsde")
+          this.http.get<any>(`http://localhost:8080/api/fac/facfco-range-facado-notnull/${this.entcod}/${this.eje}/${desde}/${hasta}`).subscribe({
+            next: (response) => {
+              if (response.error) {
+                alert('Error: ' + response.error);
+              } else {
+                this.facturas = response;
+                console.log("facturas with facado not null",this.facturas);
+                this.backupFacturas = Array.isArray(response) ? [...response] : [];
+                this.page = 0;
+                console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
+                console.log('raw facturas sample:', this.facturas[0]);
+              }
+            }, error: (err) => {
+              console.error('Facturas fetch error:', err);
+              this.facturaIsError = true;
+              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+              alert(this.facturaMessage);
+            }
+          });
+        } else if (estado === 'no-contabilizadas') {
+          console.log("no contabilizadas y hasta y desde");
+          this.http.get<any>(`http://localhost:8080/api/fac/facfco-range-facado-null/${this.entcod}/${this.eje}/${desde}/${hasta}`).subscribe({
+            next: (response) => {
+              if (response.error) {
+                alert('Error: ' + response.error);
+              } else {
+                this.facturas = response;
+                console.log("facturas with no contabilizadas",this.facturas);
+                this.backupFacturas = Array.isArray(response) ? [...response] : [];
+                this.page = 0;
+                console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
+                console.log('raw facturas sample:', this.facturas[0]);
+              }
+            }, error: (err) => {
+              console.error('Facturas fetch error:', err);
+              this.facturaIsError = true;
+              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+              alert(this.facturaMessage);
+            }
+          });
+        } else if ( estado === 'aplicadas') {
+          console.log("aplicadas y hasta y hasta y desde");
+          this.http.get<any>(`http://localhost:8080/api/fac/facfco-range-facado-aplicadas/${this.entcod}/${this.eje}/${desde}/${hasta}`).subscribe({
+            next: (response) => {
+              if (response.error) {
+                alert('Error: ' + response.error);
+              } else {
+                this.facturas = response;
+                console.log("facturas with no contabilizadas",this.facturas);
+                this.backupFacturas = Array.isArray(response) ? [...response] : [];
+                this.page = 0;
+                console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
+                console.log('raw facturas sample:', this.facturas[0]);
+              }
+            }, error: (err) => {
+              console.error('Facturas fetch error:', err);
+              this.facturaIsError = true;
+              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+              alert(this.facturaMessage);
+            }
+          });
+        } else if (estado === 'sin-aplicadas') {
+          console.log("sin aplicadas y hasta y desde");
+          this.http.get<any>(`http://localhost:8080/api/fac/facfco-range-facado-sinaplicadas/${this.entcod}/${this.eje}/${desde}/${hasta}`).subscribe({
+            next: (response) => {
+              if (response.error) {
+                alert('Error: ' + response.error);
+              } else {
+                this.facturas = response;
+                console.log("facturas with no contabilizadas",this.facturas);
+                this.backupFacturas = Array.isArray(response) ? [...response] : [];
+                this.page = 0;
+                console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
+                console.log('raw facturas sample:', this.facturas[0]);
+              }
+            }, error: (err) => {
+              console.error('Facturas fetch error:', err);
+              this.facturaIsError = true;
+              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+              alert(this.facturaMessage);
+            }
+          });
+        } else {
+          console.log("desde y hasta no estado");
+          this.http.get<any>(`http://localhost:8080/api/fac/facfco-range/${this.entcod}/${this.eje}/${desde}/${hasta}`).subscribe({
+            next: (response) => {
+              if (response.error) {
+                alert('Error: ' + response.error);
+              } else {
+                this.facturas = response;
+                console.log("facturas desde hasta",this.facturas);
+                this.backupFacturas = Array.isArray(response) ? [...response] : [];
+                this.page = 0;
+                console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
+                console.log('raw facturas sample:', this.facturas[0]);
+              }
+            }, error: (err) => {
+              console.error('Facturas fetch error:', err);
+              this.facturaIsError = true;
+              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+              alert(this.facturaMessage);
+            }
+          });
+        }
+      }
     } else {
       this.filterFacturaMessage = 'Tipo de fecha desconocido.';
     }
