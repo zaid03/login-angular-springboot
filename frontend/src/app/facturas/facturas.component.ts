@@ -347,7 +347,50 @@ export class FacturasComponent {
               alert(this.facturaMessage);
             }
           });
+        } else if ( estado === 'aplicadas') {
+          console.log("aplicadas");
+          this.http.get<any>(`http://localhost:8080/api/fac/facfre-desde-facado-aplicadas/${this.entcod}/${this.eje}/${desde}`).subscribe({
+            next: (response) => {
+              if (response.error) {
+                alert('Error: ' + response.error);
+              } else {
+                this.facturas = response;
+                console.log("facturas with no contabilizadas",this.facturas);
+                this.backupFacturas = Array.isArray(response) ? [...response] : [];
+                this.page = 0;
+                console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
+                console.log('raw facturas sample:', this.facturas[0]);
+              }
+            }, error: (err) => {
+              console.error('Facturas fetch error:', err);
+              this.facturaIsError = true;
+              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+              alert(this.facturaMessage);
+            }
+          });
+        } else if (estado === 'sin-aplicadas') {
+          console.log("sin aplicadas");
+          this.http.get<any>(`http://localhost:8080/api/fac/facfre-desde-facado-sinaplicadas/${this.entcod}/${this.eje}/${desde}`).subscribe({
+            next: (response) => {
+              if (response.error) {
+                alert('Error: ' + response.error);
+              } else {
+                this.facturas = response;
+                console.log("facturas with no contabilizadas",this.facturas);
+                this.backupFacturas = Array.isArray(response) ? [...response] : [];
+                this.page = 0;
+                console.log('paginatedFacturas sample:', this.paginatedFacturas[0]);
+                console.log('raw facturas sample:', this.facturas[0]);
+              }
+            }, error: (err) => {
+              console.error('Facturas fetch error:', err);
+              this.facturaIsError = true;
+              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+              alert(this.facturaMessage);
+            }
+          });
         } else {
+          console.log("no estado");
             this.http.get<any>(`http://localhost:8080/api/fac/facfre-desde/${this.entcod}/${this.eje}/${desde}`).subscribe({
             next: (response) => {
               if (response.error) {
