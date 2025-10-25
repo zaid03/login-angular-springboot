@@ -31,6 +31,10 @@
                         class="option-search" 
                         placeholder="Ingrese Centro Gestor"
                         [(ngModel)]="centroGestor"
+                        maxlength="4"
+                        pattern="[A-Za-z0-9]*"
+                        style="text-transform: uppercase;"
+                        (input)="onCentroGestorInput($event)"
                     />
                 </div>
             </form>

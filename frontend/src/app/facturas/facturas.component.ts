@@ -280,8 +280,13 @@ export class FacturasComponent {
     if (sanitized !== this.facturaSearch) {
       this.facturaSearch = sanitized;
     }
-    if (input.value !== sanitized) {
-      input.value = sanitized;
+  }
+
+  onCentroGestorInput(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const sanitized = (input.value || '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 4);
+    if (sanitized !== this.centroGestor) {
+      this.centroGestor = sanitized;
     }
   }
 
@@ -293,25 +298,30 @@ export class FacturasComponent {
     console.log(estado);
     const desde = this.fromDate && this.fromDate.trim() ? this.fromDate : '';
     const hasta = this.toDate && this.toDate.trim() ? this.toDate : '';
-    const facann = this.facturaSearch;
+    const facann = (this.facturaSearch || '').toString().trim();
+    const cgeq = (this.centroGestor || '').toString().trim();
     console.log('facturaSearch:', this.facturaSearch);
-    console.log(facann);
+    console.log('centroGestor:', this.centroGestor);
 
-    if (facann && facann.toString().trim() !== '') {
-      const q = facann.toString().trim();
+    if ((facann && facann !== '') || (cgeq && cgeq !== '')) {
       const source = (this.backupFacturas && this.backupFacturas.length) ? this.backupFacturas : this.facturas;
       const filtered = source.filter(f => {
-        const val = (f.facann ?? f.FACANN ?? '').toString();
-        return val === q;
+        const valFac = (f.facann ?? f.FACANN ?? '').toString();
+        const valCge = (f.cgecod ?? f.CGECOD ?? '').toString();
+        if (facann && cgeq) {
+          return valFac === facann && valCge === cgeq;
+        } else if (facann) {
+          return valFac === facann;
+        } else {
+          return valCge === cgeq;
+        }
       });
       this.facturas = filtered;
       this.page = 0;
-      this.filterFacturaMessage = `Filtrado local por FACANN = ${q}. ${filtered.length} registro(s).`;
-      return;
-    }
-
-    if (!tipo) {
-      this.filterFacturaMessage = 'No ha seleccionado un tipo de fecha (Registro, Factura o Contable).';
+      const parts = [];
+      if (facann) parts.push(`FACANN = ${facann}`);
+      if (cgeq) parts.push(`C.Gestor = ${cgeq}`);
+      this.filterFacturaMessage = `Filtrado local por ${parts.join(' y ')}. ${filtered.length} registro(s).`;
       return;
     }
 
