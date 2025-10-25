@@ -18,6 +18,7 @@ export class FacturasComponent {
   private entcod: number | null = null;
   private eje: number | null = null;
   public centroGestor: string = '';
+  public centroGestorTouched: boolean = false;
   facturas: any[] = [];
   private backupFacturas: any[] = [];
   page = 0;
@@ -289,6 +290,7 @@ export class FacturasComponent {
     if (sanitized !== this.centroGestor) {
       this.centroGestor = sanitized;
     }
+    this.centroGestorTouched = true;
   }
   
   filterFacturas(){
@@ -300,7 +302,7 @@ export class FacturasComponent {
     const desde = this.fromDate && this.fromDate.trim() ? this.fromDate : '';
     const hasta = this.toDate && this.toDate.trim() ? this.toDate : '';
     const facann = (this.facturaSearch || '').toString().trim();
-    const cgeq = (this.centroGestor || '').toString().trim();
+    const cgeq = this.centroGestorTouched ? (this.centroGestor || '').toString().trim() : '';
     console.log('facturaSearch:', this.facturaSearch);
     console.log('centroGestor:', this.centroGestor);
     const searchRaw = (this.searchQuery || '').toString().trim();
