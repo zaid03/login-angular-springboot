@@ -375,7 +375,6 @@ export class FacturasComponent {
             }
           });
         } else if ( estado === 'aplicadas') {
-          console.log("aplicadas");
           this.http.get<any>(`http://localhost:8080/api/fac/facfre-desde-facado-aplicadas/${this.entcod}/${this.eje}/${desde}`).subscribe({
             next: (response) => {
               if (response.error) {
