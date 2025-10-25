@@ -19,6 +19,9 @@ export class FacturasComponent {
   private eje: number | null = null;
   public centroGestor: string = '';
   public centroGestorTouched: boolean = false;
+  public facturaSearchTouched: boolean = false;
+  public searchQueryTouched: boolean = false;
+  private initialCentroGestor: string = '';
   facturas: any[] = [];
   private backupFacturas: any[] = [];
   page = 0;
@@ -47,6 +50,7 @@ export class FacturasComponent {
       console.warn('Failed to parse selected_centro_gestor:', e);
     }
     console.log(this.centroGestor);
+    this.initialCentroGestor = this.centroGestor;
 
     if (entidad) {
       const parsed = JSON.parse(entidad);
@@ -282,6 +286,7 @@ export class FacturasComponent {
     if (sanitized !== this.facturaSearch) {
       this.facturaSearch = sanitized;
     }
+    this.facturaSearchTouched = true;
   }
 
   onCentroGestorInput(event: Event) {
@@ -1369,6 +1374,56 @@ export class FacturasComponent {
       }
     } else {
       this.filterFacturaMessage = 'Tipo de fecha desconocido.';
+    }
+  }
+
+  forgetAll(): void{
+    this.facturaSearch = '';
+    this.searchQuery = '';
+    // restore centroGestor to initial session default but mark as untouched
+    this.centroGestor = this.initialCentroGestor || '';
+    this.centroGestorTouched = false;
+    this.facturaSearchTouched = false;
+    this.searchQueryTouched = false;
+
+    // reset date / state filters
+    this.fechaTipo = '';
+    this.estadoTipo = '';
+    this.fromDate = '';
+    this.toDate = '';
+    this.filterFacturaMessage = '';
+    this.facturaMessage = '';
+    this.page = 0;
+
+    // ensure inputs are visually reset (guard against other code writing input.value)
+    setTimeout(() => {
+      const ejeInput = document.querySelector('input[name="factura"]') as HTMLInputElement | null;
+      if (ejeInput) ejeInput.value = '';
+      const searchInput = document.querySelector('input[name="search"]') as HTMLInputElement | null;
+      if (searchInput) searchInput.value = '';
+      const cgeInput = document.querySelector('input[name="Gestor"]') as HTMLInputElement | null;
+      if (cgeInput) cgeInput.value = this.centroGestor;
+    }, 0);
+
+    // restore data from backup if available, otherwise re-fetch from server
+    if (this.backupFacturas && this.backupFacturas.length) {
+      this.facturas = [...this.backupFacturas];
+      return;
+    }
+
+    if (this.entcod !== null && this.eje !== null) {
+      this.http.get<any>(`http://localhost:8080/api/fac/${this.entcod}/${this.eje}`).subscribe({
+        next: (response) => {
+          this.facturas = response;
+          this.backupFacturas = Array.isArray(response) ? [...response] : [];
+          this.page = 0;
+        },
+        error: (err) => {
+          console.error('Facturas re-fetch error:', err);
+          this.facturaIsError = true;
+          this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+        }
+      });
     }
   }
 }
