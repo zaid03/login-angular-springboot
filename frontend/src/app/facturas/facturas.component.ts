@@ -291,7 +291,6 @@ export class FacturasComponent {
     }
   }
   
-
   filterFacturas(){
     this.facturaMessage = '';
     this.filterFacturaMessage = '';
@@ -304,29 +303,73 @@ export class FacturasComponent {
     const cgeq = (this.centroGestor || '').toString().trim();
     console.log('facturaSearch:', this.facturaSearch);
     console.log('centroGestor:', this.centroGestor);
-    const search = (this.searchQuery || '').toString().trim();
-    console.log('searchQuery:', search);
+    const searchRaw = (this.searchQuery || '').toString().trim();
+    console.log('searchQuery raw:', searchRaw);
 
-    if (facann || cgeq || search) {
-        const source = (this.backupFacturas && this.backupFacturas.length) ? this.backupFacturas : this.facturas;
-      const searchUp = search.toUpperCase();
+    // determine search type
+    const searchDigits = searchRaw.replace(/\D/g, '');
+    const hasLetters = /[A-Za-z]/.test(searchRaw);
+    const hasDigits = /\d/.test(searchRaw);
+    const NIF_MIN_DIGITS = 5; // threshold value (logic uses strictly greater than this)
+    // require strictly more than 5 digits for substring TERNIF search
+    const doNifSearch = !hasLetters && hasDigits && searchDigits.length > NIF_MIN_DIGITS;
+    // require strictly more than 5 total chars (letters+digits) for alphanumeric substring search
+    const doAlphaNumSearch = hasLetters && hasDigits && searchRaw.length > NIF_MIN_DIGITS;
+    // digits-only with length 1..5 -> exact match on TERCOD or TERADO
+    const doShortDigitsExact = !hasLetters && hasDigits && searchDigits.length > 0 && searchDigits.length <= NIF_MIN_DIGITS;
+    // fallback: any searchRaw that didn't match other rules (e.g. letters-only) -> search TERNOM/FACDOC by substring
+    const doFallbackTextSearch = searchRaw.length > 0 && !doNifSearch && !doAlphaNumSearch && !doShortDigitsExact;
+    console.log('searchDigits:', searchDigits, 'doNifSearch:', doNifSearch, 'doAlphaNumSearch:', doAlphaNumSearch, 'doShortDigitsExact:', doShortDigitsExact, 'doFallbackTextSearch:', doFallbackTextSearch);
+
+    // Local filter when any of facann, centroGestor or search rules apply.
+    if (facann || cgeq || doNifSearch || doAlphaNumSearch || doShortDigitsExact || doFallbackTextSearch) {
+      const source = (this.backupFacturas && this.backupFacturas.length) ? this.backupFacturas : this.facturas;
+      const searchUp = searchRaw.toUpperCase();
       const filtered = source.filter(f => {
         const valFac = (f.facann ?? f.FACANN ?? '').toString();
         const valCge = (f.cgecod ?? f.CGECOD ?? '').toString();
         const valTernif = (f.ternif ?? f.TERNIF ?? '').toString().toUpperCase();
-       // Build checks dynamically
+        // exact checks for EJE / C.Gestor
         if (facann && valFac !== facann) return false;
         if (cgeq && valCge !== cgeq) return false;
-        if (search && !valTernif.includes(searchUp)) return false;
+
+        // short digits (1..5): exact match on TERCOD (numeric) OR TERADO (string)
+        if (doShortDigitsExact) {
+          const valTercod = (f.tercod ?? f.TERCOD ?? '').toString();
+          const valTerado = (f.terado ?? f.TERADO ?? '').toString().toUpperCase();
+          if (!(valTercod === searchDigits || valTerado === searchUp)) return false;
+        }
+        // numbers-only > 5 digits: substring in TERNIF using digits-only
+        else if (doNifSearch) {
+          if (!valTernif.includes(searchDigits)) return false;
+        }
+        // alphanumeric > 5 chars: substring search in TERNIF, TERNOM, FACDOC (case-insensitive)
+        else if (doAlphaNumSearch) {
+          const valTernom = (f.ternom ?? f.TERNOM ?? '').toString().toUpperCase();
+          const valFacdoc = (f.facdoc ?? f.FACDOC ?? '').toString().toUpperCase();
+          if (!(valTernif.includes(searchUp) || valTernom.includes(searchUp) || valFacdoc.includes(searchUp))) return false;
+        }
+        // fallback text search (e.g. letters-only): substring search in TERNOM and FACDOC
+        else if (doFallbackTextSearch) {
+          const valTernom = (f.ternom ?? f.TERNOM ?? '').toString().toUpperCase();
+          const valFacdoc = (f.facdoc ?? f.FACDOC ?? '').toString().toUpperCase();
+          if (!(valTernom.includes(searchUp) || valFacdoc.includes(searchUp))) return false;
+        }
+
         return true;
       });
+
       this.facturas = filtered;
       this.page = 0;
       const parts = [];
       if (facann) parts.push(`FACANN = ${facann}`);
       if (cgeq) parts.push(`C.Gestor = ${cgeq}`);
-      if (search) parts.push(`Ternif contains "${search}"`);
-      this.filterFacturaMessage = `Filtrado local por ${parts.join(' y ')}. ${filtered.length} registro(s).`;
+      if (doShortDigitsExact) parts.push(`TERCOD = ${searchDigits} OR TERADO = "${searchRaw}"`);
+      else if (doNifSearch) parts.push(`TERNIF contains "${searchDigits}"`);
+      else if (doAlphaNumSearch) parts.push(`TERNIF/TERNOM/FACDOC contains "${searchRaw}"`);
+      else if (doFallbackTextSearch) parts.push(`TERNOM/FACDOC contains "${searchRaw}"`);
+      else if (searchRaw) parts.push(`Search ignored (need more than ${NIF_MIN_DIGITS} digits or alphanumeric length > ${NIF_MIN_DIGITS})`);
+      this.filterFacturaMessage = `Filtered locally by ${parts.join(' and ')}. ${filtered.length} record(s).`;
       return;
     }
 
