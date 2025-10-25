@@ -10,7 +10,13 @@
         <h2>Lista de Facturas</h2> 
         <div class="facturas-search">   
             <form class="search-form">
-                <input type="text" class="search-bar" placeholder="Buscar factura" name="search">
+                <input 
+                    type="text" 
+                    class="search-bar" 
+                    placeholder="Buscar factura" 
+                    name="search"
+                    [(ngModel)]="searchQuery"
+                >
                 <div class="search-options">
                     <label for="registro" class="ej-factura">Ej Factura</label>
                     <input 
@@ -92,7 +98,7 @@
                     <div class="option">
                         <input 
                             type="radio" 
-                            name="contabilizadas" 
+                            name="estado" 
                             class="fecha-dato"
                             [(ngModel)] = "estadoTipo"
                             value="contabilizadas" 
@@ -102,7 +108,7 @@
                     <div class="option">
                         <input 
                             type="radio" 
-                            name="no-contabilizadas" 
+                            name="estado" 
                             class="fecha-dato" 
                             [(ngModel)] = "estadoTipo"
                             value="no-contabilizadas"
@@ -112,7 +118,7 @@
                     <div class="option">
                         <input 
                             type="radio" 
-                            name="aplicadas" 
+                            name="estado" 
                             class="fecha-dato" 
                             [(ngModel)] = "estadoTipo"
                             value="aplicadas"
@@ -122,7 +128,7 @@
                     <div class="option">
                         <input 
                             type="radio" 
-                            name="sin-aplicadas" 
+                            name="estado" 
                             class="fecha-dato" 
                             [(ngModel)] = "estadoTipo"
                             value="sin-aplicadas" 
@@ -132,7 +138,7 @@
                     <div class="option">
                         <input 
                             type="radio" 
-                            name="todas" 
+                            name="estado" 
                             class="fecha-dato" 
                             checked
                         > 
