@@ -116,4 +116,18 @@ export class CreditoComponent {
       this.page = inputPage - 1;
     }
   }
+
+  selectedBolsas: any = null;
+  detallesMessage: String = '';
+  dettalesIsError: boolean = false;
+
+  showDetails(factura: any) {
+    this.selectedBolsas = factura;
+  }
+
+  closeDetails() {
+    this.selectedBolsas = null;
+    this.dettalesIsError = false;
+    this.detallesMessage = '';
+  }
 }
