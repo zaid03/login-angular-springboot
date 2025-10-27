@@ -130,4 +130,29 @@ export class CreditoComponent {
     this.dettalesIsError = false;
     this.detallesMessage = '';
   }
+
+  public getkCGECIC(cgecic: any): string {
+    const toNum = (v: any) => {
+      if (v === null || v === undefined || v === '') return 0;
+      const n = Number(v);
+      return isNaN(n) ? 0 : n;
+    };
+    const a = toNum(cgecic);
+    if (a === 0) return 'No';
+    if ( a === 1) return 'Si';
+    if ( a === 2) return 'Cierre para contabilizar';
+    return '';
+  }
+
+  public getKBoldis(gbsimp: any, gbsibg: any, gbsius: any): string {
+    const toNum = (v: any) => {
+      if (v === null || v === undefined || v === '') return 0;
+      const n = Number(v);
+      return isNaN(n) ? 0 : n;
+    };
+    const a = toNum(gbsimp)
+    const b = toNum(gbsibg);
+    const c = toNum(gbsius);
+    return (a + b -c).toFixed();
+  }
 }

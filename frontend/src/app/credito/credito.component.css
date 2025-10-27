@@ -304,6 +304,7 @@ app-sidebar {
 
 .title{
     width: 100%;
+    color: #1c5d8c;
 }
 
 .first-data p, .second-row p, .third-data p, .fourth-data p, .fifth-data p, .fifth-data-special p {
@@ -350,7 +351,7 @@ app-sidebar {
 }
 
 @media (max-width: 1380px) {
-    .fourth-data p, .fifth-data p, .fifth-data-special p, .fourth-data-special p {
+    .fourth-data p, .fifth-data p, .fifth-data-special p, .fourth-data-special p{
         width: 100%;
         font-size: 13px;
     }

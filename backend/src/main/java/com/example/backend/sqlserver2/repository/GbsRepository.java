@@ -30,7 +30,8 @@ public interface  GbsRepository extends JpaRepository<Gbs, GbsId>{
             T2.GBSIUS   AS GBSIUS, 
             T2.GBSICO   AS GBSICO, 
             T2.GBSIUT   AS GBSIUT, 
-            T2.GBSICT   AS GBSICT
+            T2.GBSICT   AS GBSICT,
+            T2.GBS413   AS GBS413
         FROM CGE T1
         JOIN GBS T2
           ON T1.ENT = T2.ENT

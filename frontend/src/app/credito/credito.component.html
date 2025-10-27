@@ -75,12 +75,12 @@
                     <div class="first-row">
                         <div class="first-data">
                             <p>Centro Gestor:</p>
-                            <h5>cgecod</h5>
-                            <h5>cgedes</h5>
+                            <h5>{{ selectedBolsas.cgecod }}</h5>
+                            <h5>{{ selectedBolsas.cgedes}}</h5>
                         </div>
                         <div class="first-data">
                             <p>Cerrado:</p>
-                            <h5>Kcgdcic</h5>
+                            <h5>{{ getkCGECIC(selectedBolsas.cgecic) }}</h5>
                         </div>
                     </div>
                     <div class="second-row">
@@ -94,17 +94,17 @@
                     <div class="third-row">
                         <div class="third-data">
                             <p>Applicación:</p>
-                            <h5>gsborg - gbsfun - gbseco</h5>
-                            <h5>Kapldes</h5>
+                            <h5>{{ selectedBolsas.gbsorg }} - {{ selectedBolsas.gbsfun }} - {{ selectedBolsas.gbseco }}</h5>
+                            <h5>Kapldes!</h5>
                         </div>
                         <div class="third-data">
                             <div class="third-data-special">
                                 <p>Fecha bolsa</p>
-                                <h5>gbsfop</h5>
+                                <h5>{{ selectedBolsas.gbsfop | date: 'dd/MM/yyyy hh:mm' }}</h5>
                             </div>
                             <div class="third-data-special">
                                 <p>Suplemento 413</p>
-                                <h5>gbs413</h5>
+                                <h5>{{ selectedBolsas.gbs413 }}</h5>
                             </div>
                         </div>
                     </div>
@@ -112,42 +112,42 @@
                         <div class="fourth-data">
                             <div class="fourth-data-special">
                                 <p>Operación</p>
-                                <h5>gbsope</h5>
+                                <h5>{{ selectedBolsas.gbsope }}</h5>
                             </div>
                             <div class="fourth-data-special">
                                 <p>Referencia</p>
-                                <h5>gbsref</h5>
+                                <h5>{{ selectedBolsas.gbsref }}</h5>
                             </div>
                             <div class="fourth-data-special">
                                 <p>Importe Op.</p>
-                                <h5>kopelmp</h5>
+                                <h5>kopelmp!</h5>
                             </div>
                         </div>
                         <div class="fourth-data bordering">
                             <div class="fourth-data-special">
                                 <p>Importe bolsa</p>
-                                <h5>gbsimp</h5>
+                                <h5>{{ selectedBolsas.gbsimp }}</h5>
                             </div>
                             <div class="fourth-data-special">
                                 <h5 class="ope">+</h5>
                             </div>
                             <div class="fourth-data-special">
                                 <p>Importe bolsa gestion</p>
-                                <h5>gbsibg</h5>
+                                <h5>{{ selectedBolsas.gbsibg }}</h5>
                             </div>
                             <div class="fourth-data-special">
                                 <h5 class="ope">-</h5>
                             </div>
                             <div class="fourth-data-special">
                                 <p>Usado bolsa</p>
-                                <h5>gbsius</h5>
+                                <h5>{{ selectedBolsas.gbsius }}</h5>
                             </div>
                             <div class="fourth-data-special">
                                 <h5 class="ope">=</h5>
                             </div>
                             <div class="fourth-data-special">
                                 <p>Disponible bolsa</p>
-                                <h5>Kboldis</h5>
+                                <h5>{{ getKBoldis(selectedBolsas.gbsimp, selectedBolsas.gbsibg, selectedBolsas.gbsius) }}</h5>
                             </div>
                         </div>
                     </div>
@@ -162,14 +162,14 @@
                             </div>
                             <div class="fifth-data-special">
                                 <p>Pte. conta SCAP</p>
-                                <h5>kaspeco</h5>
+                                <h5>{{ getkAcPeCo(selectedBolsas.gbsiut, selectedBolsas.gbsict) }}</h5>
                             </div>
                             <div class="fifth-data-special-math">
                                 <h5 class="ope">=</h5>
                             </div>
                             <div class="fifth-data-special">
                                 <p>Disponible</p>
-                                <h5>kdispon</h5>
+                                <h5>kdispon!</h5>
                             </div>
                         </div>
 
@@ -180,24 +180,23 @@
                             <div class="fifth-data-special-container">
                                 <div class="fifth-data-special">
                                     <p>Gastado Total</p>
-                                    <h5>gbsiut</h5>
+                                    <h5>{{ selectedBolsas.gbsiut }}</h5>
                                 </div>
-                            <div class="fifth-data-special-math">
-                                <h5 class="opee">-</h5>
+                                <div class="fifth-data-special-math">
+                                    <h5 class="opee">-</h5>
+                                </div>
+                                <div class="fifth-data-special">
+                                    <p>Contabilizaado Total</p>
+                                    <h5>{{ selectedBolsas.gbsict }}</h5>
+                                </div>
+                                <div class="fifth-data-special-math">
+                                    <h5 class="opee">=</h5>
+                                </div>
+                                <div class="fifth-data-special">
+                                    <p>Pte. Contabilizar SCAP</p>
+                                    <h5>{{ getkAcPeCo(selectedBolsas.gbsiut, selectedBolsas.gbsict) }}</h5>
+                                </div>
                             </div>
-                            <div class="fifth-data-special">
-                                <p>Contabilizaado Total</p>
-                                <h5>Gbsist</h5>
-                            </div>
-                            <div class="fifth-data-special-math">
-                                <h5 class="opee">=</h5>
-                            </div>
-                            <div class="fifth-data-special">
-                                <p>Pte. Contabilizar SCAP</p>
-                                <h5>kaspeco</h5>
-                            </div>
-                            </div>
-                            
                         </div>
                     </div>
                 </div>

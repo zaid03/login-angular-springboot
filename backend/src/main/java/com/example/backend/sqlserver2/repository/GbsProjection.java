@@ -18,4 +18,5 @@ public interface GbsProjection {
     Double getGBSICO();
     Double getGBSIUT();
     Double getGBSICT();
+    Double getGBS413();
 }
