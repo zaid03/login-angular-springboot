@@ -18,14 +18,14 @@
                 >
                 <button class="search-button">Buscar</button>
             </form>
-            <h1 style="margin-top: 2%; font-family: inherit; color: red; font-size: inherit;">test</h1>
+            <h1 style="margin-top: 2%; font-family: inherit; color: red; font-size: inherit;">{{ searchMessage }}</h1>
         </div>
         <div class="credito-download">
             <button class="download-btn" >Descargar como PDF</button>
             <button class="download-btn" >Descargar como CSV</button>
         </div>
         <div class="credito-list">
-            <h1 style="font-family: inherit; color: red; font-size: inherit;" id="error"></h1>
+            <h1 style="margin-bottom:2%; font-family: inherit; color: red; font-size: inherit;" id="error">{{ tableMessage }}</h1>
             <table class="credito-table">
                 <thead>
                     <tr>
@@ -40,31 +40,32 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>data1</td>
-                        <td>data2</td>
-                        <td>data3</td>
-                        <td>data4</td>
-                        <td>data5</td>
-                        <td>data6</td>
-                        <td>data7</td>
-                        <td>data8</td>
+                    <tr *ngFor="let p of paginatedFacturas">
+                        <td>{{ p.gbsorg }} - {{ p.gbsfun }} - {{ p.gbseco}}</td>
+                        <td>web serice</td>
+                        <td>{{ p.gbsope }}</td>
+                        <td>{{ p.gbsref }}</td>
+                        <td>web serice</td>
+                        <td>web serice</td>
+                        <td>{{ getkAcPeCo(p.gbsiut, p.gbsict)}}</td>
+                        <td>to be counted after web service is done</td>
                     </tr>
                 </tbody>
             </table>
             <div class="pagination-controls">
-                <button >Anterior</button>
+                <button (click)="prevPage()" [disabled]="page === 0">Anterior</button>
                 <span>Página</span>
                 <input
                 type="number"
                 min="1"
-               
-
-
+                [max]="totalPages"
+                [value]="page + 1"
+                (change)="goToPage($event)"
+                class="pagination-input"
                 class="pagination-input"
                 />
-                <span>de</span>
-                <button >Siguiente</button>
+                <span>de {{ totalPages }}</span>
+                <button (click)="nextPage()" [disabled]="page + 1 >= totalPages">Siguiente</button>
             </div>
         </div>
     </div>

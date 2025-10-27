@@ -13,29 +13,107 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
   styleUrls: ['./credito.component.css']
 })
 export class CreditoComponent {
+  private entcod: number | null = null;
+  private eje: number | null = null;
+  public centroGestor: string = '';
+  private initialCentroGestor: string = '';
+  creditos: any[] = [];
+  private backupCreditos: any[] = [];
+  public Math = Math;
   page = 0;
   pageSize = 20;
+  searchMessage: string = '';
+  searchIsError: boolean = false;
+  tableMessage: string = '';
+  tableIsError: boolean = false;
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  // get paginatedFacturas(): any[] {
-  //   if (!this.facturas || this.facturas.length === 0) return [];
-  //   const start = this.page * this.pageSize;
-  //   return this.facturas.slice(start, start + this.pageSize);
-  // }
-  // get totalPages(): number {
-  //   // return Math.max(1, Math.ceil((this.facturas?.length ?? 0) / this.pageSize));
-  // }
-  // prevPage(): void {
-  //   if (this.page > 0) this.page--;
-  // }
-  // nextPage(): void {
-  //   if (this.page < this.totalPages - 1) this.page++;
-  // }
-  // goToPage(event: any): void {
-  //   const inputPage = Number(event.target.value);
-  //   if (inputPage >= 1 && inputPage <= this.totalPages) {
-  //     this.page = inputPage - 1;
-  //   }
-  // }
+  ngOnInit(): void {
+    this.tableIsError = false;
+    const entidad = sessionStorage.getItem('Entidad');
+    const eje = sessionStorage.getItem('selected_ejercicio');
+    const cge = sessionStorage.getItem("selected_centro_gestor");
+
+    try {
+      if (cge) {
+        const parsed = JSON.parse(cge);
+        if (parsed && typeof parsed === 'object') {
+          this.centroGestor = parsed.cgecod;
+        } else {
+          this.centroGestor = String(parsed);
+        }
+      }
+    } catch (e) {
+      console.warn('Failed to parse selected_centro_gestor:', e);
+    }
+    this.initialCentroGestor = this.centroGestor;
+
+    if (entidad) {
+      const parsed = JSON.parse(entidad);
+      this.entcod = parsed.ENTCOD;
+    }
+    if (eje) {
+      const parsed = JSON.parse(eje);
+      this.eje = parsed.eje;
+    }
+
+    if (!entidad || this.entcod === null || !eje || this.eje === null) {
+      sessionStorage.clear();
+      alert('You must be logged in to access this page.');
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    console.log(this.entcod, this.eje, this.centroGestor);
+
+    this.http.get<any>(`http://localhost:8080/api/gbs/${this.entcod}/${this.eje}/${this.centroGestor}`).subscribe({
+      next: (response) => {
+        if (response.error) {
+          alert('Error: ' + response.error);
+        } else {
+          this.creditos = response;
+          console.log(this.creditos);
+          this.backupCreditos = Array.isArray(response) ? [...response] : [];
+          this.page = 0;
+        }
+      }, error: (err) => {
+        this.tableIsError = true;
+        this.tableMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+        alert(this.tableMessage);
+      }
+    });
+  }
+
+  public getkAcPeCo(gbsiut: any, gbsict: any): string {
+    const toNum = (v: any) => {
+      if (v === null || v === undefined || v === '') return 0;
+      const n = Number(v);
+      return isNaN(n) ? 0 : n;
+    };
+    const a = toNum(gbsiut);
+    const b = toNum(gbsict);
+    return (a - b).toFixed();
+  }
+
+  get paginatedFacturas(): any[] {
+    if (!this.creditos || this.creditos.length === 0) return [];
+    const start = this.page * this.pageSize;
+    return this.creditos.slice(start, start + this.pageSize);
+  }
+  get totalPages(): number {
+    return Math.max(1, Math.ceil((this.creditos?.length ?? 0) / this.pageSize));
+  }
+  prevPage(): void {
+    if (this.page > 0) this.page--;
+  }
+  nextPage(): void {
+    if (this.page < this.totalPages - 1) this.page++;
+  }
+  goToPage(event: any): void {
+    const inputPage = Number(event.target.value);
+    if (inputPage >= 1 && inputPage <= this.totalPages) {
+      this.page = inputPage - 1;
+    }
+  }
 }
