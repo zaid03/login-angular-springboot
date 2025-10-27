@@ -26,31 +26,21 @@ public class Cge {
     @Column(nullable = false)
     private String CGEDES;
 
-    public Integer getENT() {
-        return ENT;
-    }
-    public void setENT(Integer ENT) {
-        this.ENT = ENT;
-    }
+    @Column(nullable = true)
+    private Integer CGECIC;
 
-    public String getEJE() {
-        return EJE;
-    }
-    public void setEJE(String EJE){
-        this.EJE = EJE;
-    }
+    public Integer getENT() { return ENT; }
+    public void setENT(Integer ENT) { this.ENT = ENT; }
 
-    public String getCGECOD(){
-        return CGECOD;
-    }
-    public void setCGECOD(String CGECOD) {
-        this.CGECOD = CGECOD;
-    }
+    public String getEJE() { return EJE; }
+    public void setEJE(String EJE){ this.EJE = EJE; }
 
-    public String getCGEDES() {
-    return CGEDES;
-    }
-    public void setCGEDES(String CGEDES) {
-        this.CGEDES = CGEDES;
-    }
+    public String getCGECOD(){ return CGECOD; }
+    public void setCGECOD(String CGECOD) { this.CGECOD = CGECOD; }
+
+    public String getCGEDES() { return CGEDES; }
+    public void setCGEDES(String CGEDES) { this.CGEDES = CGEDES; }
+
+    public Integer getCGECIC() { return CGECIC; }
+    public void setCGECIC() { this.CGECIC = CGECIC; }
 }

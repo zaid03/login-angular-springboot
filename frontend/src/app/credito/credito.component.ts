@@ -1,10 +1,14 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { SidebarComponent } from '../sidebar/sidebar.component';
 
 @Component({
   selector: 'app-credito',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule, FormsModule, SidebarComponent],
   templateUrl: './credito.component.html',
-  styleUrl: './credito.component.css'
+  styleUrls: ['./credito.component.css']
 })
 export class CreditoComponent {
 
