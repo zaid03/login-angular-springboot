@@ -101,6 +101,9 @@ export class DashboardComponent implements OnInit {
       case 'acFac':
         this.router.navigate(['/facturas']);
         break;
+      case 'acGBS':
+        this.router.navigate(['credito']);
+        break;
       default:
         console.warn('No route configured for code:', code);
     }

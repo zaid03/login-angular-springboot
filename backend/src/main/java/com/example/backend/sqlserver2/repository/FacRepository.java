@@ -12,7 +12,45 @@ import com.example.backend.sqlserver2.model.Fac;
 @Repository
 public interface FacRepository extends JpaRepository<Fac, Integer>{
     //for the main list
-    List<Fac> findByENTAndEJE(Integer ENT, String EJE);
+    @Query(value = """
+        SELECT
+            f.ENT    AS ENT,
+            f.EJE    AS EJE,
+            f.FACNUM AS FACNUM,
+            f.TERCOD AS TERCOD,
+            f.CGECOD AS CGECOD,
+            f.FACOBS AS FACOBS,
+            f.FACIMP AS FACIMP,
+            f.FACIEC AS FACIEC,
+            f.FACIDI AS FACIDI,
+            f.FACTDC AS FACTDC,
+            f.FACANN AS FACANN,
+            f.FACFAC AS FACFAC,
+            f.FACDOC AS FACDOC,
+            f.FACDAT AS FACDAT,
+            f.FACFCO AS FACFCO,
+            f.FACADO AS FACADO,
+            f.FACTXT AS FACTXT,
+            f.FACFRE AS FACFRE,
+            f.CONCTP AS CONCTP,
+            f.CONCPR AS CONCPR,
+            f.CONCCR AS CONCCR,
+            f.FACOCT AS FACOCT,
+            f.FACFPG AS FACFPG,
+            f.FACOPG AS FACOPG,
+            f.FACTPG AS FACTPG,
+            f.FACDTO AS FACDTO,
+            t.TERNOM AS TERNOM,
+            t.TERNIF AS TERNIF
+        FROM FAC f
+        INNER JOIN TER t
+          ON f.ENT = t.ENT
+         AND f.TERCOD = t.TERCOD
+        WHERE f.ENT = :ent
+          AND f.EJE = :eje
+        ORDER BY f.FACFRE ASC
+        """, nativeQuery = true)
+    List<Object[]> findByENTAndEJE(@Param("ent") Integer ent, @Param("eje") String eje);
 
     //Filter by facfre desde
     @Query(value = """

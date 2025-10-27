@@ -72,6 +72,9 @@ export class SidebarComponent {
       case 'acFac':
         this.router.navigate(['/facturas']);
         break;
+      case 'acGBS':
+        this.router.navigate(['credito']);
+        break;
       default:
         console.warn('No route configured for code:', code);
     }

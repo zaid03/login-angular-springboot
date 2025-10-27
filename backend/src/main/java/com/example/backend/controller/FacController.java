@@ -18,15 +18,6 @@ public class FacController {
     @Autowired
     private FacRepository facRepository;
 
-    //for the main list
-    @GetMapping("/{ent}/{eje}")
-    public ResponseEntity<?> getFacturas(
-        @PathVariable Integer ent,
-        @PathVariable String eje) 
-    {
-        return ResponseEntity.ok().body(facRepository.findByENTAndEJE(ent, eje));
-    }
-
     //helper for mapping
     private Map<String,Object> rowToMap(Object[] r) {
         Map<String,Object> m = new HashMap<>();
@@ -59,6 +50,20 @@ public class FacController {
         m.put("ternom",  r.length > 26 ? r[26] : null);
         m.put("ternif",  r.length > 27 ? r[27] : null);
         return m;
+    }
+
+    //for the main list
+    @GetMapping("/{ent}/{eje}")
+    public ResponseEntity<List<Map<String, Object>>> getFacturas(
+        @PathVariable Integer ent,
+        @PathVariable String eje) {
+            
+        List<Object[]> rows = facRepository.findByENTAndEJE(ent, eje);
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (Object[] r : rows) {
+            result.add(rowToMap(r));
+        }
+        return ResponseEntity.ok(result);
     }
 
     //Filter by facfre desde
