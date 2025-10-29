@@ -319,7 +319,7 @@ input.fecha-dato[type="radio"] {
   border-radius: 16px;
   box-shadow: 0 8px 32px rgba(44, 62, 80, 0.18), 0 1.5px 6px rgba(44,62,80,0.08);
   width: 90%;
-  max-height: 70vh;
+  max-height: 85vh;
   overflow-y: auto;
   font-family: inherit;
   animation: modalIn 0.22s cubic-bezier(.4,2,.6,1) both;
@@ -328,34 +328,6 @@ input.fecha-dato[type="radio"] {
   flex-direction: column;
   align-items: stretch;
   z-index: 3000 !important;
-}
-
-.modal-row > div {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  gap: 18px;
-  margin-bottom: 0;
-  padding: 4px 0 0 0;
-}
-
-.modal-row > div strong {
-  margin-right: 0;
-  min-width: 70px;
-  flex-shrink: 0;
-  align-self: flex-start;
-}
-
-.modal-row label {
-  margin-left: 50px !important;
-  margin-bottom: 0;
-  display: inline-flex;
-  align-items: center;
-}
-
-@keyframes modalIn {
-  from { opacity: 0; transform: translateY(40px) scale(0.97);}
-  to   { opacity: 1; transform: none;}
 }
 
 .close-btn-fct {
@@ -371,91 +343,82 @@ input.fecha-dato[type="radio"] {
 }
 
 .modal h3 {
-  font-size: 1.5rem;
-  color: #1c5d8c;
-  margin-bottom: 18px;
-  text-align: center;
-  letter-spacing: 1px;
-  font-weight: 600;
-}
-
-.modal h1 {
-    font-size: 18px;
-    margin-bottom: 18px;
+    margin: 10px;
+    color: #1c5d8c;
     text-align: center;
-    letter-spacing: 1px;
-    font-weight: 600;
 }
 
-.modal-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 8px;
-  align-items: flex-start;
-  width: 100%;
-  justify-content: space-between;
+.first-row, .second-row, .third-row, .fourth-row, .fifth-row, .sixth-row{
+    display: flex;
+    margin: 10px;
 }
 
-
-.modal-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 8px;
-  align-items: flex-start;
-  width: 100%;
-  justify-content: space-between;
+.first-data, .second-data, .third-data, .fourth-data, .fifth-data, .sixth-data{
+    width: 100%;
+    height: auto;
+    margin-right: 2%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 1%;
 }
 
-
-.modal-row strong {
-  font-size: 0.98rem;
-  color: #1c5d8c;
-  font-weight: 500;
-  margin-bottom: 2px;
+.first-data p, .second-data p, .third-data p, .fourth-data p, .fifth-data p, .sixth-data p {
+    font-size: 14px;
+    font-weight: bold;
+    color: #1c5d8c;
 }
 
-.modal-row textarea {
-  width: 100%;
-  min-height: 48px;
-  border-radius: 6px;
-  border: 1px solid #cfd8dc;
-  padding: 6px 8px;
-  font-size: 1rem;
-  resize: vertical;
-  background: #f7fafd;
-  margin-top: 2px;
-}
-.modal-row input[type="checkbox"] {
-  accent-color: #1c5d8c;
-  width: 16px;
-  height: 16px;
-  margin-right: 6px;
+.first-data input[type="text"], .second-data input[type="text"], .third-data input[type="text"], .fourth-data input[type="text"], .fifth-data input[type="text"], .sixth-data input[type="text"] {
+    border: 1px solid #1c5d8c;
+    padding: 8px 6px;
+    border-radius: 6px;
+    max-width: 140px;
 }
 
-.modal-row label {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 1rem;
-  margin-top: 6px;
+.fifth-data input[type="text"], .sixth-data input[type="text"] {
+    min-width: 85%;
+    max-width: 100% !important;
 }
 
-.modal-row input[type="text"] {
-  width: 100%;
-  border-radius: 6px;
-  border: 1px solid #cfd8dc;
-  padding: 6px 8px;
-  font-size: 1rem;
-  background: #f7fafd;
+.first-data input[type="text"]:focus, .second-data input[type="text"]:focus, .third-data input[type="text"]:focus, .fourth-data input[type="text"]:focus, .fifth-data input[type="text"]:focus, .sixth-data input[type="text"]:focus {
+    border-color: #042b5a;
+    outline: none;
+    background: #fff;
 }
 
-.modal-row input[type="checkbox"].checkbox {
-  accent-color: #1c5d8c;
-  width: 18px;
-  height: 18px;
-  margin-right: 6px;
-  margin-top: 0;
-  margin-bottom: 0;
+@media (max-width: 1270px) {
+  .first-row, .second-row, .third-row, .fourth-row, .fifth-row, .sixth-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    margin: 8px 0;
+  }
+
+  .first-data, .second-data, .third-data, .fourth-data, .fifth-data, .sixth-data {
+    width: 100%;
+    margin-right: 0;
+    padding: 8px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .first-data p, .second-data p, .third-data p, .fourth-data p, .fifth-data p, .sixth-data p {
+    text-align: left;
+    width: 100%;
+  }
+
+  .first-data input[type="text"],
+  .second-data input[type="text"],
+  .third-data input[type="text"],
+  .fourth-data input[type="text"],
+  .fifth-data input[type="text"],
+  .sixth-data input[type="text"] {
+    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
+  }
 }
