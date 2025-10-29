@@ -123,7 +123,20 @@ export class CreditoComponent {
 
   showDetails(factura: any) {
     this.selectedBolsas = factura;
+    const org = factura?.gbsorg ?? '';
+    const fun = factura?.gbsfun ?? '';
+    const eco = factura?.gbseco ?? '';
+    this.bolsaCombo = `${org} - ${fun} - ${eco}`;
   }
+
+  public bolsaCombo: string = '';
+  saveDetails() {
+    if (!this.selectedBolsas) return;
+    const parts = this.bolsaCombo.split(' - ');
+    this.selectedBolsas.gbsorg = parts[0] ?? '';
+    this.selectedBolsas.gbsfun = parts[1] ?? '';
+    this.selectedBolsas.gbseco = parts[2] ?? '';
+  } 
 
   closeDetails() {
     this.selectedBolsas = null;

@@ -242,8 +242,8 @@ app-sidebar {
   padding: 24px 18px 18px 18px;
   border-radius: 16px;
   box-shadow: 0 8px 32px rgba(44, 62, 80, 0.18), 0 1.5px 6px rgba(44,62,80,0.08);
-  width: 90%;
-  max-height: 85vh;
+  width: 92%;
+  max-height: 97vh;
   overflow-y: auto;
   font-family: inherit;
   animation: modalIn 0.22s cubic-bezier(.4,2,.6,1) both;
@@ -251,15 +251,22 @@ app-sidebar {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  z-index: 3000 !important;
+  z-index: 5000 !important;
 }
 
-.first-row , .second-row, .third-row, .fourth-row, .fifth-row{
+.first-row, 
+.second-row, 
+.third-row, 
+.fourth-row, 
+.fifth-row{
     display: flex;
     margin: 10px;
 }
 
-.first-data, .data-name, .third-data, .fourth-data{
+.first-data, 
+.data-name, 
+.third-data, 
+.fourth-data{
     width: 48%;
     height: auto;
     margin-right: 2%;
@@ -269,7 +276,8 @@ app-sidebar {
     padding: 1%;
 }
 
-.fifth-data, .fifth-data-special{
+.fifth-data, 
+.fifth-data-special{
     width: 48%;
     display: flex;
     align-items: center;
@@ -282,7 +290,8 @@ app-sidebar {
     position: relative;
 }
 
-.fourth-data-special, .fifth-data-special{
+.fourth-data-special, 
+.fifth-data-special{
     position: relative !important;
 }
 
@@ -307,18 +316,48 @@ app-sidebar {
     color: #1c5d8c;
 }
 
-.first-data p, .second-row p, .third-data p, .fourth-data p, .fifth-data p, .fifth-data-special p {
+.first-data p, 
+.second-row p, 
+.third-data p, 
+.fourth-data p, 
+.fifth-data p, 
+.fifth-data-special p {
     font-size: 18px;
     font-weight: bold;
     color: #1c5d8c;
 }
 
-.first-data h5, .third-data h5, .fourth-data h5, .fifth-data h5, .fifth-data-special h5 {
-    font-size: 18px;
-    font-weight: 200;
+.first-data input[type="text"], 
+.third-data input[type="text"] {
+    border: 1px solid #1c5d8c;
+    padding: 8px 6px;
+    border-radius: 6px;
+    max-width: 160px;
 }
 
-.third-data-special, .fourth-data-special, .fifth-data-special {
+.fourth-data input[type="text"],
+.fifth-data input[type="text"], 
+.fifth-data-special input[type="text"] {
+    border: 1px solid #1c5d8c;
+    padding: 8px 6px;
+    border-radius: 6px;
+    max-width: 80px;
+}
+
+.first-data input[type="text"]:focus, 
+.second-data input[type="text"]:focus, 
+.third-data input[type="text"]:focus, 
+.fourth-data input[type="text"]:focus, 
+.fifth-data input[type="text"]:focus, 
+.fifth-data-special input[type="text"]:focus {
+    border-color: #042b5a;
+    outline: none;
+    background: #fff;
+}
+
+.third-data-special, 
+.fourth-data-special, 
+.fifth-data-special {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -326,12 +365,13 @@ app-sidebar {
     margin-right: 10px;
 }
 
-
+.more{
+    max-width: 140px !important;
+}
 
 .bordering{
     border: 1px solid gray;
 }
-
 
 .fifth-data-special-container{
     position: relative;
@@ -351,7 +391,10 @@ app-sidebar {
 }
 
 @media (max-width: 1380px) {
-    .fourth-data p, .fifth-data p, .fifth-data-special p, .fourth-data-special p{
+    .fourth-data p, 
+    .fifth-data p, 
+    .fifth-data-special p, 
+    .fourth-data-special p{
         width: 100%;
         font-size: 13px;
     }

@@ -348,12 +348,22 @@ input.fecha-dato[type="radio"] {
     text-align: center;
 }
 
-.first-row, .second-row, .third-row, .fourth-row, .fifth-row, .sixth-row{
+.first-row, 
+.second-row, 
+.third-row, 
+.fourth-row, 
+.fifth-row, 
+.sixth-row{
     display: flex;
     margin: 10px;
 }
 
-.first-data, .second-data, .third-data, .fourth-data, .fifth-data, .sixth-data{
+.first-data, 
+.second-data, 
+.third-data, 
+.fourth-data, 
+.fifth-data, 
+.sixth-data{
     width: 100%;
     height: auto;
     margin-right: 2%;
@@ -363,39 +373,65 @@ input.fecha-dato[type="radio"] {
     padding: 1%;
 }
 
-.first-data p, .second-data p, .third-data p, .fourth-data p, .fifth-data p, .sixth-data p {
+.first-data p, 
+.second-data p, 
+.third-data p, 
+.fourth-data p, 
+.fifth-data p, 
+.sixth-data p {
     font-size: 14px;
     font-weight: bold;
     color: #1c5d8c;
 }
 
-.first-data input[type="text"], .second-data input[type="text"], .third-data input[type="text"], .fourth-data input[type="text"], .fifth-data input[type="text"], .sixth-data input[type="text"] {
+.first-data input[type="text"], 
+.second-data input[type="text"], 
+.third-data input[type="text"], 
+.fourth-data input[type="text"], 
+.fifth-data input[type="text"], 
+.sixth-data input[type="text"] {
     border: 1px solid #1c5d8c;
     padding: 8px 6px;
     border-radius: 6px;
     max-width: 140px;
 }
 
-.fifth-data input[type="text"], .sixth-data input[type="text"] {
+.fifth-data input[type="text"], 
+.sixth-data input[type="text"] {
     min-width: 85%;
     max-width: 100% !important;
 }
 
-.first-data input[type="text"]:focus, .second-data input[type="text"]:focus, .third-data input[type="text"]:focus, .fourth-data input[type="text"]:focus, .fifth-data input[type="text"]:focus, .sixth-data input[type="text"]:focus {
+.first-data input[type="text"]:focus,
+.second-data input[type="text"]:focus,
+.third-data input[type="text"]:focus,
+.fourth-data input[type="text"]:focus, 
+.fifth-data input[type="text"]:focus, 
+.sixth-data input[type="text"]:focus {
     border-color: #042b5a;
     outline: none;
     background: #fff;
 }
 
 @media (max-width: 1270px) {
-  .first-row, .second-row, .third-row, .fourth-row, .fifth-row, .sixth-row {
+    .first-row,
+    .second-row, 
+    .third-row, 
+    .fourth-row, 
+    .fifth-row, 
+    .sixth-row {
     flex-direction: column;
     align-items: stretch;
     gap: 8px;
     margin: 8px 0;
   }
 
-  .first-data, .second-data, .third-data, .fourth-data, .fifth-data, .sixth-data {
+  .first-data, 
+  .second-data, 
+  .third-data, 
+  .fourth-data, 
+  .fifth-data, 
+  .sixth-data {
     width: 100%;
     margin-right: 0;
     padding: 8px;
@@ -406,7 +442,12 @@ input.fecha-dato[type="radio"] {
     gap: 8px;
   }
 
-  .first-data p, .second-data p, .third-data p, .fourth-data p, .fifth-data p, .sixth-data p {
+  .first-data p, 
+  .second-data p, 
+  .third-data p, 
+  .fourth-data p, 
+  .fifth-data p, 
+  .sixth-data p {
     text-align: left;
     width: 100%;
   }
