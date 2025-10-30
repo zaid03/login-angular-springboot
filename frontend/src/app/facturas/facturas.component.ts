@@ -36,20 +36,15 @@ export class FacturasComponent {
     this.facturaIsError = false;
     const entidad = sessionStorage.getItem('Entidad');
     const eje = sessionStorage.getItem('selected_ejercicio');
-    const cge = sessionStorage.getItem("selected_centro_gestor");
-    try {
-      if (cge) {
-        const parsed = JSON.parse(cge);
-        if (parsed && typeof parsed === 'object') {
-          this.centroGestor = parsed.cgecod;
-        } else {
-          this.centroGestor = String(parsed);
-        }
-      }
-    } catch (e) {
-      console.warn('Failed to parse selected_centro_gestor:', e);
+    const cge = sessionStorage.getItem('CENTROGESTOR');
+
+    if (cge){
+      const parsed = JSON.parse(cge);
+      this.centroGestor = parsed.value
+      this.initialCentroGestor = this.centroGestor;
+      console.log(this.initialCentroGestor);
     }
-    this.initialCentroGestor = this.centroGestor;
+    
 
     if (entidad) {
       const parsed = JSON.parse(entidad);

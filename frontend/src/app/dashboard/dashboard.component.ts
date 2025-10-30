@@ -34,12 +34,11 @@ export class DashboardComponent implements OnInit {
 
     const entidadObj = safeParse(rawEntidad);
     const perfilObj  = safeParse(rawPerfil);
-    const cgObj      = safeParse(sessionStorage.getItem('selected_centro_gestor'));
 
     this.usucod = sessionStorage.getItem('USUCOD');
     this.entcod = entidadObj.ENTCOD ?? null;
     this.perfil = perfilObj.PERCOD ?? null;
-    this.cgecod = cgObj?.cgecod ?? null;
+
 
     if (!this.usucod || this.entcod == null || !this.perfil) {
       alert('Missing session data. reiniciar el flujo.');

@@ -537,7 +537,7 @@ export class ProveedoreesComponent {
         this.page = 0;
       },
       error: (err) => {
-        this.nocontactmessage = 'error al obtener los artículos.';
+        this.nocontactmessage = 'No se encontraron artículos.';
       } 
     });
   }

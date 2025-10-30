@@ -47,7 +47,10 @@ export class CentrogestorComponent implements OnInit {
             this.storeAndGo(resp[0]);
           } else {
             // Proceed with null center (business decision)
-            sessionStorage.setItem('selected_centro_gestor', JSON.stringify({ cgecod: null, cgedes: null }));
+            sessionStorage.setItem('selected_centro_gestor', JSON.stringify({ cgecod: null, cgedes: null, ESTADOGC: 0  }));
+            sessionStorage.setItem('CENTROGESTOR', JSON.stringify({ value: null}));
+            sessionStorage.setItem('CENTROGESTOR_NAME', JSON.stringify({ value: null}));
+            sessionStorage.setItem('ESTADOGC', JSON.stringify({ value: 0}));
             this.router.navigate(['/dashboard']);
           }
         },
@@ -67,8 +70,12 @@ export class CentrogestorComponent implements OnInit {
   private storeAndGo(item: any) {
     sessionStorage.setItem('selected_centro_gestor', JSON.stringify({
       cgecod: item[0],
-      cgedes: item[1]
+      cgedes: item[1],
+      ESTADOGC: item[2] 
     }));
+    sessionStorage.setItem('CENTROGESTOR', JSON.stringify({ value: item[0] }));
+    sessionStorage.setItem('CENTROGESTOR_NAME', JSON.stringify({ value: item[1]}));
+    sessionStorage.setItem('ESTADOGC', JSON.stringify({ value: item[2]}));
     this.router.navigate(['/dashboard']);
   }
 
@@ -84,6 +91,9 @@ export class CentrogestorComponent implements OnInit {
 
   continuarSin() {
     sessionStorage.setItem('selected_centro_gestor', JSON.stringify({ cgecod: null, cgedes: null }));
+    sessionStorage.setItem('CENTROGESTOR', JSON.stringify({ value: null }));
+    sessionStorage.setItem('CENTROGESTOR_NAME', JSON.stringify({ value: null}));
+    sessionStorage.setItem('ESTADOGC', JSON.stringify({ value: 0}));
     this.router.navigate(['/dashboard']);
   }
 }
