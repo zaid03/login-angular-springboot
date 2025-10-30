@@ -502,33 +502,8 @@ export class ProveedoreesComponent {
           const asucod = String(row?.asucod?? '').trim();
           console.log(`row ${index}: artcod="${artcod}", afacod="${afacod}", asucod="${asucod}"`, row);
 
-          if (artcod === '*'){
-            if(asucod === '*') {
-              console.log(`row ${index}: artcod="*" and asucod="*"`, row);
-              this.http.get<any[]>(`http://localhost:8080/api/afa/art-name/${this.entcod}/${afacod}`).subscribe({ next: (response) => {
-                const respArray = Array.isArray(response) ? response : (response ? [response] : []);
-                const afades = respArray[0]?.afades;
-                console.log(afades);
-                row.description = String(afades).trim();
-              }})
-            } else {
-              console.log(`row ${index}: artcod="*" but asucod="${asucod}"`, row);
-              this.http.get<any[]>(`http://localhost:8080/api/asu/art-name/${this.entcod}/${afacod}/${asucod}`).subscribe({ next: (response) => {
-                const respArray = Array.isArray(response) ? response : (response ? [response] : []);
-                const asudes = respArray[0]?.asudes;
-                console.log(asudes);
-                row.description = String(asudes).trim();
-              }})
-            }
-          } else {
-            console.log(`row ${index}: artcod="${artcod}", afacod="${afacod}", asucod="${asucod}"`, row);
-            this.http.get<any>(`http://localhost:8080/api/art/art-name/${this.entcod}/${afacod}/${asucod}/${artcod}`).subscribe({ next: (response) => {
-              const respArray = Array.isArray(response) ? response : (response ? [response] : []);
-              const afades = respArray[0]?.artdes;
-              console.log(afades);
-              row.description = String(afades).trim();
-            }})
-          }
+          this.getDescription(row, index, artcod, afacod, asucod);
+          this.anadirmessage = '';
         });
 
         if (response.length === 0) {
@@ -542,6 +517,47 @@ export class ProveedoreesComponent {
     });
   }
 
+  getDescription(row: any, index: number, artcod: string, afacod: string, asucod: string){
+    if (artcod === '*') {
+      if (asucod === '*') {
+        console.log(`row ${index}: artcod="*" and asucod="*"`, row);
+        this.http
+          .get<any[]>(`http://localhost:8080/api/afa/art-name/${this.entcod}/${afacod}`)
+          .subscribe({
+            next: (response) => {
+              const respArray = Array.isArray(response) ? response : response ? [response] : [];
+              const afades = respArray[0]?.afades;
+              console.log(afades);
+              row.description = String(afades ?? '').trim();
+            },
+          });
+      } else {
+        console.log(`row ${index}: artcod="*" but asucod="${asucod}"`, row);
+        this.http
+          .get<any[]>(`http://localhost:8080/api/asu/art-name/${this.entcod}/${afacod}/${asucod}`)
+          .subscribe({
+            next: (response) => {
+              const respArray = Array.isArray(response) ? response : response ? [response] : [];
+              const asudes = respArray[0]?.asudes;
+              console.log(asudes);
+              row.description = String(asudes ?? '').trim();
+            },
+          });
+      }
+    } else {
+      console.log(`row ${index}: artcod="${artcod}", afacod="${afacod}", asucod="${asucod}"`, row);
+      this.http
+        .get<any[]>(`http://localhost:8080/api/art/art-name/${this.entcod}/${afacod}/${asucod}/${artcod}`)
+        .subscribe({
+          next: (response) => {
+            const respArray = Array.isArray(response) ? response : response ? [response] : [];
+            const artdes = respArray[0]?.artdes;
+            console.log(artdes);
+            row.description = String(artdes ?? '').trim();
+          },
+        });
+    }
+  }
   sidebarOpen = false;
   toggleSidebar() { this.sidebarOpen = !this.sidebarOpen; }
   closeSidebar() { this.sidebarOpen = false; }
@@ -745,14 +761,24 @@ export class ProveedoreesComponent {
         this.anadirIsError = false;
 
         if (this.showArticulosGrid) {
-          if (!this.articulos) {
-            this.articulos = [];
-          }
-          this.articulos.push({
-            afacod: this.selectedFamilia,
-            asucod: this.selectedSubfamilia,
-            artcod: this.selectedArticulo,
-          });
+          const newRow = {
+            afacod: this.selectedFamilia || '*',
+            asucod: this.selectedSubfamilia || '*',
+            artcod: this.selectedArticulo || '*',
+            ent: this.entcod,
+            tercod: this.selectedProveedor.tercod,
+            description: ''
+          };
+          if (!this.articulos) this.articulos = [];
+          this.articulos.push(newRow);
+
+          const artcod = String(newRow.artcod ?? '').trim();
+          const afacod = String(newRow.afacod ?? '').trim();
+          const asucod = String(newRow.asucod ?? '').trim();
+          const index = this.articulos.length - 1;
+
+          this.getDescription(newRow, index, artcod, afacod, asucod);
+          this.nocontactmessage = '';
         }
       },
       error: (err) => {

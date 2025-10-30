@@ -362,7 +362,7 @@ app-sidebar {
   padding: 24px 18px 18px 18px;
   border-radius: 16px;
   box-shadow: 0 8px 32px rgba(44, 62, 80, 0.18), 0 1.5px 6px rgba(44,62,80,0.08);
-  width: 90%;
+  width: 95%;
   max-height: 70vh;
   overflow-y: auto;
   font-family: inherit;
@@ -541,8 +541,12 @@ app-sidebar {
   border-radius: 10px;
   padding: 14px 10px;
   box-shadow: 0 1px 4px rgba(44,62,80,0.07);
-  max-width: 100%;  
+  max-width: 100%;
   z-index: 1200;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .custom-grid-modal h3 {
@@ -556,24 +560,23 @@ app-sidebar {
 
 .custom-grid-modal table {
   width: 100%;
-  min-width: 800px;
+  max-width: 100%;
   border-collapse: collapse;
   font-size: 1rem;
   background: #fff;
   border-radius: 8px;
-  overflow: hidden;
   table-layout: auto;
 }
 
-.custom-grid-modal th, .custom-grid-modal td {
+.custom-grid-modal th, .custom-grid-modal td, .custom-grid-modal td h2{
   border: 1px solid #e0e0e0;
   padding: 8px 10px;
-  font-size: 1rem;
   text-align: left;
   vertical-align: middle;
   white-space: nowrap;
+  font-size: 1.2rem !important;
+  overflow: hidden;
 }
-
 
 .custom-grid-modal th {
   background: #e3eaf3;
@@ -605,7 +608,7 @@ textarea {
   padding: 6px 8px;
   border: 1px solid #bfc9d1;
   border-radius: 4px;
-  font-size: 1rem;
+  font-size: 1.2rem;
   background: #fff;
   transition: border-color 0.2s;
   box-sizing: border-box;
@@ -840,7 +843,7 @@ textarea:focus {
 }
 
 .hello-modal .anadir-articulo-form table {
-  width: 100%;  
+  width: 100%;
   border-collapse: collapse;
   margin: 18px 0 0 0;
   background: #f8fafc;
@@ -1108,3 +1111,15 @@ textarea:focus {
 }
 
 .selected-row { background: #e6f0ff; }
+
+@media screen and (max-width: 1750px) {
+  .custom-grid-modal th, .custom-grid-modal td, .custom-grid-modal td h2{
+    font-size: 12px !important;
+  }
+  .custom-grid-modal input[type="text"],
+  .custom-grid-modal input[type="email"],
+  .custom-grid-modal input[type="number"],
+  textarea {
+    font-size: 12px;
+  }
+}
