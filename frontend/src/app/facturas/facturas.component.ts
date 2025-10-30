@@ -301,7 +301,9 @@ export class FacturasComponent {
     const doAlphaNumSearch = hasLetters && hasDigits && searchRaw.length > NIF_MIN_DIGITS;
     const doShortDigitsExact = !hasLetters && hasDigits && searchDigits.length > 0 && searchDigits.length <= NIF_MIN_DIGITS;
     const doFallbackTextSearch = searchRaw.length > 0 && !doNifSearch && !doAlphaNumSearch && !doShortDigitsExact;
+    let searchApplied = false;
     if (facann || cgeq || doNifSearch || doAlphaNumSearch || doShortDigitsExact || doFallbackTextSearch) {
+      searchApplied = true;
       const source = (this.backupFacturas && this.backupFacturas.length) ? this.backupFacturas : this.facturas;
       const searchUp = searchRaw.toUpperCase();
       const filtered = source.filter(f => {
@@ -329,7 +331,6 @@ export class FacturasComponent {
           const valFacdoc = (f.facdoc ?? f.FACDOC ?? '').toString().toUpperCase();
           if (!(valTernom.includes(searchUp) || valFacdoc.includes(searchUp))) return false;
         }
-
         return true;
       });
 
