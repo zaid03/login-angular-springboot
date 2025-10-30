@@ -32,7 +32,7 @@ export class CreditoComponent {
   ngOnInit(): void {
     this.tableIsError = false;
     const entidad = sessionStorage.getItem('Entidad');
-    const eje = sessionStorage.getItem('selected_ejercicio');
+    const eje = sessionStorage.getItem('EJERCICIO');
     const cge = sessionStorage.getItem('CENTROGESTOR');
 
     if (cge){

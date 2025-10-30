@@ -47,7 +47,7 @@ export class EjeComponent implements OnInit {
           if (resp?.length > 1) {
             this.tableData = resp;
           } else if (resp?.length === 1) {
-            sessionStorage.setItem('selected_ejercicio', JSON.stringify({ eje: resp[0] }));
+            sessionStorage.setItem('EJERCICIO', JSON.stringify({ eje: resp[0] }));
             this.router.navigate(['/centro-gestor']);
           } else {
             alert('Sin ejercicios.');
@@ -63,7 +63,7 @@ export class EjeComponent implements OnInit {
   }
 
   selectRow(item: Ejercicio): void {
-    sessionStorage.setItem('selected_ejercicio', JSON.stringify({ eje: item }));
+    sessionStorage.setItem('EJERCICIO', JSON.stringify({ eje: item }));
     this.router.navigate(['/centro-gestor']);
   }
 

@@ -26,7 +26,7 @@ export class CentrogestorComponent implements OnInit {
     const USUCOD = sessionStorage.getItem('USUCOD');
     const entObj = safeParse(sessionStorage.getItem('Entidad'));
     const perObj = safeParse(sessionStorage.getItem('Perfil'));
-    const ejeObj = safeParse(sessionStorage.getItem('selected_ejercicio'));
+    const ejeObj = safeParse(sessionStorage.getItem('EJERCICIO'));
 
     const ENTCOD = entObj.ENTCOD;
     const PERCOD = perObj.PERCOD;
@@ -47,7 +47,6 @@ export class CentrogestorComponent implements OnInit {
             this.storeAndGo(resp[0]);
           } else {
             // Proceed with null center (business decision)
-            sessionStorage.setItem('selected_centro_gestor', JSON.stringify({ cgecod: null, cgedes: null, ESTADOGC: 0  }));
             sessionStorage.setItem('CENTROGESTOR', JSON.stringify({ value: null}));
             sessionStorage.setItem('CENTROGESTOR_NAME', JSON.stringify({ value: null}));
             sessionStorage.setItem('ESTADOGC', JSON.stringify({ value: 0}));
@@ -68,11 +67,6 @@ export class CentrogestorComponent implements OnInit {
   }
 
   private storeAndGo(item: any) {
-    sessionStorage.setItem('selected_centro_gestor', JSON.stringify({
-      cgecod: item[0],
-      cgedes: item[1],
-      ESTADOGC: item[2] 
-    }));
     sessionStorage.setItem('CENTROGESTOR', JSON.stringify({ value: item[0] }));
     sessionStorage.setItem('CENTROGESTOR_NAME', JSON.stringify({ value: item[1]}));
     sessionStorage.setItem('ESTADOGC', JSON.stringify({ value: item[2]}));
@@ -90,7 +84,6 @@ export class CentrogestorComponent implements OnInit {
   }
 
   continuarSin() {
-    sessionStorage.setItem('selected_centro_gestor', JSON.stringify({ cgecod: null, cgedes: null }));
     sessionStorage.setItem('CENTROGESTOR', JSON.stringify({ value: null }));
     sessionStorage.setItem('CENTROGESTOR_NAME', JSON.stringify({ value: null}));
     sessionStorage.setItem('ESTADOGC', JSON.stringify({ value: 0}));

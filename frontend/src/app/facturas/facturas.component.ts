@@ -35,7 +35,7 @@ export class FacturasComponent {
   ngOnInit(): void{
     this.facturaIsError = false;
     const entidad = sessionStorage.getItem('Entidad');
-    const eje = sessionStorage.getItem('selected_ejercicio');
+    const eje = sessionStorage.getItem('EJERCICIO');
     const cge = sessionStorage.getItem('CENTROGESTOR');
 
     if (cge){
