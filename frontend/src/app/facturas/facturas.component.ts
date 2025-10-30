@@ -346,9 +346,21 @@ export class FacturasComponent {
       else if (searchRaw) parts.push(`Search ignored (need more than ${NIF_MIN_DIGITS} digits or alphanumeric length > ${NIF_MIN_DIGITS})`);
     }
 
-    if (!desde && !hasta) {
-      this.filterFacturaMessage = 'Por favor rellene al menos una fecha (Desde o Hasta) cuando selecciona un tipo de fecha.';
-      return;
+    const hasDateInput = !!(desde || hasta);
+    if (!tipo) {
+      if (estado) {
+        this.filterFacturaMessage = 'Seleccione un tipo de fecha antes de elegir un estado.';
+        return;
+      }
+      if (hasDateInput) {
+        this.filterFacturaMessage = 'Seleccione un tipo de fecha antes de filtrar por fechas.';
+        return;
+      }
+      if (searchApplied) {
+        this.filterFacturaMessage = '';
+        return; 
+      }
+      this.filterFacturaMessage = 'test';
     }
     
     let datePart = '';
@@ -1067,7 +1079,7 @@ export class FacturasComponent {
         }
       }
     } else {
-      this.filterFacturaMessage = 'Tipo de fecha desconocido.';
+      this.filterFacturaMessage = 'Tipo de fecha requirida.';
     }
   }
 
