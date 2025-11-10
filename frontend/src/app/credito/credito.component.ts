@@ -85,6 +85,22 @@ export class CreditoComponent {
                   this.creditos[idx].partidas = [];
                 },
               });
+              this.http.get<any>(`http://localhost:8080/api/sical/operaciones?clorg=${org}&clfun=${fun}&cleco=${eco}`)
+              .subscribe({
+                next: (operaciones) => {
+                  console.log(response);
+                  const operacionesArr = Array.isArray(operaciones) ? operaciones : [];
+                  this.creditos[idx].operaciones = operacionesArr;
+                  const firstLinea = operacionesArr[0]?.lineaList?.[0] ?? {};
+                  const saldo = this.creditos[idx].saldo = firstLinea?.saldo ?? 0;
+                  console.log("saldo", saldo);
+                  const limporte = this.creditos[idx].limporte = firstLinea?.limporte ?? 0;
+                  console.log("limporte:", limporte);
+                },
+                error: () => {
+                  this.creditos[idx].operaciones = [];
+                },
+              });
           });
           this.page = 0;
         }
@@ -178,6 +194,18 @@ export class CreditoComponent {
     const b = toNum(gbsibg);
     const c = toNum(gbsius);
     return (a + b -c).toFixed();
+  }
+
+  public getkdispon(saldo: any, getkAcPeCo: any): string {
+    const toNum = (v:any) => {
+      if (v === null || v === undefined || v === '') return 0;
+      const n = Number(v);
+      return isNaN(n) ? 0 : n;
+    };
+
+    const a = toNum(saldo);
+    const b = toNum(getkAcPeCo);
+    return (a - b).toFixed();
   }
 
   searchBolsas(){

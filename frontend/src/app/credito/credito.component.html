@@ -48,8 +48,8 @@
                         <td>{{ p.partidas?.[0]?.desc }}</td>
                         <td>{{ p.gbsope }}</td>
                         <td>{{ p.gbsref }}</td>
-                        <td>web serice</td>
-                        <td>web serice</td>
+                        <td>{{ p.limporte }}</td>
+                        <td>{{ p.saldo }}</td>
                         <td>{{ getkAcPeCo(p.gbsiut, p.gbsict)}}</td>
                         <td>to be counted after web service is done</td>
                     </tr>
@@ -123,7 +123,7 @@
                             </div>
                             <div class="fourth-data-special">
                                 <p>Importe Op.</p>
-                                <h5>kopelmp!</h5>
+                                <input type="text" [value]="selectedBolsas?.limporte" />
                             </div>
                         </div>
                         <div class="fourth-data bordering">
@@ -158,7 +158,7 @@
                         <div class="fifth-data bordering">
                             <div class="fifth-data-special">
                                 <p>Saldo op.</p>
-                                <h5>Kopesal</h5>
+                                <input type="text" [value]="selectedBolsas?.saldo" />
                             </div>
                             <div class="fifth-data-special-math">
                                 <h5 class="ope">-</h5>
@@ -172,7 +172,7 @@
                             </div>
                             <div class="fifth-data-special">
                                 <p>Disponible</p>
-                                <h5>kdispon!</h5>
+                                <input type="text" [value]="getkdispon(selectedBolsas.saldo, getkAcPeCo(selectedBolsas?.gbsiut, selectedBolsas?.gbsict))" />
                             </div>
                         </div>
 
