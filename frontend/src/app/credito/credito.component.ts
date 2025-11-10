@@ -58,8 +58,6 @@ export class CreditoComponent {
       return;
     }
 
-    console.log(this.entcod, this.eje, this.centroGestor);
-
     this.http.get<any>(`http://localhost:8080/api/gbs/${this.entcod}/${this.eje}/${this.centroGestor}`).subscribe({
       next: (response) => {
         if (response.error) {
@@ -79,7 +77,6 @@ export class CreditoComponent {
                   this.creditos[idx].partidas = partidasArr;
                   const des = partidasArr[0]?.desc ?? '';
                   this.creditos[idx].partidaDesc = des;
-                  console.log(des);
                 },
                 error: () => {
                   this.creditos[idx].partidas = [];
@@ -88,14 +85,11 @@ export class CreditoComponent {
               this.http.get<any>(`http://localhost:8080/api/sical/operaciones?clorg=${org}&clfun=${fun}&cleco=${eco}`)
               .subscribe({
                 next: (operaciones) => {
-                  console.log(response);
                   const operacionesArr = Array.isArray(operaciones) ? operaciones : [];
                   this.creditos[idx].operaciones = operacionesArr;
                   const firstLinea = operacionesArr[0]?.lineaList?.[0] ?? {};
                   const saldo = this.creditos[idx].saldo = firstLinea?.saldo ?? 0;
-                  console.log("saldo", saldo);
                   const limporte = this.creditos[idx].limporte = firstLinea?.limporte ?? 0;
-                  console.log("limporte:", limporte);
                 },
                 error: () => {
                   this.creditos[idx].operaciones = [];
@@ -230,7 +224,6 @@ export class CreditoComponent {
           alert('Error: ' + response.error);
         } else {
           this.creditos = response;
-          console.log(this.creditos);
           this.backupCreditos = Array.isArray(response) ? [...response] : [];
           this.page = 0;
         }
