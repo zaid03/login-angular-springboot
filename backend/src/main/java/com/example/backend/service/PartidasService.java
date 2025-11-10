@@ -8,6 +8,8 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -15,18 +17,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.example.backend.dto.Tercero;
 import com.example.backend.dto.Partida;
 import com.example.sical.CryptoSical;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Node;
-
-import java.util.regex.Pattern;
-import java.util.Arrays;
-import org.apache.commons.text.StringEscapeUtils;
 
 @Service
 public class PartidasService {
@@ -171,14 +166,13 @@ public class PartidasService {
 
                 p.setAlias(getTagValue(e, "alias"));
                 p.setEjeapl(getTagValue(e, "ejeapl"));
-                p.setOrgapl(getTagValue(e, "orgapl"));
-                p.setFunapl(getTagValue(e, "funapl"));
-                p.setEcoapl(getTagValue(e, "ecoapl"));
-                p.setPamapl(getTagValue(e, "pamapl"));
-                p.setCteapl(getTagValue(e, "cteapl"));
-                p.setDesc(getTagValue(e, "desc"));
+                p.setOrgapl(decodeOrNull(getTagValue(e, "orgapl")));
+                p.setFunapl(decodeOrNull(getTagValue(e, "funapl")));
+                p.setEcoapl(decodeOrNull(getTagValue(e, "ecoapl")));
+                p.setPamapl(decodeOrNull(getTagValue(e, "pamapl")));
+                p.setCteapl(decodeOrNull(getTagValue(e, "cteapl")));
+                p.setDesc(decodeOrNull(getTagValue(e, "desc")));
 
-                // numeric fields - parse safely
                 p.setCipocin(toDouble(getTagValue(e, "cipocin")));
                 p.setModcred(toDouble(getTagValue(e, "modcred")));
                 p.setCredextra(toDouble(getTagValue(e, "credextra")));
@@ -224,5 +218,15 @@ public class PartidasService {
     private Double toDouble(String s) {
       if (s == null || s.trim().isEmpty()) return 0.0;
       try { return Double.parseDouble(s); } catch (NumberFormatException ex) { return 0.0; }
+    }
+
+    private String decodeOrNull(String value) {
+      if (value == null || value.isBlank()) return null;
+      try {
+        return CryptoSical.decodeBase64(value);
+      } catch (IllegalArgumentException ex) {
+        logger.warn("failed to decode to base64 value [{}]: {}", value, ex.getMessage());
+        return value;
+      }
     }
 }
