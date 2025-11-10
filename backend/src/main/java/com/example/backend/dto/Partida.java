@@ -33,9 +33,7 @@ public class Partida {
     private Double sdisp;
     private Double svin;
     private Double svinpre;
-    // add other fields as needed
 
-    // getters / setters (generate in IDE)
     public String getAlias() { return alias; }
     public void setAlias(String alias) { this.alias = alias; }
     public String getEjeapl() { return ejeapl; }

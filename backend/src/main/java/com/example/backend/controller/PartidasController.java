@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.backend.dto.Partida;
 import com.example.backend.service.PartidasService;
-import com.example.sical.CryptoSical;
 
 @RestController
 @RequestMapping("/api/sical") 
@@ -43,7 +42,6 @@ public class PartidasController {
             );
             return ResponseEntity.ok(partidas);
         } catch (Exception ex) {
-            // log if you have a logger
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                                  .body(Collections.emptyList());
         }
