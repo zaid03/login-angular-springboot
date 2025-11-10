@@ -18,6 +18,7 @@ export class CreditoComponent {
   public centroGestor: string = '';
   private initialCentroGestor: string = '';
   creditos: any[] = [];
+  wsData: any[] = [];
   private backupCreditos: any[] = [];
   public Math = Math;
   page = 0;
@@ -64,9 +65,27 @@ export class CreditoComponent {
         if (response.error) {
           alert('Error: ' + response.error);
         } else {
-          this.creditos = response;
-          console.log(this.creditos);
-          this.backupCreditos = Array.isArray(response) ? [...response] : [];
+          this.creditos = Array.isArray(response) ? [...response] : [];
+          this.backupCreditos = [...this.creditos];
+          this.creditos.forEach((item, idx) => {
+            const org = item?.gbsorg ?? '';
+            const fun = item?.gbsfun ?? '';
+            const eco = item?.gbseco ?? '';
+            this.http
+              .get<any>(`http://localhost:8080/api/sical/partidas?clorg=${org}&clfun=${fun}&cleco=${eco}`)
+              .subscribe({
+                next: (partidas) => {
+                  const partidasArr = Array.isArray(partidas) ? partidas : [];
+                  this.creditos[idx].partidas = partidasArr;
+                  const des = partidasArr[0]?.desc ?? '';
+                  this.creditos[idx].partidaDesc = des;
+                  console.log(des);
+                },
+                error: () => {
+                  this.creditos[idx].partidas = [];
+                },
+              });
+          });
           this.page = 0;
         }
       }, error: (err) => {

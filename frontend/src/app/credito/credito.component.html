@@ -45,7 +45,7 @@
                 <tbody>
                     <tr *ngFor="let p of paginatedFacturas">
                         <td (click)="showDetails(p)" style="cursor: pointer;">{{ p.gbsorg }} - {{ p.gbsfun }} - {{ p.gbseco}}</td>
-                        <td>web serice</td>
+                        <td>{{ p.partidas?.[0]?.desc }}</td>
                         <td>{{ p.gbsope }}</td>
                         <td>{{ p.gbsref }}</td>
                         <td>web serice</td>
@@ -98,7 +98,7 @@
                         <div class="third-data">
                             <p>Applicación:</p>
                             <input type="text" [(ngModel)]="bolsaCombo" />
-                            <h5>Kapldes!</h5>
+                            <input type="text" [value]="selectedBolsas?.partidas?.[0]?.desc || ''">
                         </div>
                         <div class="third-data">
                             <div class="third-data-special">
