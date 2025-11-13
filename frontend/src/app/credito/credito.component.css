@@ -78,9 +78,7 @@ app-sidebar {
 }
 
 .search-bar:focus {
-    border-color: #094fa3;
     outline: none;
-    background: #fff;
 }
 
 .credito-download {
