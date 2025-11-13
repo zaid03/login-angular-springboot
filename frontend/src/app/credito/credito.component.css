@@ -83,22 +83,6 @@ app-sidebar {
     background: #fff;
 }
 
-.search-button {
-    margin-top: 2%;
-    background-color: #094fa3;
-    color: #ffffff;
-    border: none;
-    border-radius: 6px;
-    padding: 8px 14px;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 15px;
-}
-
-.search-button:hover{
-    background-color: #0b4f8a;
-}
-
 .credito-download {
     display: flex;
     gap: 16px;

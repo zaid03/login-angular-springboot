@@ -201,37 +201,4 @@ export class CreditoComponent {
     const b = toNum(getkAcPeCo);
     return (a - b).toFixed();
   }
-
-  searchBolsas(){
-    this.searchMessage = '';
-    this.searchIsError = false;
-
-    const cge = (this.centroGestor || '').toString().trim();
-    if (!cge) {
-      this.searchIsError = true;
-      this.searchMessage = 'Please enter a centro gestor.';
-      return;
-    }
-    if (this.entcod == null || !this.eje) {
-      this.searchIsError = true;
-      this.searchMessage = 'Missing entidad or ejercicio context.';
-      return;
-    }
-
-    this.http.get<any>(`http://localhost:8080/api/gbs/${this.entcod}/${this.eje}/${this.centroGestor}`).subscribe({
-      next: (response) => {
-        if (response.error) {
-          alert('Error: ' + response.error);
-        } else {
-          this.creditos = response;
-          this.backupCreditos = Array.isArray(response) ? [...response] : [];
-          this.page = 0;
-        }
-      }, error: (err) => {
-        this.tableIsError = true;
-        this.tableMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-        alert(this.tableMessage);
-      }
-    });
-  }
 }

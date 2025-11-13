@@ -17,9 +17,8 @@
                     name="search"
                     maxlength="4"
                     [(ngModel)]="centroGestor"
-                    (ngModelChange)="centroGestor = ($event || '').toUpperCase()"
+                    readonly
                 >
-                <button type="button" class="search-button" (click)="searchBolsas()">Buscar</button>
             </form>
             <h1 style="margin-top: 2%; font-family: inherit; color: red; font-size: inherit;">{{ searchMessage }}</h1>
         </div>
