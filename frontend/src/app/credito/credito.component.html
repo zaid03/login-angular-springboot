@@ -50,7 +50,7 @@
                         <td>{{ p.limporte }}</td>
                         <td>{{ p.saldo }}</td>
                         <td>{{ getkAcPeCo(p.gbsiut, p.gbsict)}}</td>
-                        <td>to be counted after web service is done</td>
+                        <td> {{ getkdispon(p.saldo, getkAcPeCo(p?.gbsiut, p?.gbsict)) }}</td>
                     </tr>
                 </tbody>
             </table>
