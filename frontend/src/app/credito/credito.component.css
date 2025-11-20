@@ -372,7 +372,24 @@ app-sidebar {
   transition: color 0.2s;
 }
 
+.save-btn{
+    padding: 10px;
+    margin: 10px; 
+    width: 10%;
+    border: 1px solid #042b5a;
+    border-radius: 10px;
+    color: #f0f0f0;
+    background-color: #042b5a;
+    float: right;
+    margin-left: auto;
+    font-size: 15px;
+}
+
 @media (max-width: 1380px) {
+    .modal{
+        height: 90vh !important;
+    }
+
     .fourth-data p, 
     .fifth-data p, 
     .fifth-data-special p, 
