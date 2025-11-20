@@ -221,7 +221,7 @@ export class CreditoComponent {
 
     gbsius = 0;
     gbseco = 0;      
-    gbsfop = currentdate.getDate() + "/" + (currentdate.getMonth() + 1) + "/" + currentdate.getFullYear() + ";" + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
+    gbsfop = currentdate.getDate() + "/" + (currentdate.getMonth() + 1) + "/" + currentdate.getFullYear();
     this.guardarisError = true;
     this.guardarMesage = `gbsimp = ${a}, kboldis = ${b}, gbsius = ${gbsius}, gbseco = ${gbseco}, gbsfop = ${gbsfop}`;
 
