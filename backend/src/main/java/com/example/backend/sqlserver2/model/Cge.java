@@ -42,5 +42,5 @@ public class Cge {
     public void setCGEDES(String CGEDES) { this.CGEDES = CGEDES; }
 
     public Integer getCGECIC() { return CGECIC; }
-    public void setCGECIC() { this.CGECIC = CGECIC; }
+    public void setCGECIC(Integer CGECIC) { this.CGECIC = CGECIC; }
 }
