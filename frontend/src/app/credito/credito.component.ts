@@ -199,7 +199,7 @@ export class CreditoComponent {
     return (a - b).toFixed();
   }
 
-  guardarDetelles(gbsimp: any, getKBoldis:any, gbsius: any, gbseco: any, gbsfop: any) {
+  guardarDetelles(gbsimp: any, getKBoldis:any) {
     const toNum = (v:any) => {
       if (v === null || v === undefined || v === '') return 0;
       const n = Number(v);
@@ -209,26 +209,21 @@ export class CreditoComponent {
     let currentdate = new Date();
     const a = toNum (gbsimp);
     const b = toNum(getKBoldis);
-    let c = toNum(gbsius);
-    let d = toNum(gbseco);
-    let e : string = '';
+    let gbsius = 0;
+    let gbseco = 0;
+    let gbsfop : string = '';
 
-    console.log(a);
-    console.log(b);
-    console.log(c);
-    console.log(d);
-    console.log(e)
     if ( gbsimp > b) {
       this.guardarisError = true;
       this.guardarMesage = 'HA SOBREPASADO EL DISPONIBLE DE LA REFERENCIA';
       return;
     }
 
-    c = 0
-    d = 0      
-    e = currentdate.getDate() + "/" + (currentdate.getMonth() + 1) + "/" + currentdate.getFullYear() + ";" + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
+    gbsius = 0;
+    gbseco = 0;      
+    gbsfop = currentdate.getDate() + "/" + (currentdate.getMonth() + 1) + "/" + currentdate.getFullYear() + ";" + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
     this.guardarisError = true;
-    this.guardarMesage = `gbsimp = ${a}, kboldis = ${b}, gbsius = ${c}, gbseco = ${d}, gbsfop = ${e}`;
+    this.guardarMesage = `gbsimp = ${a}, kboldis = ${b}, gbsius = ${gbsius}, gbseco = ${gbseco}, gbsfop = ${gbsfop}`;
 
     
   }
