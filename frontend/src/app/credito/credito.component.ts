@@ -27,6 +27,8 @@ export class CreditoComponent {
   tableIsError: boolean = false;
   guardarMesage: string = '';
   guardarisError: boolean = false;
+  guardarMesageSuccess: string = '';
+  guardarisSuccess : boolean = false;
 
   constructor(private http: HttpClient, private router: Router) {}
 
@@ -141,7 +143,10 @@ export class CreditoComponent {
   selectedBolsas: any = null;
 
   showDetails(factura: any) {
+    this.guardarisError = false;
     this.guardarMesage = '';
+    this.guardarisSuccess = false;
+    this.guardarMesageSuccess = ''
     this.selectedBolsas = factura;
     const org = factura?.gbsorg ?? '';
     const fun = factura?.gbsfun ?? '';
@@ -251,8 +256,8 @@ export class CreditoComponent {
     this.http.patch<void>(`http://localhost:8080/api/gbs/${this.entcod}/${this.eje}/${this.initialCentroGestor}/${gbsref}`, payload)
       .subscribe({
         next: () => {
-          this.guardarisError = true;
-          this.guardarMesage = 'Bolsa actualizada correctamente';
+          this.guardarisSuccess = true;
+          this.guardarMesageSuccess = 'Bolsa actualizada correctamente';
         },
         error: (err) => {
           this.guardarisError = true;
