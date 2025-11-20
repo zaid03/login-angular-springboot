@@ -141,7 +141,7 @@
                             </div>
                             <div class="fourth-data-special">
                                 <p>Usado bolsa</p>
-                                <input type="text" [(ngModel)]="selectedBolsas.gbsius" readonly/>
+                                <input type="text" [(ngModel)]="selectedBolsas.gbsius" />
                             </div>
                             <div class="fourth-data-special">
                                 <h5 class="ope">=</h5>
@@ -201,7 +201,7 @@
                         </div>
                     </div>
                     <h1 style="color: red; font-size: 15px; text-align: center;" id="error">{{ guardarMesage }}</h1>
-                    <button class="save-btn" (click)="guardarDetelles(selectedBolsas.gbsimp, getKBoldis(selectedBolsas.gbsimp, selectedBolsas.gbsibg, selectedBolsas.gbsius))">Guardar</button>
+                    <button class="save-btn" (click)="guardarDetelles(selectedBolsas.gbsimp, getKBoldis(selectedBolsas.gbsimp, selectedBolsas.gbsibg, selectedBolsas.gbsius), selectedBolsas.gbsref)">Guardar</button>
                 </div>
             </div>
         </div>

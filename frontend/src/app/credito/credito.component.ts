@@ -199,7 +199,31 @@ export class CreditoComponent {
     return (a - b).toFixed();
   }
 
-  guardarDetelles(gbsimp: any, getKBoldis:any) {
+  guardarDetelles(gbsimp: any, getKBoldis:any, gbsref: any) {
+    const entidad = sessionStorage.getItem('Entidad');
+    const eje = sessionStorage.getItem('EJERCICIO');
+    const cge = sessionStorage.getItem('CENTROGESTOR');
+
+    if (cge){
+      const parsed = JSON.parse(cge);
+      this.centroGestor = parsed.value
+      this.initialCentroGestor = this.centroGestor;
+    }
+
+    if (entidad) {
+      const parsed = JSON.parse(entidad);
+      this.entcod = parsed.ENTCOD;
+    }
+    if (eje) {
+      const parsed = JSON.parse(eje);
+      this.eje = parsed.eje;
+    }
+
+    console.log(this.entcod);
+    console.log(this.eje);
+    console.log(this.initialCentroGestor);
+    console.log(gbsref);
+
     const toNum = (v:any) => {
       if (v === null || v === undefined || v === '') return 0;
       const n = Number(v);
@@ -209,9 +233,6 @@ export class CreditoComponent {
     let currentdate = new Date();
     const a = toNum (gbsimp);
     const b = toNum(getKBoldis);
-    let gbsius = 0;
-    let gbseco = 0;
-    let gbsfop : string = '';
 
     if ( gbsimp > b) {
       this.guardarisError = true;
@@ -219,12 +240,24 @@ export class CreditoComponent {
       return;
     }
 
-    gbsius = 0;
-    gbseco = 0;      
-    gbsfop = currentdate.getDate() + "/" + (currentdate.getMonth() + 1) + "/" + currentdate.getFullYear();
-    this.guardarisError = true;
-    this.guardarMesage = `gbsimp = ${a}, kboldis = ${b}, gbsius = ${gbsius}, gbseco = ${gbseco}, gbsfop = ${gbsfop}`;
+    const payload = {
+      gbsimp: a,
+      gbsius: 0,
+      gbseco: 0,
+      gbsfop: currentdate.getFullYear() + "-" + (currentdate.getMonth() + 1) + "-" + currentdate.getDate()
+    };
+    console.log("payload here: ", payload);
 
-    
+    this.http.patch<void>(`http://localhost:8080/api/gbs/${this.entcod}/${this.eje}/${this.initialCentroGestor}/${gbsref}`, payload)
+      .subscribe({
+        next: () => {
+          this.guardarisError = true;
+          this.guardarMesage = 'Bolsa actualizada correctamente';
+        },
+        error: (err) => {
+          this.guardarisError = true;
+          this.guardarMesage = err?.ex ?? 'Error al actualizar';
+        }
+      });
   }
 }
