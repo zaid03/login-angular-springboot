@@ -23,10 +23,10 @@ export class CreditoComponent {
   public Math = Math;
   page = 0;
   pageSize = 20;
-  searchMessage: string = '';
-  searchIsError: boolean = false;
   tableMessage: string = '';
   tableIsError: boolean = false;
+  guardarMesage: string = '';
+  guardarisError: boolean = false;
 
   constructor(private http: HttpClient, private router: Router) {}
 
@@ -139,10 +139,9 @@ export class CreditoComponent {
   }
 
   selectedBolsas: any = null;
-  detallesMessage: String = '';
-  dettalesIsError: boolean = false;
 
   showDetails(factura: any) {
+    this.guardarMesage = '';
     this.selectedBolsas = factura;
     const org = factura?.gbsorg ?? '';
     const fun = factura?.gbsfun ?? '';
@@ -161,8 +160,6 @@ export class CreditoComponent {
 
   closeDetails() {
     this.selectedBolsas = null;
-    this.dettalesIsError = false;
-    this.detallesMessage = '';
   }
 
   public getkCGECIC(cgecic: any): string {
@@ -200,5 +197,39 @@ export class CreditoComponent {
     const a = toNum(saldo);
     const b = toNum(getkAcPeCo);
     return (a - b).toFixed();
+  }
+
+  guardarDetelles(gbsimp: any, getKBoldis:any, gbsius: any, gbseco: any, gbsfop: any) {
+    const toNum = (v:any) => {
+      if (v === null || v === undefined || v === '') return 0;
+      const n = Number(v);
+      return isNaN(n) ? 0 : n;
+    };
+
+    let currentdate = new Date();
+    const a = toNum (gbsimp);
+    const b = toNum(getKBoldis);
+    let c = toNum(gbsius);
+    let d = toNum(gbseco);
+    let e : string = '';
+
+    console.log(a);
+    console.log(b);
+    console.log(c);
+    console.log(d);
+    console.log(e)
+    if ( gbsimp > b) {
+      this.guardarisError = true;
+      this.guardarMesage = 'HA SOBREPASADO EL DISPONIBLE DE LA REFERENCIA';
+      return;
+    }
+
+    c = 0
+    d = 0      
+    e = currentdate.getDate() + "/" + (currentdate.getMonth() + 1) + "/" + currentdate.getFullYear() + ";" + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
+    this.guardarisError = true;
+    this.guardarMesage = `gbsimp = ${a}, kboldis = ${b}, gbsius = ${c}, gbseco = ${d}, gbsfop = ${e}`;
+
+    
   }
 }

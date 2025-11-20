@@ -20,7 +20,6 @@
                     readonly
                 >
             </form>
-            <h1 style="margin-top: 2%; font-family: inherit; color: red; font-size: inherit;">{{ searchMessage }}</h1>
         </div>
         <div class="credito-download">
             <button class="download-btn" >Descargar como PDF</button>
@@ -128,13 +127,12 @@
                         <div class="fourth-data bordering">
                             <div class="fourth-data-special">
                                 <p>Importe bolsa</p>
-                                <input type="text" [(ngModel)]="selectedBolsas.gbsimp" readonly/>
+                                <input type="text" [(ngModel)]="selectedBolsas.gbsimp" />
                             </div>
                             <div class="fourth-data-special">
                                 <h5 class="ope">+</h5>
                             </div>
                             <div class="fourth-data-special">
-                                <!-- laisse le -->
                                 <p>Importe bolsa gestion</p>
                                 <input type="text" [(ngModel)]="selectedBolsas.gbsibg"/>
                             </div>
@@ -202,7 +200,8 @@
                             </div>
                         </div>
                     </div>
-                    <button class="save-btn">Guardar</button>
+                    <h1 style="color: red; font-size: 15px; text-align: center;" id="error">{{ guardarMesage }}</h1>
+                    <button class="save-btn" (click)="guardarDetelles(selectedBolsas.gbsimp, getKBoldis(selectedBolsas.gbsimp, selectedBolsas.gbsibg, selectedBolsas.gbsius), selectedBolsas.gbsius, selectedBolsas.gbseco, selectedBolsas.gbsfop)">Guardar</button>
                 </div>
             </div>
         </div>

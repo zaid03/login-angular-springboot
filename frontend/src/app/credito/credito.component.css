@@ -385,6 +385,10 @@ app-sidebar {
     font-size: 15px;
 }
 
+.save-btn:focus{
+    border: 1px solid #042b5a !important;
+}
+
 @media (max-width: 1380px) {
     .modal{
         height: 90vh !important;
