@@ -44,7 +44,6 @@ export class FacturasComponent {
       this.initialCentroGestor = this.centroGestor;
     }
     
-
     if (entidad) {
       const parsed = JSON.parse(entidad);
       this.entcod = parsed.ENTCOD;
