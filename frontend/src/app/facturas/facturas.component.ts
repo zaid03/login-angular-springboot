@@ -257,7 +257,7 @@ export class FacturasComponent {
   }
 
   fechaTipo: 'registro' | 'factura' | 'contable' | '' = '';
-  estadoTipo: 'contabilizadas' | 'no-contabilizadas' | 'aplicadas' | 'sin-aplicadas' | '' = '';
+  estadoTipo: 'contabilizadas' | 'no-contabilizadas' | 'aplicadas' | 'sin-aplicadas' | '' = 'no-contabilizadas';
   fromDate: string = '';
   toDate: string = '';
   filterFacturaMessage: string = '';
@@ -348,7 +348,7 @@ export class FacturasComponent {
 
     const hasDateInput = !!(desde || hasta);
     if (!tipo) {
-      if (estado) {
+      if (estado && estado != 'no-contabilizadas') {
         this.filterFacturaMessage = 'Seleccione un tipo de fecha antes de elegir un estado.';
         return;
       }
@@ -1099,7 +1099,7 @@ export class FacturasComponent {
     this.facturaSearchTouched = false;
     this.searchQueryTouched = false;
     this.fechaTipo = '';
-    this.estadoTipo = '';
+    this.estadoTipo = 'no-contabilizadas';
     this.fromDate = '';
     this.toDate = '';
     this.filterFacturaMessage = '';
