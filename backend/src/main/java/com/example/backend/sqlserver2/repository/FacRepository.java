@@ -177,6 +177,7 @@ public interface FacRepository extends JpaRepository<Fac, Integer>{
          AND f.TERCOD = t.TERCOD
         WHERE f.ENT = :ent
           AND f.EJE = :eje
+          AND f.cgecod = :cgecod
           AND CAST(f.FACFRE AS DATE) >= CAST(:fromDate AS DATE)
           AND FACADO is null
         ORDER BY f.FACFRE ASC
