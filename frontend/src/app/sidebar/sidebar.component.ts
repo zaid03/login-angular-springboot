@@ -1,8 +1,13 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { environment } from '../../environments/environment';
+
+function safeParse(raw: string | null) {
+  if (!raw) return {};
+  try { return JSON.parse(raw); } catch { return {}; }
+}
 
 @Component({
   selector: 'app-sidebar',
@@ -11,11 +16,14 @@ import { environment } from '../../environments/environment';
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.css']
 })
-export class SidebarComponent {
+export class SidebarComponent implements OnInit {
   usucod: string | null = null;
   perfil: string | null = null;
-
+  esContable: boolean = false;
   allowedMnucods: string[] = [];
+
+  logoPath = 'assets/images/logo_iass.png';
+
   constructor(private router: Router) {}
 
   ngOnInit(): void {
@@ -23,6 +31,10 @@ export class SidebarComponent {
     const entidad = sessionStorage.getItem('Entidad');
     const perfil = sessionStorage.getItem('Perfil');
     const menus = sessionStorage.getItem('mnucods');
+    const rawContable = sessionStorage.getItem('EsContable');
+    const ContableOBJ = safeParse(rawContable);
+    this.esContable = ContableOBJ.value === true || ContableOBJ.value === 'true';
+
 
     if (menus) {
       try {
@@ -57,6 +69,25 @@ export class SidebarComponent {
     window.location.href = `${environment.casLoginUrl.replace('/login', '/logout')}?service=${environment.frontendUrl}/login`;
   }
 
+  proveedorees(): void {
+    if (this.isDisabled('acTer')) {
+      console.warn('Not allowed');
+      return;
+    }
+    this.router.navigate(['/proveedorees']);
+  }
+
+  isFacturasDisabled(): boolean {
+    return this.isDisabled('acFac') || !this.esContable;
+  }
+  facturas(): void{
+    if (this.isFacturasDisabled()) {
+      console.warn('Not allowed');
+      return;
+    }
+    this.router.navigate(['/facturas']);
+  }
+
   navigateTo(code: string): void {
     if (this.isDisabled(code)) {
       console.warn('Not allowed:', code);
@@ -68,8 +99,13 @@ export class SidebarComponent {
         this.router.navigate(['/proveedorees']);
         break;
       case 'acFac':
-        this.router.navigate(['/facturas']);
-        break;
+        if (this.esContable) {
+          this.router.navigate(['/facturas']);
+          break;
+        } else {
+          console.warn("not allowed");
+        }
+        break
       case 'acGBS':
         this.router.navigate(['credito']);
         break;
@@ -96,5 +132,4 @@ export class SidebarComponent {
     this.collapsedChange.emit(this.collapsed);
   }
 
-  logoPath = 'assets/images/logo_iass.png';
 }

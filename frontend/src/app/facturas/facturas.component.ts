@@ -42,7 +42,6 @@ export class FacturasComponent {
       const parsed = JSON.parse(cge);
       this.centroGestor = parsed.value
       this.initialCentroGestor = this.centroGestor;
-      console.log(this.initialCentroGestor);
     }
     
 

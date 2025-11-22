@@ -15,6 +15,7 @@ public interface CentroGestor extends JpaRepository<Dep, DepId> {
     @Query(value = """
         SELECT DISTINCT 
             D.CGECOD, 
+            D.DEPINT,
             G.CGEDES,
             G.CGECIC   
         FROM DEP D, DPE P, CGE G   

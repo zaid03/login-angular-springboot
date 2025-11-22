@@ -20,11 +20,12 @@
         <a class="choice">Proveedores</a>
         <div class="menu-content">
           <div class="menu-item">
-            <a class="acTer" [class.disabled]="isDisabled('acTer')" (click)="navigateTo('acTer')">Gestión de Proveedores</a>
+            <a class="acTer" [class.disabled]="isDisabled('acTer')" (click)="proveedorees()">Gestión de Proveedores</a>
             <a class="acCoTer" [class.disabled]="isDisabled('acCoTer')">Consulta de Proveedores</a>
           </div>
         </div>
       </div>
+
       <div class="menu">
         <a class="choice">Gestion de credito</a>
         <div class="menu-content">
@@ -33,11 +34,13 @@
           </div>
         </div>
       </div>
+
       <div class="menu">
         <a class="choice">Contabilización</a>
         <div class="menu-content">
           <div class="menu-item">
-            <a class="acFac" [class.disabled]="isDisabled('acFac')" (click)="navigateTo('acFac')">Gestión de Facturas</a>
+            <a class="acFac" [class.disabled]="isFacturasDisabled()" [attr.aria-disabled]="isFacturasDisabled()" (click)="facturas()">Gestión de Facturas</a>   
+            <a class="acFacC" [class.disabled]="isDisabled('acFacC')">Consulta de Facturas</a>
             <a class="acMCon" [class.disabled]="isDisabled('acMCon')">Monitor de contabilización</a>
           </div>
         </div>
