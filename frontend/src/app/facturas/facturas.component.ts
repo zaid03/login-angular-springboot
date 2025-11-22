@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { CommonModule, JsonPipe } from '@angular/common';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 
 import jsPDF from 'jspdf';
@@ -18,6 +18,7 @@ export class FacturasComponent {
   private entcod: number | null = null;
   private eje: number | null = null;
   public centroGestor: string = '';
+  public estadogc: number | null = null;
   public facturaSearchTouched: boolean = false;
   public searchQueryTouched: boolean = false;
   private initialCentroGestor: string = '';
@@ -29,15 +30,34 @@ export class FacturasComponent {
   facturaIsError: boolean = false;
   facturaMessageSuccess: String = '';
   facturaMessageIsSuccess: boolean = false;
+  estadoMessage: string = '';
+  isEstadoMessage: boolean = false;
   public Math = Math;
 
   constructor(private http: HttpClient, private router: Router) {}
 
   ngOnInit(): void{
+    this.estadoMessage = '';
     this.facturaIsError = false;
     const entidad = sessionStorage.getItem('Entidad');
     const eje = sessionStorage.getItem('EJERCICIO');
     const cge = sessionStorage.getItem('CENTROGESTOR');
+    const estadoCentroGestor = sessionStorage.getItem('ESTADOGC');
+
+    if(estadoCentroGestor){
+      const parsed = JSON.parse(estadoCentroGestor);
+      this.estadogc = parsed.value;
+      console.log(this.estadogc)
+
+      if (this.estadogc === 1) {
+        this.isEstadoMessage = true;
+        this.estadoMessage = 'Centro Gestor CERRADO';
+      }
+      if ( this.estadogc === 2) {
+        this.isEstadoMessage = true;
+        this.estadoMessage = 'Centro Gestor CERRADO para CONTABILIZAR';
+      }
+    }
 
     if (cge){
       const parsed = JSON.parse(cge);
@@ -78,7 +98,6 @@ export class FacturasComponent {
       }
     });
   }
-  
 
   get paginatedFacturas(): any[] {
     if (!this.facturas || this.facturas.length === 0) return [];
