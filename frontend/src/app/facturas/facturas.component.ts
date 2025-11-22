@@ -18,7 +18,6 @@ export class FacturasComponent {
   private entcod: number | null = null;
   private eje: number | null = null;
   public centroGestor: string = '';
-  public centroGestorTouched: boolean = false;
   public facturaSearchTouched: boolean = false;
   public searchQueryTouched: boolean = false;
   private initialCentroGestor: string = '';
@@ -28,6 +27,8 @@ export class FacturasComponent {
   pageSize = 20;
   facturaMessage: String = '';
   facturaIsError: boolean = false;
+  facturaMessageSuccess: String = '';
+  facturaMessageIsSuccess: boolean = false;
   public Math = Math;
 
   constructor(private http: HttpClient, private router: Router) {}
@@ -62,8 +63,10 @@ export class FacturasComponent {
 
     this.http.get<any>(`http://localhost:8080/api/fac/${this.entcod}/${this.eje}/${this.centroGestor}`).subscribe({
       next: (response) => {
-        if (response.error) {
-          alert('Error: ' + response.error);
+        if (!Array.isArray(response) || response.length === 0) {
+          this.facturaMessageIsSuccess = true;
+          this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+          this.facturas = []
         } else {
           this.facturas = response;
           this.backupFacturas = Array.isArray(response) ? [...response] : [];
@@ -72,7 +75,6 @@ export class FacturasComponent {
       }, error: (err) => {
         this.facturaIsError = true;
         this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-        alert(this.facturaMessage);
       }
     });
   }
@@ -270,15 +272,6 @@ export class FacturasComponent {
     }
     this.facturaSearchTouched = true;
   }
-
-  onCentroGestorInput(event: Event) {
-    const input = event.target as HTMLInputElement;
-    const sanitized = (input.value || '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 4);
-    if (sanitized !== this.centroGestor) {
-      this.centroGestor = sanitized;
-    }
-    this.centroGestorTouched = true;
-  }
   
   filterFacturas(){
     this.facturaMessage = '';
@@ -288,7 +281,6 @@ export class FacturasComponent {
     const desde = this.fromDate && this.fromDate.trim() ? this.fromDate : '';
     const hasta = this.toDate && this.toDate.trim() ? this.toDate : '';
     const facann = (this.facturaSearch || '').toString().trim();
-    const cgeq = this.centroGestorTouched ? (this.centroGestor || '').toString().trim() : '';
     const searchRaw = (this.searchQuery || '').toString().trim();
 
     const searchDigits = searchRaw.replace(/\D/g, '');
@@ -300,7 +292,7 @@ export class FacturasComponent {
     const doShortDigitsExact = !hasLetters && hasDigits && searchDigits.length > 0 && searchDigits.length <= NIF_MIN_DIGITS;
     const doFallbackTextSearch = searchRaw.length > 0 && !doNifSearch && !doAlphaNumSearch && !doShortDigitsExact;
     let searchApplied = false;
-    if (facann || cgeq || doNifSearch || doAlphaNumSearch || doShortDigitsExact || doFallbackTextSearch) {
+    if (facann || doNifSearch || doAlphaNumSearch || doShortDigitsExact || doFallbackTextSearch) {
       searchApplied = true;
       const source = (this.backupFacturas && this.backupFacturas.length) ? this.backupFacturas : this.facturas;
       const searchUp = searchRaw.toUpperCase();
@@ -309,7 +301,6 @@ export class FacturasComponent {
         const valCge = (f.cgecod ?? f.CGECOD ?? '').toString();
         const valTernif = (f.ternif ?? f.TERNIF ?? '').toString().toUpperCase();
         if (facann && valFac !== facann) return false;
-        if (cgeq && valCge !== cgeq) return false;
 
         if (doShortDigitsExact) {
           const valTercod = (f.tercod ?? f.TERCOD ?? '').toString();
@@ -336,7 +327,6 @@ export class FacturasComponent {
       this.page = 0;
       const parts = [];
       if (facann) parts.push(`FACANN = ${facann}`);
-      if (cgeq) parts.push(`C.Gestor = ${cgeq}`);
       if (doShortDigitsExact) parts.push(`TERCOD = ${searchDigits} OR TERADO = "${searchRaw}"`);
       else if (doNifSearch) parts.push(`TERNIF contains "${searchDigits}"`);
       else if (doAlphaNumSearch) parts.push(`TERNIF/TERNOM/FACDOC contains "${searchRaw}"`);
@@ -358,7 +348,6 @@ export class FacturasComponent {
         this.filterFacturaMessage = '';
         return; 
       }
-      this.filterFacturaMessage = 'test';
     }
     
     let datePart = '';
@@ -378,8 +367,10 @@ export class FacturasComponent {
         if (estado === 'contabilizadas') {
           this.http.get<any>(`http://localhost:8080/api/fac/facfre-desde-facado-notnull/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
             next: (response) => {
-              if (response.error) {
-                alert('Error: ' + response.error);
+              if (!Array.isArray(response) || response.length === 0) {
+                this.facturaMessageIsSuccess = true;
+                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+                this.facturas = []
               } else {
                 this.facturas = response;
                 this.backupFacturas = Array.isArray(response) ? [...response] : [];
@@ -393,8 +384,10 @@ export class FacturasComponent {
         } else if (estado === 'no-contabilizadas') {
           this.http.get<any>(`http://localhost:8080/api/fac/facfre-desde-facado-null/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
             next: (response) => {
-              if (response.error) {
-                alert('Error: ' + response.error);
+              if (!Array.isArray(response) || response.length === 0) {
+                this.facturaMessageIsSuccess = true;
+                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+                this.facturas = []
               } else {
                 this.facturas = response;
                 this.backupFacturas = Array.isArray(response) ? [...response] : [];
@@ -408,8 +401,10 @@ export class FacturasComponent {
         } else if ( estado === 'aplicadas') {
           this.http.get<any>(`http://localhost:8080/api/fac/facfre-desde-facado-aplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
             next: (response) => {
-              if (response.error) {
-                alert('Error: ' + response.error);
+              if (!Array.isArray(response) || response.length === 0) {
+                this.facturaMessageIsSuccess = true;
+                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+                this.facturas = []
               } else {
                 this.facturas = response;
                 this.backupFacturas = Array.isArray(response) ? [...response] : [];
@@ -423,8 +418,10 @@ export class FacturasComponent {
         } else if (estado === 'sin-aplicadas') {
           this.http.get<any>(`http://localhost:8080/api/fac/facfre-desde-facado-sinaplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
             next: (response) => {
-              if (response.error) {
-                alert('Error: ' + response.error);
+              if (!Array.isArray(response) || response.length === 0) {
+                this.facturaMessageIsSuccess = true;
+                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+                this.facturas = []
               } else {
                 this.facturas = response;
                 this.backupFacturas = Array.isArray(response) ? [...response] : [];
@@ -438,8 +435,10 @@ export class FacturasComponent {
         } else {
             this.http.get<any>(`http://localhost:8080/api/fac/facfre-desde/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
             next: (response) => {
-              if (response.error) {
-                alert('Error: ' + response.error);
+              if (!Array.isArray(response) || response.length === 0) {
+                this.facturaMessageIsSuccess = true;
+                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+                this.facturas = []
               } else {
                 this.facturas = response;
                 this.backupFacturas = Array.isArray(response) ? [...response] : [];
@@ -456,8 +455,10 @@ export class FacturasComponent {
         if (estado === 'contabilizadas') {
           this.http.get<any>(`http://localhost:8080/api/fac/facfre-hasta-facado-notnull/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
             next: (response) => {
-              if (response.error) {
-                alert('Error: ' + response.error);
+              if (!Array.isArray(response) || response.length === 0) {
+                this.facturaMessageIsSuccess = true;
+                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+                this.facturas = []
               } else {
                 this.facturas = response;
                 this.backupFacturas = Array.isArray(response) ? [...response] : [];
@@ -471,8 +472,10 @@ export class FacturasComponent {
         } else if (estado === 'no-contabilizadas') {
           this.http.get<any>(`http://localhost:8080/api/fac/facfre-hasta-facado-null/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
             next: (response) => {
-              if (response.error) {
-                alert('Error: ' + response.error);
+              if (!Array.isArray(response) || response.length === 0) {
+                this.facturaMessageIsSuccess = true;
+                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+                this.facturas = []
               } else {
                 this.facturas = response;
                 this.backupFacturas = Array.isArray(response) ? [...response] : [];
@@ -486,8 +489,10 @@ export class FacturasComponent {
         } else if ( estado === 'aplicadas') {
           this.http.get<any>(`http://localhost:8080/api/fac/facfre-hasta-facado-aplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
             next: (response) => {
-              if (response.error) {
-                alert('Error: ' + response.error);
+              if (!Array.isArray(response) || response.length === 0) {
+                this.facturaMessageIsSuccess = true;
+                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+                this.facturas = []
               } else {
                 this.facturas = response;
                 this.backupFacturas = Array.isArray(response) ? [...response] : [];
@@ -501,8 +506,10 @@ export class FacturasComponent {
         } else if (estado === 'sin-aplicadas') {
           this.http.get<any>(`http://localhost:8080/api/fac/facfre-hasta-facado-sinaplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
             next: (response) => {
-              if (response.error) {
-                alert('Error: ' + response.error);
+              if (!Array.isArray(response) || response.length === 0) {
+                this.facturaMessageIsSuccess = true;
+                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+                this.facturas = []
               } else {
                 this.facturas = response;
                 this.backupFacturas = Array.isArray(response) ? [...response] : [];
@@ -516,8 +523,10 @@ export class FacturasComponent {
         } else {
             this.http.get<any>(`http://localhost:8080/api/fac/facfre-hasta/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
             next: (response) => {
-              if (response.error) {
-                alert('Error: ' + response.error);
+              if (!Array.isArray(response) || response.length === 0) {
+                this.facturaMessageIsSuccess = true;
+                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+                this.facturas = []
               } else {
                 this.facturas = response;
                 this.backupFacturas = Array.isArray(response) ? [...response] : [];
@@ -534,8 +543,10 @@ export class FacturasComponent {
         if (estado === 'contabilizadas') {
           this.http.get<any>(`http://localhost:8080/api/fac/facfre-range-facado-notnull/${this.entcod}//${this.centroGestor}/${desde}/${hasta}`).subscribe({
             next: (response) => {
-              if (response.error) {
-                alert('Error: ' + response.error);
+              if (!Array.isArray(response) || response.length === 0) {
+                this.facturaMessageIsSuccess = true;
+                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+                this.facturas = []
               } else {
                 this.facturas = response;
                 this.backupFacturas = Array.isArray(response) ? [...response] : [];
@@ -549,8 +560,10 @@ export class FacturasComponent {
         } else if (estado === 'no-contabilizadas') {
           this.http.get<any>(`http://localhost:8080/api/fac/facfre-range-facado-null/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
             next: (response) => {
-              if (response.error) {
-                alert('Error: ' + response.error);
+              if (!Array.isArray(response) || response.length === 0) {
+                this.facturaMessageIsSuccess = true;
+                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+                this.facturas = []
               } else {
                 this.facturas = response;
                 this.backupFacturas = Array.isArray(response) ? [...response] : [];
@@ -564,8 +577,10 @@ export class FacturasComponent {
         } else if ( estado === 'aplicadas') {
           this.http.get<any>(`http://localhost:8080/api/fac/facfre-range-facado-aplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
             next: (response) => {
-              if (response.error) {
-                alert('Error: ' + response.error);
+              if (!Array.isArray(response) || response.length === 0) {
+                this.facturaMessageIsSuccess = true;
+                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+                this.facturas = []
               } else {
                 this.facturas = response;
                 this.backupFacturas = Array.isArray(response) ? [...response] : [];
@@ -579,8 +594,10 @@ export class FacturasComponent {
         } else if (estado === 'sin-aplicadas') {
           this.http.get<any>(`http://localhost:8080/api/fac/facfre-range-facado-sinaplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
             next: (response) => {
-              if (response.error) {
-                alert('Error: ' + response.error);
+              if (!Array.isArray(response) || response.length === 0) {
+                this.facturaMessageIsSuccess = true;
+                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+                this.facturas = []
               } else {
                 this.facturas = response;
                 this.backupFacturas = Array.isArray(response) ? [...response] : [];
@@ -594,8 +611,10 @@ export class FacturasComponent {
         } else {
           this.http.get<any>(`http://localhost:8080/api/fac/facfre-range/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
             next: (response) => {
-              if (response.error) {
-                alert('Error: ' + response.error);
+              if (!Array.isArray(response) || response.length === 0) {
+                this.facturaMessageIsSuccess = true;
+                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+                this.facturas = []
               } else {
                 this.facturas = response;
                 this.backupFacturas = Array.isArray(response) ? [...response] : [];
@@ -616,8 +635,10 @@ export class FacturasComponent {
         if (estado === 'contabilizadas') {
           this.http.get<any>(`http://localhost:8080/api/fac/facdat-desde-facado-notnull/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
             next: (response) => {
-              if (response.error) {
-                alert('Error: ' + response.error);
+              if (!Array.isArray(response) || response.length === 0) {
+                this.facturaMessageIsSuccess = true;
+                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+                this.facturas = []
               } else {
                 this.facturas = response;
                 this.backupFacturas = Array.isArray(response) ? [...response] : [];
@@ -631,8 +652,10 @@ export class FacturasComponent {
         } else if (estado === 'no-contabilizadas') {
           this.http.get<any>(`http://localhost:8080/api/fac/facdat-desde-facado-null/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
             next: (response) => {
-              if (response.error) {
-                alert('Error: ' + response.error);
+              if (!Array.isArray(response) || response.length === 0) {
+                this.facturaMessageIsSuccess = true;
+                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+                this.facturas = []
               } else {
                 this.facturas = response;
                 this.backupFacturas = Array.isArray(response) ? [...response] : [];
@@ -646,8 +669,10 @@ export class FacturasComponent {
         } else if ( estado === 'aplicadas') {
           this.http.get<any>(`http://localhost:8080/api/fac/facdat-desde-facado-aplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
             next: (response) => {
-              if (response.error) {
-                alert('Error: ' + response.error);
+              if (!Array.isArray(response) || response.length === 0) {
+                this.facturaMessageIsSuccess = true;
+                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+                this.facturas = []
               } else {
                 this.facturas = response;
                 this.backupFacturas = Array.isArray(response) ? [...response] : [];
@@ -661,8 +686,10 @@ export class FacturasComponent {
         } else if (estado === 'sin-aplicadas') {
           this.http.get<any>(`http://localhost:8080/api/fac/facdat-desde-facado-sinaplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
             next: (response) => {
-              if (response.error) {
-                alert('Error: ' + response.error);
+              if (!Array.isArray(response) || response.length === 0) {
+                this.facturaMessageIsSuccess = true;
+                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+                this.facturas = []
               } else {
                 this.facturas = response;
                 this.backupFacturas = Array.isArray(response) ? [...response] : [];
@@ -676,8 +703,10 @@ export class FacturasComponent {
         } else {
             this.http.get<any>(`http://localhost:8080/api/fac/facdat-desde/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
             next: (response) => {
-              if (response.error) {
-                alert('Error: ' + response.error);
+              if (!Array.isArray(response) || response.length === 0) {
+                this.facturaMessageIsSuccess = true;
+                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+                this.facturas = []
               } else {
                 this.facturas = response;
                 this.backupFacturas = Array.isArray(response) ? [...response] : [];
@@ -694,8 +723,10 @@ export class FacturasComponent {
         if (estado === 'contabilizadas') {
           this.http.get<any>(`http://localhost:8080/api/fac/facdat-hasta-facado-notnull/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
             next: (response) => {
-              if (response.error) {
-                alert('Error: ' + response.error);
+              if (!Array.isArray(response) || response.length === 0) {
+                this.facturaMessageIsSuccess = true;
+                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+                this.facturas = []
               } else {
                 this.facturas = response;
                 this.backupFacturas = Array.isArray(response) ? [...response] : [];
@@ -709,8 +740,10 @@ export class FacturasComponent {
         } else if (estado === 'no-contabilizadas') {
           this.http.get<any>(`http://localhost:8080/api/fac/facdat-hasta-facado-null/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
             next: (response) => {
-              if (response.error) {
-                alert('Error: ' + response.error);
+              if (!Array.isArray(response) || response.length === 0) {
+                this.facturaMessageIsSuccess = true;
+                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+                this.facturas = []
               } else {
                 this.facturas = response;
                 this.backupFacturas = Array.isArray(response) ? [...response] : [];
@@ -724,8 +757,10 @@ export class FacturasComponent {
         } else if ( estado === 'aplicadas') {
           this.http.get<any>(`http://localhost:8080/api/fac/facdat-hasta-facado-aplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
             next: (response) => {
-              if (response.error) {
-                alert('Error: ' + response.error);
+              if (!Array.isArray(response) || response.length === 0) {
+                this.facturaMessageIsSuccess = true;
+                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+                this.facturas = []
               } else {
                 this.facturas = response;
                 this.backupFacturas = Array.isArray(response) ? [...response] : [];
@@ -739,8 +774,10 @@ export class FacturasComponent {
         } else if (estado === 'sin-aplicadas') {
           this.http.get<any>(`http://localhost:8080/api/fac/facdat-hasta-facado-sinaplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
             next: (response) => {
-              if (response.error) {
-                alert('Error: ' + response.error);
+              if (!Array.isArray(response) || response.length === 0) {
+                this.facturaMessageIsSuccess = true;
+                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+                this.facturas = []
               } else {
                 this.facturas = response;
                 this.backupFacturas = Array.isArray(response) ? [...response] : [];
@@ -754,8 +791,10 @@ export class FacturasComponent {
         } else {
             this.http.get<any>(`http://localhost:8080/api/fac/facdat-hasta/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
             next: (response) => {
-              if (response.error) {
-                alert('Error: ' + response.error);
+              if (!Array.isArray(response) || response.length === 0) {
+                this.facturaMessageIsSuccess = true;
+                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+                this.facturas = []
               } else {
                 this.facturas = response;
                 this.backupFacturas = Array.isArray(response) ? [...response] : [];
@@ -772,8 +811,10 @@ export class FacturasComponent {
         if (estado === 'contabilizadas') {
           this.http.get<any>(`http://localhost:8080/api/fac/facdat-range-facado-notnull/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
             next: (response) => {
-              if (response.error) {
-                alert('Error: ' + response.error);
+              if (!Array.isArray(response) || response.length === 0) {
+                this.facturaMessageIsSuccess = true;
+                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+                this.facturas = []
               } else {
                 this.facturas = response;
                 this.backupFacturas = Array.isArray(response) ? [...response] : [];
@@ -787,8 +828,10 @@ export class FacturasComponent {
         } else if (estado === 'no-contabilizadas') {
           this.http.get<any>(`http://localhost:8080/api/fac/facdat-range-facado-null/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
             next: (response) => {
-              if (response.error) {
-                alert('Error: ' + response.error);
+              if (!Array.isArray(response) || response.length === 0) {
+                this.facturaMessageIsSuccess = true;
+                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+                this.facturas = []
               } else {
                 this.facturas = response;
                 this.backupFacturas = Array.isArray(response) ? [...response] : [];
@@ -802,8 +845,10 @@ export class FacturasComponent {
         } else if ( estado === 'aplicadas') {
           this.http.get<any>(`http://localhost:8080/api/fac/facdat-range-facado-aplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
             next: (response) => {
-              if (response.error) {
-                alert('Error: ' + response.error);
+              if (!Array.isArray(response) || response.length === 0) {
+                this.facturaMessageIsSuccess = true;
+                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+                this.facturas = []
               } else {
                 this.facturas = response;
                 this.backupFacturas = Array.isArray(response) ? [...response] : [];
@@ -817,8 +862,10 @@ export class FacturasComponent {
         } else if (estado === 'sin-aplicadas') {
           this.http.get<any>(`http://localhost:8080/api/fac/facdat-range-facado-sinaplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
             next: (response) => {
-              if (response.error) {
-                alert('Error: ' + response.error);
+              if (!Array.isArray(response) || response.length === 0) {
+                this.facturaMessageIsSuccess = true;
+                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+                this.facturas = []
               } else {
                 this.facturas = response;
                 this.backupFacturas = Array.isArray(response) ? [...response] : [];
@@ -832,8 +879,10 @@ export class FacturasComponent {
         } else {
           this.http.get<any>(`http://localhost:8080/api/fac/facdat-range/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
             next: (response) => {
-              if (response.error) {
-                alert('Error: ' + response.error);
+              if (!Array.isArray(response) || response.length === 0) {
+                this.facturaMessageIsSuccess = true;
+                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+                this.facturas = []
               } else {
                 this.facturas = response;
                 this.backupFacturas = Array.isArray(response) ? [...response] : [];
@@ -854,8 +903,10 @@ export class FacturasComponent {
         if (estado === 'contabilizadas') {
           this.http.get<any>(`http://localhost:8080/api/fac/facfco-desde-facado-notnull/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
             next: (response) => {
-              if (response.error) {
-                alert('Error: ' + response.error);
+              if (!Array.isArray(response) || response.length === 0) {
+                this.facturaMessageIsSuccess = true;
+                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+                this.facturas = []
               } else {
                 this.facturas = response;
                 this.backupFacturas = Array.isArray(response) ? [...response] : [];
@@ -869,8 +920,10 @@ export class FacturasComponent {
         } else if (estado === 'no-contabilizadas') {
           this.http.get<any>(`http://localhost:8080/api/fac/facfco-desde-facado-null/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
             next: (response) => {
-              if (response.error) {
-                alert('Error: ' + response.error);
+              if (!Array.isArray(response) || response.length === 0) {
+                this.facturaMessageIsSuccess = true;
+                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+                this.facturas = []
               } else {
                 this.facturas = response;
                 this.backupFacturas = Array.isArray(response) ? [...response] : [];
@@ -884,8 +937,10 @@ export class FacturasComponent {
         } else if ( estado === 'aplicadas') {
           this.http.get<any>(`http://localhost:8080/api/fac/facfco-desde-facado-aplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
             next: (response) => {
-              if (response.error) {
-                alert('Error: ' + response.error);
+              if (!Array.isArray(response) || response.length === 0) {
+                this.facturaMessageIsSuccess = true;
+                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+                this.facturas = []
               } else {
                 this.facturas = response;
                 this.backupFacturas = Array.isArray(response) ? [...response] : [];
@@ -899,8 +954,10 @@ export class FacturasComponent {
         } else if (estado === 'sin-aplicadas') {
           this.http.get<any>(`http://localhost:8080/api/fac/facfco-desde-facado-sinaplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
             next: (response) => {
-              if (response.error) {
-                alert('Error: ' + response.error);
+              if (!Array.isArray(response) || response.length === 0) {
+                this.facturaMessageIsSuccess = true;
+                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+                this.facturas = []
               } else {
                 this.facturas = response;
                 this.backupFacturas = Array.isArray(response) ? [...response] : [];
@@ -914,8 +971,10 @@ export class FacturasComponent {
         } else {
             this.http.get<any>(`http://localhost:8080/api/fac/facfco-desde/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
             next: (response) => {
-              if (response.error) {
-                alert('Error: ' + response.error);
+              if (!Array.isArray(response) || response.length === 0) {
+                this.facturaMessageIsSuccess = true;
+                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+                this.facturas = []
               } else {
                 this.facturas = response;
                 this.backupFacturas = Array.isArray(response) ? [...response] : [];
@@ -932,8 +991,10 @@ export class FacturasComponent {
         if (estado === 'contabilizadas') {
           this.http.get<any>(`http://localhost:8080/api/fac/facfco-hasta-facado-notnull/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
             next: (response) => {
-              if (response.error) {
-                alert('Error: ' + response.error);
+              if (!Array.isArray(response) || response.length === 0) {
+                this.facturaMessageIsSuccess = true;
+                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+                this.facturas = []
               } else {
                 this.facturas = response;
                 this.backupFacturas = Array.isArray(response) ? [...response] : [];
@@ -947,8 +1008,10 @@ export class FacturasComponent {
         } else if (estado === 'no-contabilizadas') {
           this.http.get<any>(`http://localhost:8080/api/fac/facfco-hasta-facado-null/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
             next: (response) => {
-              if (response.error) {
-                alert('Error: ' + response.error);
+              if (!Array.isArray(response) || response.length === 0) {
+                this.facturaMessageIsSuccess = true;
+                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+                this.facturas = []
               } else {
                 this.facturas = response;
                 this.backupFacturas = Array.isArray(response) ? [...response] : [];
@@ -962,8 +1025,10 @@ export class FacturasComponent {
         } else if ( estado === 'aplicadas') {
           this.http.get<any>(`http://localhost:8080/api/fac/facfco-hasta-facado-aplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
             next: (response) => {
-              if (response.error) {
-                alert('Error: ' + response.error);
+              if (!Array.isArray(response) || response.length === 0) {
+                this.facturaMessageIsSuccess = true;
+                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+                this.facturas = []
               } else {
                 this.facturas = response;
                 this.backupFacturas = Array.isArray(response) ? [...response] : [];
@@ -977,8 +1042,10 @@ export class FacturasComponent {
         } else if (estado === 'sin-aplicadas') {
           this.http.get<any>(`http://localhost:8080/api/fac/facfco-hasta-facado-sinaplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
             next: (response) => {
-              if (response.error) {
-                alert('Error: ' + response.error);
+              if (!Array.isArray(response) || response.length === 0) {
+                this.facturaMessageIsSuccess = true;
+                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+                this.facturas = []
               } else {
                 this.facturas = response;
                 this.backupFacturas = Array.isArray(response) ? [...response] : [];
@@ -992,8 +1059,10 @@ export class FacturasComponent {
         } else {
             this.http.get<any>(`http://localhost:8080/api/fac/facfco-hasta/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
             next: (response) => {
-              if (response.error) {
-                alert('Error: ' + response.error);
+              if (!Array.isArray(response) || response.length === 0) {
+                this.facturaMessageIsSuccess = true;
+                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+                this.facturas = []
               } else {
                 this.facturas = response;
                 this.backupFacturas = Array.isArray(response) ? [...response] : [];
@@ -1010,8 +1079,10 @@ export class FacturasComponent {
         if (estado === 'contabilizadas') {
           this.http.get<any>(`http://localhost:8080/api/fac/facfco-range-facado-notnull/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
             next: (response) => {
-              if (response.error) {
-                alert('Error: ' + response.error);
+              if (!Array.isArray(response) || response.length === 0) {
+                this.facturaMessageIsSuccess = true;
+                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+                this.facturas = []
               } else {
                 this.facturas = response;
                 this.backupFacturas = Array.isArray(response) ? [...response] : [];
@@ -1025,8 +1096,10 @@ export class FacturasComponent {
         } else if (estado === 'no-contabilizadas') {
           this.http.get<any>(`http://localhost:8080/api/fac/facfco-range-facado-null/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
             next: (response) => {
-              if (response.error) {
-                alert('Error: ' + response.error);
+              if (!Array.isArray(response) || response.length === 0) {
+                this.facturaMessageIsSuccess = true;
+                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+                this.facturas = []
               } else {
                 this.facturas = response;
                 this.backupFacturas = Array.isArray(response) ? [...response] : [];
@@ -1040,8 +1113,10 @@ export class FacturasComponent {
         } else if ( estado === 'aplicadas') {
           this.http.get<any>(`http://localhost:8080/api/fac/facfco-range-facado-aplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
             next: (response) => {
-              if (response.error) {
-                alert('Error: ' + response.error);
+              if (!Array.isArray(response) || response.length === 0) {
+                this.facturaMessageIsSuccess = true;
+                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+                this.facturas = []
               } else {
                 this.facturas = response;
                 this.backupFacturas = Array.isArray(response) ? [...response] : [];
@@ -1055,8 +1130,10 @@ export class FacturasComponent {
         } else if (estado === 'sin-aplicadas') {
           this.http.get<any>(`http://localhost:8080/api/fac/facfco-range-facado-sinaplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
             next: (response) => {
-              if (response.error) {
-                alert('Error: ' + response.error);
+              if (!Array.isArray(response) || response.length === 0) {
+                this.facturaMessageIsSuccess = true;
+                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+                this.facturas = []
               } else {
                 this.facturas = response;
                 this.backupFacturas = Array.isArray(response) ? [...response] : [];
@@ -1070,8 +1147,10 @@ export class FacturasComponent {
         } else {
           this.http.get<any>(`http://localhost:8080/api/fac/facfco-range/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
             next: (response) => {
-              if (response.error) {
-                alert('Error: ' + response.error);
+              if (!Array.isArray(response) || response.length === 0) {
+                this.facturaMessageIsSuccess = true;
+                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+                this.facturas = []
               } else {
                 this.facturas = response;
                 this.backupFacturas = Array.isArray(response) ? [...response] : [];
@@ -1093,7 +1172,6 @@ export class FacturasComponent {
     this.facturaSearch = '';
     this.searchQuery = '';
     this.centroGestor = this.initialCentroGestor || '';
-    this.centroGestorTouched = false;
     this.facturaSearchTouched = false;
     this.searchQueryTouched = false;
     this.fechaTipo = '';
@@ -1102,6 +1180,7 @@ export class FacturasComponent {
     this.toDate = '';
     this.filterFacturaMessage = '';
     this.facturaMessage = '';
+    this.facturaMessageSuccess = '';
     this.page = 0;
     setTimeout(() => {
       const ejeInput = document.querySelector('input[name="factura"]') as HTMLInputElement | null;
