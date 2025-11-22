@@ -373,6 +373,9 @@ export class FacturasComponent {
     }
 
     if (tipo === 'registro') {
+      if (!desde && !hasta) {
+        this.filterFacturaMessage = "Debe elegir una línea de tiempo";
+      }
       if (desde && !hasta) {
         if (estado === 'contabilizadas') {
           this.http.get<any>(`http://localhost:8080/api/fac/facfre-desde-facado-notnull/${this.entcod}/${this.eje}/${desde}`).subscribe({
@@ -608,7 +611,9 @@ export class FacturasComponent {
         }
       }
     } else if (tipo === 'factura') {
-      this.filterFacturaMessage = `Ha seleccionado: Factura. ${datePart}`;
+      if (!desde && !hasta) {
+        this.filterFacturaMessage = "Debe elegir una línea de tiempo";
+      }
       if (desde && !hasta) {
         if (estado === 'contabilizadas') {
           this.http.get<any>(`http://localhost:8080/api/fac/facdat-desde-facado-notnull/${this.entcod}/${this.eje}/${desde}`).subscribe({
@@ -844,6 +849,9 @@ export class FacturasComponent {
         }
       }
     } else if (tipo === 'contable') {
+      if (!desde && !hasta) {
+        this.filterFacturaMessage = "Debe elegir una línea de tiempo";
+      }
       if (desde && !hasta) {
         if (estado === 'contabilizadas') {
           this.http.get<any>(`http://localhost:8080/api/fac/facfco-desde-facado-notnull/${this.entcod}/${this.eje}/${desde}`).subscribe({
