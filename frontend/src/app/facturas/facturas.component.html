@@ -163,27 +163,39 @@
                 <thead>
                     <tr>
                         <th>Número Registro</th>
-                        <th>Fecha contable</th>
-                        <th>ADO</th>
-                        <th>R.C.F</th>
+                        <th>Código Prov.</th>
+                        <th>Nombre Proveedor</th>
+                        <th>NIF Prov.</th>
+                        <th>F. Registro</th>
+                        <th>Importe total</th>
                         <th>Núm. Factura</th>
-                        <th>Proveedor</th>
+                        <th>Año</th>
+                        <th>R.C.F.</th>
                         <th>Fecha Factura</th>
-                        <th>C.gestor</th>
-                        <th>F.Registro</th>
+                        <th>ADO</th>
+                        <th>Fecha contable</th>
+                        <th>Pte. Aplicar</th>
+                        <th>C.Gestor</th>
+                        <th>Estado</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr *ngFor="let p of paginatedFacturas">
                         <td>{{ p.facnum }}</td>
-                        <td (click)="showDetails(p)" style="cursor: pointer;">{{ p.facfco }}</td>
-                        <td>{{ p.facado }}</td>
-                        <td>{{ p.factdc || p.facann || p.facfac  }}</td>
+                        <td (click)="showDetails(p)" style="cursor: pointer;">{{ p.tercod }}</td>
+                        <td>{{ p.ternom }}</td>
+                        <td>{{ p.ternif }}</td>
+                        <td>{{ p.facfre | date:'yyyy-MM-dd'}}</td>
+                        <td>{{ p.facimp  }}</td>
                         <td>{{ p.facdoc }}</td>
-                        <td>{{ p.tercod  }}</td>
-                        <td>{{ p.facdat }}</td>
+                        <td>{{ p.facann }}</td>
+                        <td>{{ p.facfac }}</td>
+                        <td>{{ p.facdat | date:'yyyy-MM-dd' }}</td>
+                        <td>{{ p.facado }}</td>
+                        <td>{{ p.facfco | date:'yyyy-MM-dd' }}</td>
+                        <td>{{getPendingApply(p)}}</td>
                         <td>{{ p.cgecod }}</td>
-                        <td>{{ p.facfre }}</td>
+                        <td>{{ getStaus(p.facado, p.facimp, p.faciec, p.facidi) }}</td>
                     </tr>
                 </tbody>
             </table>

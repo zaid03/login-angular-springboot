@@ -47,7 +47,6 @@ export class FacturasComponent {
     if(estadoCentroGestor){
       const parsed = JSON.parse(estadoCentroGestor);
       this.estadogc = parsed.value;
-      console.log(this.estadogc)
 
       if (this.estadogc === 1) {
         this.isEstadoMessage = true;
@@ -273,6 +272,30 @@ export class FacturasComponent {
     const facidi = toNum(f.facidi);
     const pending = facimp - (faciec + facidi);
     return pending.toFixed(2);
+  }
+
+  public getStaus(facado: any, facimp: any, faciec: any, facidi:any ){
+    const toNum = (v: any) => {
+      if (v === null || v === undefined || v === '') return 0;
+      const n = Number(v);
+      return isNaN(n) ? 0 : n;
+    };
+
+    const FACADO = toNum(facado);
+    const FACIEC = toNum(faciec);
+    const FACIMP = toNum(facimp);
+    const FACIDI = toNum(facidi);
+
+    if (FACADO != 0){
+      return 'contbilizadas';
+    }
+    if (facado === '' && (this.Math.round((FACIMP * 100) / 100) === this.Math.round((FACIEC + FACIDI) * 100) / 100)) {
+      return 'Pte. Aplicada';
+    }
+    if (facado === '' && (this.Math.round((FACIMP * 100) / 100) != this.Math.round((FACIEC + FACIDI) * 100) / 100)) {
+      return 'Pte. Sin aplicar';
+    }
+    return '';
   }
 
   fechaTipo: 'registro' | 'factura' | 'contable' | '' = '';
