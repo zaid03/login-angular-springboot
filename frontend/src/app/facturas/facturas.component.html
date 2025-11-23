@@ -310,23 +310,23 @@
                         <div class="right">
                             <div class="eighth-data margin">
                                 <p style="margin-bottom: 10px;">Total Factura</p>
-                                <input class="width" type="text" [ngModel]="selectedFacturas.facimp" />
+                                <input class="width" type="text" [ngModel]="selectedFacturas.facimp | currency:'EUR':'symbol':'1.2-2'" />
                             </div>
                             <div class="ninth-data margin">
                                 <p>Aplicado:</p>
-                                <input class="width" type="text" [(ngModel)]="selectedFacturas.faciec" style="width: 100px;" />
+                                <input class="width" type="text" [ngModel]="selectedFacturas.faciec | currency:'EUR':'symbol':'1.2-2'" style="width: 100px;" />
                             </div>
                             <div class="tenth-data margin">
                                 <p>Apl. diferencias:</p>
-                                <input class="width" type="text" [(ngModel)]="selectedFacturas.facidi" />
+                                <input class="width" type="text" [ngModel]="selectedFacturas.facidi | currency:'EUR':'symbol':'1.2-2'" />
                             </div>
                             <div class="eleventh-data margin">
                                 <p>Pte.Aplicar</p>
-                                <input class="width" type="text" [value]="getPendingApply(selectedFacturas)" readonly />
+                                <input class="width" type="text" [value]="getPendingApply(selectedFacturas) | currency:'EUR':'symbol':'1.2-2'" readonly />
                             </div>
                             <div class="twelfth-data margin">
                                 <p>Descuentos</p>
-                                <input class="width" type="text" [value]="selectedFacturas.facdto" readonly />
+                                <input class="width" type="text" [value]="selectedFacturas.facdto | currency:'EUR':'symbol':'1.2-2'" readonly />
                             </div>
                             <div class="thirteenth-data margin">
                                 <p>Observaciones:</p>
