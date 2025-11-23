@@ -219,80 +219,119 @@
                     <button class="close-btn-fct" (click)="closeDetails()">×</button>
                     <h3>Detalles de Factura</h3>
 
-                    <div class="first-row">
-                        <div class="first-data">
-                            <p>Núm. Reg.</p>
-                            <input type="text" [(ngModel)]="selectedFacturas.facnum" />
+                    <div class="data">
+                        <div class="left">
+                            <div class="first-row">
+                                <div class="first-data">
+                                    <p>Núm. Reg.</p>
+                                    <input type="text" [(ngModel)]="selectedFacturas.facnum" />
+                                </div>
+                                <div class="first-data">
+                                    <p>F.Contable</p>
+                                    <input type="text" [ngModel]="selectedFacturas.facfco | date:'yyyy-MM-dd'" />
+                                </div>
+                                <div class="first-data">
+                                    <p>ADO</p>
+                                    <input type="text" [(ngModel)]="selectedFacturas.facado" />
+                                </div>  
+                            </div>
+                            <div class="second-row">
+                                <div class="second-data">
+                                    <p>R.C.F:</p>
+                                    <input class="width" type="text" [(ngModel)]="selectedFacturas.facfac" />
+                                    <input class="width" type="text" [(ngModel)]="selectedFacturas.facann" />
+                                    <input class="width" type="text" [(ngModel)]="selectedFacturas.factdc" />
+                                </div>
+                                <div class="second-data">
+                                    <p>Núm.Factura:</p>
+                                    <input class="width" type="text" [(ngModel)]="selectedFacturas.facdoc" />
+                                </div>
+                            </div>
+                            <div class="third-row">
+                                <div class="third-data">
+                                    <p>Proveedor:</p>
+                                    <input type="text" [(ngModel)]="selectedFacturas.tercod" />
+                                    <input type="text" [(ngModel)]="selectedFacturas.ternom" style="width: 300px !important;"/>
+                                </div>
+                            </div>
+                            <div class="fourth-row">
+                                <div class="fourth-data">
+                                    <p>NIF</p>
+                                    <input type="text" [(ngModel)]="selectedFacturas.ternif" />
+                                </div>
+                                <div class="fourth-data">
+                                    <p>Fecha Factura</p>
+                                    <input type="text" [ngModel]="selectedFacturas.facdat | date:'yyyy-MM-dd'" />
+                                </div>
+                                <div class="fourth-data">
+                                    <p>C.Gestor</p>
+                                    <input type="text" [value]="selectedFacturas.cgecod" style="width: 40px;" readonly />
+                                </div>
+                            </div>
+                            <div class="fifth-row">
+                                <div class="fifth-data">
+                                    <p style="margin-bottom: 10px;">Des.Fact/ADO:</p>
+                                    <input type="text" [(ngModel)]="selectedFacturas.factxt" />
+                                </div>
+                                <div class="fifth-data">
+                                    <p style="margin-bottom: 10px;">F.Registro</p>
+                                    <input type="text" [ngModel]="selectedFacturas.facfre | date:'yyyy-MM-dd'" />
+                                </div>  
+                            </div>
+                            <div class="sixth-row">
+                                <div class="sixth-data">
+                                    <p style="margin-bottom: 10px;">Tipo de contrato</p>
+                                    <input class="width" type="text" [ngModel]="selectedFacturas.conctp" />
+                                </div>
+                                <div class="sixth-data">
+                                    <p style="margin-bottom: 10px;">Procedimiento de contacto</p>
+                                    <input class="width" type="text" [ngModel]="selectedFacturas.concpr" />
+                                </div>
+                                <div class="sixth-data">
+                                    <p style="margin-bottom: 10px;">Criterio de puntuación</p>
+                                    <input class="width" type="text" [ngModel]="selectedFacturas.conccr" />
+                                </div>
+                            </div>
+                            <div class="seventh-row">
+                                <div class="seventh-data">
+                                    <p style="margin-bottom: 10px;">Forma de pago</p>
+                                    <input class="width" type="text" [ngModel]="selectedFacturas.facfpg" />
+                                </div>
+                                <div class="seventh-data">
+                                    <p style="margin-bottom: 10px;">Ordinal de pago</p>
+                                    <input class="width" type="text" [ngModel]="selectedFacturas.facopg" />
+                                </div>
+                                <div class="seventh-data">
+                                    <p style="margin-bottom: 10px;">Tipo de pago</p>
+                                    <input class="width" type="text" [ngModel]="selectedFacturas.factpg" />
+                                </div>
+                            </div>
                         </div>
-                        <div class="first-data">
-                            <p>F.Contable</p>
-                            <input type="text" [(ngModel)]="selectedFacturas.facfco" />
-                        </div>
-                        <div class="first-data">
-                            <p>ADO</p>
-                            <input type="text" [(ngModel)]="selectedFacturas.facado" />
-                        </div>
-                        <div class="first-data">
-                            <p>Total Factura</p>
-                            <input type="text" [(ngModel)]="selectedFacturas.facimp" />
-                        </div>
-                    </div>
-
-                    <div class="second-row">
-                        <div class="second-data">
-                            <p>R.C.F:</p>
-                            <input type="text" [(ngModel)]="selectedFacturas.facfac" />
-                            <input type="text" [(ngModel)]="selectedFacturas.facann" />
-                            <input type="text" [(ngModel)]="selectedFacturas.factdc" />
-                        </div>
-                        <div class="second-data">
-                            <p>Núm.Factura:</p>
-                            <input type="text" [(ngModel)]="selectedFacturas.facdoc" />
-                        </div>
-                        <div class="second-data">
-                            <p>Aplicado:</p>
-                            <input type="text" [(ngModel)]="selectedFacturas.faciec" />
-                        </div>
-                    </div>
-
-                    <div class="third-row">
-                        <div class="third-data">
-                            <p>Proveedor:</p>
-                            <input type="text" [(ngModel)]="selectedFacturas.tercod" />
-                            <input type="text" [(ngModel)]="selectedFacturas.ternom" />
-                        </div>
-                        <div class="third-data">
-                            <p>Apl. diferencias:</p>
-                            <input type="text" [(ngModel)]="selectedFacturas.facidi" />
-                        </div>
-                    </div>
-
-                    <div class="fourth-row">
-                        <div class="fourth-data">
-                            <p>NIF</p>
-                            <input type="text" [(ngModel)]="selectedFacturas.ternif" />
-                        </div>
-                        <div class="fourth-data">
-                            <p>Fecha Factura</p>
-                            <input type="text" [(ngModel)]="selectedFacturas.facdat" />
-                        </div>
-                        <div class="fourth-data">
-                            <p>Pte.Aplicar</p>
-                            <input type="text" [value]="getPendingApply(selectedFacturas)" readonly />
-                        </div>
-                    </div>
-
-                    <div class="fifth-row">
-                        <div class="fifth-data">
-                            <p>Des.Fact/ADO:</p>
-                            <input type="text" [(ngModel)]="selectedFacturas.factxt" />
-                        </div>
-                    </div>
-
-                    <div class="sixth-row">
-                        <div class="sixth-data">
-                            <p>Observaciones:</p>
-                            <input type="text" [(ngModel)]="selectedFacturas.facobs" /> 
+                        <div class="right">
+                            <div class="eighth-data margin">
+                                <p style="margin-bottom: 10px;">Total Factura</p>
+                                <input class="width" type="text" [ngModel]="selectedFacturas.facimp" />
+                            </div>
+                            <div class="ninth-data margin">
+                                <p>Aplicado:</p>
+                                <input class="width" type="text" [(ngModel)]="selectedFacturas.faciec" style="width: 100px;" />
+                            </div>
+                            <div class="tenth-data margin">
+                                <p>Apl. diferencias:</p>
+                                <input class="width" type="text" [(ngModel)]="selectedFacturas.facidi" />
+                            </div>
+                            <div class="eleventh-data margin">
+                                <p>Pte.Aplicar</p>
+                                <input class="width" type="text" [value]="getPendingApply(selectedFacturas)" readonly />
+                            </div>
+                            <div class="twelfth-data margin">
+                                <p>Descuentos</p>
+                                <input class="width" type="text" [value]="selectedFacturas.facdto" readonly />
+                            </div>
+                            <div class="thirteenth-data margin">
+                                <p>Observaciones:</p>
+                                <input class="width" type="text" [(ngModel)]="selectedFacturas.facobs" /> 
+                            </div>
                         </div>
                     </div>
                 </div>

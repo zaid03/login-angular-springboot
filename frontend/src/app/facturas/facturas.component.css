@@ -313,7 +313,7 @@ input.fecha-dato[type="radio"] {
   border-radius: 16px;
   box-shadow: 0 8px 32px rgba(44, 62, 80, 0.18), 0 1.5px 6px rgba(44,62,80,0.08);
   width: 90%;
-  max-height: 85vh;
+  max-height: 90vh;
   overflow-y: auto;
   font-family: inherit;
   animation: modalIn 0.22s cubic-bezier(.4,2,.6,1) both;
@@ -342,12 +342,26 @@ input.fecha-dato[type="radio"] {
     text-align: center;
 }
 
+.data{
+    margin-top: 10px;
+    display: flex;
+}
+
+.left{
+    width: 70%;
+}
+
+.right{
+    width: 30%;
+}
+
 .first-row, 
 .second-row, 
 .third-row, 
 .fourth-row, 
 .fifth-row, 
-.sixth-row{
+.sixth-row,
+.seventh-row {
     display: flex;
     margin: 10px;
 }
@@ -355,9 +369,14 @@ input.fecha-dato[type="radio"] {
 .first-data, 
 .second-data, 
 .third-data, 
-.fourth-data, 
-.fifth-data, 
-.sixth-data{
+.fourth-data,
+.seventh-data,
+.eighth-data,
+.ninth-data,
+.tenth-data,
+.eleventh-data,
+.twelfth-data,
+.thirteenth-data {
     width: 100%;
     height: auto;
     margin-right: 2%;
@@ -367,15 +386,38 @@ input.fecha-dato[type="radio"] {
     padding: 1%;
 }
 
+.fifth-data,
+.sixth-data {
+    width: 100%;
+    height: auto;
+    margin-right: 2%;
+    padding: 1%;
+}
+
 .first-data p, 
 .second-data p, 
 .third-data p, 
 .fourth-data p, 
 .fifth-data p, 
-.sixth-data p {
+.sixth-data p,
+.seventh-data p,
+.eighth-data p,
+.ninth-data p,
+.tenth-data p,
+.eleventh-data p,
+.twelfth-data p,
+.thirteenth-data p {
     font-size: 14px;
     font-weight: bold;
     color: #1c5d8c;
+}
+
+.width{
+    width: 120px;
+}
+
+.margin{
+    margin-bottom: 10%;
 }
 
 .first-data input[type="text"], 
@@ -383,15 +425,22 @@ input.fecha-dato[type="radio"] {
 .third-data input[type="text"], 
 .fourth-data input[type="text"], 
 .fifth-data input[type="text"], 
-.sixth-data input[type="text"] {
+.sixth-data input[type="text"],
+.sixth-data input[type="text"],
+.seventh-data input[type="text"],
+.eighth-data input[type="text"],
+.ninth-data input[type="text"],
+.tenth-data input[type="text"],
+.eleventh-data input[type="text"],
+.twelfth-data input[type="text"],
+.thirteenth-data input[type="text"]  {
     border: 1px solid #1c5d8c;
     padding: 8px 6px;
     border-radius: 6px;
-    max-width: 140px;
+    max-width: 400px;
 }
 
-.fifth-data input[type="text"], 
-.sixth-data input[type="text"] {
+.fifth-data input[type="text"] {
     min-width: 85%;
     max-width: 100% !important;
 }
@@ -401,13 +450,20 @@ input.fecha-dato[type="radio"] {
 .third-data input[type="text"]:focus,
 .fourth-data input[type="text"]:focus, 
 .fifth-data input[type="text"]:focus, 
-.sixth-data input[type="text"]:focus {
+.sixth-data input[type="text"]:focus,
+.seventh-data input[type="text"]:focus,
+.eighth-data input[type="text"]:focus,
+.ninth-data input[type="text"]:focus,
+.tenth-data input[type="text"]:focus,
+.eleventh-data input[type="text"]:focus,
+.twelfth-data input[type="text"]:focus,
+.thirteenth-data input[type="text"]:focus  {
     border-color: #042b5a;
     outline: none;
     background: #fff;
-}
+} 
 
-@media (max-width: 1270px) {
+/* @media (max-width: 1270px) {
     .first-row,
     .second-row, 
     .third-row, 
@@ -456,7 +512,7 @@ input.fecha-dato[type="radio"] {
     width: 100%;
     box-sizing: border-box;
   }
-}
+} */
 
 @media (min-width: 1700px) {
     .facturas-list {
