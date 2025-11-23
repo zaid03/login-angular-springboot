@@ -1252,4 +1252,7 @@ export class FacturasComponent {
       });
     }
   }
+
+  detailView: 'Albaranes' | 'Contabilización' = 'Albaranes';
+
 }

@@ -463,7 +463,58 @@ input.fecha-dato[type="radio"] {
     background: #fff;
 } 
 
-/* @media (max-width: 1270px) {
+.detail-switch {
+  display: flex;
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.detail-switch button {
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: 1px solid #1d4ed8;
+  background: #fff;
+  color: #1d4ed8;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.detail-switch button.active {
+  background: #1d4ed8;
+  color: #fff;
+}
+
+.detail-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #f9fafb;
+}
+
+.detail-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.detail-card h4 {
+  margin: 0 0 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.detail-card p {
+  margin: 0;
+  font-size: 13px;
+  color: #4b5563;
+}
+
+@media (max-width: 1270px) {
     .first-row,
     .second-row, 
     .third-row, 
@@ -512,7 +563,7 @@ input.fecha-dato[type="radio"] {
     width: 100%;
     box-sizing: border-box;
   }
-} */
+}
 
 @media (min-width: 1700px) {
     .facturas-list {

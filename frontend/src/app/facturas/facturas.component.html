@@ -334,7 +334,59 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                    <div class="more-details">
+                        <div class="detail-switch">
+                            <button type="button"
+                                    [class.active]="detailView === 'Albaranes'"
+                                    (click)="detailView = 'Albaranes'">
+                                Albaranes
+                            </button>
+                            <button type="button"
+                                    [class.active]="detailView === 'Contabilización'"
+                                    (click)="detailView = 'Contabilización'">
+                                Datos Contabilización
+                            </button>
+                        </div>
+
+                        <div class="detail-grid" *ngIf="detailView === 'Albaranes'">
+                            <div class="detail-card">
+                                <h4>Importe total</h4>
+                                <p>{{ selectedFacturas?.facimp | number:'1.2-2' }} €</p>
+                            </div>
+                            <div class="detail-card">
+                                <h4>Aplicado</h4>
+                                <p>{{ selectedFacturas?.faciec | number:'1.2-2' }} €</p>
+                            </div>
+                            <div class="detail-card">
+                                <h4>Diferencias</h4>
+                                <p>{{ selectedFacturas?.facidi | number:'1.2-2' }} €</p>
+                            </div>
+                            <div class="detail-card">
+                                <h4>Pte. aplicar</h4>
+                                <p>{{ getPendingApply(selectedFacturas) }}</p>
+                            </div>
+                        </div>
+
+                        <div class="detail-grid" *ngIf="detailView === 'Contabilización'">
+                            <div class="detail-card">
+                                <h4>Asignaciones recientes</h4>
+                                <p>Albarán 2024-004 · 325,00 €</p>
+                            </div>
+                            <div class="detail-card">
+                                <h4>Última acción</h4>
+                                <p>Aplicación de diferencia · 2024-09-18</p>
+                            </div>
+                            <div class="detail-card">
+                                <h4>Responsable</h4>
+                                <p>Unidad de Contabilidad</p>
+                            </div>
+                            <div class="detail-card">
+                                <h4>Notas</h4>
+                                <p>Factura pendiente de revisión documental.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
             </div>
         </div>
     </div>
