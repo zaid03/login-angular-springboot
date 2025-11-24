@@ -207,7 +207,8 @@ input.fecha-dato[type="radio"] {
     align-items: center;
 }
 
-.facturas-table {
+.facturas-table,
+.albaranes-table {
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.06);
@@ -218,7 +219,8 @@ input.fecha-dato[type="radio"] {
     overflow: hidden;
 }
 
-.facturas-table thead th {
+.facturas-table thead th,
+.albaranes-table thead th {
     border: 1px solid #e6edf3;
     padding: 8px 12px;
     text-align: center;
@@ -228,7 +230,8 @@ input.fecha-dato[type="radio"] {
     font-weight: 700;
 }
 
-.facturas-table tbody td {
+.facturas-table tbody td,
+.albaranes-table tbody td {
     border: 1px solid #f0f5f9;
     padding: 10px 12px;
     text-align: center;
@@ -238,7 +241,8 @@ input.fecha-dato[type="radio"] {
     font-weight: 600;
 }
 
-.facturas-table tbody tr:hover{
+.facturas-table tbody tr:hover,
+.albaranes-table tbody tr:hover{
     background-color: #f0f7ff;
 }
 
@@ -463,56 +467,65 @@ input.fecha-dato[type="radio"] {
     background: #fff;
 } 
 
-.detail-switch {
-  display: flex;
-  gap: 12px;
-  margin: 16px 0;
+.detail-switch,
+.detail-switch-second {
+    display: flex;
+    gap: 12px;
+    margin: 16px 0;
 }
 
-.detail-switch button {
-  padding: 6px 14px;
-  border-radius: 6px;
-  border: 1px solid #1d4ed8;
-  background: #fff;
-  color: #1d4ed8;
-  cursor: pointer;
-  transition: all 0.2s ease;
+.detail-switch button,
+.detail-switch-second button {
+    padding: 6px 14px;
+    border-radius: 6px;
+    border: 1px solid #1d4ed8;
+    background: #fff;
+    color: #1d4ed8;   
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
-.detail-switch button.active {
-  background: #1d4ed8;
-  color: #fff;
+.detail-switch button.active,
+.detail-switch-second button.active {
+    background: #1d4ed8;
+    color: #fff;
 }
 
 .detail-grid {
-  display: grid;
-  gap: 14px;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  padding: 16px;
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
-  background: #f9fafb;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    padding: 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    background: #f9fafb;
 }
 
 .detail-card {
-  background: #fff;
-  border-radius: 8px;
-  padding: 12px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+    background: #fff;
+    border-radius: 8px;
+    padding: 12px;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
 }
 
-.detail-card h4 {
-  margin: 0 0 6px;
-  font-size: 14px;
-  font-weight: 600;
-  color: #1f2937;
+
+
+/* .detail-card h4 {
+    margin: 0 0 6px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1f2937;
 }
 
 .detail-card p {
-  margin: 0;
-  font-size: 13px;
-  color: #4b5563;
-}
+    margin: 0;
+    font-size: 13px;
+    color: #4b5563;
+}  */
 
 @media (max-width: 1270px) {
     .first-row,

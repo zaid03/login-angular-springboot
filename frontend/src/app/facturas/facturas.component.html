@@ -335,7 +335,7 @@
                         </div>
                     </div>
                     <div class="more-details">
-                        <div class="detail-switch">
+                        <div class="detail-switch"> 
                             <button type="button"
                                     [class.active]="detailView === 'Albaranes'"
                                     (click)="detailView = 'Albaranes'">
@@ -349,7 +349,7 @@
                         </div>
 
                         <div class="detail-grid" *ngIf="detailView === 'Albaranes'">
-                            <div class="detail-switch nested">
+                            <div class="detail-switch-second">
                                 <button type="button"
                                         [class.active]="albaranesOptio === 'albaranes'"
                                         (click)="albaranesOptio = 'albaranes'">
@@ -367,26 +367,77 @@
                                 </button>
                             </div>
 
-                            <ng-container [ngSwitch]="albaranesOptio">
-                                <ng-container *ngSwitchCase="'albaranes'">
-                                    <div class="detail-card">
-                                        <h4>importe total</h4>
-                                        <p>{{ selectedFacturas?.facimp }}</p>
-                                    </div>
-                                </ng-container>
-                                <ng-container *ngSwitchCase="'aplicaciones'">
-                                    <div class="detail-card">
-                                        <h4>Aplicación 1</h4>
-                                        <p>Albarán 2024-010 · 120,00 €</p>
-                                    </div>
-                                </ng-container>
+                            <div class="detail-switch-second-content">
+                                <ng-container [ngSwitch]="albaranesOptio">
+                                    <ng-container *ngSwitchCase="'albaranes'">
+                                        <div class="detail-card">
+                                            <table class="albaranes-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th><strong>Número albarán</strong></th>
+                                                        <th>Referencia</th>
+                                                        <th>Fecha</th>
+                                                        <th>Base imponible</th>
+                                                        <th>Solicitud</th>
+                                                        <th>Índice</th>
+                                                        <th>Observaciones</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </ng-container>
+                                    <ng-container *ngSwitchCase="'aplicaciones'">
+                                        <div class="detail-card">
+                                            <table class="albaranes-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th><strong>Referencia</strong></th>
+                                                        <th>Económica</th>
+                                                        <th>Importe</th>
+                                                        <th>diferencias </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </ng-container>
 
-                                <ng-container *ngSwitchCase="'descuentos'">
-                                    <div class="detail-card">
-                                        <h4>descuentos</h4>
-                                    </div>
+                                    <ng-container    *ngSwitchCase="'descuentos'">
+                                        <div class="detail-card">
+                                            <table class="albaranes-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Área</th>
+                                                        <th>Orgánica</th>
+                                                        <th>Programa</th>
+                                                        <th>Económica</th>
+                                                        <th>Base</th>
+                                                        <th>% Dto</th>
+                                                        <th>Importe Descuento</th>
+                                                        <th>Descripción</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </ng-container>
                                 </ng-container>
-                            </ng-container>
+                            </div>
+
+                            
                         </div>
                         <div class="detail-grid" *ngIf="detailView === 'Contabilización'">
                             <div class="detail-card">
