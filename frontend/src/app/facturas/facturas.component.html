@@ -310,23 +310,23 @@
                         <div class="right">
                             <div class="eighth-data margin">
                                 <p style="margin-bottom: 10px;">Total Factura</p>
-                                <input class="width" type="text" [ngModel]="selectedFacturas.facimp | currency:'EUR':'symbol':'1.2-2'" />
+                                <input class="width" type="text" [ngModel]="selectedFacturas.facimp | currency:'EUR':'symbol':'1.2-2':'es-ES'" />
                             </div>
                             <div class="ninth-data margin">
                                 <p>Aplicado:</p>
-                                <input class="width" type="text" [ngModel]="selectedFacturas.faciec | currency:'EUR':'symbol':'1.2-2'" style="width: 100px;" />
+                                <input class="width" type="text" [ngModel]="selectedFacturas.faciec | currency:'EUR':'symbol':'1.2-2':'es-ES'" style="width: 100px;" />
                             </div>
                             <div class="tenth-data margin">
                                 <p>Apl. diferencias:</p>
-                                <input class="width" type="text" [ngModel]="selectedFacturas.facidi | currency:'EUR':'symbol':'1.2-2'" />
+                                <input class="width" type="text" [ngModel]="selectedFacturas.facidi | currency:'EUR':'symbol':'1.2-2':'es-ES'" />
                             </div>
                             <div class="eleventh-data margin">
                                 <p>Pte.Aplicar</p>
-                                <input class="width" type="text" [value]="getPendingApply(selectedFacturas) | currency:'EUR':'symbol':'1.2-2'" readonly />
+                                <input class="width" type="text" [value]="getPendingApply(selectedFacturas) | currency:'EUR':'symbol':'1.2-2':'es-ES'" readonly />
                             </div>
                             <div class="twelfth-data margin">
                                 <p>Descuentos</p>
-                                <input class="width" type="text" [value]="selectedFacturas.facdto | currency:'EUR':'symbol':'1.2-2'" readonly />
+                                <input class="width" type="text" [value]="selectedFacturas.facdto | currency:'EUR':'symbol':'1.2-2':'es-ES'" readonly />
                             </div>
                             <div class="thirteenth-data margin">
                                 <p>Observaciones:</p>
@@ -389,8 +389,8 @@
                                                     <tr *ngFor="let a of albaranes">
                                                         <td>{{ a.albnun }}</td>
                                                         <td>{{ a.albref }}</td>
-                                                        <td>{{ a.albdat }}</td>
-                                                        <td>{{ a.albbim }}</td>
+                                                        <td>{{ a.albdat | date:'yyyy-MM-dd' }}</td>
+                                                        <td>{{ a.albbim | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</td>
                                                         <td>{{ a.solnum }}</td>
                                                         <td>{{ a.solsub }}</td>
                                                         <td>{{ a.albobs }}</td>
@@ -414,8 +414,11 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr>
-                                                        <td></td>
+                                                    <tr *ngFor="let a of apalicaciones">
+                                                        <td>{{ a.FDEREF }}</td>
+                                                        <td>{{ a.FDEECO }}</td>
+                                                        <td>{{ a.FDEIMP | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</td>
+                                                        <td>{{ a.FDEDIF | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -440,8 +443,15 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr>
-                                                        <td></td>
+                                                    <tr *ngFor="let d of descuentos">
+                                                        <td>{{ d.FDTARE }}</td>
+                                                        <td>{{ d.FDTORG }}</td>
+                                                        <td>{{ d.FDTFUN }}</td>
+                                                        <td>{{ d.FDTECO }}</td>
+                                                        <td>{{ d.FDTBSE | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</td>
+                                                        <td>{{ d.FDTPRE | number:'1.1-1' }} %</td>
+                                                        <td>{{ d.FDTDTO | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</td>
+                                                        <td>{{ d.FDTTXT }}</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -449,8 +459,6 @@
                                     </ng-container>
                                 </ng-container>
                             </div>
-
-                            
                         </div>
                         <div class="detail-grid" *ngIf="detailView === 'Contabilización'">
                             <div class="detail-card">

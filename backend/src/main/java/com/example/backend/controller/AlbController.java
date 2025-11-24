@@ -30,7 +30,7 @@ public class AlbController {
             List<AlbResumeDto> data = albRepository.findResumenByFactura(ent, eje, facnum);
             if (data.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body("No se encontraron filas ALB para la factura proporcionada.");
+                        .body("No se encontraron albaranes");
             }
             return ResponseEntity.ok(data);
         } catch (DataAccessException ex) {

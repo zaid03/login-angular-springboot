@@ -31,7 +31,7 @@ public class FdeController {
             List<FdeResumeDto> data = fdeRepository.findByFactura(ent, eje, facnum);
             if (data.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body("No se encontraron filas FDE para la factura proporcionada.");
+                        .body("No se encontraron aplicaciones");
             }
             return ResponseEntity.ok(data);
         } catch (DataAccessException ex) {

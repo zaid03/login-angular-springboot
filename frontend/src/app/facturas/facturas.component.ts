@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -7,6 +7,7 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
 
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+
 @Component({
   selector: 'app-proveedorees',
   standalone: true,
@@ -1277,7 +1278,7 @@ export class FacturasComponent {
         next: (response) => {
           if (!Array.isArray(response) || response.length === 0) {
             this.moreInfoMessageIsSuccess = true;
-            this.moreInfoMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+            this.moreInfoMessageSuccess = 'No hay albaranes por las medidas de búsqueda';
             this.albaranes = []
           } else {
             this.albaranes = response;
@@ -1286,22 +1287,47 @@ export class FacturasComponent {
           }
         }, error: (err) => {
           this.moreInfoMessageIsError = true;
-          this.moreInfoMessageError = 'Server error: ' + (err?.message || err?.statusText || err);
-          alert('Server error' + (err?.message || err?.statusText || err));
+          this.moreInfoMessageError = err?.error ?? 'Error desconocido';
         }
       });
     }
 
     if ( option === 'aplicaciones') {
-      console.log(this.entcod);
-      console.log(this.eje);
-      console.log(facnum);
+      this.http.get<any>(`http://localhost:8080/api/fde/${this.entcod}/${this.eje}/${facnum}`).subscribe({
+        next: (response) => {
+          if (!Array.isArray(response) || response.length === 0) {
+            this.moreInfoMessageIsSuccess = true;
+            this.moreInfoMessageSuccess = 'No hay aplicaciones por las medidas de búsqueda';
+            this.apalicaciones = []
+          } else {
+            this.apalicaciones = response;
+            console.log(this.apalicaciones);
+            this.backupAplicaciones = Array.isArray(response) ? [...response] : [];
+          }
+        }, error: (err) => {
+          this.moreInfoMessageIsError = true;
+          this.moreInfoMessageError = err?.error ?? 'Error desconocido';
+        }
+      });
     }
 
     if ( option === 'descuentos') {
-      console.log(this.entcod);
-      console.log(this.eje);
-      console.log(facnum);
+      this.http.get<any>(`http://localhost:8080/api/fdt/${this.entcod}/${this.eje}/${facnum}`).subscribe({
+        next: (response) => {
+          if (!Array.isArray(response) || response.length === 0) {
+            this.moreInfoMessageIsSuccess = true;
+            this.moreInfoMessageSuccess = 'No hay descuentos por las medidas de búsqueda';
+            this.descuentos = []
+          } else {
+            this.descuentos = response;
+            console.log(this.descuentos);
+            this.backupDescuentos = Array.isArray(response) ? [...response] : [];
+          }
+        }, error: (err) => {
+          this.moreInfoMessageIsError = true;
+          this.moreInfoMessageError = err?.error ?? 'Error desconocido';
+        }
+      });
     }
   }
 

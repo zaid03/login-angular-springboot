@@ -31,13 +31,13 @@ public class FdtController {
             List<FdtResumeDto> data = fdtController.findByFdt(ent, eje, facnum);
             if (data.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body("No se encontraron filas FDt para la factura proporcionada.");
+                        .body("No se encontraron descuentos");
             }
             return ResponseEntity.ok(data);
         } catch (DataAccessException ex) {
-            log.error("Error al obtener el resumen FDt para ent={}, eje={}, facnum={}", ent, eje, facnum, ex);
+            log.error("Error al obtener el resumen Fdt para ent={}, eje={}, facnum={}", ent, eje, facnum, ex);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("No se pudo recuperar el resumen de FDt: " + ex.getMostSpecificCause().getMessage());
+                    .body("No se pudo recuperar el resumen de descuentos: " + ex.getMostSpecificCause().getMessage());
         }
     }
 }
