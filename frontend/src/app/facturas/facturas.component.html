@@ -360,22 +360,33 @@
                                         (click)="albaranesOptio = 'aplicaciones'">
                                     Aplicaciones
                                 </button>
+                                <button type="button"
+                                    [class.active] = "albaranesOptio === 'descuentos'"
+                                    (click)="albaranesOptio = 'descuentos'">
+                                    Descuentos
+                                </button>
                             </div>
-                            <ng-container *ngIf="albaranesOptio === 'albaranes'; else aplicacionesView">
-                                <div class="detail-card">
-                                    <h4>Importe total</h4>
-                                    <p>{{ selectedFacturas?.facimp | number:'1.2-2' }} €</p>
-                                </div>
-                                <!-- ... -->
-                            </ng-container>
 
-                            <ng-template #aplicacionesView>
-                                <div class="detail-card">
-                                    <h4>Aplicación 1</h4>
-                                    <p>Albarán 2024-010 · 120,00 €</p>
-                                </div>
-                                <!-- ... -->
-                            </ng-template>
+                            <ng-container [ngSwitch]="albaranesOptio">
+                                <ng-container *ngSwitchCase="'albaranes'">
+                                    <div class="detail-card">
+                                        <h4>importe total</h4>
+                                        <p>{{ selectedFacturas?.facimp }}</p>
+                                    </div>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="'aplicaciones'">
+                                    <div class="detail-card">
+                                        <h4>Aplicación 1</h4>
+                                        <p>Albarán 2024-010 · 120,00 €</p>
+                                    </div>
+                                </ng-container>
+
+                                <ng-container *ngSwitchCase="'descuentos'">
+                                    <div class="detail-card">
+                                        <h4>descuentos</h4>
+                                    </div>
+                                </ng-container>
+                            </ng-container>
                         </div>
                         <div class="detail-grid" *ngIf="detailView === 'Contabilización'">
                             <div class="detail-card">

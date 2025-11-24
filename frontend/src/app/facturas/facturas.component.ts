@@ -1254,6 +1254,6 @@ export class FacturasComponent {
   }
 
   detailView: 'Albaranes' | 'Contabilización' = 'Albaranes';
-  albaranesOptio: 'albaranes' | 'aplicaciones' = 'albaranes';
+  albaranesOptio: 'albaranes' | 'aplicaciones' | 'descuentos' = 'albaranes';
 
 }
