@@ -253,6 +253,7 @@ export class FacturasComponent {
 
   showDetails(factura: any) {
     this.selectedFacturas = factura;
+    this.setAlbaranesOptio('albaranes', factura?.facnum);
   }
 
   closeDetails() {
@@ -1255,5 +1256,53 @@ export class FacturasComponent {
 
   detailView: 'Albaranes' | 'Contabilización' = 'Albaranes';
   albaranesOptio: 'albaranes' | 'aplicaciones' | 'descuentos' = 'albaranes';
+  albaranes: any[] = [];
+  backipAlbaranes: any[] = [];
+  apalicaciones: any[] = [];
+  backupAplicaciones: any[] = [];
+  descuentos: any[] = [];
+  backupDescuentos: any[] = [];
+  moreInfoMessageSuccess: string = '';
+  moreInfoMessageIsSuccess: boolean = false;
+  moreInfoMessageError: string = '';
+  moreInfoMessageIsError: boolean = false;
+
+  setAlbaranesOptio(option: 'albaranes' | 'aplicaciones' | 'descuentos', facnum: number): void {
+    this.albaranesOptio = option;
+    this.moreInfoMessageSuccess = '';
+    this.moreInfoMessageError = '';
+
+    if ( option === 'albaranes') {
+      this.http.get<any>(`http://localhost:8080/api/alb/${this.entcod}/${this.eje}/${facnum}`).subscribe({
+        next: (response) => {
+          if (!Array.isArray(response) || response.length === 0) {
+            this.moreInfoMessageIsSuccess = true;
+            this.moreInfoMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+            this.albaranes = []
+          } else {
+            this.albaranes = response;
+            console.log(this.albaranes);
+            this.backipAlbaranes = Array.isArray(response) ? [...response] : [];
+          }
+        }, error: (err) => {
+          this.moreInfoMessageIsError = true;
+          this.moreInfoMessageError = 'Server error: ' + (err?.message || err?.statusText || err);
+          alert('Server error' + (err?.message || err?.statusText || err));
+        }
+      });
+    }
+
+    if ( option === 'aplicaciones') {
+      console.log(this.entcod);
+      console.log(this.eje);
+      console.log(facnum);
+    }
+
+    if ( option === 'descuentos') {
+      console.log(this.entcod);
+      console.log(this.eje);
+      console.log(facnum);
+    }
+  }
 
 }

@@ -352,17 +352,17 @@
                             <div class="detail-switch-second">
                                 <button type="button"
                                         [class.active]="albaranesOptio === 'albaranes'"
-                                        (click)="albaranesOptio = 'albaranes'">
+                                        (click)="setAlbaranesOptio('albaranes', selectedFacturas?.facnum)">
                                     Albaranes
                                 </button>
                                 <button type="button"
                                         [class.active]="albaranesOptio === 'aplicaciones'"
-                                        (click)="albaranesOptio = 'aplicaciones'">
+                                        (click)="setAlbaranesOptio('aplicaciones', selectedFacturas?.facnum)">
                                     Aplicaciones
                                 </button>
                                 <button type="button"
                                     [class.active] = "albaranesOptio === 'descuentos'"
-                                    (click)="albaranesOptio = 'descuentos'">
+                                    (click)="setAlbaranesOptio('descuentos', selectedFacturas?.facnum)">
                                     Descuentos
                                 </button>
                             </div>
@@ -370,6 +370,8 @@
                             <div class="detail-switch-second-content">
                                 <ng-container [ngSwitch]="albaranesOptio">
                                     <ng-container *ngSwitchCase="'albaranes'">
+                                        <h1 style="font-family: inherit; color: blue; font-size: inherit; margin-bottom: 2%; text-align: center;">{{moreInfoMessageSuccess}}</h1>
+                                        <h1 style="margin: 2%; font-family: inherit; color: red; font-size: inherit; text-align: center;">{{moreInfoMessageError}}</h1>
                                         <div class="detail-card">
                                             <table class="albaranes-table">
                                                 <thead>
@@ -384,14 +386,23 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr>
-                                                        <td></td>
+                                                    <tr *ngFor="let a of albaranes">
+                                                        <td>{{ a.albnun }}</td>
+                                                        <td>{{ a.albref }}</td>
+                                                        <td>{{ a.albdat }}</td>
+                                                        <td>{{ a.albbim }}</td>
+                                                        <td>{{ a.solnum }}</td>
+                                                        <td>{{ a.solsub }}</td>
+                                                        <td>{{ a.albobs }}</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
                                         </div>
                                     </ng-container>
+
                                     <ng-container *ngSwitchCase="'aplicaciones'">
+                                        <h1 style="font-family: inherit; color: blue; font-size: inherit; margin-bottom: 2%; text-align: center;">{{moreInfoMessageSuccess}}</h1>
+                                        <h1 style="margin: 2%; font-family: inherit; color: red; font-size: inherit; text-align: center;">{{moreInfoMessageError}}</h1>
                                         <div class="detail-card">
                                             <table class="albaranes-table">
                                                 <thead>
@@ -412,6 +423,8 @@
                                     </ng-container>
 
                                     <ng-container    *ngSwitchCase="'descuentos'">
+                                        <h1 style="font-family: inherit; color: blue; font-size: inherit; margin-bottom: 2%; text-align: center;">{{moreInfoMessageSuccess}}</h1>
+                                        <h1 style="margin: 2%; font-family: inherit; color: red; font-size: inherit; text-align: center;">{{moreInfoMessageError}}</h1>
                                         <div class="detail-card">
                                             <table class="albaranes-table">
                                                 <thead>
