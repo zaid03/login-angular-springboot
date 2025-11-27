@@ -85,6 +85,7 @@ app-sidebar {
 }
 
 .search-bar:focus, .option-search:focus {
+    outline: none;
     border-color: #094fa3;
     outline: none;
     background: #fff;
@@ -118,7 +119,6 @@ app-sidebar {
 }
 
 .fecha p, .estado p{
-    font-family: "Raleway", "Helvetica", "Tahoma", "Geneva", "Arial", sans-serif !important;
     text-align: center;
     padding: 10px;
 }
@@ -190,7 +190,6 @@ input.fecha-dato[type="radio"] {
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-    font-family: 'Open Sans Condensed', sans-serif;  
     max-width: 99%;
     border-collapse: collapse;
     margin-bottom: 24px;
@@ -244,6 +243,7 @@ input.fecha-dato[type="radio"] {
     cursor: pointer;
     transition: background-color 0.2s;
     font-weight: 700;
+    outline: none;
 }
 
 .pagination-controls button:disabled,
@@ -446,6 +446,7 @@ input.fecha-dato[type="radio"] {
 .eleventh-data input[type="text"]:focus,
 .twelfth-data input[type="text"]:focus,
 .thirteenth-data input[type="text"]:focus  {
+    outline: none;
     border-color: #042b5a;
     outline: none;
     background: #fff;
@@ -468,6 +469,7 @@ input.fecha-dato[type="radio"] {
     cursor: pointer;
     font-size: 16px;
     transition: all 0.2s ease;
+    outline: none;
 }
 
 .detail-switch button.active,

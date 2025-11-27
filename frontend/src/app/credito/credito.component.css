@@ -2,11 +2,14 @@ body, html {
   overflow-x: hidden;
 }
 
+*{
+    font-family: 'Open Sans Condensed', sans-serif;  
+}
+
 .credito-page {
     display: flex;
     min-height: 100vh;
     background: #f0f0f0;
-    font-family: "Raleway", "Helvetica", "Tahoma", "Geneva", "Arial", sans-serif;
 }
 
 app-sidebar {
@@ -38,7 +41,13 @@ app-sidebar {
     z-index: 1;
 }
 
-.modal h3, .credito-container h2 {
+.credito-container h2 {
+    margin: 10px;
+    color: #1c5d8c;
+    font-size: 32px;
+}
+
+.modal h3 {
     margin: 10px;
     color: #1c5d8c;
     text-align: center;
@@ -64,9 +73,6 @@ app-sidebar {
 
 .search-bar{
     width: 290px;
-}
-
-.search-bar{
     padding: 10px 14px;
     border-radius: 20px;
     border: 1px solid #bbb;
@@ -88,21 +94,33 @@ app-sidebar {
     margin: 16px 0 24px 0;
 }
 
-.download-btn {
-    background: #094fa3;
+.download-btn,
+.pagination-controls button,
+.save-btn {
+    background-color: #1d4ed8;
     color: #fff;
     border: none;
     padding: 10px 18px;
     border-radius: 6px;
     font-size: 0.95rem;
     cursor: pointer;
-    transition: background 0.2s, box-shadow 0.2s;
-    box-shadow: 0 2px 8px rgba(41,128,185,0.08);
+    transition: background-color 0.2s;
+    font-weight: 700;
+    outline: none;
 }
 
-.download-btn:hover {
-    background: #0b4f8a;
-    box-shadow: 0 4px 16px rgba(41,128,185,0.12);
+.download-btn:hover,
+.pagination-controls button:hover,
+.save-btn:hover {
+    background-color: #094fa3;
+    color: #e6edf3;
+}
+
+.save-btn{
+    padding: 8px 12px;
+    width: 10%;
+    float: right;
+    margin-left: auto;
 }
 
 .credito-list {
@@ -120,7 +138,6 @@ app-sidebar {
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.06);
     padding: 18px;
-    font-family: inherit;
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 24px;
@@ -143,11 +160,8 @@ app-sidebar {
     text-align: left;
     vertical-align: middle;
     font-size: 14px;
-    color: #333;
-}
-
-.credito-table tbody tr:nth-child(even){
-    background-color: #fbfdff;
+    color: #222;
+    font-weight: 600;
 }
 
 .credito-table tbody tr:hover{
@@ -162,24 +176,11 @@ app-sidebar {
     font-family: inherit;
 }
 
-.pagination-controls button {
-    background-color: #094fa3;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    padding: 8px 14px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.pagination-controls button:hover {
-    background-color: #0b4f8a;
-}
-
-.pagination-controls button:disabled{
+.pagination-controls button:disabled,
+.pagination-controls button:disabled:hover {
     background-color: #ccc;
     cursor: not-allowed;
+    color: #e5e7eb;
 }
 
 .pagination-controls span {
@@ -227,7 +228,6 @@ app-sidebar {
   width: 92%;
   max-height: 97vh;
   overflow-y: auto;
-  font-family: inherit;
   animation: modalIn 0.22s cubic-bezier(.4,2,.6,1) both;
   pointer-events: auto;
   display: flex;
@@ -293,6 +293,10 @@ app-sidebar {
     padding: 1%;
 }
 
+.large{
+    width: 50% !important;
+}
+
 .title{
     width: 100%;
     color: #1c5d8c;
@@ -315,6 +319,7 @@ app-sidebar {
     padding: 8px 6px;
     border-radius: 6px;
     max-width: 160px;
+    font-weight: 700;
 }
 
 .fourth-data input[type="text"],
@@ -324,6 +329,7 @@ app-sidebar {
     padding: 8px 6px;
     border-radius: 6px;
     max-width: 80px;
+    font-weight: 700;
 }
 
 .first-data input[type="text"]:focus, 
@@ -370,23 +376,6 @@ app-sidebar {
   color: red;
   cursor: pointer;
   transition: color 0.2s;
-}
-
-.save-btn{
-    padding: 10px;
-    margin: 10px; 
-    width: 10%;
-    border: 1px solid #042b5a;
-    border-radius: 10px;
-    color: #f0f0f0;
-    background-color: #042b5a;
-    float: right;
-    margin-left: auto;
-    font-size: 15px;
-}
-
-.save-btn:focus{
-    border: 1px solid #042b5a !important;
 }
 
 @media (max-width: 1380px) {
