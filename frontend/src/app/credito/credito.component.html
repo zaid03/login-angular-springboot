@@ -22,8 +22,8 @@
             </form>
         </div>
         <div class="credito-download">
-            <button class="download-btn" >Descargar como PDF</button>
-            <button class="download-btn" >Descargar como CSV</button>
+            <button class="download-btn" (click)="DownloadPDF()">Descargar como PDF</button>
+            <button class="download-btn" (click)="DownloadCSV()">Descargar como CSV</button>
         </div>
         <div class="credito-list">
             <h1 style="margin-bottom:2%; font-family: inherit; color: red; font-size: inherit;" id="error">{{ tableMessage }}</h1>

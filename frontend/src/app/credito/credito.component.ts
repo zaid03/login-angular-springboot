@@ -5,6 +5,8 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 @Component({
   selector: 'app-credito',
   standalone: true,
@@ -106,6 +108,106 @@ export class CreditoComponent {
         alert(this.tableMessage);
       }
     });
+  }
+
+  DownloadPDF() {
+    const doc = new jsPDF({orientation: 'landscape', unit: 'mm', format: 'a4'});
+    const columns = [
+      { header: 'Aplicación', dataKey: 'aplicacion'},
+      { header: 'Desc. Aplicación', dataKey: 'desc'},
+      { header: 'Operación contable', dataKey: 'gbsope'},
+      { header: 'Ref. contable', dataKey: 'gbsref'},
+      { header: 'Imp. Operación', dataKey: 'limporte'},
+      { header: 'Saldo Operación', dataKey: 'saldo'},
+      { header: 'Pte. Contabilizar SCAP', dataKey: 'getkAcPeCo'},
+      { header: 'Disponible', dataKey: 'getkdispon'}
+    ];
+
+    const rows = (this.creditos || []).map((f: any) => ({
+      aplicacion: `${f.gbsorg ?? ''} - ${f.gbsfun ?? ''} - ${f.gbseco ?? ''}`,
+      desc: f.partidas[0]?.desc,
+      gbsope: f.gbsope,
+      gbsref: f.gbsref,
+      limporte: f.limporte,
+      saldo: f.saldo,
+      getkAcPeCo: this.getkAcPeCo(f.gbsiut, f.gbsict),
+      getkdispon: this.getkdispon(f.saldo, this.getkAcPeCo(f.gbsiut, f.gbsict)),
+    }));
+
+    autoTable(doc, {
+      columns,
+      body: rows,
+      startY: 16,
+      styles: { fontSize: 7 },
+      headStyles: { fillColor: [15, 76, 117] },
+      margin: { left: 8, right: 8 },
+      columnStyles: {
+        aplicacion: { cellWidth: 20 },
+        desc: { cellWidth: 35 },
+        gbsope: { cellWidth: 35 },
+        gbsref: { cellWidth: 35 },
+        limporte: { cellWidth: 20 },
+        saldo: { cellWidth: 20 },
+        getkAcPeCo: { cellWidth: 20 },
+        getkdispon: { cellWidth: 30 }
+      },
+      didDrawPage: (dataArg) => {
+        doc.setFontSize(11);
+        doc.text('Lista de Bolsas', 12, 10);
+        const pageCount = doc.getNumberOfPages();
+        doc.setFontSize(8);
+        const pageStr = `Página ${pageCount}`;
+        doc.text(pageStr, doc.internal.pageSize.getWidth() - 20, 10);
+      }
+    });
+    doc.save('Bolsas.pdf');
+  }
+
+  DownloadCSV() {
+    interface Column { header: string; dataKey: string; }
+    const columns: Column[] = [
+      { header: 'Aplicación', dataKey: 'aplicacion'},
+      { header: 'Desc. Aplicación', dataKey: 'desc'},
+      { header: 'Operación contable', dataKey: 'gbsope'},
+      { header: 'Ref. contable', dataKey: 'gbsref'},
+      { header: 'Imp. Operación', dataKey: 'limporte'},
+      { header: 'Saldo Operación', dataKey: 'saldo'},
+      { header: 'Pte. Contabilizar SCAP', dataKey: 'getkAcPeCo'},
+      { header: 'Disponible', dataKey: 'getkdispon'}
+    ];
+
+    const rows = (this.creditos || []).map((f: any) => ({
+      aplicacion: `${f.gbsorg ?? ''} - ${f.gbsfun ?? ''} - ${f.gbseco ?? ''}`,
+      desc: f.partidas[0]?.desc,
+      gbsope: f.gbsope,
+      gbsref: f.gbsref,
+      limporte: f.limporte,
+      saldo: f.saldo,
+      getkAcPeCo: this.getkAcPeCo(f.gbsiut, f.gbsict),
+      getkdispon: this.getkdispon(f.saldo, this.getkAcPeCo(f.gbsiut, f.gbsict)),
+    }));
+
+    const escapeCsv = (val: any) => {
+      if (val === null || val === undefined) return '';
+      let s = String(val);
+      s = s.replace(/"/g, '""');
+      if (/[,"\r\n]/.test(s)) s = `"${s}"`;
+      return s;
+    };
+
+    const header = columns.map(c => escapeCsv(c.header)).join(',');
+    const bodyLines = rows.map(r => columns.map(c => escapeCsv((r as any)[c.dataKey])).join(','));
+
+    const csvContent = '\uFEFF' + [header, ...bodyLines].join('\r\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'Bolsas.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   }
 
   public getkAcPeCo(gbsiut: any, gbsict: any): string {
