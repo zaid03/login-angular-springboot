@@ -1,7 +1,7 @@
 <div class="table-container">
   <div class="table-wrapper">
 
-    <div *ngIf="loading">Cargando...</div>
+    <div *ngIf="loading" class="message">Cargando...</div>
 
     <table *ngIf="!loading && tableData.length" class="styled-table">
       <thead>
@@ -22,7 +22,7 @@
       </tbody>
     </table>
 
-    <div *ngIf="!loading && !tableData.length">
+    <div *ngIf="!loading && !tableData.length" class="message">
       Sin centros gestor (continuando sin selección).
       <div class="buttons">
         <button class="next-btn" (click)="continuarSin()">Continuar</button>
@@ -33,6 +33,5 @@
       <button class="cancel-btn" (click)="cancelar()" [disabled]="loading">Cancelar</button>
       <button *ngIf="!loading && tableData.length" class="next-btn" (click)="continuarSin()">Continuar sin seleccionar</button>
     </div>
-
   </div>
 </div>
