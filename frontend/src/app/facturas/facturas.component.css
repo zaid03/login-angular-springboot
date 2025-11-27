@@ -334,6 +334,11 @@ input.fecha-dato[type="radio"] {
     width: 70%;
 }
 
+.left input,
+.right input {
+    font-weight: 700;
+}
+
 .right{
     width: 30%;
 }

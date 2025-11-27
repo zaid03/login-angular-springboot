@@ -263,18 +263,11 @@ export class FacturasComponent {
     this.detallesMessage = '';
   }
 
-  public getPendingApply(f: any): string {
-    if (!f) return '';
-    const toNum = (v: any) => {
-      if (v === null || v === undefined || v === '') return 0;
-      const n = Number(v);
-      return isNaN(n) ? 0 : n;
-    };
-    const facimp = toNum(f.facimp);
-    const faciec = toNum(f.faciec);
-    const facidi = toNum(f.facidi);
-    const pending = facimp - (faciec + facidi);
-    return pending.toFixed(2);
+  public getPendingApply(f: any): number {
+    if (!f) return 0;
+    const toNum = (v: any) => (v === null || v === undefined || v === '' ? 0 : Number(v) || 0);
+    let pending = toNum(f.facimp) - (toNum(f.faciec) + toNum(f.facidi));
+    return Math.round(pending * 100) / 100;
   }
 
   public getStaus(facado: any, facimp: any, faciec: any, facidi:any ){
