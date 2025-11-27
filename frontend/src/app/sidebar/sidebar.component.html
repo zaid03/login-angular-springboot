@@ -7,9 +7,7 @@
       <img [src]="logoPath" alt="Logo" class="login-logo">
     </div>
     <div class="menu">
-      <h2>
-        Bienvenida <span class="color">{{ usucod }}</span>, perfil: <span class="color">{{ perfil }}</span>
-      </h2>
+      <h2>{{ usucod }}<br> connectado con {{ perfil }}</h2>
       <button (click)="logout()">Desconectarse</button>
     </div>
 
@@ -41,7 +39,7 @@
           <div class="menu-item">
             <a class="acFac" [class.disabled]="isFacturasDisabled()" [attr.aria-disabled]="isFacturasDisabled()" (click)="facturas()">Gestión de Facturas</a>   
             <a class="acFacC" [class.disabled]="isDisabled('acFacC')">Consulta de Facturas</a>
-            <a class="acMCon" [class.disabled]="isDisabled('acMCon')">Monitor de contabilización</a>
+            <a class="acMCon margin" [class.disabled]="isDisabled('acMCon')">Monitor de contabilización</a>
           </div>
         </div>
       </div>

@@ -58,10 +58,7 @@ export class SidebarComponent implements OnInit {
     }
 
     this.usucod = usucod;
-    this.perfil = JSON.parse(perfil).perfil;
-
-    const entcod = JSON.parse(entidad).entcod;
-    const percod = JSON.parse(perfil).perfil;
+    this.perfil = JSON.parse(perfil).PERCOD;
   }
 
   logout(): void {

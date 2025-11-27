@@ -43,7 +43,7 @@ app-sidebar {
 
 .facturas-container h2 {
     margin: 10px;
-    color: #1c5d8c;
+    color: #38249b;
     font-size: 32px;
 }
 
@@ -80,7 +80,6 @@ app-sidebar {
     font-size: 16px;
     background: #f7f7f7;
     transition: border-color 0.2s;
-    font-family: inherit;
     height: 20px;
 }
 
@@ -148,7 +147,6 @@ input.fecha-dato[type="radio"] {
     border: 1px solid #d0d0d0;
     background: #fff;
     color: #222;
-    font-family: inherit;
     font-size: inherit;
     margin-right: 6px;
     margin-bottom: 10px;
@@ -228,7 +226,6 @@ input.fecha-dato[type="radio"] {
     align-items: center;
     gap: 12px;
     margin: 10px 0 20px 0;
-    font-family: inherit;
 }
 
 .pagination-controls button,
@@ -256,7 +253,6 @@ input.fecha-dato[type="radio"] {
 .pagination-controls span {
     font-size: 15px;
     color: #444;
-    font-family: inherit;
 }
 
 .pagination-input {
@@ -298,7 +294,6 @@ input.fecha-dato[type="radio"] {
   width: 90%;
   max-height: 90vh;
   overflow-y: auto;
-  font-family: inherit;
   animation: modalIn 0.22s cubic-bezier(.4,2,.6,1) both;
   pointer-events: auto;
   display: flex;
