@@ -193,7 +193,7 @@
                         <td>{{ p.facdat | date:'yyyy-MM-dd' }}</td>
                         <td>{{ p.facado }}</td>
                         <td>{{ p.facfco | date:'yyyy-MM-dd' }}</td>
-                        <td>{{getPendingApply(p)}}</td>
+                        <td>{{getPendingApply(p) | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</td>
                         <td>{{ p.cgecod }}</td>
                         <td>{{ getStaus(p.facado, p.facimp, p.faciec, p.facidi) }}</td>
                     </tr>

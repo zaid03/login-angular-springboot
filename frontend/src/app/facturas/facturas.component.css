@@ -2,11 +2,14 @@ body, html {
   overflow-x: hidden;
 }
 
+*{
+    font-family: 'Open Sans Condensed', sans-serif;  
+}
+
 .facturas-page {
     display: flex;
     min-height: 100vh;
     background: #f0f0f0;
-    font-family: "Raleway", "Helvetica", "Tahoma", "Geneva", "Arial", sans-serif;
 }
 
 app-sidebar {
@@ -41,9 +44,11 @@ app-sidebar {
 .facturas-container h2 {
     margin: 10px;
     color: #1c5d8c;
+    font-size: 32px;
 }
 
 .facturas-search {
+    font-weight: 700;
     margin-top: 2%;
     display: flex;
     width: 100%;
@@ -92,24 +97,15 @@ app-sidebar {
     align-items: center;
 }
 
+.search-options input::placeholder,
+.search-form input::placeholder,
+.fecha-dates input[type="date"]::-webkit-datetime-edit {
+    font-weight: 700;
+}
+
 .btns{
     display: flex;
     gap: 10px;
-}
-
-.search-button {
-    background-color: #094fa3;
-    color: #ffffff;
-    border: none;
-    border-radius: 6px;
-    padding: 8px 14px;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 15px;
-}
-
-.search-button:hover{
-    background-color: #0b4f8a;
 }
 
 .more-search-options{
@@ -174,29 +170,11 @@ input.fecha-dato[type="radio"] {
     width: 100%;
 }
 
-
 .facturas-download {
     display: flex;
     gap: 16px;
     justify-content: flex-end;
     margin: 16px 0 24px 0;
-}
-
-.download-btn {
-    background: #094fa3;
-    color: #fff;
-    border: none;
-    padding: 10px 18px;
-    border-radius: 6px;
-    font-size: 0.95rem;
-    cursor: pointer;
-    transition: background 0.2s, box-shadow 0.2s;
-    box-shadow: 0 2px 8px rgba(41,128,185,0.08);
-}
-
-.download-btn:hover {
-    background: #0b4f8a;
-    box-shadow: 0 4px 16px rgba(41,128,185,0.12);
 }
 
 .facturas-list {
@@ -254,8 +232,10 @@ input.fecha-dato[type="radio"] {
     font-family: inherit;
 }
 
-.pagination-controls button {
-    background-color: #094fa3;
+.pagination-controls button,
+.download-btn,
+.search-button {
+    background-color: #1d4ed8;
     color: #fff;
     border: none;
     border-radius: 6px;
@@ -263,15 +243,14 @@ input.fecha-dato[type="radio"] {
     font-size: 14px;
     cursor: pointer;
     transition: background-color 0.2s;
+    font-weight: 700;
 }
 
-.pagination-controls button:hover {
-    background-color: #0b4f8a;
-}
-
-.pagination-controls button:disabled{
+.pagination-controls button:disabled,
+.pagination-controls button:disabled:hover{
     background-color: #ccc;
     cursor: not-allowed;
+    color: #e5e7eb;
 }
 
 .pagination-controls span {
@@ -482,6 +461,7 @@ input.fecha-dato[type="radio"] {
     background: #fff;
     color: #1d4ed8;   
     cursor: pointer;
+    font-size: 16px;
     transition: all 0.2s ease;
 }
 
@@ -489,6 +469,15 @@ input.fecha-dato[type="radio"] {
 .detail-switch-second button.active {
     background: #1d4ed8;
     color: #fff;
+}
+
+.detail-switch button:hover,
+.detail-switch-second button:hover,
+.pagination-controls button:hover,
+.download-btn:hover,
+.search-button:hover {
+    background-color: #094fa3;
+    color: #e6edf3;
 }
 
 .detail-grid {
@@ -511,21 +500,6 @@ input.fecha-dato[type="radio"] {
     justify-content: center;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
 }
-
-
-
-/* .detail-card h4 {
-    margin: 0 0 6px;
-    font-size: 14px;
-    font-weight: 600;
-    color: #1f2937;
-}
-
-.detail-card p {
-    margin: 0;
-    font-size: 13px;
-    color: #4b5563;
-}  */
 
 @media (max-width: 1270px) {
     .first-row,

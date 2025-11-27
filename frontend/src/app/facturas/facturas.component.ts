@@ -254,6 +254,7 @@ export class FacturasComponent {
 
   showDetails(factura: any) {
     this.selectedFacturas = factura;
+    this.detailView = 'Albaranes';
     this.setAlbaranesOptio('albaranes', factura?.facnum);
   }
 
