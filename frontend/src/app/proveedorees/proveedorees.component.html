@@ -29,7 +29,7 @@
         </div>
 
         <div class="proveedores-list">
-            <h1 style="font-family: inherit; color: red; font-size: inherit;" id="error">{{ error }}</h1>
+            <h1 class="error-message-style">{{error}}</h1>
             <table class="main-table">
                 <thead>
                     <tr>
@@ -165,7 +165,9 @@
                              Tiene acuerdo marco
                         </div>
                     </div>
-                   <h1 *ngIf="message" [ngClass]="{'message': !isError, 'error-message': isError}">{{ message }}</h1>
+                    <h1 class="error-message-style">{{ messageError }}</h1>
+                    <h1 class="success-message-style">{{ messageSuccess }}</h1>
+
                     <button class="guardar-btn" (click)="saveChanges()">Guardar</button>
                     <div class="more">
                         <button class="pers-btn" (click)="showContactPersons(selectedProveedor)">Personas de Contacto</button>
@@ -173,7 +175,7 @@
                     </div>
                     <div class="custom-grid-modal" *ngIf="showContactPersonsGrid">
                         <h3>Personas de Contacto</h3>
-                        <h1 style="font-family: inherit; color: red; font-size: inherit; margin: 10px;" id="proveedor-message">{{ nocontactmessage }}</h1>
+                        <h1 class="error-message-style">{{ personasContactoError }}</h1>
                         <table class="personas-contacto-table">
                             <thead>
                                 <tr>
@@ -211,16 +213,15 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <h1 *ngIf="contactMessage" [ngClass]="{'message': !contactIsError, 'error-message': contactIsError}">
-                        {{ contactMessage }}
-                        </h1>
+                        <h1 class="error-message-style">{{ personasContactoErrorMessage }}</h1>
+                        <h1 class="success-message-style">{{ personasContactoSuccessMessage }}</h1>
                         <button class="guardar-btn" (click)="updatepersonas()">Guardar</button>
 
                     </div>
                     
                     <div class="custom-grid-modal" *ngIf="showArticulosGrid">
                         <h3>Artículos</h3>
-                        <h1 style="font-family: inherit; color: red; font-size: inherit;margin: 10px;" id="proveedor-message">{{ nocontactmessage }}</h1>
+                        <h1 class="error-message-style">{{ articuloError }}</h1>
                         <table class="articulo-table">
                             <thead>
                                 <tr>
@@ -285,10 +286,8 @@
                                 </tr>
                             </tbody>
                         </table>
-                        
-                        <h1 *ngIf="articulosMessage" [ngClass]="{'message': !articleIsError, 'error-message': articleIsError}">
-                        {{ articulosMessage }}
-                        </h1>
+                        <h1 class="error-message-style">{{ articuloErrorMessage }}</h1>
+                        <h1 class="success-message-style">{{ articuloSuccessMessage }}</h1>
                         <button class="add-btn" (click)="showHello()">Añadir</button>
                     </div>
                 </div>
@@ -354,7 +353,7 @@
             <span> {{ searchPage + 1 }} de {{ searchTotalPages }}</span>
             <button class="pag-btn" (click)="searchPage = searchPage + 1" [disabled]="searchPage + 1 >= searchTotalPages">Siguiente</button>
         </div>
-        <h1 *ngIf="anadirmessage" [ngClass]="{'message': !anadirIsError, 'error-message': contactIsError}">
+        <h1 class="success-message-style">
             {{ anadirmessage }}
         </h1>
     </form>
@@ -364,7 +363,6 @@
 <div class="proveedor-grid-modal" *ngIf="showProveedorModal">
     <button class="close-btn-btn" (click)="closeProveedorModal()">×</button>
     <h3>Añadir un Proveedor</h3>
-
     <div class="content-container-for-proveedor">
         <form class="proveedor-anadir-form">
             <div class="search-anadir">
@@ -437,18 +435,14 @@
                 </tr>
             </tbody>
         </table>
-        <h1 class="errorMessageProveedor" *ngIf="anadirMessageProveedor" [ngClass]="{'message': !anadirProveedorIsError, 'errorMessage': contactProveedorIsError}">
-            {{ anadirMessageProveedor }}
-        </h1>
-        <h1 class="successMessageProveedor" *ngIf="guardarMessageProveedor" [ngClass]="{'message': !guardarProveedorIssuccess, 'successMessage': contactProveedorIssuccess}">
-            {{ guardarMessageProveedor }}
-        </h1>
+        <h1 class="error-message-style">{{ anadirProveedorErrorMessage }}</h1>
         <div class="pagination-controls" *ngIf="proveedoresSearchResults.length > proveedoresSearchPageSize">
             <button class="pag-btn" (click)="proveedoresSearchPrev()" [disabled]="proveedoresSearchPage === 0">Anterior</button>
             <span> {{ proveedoresSearchPage + 1 }} de {{ proveedoresSearchTotalPages }}</span>
             <button class="pag-btn" (click)="proveedoresSearchNext()" [disabled]="proveedoresSearchPage + 1 >= proveedoresSearchTotalPages">Siguiente</button>
         </div>
     </div>
+    <h1 class="success-message-style">{{ guardarMessageProveedor }}</h1>
     <div class="modal-actions">
         <div class="selection-summary" style="display:flex;gap:8px;align-items:center;">
             <span>Seleccionados: {{ selectedProveediresFromResults.length }}</span>
@@ -460,6 +454,7 @@
         </button>
     </div>
     <div class="save-messages" style="margin-top:8px;">
+        
       <p *ngIf="saveSuccess" class="successMessageProveedor">{{ saveSuccess }}</p>
       <p *ngIf="saveError" class="errorMessageProveedor">{{ saveError }}</p>
     </div>

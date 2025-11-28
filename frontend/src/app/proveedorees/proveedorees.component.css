@@ -280,11 +280,10 @@ app-sidebar {
 
 .articulo-table h2{
   text-align: center;
-  font-size: 18px;
+  font-size: 15px;
   color: #333;
   margin: 0;
   padding: 0;
-  font-weight: 700;
 }
 
 .articulo-personas-grid-buttons {
@@ -567,18 +566,6 @@ app-sidebar {
   font-weight: bold;
 }
 
-.error-message {
-  color: #721c24;
-  background-color: #f8d7da;
-  border: 1px solid #f5c6cb;
-  padding: 10px 20px;
-  border-radius: 6px;
-  font-size: 1.2em;
-  margin: 10px 0;
-  text-align: center;
-  font-weight: bold;
-}
-
 .hello-modal {
   position: fixed;
   top: 50%;
@@ -758,11 +745,6 @@ app-sidebar {
   font-size: 0.96rem;
 }
 
-.errorMessageProveedor{
-  color: red;
-  font-size: 15px;
-}
-
 .successMessageProveedor{
   padding-top: 5%;
   text-align: center;
@@ -772,4 +754,18 @@ app-sidebar {
 
 .selected-row { 
   background: #e6f0ff; 
+}
+
+.error-message-style{
+  font-family: inherit; 
+  color: red; 
+  font-size: inherit;
+  text-align: center;
+}
+
+.success-message-style{
+  font-family: inherit; 
+  color: green; 
+  font-size: inherit;
+  text-align: center;
 }
