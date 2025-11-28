@@ -140,7 +140,6 @@ export class ProveedoreesComponent {
   searchTerm: string = '';
   filterOption: string = 'noBloqueados';
   search() {
-    console.log('here');
     this.error = '';
     if (this.searchTerm.trim() === '') {
       this.proveedores = [];
@@ -392,7 +391,7 @@ export class ProveedoreesComponent {
     const data = this.proveedores;
 
     if (!data || data.length === 0) {
-      alert('No hay datos para exportar.');
+      this.error = 'No hay datos para exportar.';
       return;
     }
     const columns = [
@@ -474,8 +473,6 @@ export class ProveedoreesComponent {
           const artcod = String(row?.artcod ?? '').trim();
           const afacod = String(row?.afacod ?? '').trim();
           const asucod = String(row?.asucod?? '').trim();
-          console.log(`row ${index}: artcod="${artcod}", afacod="${afacod}", asucod="${asucod}"`, row);
-
           this.getDescription(row, index, artcod, afacod, asucod);
           this.anadirmessage = '';
         });
@@ -494,39 +491,33 @@ export class ProveedoreesComponent {
   getDescription(row: any, index: number, artcod: string, afacod: string, asucod: string){
     if (artcod === '*') {
       if (asucod === '*') {
-        console.log(`row ${index}: artcod="*" and asucod="*"`, row);
         this.http
           .get<any[]>(`http://localhost:8080/api/afa/art-name/${this.entcod}/${afacod}`)
           .subscribe({
             next: (response) => {
               const respArray = Array.isArray(response) ? response : response ? [response] : [];
               const afades = respArray[0]?.afades;
-              console.log(afades);
               row.description = String(afades ?? '').trim();
             },
           });
       } else {
-        console.log(`row ${index}: artcod="*" but asucod="${asucod}"`, row);
         this.http
           .get<any[]>(`http://localhost:8080/api/asu/art-name/${this.entcod}/${afacod}/${asucod}`)
           .subscribe({
             next: (response) => {
               const respArray = Array.isArray(response) ? response : response ? [response] : [];
               const asudes = respArray[0]?.asudes;
-              console.log(asudes);
               row.description = String(asudes ?? '').trim();
             },
           });
       }
     } else {
-      console.log(`row ${index}: artcod="${artcod}", afacod="${afacod}", asucod="${asucod}"`, row);
       this.http
         .get<any[]>(`http://localhost:8080/api/art/art-name/${this.entcod}/${afacod}/${asucod}/${artcod}`)
         .subscribe({
           next: (response) => {
             const respArray = Array.isArray(response) ? response : response ? [response] : [];
             const artdes = respArray[0]?.artdes;
-            console.log(artdes);
             row.description = String(artdes ?? '').trim();
           },
         });
@@ -546,7 +537,6 @@ export class ProveedoreesComponent {
     this.http.put(`http://localhost:8080/api/ter/updateFields/${this.selectedProveedor.tercod}`, updateFields, { responseType: 'text' }
     ).subscribe({
       next: (res) => {
-        console.log('Success:', res);
         this.messageSuccess = 'Proveedor actualizado correctamente';
       },
       error: (err) => {
@@ -585,7 +575,6 @@ export class ProveedoreesComponent {
       { responseType: 'text' }
     ).subscribe({
       next: (res) => {
-        console.log('Success:', res);
         this.personasContactoSuccessMessage = 'Persona de contacto actualizada correctamente';
       },
       error: (err) => {
@@ -600,7 +589,6 @@ export class ProveedoreesComponent {
       `http://localhost:8080/api/more/delete/${this.selectedProveedor.tercod}`,
       { responseType: 'text' }).subscribe({
         next: (res) => {
-        console.log('Success:', res);
         this.personasContactoSuccessMessage = 'Persona de contacto eliminada correctamente';
         this.contactPersons = null; 
         },
@@ -641,7 +629,6 @@ export class ProveedoreesComponent {
       { responseType: 'text' }
     ).subscribe({
       next: (res) => {
-        console.log('Success:', res);
         this.articuloSuccessMessage = 'Artículo actualizado correctamente';
       },
       error: (err) => {
@@ -664,7 +651,6 @@ export class ProveedoreesComponent {
       `http://localhost:8080/api/more/delete-apr?${ params}`,
       { responseType: 'text' }).subscribe({
         next: (res) => {
-        console.log('Success:', res);
         this.articuloSuccessMessage = 'Artículo eliminado correctamente';
         this.articulos = this.articulos.filter((a: any) =>
         !(a.ent === articulo.ent &&
@@ -735,7 +721,6 @@ export class ProveedoreesComponent {
       { responseType: 'text' }
     ).subscribe({
       next: (res) => {
-        console.log('Success:', res);
         this.anadirmessage = 'Artículo añadido correctamente';
 
         if (this.showArticulosGrid) {
@@ -795,7 +780,6 @@ export class ProveedoreesComponent {
     this.searchPage = 0;
     this.searchResults = [];
     if (!this.searchValue || !this.searchType) return;
-    console.log('Search initiated:', this.searchType, this.searchValue);
     let url = '';
     if (this.searchType === 'familia') {
       if(/^\d+$/.test(this.searchValue)) {
@@ -820,7 +804,6 @@ export class ProveedoreesComponent {
     this.http.get<any[]>(url, { withCredentials: true }).subscribe({
     next: (data) => {
       this.searchResults = data;
-      console.log('Search results:', this.searchResults);
     },error: (err) => {
         console.error('Error fetching search results:', err);
         this.searchResults = [];
@@ -845,7 +828,6 @@ export class ProveedoreesComponent {
     this.selectedFamilia = item.afacod;
     this.selectedSubfamilia = item.asucod;
     this.selectedArticulo = item.artcod;
-    console.log('Selected search row:', this.selectedSearchRow);
   }
 
   showProveedorModal = false;
@@ -895,7 +877,6 @@ export class ProveedoreesComponent {
 
     this.http.get<any[]>(`http://localhost:8080/api/sical/terceros`, { withCredentials: true}).subscribe({
       next:(data) => {
-        console.log('Search results:', data);
         this.fullProveedoresSearchResults = Array.isArray(data) ? data: [];
         this.proveedoresSearchResults = [...this.fullProveedoresSearchResults];
         const normalized = (Array.isArray(data) ? data : []).map(d => ({
@@ -919,7 +900,6 @@ export class ProveedoreesComponent {
           this.anadirProveedorErrorMessage = 'No se encontraron proveedores.';
         }
       }, error: (e) => {
-        console.log('Error fetching search results:', e);
         this.anadirProveedorErrorMessage = `${e}`;
       }
     });
@@ -977,7 +957,6 @@ export class ProveedoreesComponent {
    }
 
   selectProveedor(item: any){
-    console.log('Selected proveedores (before):', this.selectedProveediresFromResults);
     const k = this.proveedorKey(item);
     const idx = this.selectedProveediresFromResults.findIndex(s => this.proveedorKey(s) === k);
     if (idx === -1) {
@@ -985,18 +964,15 @@ export class ProveedoreesComponent {
     } else {
       this.selectedProveediresFromResults.splice(idx, 1);
     }
-    console.log('Selected proveedores (after):', this.selectedProveediresFromResults);
   }
 
   clearSelectedProveedores() {
     this.selectedProveediresFromResults = [];
-    console.log('Selected proveedores cleared');
     this.clearMessages();
   }
 
   guardarMessageProveedor: string = '';
   saveProveedorees() {
-    console.log(this.selectedProveediresFromResults);
     const ent = this.entcod;
 
     if (!this.selectedProveediresFromResults || this.selectedProveediresFromResults.length === 0) {
@@ -1020,7 +996,6 @@ export class ProveedoreesComponent {
     }));
 
     const token = sessionStorage.getItem('JWT');
-    console.log(token);
     const headers = token
       ? new HttpHeaders({ 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' })
       : new HttpHeaders({ 'Content-Type': 'application/json' });
@@ -1030,7 +1005,6 @@ export class ProveedoreesComponent {
     this.http.post<any[]>(`http://localhost:8080/api/ter/save-proveedores/${ent}`, payload, { headers, observe: 'response', responseType: 'text' as 'json' })
       .subscribe({
         next: (res) => {
-          console.log('saved proveedores:', res);
           this.isSaving = false;
           const savedCount = Array.isArray(res.body) ? res.body.length : this.selectedProveediresFromResults.length;
           this.clearSelectedProveedores();

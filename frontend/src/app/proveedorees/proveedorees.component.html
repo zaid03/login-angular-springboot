@@ -167,7 +167,6 @@
                     </div>
                     <h1 class="error-message-style">{{ messageError }}</h1>
                     <h1 class="success-message-style">{{ messageSuccess }}</h1>
-
                     <button class="guardar-btn" (click)="saveChanges()">Guardar</button>
                     <div class="more">
                         <button class="pers-btn" (click)="showContactPersons(selectedProveedor)">Personas de Contacto</button>
@@ -188,16 +187,13 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr *ngIf="contactPersons">
-                                    
+                                <tr *ngIf="contactPersons">          
                                     <td>
                                         <input type="text" [(ngModel)]="contactPersons.tpenom" placeholder="Nombre" />
                                     </td>
-
                                     <td>
                                         <input type="text" [(ngModel)]="contactPersons.tpetel" placeholder="Teléfono" />
-                                    </td>
-                                    
+                                    </td>      
                                     <td>
                                         <input type="text" [(ngModel)]="contactPersons.tpetmo" placeholder="Móvil" />
                                     </td>
@@ -216,9 +212,7 @@
                         <h1 class="error-message-style">{{ personasContactoErrorMessage }}</h1>
                         <h1 class="success-message-style">{{ personasContactoSuccessMessage }}</h1>
                         <button class="guardar-btn" (click)="updatepersonas()">Guardar</button>
-
                     </div>
-                    
                     <div class="custom-grid-modal" *ngIf="showArticulosGrid">
                         <h3>Artículos</h3>
                         <h1 class="error-message-style">{{ articuloError }}</h1>
@@ -242,31 +236,24 @@
                                     <td>
                                         <h2>{{ articulo.afacod }}</h2>
                                     </td>
-
                                     <td>
                                         <h2>{{ articulo.asucod }}</h2>
                                     </td>
-
                                     <td>
                                         <h2>{{ articulo.artcod }}</h2>
                                     </td>
-
                                     <td>
                                         <h2 >{{ articulo.description}}</h2>
                                     </td>
-
                                     <td>
                                         <input type="text" [(ngModel)]="articulo.aprref" placeholder="Referencia Prov." />
                                     </td>
-
                                     <td>
                                         <input type="number" [(ngModel)]="articulo.apruem" placeholder="Unidades en embalaje" />
                                     </td>
-
                                     <td>
                                         <input type="text" [(ngModel)]="articulo.aprobs" placeholder="Observaciones" />
                                     </td>
-
                                     <td>
                                         <input type="checkbox"
                                             [checked]="articulo.apracu == 1"
@@ -274,11 +261,9 @@
                                             class="checkbox"
                                         />
                                     </td>
-
                                     <td>
                                         <input type="number" [(ngModel)]="articulo.aprpre" placeholder="Precio acuerdo" />
                                     </td>
-
                                     <td class="articulo-personas-grid-buttons">
                                         <button class="delete-btn-articulos" (click)="openDeleteConfirm(articulo)">-</button>
                                         <button class="save-btn-articulos" (click)="updatearticulos(articulo)">💾</button>
@@ -295,7 +280,6 @@
         </div>
     </div>
 </div>
-
 
 <div class="modal-backdrop" *ngIf="showDeleteConfirm" (click)="closeDeleteConfirm()"></div>
 <div class="delete-confirm-modal" *ngIf="showDeleteConfirm">
@@ -328,7 +312,6 @@
             (keyup.enter)="onSearch()"
             />
         </div>
-
         <table class="anadir-proveedores-table">
             <thead>
                 <th>Familia</th>
@@ -404,7 +387,6 @@
                 APELL
             </div>   
         </form>
-
         <table class="proveedor-anadir-table-sw">
             <thead>
                 <tr>
@@ -453,9 +435,8 @@
             <span *ngIf="isSaving">Guardando...</span>
         </button>
     </div>
-    <div class="save-messages" style="margin-top:8px;">
-        
-      <p *ngIf="saveSuccess" class="successMessageProveedor">{{ saveSuccess }}</p>
-      <p *ngIf="saveError" class="errorMessageProveedor">{{ saveError }}</p>
+    <div class="save-messages" style="margin-top:8px;">  
+        <p *ngIf="saveSuccess" class="successMessageProveedor">{{ saveSuccess }}</p>
+        <p *ngIf="saveError" class="errorMessageProveedor">{{ saveError }}</p>
     </div>
 </div>
