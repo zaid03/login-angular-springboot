@@ -336,9 +336,8 @@
             <span> {{ searchPage + 1 }} de {{ searchTotalPages }}</span>
             <button class="pag-btn" (click)="searchPage = searchPage + 1" [disabled]="searchPage + 1 >= searchTotalPages">Siguiente</button>
         </div>
-        <h1 class="success-message-style">
-            {{ anadirmessage }}
-        </h1>
+        <h1 class="success-message-style">{{ anadirmessage }}</h1>
+        <h1 class="error-message-style">{{ anadirErrorMessage }}</h1>
     </form>
 </div>
 

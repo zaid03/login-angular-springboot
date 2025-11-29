@@ -475,6 +475,7 @@ export class ProveedoreesComponent {
           const asucod = String(row?.asucod?? '').trim();
           this.getDescription(row, index, artcod, afacod, asucod);
           this.anadirmessage = '';
+          this.anadirErrorMessage = '';
         });
 
         if (response.length === 0) {
@@ -674,20 +675,16 @@ export class ProveedoreesComponent {
   afas: any[] = [];
   asus: any[] = [];
   arts: any[] = [];
-
   showHello() {
     this.searchValue = '';
     this.searchResults = [];
     this.searchType = 'familia';
     this.showHelloGrid = true;
-    this.http.get<any[]>(`http://localhost:8080/api/afa/by-ent/${this.entcod}`)
-      .subscribe(data => this.afas = data);
-
-      this.selectedFamilia = '';
-      this.selectedSubfamilia = '';
-      this.selectedArticulo = '';
-      this.asus = [];
-      this.arts = [];
+    this.selectedFamilia = '';
+    this.selectedSubfamilia = '';
+    this.selectedArticulo = '';
+    this.asus = [];
+    this.arts = [];
   }
 
   hideHello() {
@@ -695,16 +692,18 @@ export class ProveedoreesComponent {
     this.searchValue = '';
     this.searchResults = [];
     this.searchType = 'familia';
-    this.searchPage = 0;
+    this.searchPage;
     this.selectedFamilia = '';
     this.selectedSubfamilia = '';
     this.selectedArticulo = '';
     this.anadirmessage = '';
+    this.anadirErrorMessage = '';
     this.afas = [];
     this.asus = [];
     this.arts = [];
   }
 
+  anadirErrorMessage: string = '';
   anadirmessage: string = '';
   addArticulo(){
     const newArticulo = {
@@ -714,6 +713,14 @@ export class ProveedoreesComponent {
       ASUCOD: this.selectedSubfamilia || '*',
       ARTCOD: this.selectedArticulo || '*',
     };
+
+    if ((this.articulos ?? []).some((a: any) =>
+      (a.afacod ?? '*') === newArticulo.AFACOD &&
+      (a.asucod ?? '*') === newArticulo.ASUCOD &&
+      (a.artcod ?? '*') === newArticulo.ARTCOD)) {
+      this.anadirErrorMessage = 'El artículo ya está en la lista.';
+      return;
+    }
 
     this.http.post(
       `http://localhost:8080/api/more/add-apr`,
@@ -824,10 +831,10 @@ export class ProveedoreesComponent {
 
   selectedSearchRow: any = null;
   selectSearchRow(item: any) {
-    this.selectedSearchRow = item;
-    this.selectedFamilia = item.afacod;
-    this.selectedSubfamilia = item.asucod;
-    this.selectedArticulo = item.artcod;
+      this.selectedSearchRow = item;
+      this.selectedFamilia = item.afacod;
+      this.selectedSubfamilia = item.asucod;
+      this.selectedArticulo = item.artcod;
   }
 
   showProveedorModal = false;
