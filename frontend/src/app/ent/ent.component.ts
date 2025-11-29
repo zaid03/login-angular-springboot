@@ -3,14 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-
-interface PuaRow {
-  USUCOD: string;
-  APLCOD: number;
-  ENTCOD: number;
-  PERCOD: string;
-  ENTNOM: string;
-}
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-ent',
@@ -20,46 +13,49 @@ interface PuaRow {
   styleUrls: ['./ent.component.css']
 })
 export class EntComponent implements OnInit {
-  tableData: PuaRow[] = [];
+  tableData: any[] = [];
   loading = false;
   errorMsg = '';
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  ngOnInit(): void {
+  ngOnInit(): void{
     const USUCOD = sessionStorage.getItem('USUCOD');
     if (!USUCOD) {
       alert('No session. Login.');
       this.router.navigate(['/login']);
       return;
     }
-    const raw = sessionStorage.getItem('puaData');
-    if (!raw) {
-      this.errorMsg = 'No data (puaData) in session.';
-      return;
-    }
-    try {
-      const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed)) {
-        this.tableData = parsed;
-      } else {
-        this.errorMsg = 'Invalid puaData format.';
-      }
-    } catch {
-      this.errorMsg = 'Corrupt puaData JSON.';
-    }
-  }
 
-  selectRow(row: PuaRow): void {
-    if (!row || row.ENTCOD == null || !row.PERCOD) {
-      alert('Row missing ENTCOD/PERCOD');
-      return;
-    }
-    sessionStorage.setItem('Entidad', JSON.stringify({ ENTCOD: row.ENTCOD }));
-    sessionStorage.setItem('Perfil', JSON.stringify({ PERCOD: row.PERCOD }));
+    this.http.get<any>(`${environment.backendUrl}/api/filter`, { params: { usucod: USUCOD } }).subscribe({
+      next: (filterResponse) => {
+        if (filterResponse.error) {
+          this.errorMsg = 'server error';
+          this.router.navigate(['/login']);
+          return;
+        } 
+        if (Array.isArray(filterResponse) && filterResponse.length) {
+          this.tableData = filterResponse;
+                        
+        } else {
+          this.errorMsg = 'No data returned for user.';
+          sessionStorage.clear();
+          this.router.navigate(['/']);
+        }
+      },
+      error: (err) => {
+        this.errorMsg = err?.error ?? 'Error loading data.';
+      }
+    });
+  }
+  
+  selectRow(t: any): void {
+
+    sessionStorage.setItem('Entidad', JSON.stringify({ ENTCOD: t.entcod }));
+    sessionStorage.setItem('Perfil', JSON.stringify({ PERCOD: t.percod }));
 
     this.loading = true;
-    this.http.get<any[]>('http://localhost:8080/api/mnucods', { params: { PERCOD: row.PERCOD } })
+    this.http.get<any[]>('http://localhost:8080/api/mnucods', { params: { PERCOD: t.percod } })
       .subscribe({
         next: resp => {
           sessionStorage.setItem('mnucods', JSON.stringify(resp));
@@ -76,4 +72,5 @@ export class EntComponent implements OnInit {
         }
       }).add(() => this.loading = false);
   }
+
 }

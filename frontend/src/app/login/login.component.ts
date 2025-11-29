@@ -53,31 +53,7 @@ export class LoginComponent implements OnInit{
               if (backendResponse.success) {
                 sessionStorage.setItem('JWT', backendResponse.token);
                 sessionStorage.setItem('USUCOD', backendResponse.username);
-                  this.http.get<any>(`${environment.backendUrl}/api/filter`, { params: { usucod: backendResponse.username } })
-                  .subscribe({
-                    next: (filterResponse) => {
-                      if (filterResponse.error) {
-                        this.errormessage = filterResponse.error;
-                        return;
-                      } 
-                      if (Array.isArray(filterResponse) && filterResponse.length) {
-                        const normalized = filterResponse.map((r: any) => ({
-                          USUCOD: r.USUCOD ?? r.usucod,
-                          APLCOD: r.APLCOD ?? r.aplcod,
-                          ENTCOD: r.ENTCOD ?? r.entcod,
-                          PERCOD: r.PERCOD ?? r.percod,
-                          ENTNOM: r.ENTNOM ?? r.entnom
-                        }));
-                        sessionStorage.setItem('puaData', JSON.stringify(normalized));
-                        this.router.navigate(['/ent']);
-                      } else {
-                        this.errormessage = 'No data returned for user.';
-                      }
-                    },
-                    error: (err) => {
-                      this.errormessage = 'Server error: ' + (err.message || err.statusText);
-                    }
-                  });
+                this.router.navigate(['/ent']);
               } else {
                 this.errormessage = 'Backend validation failed';
               }

@@ -2,23 +2,21 @@
   <table *ngIf="tableData.length > 0" class="styled-table">
     <thead>
       <tr>
-        <th>PERCOD</th>
-        <th>USUCOD</th>
-        <th>APLCOD</th>
-        <th>ENTCOD</th>
-        <th>ENTNOM</th>
+        <th>Perfil</th>
+        <th>Usario</th>      
+        <th>Entidad</th>
+        <th>Nombre</th>
         <th>Acción</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let item of tableData">
-        <td>{{ item.PERCOD }}</td>
-        <td>{{ item.USUCOD }}</td>
-        <td>{{ item.APLCOD }}</td>
-        <td>{{ item.ENTCOD }}</td>
-        <td>{{ item.ENTNOM }}</td>
+      <tr *ngFor="let t of tableData">
+        <td>{{ t.percod }}</td>
+        <td>{{ t.usucod }}</td>
+        <td>{{ t.entcod }}</td>
+        <td>{{ t.entnom }}</td>
         <td>
-          <button (click)="selectRow(item)">Seleccionar</button>
+          <button (click)="selectRow(t)">Seleccionar</button>
         </td>
       </tr>
     </tbody>
