@@ -163,4 +163,59 @@ export class FamiliaComponent {
       'familias.xlsx'
     );
   }
+
+  toPrint() {
+    const rows = this.backupFamilias.length ? this.backupFamilias : this.familias;
+    if (!rows?.length) {
+      this.tableMessage = 'No hay datos para imprimir.';
+      return;
+    }
+
+    const htmlRows = rows.map((row, index) => `
+      <tr>
+        <td>${index + 1}</td>
+        <td>${row.ent ?? ''}</td>
+        <td>${row.afacod ?? ''}</td>
+        <td>${row.afades ?? ''}</td>
+      </tr>
+    `).join('');
+
+    const printWindow = window.open('', '_blank', 'width=900,height=700');
+    if (!printWindow) return;
+
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Listado de familias</title>
+          <style>
+            body { font-family: 'Poppins', sans-serif; padding: 24px; }
+            h1 { text-align: center; margin-bottom: 16px; }
+            table { width: 100%; border-collapse: collapse; }
+            th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
+            th { background: #f3f4f6; }
+          </style>
+        </head>
+        <body>
+          <h1>Listado de familias</h1>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Entidad</th>
+                <th>Familia</th>
+                <th>Descripción</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${htmlRows}
+            </tbody>
+          </table>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
+  }
+
+  
 }

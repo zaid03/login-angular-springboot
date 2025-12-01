@@ -7,7 +7,7 @@
     </div>
     <app-sidebar #sidebar></app-sidebar>
     <div class="familia-container" [class.blurred]="!sidebar.collapsed">
-        <h2>Lista de Familias</h2> 
+        <h2>Listado de Familias</h2> 
         <div class="familia-search">
             <form class="search-form">
                 <input 
@@ -23,7 +23,7 @@
         <h1 class="errorBtn">{{ familiaMessageError }}</h1>
         <div class="familias-download">
             <button class="download-btn" (click)="excelDownload()">Descargar como Excel</button>
-            <button class="print-btn">Impreso</button>
+            <button class="print-btn" (click)="toPrint()">Impreso</button>
         </div>
         <div class="familia-list">
             <h1 class="errorBtn">{{ tableMessage }}</h1>
