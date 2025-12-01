@@ -25,6 +25,7 @@
         </div>
         <div class="familia-list">
             <h1 style="margin-bottom:2%; font-family: inherit; color: red; font-size: inherit;" id="error"></h1>
+            <h1 style="color: green; font-size: 15px; text-align: center;" id="error"></h1>
             <table class="familia-table">
                 <thead>
                     <tr>
@@ -33,10 +34,36 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
+                    <tr *ngFor="let p of paginatedFamilias">
+                        <td style="cursor: pointer;" (click)="showDetails(p)">{{ p.afacod }}</td>
+                        <td>{{ p.afades }}</td>
                     </tr>
                 </tbody>
             </table>
+            <div class="pagination-controls">
+                <button (click)="prevPage()" [disabled]="page === 0">Anterior</button>
+                <span>Página</span>
+                <input
+                    type="number"
+                    min="1"
+                    [max]="totalPages"
+                    [value]="page + 1"
+                    (change)="goToPage($event)"
+                    class="pagination-input"
+                    class="pagination-input"
+                />
+                <span>de {{ totalPages }}</span>
+                <button (click)="nextPage()" [disabled]="page + 1 >= totalPages">Siguiente</button>
+            </div>
+            <div class="modal-backdrop" *ngIf="selectedFamilias" (click)="closeDetails()"></div>
+            <div class="display" >
+                <div class="modal" *ngIf="selectedFamilias">
+                    <button class="close-btn-fct" (click)="closeDetails()">×</button>
+                    <h3>Detalles de Familia</h3>
+                    <!-- <h1>{{selectedFamilias.afacod}}</h1>
+                    <h2>{{ selectedFamilias.afades}}</h2> -->
+                </div>
+            </div>
         </div>
     </div>
 </div>

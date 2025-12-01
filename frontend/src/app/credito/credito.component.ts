@@ -243,7 +243,6 @@ export class CreditoComponent {
   }
 
   selectedBolsas: any = null;
-
   showDetails(factura: any) {
     this.guardarisError = false;
     this.guardarMesage = '';

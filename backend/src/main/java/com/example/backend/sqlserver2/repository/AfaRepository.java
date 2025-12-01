@@ -22,4 +22,7 @@ public interface AfaRepository extends JpaRepository<Afa, AfaId> {
     //find an art name
     @Query("SELECT a FROM Afa a WHERE a.ENT = :ent AND a.AFACOD = :afacod")
     List <Afa> getArtName(@Param("ent") int ent, @Param("afacod") String afacod);
+
+    //find familias by ent
+    List<Afa> findByENT(int ent);
 }

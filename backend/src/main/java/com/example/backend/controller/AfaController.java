@@ -32,4 +32,12 @@ public class AfaController {
         {
             return afaRepository.getArtName(ent, afacod);
         }
+
+    //find familias by ent
+    @GetMapping("/by-ent/{ent}")
+    public List<Afa> getAfaByEnt(
+        @PathVariable int ent
+    ) {
+        return afaRepository.findByENT(ent);
+    }
 }
