@@ -61,8 +61,34 @@
                 <div class="modal" *ngIf="selectedFamilias">
                     <button class="close-btn-fct" (click)="closeDetails()">×</button>
                     <h3>Detalles de Familia</h3>
-                    <!-- <h1>{{selectedFamilias.afacod}}</h1>
-                    <h2>{{ selectedFamilias.afades}}</h2> -->
+                    <div class="details">
+                        <div class="left-row">
+                            <p>Familia</p>
+                            <p>Descripción</p>
+                        </div>
+                        <div class="right-row">
+                            <input type="text" name="familia" [(ngModel)]="selectedFamilias.afacod" />
+                            <input type="text" name="Descripción" [(ngModel)]="selectedFamilias.afades" class="width" />
+                        </div>
+                    </div>
+                    <div class="subfamilias">
+                        <h1>Subfamilia</h1>
+                        <table class="subfamilia-table">
+                            <thead>
+                                <tr>
+                                    <th>Subfamilia</th>
+                                    <th>Descripción</th>
+                                    <th>Económica</th>
+                                    <th>Tipo almacenaje</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
