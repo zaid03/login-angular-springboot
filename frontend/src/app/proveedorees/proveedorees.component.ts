@@ -1001,7 +1001,7 @@ export class ProveedoreesComponent {
       this.anadirProveedorErrorMessage = 'Todos los proveedores seleccionados ya existen en la lista.';
       return;
     }
-    
+
     const payload = this.selectedProveediresFromResults.map(p => ({
       ENT: ent,
       TERNOM: p.TERNOM ?? '',
@@ -1088,5 +1088,4 @@ export class ProveedoreesComponent {
   proveedoresSearchNext() {
     if (this.proveedoresSearchPage + 1 < this.proveedoresSearchTotalPages) this.proveedoresSearchPage++;
   }
-//still need to add a check for the proveedor if it exists in db then dont add it
 }
