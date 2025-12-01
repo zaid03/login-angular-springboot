@@ -21,9 +21,8 @@
             <button class="search-btn" (click)="searchFamilias()">Buscar</button>
         </div>
         <h1 class="errorBtn">{{ familiaMessageError }}</h1>
-        <h1 class="successBtn"></h1>
         <div class="familias-download">
-            <button class="download-btn">Descargar como Excel</button>
+            <button class="download-btn" (click)="excelDownload()">Descargar como Excel</button>
             <button class="print-btn">Impreso</button>
         </div>
         <div class="familia-list">

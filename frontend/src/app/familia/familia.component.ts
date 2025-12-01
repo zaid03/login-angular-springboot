@@ -5,6 +5,9 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+
 @Component({
   selector: 'app-familia',
   standalone: true,
@@ -123,5 +126,41 @@ export class FamiliaComponent {
     }
     
     this.page = 0;
+  }
+
+  excelDownload() {
+    const rows = this.backupFamilias.length ? this.backupFamilias : this.familias;
+    if (!rows || rows.length === 0) {
+      this.tableMessage = 'No hay datos para exportar.';
+      return;
+    }
+
+    const exportRows = rows.map((row, index) => ({
+      '#': index + 1,
+      Entidad: row.ent ?? '',
+      Familia: row.afacod ?? '',
+      Descripción: row.afades ?? '',
+    }));
+
+    const worksheet = XLSX.utils.aoa_to_sheet([]);
+    XLSX.utils.sheet_add_aoa(worksheet, [['Listado de familias']], { origin: 'A1' });
+    worksheet['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 3 } }];
+    XLSX.utils.sheet_add_aoa(worksheet, [['#', 'Entidad', 'Familia', 'Descripción']], { origin: 'A2' });
+    XLSX.utils.sheet_add_json(worksheet, exportRows, { origin: 'A3', skipHeader: true });
+
+    worksheet['!cols'] = [
+      { wch: 6 },
+      { wch: 12 },
+      { wch: 12 },
+      { wch: 40 },
+    ];
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Familias');
+    const buffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    saveAs(
+      new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }),
+      'familias.xlsx'
+    );
   }
 }
