@@ -26,31 +26,25 @@ public class Asu {
     @Column(nullable = false)
     private String ASUDES;
 
-    public Integer getENT() {
-        return ENT;
-    }
-    public void setENT(Integer ENT) {
-        this.ENT = ENT;
-    }
+    private String ASUECO;
 
-    public String getAFACOD() {
-        return AFACOD;
-    }
-    public void setAFACOD(String AFACOD) {
-        this.AFACOD = AFACOD;
-    }
+    private Integer MTACOD;
 
-    public String getASUCOD() {
-        return ASUCOD;
-    }
-    public void setASUCOD(String ASUCOD) {
-        this.ASUCOD = ASUCOD;
-    }
+    public Integer getENT() { return ENT; }
+    public void setENT(Integer ENT) { this.ENT = ENT; }
 
-    public String getASUDES() {
-        return ASUDES;
-    }
-    public void setASUDES(String ASUDES) {
-        this.ASUDES = ASUDES;
-    }
+    public String getAFACOD() { return AFACOD; }
+    public void setAFACOD(String AFACOD) { this.AFACOD = AFACOD; }
+
+    public String getASUCOD() { return ASUCOD; }
+    public void setASUCOD(String ASUCOD) { this.ASUCOD = ASUCOD; }
+
+    public String getASUDES() { return ASUDES; }
+    public void setASUDES(String ASUDES) { this.ASUDES = ASUDES; }
+
+    public String getASUECO() { return ASUECO; }
+    public void setASUECO(String ASUECO) { this.ASUECO = ASUECO; }
+
+    public Integer getMTACOD() {return MTACOD; }
+    public void setMTACOD(Integer MTACOD) { this.MTACOD = MTACOD; }
 }

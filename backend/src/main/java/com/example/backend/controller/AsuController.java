@@ -44,4 +44,14 @@ public class AsuController {
         {
             return asuRepository.getArtName(ent, afacod, asucod);
         }
+
+    //filtering subs by ent and afacod
+    @GetMapping("/by-ent-afacod/{ent}/{afacod}")
+    public List<Asu> getSubfamilias(
+        @PathVariable int ent,
+        @PathVariable String afacod
+    )
+    {
+        return asuRepository.findByENTAndAFACOD(ent, afacod);
+    }
 }

@@ -23,4 +23,7 @@ public interface AsuRepository extends JpaRepository<Asu, AsuId> {
     //find an art name
     @Query("SELECT a FROM Asu a WHERE a.ENT = :ent AND a.AFACOD = :afacod AND ASUCOD = :asucod")
     List <Asu> getArtName(@Param("ent") int ent, @Param("afacod") String afacod, @Param("asucod") String asucod);
+
+    //filtering subs by ent and afacod
+    List<Asu> findByENTAndAFACOD(int ent, String afacod);
 }

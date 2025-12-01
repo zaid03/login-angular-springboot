@@ -67,12 +67,24 @@
                             <p>Descripción</p>
                         </div>
                         <div class="right-row">
-                            <input type="text" name="familia" [(ngModel)]="selectedFamilias.afacod" />
-                            <input type="text" name="Descripción" [(ngModel)]="selectedFamilias.afades" class="width" />
+                            <input 
+                                type="text" 
+                                name="familia" 
+                                [(ngModel)]="selectedFamilias.afacod" 
+                                readonly 
+                            />
+                            <input 
+                                type="text" 
+                                name="Descripción" 
+                                [(ngModel)]="selectedFamilias.afades" 
+                                class="width" 
+                                readonly 
+                            />
                         </div>
                     </div>
                     <div class="subfamilias">
                         <h1>Subfamilia</h1>
+                        <h4 class="errorBtn">{{ afacodError }}</h4>
                         <table class="subfamilia-table">
                             <thead>
                                 <tr>
@@ -83,8 +95,11 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td></td>
+                                <tr *ngFor="let s of subfamilias">
+                                    <td>{{s.asucod}}</td>
+                                    <td>{{s.asudes}}</td>
+                                    <td>{{s.asueco}}</td>
+                                    <td>{{s.mtacod}}</td>
                                 </tr>
                             </tbody>
                         </table>

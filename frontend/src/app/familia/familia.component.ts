@@ -80,7 +80,7 @@ export class FamiliaComponent {
     this.tableMessage = '';
     this.familiaMessageError = '';
     this.selectedFamilias = familia;
-    console.log(this.selectedFamilias);
+    this.FetchSubfamilias(this.selectedFamilias.afacod);
   }
 
   closeDetails() {
@@ -215,5 +215,23 @@ export class FamiliaComponent {
     printWindow.print();
   }
 
+  afacodError:string = '';
+  subfamilias: any[] = [];
+  FetchSubfamilias(afacod: String) {
+    if (!afacod) {
+      this.afacodError = 'Familia requerido'
+    }
 
+    this.http.get<any>(`http://localhost:8080/api/asu/by-ent-afacod/${this.entcod}/${afacod}`).subscribe({
+      next: (Response) => {
+        if(Response.length === 0) {
+          this.afacodError = 'No se encontraron Subfamilias'
+        } else {
+          this.subfamilias = Array.isArray(Response) ? [...Response] : [];
+        }
+      }, error: (e) => {
+        this.afacodError = 'Server Error';
+      }
+    })
+  }
 }
