@@ -978,6 +978,14 @@ export class ProveedoreesComponent {
     this.clearMessages();
   }
 
+  private proveedorExistsInMainList(candidate: any): boolean {
+    const candidateNif = (candidate?.NIF ?? candidate?.TERNIF ?? '').toString().trim().toLowerCase();
+    if (!candidateNif) return false;
+    return (this.proveedores ?? []).some(main =>
+      (main?.ternif ?? '').toString().trim().toLowerCase() === candidateNif
+    );
+  }
+
   guardarMessageProveedor: string = '';
   saveProveedorees() {
     const ent = this.entcod;
@@ -987,6 +995,13 @@ export class ProveedoreesComponent {
       return;
     }
 
+    const uniqueSelections = this.selectedProveediresFromResults.filter(p => !this.proveedorExistsInMainList(p));
+
+    if (uniqueSelections.length === 0) {
+      this.anadirProveedorErrorMessage = 'Todos los proveedores seleccionados ya existen en la lista.';
+      return;
+    }
+    
     const payload = this.selectedProveediresFromResults.map(p => ({
       ENT: ent,
       TERNOM: p.TERNOM ?? '',
@@ -1020,8 +1035,8 @@ export class ProveedoreesComponent {
         },
         error: (err) => {
           console.error('HTTP error status=', err.status, 'body=', err.error);
-        this.isSaving = false;
-        const msg = err && err.error ? (typeof err.error === 'string' ? err.error : JSON.stringify(err.error)) : `Error al salvar los proveedores (status ${err.status})`;
+          this.isSaving = false;
+          const msg = err && err.error ? (typeof err.error === 'string' ? err.error : JSON.stringify(err.error)) : `Error al salvar los proveedores (status ${err.status})`;  
         }
       })
   }
