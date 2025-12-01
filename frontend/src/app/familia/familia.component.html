@@ -1,1 +1,42 @@
-<p>familia works!</p>
+<div class="familia-page">
+    <div 
+        class="sidebar-backdrop" 
+        *ngIf="!sidebar.collapsed" 
+        (click)="sidebar.collapsed = true"
+    >
+    </div>
+    <app-sidebar #sidebar></app-sidebar>
+    <div class="familia-container" [class.blurred]="!sidebar.collapsed">
+        <h2>Lista de Familias</h2> 
+        <div class="familia-search">
+            <form class="search-form">
+                <input 
+                    type="text" 
+                    class="search-bar"
+                    placeholder="Buscar familias" 
+                    name="search"
+                >
+            </form>
+            <button class="search-btn">Buscar</button>
+        </div>
+        <div class="familias-download">
+            <button class="download-btn">Descargar como Excel</button>
+            <button class="print-btn">Impreso</button>
+        </div>
+        <div class="familia-list">
+            <h1 style="margin-bottom:2%; font-family: inherit; color: red; font-size: inherit;" id="error"></h1>
+            <table class="familia-table">
+                <thead>
+                    <tr>
+                        <th>Familia</th>
+                        <th>Descripción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
