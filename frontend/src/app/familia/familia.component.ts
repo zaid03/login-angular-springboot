@@ -217,6 +217,7 @@ export class FamiliaComponent {
 
   afacodError:string = '';
   subfamilias: any[] = [];
+  mta:any[] = [];
   FetchSubfamilias(afacod: String) {
     if (!afacod) {
       this.afacodError = 'Familia requerido'
@@ -228,6 +229,19 @@ export class FamiliaComponent {
           this.afacodError = 'No se encontraron Subfamilias'
         } else {
           this.subfamilias = Array.isArray(Response) ? [...Response] : [];
+          this.subfamilias.forEach((item, idx) => {
+            const almacenaje = item?.mtacod ?? '';
+            this.http.get<any[]>(`http://localhost:8080/api/mta/mta-filter/${this.entcod}/${almacenaje}`).subscribe({
+              next: (mtas) => {
+                const almacenajeArray = Array.isArray(mtas) ? mtas : [];
+                this.subfamilias[idx].mta = almacenajeArray
+                const mtaDescription = almacenajeArray[0]?.mtades ?? '';
+                this.subfamilias[idx].mtades = mtaDescription;
+              }, error: () => {
+                this.subfamilias[idx].mtas = [];
+              },
+            })
+          })
         }
       }, error: (e) => {
         this.afacodError = 'Server Error';
