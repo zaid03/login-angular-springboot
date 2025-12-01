@@ -15,17 +15,19 @@
                     class="search-bar"
                     placeholder="Buscar familias" 
                     name="search"
+                    [(ngModel)]="searchTerm"
                 >
             </form>
-            <button class="search-btn">Buscar</button>
+            <button class="search-btn" (click)="searchFamilias()">Buscar</button>
         </div>
+        <h1 class="errorBtn">{{ familiaMessageError }}</h1>
+        <h1 class="successBtn"></h1>
         <div class="familias-download">
             <button class="download-btn">Descargar como Excel</button>
             <button class="print-btn">Impreso</button>
         </div>
         <div class="familia-list">
-            <h1 style="margin-bottom:2%; font-family: inherit; color: red; font-size: inherit;" id="error"></h1>
-            <h1 style="color: green; font-size: 15px; text-align: center;" id="error"></h1>
+            <h1 class="errorBtn">{{ tableMessage }}</h1>
             <table class="familia-table">
                 <thead>
                     <tr>

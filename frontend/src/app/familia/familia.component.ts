@@ -44,11 +44,9 @@ export class FamiliaComponent {
           this.familias = Array.isArray(response) ? [...response] : [];
           this.backupFamilias = [...this.familias];
           this.page = 0;
-          // console.log(this.familias);
         }
       },error: (err) => {
-        this.tableMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-        alert(this.tableMessage);
+        this.tableMessage = 'Server error';
       }
     })
   }
@@ -77,11 +75,53 @@ export class FamiliaComponent {
   selectedFamilias: any = null;
   showDetails(familia: any) {
     this.tableMessage = '';
+    this.familiaMessageError = '';
     this.selectedFamilias = familia;
     console.log(this.selectedFamilias);
   }
 
   closeDetails() {
     this.selectedFamilias = null;
+  }
+
+  familiaMessageError: string = '';
+  public searchTerm: string = '';
+  searchFamilias(): void {
+    this.familiaMessageError = '';
+    const search = this.searchTerm.trim();
+
+    if (!search) {
+      this.familiaMessageError = 'Introduzca una familia para buscar'
+      this.familias = [...this.backupFamilias];
+      this.page = 0;
+      return;
+    }
+
+    const mixed = /^(?=.*[0-9])(?=.*[a-zA-Z])[a-zA-Z0-9]+$/
+    const numsOnly = /^\d+$/
+    const charsOnly = /^[a-zA-Z]+$/
+
+    if(mixed.test(search)) {
+      this.familiaMessageError = 'Este familia o subfamilia no existe'
+      return;
+    }
+
+    if (numsOnly.test(search)) {
+      this.familias = this.backupFamilias.filter(f =>
+        f.afacod?.toString().toLowerCase().includes(search.toLowerCase())
+      );
+    } else if (charsOnly.test(search)) {
+      this.familias = this.backupFamilias.filter(f =>
+        f.afades?.toString().toLowerCase().includes(search.toLowerCase())
+      );
+    } else {
+      this.familias = [];
+    }
+
+    if (this.familias.length === 0) {
+      this.familiaMessageError = 'Este familia o subfamilia no existe';
+    }
+    
+    this.page = 0;
   }
 }

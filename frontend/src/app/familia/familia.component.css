@@ -112,6 +112,19 @@ app-sidebar {
     color: #e6edf3;
 }
 
+.errorBtn{
+    margin-bottom:2%; 
+    font-family: inherit; 
+    color: red; 
+    font-size: inherit;
+}
+
+.successBtn{
+    color: green; 
+    font-size: 15px; 
+    text-align: center;
+}
+
 .familia-list {
     width: 80%;
     display: flex;
