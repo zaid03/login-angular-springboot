@@ -91,34 +91,32 @@ export class FamiliaComponent {
   public searchTerm: string = '';
   searchFamilias(): void {
     this.familiaMessageError = '';
-    const search = this.searchTerm.trim();
+    const term = this.searchTerm.trim();
 
-    if (!search) {
+    if (!term) {
       this.familiaMessageError = 'Introduzca una familia para buscar'
       this.familias = [...this.backupFamilias];
       this.page = 0;
       return;
     }
 
-    const mixed = /^(?=.*[0-9])(?=.*[a-zA-Z])[a-zA-Z0-9]+$/
-    const numsOnly = /^\d+$/
-    const charsOnly = /^[a-zA-Z]+$/
-
-    if(mixed.test(search)) {
-      this.familiaMessageError = 'Este familia o subfamilia no existe'
-      return;
-    }
-
-    if (numsOnly.test(search)) {
-      this.familias = this.backupFamilias.filter(f =>
-        f.afacod?.toString().toLowerCase().includes(search.toLowerCase())
-      );
-    } else if (charsOnly.test(search)) {
-      this.familias = this.backupFamilias.filter(f =>
-        f.afades?.toString().toLowerCase().includes(search.toLowerCase())
-      );
+    const numbersOnly = /^\d+$/
+    if (numbersOnly.test(term)) {
+      if (term.length <= 5) {
+        this.familias = this.backupFamilias.filter(
+          (f) => f.afacod?.toString() === term
+        );
+      } else {
+        const lower = term.toLowerCase();
+        this.familias = this.backupFamilias.filter((f) =>
+          f.afades?.toString().toLowerCase().includes(lower)
+        );
+      }
     } else {
-      this.familias = [];
+      const lower = term.toLowerCase();
+      this.familias = this.backupFamilias.filter((f) =>
+        f.afades?.toString().toLowerCase().includes(lower)
+      );
     }
 
     if (this.familias.length === 0) {
@@ -217,5 +215,5 @@ export class FamiliaComponent {
     printWindow.print();
   }
 
-  
+
 }
