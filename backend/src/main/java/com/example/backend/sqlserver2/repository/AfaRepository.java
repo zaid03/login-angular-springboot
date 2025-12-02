@@ -44,4 +44,17 @@ public interface AfaRepository extends JpaRepository<Afa, AfaId> {
         @Param("ENT") Integer ENT,
         @Param("AFACOD") String AFACOD
     );
+
+    //deleting a familia
+    @Modifying
+    @Transactional
+    @Query("""
+        DELETE FROM Afa a
+        WHERE a.ENT = :ENT
+          AND a.AFACOD = :AFACOD
+    """)
+    int deleteByEntAndAfacod(
+        @Param("ENT") Integer ENT,
+        @Param("AFACOD") String AFACOD
+    );
 }

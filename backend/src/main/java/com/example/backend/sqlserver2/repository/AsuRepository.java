@@ -3,7 +3,9 @@ package com.example.backend.sqlserver2.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.backend.sqlserver2.model.Asu;
 import com.example.backend.sqlserver2.model.AsuId;
@@ -26,4 +28,20 @@ public interface AsuRepository extends JpaRepository<Asu, AsuId> {
 
     //filtering subs by ent and afacod
     List<Asu> findByENTAndAFACOD(int ent, String afacod);
+
+    //for deleting familias
+    @Modifying
+    @Transactional
+    @Query(
+        value = """
+            DELETE FROM ASU
+            WHERE ENT = :ent 
+            AND AFACOD = :afacod
+        """,
+        nativeQuery = true  
+    )
+    int deleteByEntAndAfacod(
+        @Param("ent") Integer ent,
+        @Param("afacod") String afacod
+    );
 }

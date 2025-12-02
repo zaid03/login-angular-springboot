@@ -22,4 +22,19 @@ public interface ArtRepository extends JpaRepository<Art, String> {
     //find an art name
     @Query("SELECT a FROM Art a WHERE a.ENT = :ent AND a.AFACOD = :afacod AND a.ASUCOD = :asucod AND a.ARTCOD = :artcod")
     List<Art> findArtName(@Param("ent") int ent, @Param("afacod") String afacod, @Param("asucod") String asucod, @Param("artcod") String artcod);
+
+    //delete a familia check
+    @Query(
+        value = """
+            SELECT COUNT(*)
+            FROM ART
+            WHERE ENT = :ent
+            AND AFACOD = :afacod
+        """,
+        nativeQuery = true
+    )
+    Long countByEntAndAfacod(
+        @Param("ent") Integer ent,
+        @Param("afacod") String afacod
+    );
 }

@@ -2,7 +2,11 @@ package com.example.backend.controller;
 
 import com.example.backend.sqlserver2.model.Art;
 import com.example.backend.sqlserver2.repository.ArtRepository;
+import com.example.backend.sqlserver2.repository.AsuRepository;
+import com.example.backend.sqlserver2.repository.AfaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,6 +17,10 @@ public class ArtController {
 
     @Autowired
     private ArtRepository artRepository;
+    @Autowired
+    private AfaRepository afaRepository;
+    @Autowired
+    private AsuRepository asuRepository;
 
     // Method to find Art records by ENT and AFACOD and artcod
     @GetMapping("/by-ent/{ent}/{afacod}/{asucod}/{artcod}")
@@ -42,4 +50,25 @@ public class ArtController {
         {
         return artRepository.findArtName(ent, afacod, asucod, artcod);
         }
+
+    //deleting a familia
+    @DeleteMapping("/delete-familia/{ent}/{afacod}")
+    public ResponseEntity<?> deleteFamilia(
+        @PathVariable Integer ent,
+        @PathVariable String afacod
+    ) {
+
+        long articulos = artRepository.countByEntAndAfacod(ent, afacod);
+        if (articulos > 0) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body("No se puede borrar una familia con artículos asociados");
+        }
+
+        asuRepository.deleteByEntAndAfacod(ent, afacod);
+        int removed = afaRepository.deleteByEntAndAfacod(ent, afacod);
+        return removed == 0
+            ? ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Familia no encontrada para el código indicado.")
+            : ResponseEntity.noContent().build();
+    }
 }
