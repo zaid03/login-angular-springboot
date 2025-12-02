@@ -76,11 +76,6 @@ app-sidebar {
     height: 20px;
 }
 
-.search-bar:focus {
-    outline: none;
-    border: 1px solid #1d4ed8;
-}
-
 .familias-download {
     display: flex;
     gap: 16px;
@@ -91,7 +86,9 @@ app-sidebar {
 .search-btn,
 .download-btn,
 .print-btn,
-.pagination-controls button {
+.pagination-controls button,
+.familia-save-btn,
+.familia-delete-btn {
     background-color: #1d4ed8;
     color: #fff;
     border: none;
@@ -107,20 +104,30 @@ app-sidebar {
 .search-btn:hover,
 .download-btn:hover,
 .print-btn:hover,
-.pagination-controls button:hover {
+.pagination-controls button:hover,
+.familia-save-btn:hover,
+.familia-delete-btn:hover {
     background-color: #094fa3;
     color: #e6edf3;
+}
+
+.familia-delete-btn{
+    background-color: rgb(221, 66, 66);
+}
+
+.familia-delete-btn:hover{
+    background-color: rgb(117, 28, 28);
 }
 
 .errorBtn{
     margin-bottom:2%; 
     font-family: inherit; 
     text-align: center;
-    color: red; 
-    font-size: inherit;
+    color: rgb(221, 66, 66); 
 }
 
 .successBtn{
+    margin-bottom:2%; 
     color: green; 
     font-size: 15px; 
     text-align: center;
@@ -307,7 +314,9 @@ app-sidebar {
     width: 100px;
 }
 
-.right-row input[type="text"]:focus {
+.right-row input[type="text"]:focus,
+.pagination-input:focus,
+.search-bar:focus {
     outline: none;
     border-color: #042b5a;
     outline: none;
@@ -321,4 +330,12 @@ app-sidebar {
 .subfamilias{
     margin-top: 10px;
     padding: 5px;
+}
+
+.action-buttons{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 1%;
+    gap: 20px;
 }

@@ -3,9 +3,11 @@ package com.example.backend.sqlserver2.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.backend.sqlserver2.model.Afa;
 import com.example.backend.sqlserver2.model.AfaId;
@@ -25,4 +27,21 @@ public interface AfaRepository extends JpaRepository<Afa, AfaId> {
 
     //find familias by ent
     List<Afa> findByENT(int ent);
+
+    //update description of familias
+    @Modifying
+    @Transactional
+    @Query("""
+        UPDATE Afa a
+        SET
+            a.AFADES = :AFADES
+        WHERE
+            a.ENT = :ENT
+            AND a.AFACOD = :AFACOD
+    """)
+    int updateFamilia(
+        @Param("AFADES") String AFADES,
+        @Param("ENT") Integer ENT,
+        @Param("AFACOD") String AFACOD
+    );
 }
