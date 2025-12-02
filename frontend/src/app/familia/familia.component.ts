@@ -268,4 +268,37 @@ export class FamiliaComponent {
       }
     })
   }
+
+  showDeleteConfirm: boolean = false;
+  familiaToDelete: any = null;
+  openDeleteConfirm(afacod: string) {
+    this.familiaToDelete = afacod;
+    console.log(this.familiaToDelete);
+    this.showDeleteConfirm = true;
+  }
+
+  closeDeleteConfirm() {
+    this.familiaToDelete = null;
+    this.showDeleteConfirm = false;
+  }
+
+  confirmDelete(): void {
+    if (this.familiaToDelete) {
+      this.deleteFamilia(this.familiaToDelete);
+      this.closeDeleteConfirm();
+    }
+  }
+
+  deleteFamilia(afacod: string): void {
+    this.http.delete(`http://localhost:8080/api/art/delete-familia/${this.entcod}/${afacod}`).subscribe({
+      next: () => {
+        this.familiaSucessMessage = 'Familia eliminado correctamente';
+        this.familias = this.familias.filter(f => f.afacod !== afacod);
+        this.backupFamilias = this.backupFamilias.filter(f => f.afacod !== afacod);
+        this.closeDetails();
+      }, error: (err) => {
+        this.familiaErrorMessage = err?.error ?? 'Error al eliminar la familia.';
+      }
+    })
+  }
 }

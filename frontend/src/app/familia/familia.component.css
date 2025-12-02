@@ -88,7 +88,9 @@ app-sidebar {
 .print-btn,
 .pagination-controls button,
 .familia-save-btn,
-.familia-delete-btn {
+.familia-delete-btn,
+.articulos-delete-confirm-btn,
+.articulos-cancel-confirm-btn {
     background-color: #1d4ed8;
     color: #fff;
     border: none;
@@ -106,17 +108,25 @@ app-sidebar {
 .print-btn:hover,
 .pagination-controls button:hover,
 .familia-save-btn:hover,
-.familia-delete-btn:hover {
+.familia-delete-btn:hover,
+.articulos-delete-confirm-btn:hover,
+.articulos-cancel-confirm-btn:hover {
     background-color: #094fa3;
     color: #e6edf3;
 }
 
-.familia-delete-btn{
+.familia-delete-btn,
+.articulos-delete-confirm-btn {
     background-color: rgb(221, 66, 66);
 }
 
-.familia-delete-btn:hover{
+.familia-delete-btn:hover,
+.articulos-delete-confirm-btn:hover {
     background-color: rgb(117, 28, 28);
+}
+
+.articulos-delete-confirm-btn{
+    margin-right: 10px;
 }
 
 .errorBtn{
@@ -338,4 +348,44 @@ app-sidebar {
     justify-content: flex-end;
     padding: 1%;
     gap: 20px;
+}
+
+.delete-confirm-modal{
+    position: fixed;
+  top: 30%;
+  left: 50%;
+  border-radius: 10px;
+  transform: translate(-50%, 0);
+  background: #fff;
+  border: 1px solid #aaa;
+  padding: 24px;
+  z-index: 5000;
+  min-width: 300px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.2);
+  text-align: center;
+}
+
+.delete-confirm-modal h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: rgb(117, 28, 28);
+  margin-bottom: 18px;
+  letter-spacing: 0.5px;
+}
+
+.delete-confirm-modal div {
+  margin-bottom: 18px;
+}
+
+.delete-confirm-modal p {
+  font-weight: bold;
+  margin: 6px 0;
+  font-size: 1.05rem;
+  color: #333;
+}
+
+.delete-confirm-modal strong {
+  color: #2c3e50;
+  font-weight: 600;
+  font-weight: bold;
 }

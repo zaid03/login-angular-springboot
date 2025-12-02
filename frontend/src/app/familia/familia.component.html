@@ -91,7 +91,11 @@
                         >
                         Guardar
                         </button>
-                        <button class="familia-delete-btn">Eliminar</button>
+                        <button 
+                            class="familia-delete-btn" 
+                            (click)="openDeleteConfirm(selectedFamilias.afacod)"
+                        >
+                        Eliminar</button>
                     </div>
                     <div class="subfamilias">
                         <h1>Subfamilia</h1>
@@ -119,4 +123,14 @@
             </div>
         </div>
     </div>
+</div>
+
+<div class="modal-backdrop" *ngIf="showDeleteConfirm" (click)="closeDeleteConfirm()"></div>
+<div class="delete-confirm-modal" *ngIf="showDeleteConfirm">
+    <h3>¿Seguro que quieres eliminar este Familia?</h3>
+    <div *ngIf="familiaToDelete">
+        <p><strong>Familia:</strong> {{ familiaToDelete }}</p>
+    </div>
+    <button class="articulos-delete-confirm-btn" (click)="confirmDelete()">Sí, eliminar</button>
+    <button class="articulos-cancel-confirm-btn" (click)="closeDeleteConfirm()">Cancelar</button>
 </div>
