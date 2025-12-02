@@ -109,14 +109,45 @@
                                     <th>Descripción</th>
                                     <th>Económica</th>
                                     <th>Tipo almacenaje</th>
+                                    <th>Acción</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr *ngFor="let s of subfamilias">
-                                    <td>{{s.asucod}}</td>
-                                    <td>{{s.asudes}}</td>
-                                    <td>{{s.asueco}}</td>
-                                    <td>{{s.mta?.[0]?.mtades}}</td>
+                                    <td>
+                                        <input 
+                                            type="text" 
+                                            [(ngModel)]="s.asucod" 
+                                            readonly
+                                        />
+                                    </td>
+                                    <td>
+                                        <input
+                                            type="text"
+                                            [(ngModel)]="s.asudes"
+                                            class="width"
+                                            #Description
+                                        />
+                                    </td>
+                                    <td>
+                                        <input
+                                            type="number"
+                                            [(ngModel)]="s.asueco" 
+                                            #Economica
+                                        />
+                                    </td>
+                                    <td>
+                                        <input
+                                            type="text"
+                                            [ngModel]="s.mta?.[0]?.mtades"
+                                            (ngModelChange)="updateMtades(s, $event)"
+                                            #Almacenaje
+                                        />
+                                    </td>
+                                    <td class="gap">
+                                        <button class="sub-save-btn" (click)="updateSubfamilia(s.asucod, Description.value, Economica.value, Almacenaje.value)">💾</button>
+                                        <button class="sub-delete-btn">-</button>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>

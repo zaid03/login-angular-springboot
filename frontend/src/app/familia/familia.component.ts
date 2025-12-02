@@ -251,6 +251,12 @@ export class FamiliaComponent {
     })
   }
 
+  updateMtades(subfamilia: any, value: string): void {
+    if (subfamilia.mta?.length) {
+      subfamilia.mta[0].mtades = value;
+    }
+  }
+
   familiaErrorMessage:string = '';
   familiaSucessMessage: string = '';
   updateFamilia(afacod: string, afades: string): void {
@@ -311,7 +317,7 @@ export class FamiliaComponent {
   familiaAddError: string = '';
   addFamilia(familia: string, descripcion: string): void {
     this.familiaAddError = '';
-    
+
     if (!familia || !descripcion) { 
       this.familiaAddError = 'Se requiere descripción de la familia';
       return;
@@ -332,5 +338,9 @@ export class FamiliaComponent {
   closeAddConfirm() {
     this.showAddConfirm = false;
     this.familiaAddError = '';
+  }
+
+  updateSubfamilia(asucod: string, Description:string, Economica: string, Almacenaje: any) {
+    console.log("asucod: ", asucod, "description: ", Description, "economica: ", Economica, "amacenaje: ", Almacenaje);
   }
 }

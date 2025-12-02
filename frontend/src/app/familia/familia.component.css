@@ -92,7 +92,9 @@ app-sidebar {
 .articulos-delete-confirm-btn,
 .articulos-cancel-confirm-btn,
 .add-familia-btn,
-.familias-add-btn {
+.familias-add-btn,
+.sub-save-btn,
+.sub-delete-btn {
     background-color: #1d4ed8;
     color: #fff;
     border: none;
@@ -110,13 +112,17 @@ app-sidebar {
 .print-btn:hover,
 .pagination-controls button:hover,
 .familia-save-btn:hover,
-.familia-delete-btn:hover,
-.articulos-delete-confirm-btn:hover,
 .articulos-cancel-confirm-btn:hover,
 .add-familia-btn:hover,
-.familias-add-btn:hover {
+.familias-add-btn:hover,
+.sub-save-btn:hover {
     background-color: #094fa3;
     color: #e6edf3;
+}
+
+.sub-save-btn,
+.sub-delete-btn{
+    padding: 6px 10px;
 }
 
 .add-familia-btn{
@@ -128,12 +134,14 @@ app-sidebar {
 }
 
 .familia-delete-btn,
-.articulos-delete-confirm-btn {
+.articulos-delete-confirm-btn,
+.sub-delete-btn {
     background-color: rgb(221, 66, 66);
 }
 
 .familia-delete-btn:hover,
-.articulos-delete-confirm-btn:hover {
+.articulos-delete-confirm-btn:hover,
+.sub-delete-btn:hover {
     background-color: rgb(117, 28, 28);
 }
 
@@ -195,7 +203,8 @@ app-sidebar {
 }
 
 .subfamilia-table thead th:nth-child(3),
-.subfamilia-table thead th:nth-child(4) {
+.subfamilia-table thead th:nth-child(4),
+.subfamilia-table thead th:nth-child(5) {
     width: 10%;
 }
 
@@ -331,7 +340,9 @@ app-sidebar {
     gap: 12px;
 }
 
-.right-row input[type="text"] {
+.right-row input[type="text"],
+.subfamilia-table tbody input[type="text"],
+.subfamilia-table tbody input[type="number"] {
     border: 1px solid #1c5d8c;
     padding: 8px 6px;
     border-radius: 6px;
@@ -342,7 +353,9 @@ app-sidebar {
 
 .right-row input[type="text"]:focus,
 .pagination-input:focus,
-.search-bar:focus {
+.search-bar:focus,
+.subfamilia-table tbody input[type="text"],
+.subfamilia-table tbody input[type="number"] {
     outline: none;
     border-color: #042b5a;
     outline: none;
@@ -410,4 +423,9 @@ app-sidebar {
   color: #2c3e50;
   font-weight: 600;
   font-weight: bold;
+}
+
+.gap{
+    display: flex;
+    gap: 10px;
 }
