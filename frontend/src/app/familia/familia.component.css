@@ -90,7 +90,9 @@ app-sidebar {
 .familia-save-btn,
 .familia-delete-btn,
 .articulos-delete-confirm-btn,
-.articulos-cancel-confirm-btn {
+.articulos-cancel-confirm-btn,
+.add-familia-btn,
+.familias-add-btn {
     background-color: #1d4ed8;
     color: #fff;
     border: none;
@@ -110,9 +112,19 @@ app-sidebar {
 .familia-save-btn:hover,
 .familia-delete-btn:hover,
 .articulos-delete-confirm-btn:hover,
-.articulos-cancel-confirm-btn:hover {
+.articulos-cancel-confirm-btn:hover,
+.add-familia-btn:hover,
+.familias-add-btn:hover {
     background-color: #094fa3;
     color: #e6edf3;
+}
+
+.add-familia-btn{
+    margin-bottom: 10px;
+}
+
+.familias-add-btn {
+    margin-right: 10px;
 }
 
 .familia-delete-btn,
@@ -283,13 +295,15 @@ app-sidebar {
 }
 
 .modal h3,
-.modal h1 {
+.modal h1,
+.add-confirm-modal h3 {
     margin: 10px;
     color: #1c5d8c;
     text-align: center;
 }
 
-.details{
+.details,
+.add-content {
     padding: 5px;
     display: flex;
     gap: 10px;
@@ -299,6 +313,7 @@ app-sidebar {
     width: 8%;
     display: flex;
     flex-direction: column;
+    justify-content: flex-start !important;
     gap: 25px;
 }
 
@@ -350,19 +365,24 @@ app-sidebar {
     gap: 20px;
 }
 
-.delete-confirm-modal{
+.delete-confirm-modal,
+.add-confirm-modal {
     position: fixed;
-  top: 30%;
-  left: 50%;
-  border-radius: 10px;
-  transform: translate(-50%, 0);
-  background: #fff;
-  border: 1px solid #aaa;
-  padding: 24px;
-  z-index: 5000;
-  min-width: 300px;
-  box-shadow: 0 2px 16px rgba(0,0,0,0.2);
-  text-align: center;
+    top: 30%;
+    left: 50%;
+    border-radius: 10px;
+    transform: translate(-50%, 0);
+    background: #fff;
+    border: 1px solid #aaa;
+    padding: 24px;
+    z-index: 5000;
+    min-width: 300px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.2);
+    text-align: center;
+}
+
+.add-confirm-modal{
+   width: 92%;
 }
 
 .delete-confirm-modal h3 {
@@ -373,7 +393,8 @@ app-sidebar {
   letter-spacing: 0.5px;
 }
 
-.delete-confirm-modal div {
+.delete-confirm-modal div,
+.add-confirm-modal div {
   margin-bottom: 18px;
 }
 

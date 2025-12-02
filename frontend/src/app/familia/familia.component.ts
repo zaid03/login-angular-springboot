@@ -301,4 +301,17 @@ export class FamiliaComponent {
       }
     })
   }
+
+  showAddConfirm: boolean = false;
+  launchAddFamilia() {
+    this.showAddConfirm = true;
+  }
+
+  
+  addFamilia(familia: string, descripcion: string): void {
+  }
+
+  closeAddConfirm() {
+    this.showAddConfirm = false;
+  }
 }

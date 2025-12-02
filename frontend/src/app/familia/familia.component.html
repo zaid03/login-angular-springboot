@@ -27,6 +27,7 @@
         </div>
         <div class="familia-list">
             <h1 class="errorBtn">{{ tableMessage }}</h1>
+            <button class="add-familia-btn" (click)="launchAddFamilia()">Añadir</button>
             <table class="familia-table">
                 <thead>
                     <tr>
@@ -133,4 +134,32 @@
     </div>
     <button class="articulos-delete-confirm-btn" (click)="confirmDelete()">Sí, eliminar</button>
     <button class="articulos-cancel-confirm-btn" (click)="closeDeleteConfirm()">Cancelar</button>
+</div>
+
+<div class="modal-backdrop" *ngIf="showAddConfirm" (click)="closeAddConfirm()"></div>
+<div class="add-confirm-modal" *ngIf="showAddConfirm">
+    <h3>Añadir una Familia</h3>
+    <div class="add-content">
+        <div class="left-row">
+            <p>Familia</p>
+            <p>Descripción</p>
+        </div>
+        <div class="right-row">
+            <input 
+                type="text" 
+                name="familia" 
+                readonly 
+                #familiaInput
+            />
+            <input 
+                type="text" 
+                name="Descripción" 
+                class="width"  
+                #descripcionInput
+            />
+        </div>
+    </div>
+    
+    <button class="familias-add-btn" (click)="addFamilia(familiaInput.value, descripcionInput.value)">Añadir</button>
+    <button class="articulos-delete-confirm-btn" (click)="closeAddConfirm()">Cancelar</button>
 </div>
