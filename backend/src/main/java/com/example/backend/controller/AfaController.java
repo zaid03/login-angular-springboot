@@ -74,4 +74,29 @@ public class AfaController {
         }
     }
 
+    //familia add
+    public record newFamilia(Integer ent, String afacod, String afades) {}
+
+    @PostMapping("/Insert-familia")
+    public ResponseEntity<?> insertFamilia(
+        @RequestBody newFamilia payload
+    )
+    {
+        if (payload == null || payload.ent() == null || payload.afacod() == null || payload.afades() == null) {
+            return ResponseEntity.badRequest().body("Faltan datos obligatorios.");
+        }
+
+        if (!afaRepository.findByENTAndAFACOD(payload.ent(), payload.afacod()).isEmpty()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body("La familia ya existe para ese código.");
+        }
+
+        Afa nueva = new Afa();
+        nueva.setENT(payload.ent());
+        nueva.setAFACOD(payload.afacod());
+        nueva.setAFADES(payload.afades());
+
+        afaRepository.save(nueva);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
 }
