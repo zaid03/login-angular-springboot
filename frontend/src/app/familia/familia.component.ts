@@ -85,6 +85,8 @@ export class FamiliaComponent {
 
   closeDetails() {
     this.selectedFamilias = null;
+    this.familiaErrorMessage = '';
+    this.familiaSucessMessage = '';
   }
 
   familiaMessageError: string = '';
@@ -245,6 +247,24 @@ export class FamiliaComponent {
         }
       }, error: (e) => {
         this.afacodError = 'Server Error';
+      }
+    })
+  }
+
+  familiaErrorMessage:string = '';
+  familiaSucessMessage: string = '';
+  updateFamilia(afacod: string, afades: string): void {
+    if (!afacod) { return; }
+    const payload = (afades ?? '').trim();
+
+    this.http.patch<any>(`http://localhost:8080/api/afa/update-familia/${this.entcod}/${afacod}`, payload, { headers: { 'Content-Type': 'text/plain' }, observe: 'response' }).subscribe({
+      next: (response) => {
+        this.familiaErrorMessage = '';
+        this.familiaSucessMessage = 'Familia actualizada con éxito';
+      }, error: (err) => {
+        const message = err?.error ?? 'Error al actualizar la familia.';
+        this.familiaSucessMessage = '';
+        this.familiaErrorMessage = message;
       }
     })
   }
