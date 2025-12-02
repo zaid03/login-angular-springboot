@@ -27,6 +27,7 @@
         </div>
         <div class="familia-list">
             <h1 class="errorBtn">{{ tableMessage }}</h1>
+            <h1 class="successBtn">{{ familiaMessage }}</h1>
             <button class="add-familia-btn" (click)="launchAddFamilia()">Añadir</button>
             <table class="familia-table">
                 <thead>
@@ -148,7 +149,8 @@
             <input 
                 type="text" 
                 name="familia" 
-                readonly 
+                maxlength="4"
+                (input)="familiaInput.value = familiaInput.value.toUpperCase()"
                 #familiaInput
             />
             <input 
@@ -159,7 +161,7 @@
             />
         </div>
     </div>
-    
+    <h1 class="errorBtn">{{ familiaAddError }}</h1>
     <button class="familias-add-btn" (click)="addFamilia(familiaInput.value, descripcionInput.value)">Añadir</button>
     <button class="articulos-delete-confirm-btn" (click)="closeAddConfirm()">Cancelar</button>
 </div>

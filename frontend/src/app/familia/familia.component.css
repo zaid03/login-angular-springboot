@@ -144,6 +144,7 @@ app-sidebar {
 .errorBtn{
     margin-bottom:2%; 
     font-family: inherit; 
+    font-size: 18px;
     text-align: center;
     color: rgb(221, 66, 66); 
 }

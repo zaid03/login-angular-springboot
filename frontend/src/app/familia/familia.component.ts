@@ -307,11 +307,30 @@ export class FamiliaComponent {
     this.showAddConfirm = true;
   }
 
-  
+  familiaMessage: string = '';
+  familiaAddError: string = '';
   addFamilia(familia: string, descripcion: string): void {
+    this.familiaAddError = '';
+    
+    if (!familia || !descripcion) { 
+      this.familiaAddError = 'Se requiere descripción de la familia';
+      return;
+    }
+
+    const ent = this.entcod;
+    const payload = { ent, afacod: familia, afades: descripcion };
+    this.http.post<any>(`http://localhost:8080/api/afa/Insert-familia`, payload).subscribe({
+      next: () => {
+        this.familiaMessage = 'familia agregada exitosamente'
+        this.closeAddConfirm();
+      }, error: (err) => {
+        this.familiaAddError = err?.error ?? 'Se ha producido un error.';
+      }
+    });
   }
 
   closeAddConfirm() {
     this.showAddConfirm = false;
+    this.familiaAddError = '';
   }
 }
