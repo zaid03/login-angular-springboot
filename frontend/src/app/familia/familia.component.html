@@ -250,11 +250,15 @@
                 #economicaInput
                 (input)="allowOnlyDigits($event)"
             />
-            <input 
-                type="text" 
-                name="almacenaje" 
+            <select
+                name="almacenaje"
                 #almacenajeInput
-            />
+                class="add-select"
+            >
+                <option *ngFor="let almacen of almacenajes" [value]="almacen.mtacod">
+                    {{ almacen.mtacod }} - {{ almacen.mtades }}
+                </option>
+            </select>
         </div>
     </div>
     <h1 class="errorBtn">{{ subAddError }}</h1>

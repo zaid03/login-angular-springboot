@@ -345,7 +345,8 @@ app-sidebar {
 
 .right-row input[type="text"],
 .subfamilia-table tbody input[type="text"],
-.subfamilia-table tbody select {
+.subfamilia-table tbody select,
+.add-sub-modal .right-row select {
     border: 1px solid #1c5d8c;
     padding: 8px 6px;
     border-radius: 6px;
@@ -358,7 +359,8 @@ app-sidebar {
 .pagination-input:focus,
 .search-bar:focus,
 .subfamilia-table tbody input[type="text"]:focus,
-.subfamilia-table tbody select:focus {
+.subfamilia-table tbody select:focus,
+.add-sub-modal .right-row select:focus {
     outline: none;
     border-color: #042b5a;
     outline: none;
@@ -421,8 +423,10 @@ app-sidebar {
     width: 30%;
 }
 
-.add-sub-modal .right-row input {
-    width: 400px;
+.add-sub-modal .right-row input,
+.add-sub-modal .right-row select {
+    width: 80%;
+    box-sizing: border-box;
 }
 
 .delete-confirm-modal h3 {

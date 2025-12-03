@@ -385,6 +385,9 @@ export class FamiliaComponent {
 
   showAddConfirmSub: boolean = false;
   launchAddSubFamilia() {
+    if (!this.almacenajes.length) {
+      this.fetchAlmacenaje();
+    }
     this.showAddConfirmSub = true;
   }
 
@@ -399,6 +402,8 @@ export class FamiliaComponent {
     this.errorUpdateMessage = '';
     this.successUpdateMEssage = '';
     this.launchAddSubFamilia();
+
+    this.fetchAlmacenaje()
 
     if (!this.selectedFamilias) {
       this.subAddError = 'Seleccione una familia antes de añadir subfamilias.';
@@ -444,5 +449,16 @@ export class FamiliaComponent {
   allowOnlyDigits(event: Event): void {
     const input = event.target as HTMLInputElement;
     input.value = input.value.replace(/\D+/g, '');
+  }
+
+  almacenajes: any[] = [];
+  fetchAlmacenaje() {
+    this.http.get<any[]>(`http://localhost:8080/api/mta/all-mta/${this.entcod}`).subscribe({
+      next: (mtas) => {
+        this.almacenajes = Array.isArray(mtas) ? mtas : [];
+      }, error: () => {
+        this.almacenajes = [];
+      },
+    });
   }
 }
