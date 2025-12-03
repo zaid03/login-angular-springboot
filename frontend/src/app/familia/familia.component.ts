@@ -87,6 +87,8 @@ export class FamiliaComponent {
     this.selectedFamilias = null;
     this.familiaErrorMessage = '';
     this.familiaSucessMessage = '';
+    this.successUpdateMEssage = '';
+    this.errorUpdateMessage = '';
   }
 
   familiaMessageError: string = '';
@@ -356,6 +358,84 @@ export class FamiliaComponent {
       this.errorUpdateMessage = 'datos faltantes';
     }
 
+    const payload = { ASUDES: Description, ASUECO: Economica, MTACOD: almacenajeNum}
+
+    this.http.patch<any>(`http://localhost:8080/api/asu/update-subfamilia/${this.entcod}/${afacod}/${asucod}`, payload).subscribe({
+      next: (res) => {
+        this.successUpdateMEssage = 'Subfamilia actualizado con éxito';
+      }, error: (err) => {
+        this.errorUpdateMessage = 'Server error';
+      }
+    })
   }
 
+  deleteSubfamilia(afacod:string, asucod: string) {
+    if (!afacod || !asucod) {
+      this.errorUpdateMessage = 'datos faltantes';
+    }
+
+    this.http.delete<any>(`http://localhost:8080/api/art/delete-sub-familia/${this.entcod}/${afacod}/${asucod}`).subscribe({
+      next: (res) => {
+        this.successUpdateMEssage = 'Subfamilia eliminado exitosamente'
+      }, error: (err) => {
+        this.errorUpdateMessage = err?.error ?? 'Se ha producido un error.';
+      }
+    })
+  }
+
+  showAddConfirmSub: boolean = false;
+  launchAddSubFamilia() {
+    this.showAddConfirmSub = true;
+  }
+
+  closeAddConfirmSub() {
+    this.showAddConfirmSub = false;
+    this.subAddError = '';
+  }
+
+  subAddError: string = '';
+  addSub(asucod: string, asudes: string, asueco: string, mtacod: string): void {
+    this.subAddError = '';
+    this.launchAddSubFamilia();
+
+    if (!this.selectedFamilias) {
+      this.subAddError = 'Seleccione una familia antes de añadir subfamilias.';
+      return;
+    }
+
+    const trimmedAsucod = (asucod ?? '').trim().toUpperCase();
+    const trimmedAsudes = (asudes ?? '').trim();
+    const trimmedAsueco = (asueco ?? '').trim();
+    const almacenajeNum = Number(mtacod);
+
+    if (!trimmedAsucod || !trimmedAsudes || !trimmedAsueco || Number.isNaN(almacenajeNum)) {
+      this.subAddError = 'Complete todos los campos correctamente.';
+      return;
+    }
+
+    const payload = {
+      ent: this.entcod,
+      afacod: this.selectedFamilias.afacod,
+      asucod: trimmedAsucod,
+      asudes: trimmedAsudes,
+      asueco: trimmedAsueco,
+      mtacod: almacenajeNum
+    };
+
+    this.http.post(`http://localhost:8080/api/asu/Insert-Subfamilia`, payload).subscribe({
+      next: () => {
+        this.successUpdateMEssage = 'Subfamilia añadida correctamente.';
+        this.closeAddConfirmSub();
+        this.FetchSubfamilias(this.selectedFamilias.afacod);
+      },
+      error: (err) => {
+        this.subAddError = err?.error ?? 'Se ha producido un error al añadir la subfamilia.';
+      }
+    });
+  }
+
+  forceUppercase(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    input.value = input.value.toUpperCase();
+  }
 }

@@ -164,13 +164,16 @@
                                         >
                                             💾
                                         </button>
-                                        <button class="sub-delete-btn">-</button>
+                                        <button class="sub-delete-btn" (click)="deleteSubfamilia(s.afacod, s.asucod)">-</button>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                         <h4 class="errorBtn">{{ errorUpdateMessage }}</h4>
                         <h4 class="successBtn">{{ successUpdateMEssage }}</h4>
+                        <div class="button-subs">
+                            <button class="subFamilias-add-btn" (click)="launchAddSubFamilia()">Añadir</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -215,4 +218,45 @@
     <h1 class="errorBtn">{{ familiaAddError }}</h1>
     <button class="familias-add-btn" (click)="addFamilia(familiaInput.value, descripcionInput.value)">Añadir</button>
     <button class="articulos-delete-confirm-btn" (click)="closeAddConfirm()">Cancelar</button>
+</div>
+
+<div class="modal-backdrop" *ngIf="showAddConfirmSub" (click)="closeAddConfirmSub()"></div>
+<div class="add-confirm-modal" *ngIf="showAddConfirmSub">
+    <h3>Añadir una Subfamilia</h3>
+    <div class="add-content">
+        <div class="left-row">
+            <p>Subfamilia</p>
+            <p>Descripción</p>
+            <p>Económica</p>
+            <p>Tipo de almacenaje</p>
+        </div>
+        <div class="right-row">
+            <input 
+                type="text" 
+                name="subfamilia" 
+                maxlength="4"
+                (input)="forceUppercase($event)"
+                #subfamiliaInput
+            />
+            <input 
+                type="text" 
+                name="Descripción" 
+                class="width"  
+                #descripcionInput
+            />
+            <input 
+                type="text" 
+                name="economica" 
+                #economicaInput
+            />
+            <input 
+                type="text" 
+                name="almacenaje" 
+                #almacenajeInput
+            />
+        </div>
+    </div>
+    <h1 class="errorBtn">{{ subAddError }}</h1>
+    <button class="familias-add-btn" (click)="addSub(subfamiliaInput.value, descripcionInput.value, economicaInput.value, almacenajeInput.value)">Añadir</button>
+    <button class="articulos-delete-confirm-btn" (click)="closeAddConfirmSub()">Cancelar</button>
 </div>

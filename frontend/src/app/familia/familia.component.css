@@ -94,7 +94,8 @@ app-sidebar {
 .add-familia-btn,
 .familias-add-btn,
 .sub-save-btn,
-.sub-delete-btn {
+.sub-delete-btn,
+.subFamilias-add-btn {
     background-color: #1d4ed8;
     color: #fff;
     border: none;
@@ -115,7 +116,8 @@ app-sidebar {
 .articulos-cancel-confirm-btn:hover,
 .add-familia-btn:hover,
 .familias-add-btn:hover,
-.sub-save-btn:hover {
+.sub-save-btn:hover,
+.subFamilias-add-btn:hover {
     background-color: #094fa3;
     color: #e6edf3;
 }
@@ -433,4 +435,9 @@ app-sidebar {
 .gap{
     display: flex;
     gap: 10px;
+}
+
+.button-subs{
+    display: flex;
+    justify-content: flex-end;
 }

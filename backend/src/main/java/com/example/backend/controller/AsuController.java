@@ -93,7 +93,7 @@ public class AsuController {
     //subfamilia Add
     public record newSub(Integer ent, String afacod, String asucod, String asudes, String asueco, Integer mtacod) {}
 
-    @PostMapping("/Insert-familia")
+    @PostMapping("/Insert-Subfamilia")
     public ResponseEntity<?> insertSub(
         @RequestBody newSub payload
     ) {
