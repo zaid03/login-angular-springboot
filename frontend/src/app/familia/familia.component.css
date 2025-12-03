@@ -308,7 +308,8 @@ app-sidebar {
 
 .modal h3,
 .modal h1,
-.add-confirm-modal h3 {
+.add-confirm-modal h3,
+.add-sub-modal h3 {
     margin: 10px;
     color: #1c5d8c;
     text-align: center;
@@ -387,7 +388,8 @@ app-sidebar {
 }
 
 .delete-confirm-modal,
-.add-confirm-modal {
+.add-confirm-modal,
+.add-sub-modal {
     position: fixed;
     top: 30%;
     left: 50%;
@@ -404,6 +406,23 @@ app-sidebar {
 
 .add-confirm-modal{
    width: 92%;
+}
+
+.add-sub-modal {
+    width: 60%;
+}
+
+.add-sub-modal .add-content {
+    display: flex;
+    justify-content: center;
+}
+
+.add-sub-modal .left-row {
+    width: 30%;
+}
+
+.add-sub-modal .right-row input {
+    width: 400px;
 }
 
 .delete-confirm-modal h3 {

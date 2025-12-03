@@ -135,6 +135,7 @@
                                             [(ngModel)]="s.asueco" 
                                             maxlength="5"
                                             #Economica
+                                            (input)="allowOnlyDigits($event)"
                                         />
                                     </td>
                                     <td>
@@ -221,7 +222,7 @@
 </div>
 
 <div class="modal-backdrop" *ngIf="showAddConfirmSub" (click)="closeAddConfirmSub()"></div>
-<div class="add-confirm-modal" *ngIf="showAddConfirmSub">
+<div class="add-sub-modal" *ngIf="showAddConfirmSub">
     <h3>Añadir una Subfamilia</h3>
     <div class="add-content">
         <div class="left-row">
@@ -241,13 +242,13 @@
             <input 
                 type="text" 
                 name="Descripción" 
-                class="width"  
                 #descripcionInput
             />
             <input 
                 type="text" 
                 name="economica" 
                 #economicaInput
+                (input)="allowOnlyDigits($event)"
             />
             <input 
                 type="text" 

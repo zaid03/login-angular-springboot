@@ -396,6 +396,8 @@ export class FamiliaComponent {
   subAddError: string = '';
   addSub(asucod: string, asudes: string, asueco: string, mtacod: string): void {
     this.subAddError = '';
+    this.errorUpdateMessage = '';
+    this.successUpdateMEssage = '';
     this.launchAddSubFamilia();
 
     if (!this.selectedFamilias) {
@@ -437,5 +439,10 @@ export class FamiliaComponent {
   forceUppercase(event: Event): void {
     const input = event.target as HTMLInputElement;
     input.value = input.value.toUpperCase();
+  }
+
+  allowOnlyDigits(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    input.value = input.value.replace(/\D+/g, '');
   }
 }
