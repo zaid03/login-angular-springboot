@@ -464,3 +464,69 @@ app-sidebar {
     display: flex;
     justify-content: flex-end;
 }
+
+@media (min-width: 1800px) {
+  .familia-container {
+    padding: 0 0 60px 0;
+  }
+
+  .familia-container h2 {
+    font-size: 40px;
+  }
+
+  .familia-list {
+    width: 70%;
+  }
+
+  .familia-table,
+  .subfamilia-table {
+    padding: 26px;
+  }
+
+  .familia-table thead th,
+  .subfamilia-table thead th {
+    font-size: 17px;
+    padding: 14px 16px;
+  }
+
+  .familia-table tbody td,
+  .subfamilia-table tbody td {
+    font-size: 16px;
+    padding: 14px 16px;
+  }
+
+  .right-row input[type="text"],
+  .subfamilia-table tbody input[type="text"],
+  .subfamilia-table tbody select,
+  .add-sub-modal .right-row select {
+    min-width: 140px;
+    padding: 10px 8px;
+    font-size: 1.05rem;
+  }
+
+  .width {
+    min-width: 680px !important;
+  }
+
+  .search-bar {
+    width: 340px;
+    font-size: 18px;
+    padding: 12px 16px;
+  }
+
+  .search-btn,
+  .download-btn,
+  .print-btn,
+  .pagination-controls button,
+  .familia-save-btn,
+  .familia-delete-btn,
+  .articulos-delete-confirm-btn,
+  .add-familia-btn,
+  .familias-add-btn,
+  .sub-save-btn,
+  .sub-delete-btn,
+  .subFamilias-add-btn {
+    font-size: 1.05rem;
+    padding: 10px 16px;
+  }
+}

@@ -240,7 +240,6 @@ export class FamiliaComponent {
                 this.subfamilias[idx].mta = almacenajeArray
                 const mtaDescription = almacenajeArray[0]?.mtades ?? '';
                 this.subfamilias[idx].mtades = mtaDescription;
-                console.log(this.subfamilias)
               }, error: () => {
                 this.subfamilias[idx].mtas = [];
               },
@@ -289,7 +288,6 @@ export class FamiliaComponent {
   familiaToDelete: any = null;
   openDeleteConfirm(afacod: string) {
     this.familiaToDelete = afacod;
-    console.log(this.familiaToDelete);
     this.showDeleteConfirm = true;
   }
 
