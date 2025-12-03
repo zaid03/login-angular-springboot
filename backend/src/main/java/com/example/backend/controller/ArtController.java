@@ -71,4 +71,24 @@ public class ArtController {
                     .body("Familia no encontrada para el código indicado.")
             : ResponseEntity.noContent().build();
     }
+
+    //to delete a subfamilia
+    @DeleteMapping("/delete-sub-familia/{ent}/{afacod}/{asucod}")
+    public ResponseEntity<?> deleteSubFamilia(
+        @PathVariable Integer ent,
+        @PathVariable String afacod,
+        @PathVariable String asucod
+    ) {
+        long articulos = artRepository.countByEntAndAsucod(ent, asucod);
+        if (articulos > 0) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+            .body("No se puede borrar una subfamilia con artículos asociados");
+        }
+
+        int removed = asuRepository.deleteByEntAndAfacodAndAsucod(ent, afacod, asucod);
+        return removed == 0
+            ? ResponseEntity.status(HttpStatus.NOT_FOUND)
+            .body("Subfamilia no encontrada para el código indicado.")
+            : ResponseEntity.noContent().build();
+    }
 }

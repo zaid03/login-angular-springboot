@@ -44,4 +44,45 @@ public interface AsuRepository extends JpaRepository<Asu, AsuId> {
         @Param("ent") Integer ent,
         @Param("afacod") String afacod
     );
+
+    //for updating subs
+    @Modifying
+    @Transactional
+    @Query("""
+        UPDATE Asu
+        SET
+            ASUDES = :ASUDES,
+            ASUECO = :ASUECO,
+            MTACOD = :MTACOD
+        WHERE
+            ENT = :ENT
+            AND AFACOD = :AFACOD
+            AND ASUCOD = :ASUCOD
+    """)
+    int updateSubFamilia(
+        @Param("ASUDES") String ASUDES,
+        @Param("ASUECO") String ASUECO,
+        @Param("MTACOD") Integer MTACOD,
+        @Param("ENT") Integer ENT,
+        @Param("AFACOD") String AFACOD,
+        @Param("ASUCOD") String ASUCOD
+    );
+
+    //to add subs
+    List<Asu> findByENTAndAFACODAndASUCOD(int ENT, String AFACOD, String ASUCOD);
+
+    //to delete a subfamilia
+    @Modifying
+    @Transactional
+    @Query("""
+        DELETE FROM Asu a
+        WHERE a.ENT = :ENT
+          AND a.AFACOD = :AFACOD
+          AND a.ASUCOD = :ASUCOD
+    """)
+    int deleteByEntAndAfacodAndAsucod(
+        @Param("ENT") Integer ENT,
+        @Param("AFACOD") String AFACOD,
+        @Param("ASUCOD") String ASUCOD
+    );
 }

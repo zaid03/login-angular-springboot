@@ -37,4 +37,19 @@ public interface ArtRepository extends JpaRepository<Art, String> {
         @Param("ent") Integer ent,
         @Param("afacod") String afacod
     );
+
+    //delete a subfamilia check
+    @Query(
+        value = """
+            SELECT COUNT(*)
+            FROM ART
+            WHERE ENT = :ent
+            AND ASUCOD = :asucod
+        """,
+        nativeQuery = true
+    )
+    Long countByEntAndAsucod(
+        @Param("ent") Integer ent,
+        @Param("asucod") String asucod
+    );
 }

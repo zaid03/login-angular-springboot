@@ -342,7 +342,6 @@ app-sidebar {
 
 .right-row input[type="text"],
 .subfamilia-table tbody input[type="text"],
-.subfamilia-table tbody input[type="number"],
 .subfamilia-table tbody select {
     border: 1px solid #1c5d8c;
     padding: 8px 6px;
@@ -356,7 +355,6 @@ app-sidebar {
 .pagination-input:focus,
 .search-bar:focus,
 .subfamilia-table tbody input[type="text"]:focus,
-.subfamilia-table tbody input[type="number"]:focus,
 .subfamilia-table tbody select:focus {
     outline: none;
     border-color: #042b5a;
