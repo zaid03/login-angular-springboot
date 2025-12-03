@@ -137,20 +137,39 @@
                                         />
                                     </td>
                                     <td>
-                                        <input
-                                            type="text"
-                                            [ngModel]="s.mta?.[0]?.mtades"
-                                            (ngModelChange)="updateMtades(s, $event)"
-                                            #Almacenaje
-                                        />
+                                        <ng-container>
+                                            <select 
+                                                *ngIf="s.mta?.length; else noAlmacenaje"
+                                                class="mta-list"
+                                                [ngModel]="s.mtacod"
+                                                (ngModelChange)="onMtaChange(s, $event)"
+                                                name="almacenaje-{{ s.asucod }}"
+                                                #almacenajeModel="ngModel"
+                                            >
+                                                <option 
+                                                    *ngFor="let almacen of s.mta"
+                                                    [ngValue]="almacen.mtacod"
+                                                >
+                                                    {{ almacen.mtacod }} - {{ almacen.mtades }}
+                                                </option>
+                                            </select>
+                                        </ng-container>
+                                        <ng-template #noAlmacenaje>Sin datos</ng-template>
                                     </td>
                                     <td class="gap">
-                                        <button class="sub-save-btn" (click)="updateSubfamilia(s.asucod, Description.value, Economica.value, Almacenaje.value)">💾</button>
+                                        <button 
+                                            class="sub-save-btn" 
+                                            (click)="updateSubfamilia(s.afacod, s.asucod, Description.value, Economica.value, s.mtacod)"
+                                        >
+                                            💾
+                                        </button>
                                         <button class="sub-delete-btn">-</button>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
+                        <h4 class="errorBtn">{{ errorUpdateMessage }}</h4>
+                        <h4 class="successBtn">{{ successUpdateMEssage }}</h4>
                     </div>
                 </div>
             </div>

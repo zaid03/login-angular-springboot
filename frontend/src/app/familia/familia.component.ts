@@ -232,13 +232,13 @@ export class FamiliaComponent {
         } else {
           this.subfamilias = Array.isArray(Response) ? [...Response] : [];
           this.subfamilias.forEach((item, idx) => {
-            const almacenaje = item?.mtacod ?? '';
-            this.http.get<any[]>(`http://localhost:8080/api/mta/mta-filter/${this.entcod}/${almacenaje}`).subscribe({
+            this.http.get<any[]>(`http://localhost:8080/api/mta/all-mta/${this.entcod}`).subscribe({
               next: (mtas) => {
                 const almacenajeArray = Array.isArray(mtas) ? mtas : [];
                 this.subfamilias[idx].mta = almacenajeArray
                 const mtaDescription = almacenajeArray[0]?.mtades ?? '';
                 this.subfamilias[idx].mtades = mtaDescription;
+                console.log(this.subfamilias)
               }, error: () => {
                 this.subfamilias[idx].mtas = [];
               },
@@ -254,6 +254,14 @@ export class FamiliaComponent {
   updateMtades(subfamilia: any, value: string): void {
     if (subfamilia.mta?.length) {
       subfamilia.mta[0].mtades = value;
+    }
+  }
+
+  onMtaChange(subfamilia: any, selectedMtacod: number): void {
+    subfamilia.mtacod = selectedMtacod;
+    const match = (subfamilia.mta ?? []).find((m: any) => m.mtacod === selectedMtacod);
+    if (match) {
+      subfamilia.mtades = match.mtades;
     }
   }
 
@@ -340,7 +348,14 @@ export class FamiliaComponent {
     this.familiaAddError = '';
   }
 
-  updateSubfamilia(asucod: string, Description:string, Economica: string, Almacenaje: any) {
-    console.log("asucod: ", asucod, "description: ", Description, "economica: ", Economica, "amacenaje: ", Almacenaje);
+  errorUpdateMessage: string = '';
+  successUpdateMEssage: string = '';
+  updateSubfamilia(afacod:string, asucod: string, Description:string, Economica: string, almacenaje: any) {
+    const almacenajeNum = Number(almacenaje);
+    if (!afacod || !asucod || !Description || !Economica || !almacenajeNum) {
+      this.errorUpdateMessage = 'datos faltantes';
+    }
+
   }
+
 }
