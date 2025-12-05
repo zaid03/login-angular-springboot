@@ -26,7 +26,7 @@
             <button class="download-btn" (click)="DownloadCSV()">Descargar como CSV</button>
         </div>
         <div class="credito-list">
-            <h1 style="margin-bottom:2%; font-family: inherit; color: red; font-size: inherit;" id="error">{{ tableMessage }}</h1>
+            <h1 class="errorBtn">{{ tableMessage }}</h1>
             <table class="credito-table">
                 <thead>
                     <tr>
@@ -200,8 +200,8 @@
                             </div>
                         </div>
                     </div>
-                    <h1 style="color: green; font-size: 15px; text-align: center;" id="error">{{ guardarMesageSuccess }}</h1>
-                    <h1 style="color: red; font-size: 15px; text-align: center;" id="error">{{ guardarMesage }}</h1>
+                    <h1 class="successBtn">{{ guardarMesageSuccess }}</h1>
+                    <h1 class="errorBtn">{{ guardarMesage }}</h1>
                     <button class="save-btn" (click)="guardarDetelles(selectedBolsas.gbsimp, getKBoldis(selectedBolsas.gbsimp, selectedBolsas.gbsibg, selectedBolsas.gbsius), selectedBolsas.gbsref)">Guardar</button>
                 </div>
             </div>

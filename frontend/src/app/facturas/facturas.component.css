@@ -309,7 +309,7 @@ input.fecha-dato[type="radio"] {
     width: 120px;
 }
 
-.margin{
+.marginPx{
     margin-bottom: 10%;
 }
 
@@ -411,6 +411,10 @@ input.fecha-dato[type="radio"] {
     align-content: center;
     justify-content: center;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.margin{
+    margin-bottom: 10px;
 }
 
 @media (max-width: 1270px) {

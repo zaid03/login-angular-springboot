@@ -1,26 +1,7 @@
-body, html {
-  overflow-x: hidden;
-}
-
-*{
-    font-family: 'Open Sans Condensed', sans-serif;  
-}
-
 .credito-page {
     display: flex;
     min-height: 100vh;
     background: #f0f0f0;
-}
-
-app-sidebar {
-    flex-shrink: 0;
-    z-index: 2000;
-}
-
-.sidebar-backdrop {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    z-index: 1500;
 }
 
 .credito-container.blurred {
@@ -94,28 +75,6 @@ app-sidebar {
     margin: 16px 0 24px 0;
 }
 
-.download-btn,
-.pagination-controls button,
-.save-btn {
-    background-color: #1d4ed8;
-    color: #fff;
-    border: none;
-    padding: 10px 18px;
-    border-radius: 6px;
-    font-size: 0.95rem;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    font-weight: 700;
-    outline: none;
-}
-
-.download-btn:hover,
-.pagination-controls button:hover,
-.save-btn:hover {
-    background-color: #094fa3;
-    color: #e6edf3;
-}
-
 .save-btn{
     padding: 8px 12px;
     width: 10%;
@@ -176,13 +135,6 @@ app-sidebar {
     font-family: inherit;
 }
 
-.pagination-controls button:disabled,
-.pagination-controls button:disabled:hover {
-    background-color: #ccc;
-    cursor: not-allowed;
-    color: #e5e7eb;
-}
-
 .pagination-controls span {
     font-size: 15px;
     color: #444;
@@ -197,43 +149,6 @@ app-sidebar {
     border: 1px solid #bbb;
     text-align: center;
     margin: 0 4px;
-}
-
-.modal-backdrop {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(44, 62, 80, 0.35);
-  z-index: 1000;
-  backdrop-filter: blur(1px);
-  -webkit-backdrop-filter: blur(1px);
-}
-
-.display {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 1100;
-  pointer-events: none;
-}
-
-.modal {
-  position: fixed !important;
-  background: #fff;
-  padding: 24px 18px 18px 18px;
-  border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(44, 62, 80, 0.18), 0 1.5px 6px rgba(44,62,80,0.08);
-  width: 92%;
-  max-height: 97vh;
-  overflow-y: auto;
-  animation: modalIn 0.22s cubic-bezier(.4,2,.6,1) both;
-  pointer-events: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  z-index: 5000 !important;
 }
 
 .first-row, 
@@ -364,18 +279,6 @@ app-sidebar {
 .fifth-data-special-container{
     position: relative;
     display: flex;
-}
-
-.close-btn-fct {
-  position: absolute;
-  top: 16px;
-  right: 18px;
-  background: none;
-  border: none;
-  font-size: 2rem;
-  color: red;
-  cursor: pointer;
-  transition: color 0.2s;
 }
 
 @media (max-width: 1380px) {

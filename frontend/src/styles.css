@@ -60,7 +60,8 @@ app-sidebar {
 }
 
 /* error messages */
-.errorBtn{
+.errorBtn,
+.error-message-style{
   margin-bottom:2%; 
   font-family: inherit; 
   font-size: 18px;
@@ -68,7 +69,8 @@ app-sidebar {
   color: rgb(221, 66, 66); 
 }
 
-.successBtn{
+.successBtn,
+.success-message-style{
   margin-bottom:2%; 
   color: green; 
   font-size: 15px; 
@@ -90,7 +92,30 @@ app-sidebar {
 .sub-delete-btn,
 .subFamilias-add-btn,
 .download-btn,
-.search-button {
+.search-button,
+.download-btn,
+.pagination-controls button,
+.save-btn,
+.search-button-proveedores,
+.download-btn,
+.pag-btn,
+.add-btn,
+.guardar-btn,
+.pers-btn,
+.Articulo-btn,
+.delete-btn-personas,
+.save-btn-articulos,
+.delete-btn-articulos,
+.articulos-cancel-confirm-btn,
+.proveedor-saving-btn,
+.delete-btn-articulos,
+.delete-btn-personas,
+.articulos-delete-confirm-btn,
+.proveedor-cancel-btn,
+.delete-btn-articulos:hover,
+.delete-btn-personas:hover,
+.articulos-delete-confirm-btn:hover,
+.proveedor-cancel-btn:hover {
   background-color: #1d4ed8;
   color: #fff;
   border: none;
@@ -112,20 +137,41 @@ app-sidebar {
 .add-familia-btn:hover,
 .familias-add-btn:hover,
 .sub-save-btn:hover,
-.subFamilias-add-btn:hover {
+.subFamilias-add-btn:hover,
+.download-btn:hover,
+.pagination-controls button:hover,
+.save-btn:hover,
+.search-button-proveedores:hover,
+.download-btn:hover,
+.pag-btn:hover,
+.add-btn:hover,
+.guardar-btn:hover,
+.pers-btn:hover,
+.Articulo-btn:hover,
+.save-btn-articulos:hover,
+.articulos-cancel-confirm-btn:hover,
+.proveedor-saving-btn:hover {
   background-color: #094fa3;
   color: #e6edf3;
 }
 
 .familia-delete-btn,
 .articulos-delete-confirm-btn,
-.sub-delete-btn {
+.sub-delete-btn,
+.delete-btn-articulos,
+.delete-btn-personas,
+.articulos-delete-confirm-btn,
+.proveedor-cancel-btn {
   background-color: rgb(221, 66, 66);
 }
 
 .familia-delete-btn:hover,
 .articulos-delete-confirm-btn:hover,
-.sub-delete-btn:hover {
+.sub-delete-btn:hover,
+.delete-btn-articulos:hover,
+.delete-btn-personas:hover,
+.articulos-delete-confirm-btn:hover,
+.proveedor-cancel-btn:hover {
   background-color: rgb(117, 28, 28);
 }
 
@@ -174,7 +220,8 @@ app-sidebar {
   z-index: 3000 !important;
 }
 
-.close-btn-fct {
+.close-btn-fct,
+.close-btn-btn {
   position: absolute;
   top: 16px;
   right: 18px;
