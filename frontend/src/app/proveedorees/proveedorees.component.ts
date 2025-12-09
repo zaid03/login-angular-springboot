@@ -7,6 +7,7 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
 
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-proveedorees',
@@ -43,7 +44,7 @@ export class ProveedoreesComponent {
       return;
     }
 
-    this.http.get<any>(`http://localhost:8080/api/ter/by-ent/${this.entcod}`)
+    this.http.get<any>(`${environment.backendUrl}/api/ter/by-ent/${this.entcod}`)
       .subscribe({
         next: (response) => {
           if (response.error) {
@@ -149,7 +150,7 @@ export class ProveedoreesComponent {
     if ((/^\d+$/.test(this.searchTerm) && this.filterOption === 'Bloqueados') && (this.searchTerm.length <= 5)) { 
       const tercod = this.searchTerm;
       const terblo = 0;
-      this.http.get<any[]>(`http://localhost:8080/api/ter/by-ent/${this.entcod}/tercod/${tercod}/terblo/${terblo}`)
+      this.http.get<any[]>(`${environment.backendUrl}/api/ter/by-ent/${this.entcod}/tercod/${tercod}/terblo/${terblo}`)
         .subscribe({
           next: (response) => {
             this.proveedores = response;
@@ -167,7 +168,7 @@ export class ProveedoreesComponent {
     if (/^\d+$/.test(this.searchTerm) && this.filterOption === 'noBloqueados' && (this.searchTerm.length <= 5)) {
       const tercod = this.searchTerm;
       const terblo = 0;
-      this.http.get<any[]>(`http://localhost:8080/api/ter/by-ent/${this.entcod}/tercod/${tercod}/terblo-not/${terblo}`)
+      this.http.get<any[]>(`${environment.backendUrl}/api/ter/by-ent/${this.entcod}/tercod/${tercod}/terblo-not/${terblo}`)
         .subscribe({
           next: (response) => {
             this.proveedores = response;
@@ -185,7 +186,7 @@ export class ProveedoreesComponent {
     if (/^\d+$/.test(this.searchTerm) && this.filterOption === 'Bloqueados' && (this.searchTerm.length > 5)) {
       const ternif = this.searchTerm;
       const terblo = 0;
-      this.http.get<any[]>(`http://localhost:8080/api/ter/by-ent/${this.entcod}/ternif/${ternif}/terblo/${terblo}`)
+      this.http.get<any[]>(`${environment.backendUrl}/api/ter/by-ent/${this.entcod}/ternif/${ternif}/terblo/${terblo}`)
         .subscribe({
           next: (response) => {
             this.proveedores = response;
@@ -203,7 +204,7 @@ export class ProveedoreesComponent {
     if (/^\d+$/.test(this.searchTerm) && this.filterOption === 'noBloqueados' && (this.searchTerm.length > 5)) {
       const ternif = this.searchTerm;
       const terblo = 0;
-      this.http.get<any[]>(`http://localhost:8080/api/ter/by-ent/${this.entcod}/ternif/${ternif}/terblo-not/${terblo}`)
+      this.http.get<any[]>(`${environment.backendUrl}/api/ter/by-ent/${this.entcod}/ternif/${ternif}/terblo-not/${terblo}`)
         .subscribe({
           next: (response) => {
             this.proveedores = response;
@@ -220,7 +221,7 @@ export class ProveedoreesComponent {
     }
     if (/^[a-zA-Z0-9]+$/.test(this.searchTerm) && this.filterOption === 'Bloqueados' && (this.searchTerm.length > 5)) {
       const term = this.searchTerm;
-      this.http.get<any[]>(`http://localhost:8080/api/ter/by-ent/${this.entcod}/search?term=${term}`)
+      this.http.get<any[]>(`${environment.backendUrl}/api/ter/by-ent/${this.entcod}/search?term=${term}`)
         .subscribe({
           next: (response) => {
             this.proveedores = response;
@@ -237,7 +238,7 @@ export class ProveedoreesComponent {
     }
     if (/^[a-zA-Z0-9]+$/.test(this.searchTerm) && this.filterOption === 'noBloqueados' && (this.searchTerm.length > 5)) {
       const term = this.searchTerm;
-      this.http.get<any[]>(`http://localhost:8080/api/ter/by-ent/${this.entcod}/search-by-term?term=${term}`)
+      this.http.get<any[]>(`${environment.backendUrl}/api/ter/by-ent/${this.entcod}/search-by-term?term=${term}`)
         .subscribe({
           next: (response) => {
             this.proveedores = response;
@@ -256,7 +257,7 @@ export class ProveedoreesComponent {
 
     if (this.filterOption === 'Bloqueados') {
       const term = this.searchTerm;
-      this.http.get<any[]>(`http://localhost:8080/api/ter/by-ent/${this.entcod}/searchByNomOrAli?term=${term}`)
+      this.http.get<any[]>(`${environment.backendUrl}/api/ter/by-ent/${this.entcod}/searchByNomOrAli?term=${term}`)
         .subscribe({
           next: (response) => {
             this.proveedores = response;
@@ -274,7 +275,7 @@ export class ProveedoreesComponent {
 
     if (this.filterOption === 'noBloqueados') {
       const term = this.searchTerm;
-      this.http.get<any[]>(`http://localhost:8080/api/ter/by-ent/${this.entcod}/findMatchingNomOrAli?term=${term}`)
+      this.http.get<any[]>(`${environment.backendUrl}/api/ter/by-ent/${this.entcod}/findMatchingNomOrAli?term=${term}`)
         .subscribe({
           next: (response) => {
             this.proveedores = response;
@@ -294,7 +295,7 @@ export class ProveedoreesComponent {
 
       if (/^\d+$/.test(this.searchTerm) && this.searchTerm.length <= 5) {
         const tercod = this.searchTerm;
-        this.http.get<any[]>(`http://localhost:8080/api/ter/by-ent/${this.entcod}/tercod/${tercod}`)
+        this.http.get<any[]>(`${environment.backendUrl}/api/ter/by-ent/${this.entcod}/tercod/${tercod}`)
           .subscribe({ 
               next: (response) => {
               this.proveedores = response;
@@ -312,7 +313,7 @@ export class ProveedoreesComponent {
 
       if (/^\d+$/.test(this.searchTerm) && this.searchTerm.length > 5) {
         const ternif = this.searchTerm;
-          this.http.get<any[]>(`http://localhost:8080/api/ter/by-ent/${this.entcod}/ternif/${ternif}`)
+          this.http.get<any[]>(`${environment.backendUrl}/api/ter/by-ent/${this.entcod}/ternif/${ternif}`)
           .subscribe({ next: (response) => {
             this.proveedores = response;
             if (response.length === 0) {
@@ -327,7 +328,7 @@ export class ProveedoreesComponent {
         return;
       }
         const term = this.searchTerm;
-        this.http.get<any[]>(`http://localhost:8080/api/ter/by-ent/${this.entcod}/search-todos?term=${term}`)
+        this.http.get<any[]>(`${environment.backendUrl}/api/ter/by-ent/${this.entcod}/search-todos?term=${term}`)
           .subscribe({ next: (response) => {
             this.proveedores = response;
             if (response.length === 0) {
@@ -433,7 +434,7 @@ export class ProveedoreesComponent {
     this.articuloError = '';
     const tercod = proveedore.tercod;
 
-    this.http.get<any[]>(`http://localhost:8080/api/more/by-tpe/${this.entcod}/${tercod}`)
+    this.http.get<any[]>(`${environment.backendUrl}/api/more/by-tpe/${this.entcod}/${tercod}`)
       .subscribe({ next: (response) => {
         const respArray = Array.isArray(response) ? response : (response ? [response] : []);
         if (respArray.length === 0) { 
@@ -465,7 +466,7 @@ export class ProveedoreesComponent {
     this.articuloError = ''
     this.personasContactoError = ''
     
-    this.http.get<any[]>(`http://localhost:8080/api/more/by-apr/${this.entcod}/${tercod}`)
+    this.http.get<any[]>(`${environment.backendUrl}/api/more/by-apr/${this.entcod}/${tercod}`)
       .subscribe({ next: (response) => {
         this.articulos = Array.isArray(response) ? response : (response ? [response] : []);
 
@@ -493,7 +494,7 @@ export class ProveedoreesComponent {
     if (artcod === '*') {
       if (asucod === '*') {
         this.http
-          .get<any[]>(`http://localhost:8080/api/afa/art-name/${this.entcod}/${afacod}`)
+          .get<any[]>(`${environment.backendUrl}/api/afa/art-name/${this.entcod}/${afacod}`)
           .subscribe({
             next: (response) => {
               const respArray = Array.isArray(response) ? response : response ? [response] : [];
@@ -503,7 +504,7 @@ export class ProveedoreesComponent {
           });
       } else {
         this.http
-          .get<any[]>(`http://localhost:8080/api/asu/art-name/${this.entcod}/${afacod}/${asucod}`)
+          .get<any[]>(`${environment.backendUrl}/api/asu/art-name/${this.entcod}/${afacod}/${asucod}`)
           .subscribe({
             next: (response) => {
               const respArray = Array.isArray(response) ? response : response ? [response] : [];
@@ -514,7 +515,7 @@ export class ProveedoreesComponent {
       }
     } else {
       this.http
-        .get<any[]>(`http://localhost:8080/api/art/art-name/${this.entcod}/${afacod}/${asucod}/${artcod}`)
+        .get<any[]>(`${environment.backendUrl}/api/art/art-name/${this.entcod}/${afacod}/${asucod}/${artcod}`)
         .subscribe({
           next: (response) => {
             const respArray = Array.isArray(response) ? response : response ? [response] : [];
@@ -535,7 +536,7 @@ export class ProveedoreesComponent {
       TERACU : this.selectedProveedor.teracu
     }
 
-    this.http.put(`http://localhost:8080/api/ter/updateFields/${this.selectedProveedor.tercod}`, updateFields, { responseType: 'text' }
+    this.http.put(`${environment.backendUrl}/api/ter/updateFields/${this.selectedProveedor.tercod}`, updateFields, { responseType: 'text' }
     ).subscribe({
       next: (res) => {
         this.messageSuccess = 'Proveedor actualizado correctamente';
@@ -571,7 +572,7 @@ export class ProveedoreesComponent {
       TPEOBS : this.contactPersons.tpeobs
     }
     this.http.put(
-      `http://localhost:8080/api/more/modify/${this.selectedProveedor.tercod}`,
+      `${environment.backendUrl}/api/more/modify/${this.selectedProveedor.tercod}`,
       updateFields,
       { responseType: 'text' }
     ).subscribe({
@@ -587,7 +588,7 @@ export class ProveedoreesComponent {
 
   deletepersona(){
     this.http.delete(
-      `http://localhost:8080/api/more/delete/${this.selectedProveedor.tercod}`,
+      `${environment.backendUrl}/api/more/delete/${this.selectedProveedor.tercod}`,
       { responseType: 'text' }).subscribe({
         next: (res) => {
         this.personasContactoSuccessMessage = 'Persona de contacto eliminada correctamente';
@@ -625,7 +626,7 @@ export class ProveedoreesComponent {
     }
 
     this.http.put(
-      `http://localhost:8080/api/more/update-apr`,
+      `${environment.backendUrl}/api/more/update-apr`,
       updateFields,
       { responseType: 'text' }
     ).subscribe({
@@ -649,7 +650,7 @@ export class ProveedoreesComponent {
   ].join('&');
 
     this.http.delete(
-      `http://localhost:8080/api/more/delete-apr?${ params}`,
+      `${environment.backendUrl}/api/more/delete-apr?${ params}`,
       { responseType: 'text' }).subscribe({
         next: (res) => {
         this.articuloSuccessMessage = 'Artículo eliminado correctamente';
@@ -723,7 +724,7 @@ export class ProveedoreesComponent {
     }
 
     this.http.post(
-      `http://localhost:8080/api/more/add-apr`,
+      `${environment.backendUrl}/api/more/add-apr`,
       newArticulo,
       { responseType: 'text' }
     ).subscribe({
@@ -790,21 +791,21 @@ export class ProveedoreesComponent {
     let url = '';
     if (this.searchType === 'familia') {
       if(/^\d+$/.test(this.searchValue)) {
-        url = `http://localhost:8080/api/afa/by-ent/${this.entcod}/${this.searchValue}`;
+        url = `${environment.backendUrl}/api/afa/by-ent/${this.entcod}/${this.searchValue}`;
       } else {
-        url = `http://localhost:8080/api/afa/by-ent-like/${this.entcod}/${this.searchValue}`;
+        url = `${environment.backendUrl}/api/afa/by-ent-like/${this.entcod}/${this.searchValue}`;
       }
     } else if (this.searchType === 'subfamilia') {
       if(/^\d+$/.test(this.searchValue)) {
-        url = `http://localhost:8080/api/asu/by-ent/${this.entcod}/${this.searchValue}/${this.searchValue}`;
+        url = `${environment.backendUrl}/api/asu/by-ent/${this.entcod}/${this.searchValue}/${this.searchValue}`;
       } else {
-        url = `http://localhost:8080/api/asu/by-ent-like/${this.entcod}/${this.searchValue}`;
+        url = `${environment.backendUrl}/api/asu/by-ent-like/${this.entcod}/${this.searchValue}`;
       }
     } else if (this.searchType === 'articulo') {
       if(/^\d+$/.test(this.searchValue)) {
-        url = `http://localhost:8080/api/art/by-ent/${this.entcod}/${this.searchValue}/${this.searchValue}/${this.searchValue}`;
+        url = `${environment.backendUrl}/api/art/by-ent/${this.entcod}/${this.searchValue}/${this.searchValue}/${this.searchValue}`;
       } else {
-        url = `http://localhost:8080/api/art/by-ent-like/${this.entcod}/${this.searchValue}`;
+        url = `${environment.backendUrl}/api/art/by-ent-like/${this.entcod}/${this.searchValue}`;
       }
       
     }
@@ -882,7 +883,7 @@ export class ProveedoreesComponent {
   onProveedorFetch(){
     const ent = this.entcod;
 
-    this.http.get<any[]>(`http://localhost:8080/api/sical/terceros`, { withCredentials: true}).subscribe({
+    this.http.get<any[]>(`${environment.backendUrl}/api/sical/terceros`, { withCredentials: true}).subscribe({
       next:(data) => {
         this.fullProveedoresSearchResults = Array.isArray(data) ? data: [];
         this.proveedoresSearchResults = [...this.fullProveedoresSearchResults];
@@ -1024,7 +1025,7 @@ export class ProveedoreesComponent {
 
     this.isSaving = true;
     this.clearMessages();
-    this.http.post<any[]>(`http://localhost:8080/api/ter/save-proveedores/${ent}`, payload, { headers, observe: 'response', responseType: 'text' as 'json' })
+    this.http.post<any[]>(`${environment.backendUrl}/api/ter/save-proveedores/${ent}`, payload, { headers, observe: 'response', responseType: 'text' as 'json' })
       .subscribe({
         next: (res) => {
           this.isSaving = false;

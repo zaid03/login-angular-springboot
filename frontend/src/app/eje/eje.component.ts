@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { environment } from '../../environments/environment';
 
 type Ejercicio = number | string;
 
@@ -41,7 +42,7 @@ export class EjeComponent implements OnInit {
     }
 
     this.loading = true;
-    this.http.get<Ejercicio[]>(`http://localhost:8080/api/cfg/by-ent/${ENTCOD}`)
+    this.http.get<Ejercicio[]>(`${environment.backendUrl}/api/cfg/by-ent/${ENTCOD}`)
       .subscribe({
         next: resp => {
           if (resp?.length > 1) {

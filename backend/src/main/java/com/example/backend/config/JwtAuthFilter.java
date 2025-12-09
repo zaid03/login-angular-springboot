@@ -15,41 +15,63 @@ import java.util.List;
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwt;
+    
     private static final List<String> PUBLIC_PREFIXES = List.of(
-        "/api/login",
-        "/api/cas",
-        "/api/filter",
-        "/api/validate-usucod",
-        "/health",
-        "/api/sical",
-        "/api/rpc/call"
+        "/scap/**",
+        "/scap/api/login",
+        "/scap/api/cas",
+        "/scap/api/filter",
+        "/scap/api/validate-usucod",
+        "/scap/health",
+        "/scap/api/sical",
+        "/scap/api/rpc/call",
+        "/scap/login"
+    );
+    
+    // Extensions de fichiers statiques à ignorer
+    private static final List<String> STATIC_EXTENSIONS = List.of(
+        ".js", ".css", ".html", ".ico", ".json", ".png", ".jpg", ".jpeg", 
+        ".gif", ".svg", ".woff", ".woff2", ".ttf", ".eot"
     );
 
-    public JwtAuthFilter(JwtUtil jwt){ this.jwt = jwt; }
+    public JwtAuthFilter(JwtUtil jwt) { 
+        this.jwt = jwt; 
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
 
-    String path = req.getRequestURI();
-    System.out.println("JwtAuthFilter: Processing path=" + path + " method=" + req.getMethod());
+        String path = req.getRequestURI();
+        System.out.println("JwtAuthFilter: Processing path=" + path + " method=" + req.getMethod());
 
-    if ("OPTIONS".equalsIgnoreCase(req.getMethod())) {
-        res.setStatus(HttpServletResponse.SC_OK);
-        chain.doFilter(req, res);
-        return;
-    }
+        // 1. Ignorer les requêtes OPTIONS (CORS preflight)
+        if ("OPTIONS".equalsIgnoreCase(req.getMethod())) {
+            res.setStatus(HttpServletResponse.SC_OK);
+            chain.doFilter(req, res);
+            return;
+        }
 
-    if (isPublic(path)) {
-        System.out.println("JwtAuthFilter: Public path, skipping auth for " + path);
-        chain.doFilter(req, res);
-        return;
-    }
+        // 2. Ignorer les fichiers statiques (Angular)
+        if (isStaticResource(path)) {
+            System.out.println("JwtAuthFilter: Static resource, skipping auth for " + path);
+            chain.doFilter(req, res);
+            return;
+        }
 
-    System.out.println("JwtAuthFilter: Protected path, checking JWT for " + path);
+        // 3. Ignorer les chemins publics de l'API
+        if (isPublic(path)) {
+            System.out.println("JwtAuthFilter: Public path, skipping auth for " + path);
+            chain.doFilter(req, res);
+            return;
+        }
+
+        // 4. Vérifier JWT pour les API protégées
+        System.out.println("JwtAuthFilter: Protected path, checking JWT for " + path);
 
         String auth = req.getHeader(HttpHeaders.AUTHORIZATION);
         if (auth == null || !auth.startsWith("Bearer ")) {
+            System.out.println("JwtAuthFilter: Missing or invalid Authorization header");
             res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
@@ -58,6 +80,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         try {
             String user = jwt.validateAndGetSubject(token);
             if (user == null) {
+                System.out.println("JwtAuthFilter: Invalid token");
                 res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
             }
@@ -67,11 +90,35 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             chain.doFilter(req, res);
         } catch (Exception e) {
+            System.out.println("JwtAuthFilter: Exception validating token: " + e.getMessage());
             SecurityContextHolder.clearContext();
             res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
     }
 
+    /**
+     * Vérifie si le chemin correspond à une ressource statique
+     */
+    private boolean isStaticResource(String path) {
+        // Racine ou index.html
+        if (path.equals("/") || path.equals("/scap") || path.equals("/scap/") || 
+            path.endsWith("/index.html")) {
+            return true;
+        }
+        
+        // Dossier assets
+        if (path.contains("/assets/")) {
+            return true;
+        }
+        
+        // Extensions de fichiers statiques
+        String lowerPath = path.toLowerCase();
+        return STATIC_EXTENSIONS.stream().anyMatch(lowerPath::endsWith);
+    }
+
+    /**
+     * Vérifie si le chemin est une API publique
+     */
     private boolean isPublic(String path) {
         return PUBLIC_PREFIXES.stream().anyMatch(path::startsWith);
     }

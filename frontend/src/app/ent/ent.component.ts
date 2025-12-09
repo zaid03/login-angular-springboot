@@ -55,7 +55,7 @@ export class EntComponent implements OnInit {
     sessionStorage.setItem('Perfil', JSON.stringify({ PERCOD: t.percod }));
 
     this.loading = true;
-    this.http.get<any[]>('http://localhost:8080/api/mnucods', { params: { PERCOD: t.percod } })
+    this.http.get<any[]>(`${environment.backendUrl}/api/mnucods`, { params: { PERCOD: t.percod } })
       .subscribe({
         next: resp => {
           sessionStorage.setItem('mnucods', JSON.stringify(resp));

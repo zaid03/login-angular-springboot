@@ -19,9 +19,9 @@ bootstrapApplication(AppComponent, {
         (req, next) => {
           const token = sessionStorage.getItem('JWT');
           const isPublicEndpoint =
-            req.url.includes('/api/cas/validate') ||
-            req.url.includes('/api/login/') ||
-            req.url.includes('/api/filter');
+            req.url.includes('/scap/api/cas/validate') ||
+            req.url.includes('/scap/api/login/') ||
+            req.url.includes('/scap/api/filter');
 
           if (token && !req.headers.has('Authorization') && !req.headers.has('Skip-Auth') && !isPublicEndpoint) {
             req = req.clone({ setHeaders: { Authorization: `Bearer ${token}` } });

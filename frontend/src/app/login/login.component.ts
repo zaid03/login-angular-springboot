@@ -30,7 +30,7 @@ export class LoginComponent implements OnInit{
 
   validateCASTicket(ticket: string) {
     this.isValidating = true;
-    const validateUrl = `${environment.casValidateUrl}?ticket=${ticket}&service=${environment.frontendUrl}/login`;
+    const validateUrl = `${environment.casValidateUrl}?ticket=${ticket}&service=${environment.backendUrl}/login`;
 
     this.http.get(validateUrl, { responseType: 'text' }).subscribe({
       next: (response: string) => {
@@ -80,6 +80,6 @@ export class LoginComponent implements OnInit{
   logoPath = 'assets/images/logo_iass.png';
 
   goToCAS() {
-    window.location.href = `${environment.casLoginUrl}?service=${environment.frontendUrl}/login`;
+    window.location.href = `${environment.casLoginUrl}?service=${environment.backendUrl}/login`;
   }
 }

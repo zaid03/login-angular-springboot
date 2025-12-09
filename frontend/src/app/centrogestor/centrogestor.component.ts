@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { environment } from '../../environments/environment';
 
 function safeParse(raw: string | null) {
   if (!raw) return {};
@@ -38,7 +39,7 @@ export class CentrogestorComponent implements OnInit {
     if (EJE == null)    { this.fail('/eje','Ejercicio missing'); return; }
 
     this.loading = true;
-    this.http.get<any[]>(`http://localhost:8080/api/centrogestor/percod/${PERCOD}/ent/${ENTCOD}/eje/${EJE}`)
+    this.http.get<any[]>(`${environment.backendUrl}/api/centrogestor/percod/${PERCOD}/ent/${ENTCOD}/eje/${EJE}`)
       .subscribe({
         next: resp => {
           if (resp?.length > 1) {

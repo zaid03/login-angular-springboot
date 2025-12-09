@@ -7,6 +7,7 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
 
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { environment } from '../../environments/environment';
 @Component({
   selector: 'app-credito',
   standalone: true,
@@ -62,7 +63,7 @@ export class CreditoComponent {
       return;
     }
 
-    this.http.get<any>(`http://localhost:8080/api/gbs/${this.entcod}/${this.eje}/${this.centroGestor}`).subscribe({
+    this.http.get<any>(`${environment.backendUrl}/api/gbs/${this.entcod}/${this.eje}/${this.centroGestor}`).subscribe({
       next: (response) => {
         if (response.error) {
           alert('Error: ' + response.error);
@@ -74,7 +75,7 @@ export class CreditoComponent {
             const fun = item?.gbsfun ?? '';
             const eco = item?.gbseco ?? '';
             this.http
-              .get<any>(`http://localhost:8080/api/sical/partidas?clorg=${org}&clfun=${fun}&cleco=${eco}`)
+              .get<any>(`${environment.backendUrl}/api/sical/partidas?clorg=${org}&clfun=${fun}&cleco=${eco}`)
               .subscribe({
                 next: (partidas) => {
                   const partidasArr = Array.isArray(partidas) ? partidas : [];
@@ -86,7 +87,7 @@ export class CreditoComponent {
                   this.creditos[idx].partidas = [];
                 },
               });
-              this.http.get<any>(`http://localhost:8080/api/sical/operaciones?clorg=${org}&clfun=${fun}&cleco=${eco}`)
+              this.http.get<any>(`${environment.backendUrl}/api/sical/operaciones?clorg=${org}&clfun=${fun}&cleco=${eco}`)
               .subscribe({
                 next: (operaciones) => {
                   const operacionesArr = Array.isArray(operaciones) ? operaciones : [];
@@ -354,7 +355,7 @@ export class CreditoComponent {
     };
     console.log("payload here: ", payload);
 
-    this.http.patch<void>(`http://localhost:8080/api/gbs/${this.entcod}/${this.eje}/${this.initialCentroGestor}/${gbsref}`, payload)
+    this.http.patch<void>(`${environment.backendUrl}/api/gbs/${this.entcod}/${this.eje}/${this.initialCentroGestor}/${gbsref}`, payload)
       .subscribe({
         next: () => {
           this.guardarisSuccess = true;

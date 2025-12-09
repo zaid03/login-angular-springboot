@@ -100,8 +100,70 @@ app-sidebar {
   padding: 6px 12px !important;
 }
 
+.search-button-proveedores,
+.download-btn,
+.pag-btn,
+.add-btn,
+.guardar-btn,
+.pers-btn,
+.Articulo-btn,
+.delete-btn-personas,
+.save-btn-articulos,
+.delete-btn-articulos,
+.articulos-cancel-confirm-btn,
+.proveedor-saving-btn {
+  background-color: #1d4ed8;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-weight: 700;
+  outline: none;
+}
+
+.search-button-proveedores:hover,
+.download-btn:hover,
+.pag-btn:hover,
+.add-btn:hover,
+.guardar-btn:hover,
+.pers-btn:hover,
+.Articulo-btn:hover,
+.save-btn-articulos:hover,
+.articulos-cancel-confirm-btn:hover,
+.proveedor-saving-btn:hover {
+  background-color: #094fa3;
+  color: #e6edf3;
+}
+
 .articulos-delete-confirm-btn {
   margin-right: 10px;
+}
+
+.delete-btn-articulos,
+.delete-btn-personas,
+.articulos-delete-confirm-btn,
+.proveedor-cancel-btn {
+  background-color: rgb(221, 66, 66);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-weight: 700;
+  outline: none;
+}
+
+.delete-btn-articulos:hover,
+.delete-btn-personas:hover,
+.articulos-delete-confirm-btn:hover,
+.proveedor-cancel-btn:hover {
+  background-color: rgb(117, 28, 28);
+  color: #e6edf3;
 }
 
 .proveedores-download {
@@ -239,6 +301,11 @@ app-sidebar {
   border-radius: 8px;
 }
 
+.pagination-controls button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
 .pagination-controls span {
   font-size: 15px;
   color: #444;
@@ -253,6 +320,15 @@ app-sidebar {
   border: 1px solid #bbb;
   text-align: center;
   margin: 0 4px;
+}
+
+.modal-backdrop {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(44, 62, 80, 0.35);
+  z-index: 1000;
+  backdrop-filter: blur(1px);
+  -webkit-backdrop-filter: blur(1px);
 }
 
 .delete-confirm-modal {
@@ -295,6 +371,34 @@ app-sidebar {
   font-weight: bold;
 }
 
+.display {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+  pointer-events: none;
+}
+
+.modal {
+  position: fixed !important;
+  background: #fff;
+  padding: 24px 18px 18px 18px;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(44, 62, 80, 0.18), 0 1.5px 6px rgba(44,62,80,0.08);
+  width: 95%;
+  max-height: 70vh;
+  overflow-y: auto;
+  animation: modalIn 0.22s cubic-bezier(.4,2,.6,1) both;
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  z-index: 3000 !important;
+}
+
 .modal-row > div {
   display: flex;
   flex-direction: row;
@@ -318,6 +422,18 @@ app-sidebar {
   margin-bottom: 0;
   display: inline-flex;
   align-items: center;
+}
+
+.close-btn-btn {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: red;
+  cursor: pointer;
+  transition: color 0.2s;
 }
 
 .modal h3,
@@ -638,4 +754,18 @@ app-sidebar {
 
 .selected-row { 
   background: #e6f0ff; 
+}
+
+.error-message-style{
+  font-family: inherit; 
+  color: red; 
+  font-size: inherit;
+  text-align: center;
+}
+
+.success-message-style{
+  font-family: inherit; 
+  color: green; 
+  font-size: inherit;
+  text-align: center;
 }

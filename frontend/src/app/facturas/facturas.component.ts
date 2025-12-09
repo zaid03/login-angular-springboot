@@ -7,6 +7,7 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
 
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-proveedorees',
@@ -81,7 +82,7 @@ export class FacturasComponent {
       return;
     }
 
-    this.http.get<any>(`http://localhost:8080/api/fac/${this.entcod}/${this.eje}/${this.centroGestor}`).subscribe({
+    this.http.get<any>(`${environment.backendUrl}/api/fac/${this.entcod}/${this.eje}/${this.centroGestor}`).subscribe({
       next: (response) => {
         if (!Array.isArray(response) || response.length === 0) {
           this.facturaMessageIsSuccess = true;
@@ -403,7 +404,7 @@ export class FacturasComponent {
       }
       if (desde && !hasta) {
         if (estado === 'contabilizadas') {
-          this.http.get<any>(`http://localhost:8080/api/fac/facfre-desde-facado-notnull/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
+          this.http.get<any>(`${environment.backendUrl}/api/fac/facfre-desde-facado-notnull/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
             next: (response) => {
               if (!Array.isArray(response) || response.length === 0) {
                 this.facturaMessageIsSuccess = true;
@@ -420,7 +421,7 @@ export class FacturasComponent {
             }
           });
         } else if (estado === 'no-contabilizadas') {
-          this.http.get<any>(`http://localhost:8080/api/fac/facfre-desde-facado-null/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
+          this.http.get<any>(`${environment.backendUrl}/api/fac/facfre-desde-facado-null/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
             next: (response) => {
               if (!Array.isArray(response) || response.length === 0) {
                 this.facturaMessageIsSuccess = true;
@@ -437,7 +438,7 @@ export class FacturasComponent {
             }
           });
         } else if ( estado === 'aplicadas') {
-          this.http.get<any>(`http://localhost:8080/api/fac/facfre-desde-facado-aplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
+          this.http.get<any>(`${environment.backendUrl}/api/fac/facfre-desde-facado-aplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
             next: (response) => {
               if (!Array.isArray(response) || response.length === 0) {
                 this.facturaMessageIsSuccess = true;
@@ -454,7 +455,7 @@ export class FacturasComponent {
             }
           });
         } else if (estado === 'sin-aplicadas') {
-          this.http.get<any>(`http://localhost:8080/api/fac/facfre-desde-facado-sinaplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
+          this.http.get<any>(`${environment.backendUrl}/api/fac/facfre-desde-facado-sinaplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
             next: (response) => {
               if (!Array.isArray(response) || response.length === 0) {
                 this.facturaMessageIsSuccess = true;
@@ -471,7 +472,7 @@ export class FacturasComponent {
             }
           });
         } else {
-            this.http.get<any>(`http://localhost:8080/api/fac/facfre-desde/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
+            this.http.get<any>(`${environment.backendUrl}/api/fac/facfre-desde/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
             next: (response) => {
               if (!Array.isArray(response) || response.length === 0) {
                 this.facturaMessageIsSuccess = true;
@@ -491,7 +492,7 @@ export class FacturasComponent {
       }
       if(!desde && hasta) {
         if (estado === 'contabilizadas') {
-          this.http.get<any>(`http://localhost:8080/api/fac/facfre-hasta-facado-notnull/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
+          this.http.get<any>(`${environment.backendUrl}/api/fac/facfre-hasta-facado-notnull/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
             next: (response) => {
               if (!Array.isArray(response) || response.length === 0) {
                 this.facturaMessageIsSuccess = true;
@@ -508,7 +509,7 @@ export class FacturasComponent {
             }
           });
         } else if (estado === 'no-contabilizadas') {
-          this.http.get<any>(`http://localhost:8080/api/fac/facfre-hasta-facado-null/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
+          this.http.get<any>(`${environment.backendUrl}/api/fac/facfre-hasta-facado-null/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
             next: (response) => {
               if (!Array.isArray(response) || response.length === 0) {
                 this.facturaMessageIsSuccess = true;
@@ -525,7 +526,7 @@ export class FacturasComponent {
             }
           });
         } else if ( estado === 'aplicadas') {
-          this.http.get<any>(`http://localhost:8080/api/fac/facfre-hasta-facado-aplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
+          this.http.get<any>(`${environment.backendUrl}/api/fac/facfre-hasta-facado-aplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
             next: (response) => {
               if (!Array.isArray(response) || response.length === 0) {
                 this.facturaMessageIsSuccess = true;
@@ -542,7 +543,7 @@ export class FacturasComponent {
             }
           });
         } else if (estado === 'sin-aplicadas') {
-          this.http.get<any>(`http://localhost:8080/api/fac/facfre-hasta-facado-sinaplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
+          this.http.get<any>(`${environment.backendUrl}/api/fac/facfre-hasta-facado-sinaplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
             next: (response) => {
               if (!Array.isArray(response) || response.length === 0) {
                 this.facturaMessageIsSuccess = true;
@@ -559,7 +560,7 @@ export class FacturasComponent {
             }
           });
         } else {
-            this.http.get<any>(`http://localhost:8080/api/fac/facfre-hasta/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
+            this.http.get<any>(`${environment.backendUrl}/api/fac/facfre-hasta/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
             next: (response) => {
               if (!Array.isArray(response) || response.length === 0) {
                 this.facturaMessageIsSuccess = true;
@@ -579,7 +580,7 @@ export class FacturasComponent {
       }
       if (desde && hasta){
         if (estado === 'contabilizadas') {
-          this.http.get<any>(`http://localhost:8080/api/fac/facfre-range-facado-notnull/${this.entcod}//${this.centroGestor}/${desde}/${hasta}`).subscribe({
+          this.http.get<any>(`${environment.backendUrl}/api/fac/facfre-range-facado-notnull/${this.entcod}//${this.centroGestor}/${desde}/${hasta}`).subscribe({
             next: (response) => {
               if (!Array.isArray(response) || response.length === 0) {
                 this.facturaMessageIsSuccess = true;
@@ -596,7 +597,7 @@ export class FacturasComponent {
             }
           });
         } else if (estado === 'no-contabilizadas') {
-          this.http.get<any>(`http://localhost:8080/api/fac/facfre-range-facado-null/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
+          this.http.get<any>(`${environment.backendUrl}/api/fac/facfre-range-facado-null/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
             next: (response) => {
               if (!Array.isArray(response) || response.length === 0) {
                 this.facturaMessageIsSuccess = true;
@@ -613,7 +614,7 @@ export class FacturasComponent {
             }
           });
         } else if ( estado === 'aplicadas') {
-          this.http.get<any>(`http://localhost:8080/api/fac/facfre-range-facado-aplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
+          this.http.get<any>(`${environment.backendUrl}/api/fac/facfre-range-facado-aplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
             next: (response) => {
               if (!Array.isArray(response) || response.length === 0) {
                 this.facturaMessageIsSuccess = true;
@@ -630,7 +631,7 @@ export class FacturasComponent {
             }
           });
         } else if (estado === 'sin-aplicadas') {
-          this.http.get<any>(`http://localhost:8080/api/fac/facfre-range-facado-sinaplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
+          this.http.get<any>(`${environment.backendUrl}/api/fac/facfre-range-facado-sinaplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
             next: (response) => {
               if (!Array.isArray(response) || response.length === 0) {
                 this.facturaMessageIsSuccess = true;
@@ -647,7 +648,7 @@ export class FacturasComponent {
             }
           });
         } else {
-          this.http.get<any>(`http://localhost:8080/api/fac/facfre-range/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
+          this.http.get<any>(`${environment.backendUrl}/api/fac/facfre-range/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
             next: (response) => {
               if (!Array.isArray(response) || response.length === 0) {
                 this.facturaMessageIsSuccess = true;
@@ -671,7 +672,7 @@ export class FacturasComponent {
       }
       if (desde && !hasta) {
         if (estado === 'contabilizadas') {
-          this.http.get<any>(`http://localhost:8080/api/fac/facdat-desde-facado-notnull/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
+          this.http.get<any>(`${environment.backendUrl}/api/fac/facdat-desde-facado-notnull/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
             next: (response) => {
               if (!Array.isArray(response) || response.length === 0) {
                 this.facturaMessageIsSuccess = true;
@@ -688,7 +689,7 @@ export class FacturasComponent {
             }
           });
         } else if (estado === 'no-contabilizadas') {
-          this.http.get<any>(`http://localhost:8080/api/fac/facdat-desde-facado-null/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
+          this.http.get<any>(`${environment.backendUrl}/api/fac/facdat-desde-facado-null/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
             next: (response) => {
               if (!Array.isArray(response) || response.length === 0) {
                 this.facturaMessageIsSuccess = true;
@@ -705,7 +706,7 @@ export class FacturasComponent {
             }
           });
         } else if ( estado === 'aplicadas') {
-          this.http.get<any>(`http://localhost:8080/api/fac/facdat-desde-facado-aplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
+          this.http.get<any>(`${environment.backendUrl}/api/fac/facdat-desde-facado-aplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
             next: (response) => {
               if (!Array.isArray(response) || response.length === 0) {
                 this.facturaMessageIsSuccess = true;
@@ -722,7 +723,7 @@ export class FacturasComponent {
             }
           });
         } else if (estado === 'sin-aplicadas') {
-          this.http.get<any>(`http://localhost:8080/api/fac/facdat-desde-facado-sinaplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
+          this.http.get<any>(`${environment.backendUrl}/api/fac/facdat-desde-facado-sinaplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
             next: (response) => {
               if (!Array.isArray(response) || response.length === 0) {
                 this.facturaMessageIsSuccess = true;
@@ -739,7 +740,7 @@ export class FacturasComponent {
             }
           });
         } else {
-            this.http.get<any>(`http://localhost:8080/api/fac/facdat-desde/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
+            this.http.get<any>(`${environment.backendUrl}/api/fac/facdat-desde/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
             next: (response) => {
               if (!Array.isArray(response) || response.length === 0) {
                 this.facturaMessageIsSuccess = true;
@@ -759,7 +760,7 @@ export class FacturasComponent {
       }
       if(!desde && hasta) {
         if (estado === 'contabilizadas') {
-          this.http.get<any>(`http://localhost:8080/api/fac/facdat-hasta-facado-notnull/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
+          this.http.get<any>(`${environment.backendUrl}/api/fac/facdat-hasta-facado-notnull/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
             next: (response) => {
               if (!Array.isArray(response) || response.length === 0) {
                 this.facturaMessageIsSuccess = true;
@@ -776,7 +777,7 @@ export class FacturasComponent {
             }
           });
         } else if (estado === 'no-contabilizadas') {
-          this.http.get<any>(`http://localhost:8080/api/fac/facdat-hasta-facado-null/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
+          this.http.get<any>(`${environment.backendUrl}/api/fac/facdat-hasta-facado-null/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
             next: (response) => {
               if (!Array.isArray(response) || response.length === 0) {
                 this.facturaMessageIsSuccess = true;
@@ -793,7 +794,7 @@ export class FacturasComponent {
             }
           });
         } else if ( estado === 'aplicadas') {
-          this.http.get<any>(`http://localhost:8080/api/fac/facdat-hasta-facado-aplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
+          this.http.get<any>(`${environment.backendUrl}/api/fac/facdat-hasta-facado-aplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
             next: (response) => {
               if (!Array.isArray(response) || response.length === 0) {
                 this.facturaMessageIsSuccess = true;
@@ -810,7 +811,7 @@ export class FacturasComponent {
             }
           });
         } else if (estado === 'sin-aplicadas') {
-          this.http.get<any>(`http://localhost:8080/api/fac/facdat-hasta-facado-sinaplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
+          this.http.get<any>(`${environment.backendUrl}/api/fac/facdat-hasta-facado-sinaplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
             next: (response) => {
               if (!Array.isArray(response) || response.length === 0) {
                 this.facturaMessageIsSuccess = true;
@@ -827,7 +828,7 @@ export class FacturasComponent {
             }
           });
         } else {
-            this.http.get<any>(`http://localhost:8080/api/fac/facdat-hasta/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
+            this.http.get<any>(`${environment.backendUrl}/api/fac/facdat-hasta/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
             next: (response) => {
               if (!Array.isArray(response) || response.length === 0) {
                 this.facturaMessageIsSuccess = true;
@@ -847,7 +848,7 @@ export class FacturasComponent {
       }
       if (desde && hasta){
         if (estado === 'contabilizadas') {
-          this.http.get<any>(`http://localhost:8080/api/fac/facdat-range-facado-notnull/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
+          this.http.get<any>(`${environment.backendUrl}/api/fac/facdat-range-facado-notnull/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
             next: (response) => {
               if (!Array.isArray(response) || response.length === 0) {
                 this.facturaMessageIsSuccess = true;
@@ -864,7 +865,7 @@ export class FacturasComponent {
             }
           });
         } else if (estado === 'no-contabilizadas') {
-          this.http.get<any>(`http://localhost:8080/api/fac/facdat-range-facado-null/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
+          this.http.get<any>(`${environment.backendUrl}/api/fac/facdat-range-facado-null/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
             next: (response) => {
               if (!Array.isArray(response) || response.length === 0) {
                 this.facturaMessageIsSuccess = true;
@@ -881,7 +882,7 @@ export class FacturasComponent {
             }
           });
         } else if ( estado === 'aplicadas') {
-          this.http.get<any>(`http://localhost:8080/api/fac/facdat-range-facado-aplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
+          this.http.get<any>(`${environment.backendUrl}/api/fac/facdat-range-facado-aplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
             next: (response) => {
               if (!Array.isArray(response) || response.length === 0) {
                 this.facturaMessageIsSuccess = true;
@@ -898,7 +899,7 @@ export class FacturasComponent {
             }
           });
         } else if (estado === 'sin-aplicadas') {
-          this.http.get<any>(`http://localhost:8080/api/fac/facdat-range-facado-sinaplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
+          this.http.get<any>(`${environment.backendUrl}/api/fac/facdat-range-facado-sinaplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
             next: (response) => {
               if (!Array.isArray(response) || response.length === 0) {
                 this.facturaMessageIsSuccess = true;
@@ -915,7 +916,7 @@ export class FacturasComponent {
             }
           });
         } else {
-          this.http.get<any>(`http://localhost:8080/api/fac/facdat-range/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
+          this.http.get<any>(`${environment.backendUrl}/api/fac/facdat-range/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
             next: (response) => {
               if (!Array.isArray(response) || response.length === 0) {
                 this.facturaMessageIsSuccess = true;
@@ -939,7 +940,7 @@ export class FacturasComponent {
       }
       if (desde && !hasta) {
         if (estado === 'contabilizadas') {
-          this.http.get<any>(`http://localhost:8080/api/fac/facfco-desde-facado-notnull/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
+          this.http.get<any>(`${environment.backendUrl}/api/fac/facfco-desde-facado-notnull/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
             next: (response) => {
               if (!Array.isArray(response) || response.length === 0) {
                 this.facturaMessageIsSuccess = true;
@@ -956,7 +957,7 @@ export class FacturasComponent {
             }
           });
         } else if (estado === 'no-contabilizadas') {
-          this.http.get<any>(`http://localhost:8080/api/fac/facfco-desde-facado-null/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
+          this.http.get<any>(`${environment.backendUrl}/api/fac/facfco-desde-facado-null/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
             next: (response) => {
               if (!Array.isArray(response) || response.length === 0) {
                 this.facturaMessageIsSuccess = true;
@@ -973,7 +974,7 @@ export class FacturasComponent {
             }
           });
         } else if ( estado === 'aplicadas') {
-          this.http.get<any>(`http://localhost:8080/api/fac/facfco-desde-facado-aplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
+          this.http.get<any>(`${environment.backendUrl}/api/fac/facfco-desde-facado-aplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
             next: (response) => {
               if (!Array.isArray(response) || response.length === 0) {
                 this.facturaMessageIsSuccess = true;
@@ -990,7 +991,7 @@ export class FacturasComponent {
             }
           });
         } else if (estado === 'sin-aplicadas') {
-          this.http.get<any>(`http://localhost:8080/api/fac/facfco-desde-facado-sinaplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
+          this.http.get<any>(`${environment.backendUrl}/api/fac/facfco-desde-facado-sinaplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
             next: (response) => {
               if (!Array.isArray(response) || response.length === 0) {
                 this.facturaMessageIsSuccess = true;
@@ -1007,7 +1008,7 @@ export class FacturasComponent {
             }
           });
         } else {
-            this.http.get<any>(`http://localhost:8080/api/fac/facfco-desde/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
+            this.http.get<any>(`${environment.backendUrl}/api/fac/facfco-desde/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
             next: (response) => {
               if (!Array.isArray(response) || response.length === 0) {
                 this.facturaMessageIsSuccess = true;
@@ -1027,7 +1028,7 @@ export class FacturasComponent {
       }
       if(!desde && hasta) {
         if (estado === 'contabilizadas') {
-          this.http.get<any>(`http://localhost:8080/api/fac/facfco-hasta-facado-notnull/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
+          this.http.get<any>(`${environment.backendUrl}/api/fac/facfco-hasta-facado-notnull/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
             next: (response) => {
               if (!Array.isArray(response) || response.length === 0) {
                 this.facturaMessageIsSuccess = true;
@@ -1044,7 +1045,7 @@ export class FacturasComponent {
             }
           });
         } else if (estado === 'no-contabilizadas') {
-          this.http.get<any>(`http://localhost:8080/api/fac/facfco-hasta-facado-null/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
+          this.http.get<any>(`${environment.backendUrl}/api/fac/facfco-hasta-facado-null/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
             next: (response) => {
               if (!Array.isArray(response) || response.length === 0) {
                 this.facturaMessageIsSuccess = true;
@@ -1061,7 +1062,7 @@ export class FacturasComponent {
             }
           });
         } else if ( estado === 'aplicadas') {
-          this.http.get<any>(`http://localhost:8080/api/fac/facfco-hasta-facado-aplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
+          this.http.get<any>(`${environment.backendUrl}/api/fac/facfco-hasta-facado-aplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
             next: (response) => {
               if (!Array.isArray(response) || response.length === 0) {
                 this.facturaMessageIsSuccess = true;
@@ -1078,7 +1079,7 @@ export class FacturasComponent {
             }
           });
         } else if (estado === 'sin-aplicadas') {
-          this.http.get<any>(`http://localhost:8080/api/fac/facfco-hasta-facado-sinaplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
+          this.http.get<any>(`${environment.backendUrl}/api/fac/facfco-hasta-facado-sinaplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
             next: (response) => {
               if (!Array.isArray(response) || response.length === 0) {
                 this.facturaMessageIsSuccess = true;
@@ -1095,7 +1096,7 @@ export class FacturasComponent {
             }
           });
         } else {
-            this.http.get<any>(`http://localhost:8080/api/fac/facfco-hasta/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
+            this.http.get<any>(`${environment.backendUrl}/api/fac/facfco-hasta/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
             next: (response) => {
               if (!Array.isArray(response) || response.length === 0) {
                 this.facturaMessageIsSuccess = true;
@@ -1115,7 +1116,7 @@ export class FacturasComponent {
       }
       if (desde && hasta){
         if (estado === 'contabilizadas') {
-          this.http.get<any>(`http://localhost:8080/api/fac/facfco-range-facado-notnull/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
+          this.http.get<any>(`${environment.backendUrl}/api/fac/facfco-range-facado-notnull/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
             next: (response) => {
               if (!Array.isArray(response) || response.length === 0) {
                 this.facturaMessageIsSuccess = true;
@@ -1132,7 +1133,7 @@ export class FacturasComponent {
             }
           });
         } else if (estado === 'no-contabilizadas') {
-          this.http.get<any>(`http://localhost:8080/api/fac/facfco-range-facado-null/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
+          this.http.get<any>(`${environment.backendUrl}/api/fac/facfco-range-facado-null/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
             next: (response) => {
               if (!Array.isArray(response) || response.length === 0) {
                 this.facturaMessageIsSuccess = true;
@@ -1149,7 +1150,7 @@ export class FacturasComponent {
             }
           });
         } else if ( estado === 'aplicadas') {
-          this.http.get<any>(`http://localhost:8080/api/fac/facfco-range-facado-aplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
+          this.http.get<any>(`${environment.backendUrl}/api/fac/facfco-range-facado-aplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
             next: (response) => {
               if (!Array.isArray(response) || response.length === 0) {
                 this.facturaMessageIsSuccess = true;
@@ -1166,7 +1167,7 @@ export class FacturasComponent {
             }
           });
         } else if (estado === 'sin-aplicadas') {
-          this.http.get<any>(`http://localhost:8080/api/fac/facfco-range-facado-sinaplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
+          this.http.get<any>(`${environment.backendUrl}/api/fac/facfco-range-facado-sinaplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
             next: (response) => {
               if (!Array.isArray(response) || response.length === 0) {
                 this.facturaMessageIsSuccess = true;
@@ -1183,7 +1184,7 @@ export class FacturasComponent {
             }
           });
         } else {
-          this.http.get<any>(`http://localhost:8080/api/fac/facfco-range/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
+          this.http.get<any>(`${environment.backendUrl}/api/fac/facfco-range/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
             next: (response) => {
               if (!Array.isArray(response) || response.length === 0) {
                 this.facturaMessageIsSuccess = true;
@@ -1235,7 +1236,7 @@ export class FacturasComponent {
     }
 
     if (this.entcod !== null && this.eje !== null) {
-      this.http.get<any>(`http://localhost:8080/api/fac/${this.entcod}/${this.eje}/${this.centroGestor}`).subscribe({
+      this.http.get<any>(`${environment.backendUrl}/api/fac/${this.entcod}/${this.eje}/${this.centroGestor}`).subscribe({
         next: (response) => {
           this.facturas = response;
           this.backupFacturas = Array.isArray(response) ? [...response] : [];
@@ -1268,7 +1269,7 @@ export class FacturasComponent {
     this.moreInfoMessageError = '';
 
     if ( option === 'albaranes') {
-      this.http.get<any>(`http://localhost:8080/api/alb/${this.entcod}/${this.eje}/${facnum}`).subscribe({
+      this.http.get<any>(`${environment.backendUrl}/api/alb/${this.entcod}/${this.eje}/${facnum}`).subscribe({
         next: (response) => {
           if (!Array.isArray(response) || response.length === 0) {
             this.moreInfoMessageIsSuccess = true;
@@ -1287,7 +1288,7 @@ export class FacturasComponent {
     }
 
     if ( option === 'aplicaciones') {
-      this.http.get<any>(`http://localhost:8080/api/fde/${this.entcod}/${this.eje}/${facnum}`).subscribe({
+      this.http.get<any>(`${environment.backendUrl}/api/fde/${this.entcod}/${this.eje}/${facnum}`).subscribe({
         next: (response) => {
           if (!Array.isArray(response) || response.length === 0) {
             this.moreInfoMessageIsSuccess = true;
@@ -1306,7 +1307,7 @@ export class FacturasComponent {
     }
 
     if ( option === 'descuentos') {
-      this.http.get<any>(`http://localhost:8080/api/fdt/${this.entcod}/${this.eje}/${facnum}`).subscribe({
+      this.http.get<any>(`${environment.backendUrl}/api/fdt/${this.entcod}/${this.eje}/${facnum}`).subscribe({
         next: (response) => {
           if (!Array.isArray(response) || response.length === 0) {
             this.moreInfoMessageIsSuccess = true;

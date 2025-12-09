@@ -7,6 +7,7 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
 
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-familia',
@@ -39,7 +40,7 @@ export class FamiliaComponent {
       return;
     }
 
-    this.http.get<any>(`http://localhost:8080/api/afa/by-ent/${this.entcod}`).subscribe({
+    this.http.get<any>(`${environment.backendUrl}/api/afa/by-ent/${this.entcod}`).subscribe({
       next: (response) => {
         if (response.error) {
           this.tableMessage = 'Error: ' + response.error || 'Server error';
@@ -227,14 +228,14 @@ export class FamiliaComponent {
       this.afacodError = 'Familia requerido'
     }
 
-    this.http.get<any>(`http://localhost:8080/api/asu/by-ent-afacod/${this.entcod}/${afacod}`).subscribe({
+    this.http.get<any>(`${environment.backendUrl}/api/asu/by-ent-afacod/${this.entcod}/${afacod}`).subscribe({
       next: (Response) => {
         if(Response.length === 0) {
           this.afacodError = 'No se encontraron Subfamilias'
         } else {
           this.subfamilias = Array.isArray(Response) ? [...Response] : [];
           this.subfamilias.forEach((item, idx) => {
-            this.http.get<any[]>(`http://localhost:8080/api/mta/all-mta/${this.entcod}`).subscribe({
+            this.http.get<any[]>(`${environment.backendUrl}/api/mta/all-mta/${this.entcod}`).subscribe({
               next: (mtas) => {
                 const almacenajeArray = Array.isArray(mtas) ? mtas : [];
                 this.subfamilias[idx].mta = almacenajeArray
@@ -272,7 +273,7 @@ export class FamiliaComponent {
     if (!afacod) { return; }
     const payload = (afades ?? '').trim();
 
-    this.http.patch<any>(`http://localhost:8080/api/afa/update-familia/${this.entcod}/${afacod}`, payload, { headers: { 'Content-Type': 'text/plain' }, observe: 'response' }).subscribe({
+    this.http.patch<any>(`${environment.backendUrl}/api/afa/update-familia/${this.entcod}/${afacod}`, payload, { headers: { 'Content-Type': 'text/plain' }, observe: 'response' }).subscribe({
       next: (response) => {
         this.familiaErrorMessage = '';
         this.familiaSucessMessage = 'Familia actualizada con éxito';
@@ -304,7 +305,7 @@ export class FamiliaComponent {
   }
 
   deleteFamilia(afacod: string): void {
-    this.http.delete(`http://localhost:8080/api/art/delete-familia/${this.entcod}/${afacod}`).subscribe({
+    this.http.delete(`${environment.backendUrl}/api/art/delete-familia/${this.entcod}/${afacod}`).subscribe({
       next: () => {
         this.familiaSucessMessage = 'Familia eliminado correctamente';
         this.familias = this.familias.filter(f => f.afacod !== afacod);
@@ -333,7 +334,7 @@ export class FamiliaComponent {
 
     const ent = this.entcod;
     const payload = { ent, afacod: familia, afades: descripcion };
-    this.http.post<any>(`http://localhost:8080/api/afa/Insert-familia`, payload).subscribe({
+    this.http.post<any>(`${environment.backendUrl}/api/afa/Insert-familia`, payload).subscribe({
       next: () => {
         this.familiaMessage = 'familia agregada exitosamente'
         this.closeAddConfirm();
@@ -358,7 +359,7 @@ export class FamiliaComponent {
 
     const payload = { ASUDES: Description, ASUECO: Economica, MTACOD: almacenajeNum}
 
-    this.http.patch<any>(`http://localhost:8080/api/asu/update-subfamilia/${this.entcod}/${afacod}/${asucod}`, payload).subscribe({
+    this.http.patch<any>(`${environment.backendUrl}/api/asu/update-subfamilia/${this.entcod}/${afacod}/${asucod}`, payload).subscribe({
       next: (res) => {
         this.successUpdateMEssage = 'Subfamilia actualizado con éxito';
       }, error: (err) => {
@@ -372,7 +373,7 @@ export class FamiliaComponent {
       this.errorUpdateMessage = 'datos faltantes';
     }
 
-    this.http.delete<any>(`http://localhost:8080/api/art/delete-sub-familia/${this.entcod}/${afacod}/${asucod}`).subscribe({
+    this.http.delete<any>(`${environment.backendUrl}/api/art/delete-sub-familia/${this.entcod}/${afacod}/${asucod}`).subscribe({
       next: (res) => {
         this.successUpdateMEssage = 'Subfamilia eliminado exitosamente'
       }, error: (err) => {
@@ -427,7 +428,7 @@ export class FamiliaComponent {
       mtacod: almacenajeNum
     };
 
-    this.http.post(`http://localhost:8080/api/asu/Insert-Subfamilia`, payload).subscribe({
+    this.http.post(`${environment.backendUrl}/api/asu/Insert-Subfamilia`, payload).subscribe({
       next: () => {
         this.successUpdateMEssage = 'Subfamilia añadida correctamente.';
         this.closeAddConfirmSub();
@@ -451,7 +452,7 @@ export class FamiliaComponent {
 
   almacenajes: any[] = [];
   fetchAlmacenaje() {
-    this.http.get<any[]>(`http://localhost:8080/api/mta/all-mta/${this.entcod}`).subscribe({
+    this.http.get<any[]>(`${environment.backendUrl}/api/mta/all-mta/${this.entcod}`).subscribe({
       next: (mtas) => {
         this.almacenajes = Array.isArray(mtas) ? mtas : [];
       }, error: () => {
