@@ -26,6 +26,12 @@ public class Cge {
     @Column(nullable = false)
     private String CGEDES;
 
+    private String CGEORG;
+
+    private String CGEFUN;
+
+    private String CGEDAT;
+
     @Column(nullable = true)
     private Integer CGECIC;
 
@@ -40,6 +46,15 @@ public class Cge {
 
     public String getCGEDES() { return CGEDES; }
     public void setCGEDES(String CGEDES) { this.CGEDES = CGEDES; }
+
+    public String getCGEORG() { return CGEORG; }
+    public void setCGEORG(String CGEORG) { this.CGEORG = CGEORG; }
+
+    public String getCGEFUN() { return CGEFUN; }
+    public void setCGEFUN(String CGEFUN) { this.CGEFUN = CGEFUN; }
+
+    public String CGEDAT() { return CGEDAT; }
+    public void setCGEDAT(String CGEDAT) { this.CGEDAT = CGEDAT; }
 
     public Integer getCGECIC() { return CGECIC; }
     public void setCGECIC(Integer CGECIC) { this.CGECIC = CGECIC; }
