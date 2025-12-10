@@ -59,6 +59,41 @@ app-sidebar {
   z-index: 1500;
 }
 
+/* component styles */
+.familia-page,
+.centroGestor-page {
+  display: flex;
+  min-height: 100vh;
+  background: #f0f0f0;
+}
+
+.familia-container.blurred,
+.centroGestor-container.blurred {
+  filter: blur(1.2px);
+  pointer-events: none;
+  user-select: none;
+}
+
+.familia-container,
+.centroGestor-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  background: #f0f0f0;
+  padding: 0 0 40px 0;
+  min-height: 100vh;
+  z-index: 1;
+}
+
+.familia-container h2,
+.centroGestor-container h2 {
+  margin: 10px;
+  color: #38249b;
+  font-size: 32px;
+}
+
 /* error messages */
 .errorBtn{
   margin-bottom:2%; 
@@ -90,7 +125,8 @@ app-sidebar {
 .sub-delete-btn,
 .subFamilias-add-btn,
 .download-btn,
-.search-button {
+.search-button,
+.add-centroGestor-btn {
   background-color: #1d4ed8;
   color: #fff;
   border: none;
@@ -112,7 +148,9 @@ app-sidebar {
 .add-familia-btn:hover,
 .familias-add-btn:hover,
 .sub-save-btn:hover,
-.subFamilias-add-btn:hover {
+.subFamilias-add-btn:hover,
+.add-centroGestor-btn:hover,
+.search-button:hover  {
   background-color: #094fa3;
   color: #e6edf3;
 }
@@ -129,11 +167,35 @@ app-sidebar {
   background-color: rgb(117, 28, 28);
 }
 
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 10px 0 20px 0;
+  font-family: inherit;
+}
+
 .pagination-controls button:disabled,
-.pagination-controls button:disabled:hover{
+.pagination-controls button:disabled:hover {
   background-color: #ccc;
   cursor: not-allowed;
   color: #e5e7eb;
+}
+
+.pagination-controls span {
+  font-size: 15px;
+  color: #444;
+  font-family: inherit;
+}
+
+.pagination-input {
+  width: 48px;
+  padding: 4px 6px;
+  font-size: 15px;
+  border-radius: 4px;
+  border: 1px solid #bbb;
+  text-align: center;
+  margin: 0 4px;
 }
 
 /* modal */

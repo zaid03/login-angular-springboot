@@ -1,11 +1,249 @@
 import { Component } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { SidebarComponent } from '../sidebar/sidebar.component';
 
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+import { environment } from '../../environments/environment';
 @Component({
   selector: 'app-cge',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule ,FormsModule, SidebarComponent],
   templateUrl: './cge.component.html',
-  styleUrl: './cge.component.css'
+  styleUrls: ['./cge.component.css']
 })
 export class CgeComponent {
+  constructor(private http: HttpClient, private router: Router) {}
 
+  private entcod: number | null = null;
+  private eje: number | null = null;
+  centroGestores: any[] = [];
+  private backupCentroGestores: any[] = [];
+  errorMessageTable: string = '';
+  page = 0;
+  pageSize = 20;
+
+  ngOnInit() {
+    const entidad = sessionStorage.getItem('Entidad');
+    const eje = sessionStorage.getItem('EJERCICIO');
+
+    if (entidad) {
+      const parsed = JSON.parse(entidad);
+      this.entcod = parsed.ENTCOD;
+    }
+
+    if (eje) {
+      const parsed = JSON.parse(eje);
+      this.eje = parsed.eje;
+    }
+
+    if (!entidad || this.entcod === null || this.eje === null) {
+      sessionStorage.clear();
+      alert('You must be logged in to access this page.');
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    this.http.get<any>(`${environment.backendUrl}/api/cge/fetch-all/${this.entcod}/${this.eje}`).subscribe({
+      next: (res) => {
+        this.centroGestores = Array.isArray(res) ? [...res] : [];
+        console.log(this.centroGestores)
+        this.backupCentroGestores = [...this.centroGestores];
+        this.page = 0;
+        if ( res.status === 404 ) {
+          this.centroGestores = [];
+          this.errorMessageTable = typeof res.body === 'string' ? res.body : 'sin resultados.';
+        }
+      }, error: (err) => {
+        this.centroGestores = [];
+        this.errorMessageTable = typeof err.error === 'string' ? err.error : 'server Error';
+      }
+    })
+  }
+
+  get paginatedFamilias(): any[] {
+    if (!this.centroGestores || this.centroGestores.length === 0) return [];
+    const start = this.page * this.pageSize;
+    return this.centroGestores.slice(start, start + this.pageSize);
+  }
+  get totalPages(): number {
+    return Math.max(1, Math.ceil((this.centroGestores?.length ?? 0) / this.pageSize));
+  }
+  prevPage(): void {
+    if (this.page > 0) this.page--;
+  }
+  nextPage(): void {
+    if (this.page < this.totalPages - 1) this.page++;
+  }
+  goToPage(event: any): void {
+    const inputPage = Number(event.target.value);
+    if (inputPage >= 1 && inputPage <= this.totalPages) {
+      this.page = inputPage - 1;
+    }
+  }
+
+  getkCGECIC(cgecic: number) {
+    console.log(cgecic)
+
+    if (cgecic === 0) {
+      return 'No';
+    } else if (cgecic === 1) {
+      return 'Sí';
+    } else if (cgecic === 2) {
+      return 'Cierre para contabilizar';
+    }
+    return;
+  }
+
+  SearchDownMessageError: string = '';
+  public searchTerm: string = '';
+  handleSearchInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const value = (input.value ?? '').toUpperCase();
+    this.searchTerm = value;
+    input.value = value;
+
+    if (!value) {
+      this.SearchDownMessageError = '';
+      this.centroGestores = [...this.backupCentroGestores];
+      this.page = 0;
+    }
+  }
+
+  searchCentroGestor(): void {
+    this.SearchDownMessageError = '';
+    const term = this.searchTerm.trim();
+
+    if (!term) {
+      this.SearchDownMessageError = 'Introduzca una familia para buscar'
+      this.centroGestores = [...this.backupCentroGestores];
+      this.page = 0;
+      return;
+    }
+
+    const oneToFour = /^[A-Za-z0-9]{1,4}$/
+    const moreThanFour = /^[A-Za-z0-9]{5,}$/
+    if (oneToFour.test(term)) {
+      this.centroGestores = this.backupCentroGestores.filter((f) =>
+        f.cgecod?.toString().toUpperCase() === term
+      );
+    } else if (moreThanFour.test(term)) {
+      this.centroGestores = this.backupCentroGestores.filter((f) =>
+        f.cgedes?.toString().toUpperCase().includes(term)
+      );
+    }
+
+    if (this.centroGestores.length === 0) {
+      this.SearchDownMessageError = 'Este Centro Gestor no existe';
+    }
+    this.page = 0;
+  }
+
+  excelDownload() {
+    const rows = this.backupCentroGestores.length ? this.backupCentroGestores : this.centroGestores;
+    if (!rows || rows.length === 0) {
+      this.SearchDownMessageError = 'No hay datos para exportar.';
+      return;
+    }
+  
+    const exportRows = rows.map((row, index) => ({
+      '#': index + 1,
+      Entidad: row.ent ?? '',
+      EJE: row.eje ?? '',
+      Código: row.cgecod ?? '',
+      Descripción: row.cgedes ?? '',
+      Orgánica: row.cgeorg ?? '',
+      Programa: row.cgefun ?? '',
+      Cierre_contable: this.getkCGECIC(row.cgecic) ?? ''
+    }));
+  
+    const worksheet = XLSX.utils.aoa_to_sheet([]);
+    XLSX.utils.sheet_add_aoa(worksheet, [['Listado de Centros de gestor']], { origin: 'A1' });
+    worksheet['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 3 } }];
+    XLSX.utils.sheet_add_aoa(worksheet, [['#', 'Entidad', 'EJE', 'Código', 'Descripción', 'Orgánica', 'Programa', 'Cierre_contable']], { origin: 'A2' });
+    XLSX.utils.sheet_add_json(worksheet, exportRows, { origin: 'A3', skipHeader: true });
+
+    worksheet['!cols'] = [
+      { wch: 6 },
+      { wch: 12 },
+      { wch: 12 },
+      { wch: 12 },
+      { wch: 55 },
+      { wch: 12 },
+      { wch: 12 },
+      { wch: 16 }
+    ];
+  
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Centros_gestor');
+    const buffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    saveAs(
+      new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }),
+      'Centros_gestor.xlsx'
+    );
+  }
+
+  toPrint() {
+    const rows = this.backupCentroGestores.length ? this.backupCentroGestores : this.centroGestores;
+    if (!rows?.length) {
+      this.SearchDownMessageError = 'No hay datos para imprimir.';
+      return;
+    }
+
+    const htmlRows = rows.map((row, index) => `
+      <tr>
+        <td>${index + 1}</td>
+        <td>${row.ent ?? ''}</td>
+        <td>${row.eje ?? ''}</td>
+        <td>${row.cgecod ?? ''}</td>
+        <td>${row.cgedes ?? ''}</td>
+        <td>${row.cgeorg ?? ''}</td>
+        <td>${row.cgefun ?? ''}</td>
+        <td>${this.getkCGECIC(row.cgecic) ?? ''}</td>
+      </tr>
+    `).join('');
+
+    const printWindow = window.open('', '_blank', 'width=900,height=700');
+    if (!printWindow) return;
+
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Listado de Centros de gestor</title>
+          <style>
+            body { font-family: 'Poppins', sans-serif; padding: 24px; }
+            h1 { text-align: center; margin-bottom: 16px; }
+            table { width: 100%; border-collapse: collapse; }
+            th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
+            th { background: #f3f4f6; }
+          </style>
+        </head>
+        <body>
+          <h1>Listado de Centros de gestor</h1>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Entidad</th>
+                <th>eje</th>
+                <th>cgecod</th>
+                <th>cgecod</th>
+                <th>Orgánica</th>
+                <th>Programa</th>
+                <th>Cierre contable</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${htmlRows}
+            </tbody>
+          </table>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
+  }
 }

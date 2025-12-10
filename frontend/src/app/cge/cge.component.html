@@ -1,1 +1,72 @@
-<p>cge works!</p>
+<div class="centroGestor-page">
+    <div 
+        class="sidebar-backdrop" 
+        *ngIf="!sidebar.collapsed" 
+        (click)="sidebar.collapsed = true"
+    >
+    </div>
+    <app-sidebar #sidebar></app-sidebar>
+    <div class="centroGestor-container" [class.blurred]="!sidebar.collapsed">
+        <h2>Listado de centros de gestor</h2>
+        <div class="centroGestor-search">
+            <form class="search-form">
+                <input 
+                    type="text" 
+                    class="search-bar"
+                    placeholder="Buscar familias" 
+                    name="search"
+                    [(ngModel)]="searchTerm"
+                    (ngModelChange)="searchTerm = $event"
+                    (input)="handleSearchInput($event)"
+                    placeholder="Buscar centro gestor"
+                >
+            </form>
+            <button class="search-btn" (click)="searchCentroGestor()">Buscar</button>
+        </div>
+        <h1 class="errorBtn">{{ SearchDownMessageError }}</h1>
+        <div class="centroGestor-download">
+            <button class="download-btn" (click)="excelDownload()">Descargar como Excel</button>
+            <button class="print-btn" (click)="toPrint()">Impreso</button>
+        </div>
+        <div class="centroGestor-list">
+            <h1 class="errorBtn">{{ errorMessageTable }}</h1>
+            <h1 class="successBtn">success</h1>
+            <button class="add-centroGestor-btn">Añadir</button>
+            <table class="centroGestor-table">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Descripción</th>
+                        <th>Orgánica</th>
+                        <th>Programa</th>
+                        <th>Cierre contable</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let c of centroGestores">
+                        <td style="cursor: pointer;">{{ c.cgecod }}</td>
+                        <td>{{ c.cgedes }}</td>
+                        <td>{{ c.cgeorg }}</td>
+                        <td>{{c.cgefun }}</td>
+                        <td>{{ getkCGECIC(c.cgecic) }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="pagination-controls">
+                <button (click)="prevPage()" [disabled]="page === 0">Anterior</button>
+                <span>Página</span>
+                <input
+                    type="number"
+                    min="1"
+                    [max]="totalPages"
+                    [value]="page + 1"
+                    (change)="goToPage($event)"
+                    class="pagination-input"
+                    class="pagination-input"
+                />
+                <span>de {{ totalPages }}</span>
+                <button (click)="nextPage()" [disabled]="page + 1 >= totalPages">Siguiente</button>
+            </div>
+        </div>
+    </div>
+</div>
