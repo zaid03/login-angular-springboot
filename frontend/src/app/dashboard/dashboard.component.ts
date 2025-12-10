@@ -93,7 +93,7 @@ export class DashboardComponent implements OnInit {
   }
 
   navigateTo(code: string): void {
-    if (this.isDisabled(code) && code !== 'familia') {
+    if (this.isDisabled(code) && code !== 'familia' && code !== 'centroGestor') {
       console.warn('Not allowed:', code);
       return;
     }
@@ -115,6 +115,9 @@ export class DashboardComponent implements OnInit {
         break;
       case 'familia':
         this.router.navigate(['/familia'])
+        break;
+      case 'centroGestor':
+        this.router.navigate(['/centroGestor']);
         break;
       default:
         console.warn('No route configured for code:', code);

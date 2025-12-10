@@ -9,6 +9,7 @@ import { EjeComponent } from './eje/eje.component';
 import { FacturasComponent } from './facturas/facturas.component';
 import { CreditoComponent } from './credito/credito.component';
 import { FamiliaComponent } from './familia/familia.component';
+import { CgeComponent } from './cge/cge.component';
 
 export const routes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -20,6 +21,7 @@ export const routes: Routes = [
     { path: 'facturas', component: FacturasComponent},
     { path: 'credito', component: CreditoComponent},
     { path: 'familia', component: FamiliaComponent},
+    { path: 'centroGestor', component: CgeComponent},
     { path: '', redirectTo: '/login', pathMatch: 'full' }, //route by default
 ];
 
