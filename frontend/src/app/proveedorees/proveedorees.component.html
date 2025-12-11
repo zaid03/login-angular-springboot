@@ -29,7 +29,7 @@
         </div>
 
         <div class="proveedores-list">
-            <h1 class="error-message-style">{{error}}</h1>
+            <h1 class="errorBtn">{{error}}</h1>
             <table class="main-table">
                 <thead>
                     <tr>
@@ -165,8 +165,8 @@
                              Tiene acuerdo marco
                         </div>
                     </div>
-                    <h1 class="error-message-style">{{ messageError }}</h1>
-                    <h1 class="success-message-style">{{ messageSuccess }}</h1>
+                    <h1 class="errorBtn">{{ messageError }}</h1>
+                    <h1 class="successBtn">{{ messageSuccess }}</h1>
                     <button class="guardar-btn" (click)="saveChanges()">Guardar</button>
                     <div class="more">
                         <button class="pers-btn" (click)="showContactPersons(selectedProveedor)">Personas de Contacto</button>
@@ -174,7 +174,7 @@
                     </div>
                     <div class="custom-grid-modal" *ngIf="showContactPersonsGrid">
                         <h3>Personas de Contacto</h3>
-                        <h1 class="error-message-style">{{ personasContactoError }}</h1>
+                        <h1 class="errorBtn">{{ personasContactoError }}</h1>
                         <table class="personas-contacto-table">
                             <thead>
                                 <tr>
@@ -209,13 +209,13 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <h1 class="error-message-style">{{ personasContactoErrorMessage }}</h1>
-                        <h1 class="success-message-style">{{ personasContactoSuccessMessage }}</h1>
+                        <h1 class="errorBtn">{{ personasContactoErrorMessage }}</h1>
+                        <h1 class="successBtn">{{ personasContactoSuccessMessage }}</h1>
                         <button class="guardar-btn" (click)="updatepersonas()">Guardar</button>
                     </div>
                     <div class="custom-grid-modal" *ngIf="showArticulosGrid">
                         <h3>Artículos</h3>
-                        <h1 class="error-message-style">{{ articuloError }}</h1>
+                        <h1 class="errorBtn">{{ articuloError }}</h1>
                         <table class="articulo-table">
                             <thead>
                                 <tr>
@@ -271,8 +271,8 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <h1 class="error-message-style">{{ articuloErrorMessage }}</h1>
-                        <h1 class="success-message-style">{{ articuloSuccessMessage }}</h1>
+                        <h1 class="errorBtn">{{ articuloErrorMessage }}</h1>
+                        <h1 class="successBtn">{{ articuloSuccessMessage }}</h1>
                         <button class="add-btn" (click)="showHello()">Añadir</button>
                     </div>
                 </div>
@@ -336,8 +336,8 @@
             <span> {{ searchPage + 1 }} de {{ searchTotalPages }}</span>
             <button class="pag-btn" (click)="searchPage = searchPage + 1" [disabled]="searchPage + 1 >= searchTotalPages">Siguiente</button>
         </div>
-        <h1 class="success-message-style">{{ anadirmessage }}</h1>
-        <h1 class="error-message-style">{{ anadirErrorMessage }}</h1>
+        <h1 class="successBtn">{{ anadirmessage }}</h1>
+        <h1 class="errorBtn">{{ anadirErrorMessage }}</h1>
     </form>
 </div>
 
@@ -416,14 +416,14 @@
                 </tr>
             </tbody>
         </table>
-        <h1 class="error-message-style">{{ anadirProveedorErrorMessage }}</h1>
+        <h1 class="errorBtn">{{ anadirProveedorErrorMessage }}</h1>
         <div class="pagination-controls" *ngIf="proveedoresSearchResults.length > proveedoresSearchPageSize">
             <button class="pag-btn" (click)="proveedoresSearchPrev()" [disabled]="proveedoresSearchPage === 0">Anterior</button>
             <span> {{ proveedoresSearchPage + 1 }} de {{ proveedoresSearchTotalPages }}</span>
             <button class="pag-btn" (click)="proveedoresSearchNext()" [disabled]="proveedoresSearchPage + 1 >= proveedoresSearchTotalPages">Siguiente</button>
         </div>
     </div>
-    <h1 class="success-message-style">{{ guardarMessageProveedor }}</h1>
+    <h1 class="successBtn">{{ guardarMessageProveedor }}</h1>
     <div class="modal-actions">
         <div class="selection-summary" style="display:flex;gap:8px;align-items:center;">
             <span>Seleccionados: {{ selectedProveediresFromResults.length }}</span>

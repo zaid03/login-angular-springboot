@@ -133,7 +133,20 @@ app-sidebar {
 .next-btn,
 .menu button,
 .services-btn,
-.cge-btn  {
+.cge-btn,
+.search-button-proveedores,
+.download-btn,
+.pag-btn,
+.add-btn,
+.guardar-btn,
+.pers-btn,
+.Articulo-btn,
+.delete-btn-personas,
+.save-btn-articulos,
+.delete-btn-articulos,
+.articulos-cancel-confirm-btn,
+.proveedor-saving-btn,
+.proveedor-cancel-btn  {
   background-color: #1d4ed8;
   color: #fff;
   border: none;
@@ -162,7 +175,17 @@ app-sidebar {
 .next-btn:hover,
 .menu button:hover,
 .services-btn:hover,
-.cge-btn:hover {
+.cge-btn:hover,
+.search-button-proveedores:hover,
+.download-btn:hover,
+.pag-btn:hover,
+.add-btn:hover,
+.guardar-btn:hover,
+.pers-btn:hover,
+.Articulo-btn:hover,
+.save-btn-articulos:hover,
+.articulos-cancel-confirm-btn:hover,
+.proveedor-saving-btn:hover {
   background-color: #094fa3;
   color: #e6edf3;
 }
@@ -170,14 +193,22 @@ app-sidebar {
 .familia-delete-btn,
 .articulos-delete-confirm-btn,
 .sub-delete-btn,
-.cancel-btn {
+.cancel-btn,
+.delete-btn-articulos,
+.delete-btn-personas,
+.articulos-delete-confirm-btn,
+.proveedor-cancel-btn {
   background-color: rgb(221, 66, 66);
 }
 
 .familia-delete-btn:hover,
 .articulos-delete-confirm-btn:hover,
 .sub-delete-btn:hover,
-.cancel-btn:hover {
+.cancel-btn:hover,
+.delete-btn-articulos:hover,
+.delete-btn-personas:hover,
+.articulos-delete-confirm-btn:hover,
+.proveedor-cancel-btn:hover {
   background-color: rgb(117, 28, 28);
 }
 
@@ -250,7 +281,8 @@ app-sidebar {
   z-index: 3000 !important;
 }
 
-.close-btn-fct {
+.close-btn-fct,
+.close-btn-btn {
   position: absolute;
   top: 16px;
   right: 18px;
