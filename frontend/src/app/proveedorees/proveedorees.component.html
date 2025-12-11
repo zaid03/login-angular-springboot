@@ -1,13 +1,25 @@
     
 <div class="proveedores-page">
-  <div 
-    class="sidebar-backdrop" 
-    *ngIf="!sidebar.collapsed" 
-    (click)="sidebar.collapsed = true">
-  </div>
-  <app-sidebar #sidebar></app-sidebar>
+    <div 
+        class="sidebar-backdrop" 
+        *ngIf="!sidebar.collapsed" 
+        (click)="sidebar.collapsed = true">
+    </div>
+    <app-sidebar #sidebar></app-sidebar>
     <div class="proveedores-container" [class.blurred]="!sidebar.collapsed">
-        <h2>Lista de Proveedores</h2>  
+        <div class="title-menu">
+            <h2 class="margin-title">Lista de Proveedores</h2>  
+            <div class="group-menu" (click)="toggleMenu($event)">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="menu-panel" *ngIf="showMenu">
+                    <button type="button" (click)="DownloadPDF(); closeMenu()">Descargar PDF</button>
+                    <button type="button" (click)="DownloadCSV(); closeMenu()">Descargar CSV</button>
+                    <button type="button" (click)="openProveedorModal(); closeMenu()">Añadir proveedor</button>
+                </div>
+            </div>
+        </div>
         <div class="proveedores-search">
             <form class="search-form" (submit)="onSearchFormSubmit($event)">
                 <input type="text" class="search-bar" placeholder="Buscar proveedor" name="search" [(ngModel)]="searchTerm" (keyup.enter)="search()"/>
@@ -15,18 +27,13 @@
                     <label>
                         <input type="radio" name="optiones" value="Todos" [(ngModel)]="filterOption" /> Todos
                         <input type="radio" name="optiones" value="noBloqueados" [(ngModel)]="filterOption" /> No Bloqueados
-                        <input type="radio" name="optiones" value="Bloqueados" [(ngModel)]="filterOption"  /> Bloqueados
+                        <input type="radio" name="optiones" value="Bloqueados" [(ngModel)]="filterOption"  /> No Bloqueados
                     </label>
                 </div>
                 <button type="button" class="search-button-proveedores" (click)="search()">Buscar</button>
-                <button type="button" class="search-button-proveedores" (click)="clearSearch()">Volver</button>
+                <button type="button" class="search-button-proveedores" (click)="clearSearch()">Limpiar</button>
             </form>
         </div> 
-
-        <div class="proveedores-download">
-            <button class="download-btn" (click)="DownloadPDF()">Descargar como PDF</button>
-            <button class="download-btn" (click)="DownloadCSV()">Descargar como CSV</button>
-        </div>
 
         <div class="proveedores-list">
             <h1 class="errorBtn">{{error}}</h1>
@@ -79,9 +86,6 @@
                 />
                 <span>de {{ totalPages }}</span>
                 <button class="pag-btn" (click)="nextPage()" [disabled]="page + 1 >= totalPages">Siguiente</button>
-            </div>
-            <div class="add-container">
-                <button  class="add-btn" (click)="openProveedorModal()">Añadir</button>
             </div>
             <div class="modal-backdrop" *ngIf="selectedProveedor" (click)="closeDetails()"></div>
             <div class="display" >

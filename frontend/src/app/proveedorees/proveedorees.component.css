@@ -1,11 +1,3 @@
-body, html {
-  overflow-x: hidden;
-}
-
-*{
-  font-family: 'Open Sans Condensed', sans-serif;  
-}
-
 .proveedores-page {
   display: flex;
   min-height: 100vh;
@@ -102,13 +94,6 @@ app-sidebar {
 
 .articulos-delete-confirm-btn {
   margin-right: 10px;
-}
-
-.proveedores-download {
-  display: flex;
-  gap: 16px;
-  justify-content: flex-end;
-  margin: 16px 0 24px 0;
 }
 
 .proveedores-list {

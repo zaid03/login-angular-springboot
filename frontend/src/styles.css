@@ -146,7 +146,8 @@ app-sidebar {
 .delete-btn-articulos,
 .articulos-cancel-confirm-btn,
 .proveedor-saving-btn,
-.proveedor-cancel-btn  {
+.proveedor-cancel-btn,
+.menu-panel button  {
   background-color: #1d4ed8;
   color: #fff;
   border: none;
@@ -185,7 +186,8 @@ app-sidebar {
 .Articulo-btn:hover,
 .save-btn-articulos:hover,
 .articulos-cancel-confirm-btn:hover,
-.proveedor-saving-btn:hover {
+.proveedor-saving-btn:hover,
+.menu-panel button:hover {
   background-color: #094fa3;
   color: #e6edf3;
 }
@@ -292,4 +294,49 @@ app-sidebar {
   color: red;
   cursor: pointer;
   transition: color 0.2s;
+}
+
+/* 3 dots menu */
+.title-menu{
+  text-align: center;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.margin-title {
+  width: 97%;
+}
+.group-menu{
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+}
+
+.dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: #6c757d;
+  margin-top: 4px;
+}
+
+.menu-panel {
+  position: absolute;
+  top: 28px;
+  right: 0;
+  min-width: 190px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 12px 28px rgba(17, 48, 71, 0.18);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 3000;
+  border: 1px solid rgba(28, 93, 140, 0.08);
 }
