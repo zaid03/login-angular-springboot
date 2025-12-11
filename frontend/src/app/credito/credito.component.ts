@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -16,6 +16,17 @@ import { environment } from '../../environments/environment';
   styleUrls: ['./credito.component.css']
 })
 export class CreditoComponent {
+  showMenu = false;
+  toggleMenu(event: MouseEvent): void {
+    event.stopPropagation();
+    this.showMenu = !this.showMenu;
+  }
+
+  @HostListener('document:click')
+  closeMenu(): void {
+    this.showMenu = false;
+  }
+
   private entcod: number | null = null;
   private eje: number | null = null;
   public centroGestor: string = '';

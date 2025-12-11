@@ -17,8 +17,6 @@ import { environment } from '../../environments/environment';
   styleUrls: ['./proveedorees.component.css']
 })
 export class ProveedoreesComponent {
-
-
   sidebarOpen = false;
   toggleSidebar() { this.sidebarOpen = !this.sidebarOpen; }
   closeSidebar() { this.sidebarOpen = false; }
@@ -159,7 +157,7 @@ export class ProveedoreesComponent {
       return;
     }
 
-    if ((/^\d+$/.test(this.searchTerm) && this.filterOption === 'Bloqueados') && (this.searchTerm.length <= 5)) { 
+    if ((/^\d+$/.test(this.searchTerm) && this.filterOption === 'noBloqueados') && (this.searchTerm.length <= 5)) { 
       const tercod = this.searchTerm;
       const terblo = 0;
       this.http.get<any[]>(`${environment.backendUrl}/api/ter/by-ent/${this.entcod}/tercod/${tercod}/terblo/${terblo}`)
@@ -167,7 +165,7 @@ export class ProveedoreesComponent {
           next: (response) => {
             this.proveedores = response;
             if (response.length === 0) {
-              this.error = 'No se encontraron proveedores bloqueados con el código ingresado.';
+              this.error = 'No se encontraron proveedores no bloqueados con el código ingresado.';
             }
             this.page = 0;
           },
@@ -177,7 +175,7 @@ export class ProveedoreesComponent {
         });
       return;
     }
-    if (/^\d+$/.test(this.searchTerm) && this.filterOption === 'noBloqueados' && (this.searchTerm.length <= 5)) {
+    if (/^\d+$/.test(this.searchTerm) && this.filterOption === 'Bloqueados' && (this.searchTerm.length <= 5)) {
       const tercod = this.searchTerm;
       const terblo = 0;
       this.http.get<any[]>(`${environment.backendUrl}/api/ter/by-ent/${this.entcod}/tercod/${tercod}/terblo-not/${terblo}`)
@@ -185,7 +183,7 @@ export class ProveedoreesComponent {
           next: (response) => {
             this.proveedores = response;
             if (response.length === 0) {
-              this.error = 'No se encontraron proveedores no bloqueados con el código ingresado.';
+              this.error = 'No se encontraron proveedores bloqueados con el código ingresado.';
             }
             this.page = 0;
           },

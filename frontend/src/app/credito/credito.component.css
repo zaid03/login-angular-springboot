@@ -87,13 +87,6 @@ app-sidebar {
     outline: none;
 }
 
-.credito-download {
-    display: flex;
-    gap: 16px;
-    justify-content: flex-end;
-    margin: 16px 0 24px 0;
-}
-
 .download-btn,
 .pagination-controls button,
 .save-btn {

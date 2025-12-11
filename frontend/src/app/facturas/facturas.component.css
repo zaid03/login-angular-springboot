@@ -30,12 +30,10 @@
 
 .facturas-search {
     font-weight: 700;
-    margin-top: 2%;
     display: flex;
     width: 100%;
     justify-content: center;
     align-items: center;
-    margin-bottom: 24px;
     background: transparent;
 }
 
@@ -55,7 +53,7 @@
 }
 
 .search-bar, .option-search {
-    padding: 10px 14px;
+    padding: 4px 8px;
     border-radius: 20px;
     border: 1px solid #bbb;
     font-size: 16px;
@@ -78,29 +76,15 @@
     align-items: center;
 }
 
-.search-options input::placeholder,
-.search-form input::placeholder,
-.fecha-dates input[type="date"]::-webkit-datetime-edit {
-    font-weight: 700;
-}
-
 .btns{
     display: flex;
     gap: 10px;
 }
 
-.more-search-options{
+.more-search-options {
     width: 45%;
     display: flex;
-}
-
-.choice, .option{
-    margin-bottom: 10px;
-}
-
-.fecha p, .estado p{
-    text-align: center;
-    padding: 10px;
+    font-weight: 500;
 }
 
 input.fecha-dato[type="radio"] {
@@ -113,24 +97,17 @@ input.fecha-dato[type="radio"] {
   appearance: radio;
 }
 
-.more-search-options .fecha-dates {
-    margin: 10px;
-    gap: 10px;
-    align-items: center;
-    font-size: 0.95rem;
-    color: #222;
+.margin-bottom{
+    margin-bottom: 5px;
 }
 
 .more-search-options .fecha-dates input.fecha-dato[type="date"] {
-    padding: 2px 2px;
-    height: 36px;
+    padding: 4px 8px;
     border-radius: 6px;
     border: 1px solid #d0d0d0;
     background: #fff;
     color: #222;
-    font-size: inherit;
-    margin-right: 6px;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
 }
 
 .more-search-options .fecha-dates input.fecha-dato[type="date"]:focus {
@@ -139,21 +116,8 @@ input.fecha-dato[type="radio"] {
     box-shadow: 0 0 0 4px rgba(9,79,163,0.06);
 }
 
-.more-search-options .btns{
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-}
-
 .estado{
     width: 100%;
-}
-
-.facturas-download {
-    display: flex;
-    gap: 16px;
-    justify-content: flex-end;
-    margin: 16px 0 24px 0;
 }
 
 .facturas-list {

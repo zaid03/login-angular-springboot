@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -17,6 +17,17 @@ import { environment } from '../../environments/environment';
   styleUrls: ['./familia.component.css']
 })
 export class FamiliaComponent {
+  showMenu = false;
+  toggleMenu(event: MouseEvent): void {
+    event.stopPropagation();
+    this.showMenu = !this.showMenu;
+  }
+
+  @HostListener('document:click')
+  closeMenu(): void {
+    this.showMenu = false;
+  }
+
   constructor(private http: HttpClient, private router: Router) {}
   
   private entcod: number | null = null;

@@ -7,7 +7,18 @@
     </div>
     <app-sidebar #sidebar></app-sidebar>
     <div class="credito-container" [class.blurred]="!sidebar.collapsed">
-        <h2>Lista de Bolsas de credito</h2>
+        <div class="title-menu">
+            <h2 class="margin-title">Lista de Bolsas de credito</h2>  
+            <div class="group-menu" (click)="toggleMenu($event)">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="menu-panel" *ngIf="showMenu">
+                    <button class="download-btn" (click)="DownloadPDF(); closeMenu()">Descargar como PDF</button>
+                    <button class="download-btn" (click)="DownloadCSV(); closeMenu()">Descargar como CSV</button>
+                </div>
+            </div>
+        </div>
         <div class="credito-search">
             <form class="search-form">
                 <input 
@@ -20,10 +31,6 @@
                     readonly
                 >
             </form>
-        </div>
-        <div class="credito-download">
-            <button class="download-btn" (click)="DownloadPDF()">Descargar como PDF</button>
-            <button class="download-btn" (click)="DownloadCSV()">Descargar como CSV</button>
         </div>
         <div class="credito-list">
             <h1 style="margin-bottom:2%; font-family: inherit; color: red; font-size: inherit;" id="error">{{ tableMessage }}</h1>

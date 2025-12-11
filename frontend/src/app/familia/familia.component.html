@@ -7,7 +7,20 @@
     </div>
     <app-sidebar #sidebar></app-sidebar>
     <div class="familia-container" [class.blurred]="!sidebar.collapsed">
-        <h2>Listado de Familias</h2> 
+        <div class="title-menu">
+            <h2 class="margin-title">Listado de Familias</h2> 
+            <div class="group-menu" (click)="toggleMenu($event)">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="menu-panel" *ngIf="showMenu">
+                    <button class="download-btn" (click)="excelDownload(); closeMenu()">Descargar como Excel</button>
+                    <button class="print-btn" (click)="toPrint(); closeMenu()">Impreso</button>
+                    <button class="add-familia-btn" (click)="launchAddFamilia()">Añadir</button>
+                </div>
+            </div>
+        </div>
+        
         <div class="familia-search">
             <form class="search-form">
                 <input 
@@ -21,14 +34,9 @@
             <button class="search-btn" (click)="searchFamilias()">Buscar</button>
         </div>
         <h1 class="errorBtn">{{ familiaMessageError }}</h1>
-        <div class="familias-download">
-            <button class="download-btn" (click)="excelDownload()">Descargar como Excel</button>
-            <button class="print-btn" (click)="toPrint()">Impreso</button>
-        </div>
         <div class="familia-list">
             <h1 class="errorBtn">{{ tableMessage }}</h1>
             <h1 class="successBtn">{{ familiaMessage }}</h1>
-            <button class="add-familia-btn" (click)="launchAddFamilia()">Añadir</button>
             <table class="familia-table">
                 <thead>
                     <tr>
