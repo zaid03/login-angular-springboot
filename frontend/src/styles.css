@@ -130,7 +130,10 @@ app-sidebar {
 .styled-table button,
 .cancel-btn,
 .next-btn,
-.next-btn  {
+.next-btn,
+.menu button,
+.services-btn,
+.cge-btn  {
   background-color: #1d4ed8;
   color: #fff;
   border: none;
@@ -156,7 +159,10 @@ app-sidebar {
 .add-centroGestor-btn:hover,
 .search-button:hover,
 .styled-table button:hover,
-.next-btn:hover  {
+.next-btn:hover,
+.menu button:hover,
+.services-btn:hover,
+.cge-btn:hover {
   background-color: #094fa3;
   color: #e6edf3;
 }
