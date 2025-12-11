@@ -126,7 +126,11 @@ app-sidebar {
 .subFamilias-add-btn,
 .download-btn,
 .search-button,
-.add-centroGestor-btn {
+.add-centroGestor-btn,
+.styled-table button,
+.cancel-btn,
+.next-btn,
+.next-btn  {
   background-color: #1d4ed8;
   color: #fff;
   border: none;
@@ -150,20 +154,24 @@ app-sidebar {
 .sub-save-btn:hover,
 .subFamilias-add-btn:hover,
 .add-centroGestor-btn:hover,
-.search-button:hover  {
+.search-button:hover,
+.styled-table button:hover,
+.next-btn:hover  {
   background-color: #094fa3;
   color: #e6edf3;
 }
 
 .familia-delete-btn,
 .articulos-delete-confirm-btn,
-.sub-delete-btn {
+.sub-delete-btn,
+.cancel-btn {
   background-color: rgb(221, 66, 66);
 }
 
 .familia-delete-btn:hover,
 .articulos-delete-confirm-btn:hover,
-.sub-delete-btn:hover {
+.sub-delete-btn:hover,
+.cancel-btn:hover {
   background-color: rgb(117, 28, 28);
 }
 

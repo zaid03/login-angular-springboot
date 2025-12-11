@@ -34,9 +34,12 @@ export class EntComponent implements OnInit {
           this.router.navigate(['/login']);
           return;
         } 
-        if (Array.isArray(filterResponse) && filterResponse.length) {
-          this.tableData = filterResponse;
-                        
+        if (Array.isArray(filterResponse) && filterResponse.length > 1) {
+          this.tableData = filterResponse;            
+        } else if (Array.isArray(filterResponse) && filterResponse.length === 1) {
+          const row = filterResponse[0];
+          this.tableData = [row];
+          this.selectRow(row);
         } else {
           this.errorMsg = 'No data returned for user.';
           sessionStorage.clear();

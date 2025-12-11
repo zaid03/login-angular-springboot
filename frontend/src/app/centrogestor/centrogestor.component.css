@@ -1,7 +1,3 @@
-*{
-    font-family: 'Open Sans Condensed', sans-serif;  
-}
-
 .table-container {
     background-color: #f0f0f0;
     min-height: 100vh;
@@ -51,49 +47,6 @@
 
 .styled-table tr:hover {
     background-color: #f0f7ff;
-}
-
-.styled-table button,
-.cancel-btn,
-.next-btn {
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    padding: 8px 14px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    font-weight: 700;
-    outline: none;
-}
-
-.styled-table button {
-    background-color: #1d4ed8;
-    font-size: 14px;
-}
-
-.styled-table button:hover {
-    background-color: #094fa3;
-    color: #e6edf3;
-}
-
-.cancel-btn {
-    background-color: #dc3545;
-    font-size: 18px;
-}
-
-.cancel-btn:hover {
-    background-color: #c82333;
-    transition: background-color 0.3s ease;
-    color: #e6edf3;
-}
-
-.next-btn{
-    background-color: rgb(53, 145, 53);
-    font-size: 18px;
-}
-.next-btn:hover{
-    background-color: green;
-    color: #e6edf3;
 }
 
 .buttons{
