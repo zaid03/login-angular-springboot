@@ -27,35 +27,34 @@ public class TerController {
     }
 
     //for the list filtered by TERCOD and option bloqueado
-    @GetMapping("/by-ent/{ent}/tercod/{tercod}/terblo/{terblo}")
+    @GetMapping("/by-tercod-bloqueado/{ent}/tercod/{tercod}")
     public List<Ter> getByENTAndTERCODAndTERBLO(@PathVariable int ent, @PathVariable Integer tercod) {
         return terRepository.findByENTAndTERCODAndTERBLOZero(ent, tercod);
     }
 
     //for the list filtered by TERCOD and option no bloqueado
-    @GetMapping("/by-ent/{ent}/tercod/{tercod}/terblo-not/{terblo}")
+    @GetMapping("/by-tercod-no-bloqueado/{ent}/tercod/{tercod}")
     public List<Ter> getByENTAndTERCODAndTERBLONot(
         @PathVariable int ent,
-        @PathVariable Integer tercod,
-        @PathVariable Integer terblo
+        @PathVariable Integer tercod
     ) {
-        return terRepository.findByENTAndTERCODAndTERBLONot(ent, tercod, terblo);
+        return terRepository.findByENTAndTERCODAndTERBLONot(ent, tercod);
     }
 
     //for the list filtered by TERNIF and option bloqueado
-    @GetMapping("/by-ent/{ent}/ternif/{ternif}/terblo/{terblo}")
+    @GetMapping("/by-ternif-bloquado/{ent}/ternif/{ternif}")
     public List<Ter> getByENTAndTERNIFAndTERBLO(@PathVariable int ent, @PathVariable String ternif) {
         return terRepository.findByENTAndTERNIFAndTERBLO(ent, ternif);
     }
 
     //for the list filtered by TERNIF and option no bloqueado 
-    @GetMapping("/by-ent/{ent}/ternif/{ternif}/terblo-not/{terblo}")
-    public List<Ter> getByENTAndTERNIFAndTERBLONot(@PathVariable int ent, @PathVariable String ternif, @PathVariable Integer terblo) {
-        return terRepository.findByENTAndTERNIFContainingAndTERBLONot(ent, ternif, terblo);
+    @GetMapping("/by-ternif-no-bloqueado/{ent}/ternif/{ternif}")
+    public List<Ter> getByENTAndTERNIFAndTERBLONot(@PathVariable int ent, @PathVariable String ternif) {
+        return terRepository.findByENTAndTERNIFContainingAndTERBLONot(ent, ternif);
     }
 
     //for the list filtered by TerNIF and TERNOM and TERALI bloqueado
-    @GetMapping("/by-ent/{ent}/search")
+    @GetMapping("/by-ternif-nom-ali-bloquado/{ent}/search")
     public List<Ter> search(
             @PathVariable int ent,
             @RequestParam String term
@@ -64,17 +63,16 @@ public class TerController {
     }
 
     //for the list filtered by TERNIF and TERNOM and TERALI no bloqueado
-    @GetMapping("/by-ent/{ent}/search-by-term")
+    @GetMapping("/by-nif-nom-ali-no-bloquado/{ent}/search-by-term")
     public List<Ter> searchByTerm(
             @PathVariable int ent,
-            @RequestParam String term,
-            @RequestParam(required = false, defaultValue = "0") Integer terblo
+            @RequestParam String term
     ) {
-        return terRepository.searchByTerm(ent, term, terblo);
+        return terRepository.searchByTerm(ent, term);
     }
 
-    //for the list filtered by TERNIF and TERNOM and TERALI bloqueado
-    @GetMapping("/by-ent/{ent}/searchByNomOrAli")
+    //for the list filtered by TERNOM and TERALI bloqueado
+    @GetMapping("/by-nom-ali-bloquado/{ent}/searchByNomOrAli")
     public List<Ter> searchByNomOrAli(
             @PathVariable int ent,
             @RequestParam String term
@@ -82,22 +80,22 @@ public class TerController {
         return terRepository.searchByNomOrAli(ent, term);
     }
 
-    //for the list filtered by TERNIF and TERNOM and TERALI no bloqueado
-    @GetMapping("/by-ent/{ent}/findMatchingNomOrAli")
+    //for the list filtered by TERNOM and TERALI no bloqueado
+    @GetMapping("/by-nom-ali-no-bloquado/{ent}/findMatchingNomOrAli")
     public List<Ter> findMatchingNomOrAli(
             @PathVariable int ent,
-            @RequestParam String term,
-            @RequestParam(required = false, defaultValue = "0") Integer terblo
+            @RequestParam String term
     ) {
-        return terRepository.findMatchingNomOrAli(ent, term, terblo);
+        return terRepository.findMatchingNomOrAli(ent, term);
     }
 
+    //for todos
     // For TERCOD, no TERBLO filter
     @GetMapping("/by-ent/{ent}/tercod/{tercod}")
     public List<Ter> getByENTAndTERCOD(@PathVariable int ent, @PathVariable Integer tercod) {
         return terRepository.findByENTAndTERCOD(ent, tercod);
     }
-
+    
     // For TERNIF, no TERBLO filter
     @GetMapping("/by-ent/{ent}/ternif/{ternif}")
     public List<Ter> getByENTAndTERNIF(@PathVariable int ent, @PathVariable String ternif) {

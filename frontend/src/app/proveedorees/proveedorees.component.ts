@@ -157,6 +157,20 @@ export class ProveedoreesComponent {
       return;
     }
 
+
+    if(this.filterOption === 'noBloqueados') {
+      
+    }
+
+
+
+
+
+
+
+
+
+
     if ((/^\d+$/.test(this.searchTerm) && this.filterOption === 'noBloqueados') && (this.searchTerm.length <= 5)) { 
       const tercod = this.searchTerm;
       const terblo = 0;
