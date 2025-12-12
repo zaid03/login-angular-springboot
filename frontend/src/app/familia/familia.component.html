@@ -40,7 +40,17 @@
             <table class="familia-table">
                 <thead>
                     <tr>
-                        <th>Familia</th>
+                        <th
+                            class="sortable"
+                            (click)="toggleSort('afacod')"
+                        >
+                            Familia
+                            <span 
+                                class="sort-indicator" 
+                            >
+                                {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                            </span>
+                        </th>
                         <th>Descripción</th>
                     </tr>
                 </thead>

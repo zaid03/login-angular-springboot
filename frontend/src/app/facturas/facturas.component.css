@@ -150,6 +150,11 @@ input.fecha-dato[type="radio"] {
     font-weight: 700;
 }
 
+.facturas-table th:first-child,
+.facturas-table th:nth-child(10) {
+  width: 70px;
+}
+
 .facturas-table tbody td,
 .albaranes-table tbody td {
     border: 1px solid #f0f5f9;

@@ -340,3 +340,13 @@ app-sidebar {
   z-index: 3000;
   border: 1px solid rgba(28, 93, 140, 0.08);
 }
+
+/* table styles for ordering */
+th.sortable {
+  cursor: pointer;
+  user-select: none;
+}
+.sort-indicator {
+  margin-left: 4px;
+  font-size: 0.75rem;
+}

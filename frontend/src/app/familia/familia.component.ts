@@ -37,6 +37,9 @@ export class FamiliaComponent {
   page = 0;
   pageSize = 20;
 
+  private defaultFamilias: any[] = [];
+  sortField: 'afacod' | null = null;
+  sortDirection: 'asc' | 'desc' = 'asc';
   ngOnInit():void {
     const entidad = sessionStorage.getItem('Entidad');
     if (entidad) {
@@ -58,6 +61,7 @@ export class FamiliaComponent {
         } else {
           this.familias = Array.isArray(response) ? [...response] : [];
           this.backupFamilias = [...this.familias];
+          this.defaultFamilias = [...this.familias];
           this.page = 0;
         }
       },error: (err) => {
@@ -66,6 +70,42 @@ export class FamiliaComponent {
     })
   }
 
+  toggleSort(field: 'afacod'): void {
+    if (this.sortField !== field) {
+      this.sortField = field;
+      this.sortDirection = 'asc';
+      this.defaultFamilias = [...this.familias];
+    } else if (this.sortDirection === 'asc') {
+      this.sortDirection = 'desc';
+    } else {
+      this.sortField = null;
+      this.sortDirection = 'asc';
+      this.familias = [...this.defaultFamilias];
+      this.page = 0;
+      return;
+    }
+
+    this.applySort();
+  }
+
+  private applySort(): void {
+    if (!this.sortField) {
+      return;
+    }
+
+    const base = [...this.defaultFamilias];
+    const sorted = base.sort((a, b) => {
+      const aVal = (a.afacod ?? '').toString().toUpperCase();
+      const bVal = (b.afacod ?? '').toString().toUpperCase();
+      return this.sortDirection === 'asc'
+        ? aVal.localeCompare(bVal)
+        : bVal.localeCompare(aVal);
+    });
+
+    this.familias = sorted;
+    this.page = 0;
+  }
+  
   get paginatedFamilias(): any[] {
     if (!this.familias || this.familias.length === 0) return [];
     const start = this.page * this.pageSize;
@@ -112,6 +152,9 @@ export class FamiliaComponent {
     if (!term) {
       this.familiaMessageError = 'Introduzca una familia para buscar'
       this.familias = [...this.backupFamilias];
+      this.defaultFamilias = [...this.familias];
+      this.sortField = null;
+      this.sortDirection = 'asc';
       this.page = 0;
       return;
     }
@@ -139,6 +182,9 @@ export class FamiliaComponent {
       this.familiaMessageError = 'Este familia o subfamilia no existe';
     }
     
+    this.defaultFamilias = [...this.familias];
+    this.sortField = null;
+    this.sortDirection = 'asc';
     this.page = 0;
   }
 

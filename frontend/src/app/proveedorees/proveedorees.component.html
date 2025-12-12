@@ -40,8 +40,28 @@
             <table class="main-table">
                 <thead>
                     <tr>
-                        <th>Código</th>
-                        <th>Nombre</th>
+                        <th 
+                            class="sortable" 
+                            (click)="toggleSort('tercod')"
+                        >
+                            Código 
+                            <span 
+                                class="sort-indicator" 
+                            >
+                            {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                            </span>
+                        </th>
+                        <th
+                            class="sortable"
+                            (click)="toggleSort('ternom')" 
+                        >
+                            Nombre
+                            <span 
+                                class="sort-indicator" 
+                            >
+                                {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                            </span>
+                        </th>
                         <th>NIF</th>
                         <th>Alias</th>
                         <th>Teléfono</th>

@@ -49,6 +49,9 @@ export class FacturasComponent {
 
   constructor(private http: HttpClient, private router: Router) {}
 
+  private defaultFacturas: any[] = [];
+  sortField: 'facnum' | 'facdat' | null = null;
+  sortDirection: 'asc' | 'desc' = 'asc';
   ngOnInit(): void{
     this.estadoMessage = '';
     this.facturaIsError = false;
@@ -98,17 +101,77 @@ export class FacturasComponent {
         if (!Array.isArray(response) || response.length === 0) {
           this.facturaMessageIsSuccess = true;
           this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
-          this.facturas = []
+          this.facturas = [];
+          this.defaultFacturas = [];
+            this.updatePagination();
         } else {
           this.facturas = response;
           this.backupFacturas = Array.isArray(response) ? [...response] : [];
+          this.defaultFacturas = [...this.backupFacturas];
           this.page = 0;
+          this.updatePagination();
         }
       }, error: (err) => {
         this.facturaIsError = true;
         this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
       }
     });
+  }
+
+  private updatePagination(): void {
+    const total = this.totalPages;
+    if (total === 0) {
+      this.page = 0;
+      return;
+    }
+    if (this.page >= total) {
+      this.page = total - 1;
+    }
+  }
+  
+  toggleSort(field: 'facnum' | 'facdat'): void {
+    if (this.sortField !== field) {
+      this.sortField = field;
+      this.sortDirection = 'asc';
+    } else if (this.sortDirection === 'asc') {
+      this.sortDirection = 'desc';
+    } else {
+      this.sortField = null;
+      this.sortDirection = 'asc';
+      this.facturas = [...this.defaultFacturas];
+      this.page = 0;
+      this.updatePagination();
+      return;
+    }
+
+    this.applySort();
+  }
+
+  private applySort(): void {
+    if (!this.sortField) {
+      return;
+    }
+
+    const source = [...this.defaultFacturas];
+    const sorted = source.sort((a: any, b: any) => {
+      if (this.sortField === 'facnum') {
+        const aNum = Number(a.facnum ?? a.FACNUM ?? 0);
+        const bNum = Number(b.facnum ?? b.FACNUM ?? 0);
+        return this.sortDirection === 'asc' ? aNum - bNum : bNum - aNum;
+      }
+      const toTime = (value: any) => {
+        if (!value) return 0;
+        const date = new Date(value);
+        return isNaN(date.getTime()) ? 0 : date.getTime();
+      };
+      const aTime = toTime(a.facdat ?? a.FACDAT);
+      const bTime = toTime(b.facdat ?? b.FACDAT);
+      return this.sortDirection === 'asc' ? aTime - bTime : bTime - aTime;
+    });
+
+    this.facturas = sorted;
+    this.page = 0;
+    this.updatePagination();
   }
 
   get paginatedFacturas(): any[] {
@@ -415,10 +478,22 @@ export class FacturasComponent {
             this.facturaMessageIsSuccess = true;
             this.facturaMessage = 'No hay facturas para los filtros seleccionados.';
             this.facturas = [];
+            this.facturas = [];
+            this.defaultFacturas = [];
+            this.sortField = null;
+            this.sortDirection = 'asc';
+            this.updatePagination();
             return;
           }
-          this.facturas = res.body;
-          this.page = 0;
+          const body = res.body ?? [];
+          this.facturas = body;
+          this.defaultFacturas = [...body];
+          if (this.sortField) {
+            this.applySort();
+          } else {
+            this.page = 0;
+            this.updatePagination();
+          }
         },
         error: (err) => {
           this.facturaIsError = true;
@@ -443,10 +518,17 @@ export class FacturasComponent {
     this.facturaMessage = '';
     this.facturaMessageSuccess = '';
     this.page = 0;
+    this.sortField = null;
+    this.sortDirection = 'asc';
 
     if (this.backupFacturas.length) {
       this.facturas = [...this.backupFacturas];
-      this.page = 0;
+      this.defaultFacturas = [...this.backupFacturas];
+      this.updatePagination();
+    } else {
+      this.facturas = [];
+      this.defaultFacturas = [];
+      this.updatePagination();
     }
   }
 

@@ -169,7 +169,17 @@
             <table class="facturas-table">
                 <thead>
                     <tr>
-                        <th>Número Registro</th>
+                        <th
+                            class="sortable"
+                            (click)="toggleSort('facnum')"
+                        >
+                            Número Registro
+                            <span 
+                                class="sort-indicator" 
+                            >
+                            {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                            </span>
+                        </th>
                         <th>Código Prov.</th>
                         <th>Nombre Proveedor</th>
                         <th>NIF Prov.</th>
@@ -178,7 +188,17 @@
                         <th>Núm. Factura</th>
                         <th>Año</th>
                         <th>R.C.F.</th>
-                        <th>Fecha Factura</th>
+                        <th
+                            class="sortable"
+                            (click)="toggleSort('facdat')"
+                        >
+                            Fecha Factura
+                            <span 
+                                class="sort-indicator" 
+                            >
+                            {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                            </span>
+                        </th>
                         <th>ADO</th>
                         <th>Fecha contable</th>
                         <th>Pte. Aplicar</th>

@@ -38,6 +38,9 @@ export class ProveedoreesComponent {
   proveedores: any[] = [];
   private backupProveedores: any[] = [];
   error: string | null = null;
+  sortField: 'tercod' | 'ternom' | null = null;
+  sortDirection: 'asc' | 'desc' = 'asc';
+  private defaultProveedores: any[] = [];
   ngOnInit(): void {
     this.error = '';
     const entidad = sessionStorage.getItem('Entidad');
@@ -62,13 +65,62 @@ export class ProveedoreesComponent {
           } else {
             this.proveedores = response;
             this.backupProveedores = Array.isArray(response) ? [...response] : [];
+            this.defaultProveedores = [...this.backupProveedores];
             this.page = 0;
+            this.updatePaginatedProveedores();
           }
         },
         error: (err) => {
           this.error = 'Server error';
         }
       });
+  }
+
+  toggleSort(field: 'tercod' | 'ternom'): void {
+    if (this.sortField !== field) {
+      this.sortField = field;
+      this.sortDirection = 'asc';
+    } else if (this.sortDirection === 'asc') {
+      this.sortDirection = 'desc';
+    } else {
+      this.sortField = null;
+      this.sortDirection = 'asc';
+      this.proveedores = [...this.defaultProveedores];
+      this.page = 0;
+      this.updatePaginatedProveedores();
+      return;
+    }
+    this.applySort();
+  }
+
+  private applySort(): void {
+    const sorted = [...this.proveedores].sort((a, b) => {
+      if (this.sortField === 'tercod') {
+        const aNum = Number(a.tercod ?? 0);
+        const bNum = Number(b.tercod ?? 0);
+        return this.sortDirection === 'asc' ? aNum - bNum : bNum - aNum;
+      }
+      const aName = (a.ternom ?? '').toString().toUpperCase();
+      const bName = (b.ternom ?? '').toString().toUpperCase();
+      return this.sortDirection === 'asc'
+        ? aName.localeCompare(bName)
+        : bName.localeCompare(aName);
+    });
+
+    this.proveedores = sorted;
+    this.page = 0;
+    this.updatePaginatedProveedores();
+  }
+
+  private updatePaginatedProveedores(): void {
+    const total = this.totalPages;
+    if (total === 0) {
+      this.page = 0;
+      return;
+    }
+    if (this.page >= total) {
+      this.page = total - 1;
+    }
   }
 
   page = 0;

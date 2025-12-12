@@ -157,6 +157,10 @@ app-sidebar {
   font-weight: 600;
 }
 
+.main-table td:first-child {
+  width: 64px;
+}
+
 .main-table tr:hover,
 .personas-contacto-table tr:hover
 .articulo-table tr:hover,
