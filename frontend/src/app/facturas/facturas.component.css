@@ -248,56 +248,66 @@ input.fecha-dato[type="radio"] {
 }
 
 .width{
-    width: 120px;
+    width: 200px;
 }
 
 .margin{
     margin-bottom: 10%;
 }
 
-.first-data input[type="text"], 
-.second-data input[type="text"], 
-.third-data input[type="text"], 
-.fourth-data input[type="text"], 
-.fifth-data input[type="text"], 
-.sixth-data input[type="text"],
-.sixth-data input[type="text"],
-.seventh-data input[type="text"],
-.eighth-data input[type="text"],
-.ninth-data input[type="text"],
-.tenth-data input[type="text"],
-.eleventh-data input[type="text"],
-.twelfth-data input[type="text"],
-.thirteenth-data input[type="text"]  {
+.first-data textarea, 
+.second-data textarea, 
+.third-data textarea, 
+.fourth-data textarea, 
+.fifth-data textarea, 
+.sixth-data textarea,
+.sixth-data textarea,
+.seventh-data textarea,
+.eighth-data textarea,
+.ninth-data textarea,
+.tenth-data textarea,
+.eleventh-data textarea,
+.twelfth-data textarea,
+.thirteenth-data textarea  {
     border: 1px solid #1c5d8c;
-    padding: 8px 6px;
+    height: 20px;
+    padding: 2px 4px;
     border-radius: 6px;
-    max-width: 400px;
+    max-width: 200px;
+    font-weight: bold;
 }
 
-.fifth-data input[type="text"] {
+.fifth-data textarea {
     min-width: 85%;
     max-width: 100% !important;
 }
 
-.first-data input[type="text"]:focus,
-.second-data input[type="text"]:focus,
-.third-data input[type="text"]:focus,
-.fourth-data input[type="text"]:focus, 
-.fifth-data input[type="text"]:focus, 
-.sixth-data input[type="text"]:focus,
-.seventh-data input[type="text"]:focus,
-.eighth-data input[type="text"]:focus,
-.ninth-data input[type="text"]:focus,
-.tenth-data input[type="text"]:focus,
-.eleventh-data input[type="text"]:focus,
-.twelfth-data input[type="text"]:focus,
-.thirteenth-data input[type="text"]:focus  {
+.first-data textarea:focus,
+.second-data textarea:focus,
+.third-data textarea:focus,
+.fourth-data textarea:focus, 
+.fifth-data textarea:focus, 
+.sixth-data textarea:focus,
+.seventh-data textarea:focus,
+.eighth-data textarea:focus,
+.ninth-data textarea:focus,
+.tenth-data textarea:focus,
+.eleventh-data textarea:focus,
+.twelfth-data textarea:focus,
+.thirteenth-data textarea:focus  {
     outline: none;
     border-color: #042b5a;
     outline: none;
     background: #fff;
 } 
+
+.eighth-data textarea,
+.ninth-data textarea,
+.tenth-data textarea,
+.eleventh-data textarea,
+.twelfth-data textarea {
+    text-align: right;
+}
 
 .detail-switch,
 .detail-switch-second {

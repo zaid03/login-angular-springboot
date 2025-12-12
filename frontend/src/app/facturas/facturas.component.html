@@ -192,14 +192,14 @@
                         <td (click)="showDetails(p)" style="cursor: pointer;">{{ p.tercod }}</td>
                         <td>{{ p.ternom }}</td>
                         <td>{{ p.ternif }}</td>
-                        <td>{{ p.facfre | date:'yyyy-MM-dd'}}</td>
+                        <td>{{ p.facfre | date:'dd-MM-yyyy'}}</td>
                         <td>{{ p.facimp  }}</td>
                         <td>{{ p.facdoc }}</td>
                         <td>{{ p.facann }}</td>
                         <td>{{ p.facfac }}</td>
-                        <td>{{ p.facdat | date:'yyyy-MM-dd' }}</td>
+                        <td>{{ p.facdat | date:'dd-MM-yyyy' }}</td>
                         <td>{{ p.facado }}</td>
-                        <td>{{ p.facfco | date:'yyyy-MM-dd' }}</td>
+                        <td>{{ p.facfco | date:'dd-MM-yyyy' }}</td>
                         <td>{{getPendingApply(p) | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</td>
                         <td>{{ p.cgecod }}</td>
                         <td>{{ getStaus(p.facado, p.facimp, p.faciec, p.facidi) }}</td>
@@ -231,113 +231,113 @@
                             <div class="first-row">
                                 <div class="first-data">
                                     <p>Núm. Reg.</p>
-                                    <input type="text" [(ngModel)]="selectedFacturas.facnum" />
+                                    <textarea [(ngModel)]="selectedFacturas.facnum"></textarea>
                                 </div>
                                 <div class="first-data">
                                     <p>F.Contable</p>
-                                    <input type="text" [ngModel]="selectedFacturas.facfco | date:'yyyy-MM-dd'" />
+                                    <textarea [ngModel]="selectedFacturas.facfco | date:'dd-MM-yyyy'"></textarea>
                                 </div>
                                 <div class="first-data">
                                     <p>ADO</p>
-                                    <input type="text" [(ngModel)]="selectedFacturas.facado" />
+                                    <textarea [(ngModel)]="selectedFacturas.facado"></textarea>
                                 </div>  
                             </div>
                             <div class="second-row">
                                 <div class="second-data">
                                     <p>R.C.F:</p>
-                                    <input class="width" type="text" [(ngModel)]="selectedFacturas.facfac" />
-                                    <input class="width" type="text" [(ngModel)]="selectedFacturas.facann" />
-                                    <input class="width" type="text" [(ngModel)]="selectedFacturas.factdc" />
+                                    <textarea [(ngModel)]="selectedFacturas.facfac"></textarea>
+                                    <textarea [(ngModel)]="selectedFacturas.facann" ></textarea>
+                                    <textarea [(ngModel)]="selectedFacturas.factdc"></textarea>
                                 </div>
                                 <div class="second-data">
                                     <p>Núm.Factura:</p>
-                                    <input class="width" type="text" [(ngModel)]="selectedFacturas.facdoc" />
+                                    <textarea [(ngModel)]="selectedFacturas.facdoc"></textarea>
                                 </div>
                             </div>
                             <div class="third-row">
                                 <div class="third-data">
                                     <p>Proveedor:</p>
-                                    <input type="text" [(ngModel)]="selectedFacturas.tercod" />
-                                    <input type="text" [(ngModel)]="selectedFacturas.ternom" style="width: 300px !important;"/>
+                                    <textarea [(ngModel)]="selectedFacturas.tercod"></textarea>
+                                    <textarea class="width" [(ngModel)]="selectedFacturas.ternom"></textarea>
                                 </div>
                             </div>
                             <div class="fourth-row">
                                 <div class="fourth-data">
                                     <p>NIF</p>
-                                    <input type="text" [(ngModel)]="selectedFacturas.ternif" />
+                                    <textarea [(ngModel)]="selectedFacturas.ternif"></textarea>
                                 </div>
                                 <div class="fourth-data">
                                     <p>Fecha Factura</p>
-                                    <input type="text" [ngModel]="selectedFacturas.facdat | date:'yyyy-MM-dd'" />
+                                    <textarea [ngModel]="selectedFacturas.facdat | date:'dd-MM-yyyy'"></textarea>
                                 </div>
                                 <div class="fourth-data">
                                     <p>C.Gestor</p>
-                                    <input type="text" [value]="selectedFacturas.cgecod" style="width: 40px;" readonly />
+                                    <textarea [value]="selectedFacturas.cgecod" readonly></textarea>
                                 </div>
                             </div>
                             <div class="fifth-row">
                                 <div class="fifth-data">
                                     <p style="margin-bottom: 10px;">Des.Fact/ADO:</p>
-                                    <input type="text" [(ngModel)]="selectedFacturas.factxt" />
+                                    <textarea [(ngModel)]="selectedFacturas.factxt"></textarea>
                                 </div>
                                 <div class="fifth-data">
                                     <p style="margin-bottom: 10px;">F.Registro</p>
-                                    <input type="text" [ngModel]="selectedFacturas.facfre | date:'yyyy-MM-dd'" />
+                                    <textarea [ngModel]="selectedFacturas.facfre | date:'dd-MM-yyyy'"></textarea>
                                 </div>  
                             </div>
                             <div class="sixth-row">
                                 <div class="sixth-data">
                                     <p style="margin-bottom: 10px;">Tipo de contrato</p>
-                                    <input class="width" type="text" [ngModel]="selectedFacturas.conctp" />
+                                    <textarea [ngModel]="selectedFacturas.conctp"></textarea>
                                 </div>
                                 <div class="sixth-data">
                                     <p style="margin-bottom: 10px;">Procedimiento de contacto</p>
-                                    <input class="width" type="text" [ngModel]="selectedFacturas.concpr" />
+                                    <textarea [ngModel]="selectedFacturas.concpr"></textarea>
                                 </div>
                                 <div class="sixth-data">
                                     <p style="margin-bottom: 10px;">Criterio de puntuación</p>
-                                    <input class="width" type="text" [ngModel]="selectedFacturas.conccr" />
+                                    <textarea [ngModel]="selectedFacturas.conccr"></textarea>
                                 </div>
                             </div>
                             <div class="seventh-row">
                                 <div class="seventh-data">
                                     <p style="margin-bottom: 10px;">Forma de pago</p>
-                                    <input class="width" type="text" [ngModel]="selectedFacturas.facfpg" />
+                                    <textarea [ngModel]="selectedFacturas.facfpg"></textarea>
                                 </div>
                                 <div class="seventh-data">
                                     <p style="margin-bottom: 10px;">Ordinal de pago</p>
-                                    <input class="width" type="text" [ngModel]="selectedFacturas.facopg" />
+                                    <textarea [ngModel]="selectedFacturas.facopg"></textarea>
                                 </div>
                                 <div class="seventh-data">
                                     <p style="margin-bottom: 10px;">Tipo de pago</p>
-                                    <input class="width" type="text" [ngModel]="selectedFacturas.factpg" />
+                                    <textarea [ngModel]="selectedFacturas.factpg"></textarea>
                                 </div>
                             </div>
                         </div>
                         <div class="right">
                             <div class="eighth-data margin">
                                 <p style="margin-bottom: 10px;">Total Factura</p>
-                                <input class="width" type="text" [ngModel]="selectedFacturas.facimp | currency:'EUR':'symbol':'1.2-2':'es-ES'" />
+                                <textarea [ngModel]="selectedFacturas.facimp | currency:'EUR':'symbol':'1.2-2':'es-ES'"></textarea>
                             </div>
                             <div class="ninth-data margin">
                                 <p>Aplicado:</p>
-                                <input class="width" type="text" [ngModel]="selectedFacturas.faciec | currency:'EUR':'symbol':'1.2-2':'es-ES'" style="width: 100px;" />
+                                <textarea [ngModel]="selectedFacturas.faciec | currency:'EUR':'symbol':'1.2-2':'es-ES'"></textarea>
                             </div>
                             <div class="tenth-data margin">
                                 <p>Apl. diferencias:</p>
-                                <input class="width" type="text" [ngModel]="selectedFacturas.facidi | currency:'EUR':'symbol':'1.2-2':'es-ES'" />
+                                <textarea [ngModel]="selectedFacturas.facidi | currency:'EUR':'symbol':'1.2-2':'es-ES'"></textarea>
                             </div>
                             <div class="eleventh-data margin">
                                 <p>Pte.Aplicar</p>
-                                <input class="width" type="text" [value]="getPendingApply(selectedFacturas) | currency:'EUR':'symbol':'1.2-2':'es-ES'" readonly />
+                                <textarea [value]="getPendingApply(selectedFacturas) | currency:'EUR':'symbol':'1.2-2':'es-ES'" readonly></textarea>
                             </div>
                             <div class="twelfth-data margin">
                                 <p>Descuentos</p>
-                                <input class="width" type="text" [value]="selectedFacturas.facdto | currency:'EUR':'symbol':'1.2-2':'es-ES'" readonly />
+                                <textarea [value]="selectedFacturas.facdto | currency:'EUR':'symbol':'1.2-2':'es-ES'" readonly></textarea>
                             </div>
                             <div class="thirteenth-data margin">
                                 <p>Observaciones:</p>
-                                <input class="width" type="text" [(ngModel)]="selectedFacturas.facobs" /> 
+                                <textarea [(ngModel)]="selectedFacturas.facobs"></textarea>
                             </div>
                         </div>
                     </div>
@@ -396,7 +396,7 @@
                                                     <tr *ngFor="let a of albaranes">
                                                         <td>{{ a.albnun }}</td>
                                                         <td>{{ a.albref }}</td>
-                                                        <td>{{ a.albdat | date:'yyyy-MM-dd' }}</td>
+                                                        <td>{{ a.albdat | date:'dd-MM-yyyy' }}</td>
                                                         <td>{{ a.albbim | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</td>
                                                         <td>{{ a.solnum }}</td>
                                                         <td>{{ a.solsub }}</td>
@@ -469,20 +469,7 @@
                         </div>
                         <div class="detail-grid" *ngIf="detailView === 'Contabilización'">
                             <div class="detail-card">
-                                <h4>Asignaciones recientes</h4>
-                                <p>Albarán 2024-004 · 325,00 €</p>
-                            </div>
-                            <div class="detail-card">
-                                <h4>Última acción</h4>
-                                <p>Aplicación de diferencia · 2024-09-18</p>
-                            </div>
-                            <div class="detail-card">
-                                <h4>Responsable</h4>
-                                <p>Unidad de Contabilidad</p>
-                            </div>
-                            <div class="detail-card">
-                                <h4>Notas</h4>
-                                <p>Factura pendiente de revisión documental.</p>
+                                <h4>Later</h4>
                             </div>
                         </div>
                     </div>

@@ -221,6 +221,10 @@ app-sidebar {
     margin: 10px;
 }
 
+.left {
+    margin-left: 6px;
+}
+
 .first-data, 
 .data-name, 
 .third-data, 
@@ -269,10 +273,6 @@ app-sidebar {
     padding: 1%;
 }
 
-.large{
-    width: 50% !important;
-}
-
 .title{
     width: 100%;
     color: #1c5d8c;
@@ -289,32 +289,38 @@ app-sidebar {
     color: #1c5d8c;
 }
 
-.first-data input[type="text"], 
-.third-data input[type="text"] {
+.first-data textarea, 
+.third-data textarea {
     border: 1px solid #1c5d8c;
-    padding: 8px 6px;
+    height: 20px;
+    padding: 2px 4px;
     border-radius: 6px;
-    max-width: 160px;
-    font-weight: 700;
+    min-width: 150px;
+    max-width: 400px;
+    font-weight: bold;
 }
 
-.fourth-data input[type="text"],
-.fifth-data input[type="text"], 
-.fifth-data-special input[type="text"] {
+.align-text{
     text-align: right !important;
-    border: 1px solid #1c5d8c;
-    padding: 8px 6px;
-    border-radius: 6px;
-    max-width: 80px;
-    font-weight: 700;
 }
 
-.first-data input[type="text"]:focus, 
-.second-data input[type="text"]:focus, 
-.third-data input[type="text"]:focus, 
-.fourth-data input[type="text"]:focus, 
-.fifth-data input[type="text"]:focus, 
-.fifth-data-special input[type="text"]:focus {
+.fourth-data textarea,
+.fifth-data textarea, 
+.fifth-data-special textarea {
+    border: 1px solid #1c5d8c;
+    padding: 2px 4px;
+    border-radius: 6px;
+    max-width: 200px;
+    font-weight: 700;
+    height: 20px;
+}
+
+.first-data textarea:focus, 
+.second-data textarea:focus, 
+.third-data textarea:focus, 
+.fourth-data textarea:focus, 
+.fifth-data textarea:focus, 
+.fifth-data-special textarea:focus {
     border-color: #042b5a;
     outline: none;
     background: #fff;
@@ -330,10 +336,6 @@ app-sidebar {
     margin-right: 10px;
 }
 
-.more{
-    max-width: 140px !important;
-}
-
 .bordering{
     border: 1px solid gray;
 }
@@ -341,18 +343,6 @@ app-sidebar {
 .fifth-data-special-container{
     position: relative;
     display: flex;
-}
-
-.close-btn-fct {
-  position: absolute;
-  top: 16px;
-  right: 18px;
-  background: none;
-  border: none;
-  font-size: 2rem;
-  color: red;
-  cursor: pointer;
-  transition: color 0.2s;
 }
 
 @media (max-width: 1380px) {
@@ -366,5 +356,11 @@ app-sidebar {
     .fourth-data-special p{
         width: 100%;
         font-size: 13px;
+    }
+
+    .fourth-data textarea,
+    .fifth-data textarea, 
+    .fifth-data-special textarea {
+        max-width: 90px;
     }
 }

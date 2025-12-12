@@ -327,10 +327,6 @@ app-sidebar {
   font-size: 1rem;
 }
 
-.textArea{
-  width: 70%;
-}
-
 .modal-row textarea {
   width: 100%;
   max-height: 48px;

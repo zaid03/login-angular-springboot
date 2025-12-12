@@ -83,12 +83,12 @@
                     <div class="first-row">
                         <div class="first-data">
                             <p>Centro Gestor:</p>
-                            <input type="text" [(ngModel)]="selectedBolsas.cgecod" readonly/>
-                            <input class="large" type="text" [(ngModel)]="selectedBolsas.cgedes" readonly/>
+                            <textarea [(ngModel)]="selectedBolsas.cgecod" readonly></textarea>
+                            <textarea type="text" [(ngModel)]="selectedBolsas.cgedes" readonly></textarea>
                         </div>
                         <div class="first-data">
                             <p>Cerrado:</p>
-                            <input type="text" [value]="getkCGECIC(selectedBolsas.cgecic)" readonly/>
+                            <textarea [value]="getkCGECIC(selectedBolsas.cgecic)" readonly></textarea>
                         </div>
                     </div>
                     <div class="second-row">
@@ -102,17 +102,17 @@
                     <div class="third-row">
                         <div class="third-data">
                             <p>Applicación:</p>
-                            <input type="text" [(ngModel)]="bolsaCombo" readonly/>
-                            <input class="large" type="text" [value]="selectedBolsas?.partidas?.[0]?.desc || ''" readonly>
+                            <textarea [(ngModel)]="bolsaCombo" readonly></textarea>
+                            <textarea [value]="selectedBolsas?.partidas?.[0]?.desc || ''" readonly></textarea>
                         </div>
                         <div class="third-data">
                             <div class="third-data-special">
                                 <p>Fecha bolsa</p>
-                                <input type="text" [value]="selectedBolsas?.gbsfop | date:'dd/MM/yyyy'" readonly />
+                                <textarea [value]="selectedBolsas?.gbsfop | date:'dd/MM/yyyy'" readonly></textarea>
                             </div>
                             <div class="third-data-special">
                                 <p>Suplemento 413</p>
-                                <input type="text" [(ngModel)]="selectedBolsas.gbs413" readonly/>
+                                <textarea [(ngModel)]="selectedBolsas.gbs413" readonly></textarea>
                             </div>
                         </div>
                     </div>
@@ -120,43 +120,43 @@
                         <div class="fourth-data">
                             <div class="fourth-data-special">
                                 <p>Operación</p>
-                                <input type="text" class="more" [(ngModel)]="selectedBolsas.gbsope" readonly/>
+                                <textarea [(ngModel)]="selectedBolsas.gbsope" readonly></textarea>
                             </div>
                             <div class="fourth-data-special">
                                 <p>Referencia</p>
-                                <input type="text" class="more" [(ngModel)]="selectedBolsas.gbsref" readonly/>
+                                <textarea [(ngModel)]="selectedBolsas.gbsref" readonly></textarea>
                             </div>
                             <div class="fourth-data-special">
                                 <p>Importe Op.</p>
-                                <input type="text" [value]="selectedBolsas?.limporte" readonly/>
+                                <textarea [value]="selectedBolsas?.limporte" readonly></textarea>
                             </div>
                         </div>
-                        <div class="fourth-data bordering">
+                        <div class="fourth-data bordering left">
                             <div class="fourth-data-special">
                                 <p>Importe bolsa</p>
-                                <input type="text" [ngModel]="selectedBolsas.gbsimp | currency:'EUR':'symbol':'1.2-2':'es-ES'"
-                                (blur)="formatGbsimp($event)" />
+                                <textarea [ngModel]="selectedBolsas.gbsimp | currency:'EUR':'symbol':'1.2-2':'es-ES'"
+                                (blur)="formatGbsimp($event)"></textarea>
                             </div>
                             <div class="fourth-data-special">
                                 <h5 class="ope">+</h5>
                             </div>
                             <div class="fourth-data-special">
                                 <p>Importe bolsa gestion</p>
-                                <input type="text" [ngModel]="selectedBolsas.gbsibg | currency:'EUR':'symbol':'1.2-2':'es-ES'" readonly/>
+                                <textarea [ngModel]="selectedBolsas.gbsibg | currency:'EUR':'symbol':'1.2-2':'es-ES'" readonly></textarea>
                             </div>
                             <div class="fourth-data-special">
                                 <h5 class="ope">-</h5>
                             </div>
                             <div class="fourth-data-special">
                                 <p>Usado bolsa</p>
-                                <input type="text" [ngModel]="selectedBolsas.gbsius | currency:'EUR':'symbol':'1.2-2':'es-ES'" readonly/>
+                                <textarea [ngModel]="selectedBolsas.gbsius | currency:'EUR':'symbol':'1.2-2':'es-ES'" readonly></textarea>
                             </div>
                             <div class="fourth-data-special">
                                 <h5 class="ope">=</h5>
                             </div>
                             <div class="fourth-data-special">
                                 <p>Disponible bolsa</p>
-                                <input type="text" [value]="getKBoldis(selectedBolsas.gbsimp, selectedBolsas.gbsibg, selectedBolsas.gbsius) | currency:'EUR':'symbol':'1.2-2':'es-ES'" readonly/>
+                                <textarea [value]="getKBoldis(selectedBolsas.gbsimp, selectedBolsas.gbsibg, selectedBolsas.gbsius) | currency:'EUR':'symbol':'1.2-2':'es-ES'" readonly></textarea>
                             </div>
                         </div>
                     </div>
@@ -164,21 +164,21 @@
                         <div class="fifth-data bordering">
                             <div class="fifth-data-special">
                                 <p>Saldo op.</p>
-                                <input type="text" [value]="selectedBolsas?.saldo | currency:'EUR':'symbol':'1.2-2':'es-ES'" readonly/>
+                                <textarea  [value]="selectedBolsas?.saldo | currency:'EUR':'symbol':'1.2-2':'es-ES'" readonly></textarea>
                             </div>
                             <div class="fifth-data-special-math">
                                 <h5 class="ope">-</h5>
                             </div>
                             <div class="fifth-data-special">
                                 <p>Pte. conta SCAP</p>
-                                <input type="text" [value]="getkAcPeCo(selectedBolsas.gbsiut, selectedBolsas.gbsict) | currency:'EUR':'symbol':'1.2-2':'es-ES'" readonly/>
+                                <textarea [value]="getkAcPeCo(selectedBolsas.gbsiut, selectedBolsas.gbsict) | currency:'EUR':'symbol':'1.2-2':'es-ES'" readonly></textarea>
                             </div>
                             <div class="fifth-data-special-math">
                                 <h5 class="ope">=</h5>
                             </div>
                             <div class="fifth-data-special">
                                 <p>Disponible</p>
-                                <input type="text" [value]="getkdispon(selectedBolsas.saldo, getkAcPeCo(selectedBolsas?.gbsiut, selectedBolsas?.gbsict)) | currency:'EUR':'symbol':'1.2-2':'es-ES'" readonly/>
+                                <textarea [value]="getkdispon(selectedBolsas.saldo, getkAcPeCo(selectedBolsas?.gbsiut, selectedBolsas?.gbsict)) | currency:'EUR':'symbol':'1.2-2':'es-ES'" readonly></textarea>
                             </div>
                         </div>
 
@@ -189,21 +189,21 @@
                             <div class="fifth-data-special-container">
                                 <div class="fifth-data-special">
                                     <p>Gastado Total</p>
-                                    <input type="text" [ngModel]="selectedBolsas.gbsiut | currency:'EUR':'symbol':'1.2-2':'es-ES'" readonly/>
+                                    <textarea [ngModel]="selectedBolsas.gbsiut | currency:'EUR':'symbol':'1.2-2':'es-ES'" readonly></textarea>
                                 </div>
                                 <div class="fifth-data-special-math">
                                     <h5 class="opee">-</h5>
                                 </div>
                                 <div class="fifth-data-special">
                                     <p>Contabilizaado Total</p>
-                                    <input type="text" [ngModel]="selectedBolsas.gbsict | currency:'EUR':'symbol':'1.2-2':'es-ES'" readonly/>
+                                    <textarea [ngModel]="selectedBolsas.gbsict | currency:'EUR':'symbol':'1.2-2':'es-ES'" readonly></textarea>
                                 </div>
                                 <div class="fifth-data-special-math">
                                     <h5 class="opee">=</h5>
                                 </div>
                                 <div class="fifth-data-special">
                                     <p>Pte. Contabilizar SCAP</p>
-                                    <input type="text" [value]="getkAcPeCo(selectedBolsas.gbsiut, selectedBolsas.gbsict) | currency:'EUR':'symbol':'1.2-2':'es-ES'" readonly/>
+                                    <textarea [value]="getkAcPeCo(selectedBolsas.gbsiut, selectedBolsas.gbsict) | currency:'EUR':'symbol':'1.2-2':'es-ES'" readonly></textarea>
                                 </div>
                             </div>
                         </div>

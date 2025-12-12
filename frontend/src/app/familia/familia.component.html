@@ -77,19 +77,15 @@
                             <p>Descripción</p>
                         </div>
                         <div class="right-row">
-                            <input 
-                                type="text" 
-                                name="familia" 
+                            <textarea 
                                 [(ngModel)]="selectedFamilias.afacod" 
                                 readonly 
-                            />
-                            <input 
-                                type="text" 
-                                name="Descripción" 
+                            ></textarea>
+                            <textarea
                                 [value]="selectedFamilias.afades" 
                                 #descripcionRef
-                                class="width"  
-                            />
+                                class="width" 
+                            ></textarea>
                         </div>
                     </div>
                     <h4 class="errorBtn">{{ familiaErrorMessage }}</h4>
