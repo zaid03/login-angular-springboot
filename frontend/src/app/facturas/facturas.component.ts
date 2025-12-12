@@ -323,899 +323,110 @@ export class FacturasComponent {
     this.facturaSearchTouched = true;
   }
   
-  filterFacturas(){
-    this.facturaMessage = '';
-    this.filterFacturaMessage = '';
-    const tipo = this.fechaTipo;
-    const estado = this.estadoTipo;
-    const desde = this.fromDate && this.fromDate.trim() ? this.fromDate : '';
-    const hasta = this.toDate && this.toDate.trim() ? this.toDate : '';
-    const facann = (this.facturaSearch || '').toString().trim();
-    const searchRaw = (this.searchQuery || '').toString().trim();
+  filterFacturas(): void {
+    if (this.entcod == null || this.eje == null || !this.centroGestor) {
+      this.facturaMessage = 'Faltan datos de sesión.';
+      return;
+    }
 
-    const searchDigits = searchRaw.replace(/\D/g, '');
+    this.facturaMessage = '';
+    this.facturaMessageSuccess = '';
+    this.filterFacturaMessage = '';
+
+    const estadoMap: Record<string, string> = {
+      'contabilizadas': 'CONT',
+      'no-contabilizadas': 'NO_CONT',
+      'aplicadas': 'PTE_APL',
+      'sin-aplicadas': 'PTE_SIN',
+      'todas': 'TODAS',
+      '': 'CONT'
+    };
+    const fechaMap: Record<string, string> = {
+      'registro': 'REGISTRO',
+      'factura': 'FACTURA',
+      'contable': 'CONTABLE',
+      '': 'REGISTRO'
+    };
+
+    const estado = estadoMap[this.estadoTipo ?? ''] ?? 'CONT';
+    const dateType = fechaMap[this.fechaTipo ?? ''] ?? 'REGISTRO';
+
+    const desde = this.fromDate?.trim() || '';
+    const hasta = this.toDate?.trim() || '';
+    if ((desde || hasta) && !this.fechaTipo || this.fechaTipo && !(desde || hasta)) {
+      this.filterFacturaMessage = 'Seleccione un tipo de fecha y una cita antes de buscar.';
+      return;
+    }
+
+    const facann = this.facturaSearch?.trim() || '';
+    let facannMode = 'ANY';
+    if (facann) {
+      facannMode = 'VALUE';
+    } else if (estado === 'CONT') {
+      facannMode = 'NOT_NULL';
+    } else if (estado === 'NO_CONT' || estado === 'PTE_APL' || estado === 'PTE_SIN') {
+      facannMode = 'NULL';
+    }
+
+    const searchRaw = this.searchQuery?.trim() || '';
+    const digits = searchRaw.replace(/\D/g, '');
     const hasLetters = /[A-Za-z]/.test(searchRaw);
     const hasDigits = /\d/.test(searchRaw);
     const NIF_MIN_DIGITS = 5;
-    const doNifSearch = !hasLetters && hasDigits && searchDigits.length > NIF_MIN_DIGITS;
-    const doAlphaNumSearch = hasLetters && hasDigits && searchRaw.length > NIF_MIN_DIGITS;
-    const doShortDigitsExact = !hasLetters && hasDigits && searchDigits.length > 0 && searchDigits.length <= NIF_MIN_DIGITS;
-    const doFallbackTextSearch = searchRaw.length > 0 && !doNifSearch && !doAlphaNumSearch && !doShortDigitsExact;
-    let searchApplied = false;
-    if (facann || doNifSearch || doAlphaNumSearch || doShortDigitsExact || doFallbackTextSearch) {
-      searchApplied = true;
-      const source = (this.backupFacturas && this.backupFacturas.length) ? this.backupFacturas : this.facturas;
-      const searchUp = searchRaw.toUpperCase();
-      const filtered = source.filter(f => {
-        const valFac = (f.facann ?? f.FACANN ?? '').toString();
-        const valCge = (f.cgecod ?? f.CGECOD ?? '').toString();
-        const valTernif = (f.ternif ?? f.TERNIF ?? '').toString().toUpperCase();
-        if (facann && valFac !== facann) return false;
+    let searchType = 'OTROS';
+    let search = '';
 
-        if (doShortDigitsExact) {
-          const valTercod = (f.tercod ?? f.TERCOD ?? '').toString();
-          const valTerado = (f.terado ?? f.TERADO ?? '').toString().toUpperCase();
-          if (!(valTercod === searchDigits || valTerado === searchUp)) return false;
+    if (searchRaw) {
+      if (!hasLetters && hasDigits && digits.length > 0 && digits.length <= NIF_MIN_DIGITS) {
+        searchType = 'TERCOD';
+        search = digits;
+      } else if (!hasLetters && hasDigits && digits.length > NIF_MIN_DIGITS) {
+        searchType = 'NIF';
+        search = digits;
+      } else if (hasLetters && hasDigits && searchRaw.length > NIF_MIN_DIGITS) {
+        searchType = 'NIF_LETTERS';
+        search = searchRaw;
+      } else {
+        searchType = 'OTROS';
+        search = searchRaw;
+      }
+    }
+
+    const params: Record<string, string> = {
+      ent: String(this.entcod),
+      eje: String(this.eje),
+      cgecod: this.centroGestor,
+      estado,
+      dateType,
+      facannMode
+    };
+    if (desde) params['desde'] = desde;
+    if (hasta) params['hasta'] = hasta;
+    if (facann && facannMode === 'VALUE') params['facann'] = facann;
+    if (search) {
+      params['search'] = search;
+      params['searchType'] = searchType;
+    }
+
+    this.http.get<any[]>(`${environment.backendUrl}/api/fac/search`, { observe: 'response', params })
+      .subscribe({
+        next: (res) => {
+          if (res.status === 204 || !res.body || res.body.length === 0) {
+            this.facturaMessageIsSuccess = true;
+            this.facturaMessage = 'No hay facturas para los filtros seleccionados.';
+            this.facturas = [];
+            return;
+          }
+          this.facturas = res.body;
+          this.page = 0;
+        },
+        error: (err) => {
+          this.facturaIsError = true;
+          this.facturaMessage = typeof err.error === 'string'
+            ? err.error
+            : 'Error al buscar facturas.';
         }
-        else if (doNifSearch) {
-          if (!valTernif.includes(searchDigits)) return false;
-        }
-        else if (doAlphaNumSearch) {
-          const valTernom = (f.ternom ?? f.TERNOM ?? '').toString().toUpperCase();
-          const valFacdoc = (f.facdoc ?? f.FACDOC ?? '').toString().toUpperCase();
-          if (!(valTernif.includes(searchUp) || valTernom.includes(searchUp) || valFacdoc.includes(searchUp))) return false;
-        }
-        else if (doFallbackTextSearch) {
-          const valTernom = (f.ternom ?? f.TERNOM ?? '').toString().toUpperCase();
-          const valFacdoc = (f.facdoc ?? f.FACDOC ?? '').toString().toUpperCase();
-          if (!(valTernom.includes(searchUp) || valFacdoc.includes(searchUp))) return false;
-        }
-        return true;
       });
-
-      this.facturas = filtered;
-      this.page = 0;
-      const parts = [];
-      if (facann) parts.push(`FACANN = ${facann}`);
-      if (doShortDigitsExact) parts.push(`TERCOD = ${searchDigits} OR TERADO = "${searchRaw}"`);
-      else if (doNifSearch) parts.push(`TERNIF contains "${searchDigits}"`);
-      else if (doAlphaNumSearch) parts.push(`TERNIF/TERNOM/FACDOC contains "${searchRaw}"`);
-      else if (doFallbackTextSearch) parts.push(`TERNOM/FACDOC contains "${searchRaw}"`);
-      else if (searchRaw) parts.push(`Search ignored (need more than ${NIF_MIN_DIGITS} digits or alphanumeric length > ${NIF_MIN_DIGITS})`);
-    }
-
-    const hasDateInput = !!(desde || hasta);
-    if (!tipo) {
-      if (estado && estado != 'no-contabilizadas') {
-        this.filterFacturaMessage = 'Seleccione un tipo de fecha antes de elegir un estado.';
-        return;
-      }
-      if (hasDateInput) {
-        this.filterFacturaMessage = 'Seleccione un tipo de fecha antes de filtrar por fechas.';
-        return;
-      }
-      if (searchApplied) {
-        this.filterFacturaMessage = '';
-        return; 
-      }
-    }
-    
-    let datePart = '';
-    if (desde && hasta) {
-      datePart = `Desde: ${desde}. Hasta: ${hasta}.`;
-    } else if (desde) {
-      datePart = `Desde: ${desde}.`;
-    } else {
-      datePart = `Hasta: ${hasta}.`;
-    }
-
-    if (tipo === 'registro') {
-      if (!desde && !hasta) {
-        this.filterFacturaMessage = "Debe elegir una línea de tiempo";
-      }
-      if (desde && !hasta) {
-        if (estado === 'contabilizadas') {
-          this.http.get<any>(`${environment.backendUrl}/api/fac/facfre-desde-facado-notnull/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
-            next: (response) => {
-              if (!Array.isArray(response) || response.length === 0) {
-                this.facturaMessageIsSuccess = true;
-                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
-                this.facturas = []
-              } else {
-                this.facturas = response;
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
-                this.page = 0;
-              }
-            }, error: (err) => {
-              this.facturaIsError = true;
-              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-            }
-          });
-        } else if (estado === 'no-contabilizadas') {
-          this.http.get<any>(`${environment.backendUrl}/api/fac/facfre-desde-facado-null/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
-            next: (response) => {
-              if (!Array.isArray(response) || response.length === 0) {
-                this.facturaMessageIsSuccess = true;
-                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
-                this.facturas = []
-              } else {
-                this.facturas = response;
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
-                this.page = 0;
-              }
-            }, error: (err) => {
-              this.facturaIsError = true;
-              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-            }
-          });
-        } else if ( estado === 'aplicadas') {
-          this.http.get<any>(`${environment.backendUrl}/api/fac/facfre-desde-facado-aplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
-            next: (response) => {
-              if (!Array.isArray(response) || response.length === 0) {
-                this.facturaMessageIsSuccess = true;
-                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
-                this.facturas = []
-              } else {
-                this.facturas = response;
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
-                this.page = 0;
-              }
-            }, error: (err) => {
-              this.facturaIsError = true;
-              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-            }
-          });
-        } else if (estado === 'sin-aplicadas') {
-          this.http.get<any>(`${environment.backendUrl}/api/fac/facfre-desde-facado-sinaplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
-            next: (response) => {
-              if (!Array.isArray(response) || response.length === 0) {
-                this.facturaMessageIsSuccess = true;
-                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
-                this.facturas = []
-              } else {
-                this.facturas = response;
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
-                this.page = 0;
-              }
-            }, error: (err) => {
-              this.facturaIsError = true;
-              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-            }
-          });
-        } else {
-            this.http.get<any>(`${environment.backendUrl}/api/fac/facfre-desde/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
-            next: (response) => {
-              if (!Array.isArray(response) || response.length === 0) {
-                this.facturaMessageIsSuccess = true;
-                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
-                this.facturas = []
-              } else {
-                this.facturas = response;
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
-                this.page = 0;
-              }
-            }, error: (err) => {
-              this.facturaIsError = true;
-              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-            }
-          });
-        }
-      }
-      if(!desde && hasta) {
-        if (estado === 'contabilizadas') {
-          this.http.get<any>(`${environment.backendUrl}/api/fac/facfre-hasta-facado-notnull/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
-            next: (response) => {
-              if (!Array.isArray(response) || response.length === 0) {
-                this.facturaMessageIsSuccess = true;
-                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
-                this.facturas = []
-              } else {
-                this.facturas = response;
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
-                this.page = 0;
-              }
-            }, error: (err) => {
-              this.facturaIsError = true;
-              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-            }
-          });
-        } else if (estado === 'no-contabilizadas') {
-          this.http.get<any>(`${environment.backendUrl}/api/fac/facfre-hasta-facado-null/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
-            next: (response) => {
-              if (!Array.isArray(response) || response.length === 0) {
-                this.facturaMessageIsSuccess = true;
-                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
-                this.facturas = []
-              } else {
-                this.facturas = response;
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
-                this.page = 0;
-              }
-            }, error: (err) => {
-              this.facturaIsError = true;
-              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-            }
-          });
-        } else if ( estado === 'aplicadas') {
-          this.http.get<any>(`${environment.backendUrl}/api/fac/facfre-hasta-facado-aplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
-            next: (response) => {
-              if (!Array.isArray(response) || response.length === 0) {
-                this.facturaMessageIsSuccess = true;
-                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
-                this.facturas = []
-              } else {
-                this.facturas = response;
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
-                this.page = 0;
-              }
-            }, error: (err) => {
-              this.facturaIsError = true;
-              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-            }
-          });
-        } else if (estado === 'sin-aplicadas') {
-          this.http.get<any>(`${environment.backendUrl}/api/fac/facfre-hasta-facado-sinaplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
-            next: (response) => {
-              if (!Array.isArray(response) || response.length === 0) {
-                this.facturaMessageIsSuccess = true;
-                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
-                this.facturas = []
-              } else {
-                this.facturas = response;
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
-                this.page = 0;
-              }
-            }, error: (err) => {
-              this.facturaIsError = true;
-              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-            }
-          });
-        } else {
-            this.http.get<any>(`${environment.backendUrl}/api/fac/facfre-hasta/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
-            next: (response) => {
-              if (!Array.isArray(response) || response.length === 0) {
-                this.facturaMessageIsSuccess = true;
-                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
-                this.facturas = []
-              } else {
-                this.facturas = response;
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
-                this.page = 0;
-              }
-            }, error: (err) => {
-              this.facturaIsError = true;
-              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-            }
-          });
-        }
-      }
-      if (desde && hasta){
-        if (estado === 'contabilizadas') {
-          this.http.get<any>(`${environment.backendUrl}/api/fac/facfre-range-facado-notnull/${this.entcod}//${this.centroGestor}/${desde}/${hasta}`).subscribe({
-            next: (response) => {
-              if (!Array.isArray(response) || response.length === 0) {
-                this.facturaMessageIsSuccess = true;
-                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
-                this.facturas = []
-              } else {
-                this.facturas = response;
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
-                this.page = 0;
-              }
-            }, error: (err) => {
-              this.facturaIsError = true;
-              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-            }
-          });
-        } else if (estado === 'no-contabilizadas') {
-          this.http.get<any>(`${environment.backendUrl}/api/fac/facfre-range-facado-null/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
-            next: (response) => {
-              if (!Array.isArray(response) || response.length === 0) {
-                this.facturaMessageIsSuccess = true;
-                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
-                this.facturas = []
-              } else {
-                this.facturas = response;
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
-                this.page = 0;
-              }
-            }, error: (err) => {
-              this.facturaIsError = true;
-              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-            }
-          });
-        } else if ( estado === 'aplicadas') {
-          this.http.get<any>(`${environment.backendUrl}/api/fac/facfre-range-facado-aplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
-            next: (response) => {
-              if (!Array.isArray(response) || response.length === 0) {
-                this.facturaMessageIsSuccess = true;
-                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
-                this.facturas = []
-              } else {
-                this.facturas = response;
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
-                this.page = 0;
-              }
-            }, error: (err) => {
-              this.facturaIsError = true;
-              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-            }
-          });
-        } else if (estado === 'sin-aplicadas') {
-          this.http.get<any>(`${environment.backendUrl}/api/fac/facfre-range-facado-sinaplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
-            next: (response) => {
-              if (!Array.isArray(response) || response.length === 0) {
-                this.facturaMessageIsSuccess = true;
-                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
-                this.facturas = []
-              } else {
-                this.facturas = response;
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
-                this.page = 0;
-              }
-            }, error: (err) => {
-              this.facturaIsError = true;
-              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-            }
-          });
-        } else {
-          this.http.get<any>(`${environment.backendUrl}/api/fac/facfre-range/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
-            next: (response) => {
-              if (!Array.isArray(response) || response.length === 0) {
-                this.facturaMessageIsSuccess = true;
-                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
-                this.facturas = []
-              } else {
-                this.facturas = response;
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
-                this.page = 0;
-              }
-            }, error: (err) => {
-              this.facturaIsError = true;
-              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-            }
-          });
-        }
-      }
-    } else if (tipo === 'factura') {
-      if (!desde && !hasta) {
-        this.filterFacturaMessage = "Debe elegir una línea de tiempo";
-      }
-      if (desde && !hasta) {
-        if (estado === 'contabilizadas') {
-          this.http.get<any>(`${environment.backendUrl}/api/fac/facdat-desde-facado-notnull/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
-            next: (response) => {
-              if (!Array.isArray(response) || response.length === 0) {
-                this.facturaMessageIsSuccess = true;
-                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
-                this.facturas = []
-              } else {
-                this.facturas = response;
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
-                this.page = 0;
-              }
-            }, error: (err) => {
-              this.facturaIsError = true;
-              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-            }
-          });
-        } else if (estado === 'no-contabilizadas') {
-          this.http.get<any>(`${environment.backendUrl}/api/fac/facdat-desde-facado-null/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
-            next: (response) => {
-              if (!Array.isArray(response) || response.length === 0) {
-                this.facturaMessageIsSuccess = true;
-                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
-                this.facturas = []
-              } else {
-                this.facturas = response;
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
-                this.page = 0;
-              }
-            }, error: (err) => {
-              this.facturaIsError = true;
-              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-            }
-          });
-        } else if ( estado === 'aplicadas') {
-          this.http.get<any>(`${environment.backendUrl}/api/fac/facdat-desde-facado-aplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
-            next: (response) => {
-              if (!Array.isArray(response) || response.length === 0) {
-                this.facturaMessageIsSuccess = true;
-                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
-                this.facturas = []
-              } else {
-                this.facturas = response;
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
-                this.page = 0;
-              }
-            }, error: (err) => {
-              this.facturaIsError = true;
-              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-            }
-          });
-        } else if (estado === 'sin-aplicadas') {
-          this.http.get<any>(`${environment.backendUrl}/api/fac/facdat-desde-facado-sinaplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
-            next: (response) => {
-              if (!Array.isArray(response) || response.length === 0) {
-                this.facturaMessageIsSuccess = true;
-                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
-                this.facturas = []
-              } else {
-                this.facturas = response;
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
-                this.page = 0;
-              }
-            }, error: (err) => {
-              this.facturaIsError = true;
-              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-            }
-          });
-        } else {
-            this.http.get<any>(`${environment.backendUrl}/api/fac/facdat-desde/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
-            next: (response) => {
-              if (!Array.isArray(response) || response.length === 0) {
-                this.facturaMessageIsSuccess = true;
-                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
-                this.facturas = []
-              } else {
-                this.facturas = response;
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
-                this.page = 0;
-              }
-            }, error: (err) => {
-              this.facturaIsError = true;
-              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-            }
-          });
-        }
-      }
-      if(!desde && hasta) {
-        if (estado === 'contabilizadas') {
-          this.http.get<any>(`${environment.backendUrl}/api/fac/facdat-hasta-facado-notnull/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
-            next: (response) => {
-              if (!Array.isArray(response) || response.length === 0) {
-                this.facturaMessageIsSuccess = true;
-                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
-                this.facturas = []
-              } else {
-                this.facturas = response;
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
-                this.page = 0;
-              }
-            }, error: (err) => {
-              this.facturaIsError = true;
-              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-            }
-          });
-        } else if (estado === 'no-contabilizadas') {
-          this.http.get<any>(`${environment.backendUrl}/api/fac/facdat-hasta-facado-null/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
-            next: (response) => {
-              if (!Array.isArray(response) || response.length === 0) {
-                this.facturaMessageIsSuccess = true;
-                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
-                this.facturas = []
-              } else {
-                this.facturas = response;
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
-                this.page = 0;
-              }
-            }, error: (err) => {
-              this.facturaIsError = true;
-              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-            }
-          });
-        } else if ( estado === 'aplicadas') {
-          this.http.get<any>(`${environment.backendUrl}/api/fac/facdat-hasta-facado-aplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
-            next: (response) => {
-              if (!Array.isArray(response) || response.length === 0) {
-                this.facturaMessageIsSuccess = true;
-                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
-                this.facturas = []
-              } else {
-                this.facturas = response;
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
-                this.page = 0;
-              }
-            }, error: (err) => {
-              this.facturaIsError = true;
-              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-            }
-          });
-        } else if (estado === 'sin-aplicadas') {
-          this.http.get<any>(`${environment.backendUrl}/api/fac/facdat-hasta-facado-sinaplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
-            next: (response) => {
-              if (!Array.isArray(response) || response.length === 0) {
-                this.facturaMessageIsSuccess = true;
-                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
-                this.facturas = []
-              } else {
-                this.facturas = response;
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
-                this.page = 0;
-              }
-            }, error: (err) => {
-              this.facturaIsError = true;
-              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-            }
-          });
-        } else {
-            this.http.get<any>(`${environment.backendUrl}/api/fac/facdat-hasta/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
-            next: (response) => {
-              if (!Array.isArray(response) || response.length === 0) {
-                this.facturaMessageIsSuccess = true;
-                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
-                this.facturas = []
-              } else {
-                this.facturas = response;
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
-                this.page = 0;
-              }
-            }, error: (err) => {
-              this.facturaIsError = true;
-              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-            }
-          });
-        }
-      }
-      if (desde && hasta){
-        if (estado === 'contabilizadas') {
-          this.http.get<any>(`${environment.backendUrl}/api/fac/facdat-range-facado-notnull/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
-            next: (response) => {
-              if (!Array.isArray(response) || response.length === 0) {
-                this.facturaMessageIsSuccess = true;
-                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
-                this.facturas = []
-              } else {
-                this.facturas = response;
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
-                this.page = 0;
-              }
-            }, error: (err) => {
-              this.facturaIsError = true;
-              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-            }
-          });
-        } else if (estado === 'no-contabilizadas') {
-          this.http.get<any>(`${environment.backendUrl}/api/fac/facdat-range-facado-null/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
-            next: (response) => {
-              if (!Array.isArray(response) || response.length === 0) {
-                this.facturaMessageIsSuccess = true;
-                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
-                this.facturas = []
-              } else {
-                this.facturas = response;
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
-                this.page = 0;
-              }
-            }, error: (err) => {
-              this.facturaIsError = true;
-              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-            }
-          });
-        } else if ( estado === 'aplicadas') {
-          this.http.get<any>(`${environment.backendUrl}/api/fac/facdat-range-facado-aplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
-            next: (response) => {
-              if (!Array.isArray(response) || response.length === 0) {
-                this.facturaMessageIsSuccess = true;
-                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
-                this.facturas = []
-              } else {
-                this.facturas = response;
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
-                this.page = 0;
-              }
-            }, error: (err) => {
-              this.facturaIsError = true;
-              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-            }
-          });
-        } else if (estado === 'sin-aplicadas') {
-          this.http.get<any>(`${environment.backendUrl}/api/fac/facdat-range-facado-sinaplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
-            next: (response) => {
-              if (!Array.isArray(response) || response.length === 0) {
-                this.facturaMessageIsSuccess = true;
-                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
-                this.facturas = []
-              } else {
-                this.facturas = response;
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
-                this.page = 0;
-              }
-            }, error: (err) => {
-              this.facturaIsError = true;
-              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-            }
-          });
-        } else {
-          this.http.get<any>(`${environment.backendUrl}/api/fac/facdat-range/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
-            next: (response) => {
-              if (!Array.isArray(response) || response.length === 0) {
-                this.facturaMessageIsSuccess = true;
-                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
-                this.facturas = []
-              } else {
-                this.facturas = response;
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
-                this.page = 0;
-              }
-            }, error: (err) => {
-              this.facturaIsError = true;
-              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-            }
-          });
-        }
-      }
-    } else if (tipo === 'contable') {
-      if (!desde && !hasta) {
-        this.filterFacturaMessage = "Debe elegir una línea de tiempo";
-      }
-      if (desde && !hasta) {
-        if (estado === 'contabilizadas') {
-          this.http.get<any>(`${environment.backendUrl}/api/fac/facfco-desde-facado-notnull/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
-            next: (response) => {
-              if (!Array.isArray(response) || response.length === 0) {
-                this.facturaMessageIsSuccess = true;
-                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
-                this.facturas = []
-              } else {
-                this.facturas = response;
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
-                this.page = 0;
-              }
-            }, error: (err) => {
-              this.facturaIsError = true;
-              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-            }
-          });
-        } else if (estado === 'no-contabilizadas') {
-          this.http.get<any>(`${environment.backendUrl}/api/fac/facfco-desde-facado-null/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
-            next: (response) => {
-              if (!Array.isArray(response) || response.length === 0) {
-                this.facturaMessageIsSuccess = true;
-                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
-                this.facturas = []
-              } else {
-                this.facturas = response;
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
-                this.page = 0;
-              }
-            }, error: (err) => {
-              this.facturaIsError = true;
-              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-            }
-          });
-        } else if ( estado === 'aplicadas') {
-          this.http.get<any>(`${environment.backendUrl}/api/fac/facfco-desde-facado-aplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
-            next: (response) => {
-              if (!Array.isArray(response) || response.length === 0) {
-                this.facturaMessageIsSuccess = true;
-                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
-                this.facturas = []
-              } else {
-                this.facturas = response;
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
-                this.page = 0;
-              }
-            }, error: (err) => {
-              this.facturaIsError = true;
-              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-            }
-          });
-        } else if (estado === 'sin-aplicadas') {
-          this.http.get<any>(`${environment.backendUrl}/api/fac/facfco-desde-facado-sinaplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
-            next: (response) => {
-              if (!Array.isArray(response) || response.length === 0) {
-                this.facturaMessageIsSuccess = true;
-                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
-                this.facturas = []
-              } else {
-                this.facturas = response;
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
-                this.page = 0;
-              }
-            }, error: (err) => {
-              this.facturaIsError = true;
-              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-            }
-          });
-        } else {
-            this.http.get<any>(`${environment.backendUrl}/api/fac/facfco-desde/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}`).subscribe({
-            next: (response) => {
-              if (!Array.isArray(response) || response.length === 0) {
-                this.facturaMessageIsSuccess = true;
-                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
-                this.facturas = []
-              } else {
-                this.facturas = response;
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
-                this.page = 0;
-              }
-            }, error: (err) => {
-              this.facturaIsError = true;
-              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-            }
-          });
-        }
-      }
-      if(!desde && hasta) {
-        if (estado === 'contabilizadas') {
-          this.http.get<any>(`${environment.backendUrl}/api/fac/facfco-hasta-facado-notnull/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
-            next: (response) => {
-              if (!Array.isArray(response) || response.length === 0) {
-                this.facturaMessageIsSuccess = true;
-                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
-                this.facturas = []
-              } else {
-                this.facturas = response;
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
-                this.page = 0;
-              }
-            }, error: (err) => {
-              this.facturaIsError = true;
-              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-            }
-          });
-        } else if (estado === 'no-contabilizadas') {
-          this.http.get<any>(`${environment.backendUrl}/api/fac/facfco-hasta-facado-null/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
-            next: (response) => {
-              if (!Array.isArray(response) || response.length === 0) {
-                this.facturaMessageIsSuccess = true;
-                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
-                this.facturas = []
-              } else {
-                this.facturas = response;
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
-                this.page = 0;
-              }
-            }, error: (err) => {
-              this.facturaIsError = true;
-              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-            }
-          });
-        } else if ( estado === 'aplicadas') {
-          this.http.get<any>(`${environment.backendUrl}/api/fac/facfco-hasta-facado-aplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
-            next: (response) => {
-              if (!Array.isArray(response) || response.length === 0) {
-                this.facturaMessageIsSuccess = true;
-                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
-                this.facturas = []
-              } else {
-                this.facturas = response;
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
-                this.page = 0;
-              }
-            }, error: (err) => {
-              this.facturaIsError = true;
-              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-            }
-          });
-        } else if (estado === 'sin-aplicadas') {
-          this.http.get<any>(`${environment.backendUrl}/api/fac/facfco-hasta-facado-sinaplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
-            next: (response) => {
-              if (!Array.isArray(response) || response.length === 0) {
-                this.facturaMessageIsSuccess = true;
-                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
-                this.facturas = []
-              } else {
-                this.facturas = response;
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
-                this.page = 0;
-              }
-            }, error: (err) => {
-              this.facturaIsError = true;
-              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-            }
-          });
-        } else {
-            this.http.get<any>(`${environment.backendUrl}/api/fac/facfco-hasta/${this.entcod}/${this.eje}/${this.centroGestor}/${hasta}`).subscribe({
-            next: (response) => {
-              if (!Array.isArray(response) || response.length === 0) {
-                this.facturaMessageIsSuccess = true;
-                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
-                this.facturas = []
-              } else {
-                this.facturas = response;
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
-                this.page = 0;
-              }
-            }, error: (err) => {
-              this.facturaIsError = true;
-              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-            }
-          });
-        }
-      }
-      if (desde && hasta){
-        if (estado === 'contabilizadas') {
-          this.http.get<any>(`${environment.backendUrl}/api/fac/facfco-range-facado-notnull/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
-            next: (response) => {
-              if (!Array.isArray(response) || response.length === 0) {
-                this.facturaMessageIsSuccess = true;
-                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
-                this.facturas = []
-              } else {
-                this.facturas = response;
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
-                this.page = 0;
-              }
-            }, error: (err) => {
-              this.facturaIsError = true;
-              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-            }
-          });
-        } else if (estado === 'no-contabilizadas') {
-          this.http.get<any>(`${environment.backendUrl}/api/fac/facfco-range-facado-null/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
-            next: (response) => {
-              if (!Array.isArray(response) || response.length === 0) {
-                this.facturaMessageIsSuccess = true;
-                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
-                this.facturas = []
-              } else {
-                this.facturas = response;
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
-                this.page = 0;
-              }
-            }, error: (err) => {
-              this.facturaIsError = true;
-              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-            }
-          });
-        } else if ( estado === 'aplicadas') {
-          this.http.get<any>(`${environment.backendUrl}/api/fac/facfco-range-facado-aplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
-            next: (response) => {
-              if (!Array.isArray(response) || response.length === 0) {
-                this.facturaMessageIsSuccess = true;
-                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
-                this.facturas = []
-              } else {
-                this.facturas = response;
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
-                this.page = 0;
-              }
-            }, error: (err) => {
-              this.facturaIsError = true;
-              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-            }
-          });
-        } else if (estado === 'sin-aplicadas') {
-          this.http.get<any>(`${environment.backendUrl}/api/fac/facfco-range-facado-sinaplicadas/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
-            next: (response) => {
-              if (!Array.isArray(response) || response.length === 0) {
-                this.facturaMessageIsSuccess = true;
-                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
-                this.facturas = []
-              } else {
-                this.facturas = response;
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
-                this.page = 0;
-              }
-            }, error: (err) => {
-              this.facturaIsError = true;
-              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-            }
-          });
-        } else {
-          this.http.get<any>(`${environment.backendUrl}/api/fac/facfco-range/${this.entcod}/${this.eje}/${this.centroGestor}/${desde}/${hasta}`).subscribe({
-            next: (response) => {
-              if (!Array.isArray(response) || response.length === 0) {
-                this.facturaMessageIsSuccess = true;
-                this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
-                this.facturas = []
-              } else {
-                this.facturas = response;
-                this.backupFacturas = Array.isArray(response) ? [...response] : [];
-                this.page = 0;
-              }
-            }, error: (err) => {
-              this.facturaIsError = true;
-              this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-            }
-          });
-        }
-      }
-    } else {
-      this.filterFacturaMessage = 'Tipo de fecha requirida.';
-    }
   }
 
   forgetAll(): void{
@@ -1232,32 +443,10 @@ export class FacturasComponent {
     this.facturaMessage = '';
     this.facturaMessageSuccess = '';
     this.page = 0;
-    setTimeout(() => {
-      const ejeInput = document.querySelector('input[name="factura"]') as HTMLInputElement | null;
-      if (ejeInput) ejeInput.value = '';
-      const searchInput = document.querySelector('input[name="search"]') as HTMLInputElement | null;
-      if (searchInput) searchInput.value = '';
-      const cgeInput = document.querySelector('input[name="Gestor"]') as HTMLInputElement | null;
-      if (cgeInput) cgeInput.value = this.centroGestor;
-    }, 0);
 
-    if (this.backupFacturas && this.backupFacturas.length) {
+    if (this.backupFacturas.length) {
       this.facturas = [...this.backupFacturas];
-      return;
-    }
-
-    if (this.entcod !== null && this.eje !== null) {
-      this.http.get<any>(`${environment.backendUrl}/api/fac/${this.entcod}/${this.eje}/${this.centroGestor}`).subscribe({
-        next: (response) => {
-          this.facturas = response;
-          this.backupFacturas = Array.isArray(response) ? [...response] : [];
-          this.page = 0;
-        },
-        error: (err) => {
-          this.facturaIsError = true;
-          this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
-        }
-      });
+      this.page = 0;
     }
   }
 
