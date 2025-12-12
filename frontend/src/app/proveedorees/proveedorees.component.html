@@ -92,43 +92,49 @@
                 <div class="modal" *ngIf="selectedProveedor">
                     <button class="close-btn-btn" (click)="closeDetails()">×</button>
                     <h3>Detalles del Proveedor</h3>
-                    <div class="modal-row">
-                        <div class="modal-col">
-                            <strong>Código:</strong>
-                            <h1>{{ selectedProveedor.tercod }}</h1>
+                    <div class="first-row">
+                        <div class="first-data">
+                            <p>Nombre</p>
+                            <textarea [(ngModel)]="selectedProveedor.ternom"></textarea>
                         </div>
-                        <div>
-                            <strong>Nombre:</strong>
-                            <h1>{{ selectedProveedor.ternom }}</h1>
-                        </div>
-                    </div>
-                    <div class="modal-row">
-                        <div>
-                            <strong>Alias:</strong>
-                            <h1>{{ selectedProveedor.terali }}</h1>
-                        </div>
-                        <div>
-                            <strong>NIF:</strong>
-                           <h1>{{ selectedProveedor.ternif }}</h1>
+                        <div class="first-data">
+                            <p>Código</p>
+                            <textarea [(ngModel)]="selectedProveedor.tercod"></textarea>
                         </div>
                     </div>
-                    <div class="modal-row">
-                        <div>
-                            <strong>Dirección:</strong>
-                            <h1>{{ selectedProveedor.terdom }}</h1>
-                        </div>
-                        <div>
-                            <strong>Código contable:</strong>
-                            <h1>{{ selectedProveedor.terayt }}</h1>
+                    <div class="second-row">
+                        <div class="second-data">
+                            <p>Alias</p>
+                            <textarea [(ngModel)]="selectedProveedor.terali"></textarea>
                         </div>
                     </div>
-                    <div class="modal-row">
-                        <div>
-                            <strong>Código Postal:</strong>
-                            <h1>{{ selectedProveedor.tercpo }}</h1>          
-                                <strong>Provincia:</strong>
-                                <h1>{{ selectedProveedor.procod }}</h1>
-                                <h1>{{ selectedProveedor.terpob }}</h1>              
+                    <div class="third-row">
+                        <div class="third-data">
+                            <p>Dirección</p>
+                            <textarea [(ngModel)]="selectedProveedor.terdom"></textarea>
+                        </div>
+                        <div class="third-data">
+                            <p>NIF</p>
+                            <textarea [(ngModel)]="selectedProveedor.ternif"></textarea>
+                        </div>
+                    </div>
+                    <div class="fourth-row">
+                        <div class="fourth-data">
+                            <p>C.P</p>
+                            <textarea [(ngModel)]="selectedProveedor.tercpo"></textarea>
+                        </div>
+                        <div class="fourth-data">
+                            <p>Provincia</p>
+                            <textarea [(ngModel)]="selectedProveedor.procod"></textarea>
+                            <textarea [(ngModel)]="selectedProveedor.terpob"></textarea>
+                        </div>
+                    </div>
+                    <div class="fifth-row">
+                        <div class="fifth-data">
+                            <p>C.contable</p>
+                            <textarea [(ngModel)]="selectedProveedor.terayt"></textarea>
+                        </div>
+                        <div class="fifth-data">
                             <label style="display: flex; align-items: center; gap: 2px;">
                                 <input type="checkbox"
                                 [checked]="selectedProveedor.terblo == 1"
@@ -138,36 +144,47 @@
                             </label>
                         </div>
                     </div>
-                    <div class="modal-row">
-                        <div>
-                            <strong>Teléfono:</strong>
-                            <h1>{{ selectedProveedor.tertel }}</h1>
+                    <div class="special-grid">
+                        <div class="left">
+                            <div class="sixth-row">
+                                <div class="sixth-data">
+                                    <p>Teléfono</p>
+                                    <textarea [(ngModel)]="selectedProveedor.tertel"></textarea>
+                                </div>
+                                <div class="sixth-data">
+                                    <p>Fax</p>
+                                    <textarea [(ngModel)]="selectedProveedor.terfax"></textarea>
+                                </div>
+                            </div>
+                            <div class="seventh-row">
+                                <div class="seventh-data">
+                                    <p>Web</p>
+                                    <textarea [(ngModel)]="selectedProveedor.terweb"></textarea>
+                                </div>
+                            </div>
+                            <div class="eighth-row">
+                                <div class="eighth-data">
+                                    <p>Correo electrónico</p>
+                                    <textarea [(ngModel)]="selectedProveedor.tercoe"></textarea>
+                                </div>
+                            </div>
                         </div>
-                        <div>
-                            <strong>Fax:</strong>
-                            <h1>{{ selectedProveedor.terfax }}</h1>
-                        </div>
-                        <div>
-                            <strong>Web:</strong>
-                            <input [(ngModel)]="selectedProveedor.terweb" type="text" />
+                        <div class="right">
+                            <div class="tenth-row">
+                                <div class="tenth-data">
+                                    <p>Observaciones:</p>
+                                    <textarea [(ngModel)]="selectedProveedor.terobs"></textarea>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="modal-row">
-                        <div class="textArea">
-                            <strong>Correo electrónico:</strong>
-                            <h1 class="correo">{{ selectedProveedor.tercoe }}</h1>
-                            <strong>Observaciones:</strong>
-                            <textarea [(ngModel)]="selectedProveedor.terobs"></textarea>
-                        </div>
-                    </div>
-                    <div class="modal-row">
-                        <div>
-                            <input type="checkbox"
+                    <div class="ninth-row">
+                        <input type="checkbox"
                             [checked]="selectedProveedor.teracu == 1"
                             (change)="onCheckboxGeneric($event, 'teracu')"
-                            class="checkbox" />
-                             Tiene acuerdo marco
-                        </div>
+                            class="checkbox" 
+                        />
+                            Tiene acuerdo marco
                     </div>
                     <h1 class="errorBtn">{{ messageError }}</h1>
                     <h1 class="successBtn">{{ messageSuccess }}</h1>
