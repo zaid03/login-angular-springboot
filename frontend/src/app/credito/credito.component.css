@@ -161,6 +161,13 @@ app-sidebar {
     background-color: #f0f7ff;
 }
 
+.credito-table td:last-child,
+.credito-container td:nth-child(7),
+.credito-container td:nth-child(6),
+.credito-container td:nth-child(5) {
+    text-align: right !important;
+}
+
 .pagination-controls button:disabled,
 .pagination-controls button:disabled:hover {
     background-color: #ccc;
@@ -294,6 +301,7 @@ app-sidebar {
 .fourth-data input[type="text"],
 .fifth-data input[type="text"], 
 .fifth-data-special input[type="text"] {
+    text-align: right !important;
     border: 1px solid #1c5d8c;
     padding: 8px 6px;
     border-radius: 6px;

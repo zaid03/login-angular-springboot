@@ -53,10 +53,10 @@
                         <td>{{ p.partidas?.[0]?.desc }}</td>
                         <td>{{ p.gbsope }}</td>
                         <td>{{ p.gbsref }}</td>
-                        <td>{{ p.limporte }}</td>
-                        <td>{{ p.saldo }}</td>
-                        <td>{{ getkAcPeCo(p.gbsiut, p.gbsict)}}</td>
-                        <td> {{ getkdispon(p.saldo, getkAcPeCo(p?.gbsiut, p?.gbsict)) }}</td>
+                        <td>{{ p.limporte | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</td>
+                        <td>{{ p.saldo | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</td>
+                        <td>{{ getkAcPeCo(p.gbsiut, p.gbsict) | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</td>
+                        <td> {{ getkdispon(p.saldo, getkAcPeCo(p?.gbsiut, p?.gbsict)) | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -108,7 +108,7 @@
                         <div class="third-data">
                             <div class="third-data-special">
                                 <p>Fecha bolsa</p>
-                                <input type="text" [value]="selectedBolsas?.gbsfop | date:'dd/MM/yyyy HH:mm'" readonly />
+                                <input type="text" [value]="selectedBolsas?.gbsfop | date:'dd/MM/yyyy'" readonly />
                             </div>
                             <div class="third-data-special">
                                 <p>Suplemento 413</p>
@@ -134,28 +134,29 @@
                         <div class="fourth-data bordering">
                             <div class="fourth-data-special">
                                 <p>Importe bolsa</p>
-                                <input type="text" [(ngModel)]="selectedBolsas.gbsimp" />
+                                <input type="text" [ngModel]="selectedBolsas.gbsimp | currency:'EUR':'symbol':'1.2-2':'es-ES'"
+                                (blur)="formatGbsimp($event)" />
                             </div>
                             <div class="fourth-data-special">
                                 <h5 class="ope">+</h5>
                             </div>
                             <div class="fourth-data-special">
                                 <p>Importe bolsa gestion</p>
-                                <input type="text" [(ngModel)]="selectedBolsas.gbsibg" readonly/>
+                                <input type="text" [ngModel]="selectedBolsas.gbsibg | currency:'EUR':'symbol':'1.2-2':'es-ES'" readonly/>
                             </div>
                             <div class="fourth-data-special">
                                 <h5 class="ope">-</h5>
                             </div>
                             <div class="fourth-data-special">
                                 <p>Usado bolsa</p>
-                                <input type="text" [(ngModel)]="selectedBolsas.gbsius" readonly/>
+                                <input type="text" [ngModel]="selectedBolsas.gbsius | currency:'EUR':'symbol':'1.2-2':'es-ES'" readonly/>
                             </div>
                             <div class="fourth-data-special">
                                 <h5 class="ope">=</h5>
                             </div>
                             <div class="fourth-data-special">
                                 <p>Disponible bolsa</p>
-                                <input type="text" [value]="getKBoldis(selectedBolsas.gbsimp, selectedBolsas.gbsibg, selectedBolsas.gbsius)" readonly/>
+                                <input type="text" [value]="getKBoldis(selectedBolsas.gbsimp, selectedBolsas.gbsibg, selectedBolsas.gbsius) | currency:'EUR':'symbol':'1.2-2':'es-ES'" readonly/>
                             </div>
                         </div>
                     </div>
@@ -163,21 +164,21 @@
                         <div class="fifth-data bordering">
                             <div class="fifth-data-special">
                                 <p>Saldo op.</p>
-                                <input type="text" [value]="selectedBolsas?.saldo" readonly/>
+                                <input type="text" [value]="selectedBolsas?.saldo | currency:'EUR':'symbol':'1.2-2':'es-ES'" readonly/>
                             </div>
                             <div class="fifth-data-special-math">
                                 <h5 class="ope">-</h5>
                             </div>
                             <div class="fifth-data-special">
                                 <p>Pte. conta SCAP</p>
-                                <input type="text" [value]="getkAcPeCo(selectedBolsas.gbsiut, selectedBolsas.gbsict)" readonly/>
+                                <input type="text" [value]="getkAcPeCo(selectedBolsas.gbsiut, selectedBolsas.gbsict) | currency:'EUR':'symbol':'1.2-2':'es-ES'" readonly/>
                             </div>
                             <div class="fifth-data-special-math">
                                 <h5 class="ope">=</h5>
                             </div>
                             <div class="fifth-data-special">
                                 <p>Disponible</p>
-                                <input type="text" [value]="getkdispon(selectedBolsas.saldo, getkAcPeCo(selectedBolsas?.gbsiut, selectedBolsas?.gbsict))" readonly/>
+                                <input type="text" [value]="getkdispon(selectedBolsas.saldo, getkAcPeCo(selectedBolsas?.gbsiut, selectedBolsas?.gbsict)) | currency:'EUR':'symbol':'1.2-2':'es-ES'" readonly/>
                             </div>
                         </div>
 
@@ -188,27 +189,27 @@
                             <div class="fifth-data-special-container">
                                 <div class="fifth-data-special">
                                     <p>Gastado Total</p>
-                                    <input type="text" [ngModel]="selectedBolsas.gbsiut" readonly/>
+                                    <input type="text" [ngModel]="selectedBolsas.gbsiut | currency:'EUR':'symbol':'1.2-2':'es-ES'" readonly/>
                                 </div>
                                 <div class="fifth-data-special-math">
                                     <h5 class="opee">-</h5>
                                 </div>
                                 <div class="fifth-data-special">
                                     <p>Contabilizaado Total</p>
-                                    <input type="text" [(ngModel)]="selectedBolsas.gbsict" readonly/>
+                                    <input type="text" [ngModel]="selectedBolsas.gbsict | currency:'EUR':'symbol':'1.2-2':'es-ES'" readonly/>
                                 </div>
                                 <div class="fifth-data-special-math">
                                     <h5 class="opee">=</h5>
                                 </div>
                                 <div class="fifth-data-special">
                                     <p>Pte. Contabilizar SCAP</p>
-                                    <input type="text" [value]="getkAcPeCo(selectedBolsas.gbsiut, selectedBolsas.gbsict)" readonly/>
+                                    <input type="text" [value]="getkAcPeCo(selectedBolsas.gbsiut, selectedBolsas.gbsict) | currency:'EUR':'symbol':'1.2-2':'es-ES'" readonly/>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <h1 style="color: green; font-size: 15px; text-align: center;" id="error">{{ guardarMesageSuccess }}</h1>
-                    <h1 style="color: red; font-size: 15px; text-align: center;" id="error">{{ guardarMesage }}</h1>
+                    <h1 class="successBtn">{{ guardarMesageSuccess }}</h1>
+                    <h1 class="errorBtn">{{ guardarMesage }}</h1>
                     <button class="save-btn" (click)="guardarDetelles(selectedBolsas.gbsimp, getKBoldis(selectedBolsas.gbsimp, selectedBolsas.gbsibg, selectedBolsas.gbsius), selectedBolsas.gbsref)">Guardar</button>
                 </div>
             </div>

@@ -1,5 +1,5 @@
-import { Component, HostListener } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, HostListener} from '@angular/core';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -11,9 +11,10 @@ import { environment } from '../../environments/environment';
 @Component({
   selector: 'app-credito',
   standalone: true,
-  imports: [CommonModule, FormsModule, SidebarComponent],
+  imports: [CommonModule, FormsModule, SidebarComponent, CurrencyPipe],
   templateUrl: './credito.component.html',
-  styleUrls: ['./credito.component.css']
+  styleUrls: ['./credito.component.css'],
+  providers: [CurrencyPipe]
 })
 export class CreditoComponent {
   showMenu = false;
@@ -44,7 +45,7 @@ export class CreditoComponent {
   guardarMesageSuccess: string = '';
   guardarisSuccess : boolean = false;
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router, private currency: CurrencyPipe) {}
 
   ngOnInit(): void {
     this.tableIsError = false;
@@ -315,6 +316,19 @@ export class CreditoComponent {
     const a = toNum(saldo);
     const b = toNum(getkAcPeCo);
     return (a - b).toFixed();
+  }
+
+  formatGbsimp(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const normalized = input.value.replace(/\./g, '').replace(',', '.');
+    const amount = Number(normalized);
+    if (!isNaN(amount)) {
+      this.selectedBolsas.gbsimp = amount;
+      input.value =
+        this.currency.transform(amount, 'EUR', 'symbol', '1.2-2', 'es-ES') ?? '';
+    } else {
+      input.value = '';
+    }
   }
 
   guardarDetelles(gbsimp: any, getKBoldis:any, gbsref: any) {
