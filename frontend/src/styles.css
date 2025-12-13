@@ -147,7 +147,9 @@ app-sidebar {
 .articulos-cancel-confirm-btn,
 .proveedor-saving-btn,
 .proveedor-cancel-btn,
-.menu-panel button  {
+.menu-panel button,
+.cge-save-btn,
+.cge-delete-btn  {
   background-color: #1d4ed8;
   color: #fff;
   border: none;
@@ -187,7 +189,8 @@ app-sidebar {
 .save-btn-articulos:hover,
 .articulos-cancel-confirm-btn:hover,
 .proveedor-saving-btn:hover,
-.menu-panel button:hover {
+.menu-panel button:hover,
+.cge-save-btn:hover {
   background-color: #094fa3;
   color: #e6edf3;
 }
@@ -199,7 +202,8 @@ app-sidebar {
 .delete-btn-articulos,
 .delete-btn-personas,
 .articulos-delete-confirm-btn,
-.proveedor-cancel-btn {
+.proveedor-cancel-btn,
+.cge-delete-btn {
   background-color: rgb(221, 66, 66);
 }
 
@@ -210,7 +214,8 @@ app-sidebar {
 .delete-btn-articulos:hover,
 .delete-btn-personas:hover,
 .articulos-delete-confirm-btn:hover,
-.proveedor-cancel-btn:hover {
+.proveedor-cancel-btn,
+.cge-delete-btn:hover {
   background-color: rgb(117, 28, 28);
 }
 

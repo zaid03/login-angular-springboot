@@ -53,7 +53,7 @@ public class Cge {
     public String getCGEFUN() { return CGEFUN; }
     public void setCGEFUN(String CGEFUN) { this.CGEFUN = CGEFUN; }
 
-    public String CGEDAT() { return CGEDAT; }
+    public String getCGEDAT() { return CGEDAT; }
     public void setCGEDAT(String CGEDAT) { this.CGEDAT = CGEDAT; }
 
     public Integer getCGECIC() { return CGECIC; }

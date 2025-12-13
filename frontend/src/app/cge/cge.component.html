@@ -60,7 +60,7 @@
                 </thead>
                 <tbody>
                     <tr *ngFor="let c of centroGestores">
-                        <td style="cursor: pointer;">{{ c.cgecod }}</td>
+                        <td (click)="showDetails(c)" style="cursor: pointer;">{{ c.cgecod }}</td>
                         <td>{{ c.cgedes }}</td>
                         <td>{{ c.cgeorg }}</td>
                         <td>{{c.cgefun }}</td>
@@ -82,6 +82,66 @@
                 />
                 <span>de {{ totalPages }}</span>
                 <button (click)="nextPage()" [disabled]="page + 1 >= totalPages">Siguiente</button>
+            </div>
+            <div class="modal-backdrop" *ngIf="selectedCentroGestor" (click)="closeDetails()"></div>
+            <div class="display" >
+                <div class="modal" *ngIf="selectedCentroGestor">
+                    <button class="close-btn-fct" (click)="closeDetails()">×</button>
+                    <h3>Detalles de centro gestor</h3>
+                    <div class="top">
+                        <div class="left">
+                            <div class="detail-info">
+                                <p>Código</p>
+                                <textarea [(ngModel)]="selectedCentroGestor.cgecod"></textarea>
+                            </div>
+                            <div class="detail-info">
+                                <p>Orgánica</p>
+                                <textarea [(ngModel)]="selectedCentroGestor.cgeorg"></textarea>
+                            </div>
+                            <div class="detail-info">
+                                <p>Programa</p>
+                                <textarea [(ngModel)]="selectedCentroGestor.cgefun"></textarea>
+                            </div>
+                            <div class="detail-info-descr">
+                                <p>Descripción</p>
+                                <textarea [(ngModel)]="selectedCentroGestor.cgedes" class="width"></textarea>
+                            </div>
+                        </div>
+                        <div class="right">
+                            <h3>Estado contable</h3>
+                            <div class="input-container">
+                                <input 
+                                    type="radio" 
+                                    name="cont-option" 
+                                    value="0" 
+                                >
+                                Abierto<br>
+                                <input 
+                                    type="radio" 
+                                    name="cont-option" 
+                                    value="2" 
+                                >
+                                Cerrado Para Contabilizar<br>
+                                <input 
+                                    type="radio" 
+                                    name="cont-option" 
+                                    value="1" 
+                                >
+                                Cerrado
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bottom">
+                        <p>Dirección para pedido</p>
+                        <textarea [(ngModel)]="selectedCentroGestor.cgedat"></textarea>
+                    </div>
+                    <h1 class="errorBtn">{{ centroGestorSuccessMessage }}</h1>
+                    <h1 class="successBtn">{{ centroGestorErrorMessage }}</h1>
+                    <div class="btn-container">
+                        <button class="cge-save-btn">Guardar</button>
+                        <button class="cge-delete-btn">Borrar</button>
+                    </div> 
+                </div>
             </div>
         </div>
     </div>

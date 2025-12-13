@@ -216,7 +216,7 @@ export class CgeComponent {
       this.page = total - 1;
     }
   }
-  
+
   excelDownload() {
     const rows = this.backupCentroGestores.length ? this.backupCentroGestores : this.centroGestores;
     if (!rows || rows.length === 0) {
@@ -320,5 +320,18 @@ export class CgeComponent {
     `);
     printWindow.document.close();
     printWindow.print();
+  }
+
+  selectedCentroGestor: any = null;
+  centroGestorSuccessMessage: String = '';
+  centroGestorErrorMessage: string = '';
+  showDetails(centroGestor: any) {
+    this.selectedCentroGestor = centroGestor;
+  }
+
+  closeDetails() {
+    this.selectedCentroGestor = null;
+    this.centroGestorSuccessMessage = '';
+    this.centroGestorErrorMessage = '';
   }
 }
