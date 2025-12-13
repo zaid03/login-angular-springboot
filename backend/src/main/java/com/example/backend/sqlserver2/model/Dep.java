@@ -26,6 +26,8 @@ public class Dep {
     @Column(nullable = false)
     private String DEPDES;
 
+    private String CGECOD;
+
     //getters and setters
     public Integer getENT() {
         return ENT;
@@ -54,4 +56,7 @@ public class Dep {
     public void setDEPDES(String DEPDES) {
         this.DEPDES = DEPDES;
     }
+
+    public String getCGECOD() { return CGECOD; }
+    public void setCGECOD(String CGECOD) { this.CGECOD = CGECOD; }
 }

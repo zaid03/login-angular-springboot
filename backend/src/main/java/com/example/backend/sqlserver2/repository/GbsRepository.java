@@ -71,4 +71,21 @@ public interface  GbsRepository extends JpaRepository<Gbs, GbsId>{
         @Param("CGECOD") String CGECOD,
         @Param("GBSREF") String GBSREF
     );
+
+    //for deleting a centro gestor
+    @Query(
+        value = """
+        SELECT count (*)
+        FROM GBS
+        WHERE 
+            ENT = :ENT
+            AND EJE = :EJE 
+            AND CGECOD = :CGECOD   
+        """, nativeQuery = true
+    )
+    Long CountBolsas(
+        @Param("ENT") Integer ENT,
+        @Param("EJE") String EJE,
+        @Param("CGECOD") String CGECOD
+    );
 }

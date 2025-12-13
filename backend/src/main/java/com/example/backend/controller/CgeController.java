@@ -2,6 +2,9 @@ package com.example.backend.controller;
 
 import com.example.backend.sqlserver2.model.Cge;
 import com.example.backend.sqlserver2.repository.CgeRepository;
+import com.example.backend.sqlserver2.repository.GbsRepository;
+import com.example.backend.sqlserver2.repository.DepRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +18,10 @@ import java.util.List;
 public class CgeController {
     @Autowired
     private CgeRepository cgeRepository;
+    @Autowired
+    private GbsRepository gbsRepository;
+    @Autowired
+    private DepRepository depRepository;
 
     @GetMapping("/fetch-all/{ent}/{eje}")
     public ResponseEntity<?> fetchAllCentroGestores(
@@ -68,7 +75,6 @@ public class CgeController {
                 .body("Update failed: " + ex.getMostSpecificCause().getMessage());
         }
     }
-
     //add centro gestor
     public record centroAdd(Integer ent, String eje, String cgecod, String cgedes, String cgeorg, String cgefun, String cgedat, Integer cgecic) {}
 
@@ -100,7 +106,39 @@ public class CgeController {
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch(DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Update failed: " + ex.getMostSpecificCause().getMessage());
+                .body("insert failed: " + ex.getMostSpecificCause().getMessage());
+        }
+    }
+
+    //to delete a centro gestor
+    @DeleteMapping("/delete-centro-gestor/{ent}/{eje}/{cgecod}")
+    public ResponseEntity<?> deleteSubFamilia(
+        @PathVariable Integer ent,
+        @PathVariable String eje,
+        @PathVariable String cgecod
+    ) {
+        try {
+            Long bolsas = gbsRepository.CountBolsas(ent, eje, cgecod);
+            if (bolsas > 0) {
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body("No puede borrar un centro gestor que tiene bolsas de crédito");
+            }
+
+            Long services = depRepository.countServices(ent, eje, cgecod);
+            if (services > 0) {
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body("No puede borrar un centro gestor que tiene servicios");
+            }
+
+            int removed = cgeRepository.deleteCentroGestor(ent, eje, cgecod);
+            return removed == 0
+            ? ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body("Centro gestor no encontrada para los datos.")
+            : ResponseEntity.noContent().build();
+
+        } catch(DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("delete failed: " + ex.getMostSpecificCause().getMessage());
         }
     }
 }

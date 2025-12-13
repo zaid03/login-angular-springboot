@@ -56,8 +56,8 @@ public interface CgeRepository extends JpaRepository<Cge, CgeId> {
     """)
     int deleteCentroGestor(
         @Param("ENT") Integer ENT,
-        @Param("EJE") Integer EJE,
-        @Param("CGECOD") Integer CGECOD
+        @Param("EJE") String EJE,
+        @Param("CGECOD") String CGECOD
     );
 
     //needed for adding a centro gestor
