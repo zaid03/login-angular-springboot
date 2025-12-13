@@ -32,13 +32,6 @@
     outline: none;
 }
 
-.centroGestor-download {
-    display: flex;
-    gap: 16px;
-    justify-content: flex-end;
-    margin: 16px 0 24px 0;
-}
-
 .add-centroGestor-btn{
     margin-bottom: 10px;
 }

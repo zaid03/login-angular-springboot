@@ -7,7 +7,19 @@
     </div>
     <app-sidebar #sidebar></app-sidebar>
     <div class="centroGestor-container" [class.blurred]="!sidebar.collapsed">
-        <h2>Listado de centros de gestor</h2>
+        <div class="title-menu">
+            <h2 class="margin-title">Lista de centros gestión </h2>  
+            <div class="group-menu" (click)="toggleMenu($event)">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="menu-panel" *ngIf="showMenu">
+                    <button class="download-btn" (click)="excelDownload()">Descargar como Excel</button>
+                    <button class="print-btn" (click)="toPrint()">Impreso</button>
+                    <button class="add-centroGestor-btn">Añadir</button>
+                </div>
+            </div>
+        </div>
         <div class="centroGestor-search">
             <form class="search-form">
                 <input 
@@ -24,18 +36,22 @@
             <button class="search-btn" (click)="searchCentroGestor()">Buscar</button>
         </div>
         <h1 class="errorBtn">{{ SearchDownMessageError }}</h1>
-        <div class="centroGestor-download">
-            <button class="download-btn" (click)="excelDownload()">Descargar como Excel</button>
-            <button class="print-btn" (click)="toPrint()">Impreso</button>
-        </div>
         <div class="centroGestor-list">
-            <h1 class="errorBtn">{{ errorMessageTable }}</h1>
             <h1 class="successBtn">success</h1>
-            <button class="add-centroGestor-btn">Añadir</button>
             <table class="centroGestor-table">
                 <thead>
                     <tr>
-                        <th>Código</th>
+                        <th
+                            class="sortable"
+                            (click)="toggleSort('cgecod')"
+                        >
+                            Código
+                            <span 
+                                class="sort-indicator" 
+                            >
+                                {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                            </span>
+                        </th>
                         <th>Descripción</th>
                         <th>Orgánica</th>
                         <th>Programa</th>

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -16,13 +16,26 @@ import { environment } from '../../environments/environment';
   styleUrls: ['./cge.component.css']
 })
 export class CgeComponent {
+  showMenu = false;
+  toggleMenu(event: MouseEvent): void {
+    event.stopPropagation();
+    this.showMenu = !this.showMenu;
+  }
+
+  @HostListener('document:click')
+  closeMenu(): void {
+    this.showMenu = false;
+  }
+
   constructor(private http: HttpClient, private router: Router) {}
 
   private entcod: number | null = null;
   private eje: number | null = null;
   centroGestores: any[] = [];
   private backupCentroGestores: any[] = [];
-  errorMessageTable: string = '';
+  private defaultCentroGestores: any[] = [];
+  sortField: 'cgecod' | 'cgedes' | null = null;
+  sortDirection: 'asc' | 'desc' = 'asc';
   page = 0;
   pageSize = 20;
 
@@ -50,16 +63,17 @@ export class CgeComponent {
     this.http.get<any>(`${environment.backendUrl}/api/cge/fetch-all/${this.entcod}/${this.eje}`).subscribe({
       next: (res) => {
         this.centroGestores = Array.isArray(res) ? [...res] : [];
-        console.log(this.centroGestores)
         this.backupCentroGestores = [...this.centroGestores];
+        this.defaultCentroGestores = [...this.centroGestores];
         this.page = 0;
+        this.updatePagination();
         if ( res.status === 404 ) {
           this.centroGestores = [];
-          this.errorMessageTable = typeof res.body === 'string' ? res.body : 'sin resultados.';
+          this.SearchDownMessageError = typeof res.body === 'string' ? res.body : 'sin resultados.';
         }
       }, error: (err) => {
         this.centroGestores = [];
-        this.errorMessageTable = typeof err.error === 'string' ? err.error : 'server Error';
+        this.SearchDownMessageError = typeof err.error === 'string' ? err.error : 'server Error';
       }
     })
   }
@@ -118,7 +132,7 @@ export class CgeComponent {
     const term = this.searchTerm.trim();
 
     if (!term) {
-      this.SearchDownMessageError = 'Introduzca una familia para buscar'
+      this.SearchDownMessageError = 'Introduzca una centro gestor para buscar'
       this.centroGestores = [...this.backupCentroGestores];
       this.page = 0;
       return;
@@ -139,9 +153,70 @@ export class CgeComponent {
     if (this.centroGestores.length === 0) {
       this.SearchDownMessageError = 'Este Centro Gestor no existe';
     }
+    
+    this.defaultCentroGestores = [...this.centroGestores];
+    this.sortField = null;
+    this.sortDirection = 'asc';
     this.page = 0;
+    this.updatePagination();
   }
 
+  toggleSort(field: 'cgecod' | 'cgedes'): void {
+    if (this.sortField !== field) {
+      this.sortField = field;
+      this.sortDirection = 'asc';
+    } else if (this.sortDirection === 'asc') {
+      this.sortDirection = 'desc';
+    } else {
+      this.sortField = null;
+      this.sortDirection = 'asc';
+      this.centroGestores = [...this.defaultCentroGestores];
+      this.page = 0;
+      this.updatePagination();
+      return;
+    }
+
+    this.applySort();
+  }
+
+  private applySort(): void {
+    if (!this.sortField) {
+      return;
+    }
+
+    const base = [...this.defaultCentroGestores];
+    const sorted = base.sort((a, b) => {
+      const aVal = (this.sortField === 'cgecod'
+        ? (a.cgecod ?? '').toString()
+        : (a.cgedes ?? '').toString()
+      ).toUpperCase();
+
+      const bVal = (this.sortField === 'cgecod'
+        ? (b.cgecod ?? '').toString()
+        : (b.cgedes ?? '').toString()
+      ).toUpperCase();
+
+      return this.sortDirection === 'asc'
+        ? aVal.localeCompare(bVal, 'es')
+        : bVal.localeCompare(aVal, 'es');
+    });
+
+    this.centroGestores = sorted;
+    this.page = 0;
+    this.updatePagination();
+  }
+
+  private updatePagination(): void {
+    const total = this.totalPages;
+    if (total === 0) {
+      this.page = 0;
+      return;
+    }
+    if (this.page >= total) {
+      this.page = total - 1;
+    }
+  }
+  
   excelDownload() {
     const rows = this.backupCentroGestores.length ? this.backupCentroGestores : this.centroGestores;
     if (!rows || rows.length === 0) {
