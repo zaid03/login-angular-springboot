@@ -51,7 +51,7 @@ public interface AfaRepository extends JpaRepository<Afa, AfaId> {
     @Query("""
         DELETE FROM Afa a
         WHERE a.ENT = :ENT
-          AND a.AFACOD = :AFACOD
+        AND a.AFACOD = :AFACOD
     """)
     int deleteByEntAndAfacod(
         @Param("ENT") Integer ENT,

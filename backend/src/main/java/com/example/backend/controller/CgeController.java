@@ -31,4 +31,76 @@ public class CgeController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al consultar centros: " + ex.getMostSpecificCause().getMessage());
         }
     }
+
+    //update centro gestor
+    public record centroUpdate(String cgedes, String cgeorg, String cgefun, String cgedat, Integer cgecic) {}
+
+    @PatchMapping("/update-familia/{ent}/{eje}/{cge}")
+    public ResponseEntity<?> updateCentro(
+        @PathVariable Integer ent,
+        @PathVariable String eje,
+        @PathVariable String cge,
+        @RequestBody centroUpdate payload
+    ) {
+        try {
+            if (payload == null || payload.cgedes() == null || payload.cgeorg() == null || payload.cgefun() == null || payload.cgedat() == null || payload.cgecic() == null) {
+                return ResponseEntity.badRequest().body("Faltan datos obligatorios.");
+            }
+
+            int updated = cgeRepository.updateCentroGestor(
+                payload.cgedes(),
+                payload.cgeorg(),
+                payload.cgefun(),
+                payload.cgedat(),
+                payload.cgecic(),
+                ent,
+                eje,
+                cge
+            );
+
+            if (updated == 0) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No se encontró ninguna centro gestor para los datos.");
+            }
+            return ResponseEntity.noContent().build();
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Update failed: " + ex.getMostSpecificCause().getMessage());
+        }
+    }
+
+    //add centro gestor
+    public record centroAdd(Integer ent, String eje, String cgecod, String cgedes, String cgeorg, String cgefun, String cgedat, Integer cgecic) {}
+
+    @PostMapping("/Insert-familia")
+    public ResponseEntity<?> addCentroGestor(
+        @RequestBody centroAdd payload
+    ) {
+        try {
+            if (payload == null || payload.ent() == null || payload.eje() == null || payload.cgecod() == null || payload.cgedes() == null || payload.cgeorg() == null || payload.cgefun() == null || payload.cgedat() == null || payload.cgecic() == null) {
+                return ResponseEntity.badRequest().body("Faltan datos obligatorios.");
+            }
+
+            if(!cgeRepository.findByENTAndEJEAndCGECOD(payload.ent(), payload.eje(), payload.cgecod()).isEmpty()) {
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("Este Centro gestor ya existe   .");
+            }
+            
+            Cge nueva = new Cge();
+            nueva.setENT(payload.ent());
+            nueva.setEJE(payload.eje());
+            nueva.setCGECOD(payload.cgecod());
+            nueva.setCGEDES(payload.cgedes());
+            nueva.setCGEORG(payload.cgeorg());
+            nueva.setCGEFUN(payload.cgefun());
+            nueva.setCGEDAT(payload.cgedat());
+            nueva.setCGECIC(payload.cgecic());
+
+            cgeRepository.save(nueva);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } catch(DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Update failed: " + ex.getMostSpecificCause().getMessage());
+        }
+    }
 }
