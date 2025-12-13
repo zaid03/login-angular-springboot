@@ -92,19 +92,32 @@
                         <div class="left">
                             <div class="detail-info">
                                 <p>Código</p>
-                                <textarea [(ngModel)]="selectedCentroGestor.cgecod"></textarea>
+                                <textarea 
+                                    [(ngModel)]="selectedCentroGestor.cgecod"
+                                    readonly
+                                ></textarea>
                             </div>
                             <div class="detail-info">
                                 <p>Orgánica</p>
-                                <textarea [(ngModel)]="selectedCentroGestor.cgeorg"></textarea>
+                                <textarea 
+                                    [(ngModel)]="selectedCentroGestor.cgeorg"
+                                    #cgeorg
+                                ></textarea>
                             </div>
                             <div class="detail-info">
                                 <p>Programa</p>
-                                <textarea [(ngModel)]="selectedCentroGestor.cgefun"></textarea>
+                                <textarea 
+                                    [(ngModel)]="selectedCentroGestor.cgefun"
+                                    #cgefun
+                                ></textarea>
                             </div>
                             <div class="detail-info-descr">
                                 <p>Descripción</p>
-                                <textarea [(ngModel)]="selectedCentroGestor.cgedes" class="width"></textarea>
+                                <textarea 
+                                    [(ngModel)]="selectedCentroGestor.cgedes" 
+                                    class="width"
+                                    #cgedes
+                                ></textarea>
                             </div>
                         </div>
                         <div class="right">
@@ -113,19 +126,22 @@
                                 <input 
                                     type="radio" 
                                     name="cont-option" 
-                                    value="0" 
+                                    [checked]="isCgecic(0)"
+                                    (change)="setCgecic(0)"
                                 >
                                 Abierto<br>
                                 <input 
                                     type="radio" 
                                     name="cont-option" 
-                                    value="2" 
+                                    [checked]="isCgecic(2)"
+                                    (change)="setCgecic(2)"
                                 >
                                 Cerrado Para Contabilizar<br>
                                 <input 
                                     type="radio" 
                                     name="cont-option" 
-                                    value="1" 
+                                    [checked]="isCgecic(1)"
+                                    (change)="setCgecic(1)"
                                 >
                                 Cerrado
                             </div>
@@ -133,12 +149,15 @@
                     </div>
                     <div class="bottom">
                         <p>Dirección para pedido</p>
-                        <textarea [(ngModel)]="selectedCentroGestor.cgedat"></textarea>
+                        <textarea 
+                            [(ngModel)]="selectedCentroGestor.cgedat"
+                            #cgedat
+                        ></textarea>
                     </div>
                     <h1 class="errorBtn">{{ centroGestorSuccessMessage }}</h1>
                     <h1 class="successBtn">{{ centroGestorErrorMessage }}</h1>
                     <div class="btn-container">
-                        <button class="cge-save-btn">Guardar</button>
+                        <button class="cge-save-btn" (click)="updateCentroGestor(cgedes.value ,cgeorg.value ,cgefun.value, cgedat.value)">Guardar</button>
                         <button class="cge-delete-btn">Borrar</button>
                     </div> 
                 </div>

@@ -31,6 +31,7 @@ export class CgeComponent {
 
   private entcod: number | null = null;
   private eje: number | null = null;
+  public cge: string = '';
   centroGestores: any[] = [];
   private backupCentroGestores: any[] = [];
   private defaultCentroGestores: any[] = [];
@@ -42,6 +43,7 @@ export class CgeComponent {
   ngOnInit() {
     const entidad = sessionStorage.getItem('Entidad');
     const eje = sessionStorage.getItem('EJERCICIO');
+    const cge = sessionStorage.getItem('CENTROGESTOR');
 
     if (entidad) {
       const parsed = JSON.parse(entidad);
@@ -51,6 +53,11 @@ export class CgeComponent {
     if (eje) {
       const parsed = JSON.parse(eje);
       this.eje = parsed.eje;
+    }
+
+    if (cge) {
+      const parsed = JSON.parse(cge);
+      this.cge = parsed.value;
     }
 
     if (!entidad || this.entcod === null || this.eje === null) {
@@ -100,8 +107,6 @@ export class CgeComponent {
   }
 
   getkCGECIC(cgecic: number) {
-    console.log(cgecic)
-
     if (cgecic === 0) {
       return 'No';
     } else if (cgecic === 1) {
@@ -110,6 +115,17 @@ export class CgeComponent {
       return 'Cierre para contabilizar';
     }
     return;
+  }
+
+  setCgecic(value: number): void {
+    if (!this.selectedCentroGestor) {
+      return;
+    }
+    this.selectedCentroGestor.cgecic = value;
+  }
+
+  isCgecic(value: number): boolean {
+    return (this.selectedCentroGestor?.cgecic ?? null) === value;
   }
 
   SearchDownMessageError: string = '';
@@ -333,5 +349,26 @@ export class CgeComponent {
     this.selectedCentroGestor = null;
     this.centroGestorSuccessMessage = '';
     this.centroGestorErrorMessage = '';
+  }
+
+  updateCentroGestor(des: string, org: string, fun: string, dat: string) {
+    this.centroGestorSuccessMessage = '';
+    this.centroGestorErrorMessage = '';
+    const payload = {
+      ent: this.entcod,
+      eje: this.eje,
+      cgecod: this.cge,
+      cgedes: des,
+      cgeorg: org,
+      cgefun: fun,
+      cgedat: dat,
+      cgecic: this.selectedCentroGestor.cgecic
+    }
+
+    console.log(payload);
+  }
+
+  AddCentroGestor(cod: string, des: string, org: string, fun: string, dat: string) {
+
   }
 }

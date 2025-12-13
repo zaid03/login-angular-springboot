@@ -178,5 +178,6 @@
 .btn-container{
     padding: 1%;
     display: flex;
+    justify-content: flex-end;
     gap: 10px;
 }
