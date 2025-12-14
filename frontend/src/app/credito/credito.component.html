@@ -40,7 +40,18 @@
                         <th>Aplicación</th>
                         <th>Desc. Aplicación</th>
                         <th>Operación contable</th>
-                        <th>Ref. contable</th>
+                        <th
+                            class="sortable"
+                            (click)="toggleSort('gbsref')"
+
+                        >
+                            Ref. contable
+                            <span 
+                                class="sort-indicator" 
+                            >
+                            {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                            </span>
+                        </th>
                         <th>Imp. Operación</th>
                         <th>Saldo Operación</th>
                         <th>Pte. Contabilizar SCAP</th>

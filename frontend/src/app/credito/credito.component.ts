@@ -33,8 +33,9 @@ export class CreditoComponent {
   public centroGestor: string = '';
   private initialCentroGestor: string = '';
   creditos: any[] = [];
-  wsData: any[] = [];
   private backupCreditos: any[] = [];
+  private defaultCreditos: any[] = [];
+  wsData: any[] = [];
   public Math = Math;
   page = 0;
   pageSize = 20;
@@ -82,6 +83,7 @@ export class CreditoComponent {
         } else {
           this.creditos = Array.isArray(response) ? [...response] : [];
           this.backupCreditos = [...this.creditos];
+          this.defaultCreditos = [...this.creditos];
           this.creditos.forEach((item, idx) => {
             const org = item?.gbsorg ?? '';
             const fun = item?.gbsfun ?? '';
@@ -99,6 +101,8 @@ export class CreditoComponent {
                   this.creditos[idx].partidas = [];
                 },
               });
+              this.creditos[idx].saldo = 0;
+              this.creditos[idx].limporte = 0;
               this.http.get<any>(`${environment.backendUrl}/api/sical/operaciones?clorg=${org}&clfun=${fun}&cleco=${eco}`)
               .subscribe({
                 next: (operaciones) => {
@@ -113,7 +117,9 @@ export class CreditoComponent {
                 },
               });
           });
+          this.sortDirection = 'asc';
           this.page = 0;
+          this.updatePagination();
         }
       }, error: (err) => {
         this.tableIsError = true;
@@ -121,6 +127,52 @@ export class CreditoComponent {
         alert(this.tableMessage);
       }
     });
+  }
+
+  toggleSort(field: 'gbsref'): void {
+    if (this.sortField !== field) {
+      this.sortField = field;
+      this.sortDirection = 'asc';
+    } else if (this.sortDirection === 'asc') {
+      this.sortDirection = 'desc';
+    } else {
+      this.sortField = null;
+      this.sortDirection = 'asc';
+      this.creditos = [...this.defaultCreditos];
+      this.page = 0;
+      this.updatePagination();
+      return;
+    }
+
+    this.applySort();
+  }
+
+  sortField: 'gbsref' | null = null;
+  sortDirection: 'asc' | 'desc' = 'asc';
+  private applySort(): void {
+    if (!this.sortField) {
+      return;
+    }
+
+    const field = this.sortField;
+    const sorted = [...this.defaultCreditos].sort((a, b) => {
+      const aVal = (a?.[field] ?? '').toString().toUpperCase();
+      const bVal = (b?.[field] ?? '').toString().toUpperCase();
+      return this.sortDirection === 'asc'
+        ? aVal.localeCompare(bVal, 'es')
+        : bVal.localeCompare(aVal, 'es');
+    });
+
+    this.creditos = sorted;
+    this.page = 0;
+    this.updatePagination();
+  }
+
+  private updatePagination(): void {
+    const total = this.totalPages;
+    if (this.page >= total) {
+      this.page = Math.max(0, total - 1);
+    }
   }
 
   DownloadPDF() {
