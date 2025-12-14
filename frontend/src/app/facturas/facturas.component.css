@@ -151,8 +151,10 @@ input.fecha-dato[type="radio"] {
 }
 
 .facturas-table th:first-child,
-.facturas-table th:nth-child(10) {
-  width: 70px;
+.facturas-table th:nth-child(10),
+.facturas-table th:nth-child(5),
+.facturas-table th:nth-child(12)  {
+  width: 80px;
 }
 
 .facturas-table tbody td,

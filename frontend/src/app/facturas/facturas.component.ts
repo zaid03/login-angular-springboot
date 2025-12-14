@@ -50,8 +50,6 @@ export class FacturasComponent {
   constructor(private http: HttpClient, private router: Router) {}
 
   private defaultFacturas: any[] = [];
-  sortField: 'facnum' | 'facdat' | null = null;
-  sortDirection: 'asc' | 'desc' = 'asc';
   ngOnInit(): void{
     this.estadoMessage = '';
     this.facturaIsError = false;
@@ -129,7 +127,7 @@ export class FacturasComponent {
     }
   }
   
-  toggleSort(field: 'facnum' | 'facdat'): void {
+  toggleSort(field: 'facnum' | 'facdat' | 'facfre' | 'facfco'): void {
     if (this.sortField !== field) {
       this.sortField = field;
       this.sortDirection = 'asc';
@@ -147,25 +145,31 @@ export class FacturasComponent {
     this.applySort();
   }
 
+  sortField: 'facnum' | 'facdat' | 'facfre' | 'facfco' | null = null;
+  sortDirection: 'asc' | 'desc' = 'asc';
   private applySort(): void {
     if (!this.sortField) {
       return;
     }
 
+    const field = this.sortField;
     const source = [...this.defaultFacturas];
     const sorted = source.sort((a: any, b: any) => {
-      if (this.sortField === 'facnum') {
+      if (field === 'facnum') {
         const aNum = Number(a.facnum ?? a.FACNUM ?? 0);
         const bNum = Number(b.facnum ?? b.FACNUM ?? 0);
         return this.sortDirection === 'asc' ? aNum - bNum : bNum - aNum;
       }
+
       const toTime = (value: any) => {
-        if (!value) return 0;
+        if (!value && value !== 0) return 0;
         const date = new Date(value);
         return isNaN(date.getTime()) ? 0 : date.getTime();
       };
-      const aTime = toTime(a.facdat ?? a.FACDAT);
-      const bTime = toTime(b.facdat ?? b.FACDAT);
+
+      const aTime = toTime(a[field] ?? a[field.toUpperCase()]);
+      const bTime = toTime(b[field] ?? b[field.toUpperCase()]);
+
       return this.sortDirection === 'asc' ? aTime - bTime : bTime - aTime;
     });
 
@@ -173,6 +177,7 @@ export class FacturasComponent {
     this.page = 0;
     this.updatePagination();
   }
+
 
   get paginatedFacturas(): any[] {
     if (!this.facturas || this.facturas.length === 0) return [];
