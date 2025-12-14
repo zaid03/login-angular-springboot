@@ -149,7 +149,11 @@ app-sidebar {
 .proveedor-cancel-btn,
 .menu-panel button,
 .cge-save-btn,
-.cge-delete-btn  {
+.cge-delete-btn,
+.centroGestor-add-btn,
+.centroGestor-delete-confirm-btn,
+.cge-delete-confirm-btn,
+.cge-cancel-confirm-btn  {
   background-color: #1d4ed8;
   color: #fff;
   border: none;
@@ -190,7 +194,9 @@ app-sidebar {
 .articulos-cancel-confirm-btn:hover,
 .proveedor-saving-btn:hover,
 .menu-panel button:hover,
-.cge-save-btn:hover {
+.cge-save-btn:hover,
+.centroGestor-add-btn:hover,
+.cge-delete-confirm-btn:hover {
   background-color: #094fa3;
   color: #e6edf3;
 }
@@ -203,7 +209,9 @@ app-sidebar {
 .delete-btn-personas,
 .articulos-delete-confirm-btn,
 .proveedor-cancel-btn,
-.cge-delete-btn {
+.cge-delete-btn,
+.centroGestor-delete-confirm-btn,
+.cge-cancel-confirm-btn {
   background-color: rgb(221, 66, 66);
 }
 
@@ -215,7 +223,9 @@ app-sidebar {
 .delete-btn-personas:hover,
 .articulos-delete-confirm-btn:hover,
 .proveedor-cancel-btn,
-.cge-delete-btn:hover {
+.cge-delete-btn:hover,
+.centroGestor-delete-confirm-btn:hover,
+.cge-cancel-confirm-btn:hover {
   background-color: rgb(117, 28, 28);
 }
 

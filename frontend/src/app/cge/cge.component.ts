@@ -2,7 +2,7 @@ import { Component, HostListener } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { CommonModule, provideCloudinaryLoader } from '@angular/common';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 
 import * as XLSX from 'xlsx';
@@ -351,13 +351,10 @@ export class CgeComponent {
     this.centroGestorErrorMessage = '';
   }
 
-  updateCentroGestor(des: string, org: string, fun: string, dat: string) {
+  updateCentroGestor(cge: string, des: string, org: string, fun: string, dat: string) {
     this.centroGestorSuccessMessage = '';
     this.centroGestorErrorMessage = '';
     const payload = {
-      ent: this.entcod,
-      eje: this.eje,
-      cgecod: this.cge,
       cgedes: des,
       cgeorg: org,
       cgefun: fun,
@@ -365,10 +362,115 @@ export class CgeComponent {
       cgecic: this.selectedCentroGestor.cgecic
     }
 
-    console.log(payload);
+    if (!org || !fun) {
+      this.centroGestorErrorMessage = 'Se requieren organica y programa';
+      return;
+    }
+
+    this.http.patch<any>(`${environment.backendUrl}/api/cge/update-familia/${this.entcod}/${this.eje}/${cge}`, payload).subscribe({
+      next: (res) => {
+        this.centroGestorErrorMessage = '';
+        this.centroGestorSuccessMessage = 'Centro gestor actualizado con éxito';
+      }, 
+      error: (err) => {
+        const message = err?.error ?? 'Error al actualizar la centro gestor.';
+        this.centroGestorSuccessMessage = '';
+        this.centroGestorErrorMessage = message;
+      }
+    })
   }
 
-  AddCentroGestor(cod: string, des: string, org: string, fun: string, dat: string) {
+  allowOnlyDigits(event: Event): void {
+    const target = event.target as HTMLTextAreaElement;
+    target.value = target.value.replace(/[^0-9]/g, '');
+    if (this.selectedCentroGestor) {
+      this.selectedCentroGestor.cgefun = target.value;
+    }
+  }
 
+  showAddConfirm: boolean = false;
+  centroGestorAddError: string = '';
+  launchAddCentroGestor() {
+    this.showAddConfirm = true;
+  }
+
+  closeAddConfirm() {
+    this.showAddConfirm = false;
+    this.centroGestorAddError = '';
+  }
+
+  newCgecic = 0;
+  setAddCgecic(value: number): void {
+    this.newCgecic = value;
+  }
+  newCge = '';
+  setCgeToUpper(event: Event): void {
+    const target = event.target as HTMLTextAreaElement;
+    const upper = (target.value ?? '').toUpperCase();
+    target.value = upper;
+    this.newCge = upper;
+  }
+
+  successAddCentroGestor = '';
+  AddCentroGestor(cod: string, des: string, org: string, fun: string, dat: string) {
+    this.centroGestorAddError = '';
+    this.successAddCentroGestor = '';
+
+    if (!cod || !des) {
+      this.centroGestorAddError = 'Se requieren centrgo gestor y descripción'
+      return;
+    }
+    const payload = {
+      "ent" : this.entcod,
+      "eje" : this.eje,
+      "cgecod" : this.newCge,
+      "cgedes" : des,
+      "cgeorg" : org,
+      "cgefun" : fun,
+      "cgedat" : dat,
+      "cgecic" : this.newCgecic
+    }
+
+    this.http.post<any>(`${environment.backendUrl}/api/cge/Insert-familia`,payload).subscribe({
+      next: (res) => {
+        this.successAddCentroGestor = 'centro gestor añadido con éxito'
+        this.closeAddConfirm();
+      },
+      error: (err) => {
+        this.centroGestorAddError = err?.error ?? 'Se ha producido un error.';
+      }
+    })
+  }
+
+  showDeleteConfirm: boolean = false;
+  centroGestorToDelete: any = null;
+  openDeleteConfirm(cgecod: string) {
+    this.centroGestorToDelete = cgecod;
+    this.showDeleteConfirm = true;
+  }
+
+  closeDeleteConfirm() {
+    this.centroGestorToDelete = null;
+    this.showDeleteConfirm = false;
+  }
+
+  confirmDelete(): void {
+    if (this.centroGestorToDelete) {
+      this.deleteCentroGestor(this.centroGestorToDelete);
+      this.closeDeleteConfirm();
+    }
+  }
+
+  deleteCentroGestor(cgecod: string) {
+    this.http.delete<any>(`${environment.backendUrl}/api/cge/delete-centro-gestor/${this.entcod}/${this.eje}/${cgecod}`).subscribe({
+      next: (res) => {
+        this.successAddCentroGestor = 'cge eliminado exitosamente';
+        this.centroGestores = this.centroGestores.filter(c => c.cgecod !== cgecod);
+        this.backupCentroGestores = this.backupCentroGestores.filter(c => c.cgecod !== cgecod);
+        this.closeDetails();
+      }, error: (err) => {
+        this.centroGestorErrorMessage = err?.error ?? 'Error al eliminar la familia.';
+      }
+    })
   }
 }

@@ -85,7 +85,9 @@
     background-color: #f0f7ff;
 }
 
-.modal h3 {
+.modal h3,
+.add-confirm-modal h3,
+.delete-confirm-modal h3 {
     margin: 10px;
     color: #1c5d8c;
     text-align: center;
@@ -111,7 +113,8 @@
 
 .detail-info p,
 .detail-info-descr p,
-.bottom p {
+.bottom p,
+.left-add p {
     font-size: 14px;
     font-weight: bold;
     color: #1c5d8c;
@@ -136,7 +139,8 @@
 
 .detail-info textarea,
 .detail-info-descr textarea,
-.bottom textarea {
+.bottom textarea,
+.right-add textarea {
     border: 1px solid #1c5d8c;
     height: 20px;
     padding: 2px 4px;
@@ -146,7 +150,8 @@
 
 .detail-info textarea:focus,
 .detail-info-descr textarea:focus,
-.bottom textarea:focus {
+.bottom textarea:focus,
+.right-add textarea:focus {
     outline: none;
     border-color: #042b5a;
     outline: none;
@@ -159,7 +164,8 @@
     width: 25%;
 }
 
-.input-container input[type="radio"] {
+.input-container input[type="radio"],
+.estado-inputs input[type="radio"] {
   accent-color: #1c5d8c;
   width: 18px;
   height: 18px;
@@ -167,7 +173,8 @@
   cursor: pointer;
 }
 
-.input-container input[type="radio"]:focus {
+.input-container input[type="radio"]:focus,
+.estado-inputs input[type="radio"]:focus {
     outline: none;
 }
 
@@ -180,4 +187,88 @@
     display: flex;
     justify-content: flex-end;
     gap: 10px;
+}
+
+.add-confirm-modal,
+.delete-confirm-modal {
+    position: fixed;
+    top: 15%;
+    left: 50%;
+    border-radius: 10px;
+    transform: translate(-50%, 0);
+    background: #fff;
+    border: 1px solid #aaa;
+    padding: 24px;
+    z-index: 2000;
+    width: 900px;
+    min-width: 800px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.2);
+    text-align: center;
+}
+
+.delete-confirm-modal {
+    width: 250px !important;
+    min-width: 200px !important;
+    top: 35%;
+}
+
+.centroGestor-add-btn {
+  margin-right: 10px;
+}
+
+.add-content {
+    display: flex;
+    padding: 1%;
+}
+
+.left-add {
+    width: 20%;
+    padding: 1%;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    gap: 12px;
+}
+
+.right-add {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    padding: 1%;
+    gap: 10px;
+}
+
+.right-add textarea {
+    width: 10%;
+    max-width: 90%;
+}
+
+.longWidth { 
+    width: 80% !important;
+}
+
+.estado-inputs {
+    display: flex;
+    gap: 10px;
+}
+
+.cge-delete-confirm-btn {
+    margin-right: 10px;
+}
+
+.delete-confirm-modal div {
+  margin-bottom: 18px;
+}
+
+.delete-confirm-modal p {
+  font-weight: bold;
+  margin: 6px 0;
+  font-size: 1.05rem;
+  color: #333;
+}
+
+.delete-confirm-modal strong {
+  color: #2c3e50;
+  font-weight: 600;
+  font-weight: bold;
 }

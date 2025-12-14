@@ -16,7 +16,7 @@
                 <div class="menu-panel" *ngIf="showMenu">
                     <button class="download-btn" (click)="excelDownload()">Descargar como Excel</button>
                     <button class="print-btn" (click)="toPrint()">Impreso</button>
-                    <button class="add-centroGestor-btn">Añadir</button>
+                    <button class="add-centroGestor-btn" (click)="launchAddCentroGestor()">Añadir</button>
                 </div>
             </div>
         </div>
@@ -25,7 +25,6 @@
                 <input 
                     type="text" 
                     class="search-bar"
-                    placeholder="Buscar familias" 
                     name="search"
                     [(ngModel)]="searchTerm"
                     (ngModelChange)="searchTerm = $event"
@@ -37,7 +36,7 @@
         </div>
         <h1 class="errorBtn">{{ SearchDownMessageError }}</h1>
         <div class="centroGestor-list">
-            <h1 class="successBtn">success</h1>
+            <h1 class="successBtn">{{ successAddCentroGestor }}</h1>
             <table class="centroGestor-table">
                 <thead>
                     <tr>
@@ -108,6 +107,7 @@
                                 <p>Programa</p>
                                 <textarea 
                                     [(ngModel)]="selectedCentroGestor.cgefun"
+                                    (input)="allowOnlyDigits($event)"
                                     #cgefun
                                 ></textarea>
                             </div>
@@ -154,14 +154,79 @@
                             #cgedat
                         ></textarea>
                     </div>
-                    <h1 class="errorBtn">{{ centroGestorSuccessMessage }}</h1>
-                    <h1 class="successBtn">{{ centroGestorErrorMessage }}</h1>
+                    <h1 class="successBtn">{{ centroGestorSuccessMessage }}</h1>
+                    <h1 class="errorBtn">{{ centroGestorErrorMessage }}</h1>
                     <div class="btn-container">
-                        <button class="cge-save-btn" (click)="updateCentroGestor(cgedes.value ,cgeorg.value ,cgefun.value, cgedat.value)">Guardar</button>
-                        <button class="cge-delete-btn">Borrar</button>
+                        <button class="cge-save-btn" (click)="updateCentroGestor(selectedCentroGestor.cgecod ,cgedes.value ,cgeorg.value ,cgefun.value, cgedat.value)">Guardar</button>
+                        <button class="cge-delete-btn" (click)="openDeleteConfirm(selectedCentroGestor.cgecod)">Borrar</button>
                     </div> 
                 </div>
             </div>
         </div>
     </div>
+</div>
+
+
+<div class="modal-backdrop" *ngIf="showAddConfirm" (click)="closeAddConfirm()"></div>
+<div class="add-confirm-modal" *ngIf="showAddConfirm">
+    <h3>Añadir un Centro Gestor</h3>
+    <div class="add-content">
+        <div class="left-add">
+            <p>Código</p>
+            <p>Orgánica</p>
+            <p>Programa</p>
+            <p>Descripción</p>
+            <p>Dirección para pedido</p>
+            <p>Estado contable</p>
+        </div>
+        <div class="right-add">
+            <textarea
+                (input)="setCgeToUpper($event)"
+                #codigo
+            ></textarea>
+            <textarea #organica></textarea>
+            <textarea
+                (input)="allowOnlyDigits($event)"
+                #programa
+            ></textarea>
+            <textarea #description class="longWidth"></textarea>
+            <textarea #direction class="longWidth"></textarea>
+            <div class="estado-inputs">
+                <input 
+                    type="radio" 
+                    name="cont-option" 
+                    [checked]="newCgecic === 0"
+                    (change)="setAddCgecic(0)"
+                >
+                Abierto<br>
+                <input 
+                    type="radio" 
+                    name="cont-option" 
+                    [checked]="newCgecic === 2"
+                    (change)="setAddCgecic(2)"
+                >
+                Cerrado Para Contabilizar<br>
+                <input 
+                    type="radio" 
+                    name="cont-option" 
+                    [checked]="newCgecic === 1"
+                    (change)="setAddCgecic(1)"
+                >
+                Cerrado
+            </div>
+        </div>
+    </div>
+    <h1 class="errorBtn">{{ centroGestorAddError }}</h1>
+    <button class="centroGestor-add-btn" (click)="AddCentroGestor(codigo.value, organica.value, programa.value, description.value, direction.value)">Añadir</button>
+    <button class="centroGestor-delete-confirm-btn" (click)="closeAddConfirm()">Cancelar</button>
+</div>
+
+<div class="modal-backdrop" *ngIf="showDeleteConfirm" (click)="closeDeleteConfirm()"></div>
+<div class="delete-confirm-modal" *ngIf="showDeleteConfirm">
+    <h3>¿Seguro que quieres eliminar este Centro gestor?</h3>
+    <div *ngIf="centroGestorToDelete">
+        <p><strong>Centro gestor:</strong> {{ centroGestorToDelete }}</p>
+    </div>
+    <button class="cge-delete-confirm-btn" (click)="confirmDelete()">Sí, eliminar</button>
+    <button class="cge-cancel-confirm-btn" (click)="closeDeleteConfirm()">Cancelar</button>
 </div>
