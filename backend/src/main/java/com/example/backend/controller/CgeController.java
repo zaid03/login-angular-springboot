@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.dao.DataAccessException;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/cge")
@@ -139,6 +140,25 @@ public class CgeController {
         } catch(DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("delete failed: " + ex.getMostSpecificCause().getMessage());
+        }
+    }
+
+    //fetching description for services
+    @GetMapping("/fetch-services/{ent}/{eje}/{cgecod}")
+    public ResponseEntity<String> fetchDescriptionForCge(
+            @PathVariable Integer ent,
+            @PathVariable String eje,
+            @PathVariable String cgecod) {
+        try {
+            Optional<String> description = cgeRepository.findDescription(ent, eje, cgecod);
+            if (description.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("No se pudo encontrar la descripción para el centro gestor solicitado.");
+            }
+            return ResponseEntity.ok(description.get());
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("fetching failed: " + ex.getMostSpecificCause().getMessage());
         }
     }
 }

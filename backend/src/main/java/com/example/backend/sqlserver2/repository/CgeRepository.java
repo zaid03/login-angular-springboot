@@ -1,6 +1,7 @@
 package com.example.backend.sqlserver2.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -62,4 +63,20 @@ public interface CgeRepository extends JpaRepository<Cge, CgeId> {
 
     //needed for adding a centro gestor
     List<Cge> findByENTAndEJEAndCGECOD(int ent, String eje, String cgecod);
+
+    //fetching description for services
+    @Query("""
+        SELECT 
+            c.CGEDES 
+        FROM Cge c
+        WHERE 
+            c.ENT = :ENT 
+            AND c.EJE = :EJE 
+            AND c.CGECOD = :CGECOD
+    """)
+    Optional<String> findDescription(
+        @Param("ENT") Integer ENT,
+        @Param("EJE") String EJE,
+        @Param("CGECOD") String CGECOD
+    );
 }

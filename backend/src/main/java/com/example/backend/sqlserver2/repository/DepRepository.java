@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 import com.example.backend.sqlserver2.model.Dep;
 import com.example.backend.sqlserver2.model.DepId;
 
+import java.util.List;
+
 @Repository
 public interface DepRepository  extends JpaRepository<Dep, DepId> {
     //for deleting centro gestor
@@ -26,4 +28,7 @@ public interface DepRepository  extends JpaRepository<Dep, DepId> {
         @Param("EJE") String EJE,
         @Param("CGECOD") String CGECOD
     );
+
+    //fetching all services
+    List<Dep> findByENTAndEJE(int ent, String eje);
 }
