@@ -10,6 +10,7 @@ import { FacturasComponent } from './facturas/facturas.component';
 import { CreditoComponent } from './credito/credito.component';
 import { FamiliaComponent } from './familia/familia.component';
 import { CgeComponent } from './cge/cge.component';
+import { ServiciosComponent } from './servicios/servicios.component';
 
 export const routes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -22,6 +23,7 @@ export const routes: Routes = [
     { path: 'credito', component: CreditoComponent},
     { path: 'familia', component: FamiliaComponent},
     { path: 'centroGestor', component: CgeComponent},
+    { path: 'servicios', component: ServiciosComponent},
     { path: '', redirectTo: '/login', pathMatch: 'full' }, //route by default
 ];
 
