@@ -153,7 +153,8 @@ app-sidebar {
 .centroGestor-add-btn,
 .centroGestor-delete-confirm-btn,
 .cge-delete-confirm-btn,
-.cge-cancel-confirm-btn  {
+.cge-cancel-confirm-,
+.login-button  {
   background-color: #1d4ed8;
   color: #fff;
   border: none;
@@ -196,7 +197,8 @@ app-sidebar {
 .menu-panel button:hover,
 .cge-save-btn:hover,
 .centroGestor-add-btn:hover,
-.cge-delete-confirm-btn:hover {
+.cge-delete-confirm-btn:hover,
+.login-button:hover {
   background-color: #094fa3;
   color: #e6edf3;
 }

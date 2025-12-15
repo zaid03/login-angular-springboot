@@ -14,18 +14,30 @@ import { environment } from '../../environments/environment';
 export class LoginComponent implements OnInit{
   errormessage: string = '';
   isValidating = false;
-  loadingMessage = 'Validating your credentials, please wait...'
+  loadingMessage = 'Validando tus credenciales, por favor espera...'
+  private casRedirectInitiated = false;
+
   constructor(private http: HttpClient, private router: Router, private route: ActivatedRoute) {}
 
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
       const ticket = params['ticket'];
-      
+      const hasJwt = !!sessionStorage.getItem('JWT');
+
+      if (hasJwt && !ticket) {
+        this.router.navigate(['/ent']);
+        return;
+      }
+
       if (ticket && !this.isValidating) {
         this.isValidating = true;
         this.validateCASTicket(ticket);
+      } else if (!ticket && !this.casRedirectInitiated) {
+        this.isValidating = true;
+        this.goToCAS();
       }
     });
+
   }
 
   validateCASTicket(ticket: string) {
@@ -34,7 +46,6 @@ export class LoginComponent implements OnInit{
 
     this.http.get(validateUrl, { responseType: 'text' }).subscribe({
       next: (response: string) => {
-        this.isValidating = false;
         this.router.navigate([], {
           relativeTo: this.route,
           queryParams: {},
@@ -55,18 +66,22 @@ export class LoginComponent implements OnInit{
                 sessionStorage.setItem('USUCOD', backendResponse.username);
                 this.router.navigate(['/ent']);
               } else {
+                this.isValidating = false;
                 this.errormessage = 'Backend validation failed';
               }
             },
             error: (err) => {
+              this.isValidating = false;
               this.errormessage = 'Backend validation error: ' + err.message;
             }
           });
         } else {
+          this.isValidating = false;
           this.errormessage = 'CAS validation failed: ' + response;
         }
       },
       error: (error) => {
+        this.isValidating = false;
         this.router.navigate([], {
           relativeTo: this.route,
           queryParams: {},
@@ -80,6 +95,8 @@ export class LoginComponent implements OnInit{
   logoPath = 'assets/images/logo_iass.png';
 
   goToCAS() {
+    this.casRedirectInitiated = true;
+    this.isValidating = true;
     window.location.href = `${environment.casLoginUrl}?service=${environment.frontendUrl}/login`;
   }
 }
