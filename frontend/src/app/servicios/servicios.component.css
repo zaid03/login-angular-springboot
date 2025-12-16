@@ -105,3 +105,9 @@
 .services-table tbody tr:hover{
     background-color: #f0f7ff;
 }
+
+.locked-radio {
+  accent-color: #1c5d8c;
+  pointer-events: none;
+  opacity: 1;
+}

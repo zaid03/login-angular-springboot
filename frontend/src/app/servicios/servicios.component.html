@@ -14,8 +14,8 @@
                 <div class="dot"></div>
                 <div class="dot"></div>
                 <div class="menu-panel" *ngIf="showMenu">
-                    <button class="download-btn" >Descargar como Excel</button>
-                    <button class="print-btn">Impreso</button>
+                    <button class="download-btn" (click)="excelDownload()">Descargar como Excel</button>
+                    <button class="print-btn" (click)="toPrint()">Impreso</button>
                     <button class="add-familia-btn">Añadir</button>
                 </div>
             </div>
@@ -106,7 +106,7 @@
                             {{ sortDirection === 'asc' ? '▲' : '▼' }}
                             </span>
                         </th>
-                        <th>CCOCOD Centro de Coste</th>
+                        <th>Centro de Coste</th>
                         <th>Almacén</th>
                         <th>Comprador/Farmacia</th>
                         <th>Contabilidad</th>
@@ -118,9 +118,27 @@
                         <td>{{ s.depdes }}</td>
                         <td>{{ s.cgecod }}</td>
                         <td>{{ s.ccocod }}</td>
-                        <td>{{ s.depalm }}</td>
-                        <td>{{ s.depcom }}</td>
-                        <td>{{ s.depint }}</td>
+                        <td>
+                            <input 
+                                type="radio"
+                                [checked]="s.depalm === 0"
+                                class="locked-radio"
+                            >  
+                        </td>
+                        <td>
+                            <input 
+                                type="radio"
+                                [checked]="s.depcom === 0"
+                                class="locked-radio"
+                            >
+                        </td>
+                        <td>
+                            <input
+                                type="radio"
+                                [checked]="s.depint === 0"
+                                class="locked-radio"
+                            >   
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -138,6 +156,7 @@
                 <span>de {{ totalPages }}</span>
                 <button (click)="nextPage()" [disabled]="page + 1 >= totalPages">Siguiente</button>
             </div>
+            <div class="modal-backdrop" *ngIf="selectedService" (click)="closeDetails()"></div>
         </div>
     </div>
 </div>

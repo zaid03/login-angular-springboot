@@ -6,6 +6,9 @@ import { CommonModule } from '@angular/common';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { environment } from '../../environments/environment';
 
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+
 @Component({
   selector: 'app-servicios',
   standalone: true,
@@ -155,5 +158,139 @@ export class ServiciosComponent {
     if (inputPage >= 1 && inputPage <= this.totalPages) {
       this.page = inputPage - 1;
     }
+  }
+
+  campo: 'depalm' | 'depcom' | 'depint' | null = null;
+  checkIfChecked(campo: number) {
+    if (campo === 0) {
+      return 'Si';
+    } else if (campo === 1) {
+      return 'No';
+    }
+    return 'No';
+  }
+
+  excelDownload() {
+    const rows = this.backupServices.length ? this.backupServices : this.services;
+    if (!rows || rows.length === 0) {
+      this.servicessMessageError = 'No hay datos para exportar.';
+      return;
+    }
+  
+    const exportRows = rows.map((row, index) => ({
+      '#': index + 1,
+      Entidad: row.ent ?? '',
+      EJE: row.eje ?? '',
+      Servicio: row.depcod ?? '',
+      Descripción: row.depdes ?? '',
+      centro_gestor: row.cgecod ?? '',
+      Centro_de_Coste: row.ccocod ?? '',
+      Almacén: this.checkIfChecked(row.depalm) ?? '',
+      Comprador_Or_Farmacia: this.checkIfChecked(row.depcom) ?? '',
+      Contabilidad: this.checkIfChecked(row.depint) ?? ''
+    }));
+  
+    const worksheet = XLSX.utils.aoa_to_sheet([]);
+    XLSX.utils.sheet_add_aoa(worksheet, [['listas de servicios']], { origin: 'A1' });
+    worksheet['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 3 } }];
+    XLSX.utils.sheet_add_aoa(worksheet, [['#', 'Entidad', 'EJE', 'Servicio', 'Descripción', 'Cód. C.G.', 'Centro de Coste', 'Almacén', 'Comprador/Farmacia', 'Contabilidad']], { origin: 'A2' });
+    XLSX.utils.sheet_add_json(worksheet, exportRows, { origin: 'A3', skipHeader: true });
+
+    worksheet['!cols'] = [
+      { wch: 6 },
+      { wch: 12 },
+      { wch: 12 },
+      { wch: 15 },
+      { wch: 45 },
+      { wch: 12 },
+      { wch: 15 },
+      { wch: 16 },
+      { wch: 20 },
+      { wch: 16 }
+    ];
+  
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Servicios');
+    const buffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    saveAs(
+      new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }),
+      'servicios.xlsx'
+    );
+  }
+
+  toPrint() {
+    const rows = this.backupServices.length ? this.backupServices : this.services;
+    if (!rows?.length) {
+      this.servicessMessageError = 'No hay datos para imprimir.';
+      return;
+    }
+
+    const htmlRows = rows.map((row, index) => `
+      <tr>
+        <td>${index + 1}</td>
+        <td>${row.ent ?? ''}</td>
+        <td>${row.eje ?? ''}</td>
+        <td>${row.depcod ?? ''}</td>
+        <td>${row.depdes ?? ''}</td>
+        <td>${row.cgecod ?? ''}</td>
+        <td>${row.ccocod ?? ''}</td>
+        <td>${this.checkIfChecked(row.depalm) ?? ''}</td>
+        <td>${this.checkIfChecked(row.depcom) ?? ''}</td>
+        <td>${this.checkIfChecked(row.depint) ?? ''}</td>
+      </tr>
+    `).join('');
+
+    const printWindow = window.open('', '_blank', 'width=900,height=700');
+    if (!printWindow) return;
+
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>listas de servicios</title>
+          <style>
+            body { font-family: 'Poppins', sans-serif; padding: 24px; }
+            h1 { text-align: center; margin-bottom: 16px; }
+            table { width: 100%; border-collapse: collapse; }
+            th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
+            th { background: #f3f4f6; }
+            th:last-child, td:last-child { width: 180px; }
+          </style>
+        </head>
+        <body>
+          <h1>listas de servicios</h1>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Entidad</th>
+                <th>eje</th>
+                <th>Servicio</th>
+                <th>Descripción</th>
+                <th>Cód.C.G</th>
+                <th>Centro de Coste</th>
+                <th>Almacén</th>
+                <th>Comprador / Farmacia</th>
+                <th>Contabilidad</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${htmlRows}
+            </tbody>
+          </table>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
+  }
+
+
+
+
+
+  selectedService: boolean = false;
+
+  closeDetails() {
+
   }
 }
