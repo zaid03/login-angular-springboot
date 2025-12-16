@@ -16,7 +16,7 @@
                 <div class="menu-panel" *ngIf="showMenu">
                     <button class="download-btn" (click)="excelDownload()">Descargar como Excel</button>
                     <button class="print-btn" (click)="toPrint()">Impreso</button>
-                    <button class="add-familia-btn">Añadir</button>
+                    <button class="add-familia-btn" (click)="launchAddCentroGestor()">Añadir</button>
                 </div>
             </div>
         </div>
@@ -76,6 +76,7 @@
                 <button class="search-btn">Buscar</button>
                 <button class="Limpiar-btn">Limpiar</button>
             </div>
+            <h1 class="successBtn">{{ addServicesSuccessMessage }}</h1>
         </div>
         <div class="services-list">
             <h1 class="successBtn">{{ servicesMessageSuccess }}</h1>
@@ -263,4 +264,41 @@
             </div>
         </div>
     </div>
+</div>
+
+<div class="modal-backdrop" *ngIf="showAddConfirm" (click)="closeAddConfirm()"></div>
+<div class="add-confirm-modal" *ngIf="showAddConfirm">
+    <h3>Añadir un servicio</h3>
+    <div class="add-content">
+        <div class="left-add">
+            <p>Código</p>
+            <p>Descripción</p>
+            <p>Almacén/Farmacia</p>
+            <p>Comprador</p>
+            <p>Contabilidad</p>
+            <p>Centro de Coste</p>
+            <p>Centro Gestor</p>
+        </div>
+        <div class="right-add">
+            <textarea
+                class="smallWidth"
+                (input)="setInputToUpper($event)"
+                #codigo
+            ></textarea>
+            <textarea #description></textarea>
+            <div class="checkboxes">
+                <input type="checkbox" [(ngModel)]="addDepalm">
+                <input type="checkbox" [(ngModel)]="addDepcom">
+                <input type="checkbox" [(ngModel)]="addDepint">
+            </div>
+            <textarea
+                class="smallWidth" 
+                #centroCoste
+            ></textarea>
+            <textarea #centroGestor></textarea>
+        </div>
+    </div>
+    <h1 class="errorBtn">{{ addServiceErrorMessage }}</h1>
+    <button class="add-btn" (click)="addService(codigo.value, description.value, centroCoste.value, centroGestor.value)">Añadir</button>
+    <button class="cancel-btn" (click)="closeAddConfirm()">Cancelar</button>
 </div>

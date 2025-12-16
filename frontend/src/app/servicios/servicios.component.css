@@ -29,7 +29,8 @@
 }
 
 .search-bar:focus,
-.search-option-radio input[type="radio"]:focus {
+.search-option-radio input[type="radio"]:focus,
+.checkboxes input[type="checkbox"]:focus {
     outline: none;
     border-color: #094fa3;
     outline: none;
@@ -112,7 +113,8 @@
   opacity: 1;
 }
 
-.modal h3{
+.modal h3,
+.add-confirm-modal h3{
     margin: 10px;
     color: #1c5d8c;
     text-align: center;
@@ -149,7 +151,8 @@
 
 .first-data p,
 .second-data p,
-.third-data p {
+.third-data p,
+.left-add p {
     font-size: 14px;
     font-weight: bold;
     color: #1c5d8c;
@@ -157,7 +160,8 @@
 
 .first-data textarea,
 .second-data textarea,
-.third-data textarea{
+.third-data textarea,
+.right-add textarea {
     border: 1px solid #1c5d8c;
     height: 20px;
     padding: 2px 4px;
@@ -169,9 +173,10 @@
     width: 300px;
 }
 
-.first-data textarea,
-.second-data textarea,
-.third-data textarea {
+.first-data textarea:focus,
+.second-data textarea:focus,
+.third-data textarea:focus,
+.right-add textarea:focus  {
     outline: none;
     border-color: #042b5a;
     outline: none;
@@ -222,4 +227,57 @@
 .switch-btns button:hover {
     background-color: #094fa3;
     color: #e6edf3;
+}
+
+.add-confirm-modal {
+    position: fixed;
+    top: 15%;
+    left: 50%;
+    border-radius: 10px;
+    transform: translate(-50%, 0);
+    background: #fff;
+    border: 1px solid #aaa;
+    padding: 24px;
+    z-index: 2000;
+    width: 900px;
+    min-width: 800px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.2);
+    text-align: center;
+}
+
+.add-btn {
+    margin-right: 10px;
+}
+
+.add-content {
+    display: flex;
+    padding: 1%;
+}
+
+.left-add {
+    width: 20%;
+    padding: 1%;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    gap: 16px;
+}
+
+.right-add {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    padding: 1%;
+    gap: 12px;
+}
+
+.checkboxes {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.smallWidth {
+    width: 10%;
 }

@@ -359,4 +359,59 @@ export class ServiciosComponent {
       }
     });
   }
+
+  showAddConfirm: boolean = false;
+  servicesAddError: string = '';
+  launchAddCentroGestor() {
+    this.showAddConfirm = true;
+  }
+
+  closeAddConfirm() {
+    this.showAddConfirm = false;
+    this.servicesAddError = '';
+  }
+
+  newCge = '';
+  setInputToUpper(event: Event): void {
+    const target = event.target as HTMLTextAreaElement;
+    const upper = (target.value ?? '').toUpperCase();
+    target.value = upper;
+    this.newCge = upper;
+  }
+
+  addDepalm: boolean = false;
+  addDepcom: boolean = false;
+  addDepint: boolean = false;
+  addServicesSuccessMessage: string = '';
+  addServiceErrorMessage: string = '';
+  addService(cod: string, des:string, cco:string, cge: string) {
+    this.addServiceErrorMessage = '';
+    this.addServicesSuccessMessage = '';
+    if (cod === '' || des === '' || cco === '') {
+      this.addServiceErrorMessage = 'Todos los campos son obligatorios.'
+      return;
+    }
+
+    const payload = {
+      "ent": this.entcod,
+      "eje": this.eje,
+      "depcod": cod,
+      "depdes": des,
+      "depalm": this.addDepalm ? 1 : 0,
+      "depcom": this.addDepcom ? 1 : 0,
+      "depint": this.addDepint ? 1 : 0,
+      "ccocod": cco,
+      "cgecod": cge
+    }
+
+    this.http.post(`${environment.backendUrl}/api/dep/Insert-service`, payload).subscribe({
+      next: (res) => {
+        this.addServicesSuccessMessage = 'Servicio añadido con éxito';
+        this.closeAddConfirm();
+      },
+      error: (err) => {
+        this.addServiceErrorMessage = 'Server error: ' + err?.error;
+      }
+    })
+  }
 }
