@@ -1,1 +1,143 @@
-<p>servicios works!</p>
+<div class="services-page">
+    <div 
+        class="sidebar-backdrop" 
+        *ngIf="!sidebar.collapsed" 
+        (click)="sidebar.collapsed = true"
+    >
+    </div>
+    <app-sidebar #sidebar></app-sidebar>
+    <div class="familia-container" [class.blurred]="!sidebar.collapsed">
+        <div class="title-menu">
+            <h2 class="margin-title">listas de servicios</h2> 
+            <div class="group-menu" (click)="toggleMenu($event)">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="menu-panel" *ngIf="showMenu">
+                    <button class="download-btn" >Descargar como Excel</button>
+                    <button class="print-btn">Impreso</button>
+                    <button class="add-familia-btn">Añadir</button>
+                </div>
+            </div>
+        </div>
+        <div class="services-search">
+            <div class="search-option">
+                <label>Servicio</label>
+                <input 
+                    type="text" 
+                    class="search-bar"
+                    placeholder="Búsqueda de servicios" 
+                >
+                <label>Centro gestor</label>
+                <input 
+                    type="text" 
+                    class="search-bar"
+                    placeholder="Búsqueda de centro gestor" 
+                >
+                <div class="search-option-radio">
+                    <div class="choice">
+                        <input
+                            type="radio"
+                            name="choice-option"
+                            class="search-radio"
+                        /> Almacén / Farmacia
+                    </div>
+                    <div class="choice">
+                        <input
+                            type="radio"
+                            name="choice-option"
+                            class="search-radio"
+                        />Comprador
+                    </div>
+                    <div class="choice">
+                        <input
+                            type="radio"
+                            name="choice-option"
+                            class="search-radio"
+                        />Contabilidad
+                    </div>                    
+                    <div class="choice">
+                        <input
+                            type="radio"
+                            name="choice-option"
+                            class="search-radio"
+                        />Centro peticionario
+                    </div>                    
+                    <div class="choice">
+                        <input
+                            type="radio"
+                            name="choice-option"
+                            class="search-radio"
+                        />Todos
+                    </div>                                        
+                </div>
+            </div>
+            <div class="search-btns">
+                <button class="search-btn">Buscar</button>
+                <button class="Limpiar-btn">Limpiar</button>
+            </div>
+        </div>
+        <div class="services-list">
+            <h1 class="successBtn">{{ servicesMessageSuccess }}</h1>
+            <h1 class="errorBtn">{{ servicessMessageError }}</h1>
+            <table class="services-table">
+                <thead>
+                    <tr>
+                        <th
+                            class="sortable"
+                            (click)="toggleSort('depcod')"
+                        >
+                            Servicio
+                            <span 
+                                class="sort-indicator" 
+                            >
+                            {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                            </span>
+                        </th>
+                        <th>Descripción</th>
+                        <th
+                            class="sortable"
+                            (click)="toggleSort('cgecod')"
+                        >
+                            Cód.C.G
+                            <span 
+                                class="sort-indicator" 
+                            >
+                            {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                            </span>
+                        </th>
+                        <th>CCOCOD Centro de Coste</th>
+                        <th>Almacén</th>
+                        <th>Comprador/Farmacia</th>
+                        <th>Contabilidad</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let s of paginatedServices">
+                        <td>{{ s.depcod }}</td>
+                        <td>{{ s.depdes }}</td>
+                        <td>{{ s.cgecod }}</td>
+                        <td>{{ s.ccocod }}</td>
+                        <td>{{ s.depalm }}</td>
+                        <td>{{ s.depcom }}</td>
+                        <td>{{ s.depint }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="pagination-controls">
+                <button (click)="prevPage()" [disabled]="page === 0">Anterior</button>
+                <span>Página</span>
+                <input
+                type="number"
+                min="1"
+                [max]="totalPages"
+                [value]="page + 1"
+                (change)="goToPage($event)"
+                class="pagination-input"
+                />
+                <span>de {{ totalPages }}</span>
+                <button (click)="nextPage()" [disabled]="page + 1 >= totalPages">Siguiente</button>
+            </div>
+        </div>
+    </div>
+</div>
