@@ -62,18 +62,7 @@ export class ServiciosComponent {
       return;
     }
 
-    this.http.get<any>(`${environment.backendUrl}/api/dep/fetch-services/${this.entcod}/${this.eje}`).subscribe({
-      next: (res) => {
-        this.services = res;
-        this.backupServices = Array.isArray(res) ? [...res] : [];
-        this.defaultServices = [...this.backupServices];
-        this.page = 0;
-        this.updatePagination();
-      },
-      error: (err) => {
-        this.servicessMessageError = 'Server error: ' + err?.error;
-      }
-    })
+    this.fetchServices();
   }
 
   private updatePagination(): void {
@@ -287,15 +276,20 @@ export class ServiciosComponent {
   selectedService: any = null;
   servicesDetailError: string = '';
   servicesDetailSuccess: string = '';
+  detailFlags = { depalm: false, depcom: false, depint: false };
   showDetails(services: any) {
     this.selectedService = services;
+    this.detailFlags = {
+      depalm: services?.depalm === 1,
+      depcom: services?.depcom === 1,
+      depint: services?.depint === 1
+    };
     const cgecod = this.selectedService.cgecod;
     this.http.get(`${environment.backendUrl}/api/cge/fetch-description-services/${this.entcod}/${this.eje}/${cgecod}`, { responseType: 'text' }
     ).subscribe({
       next: (res) => {
         const description = res;
         this.selectedService = {... this.selectedService, cgedes: description};
-        console.log(this.selectedService);
       },
       error: (err) => {
         this.servicesDetailError = 'No se encuentra la descripción del cgecod.';
@@ -303,23 +297,66 @@ export class ServiciosComponent {
     })
   }
 
-  toggleDetailFlag(event: Event, field: 'depalm' | 'depcom' | 'depint'): void {
-    if (!this.selectedService) return;
-    const input = event.target as HTMLInputElement | null;
-    const value = input?.checked ? 0 : 1;
-    this.selectedService = { ...this.selectedService, [field]: value };
+  toggleDetailFlag(field: 'depalm' | 'depcom' | 'depint', value: boolean): void {
+    this.detailFlags = { ...this.detailFlags, [field]: value };
   }
 
   closeDetails() {
     this.selectedService = null;
     this.servicesDetailError = '';
     this.servicesDetailSuccess = '';
+    this.updateServiceSuccessMessage = '';
+    this.updateServiceErrorMessage = '';
   }
 
   option: 'personas' | 'datos' | 'almacen' = 'personas';
   setOption(next: 'personas' | 'datos' | 'almacen'): void {
     this.option = next;
+  }
 
-    if ( this.option === 'personas') {console.log("personas")} else if (this.option === 'datos') { console.log("datos")} else if (this.option === 'almacen') {console.log('almacen')}
+  updateServiceSuccessMessage: string = '';
+  updateServiceErrorMessage: string = ''
+  updateService(cod:string, des: string, cco:string) {
+    this.updateServiceSuccessMessage = '';
+    this.updateServiceErrorMessage = '';
+
+    if (cod === '' || des === '' || cco === '') {
+      this.updateServiceErrorMessage = 'Todos los campos son obligatorios.'
+      return;
+    }
+
+    const payload = {
+      depdes: des,
+      depalm: this.detailFlags.depalm ? 1 : 0,
+      depcom: this.detailFlags.depcom ? 1 : 0,
+      depint: this.detailFlags.depint ? 1 : 0,
+      ccocod: cco
+    };
+
+    this.http.patch(`${environment.backendUrl}/api/dep/update-service/${this.entcod}/${this.eje}/${cod}`, payload).subscribe({
+      next: (res) => {
+        this.updateServiceSuccessMessage = 'servicio actualizado exitosamente'
+        this.fetchServices();
+      },
+      error: (err) => {
+        this.updateServiceErrorMessage = err?.error;
+      }
+    })
+  }
+
+  private fetchServices(): void {
+    if (this.entcod === null || this.eje === null) return;
+    this.http.get<any>(`${environment.backendUrl}/api/dep/fetch-services/${this.entcod}/${this.eje}`).subscribe({
+      next: (res) => {
+        this.services = res;
+        this.backupServices = Array.isArray(res) ? [...res] : [];
+        this.defaultServices = [...this.backupServices];
+        this.page = 0;
+        this.updatePagination();
+      },
+      error: (err) => {
+        this.servicessMessageError = 'Server error: ' + err?.error;
+      }
+    });
   }
 }

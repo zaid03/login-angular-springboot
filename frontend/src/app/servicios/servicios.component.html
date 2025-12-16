@@ -125,21 +125,21 @@
                         <td>
                             <input 
                                 type="radio"
-                                [checked]="s.depalm === 0"
+                                [checked]="s.depalm === 1"
                                 class="locked-radio"
                             >  
                         </td>
                         <td>
                             <input 
                                 type="radio"
-                                [checked]="s.depcom === 0"
+                                [checked]="s.depcom === 1"
                                 class="locked-radio"
                             >
                         </td>
                         <td>
                             <input
                                 type="radio"
-                                [checked]="s.depint === 0"
+                                [checked]="s.depint === 1"
                                 class="locked-radio"
                             >   
                         </td>
@@ -174,13 +174,20 @@
                                 </div>
                                 <div class="first-data">
                                     <p>Centro de coste</p>
-                                    <textarea [(ngModel)]="selectedService.ccocod"></textarea>
+                                    <textarea 
+                                        [(ngModel)]="selectedService.ccocod"
+                                        #cco
+                                    ></textarea>
                                 </div>
                             </div>
                             <div class="second-row">
                                 <div class="second-data">
                                     <p>Descripción</p>
-                                    <textarea class="moreWidth" [(ngModel)]="selectedService.depdes"></textarea>
+                                    <textarea 
+                                        class="moreWidth" 
+                                        [(ngModel)]="selectedService.depdes"
+                                        #des
+                                    ></textarea>
                                 </div>
                             </div>
                             <div class="third-row">
@@ -195,28 +202,30 @@
                             <div class="choice-detail">
                                 <input
                                     type="checkbox"
-                                    [checked]="selectedService?.depalm === 0"
-                                    (change)="toggleDetailFlag($event, 'depalm')"
+                                    [ngModel]="detailFlags.depalm"
+                                    (ngModelChange)="toggleDetailFlag('depalm', $event)"
                                 > Almacenar
                             </div>
                             <div class="choice-detail">
                                 <input
                                     type="checkbox"
-                                    [checked]="selectedService?.depcom === 0"
-                                    (change)="toggleDetailFlag($event, 'depcom')"
+                                    [ngModel]="detailFlags.depcom"
+                                    (ngModelChange)="toggleDetailFlag('depcom', $event)"
                                 > Comprar
                             </div>
                             <div class="choice-detail">
                                 <input
                                     type="checkbox"
-                                    [checked]="selectedService?.depint === 0"
-                                    (change)="toggleDetailFlag($event, 'depint')"
+                                    [ngModel]="detailFlags.depint"
+                                    (ngModelChange)="toggleDetailFlag('depint', $event)"
                                 > Contabilizar
                             </div>
                         </div>
                     </div>
+                    <h1 class="successBtn">{{ updateServiceSuccessMessage }}</h1>
+                    <h1 class="errorBtn">{{ updateServiceErrorMessage }}</h1>
                     <div class="action-btns">
-                        <button class="save-btn">Guardar</button>
+                        <button class="save-btn" (click)="updateService(selectedService.depcod, des.value, cco.value)">Guardar</button>
                         <button class="delete-btn">Borrar</button>
                     </div>
                     <div class="switch-btns">
