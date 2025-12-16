@@ -187,7 +187,7 @@
                                 <div class="third-data">
                                     <p>Centro Gestor</p>
                                     <textarea [(ngModel)]="selectedService.cgecod" disabled></textarea>
-                                    <textarea class="moreWidth" [(ngModel)]="selectedService.cgedes"></textarea>
+                                    <textarea class="moreWidth" [(ngModel)]="selectedService.cgedes" disabled></textarea>
                                 </div>
                             </div>
                         </div>
@@ -220,7 +220,35 @@
                         <button class="delete-btn">Borrar</button>
                     </div>
                     <div class="switch-btns">
-                        
+                        <button type="button"
+                            [class.active]="option === 'personas'"
+                            (click)="setOption('personas')"
+                        >
+                            Personas
+                        </button>
+                        <button type="button"
+                            [class.active]="option === 'datos'"
+                            (click)="setOption('datos')"
+                        >
+                            Datos para pedidos
+                        </button>
+                        <button type="button"
+                            [class.active] = "option === 'almacen'"
+                            (click)="setOption('almacen')"
+                        >
+                            Almacen
+                        </button>
+                    </div>
+                    <div class="detail-switch-content" [ngSwitch]="option">
+                        <ng-container *ngSwitchCase="'personas'">
+                            <h1>personas grid</h1>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'datos'">
+                            <h1>datos grid</h1>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'almacen'">
+                            <h1>almcen grid</h1>
+                        </ng-container>
                     </div>
                 </div>
             </div>

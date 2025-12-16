@@ -309,9 +309,17 @@ export class ServiciosComponent {
     const value = input?.checked ? 0 : 1;
     this.selectedService = { ...this.selectedService, [field]: value };
   }
+
   closeDetails() {
     this.selectedService = null;
     this.servicesDetailError = '';
     this.servicesDetailSuccess = '';
+  }
+
+  option: 'personas' | 'datos' | 'almacen' = 'personas';
+  setOption(next: 'personas' | 'datos' | 'almacen'): void {
+    this.option = next;
+
+    if ( this.option === 'personas') {console.log("personas")} else if (this.option === 'datos') { console.log("datos")} else if (this.option === 'almacen') {console.log('almacen')}
   }
 }

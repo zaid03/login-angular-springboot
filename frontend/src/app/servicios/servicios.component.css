@@ -195,3 +195,31 @@
     gap: 10px;
     justify-content: flex-end;
 }
+
+.switch-btns {
+    display: flex;
+    gap: 12px;
+    margin: 16px 0;
+}
+
+.switch-btns button {
+    padding: 6px 14px;
+    border-radius: 6px;
+    border: 1px solid #1d4ed8;
+    background: #fff;
+    color: #1d4ed8;   
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.2s ease;
+    outline: none;
+}
+
+.switch-btns button.active {
+    background: #1d4ed8;
+    color: #fff;
+}
+
+.switch-btns button:hover {
+    background-color: #094fa3;
+    color: #e6edf3;
+}
