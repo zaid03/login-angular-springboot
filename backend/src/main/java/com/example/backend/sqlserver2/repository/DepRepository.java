@@ -1,8 +1,10 @@
 package com.example.backend.sqlserver2.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Repository;
 
 import com.example.backend.sqlserver2.model.Dep;
@@ -31,4 +33,34 @@ public interface DepRepository  extends JpaRepository<Dep, DepId> {
 
     //fetching all services
     List<Dep> findByENTAndEJE(int ent, String eje);
+
+    //modifying a service
+    @Modifying
+    @Transactional
+    @Query("""
+        UPDATE Dep d
+        SET 
+            d.DEPDES = :DEPDES, 
+            d.DEPALM = :DEPALM, 
+            d.DEPCOM = :DEPCOM, 
+            d.DEPINT = :DEPINT, 
+            d.CCOCOD = :CCOCOD 
+        where 
+            d.ENT = :ENT
+            AND d.EJE = :EJE
+            AND d.DEPCOD = :DEPCOD
+    """)
+    int updateService(
+        @Param("DEPDES") String DEPDES,
+        @Param("DEPALM") Integer DEPALM,
+        @Param("DEPCOM") Integer DEPCOM,
+        @Param("DEPINT") Integer DEPINT,
+        @Param("CCOCOD") String CCOCOD,
+        @Param("ENT") Integer ENT,
+        @Param("EJE") String EJE,
+        @Param("DEPCOD") String DEPCOD
+    );
+
+    //for adding a service
+    List<Dep> findByENTAndEJEAndDEPCOD(int ent, String eje, String depcod);
 }
