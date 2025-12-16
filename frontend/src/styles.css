@@ -155,7 +155,9 @@ app-sidebar {
 .cge-delete-confirm-btn,
 .cge-cancel-confirm-,
 .login-button,
-.Limpiar-btn  {
+.Limpiar-btn,
+.save-btn,
+.delete-btn  {
   background-color: #1d4ed8;
   color: #fff;
   border: none;
@@ -199,7 +201,8 @@ app-sidebar {
 .cge-save-btn:hover,
 .centroGestor-add-btn:hover,
 .cge-delete-confirm-btn:hover,
-.login-button:hover {
+.login-button:hover,
+.save-btn:hover {
   background-color: #094fa3;
   color: #e6edf3;
 }
@@ -215,7 +218,8 @@ app-sidebar {
 .cge-delete-btn,
 .centroGestor-delete-confirm-btn,
 .cge-cancel-confirm-btn,
-.Limpiar-btn {
+.Limpiar-btn,
+.delete-btn {
   background-color: rgb(221, 66, 66);
 }
 
@@ -230,7 +234,8 @@ app-sidebar {
 .cge-delete-btn:hover,
 .centroGestor-delete-confirm-btn:hover,
 .cge-cancel-confirm-btn:hover,
-.Limpiar-btn:hover {
+.Limpiar-btn:hover,
+.delete-btn:hover {
   background-color: rgb(117, 28, 28);
 }
 

@@ -114,7 +114,11 @@
                 </thead>
                 <tbody>
                     <tr *ngFor="let s of paginatedServices">
-                        <td>{{ s.depcod }}</td>
+                        <td 
+                            (click)="showDetails(s)"
+                        >
+                            {{ s.depcod }}
+                        </td>
                         <td>{{ s.depdes }}</td>
                         <td>{{ s.cgecod }}</td>
                         <td>{{ s.ccocod }}</td>
@@ -157,6 +161,69 @@
                 <button (click)="nextPage()" [disabled]="page + 1 >= totalPages">Siguiente</button>
             </div>
             <div class="modal-backdrop" *ngIf="selectedService" (click)="closeDetails()"></div>
+            <div class="display" >
+                <div class="modal" *ngIf="selectedService">
+                    <button class="close-btn-fct" (click)="closeDetails()">×</button>
+                    <h3>Detalles de Servicio</h3>
+                    <div class="detail-container">
+                        <div class="left">
+                            <div class="first-row">
+                                <div class="first-data">
+                                    <p>Código</p>
+                                    <textarea [(ngModel)]="selectedService.depcod" disabled></textarea>
+                                </div>
+                                <div class="first-data">
+                                    <p>Centro de coste</p>
+                                    <textarea [(ngModel)]="selectedService.ccocod"></textarea>
+                                </div>
+                            </div>
+                            <div class="second-row">
+                                <div class="second-data">
+                                    <p>Descripción</p>
+                                    <textarea class="moreWidth" [(ngModel)]="selectedService.depdes"></textarea>
+                                </div>
+                            </div>
+                            <div class="third-row">
+                                <div class="third-data">
+                                    <p>Centro Gestor</p>
+                                    <textarea [(ngModel)]="selectedService.cgecod" disabled></textarea>
+                                    <textarea class="moreWidth" [(ngModel)]="selectedService.cgedes"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="right">
+                            <div class="choice-detail">
+                                <input
+                                    type="checkbox"
+                                    [checked]="selectedService?.depalm === 0"
+                                    (change)="toggleDetailFlag($event, 'depalm')"
+                                > Almacenar
+                            </div>
+                            <div class="choice-detail">
+                                <input
+                                    type="checkbox"
+                                    [checked]="selectedService?.depcom === 0"
+                                    (change)="toggleDetailFlag($event, 'depcom')"
+                                > Comprar
+                            </div>
+                            <div class="choice-detail">
+                                <input
+                                    type="checkbox"
+                                    [checked]="selectedService?.depint === 0"
+                                    (change)="toggleDetailFlag($event, 'depint')"
+                                > Contabilizar
+                            </div>
+                        </div>
+                    </div>
+                    <div class="action-btns">
+                        <button class="save-btn">Guardar</button>
+                        <button class="delete-btn">Borrar</button>
+                    </div>
+                    <div class="switch-btns">
+                        
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

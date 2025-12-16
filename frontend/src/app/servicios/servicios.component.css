@@ -111,3 +111,87 @@
   pointer-events: none;
   opacity: 1;
 }
+
+.modal h3{
+    margin: 10px;
+    color: #1c5d8c;
+    text-align: center;
+}
+
+.detail-container {
+    display: flex;
+    justify-content: center;
+    padding: 1%;
+}
+
+.left {
+    width: 80%;
+    padding: 1%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.first-row,
+.second-row,
+.third-row {
+    display: flex;
+    gap: 10px;
+}
+
+.first-data,
+.second-data,
+.third-data { 
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.first-data p,
+.second-data p,
+.third-data p {
+    font-size: 14px;
+    font-weight: bold;
+    color: #1c5d8c;
+}
+
+.first-data textarea,
+.second-data textarea,
+.third-data textarea{
+    border: 1px solid #1c5d8c;
+    height: 20px;
+    padding: 2px 4px;
+    border-radius: 6px;
+    font-weight: bold;
+}
+
+.moreWidth{
+    width: 300px;
+}
+
+.first-data textarea,
+.second-data textarea,
+.third-data textarea {
+    outline: none;
+    border-color: #042b5a;
+    outline: none;
+    background: #fff;
+}
+
+.right {
+    padding: 1%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.choice-detail input[type="checkbox"] {
+    border: 1px solid salmon;
+    outline: none;
+}
+
+.action-btns {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}

@@ -144,7 +144,7 @@ public class CgeController {
     }
 
     //fetching description for services
-    @GetMapping("/fetch-services/{ent}/{eje}/{cgecod}")
+    @GetMapping("/fetch-description-services/{ent}/{eje}/{cgecod}")
     public ResponseEntity<String> fetchDescriptionForCge(
             @PathVariable Integer ent,
             @PathVariable String eje,

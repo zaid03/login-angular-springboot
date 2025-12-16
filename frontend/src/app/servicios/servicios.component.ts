@@ -284,13 +284,34 @@ export class ServiciosComponent {
     printWindow.print();
   }
 
+  selectedService: any = null;
+  servicesDetailError: string = '';
+  servicesDetailSuccess: string = '';
+  showDetails(services: any) {
+    this.selectedService = services;
+    const cgecod = this.selectedService.cgecod;
+    this.http.get(`${environment.backendUrl}/api/cge/fetch-description-services/${this.entcod}/${this.eje}/${cgecod}`, { responseType: 'text' }
+    ).subscribe({
+      next: (res) => {
+        const description = res;
+        this.selectedService = {... this.selectedService, cgedes: description};
+        console.log(this.selectedService);
+      },
+      error: (err) => {
+        this.servicesDetailError = 'No se encuentra la descripción del cgecod.';
+      }
+    })
+  }
 
-
-
-
-  selectedService: boolean = false;
-
+  toggleDetailFlag(event: Event, field: 'depalm' | 'depcom' | 'depint'): void {
+    if (!this.selectedService) return;
+    const input = event.target as HTMLInputElement | null;
+    const value = input?.checked ? 0 : 1;
+    this.selectedService = { ...this.selectedService, [field]: value };
+  }
   closeDetails() {
-
+    this.selectedService = null;
+    this.servicesDetailError = '';
+    this.servicesDetailSuccess = '';
   }
 }
