@@ -245,6 +245,7 @@
                         <button type="button"
                             [class.active] = "option === 'almacen'"
                             (click)="[setOption('almacen'), almacenDatos(selectedService.depcod)]"
+                            [disabled]="selectedService?.depalm !== 1"
                         >
                             Almacen
                         </button>
