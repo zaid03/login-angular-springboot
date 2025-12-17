@@ -329,7 +329,7 @@
                                 <textarea [(ngModel)]="almacenArray.magnom">test</textarea>   
                             </div>
                             <h3>Tipos</h3>
-                            <h1>{{almacenErro}}</h1>
+                            <h1 class="errorBtn">{{almacenErro}}</h1>
                             <div class="almacen-list">
                                 <table class="almacen-table">
                                     <thead>
@@ -339,9 +339,9 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>test</td>
-                                            <td>test</td>
+                                        <tr *ngFor="let a of almacenDatosArray">
+                                            <td>{{ a.mtacod}}</td>
+                                            <td>{{ a.mtades }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
