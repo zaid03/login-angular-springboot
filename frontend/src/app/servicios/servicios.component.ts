@@ -317,6 +317,7 @@ export class ServiciosComponent {
     this.almacenErro = '';
     this.datosError = '';
     this.personasError = '';
+    this.personas = [];
   }
 
   option: 'personas' | 'datos' | 'almacen' = 'personas';
