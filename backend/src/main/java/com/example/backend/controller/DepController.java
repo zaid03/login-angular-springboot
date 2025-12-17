@@ -19,7 +19,7 @@ public class DepController {
 
     //fetching all services
     @GetMapping("/fetch-services/{ent}/{eje}")
-        public ResponseEntity<?> fetchAllservices(
+    public ResponseEntity<?> fetchAllservices(
         @PathVariable Integer ent,
         @PathVariable String eje
     ) {

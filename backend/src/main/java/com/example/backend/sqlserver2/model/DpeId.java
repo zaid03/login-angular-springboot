@@ -7,15 +7,15 @@ public class DpeId implements Serializable {
     private Integer ENT;
     private String EJE;
     private String DEPCOD;
-    private String Percod;
+    private String PERCOD;
 
     public DpeId() {}
 
-    public DpeId(Integer ENT, String EJE, String DEPCOD, String Percod) {
+    public DpeId(Integer ENT, String EJE, String DEPCOD, String PERCOD) {
         this.ENT = ENT;
         this.EJE = EJE;
         this.DEPCOD = DEPCOD;
-        this.Percod = Percod;
+        this.PERCOD = PERCOD;
     }
 
     public Integer getENT() {return ENT;}
@@ -27,8 +27,8 @@ public class DpeId implements Serializable {
     public String getDEPCOD() {return DEPCOD;}
     public void setDEPCOD(String DEPCOD) {this.DEPCOD = DEPCOD;}
 
-    public String getPercod() {return Percod;}
-    public void setPercod(String Percod) {this.Percod = Percod;}
+    public String getPERCOD() {return PERCOD;}
+    public void setPERCOD(String PERCOD) {this.PERCOD = PERCOD;}
 
     @Override
     public boolean equals(Object o) {
@@ -38,11 +38,11 @@ public class DpeId implements Serializable {
         return Objects.equals(ENT, dpeId.ENT) &&
                Objects.equals(EJE, dpeId.EJE) &&
                Objects.equals(DEPCOD, dpeId.DEPCOD) &&
-               Objects.equals(Percod, dpeId.Percod);
+               Objects.equals(PERCOD, dpeId.PERCOD);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(ENT, EJE, DEPCOD, Percod);
+        return Objects.hash(ENT, EJE, DEPCOD, PERCOD);
     }
 }

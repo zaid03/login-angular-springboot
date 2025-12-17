@@ -24,33 +24,22 @@ public class Dpe {
 
     @Id
     @Column(nullable = false)
-    private String Percod;
+    private String PERCOD;
 
-    public Integer getENT() {
-        return ENT;
-    }
-    public void setENT(Integer ENT) {
-        this.ENT = ENT;
-    }
+    private Integer DPERES;
 
-    public String getEJE() {
-        return EJE;
-    }
-    public void setEJE(String EJE){
-        this.EJE = EJE;
-    }
+    public Integer getENT() { return ENT; }
+    public void setENT(Integer ENT) { this.ENT = ENT; }
 
-    public String getDEPCOD() {
-        return DEPCOD;
-    }
-    public void setDEPCOD(String DEPCOD) {
-        this.DEPCOD = DEPCOD;
-    }
+    public String getEJE() { return EJE; }
+    public void setEJE(String EJE){ this.EJE = EJE; }
 
-    public String getPercod() {
-        return Percod;
-    }
-    public void setPercod(String Percod) {
-        this.Percod = Percod;
-    }
+    public String getDEPCOD() { return DEPCOD; }
+    public void setDEPCOD(String DEPCOD) { this.DEPCOD = DEPCOD; }
+
+    public String getPERCOD() { return PERCOD; }
+    public void setPERCOD(String PERCOD) { this.PERCOD = PERCOD; }
+
+    public Integer DPERES() { return DPERES; }
+    public void setDPERES(Integer DPERES) { this.DPERES = DPERES; }
 }
