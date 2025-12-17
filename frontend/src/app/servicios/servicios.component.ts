@@ -544,4 +544,57 @@ export class ServiciosComponent {
       }
     })
   }
+
+  searchServicio: string = '';
+  searchCentroGestor: string = '';
+  searchPerfil: string = 'todos';
+  searchErrorMessage: string = '';
+  search() {
+    this.searchErrorMessage = '';
+
+    const params: any = {
+      ent: this.entcod,
+      eje: this.eje
+    };
+    if (this.searchServicio && this.searchServicio.trim() !== '') {
+      params.search = this.searchServicio;
+    }
+    if (this.searchCentroGestor && this.searchCentroGestor.trim() !== '') {
+      params.cgecod = this.searchCentroGestor;
+    }
+    if (this.searchPerfil && this.searchPerfil !== 'todos') {
+      params.perfil = this.searchPerfil;
+    }
+
+    this.http.get<any>(`${environment.backendUrl}/api/dep/search`, { params }).subscribe({
+      next: (res) => {
+        this.services = res;
+        this.backupServices = Array.isArray(res) ? [...res] : [];
+        this.defaultServices = [...this.backupServices];
+        this.page = 0;
+        this.updatePagination();
+        if (!res.length) {
+          this.searchErrorMessage = 'No se encontraron servicios con los filtros dados.';
+        } else {
+          this.searchErrorMessage = '';
+        }
+      },
+      error: (err) => {
+        this.services = [];
+        this.backupServices = [];
+        this.defaultServices = [];
+        this.page = 0;
+        this.updatePagination();
+        this.searchErrorMessage = err?.error || 'Error en la búsqueda.';
+      }
+    });
+  }
+
+  clearSearch() {
+    this.searchServicio = '';
+    this.searchCentroGestor = '';
+    this.searchPerfil = 'todos';
+    this.searchErrorMessage = '';
+    this.fetchServices();
+  }
 }
