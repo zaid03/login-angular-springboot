@@ -18,7 +18,7 @@ public class MagController {
     private MagRepository magRepository;
 
     //selecting name for almacen
-    @GetMapping("/fetch-service-personas/{ent}/{depcod}")
+    @GetMapping("/fetch-almacen-nombre/{ent}/{depcod}")
     public ResponseEntity<?> fetchAlmacenName(
         @PathVariable Integer ent,
         @PathVariable String depcod
@@ -30,7 +30,7 @@ public class MagController {
             }
             return ResponseEntity.ok(name);
         } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al consultar personas: " + ex.getMostSpecificCause().getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al consultar nombre de almacen: " + ex.getMostSpecificCause().getMessage());
         }
     }
 }

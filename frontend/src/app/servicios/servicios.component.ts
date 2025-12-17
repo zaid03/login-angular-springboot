@@ -490,7 +490,7 @@ export class ServiciosComponent {
       this.almacenErro = 'codigo extraviato';
     }
 
-    this.http.get<any>(`${environment.backendUrl}/api/mag/fetch-service-personas/${this.entcod}/${depcod}`).subscribe({
+    this.http.get<any>(`${environment.backendUrl}/api/mag/fetch-almacen-nombre/${this.entcod}/${depcod}`).subscribe({
       next: (res) => {
         this.almacenArray = res;
         console.log(this.almacenArray)
