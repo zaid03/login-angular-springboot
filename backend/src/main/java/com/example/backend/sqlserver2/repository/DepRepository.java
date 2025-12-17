@@ -96,4 +96,38 @@ public interface DepRepository  extends JpaRepository<Dep, DepId> {
         @Param("EJE") String EJE,
         @Param("DEPCOD") String DEPCOD
     );
+
+    //search function
+    @Query("""
+        SELECT d FROM Dep d
+        WHERE d.ENT = :ent
+        AND d.EJE = :eje
+        AND (
+                (:search IS NULL)
+                    OR (
+                        (LENGTH(:search) BETWEEN 1 AND 8 AND d.DEPCOD LIKE %:search%)
+                        OR
+                        (LENGTH(:search) > 6 AND d.DEPDES LIKE %:search%)
+                    )
+            )
+        AND (
+                (:cgecod IS NULL OR :cgecod = '')
+                OR d.CGECOD = :cgecod
+        )
+        AND (
+                (:perfil = 'almacen' AND d.DEPALM = 1)
+                OR (:perfil = 'comprador' AND d.DEPCOM = 1)
+                OR (:perfil = 'contabilidad' AND d.DEPINT = 1)
+                OR (:perfil = 'peticionario' AND d.DEPALM = 0 AND d.DEPCOM = 0 AND d.DEPINT = 0)
+                OR (:perfil = 'todos')
+                OR (:perfil IS NULL)
+            )
+    """)
+    List<Dep> searchServices(
+        @Param("ent") Integer ent,
+        @Param("eje") String eje,
+        @Param("search") String search,
+        @Param("cgecod") String cgecod,
+        @Param("perfil") String perfil
+    );
 }

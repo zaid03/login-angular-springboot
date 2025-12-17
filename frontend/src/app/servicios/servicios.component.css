@@ -10,6 +10,7 @@
 .search-option {
     display: flex;
     align-items: center;
+    width: 50%;
     gap: 10px;
 }
 
@@ -38,6 +39,8 @@
 }
 
 .search-option-radio {
+    border: 1px solid #aaa;
+    padding: 1%;
     display: flex;
     flex-direction: column;
     justify-items: left;
@@ -170,7 +173,8 @@
 .data-three p,
 .data-four p,
 .data-five p,
-.almacen-title p {
+.almacen-title p,
+.search-option-radio p {
     font-size: 14px;
     font-weight: bold;
     color: #1c5d8c;

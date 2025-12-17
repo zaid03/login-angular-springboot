@@ -144,4 +144,24 @@ public class DepController {
         }
     }
     
+    //search function
+    @GetMapping("/search")
+    public ResponseEntity<?> searchServices(
+        @RequestParam Integer ent,
+        @RequestParam String eje,
+        @RequestParam(required = false) String search,
+        @RequestParam(required = false) String cgecod,
+        @RequestParam(required = false) String perfil
+    ) {
+        try {
+            List<Dep> results = depRepository.searchServices(ent, eje, search, cgecod, perfil);
+            if (results.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontraron servicios con los filtros dados.");
+            }
+            return ResponseEntity.ok(results);
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error al buscar servicios: " + ex.getMostSpecificCause().getMessage());
+        }
+    }
 }

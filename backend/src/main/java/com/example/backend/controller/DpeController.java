@@ -1,6 +1,5 @@
 package com.example.backend.controller;
 
-import com.example.backend.sqlserver2.model.Dpe;
 import com.example.backend.sqlserver2.repository.DpeRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
