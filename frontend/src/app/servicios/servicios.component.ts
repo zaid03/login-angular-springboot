@@ -318,6 +318,8 @@ export class ServiciosComponent {
     this.datosError = '';
     this.personasError = '';
     this.personas = [];
+    this.updateServiceSecondError = '';
+    this.updateServiceSecondError = '';
   }
 
   option: 'personas' | 'datos' | 'almacen' = 'personas';
@@ -477,9 +479,13 @@ export class ServiciosComponent {
   datosError: string = '';
   datosObject: any = null;
   datos(service: any) {
+    this.updateServiceSecondError = '';
+    this.updateServiceSecondSuccess = '';
     this.almacenErro = '';
     this.datosError = '';
     this.personasError = '';
+    this.updateServiceSecondError = '';
+    this.updateServiceSecondError = '';
     this.datosObject = service;
   }
 
@@ -487,6 +493,8 @@ export class ServiciosComponent {
   almacenArray: any = null;
   almacenDatosArray: any[] = [];
   almacenDatos(depcod: string) {
+    this.updateServiceSecondError = '';
+    this.updateServiceSecondSuccess = '';
     if (!depcod) {
       this.almacenErro = 'codigo extraviato';
     }
@@ -507,6 +515,32 @@ export class ServiciosComponent {
       },
       error: (err) => {
         this.almacenErro = 'Server error: ' + err?.error;
+      }
+    })
+  }
+
+  updateServiceSecondError: string = '';
+  updateServiceSecondSuccess: string = '';
+  updateServiceSecond(depcod: string, depd1c:string, depd1d:string, depd2c:string, depd2d:string, depd3c:string, depd3d:string, depdco:string, depden:string) {
+    const payload = {
+      "depd1c": depd1c,
+      "depd1d": depd1d,
+      "depd2c": depd2c,
+      "depd2d": depd2d,
+      "depd3c": depd3c,
+      "depd3d": depd3d,
+      "depdco": depdco,
+      "depden": depden
+    }
+
+    this.http.patch(`${environment.backendUrl}/api/dep/update-service-second/${this.entcod}/${this.eje}/${depcod}`, payload).subscribe({
+      next: (res) => {
+        this.updateServiceSecondError = '';
+        this.updateServiceSecondSuccess = 'Se ha actualizado la pestaña Detalles del pedido';
+      },
+      error: (err) => {
+        this.updateServiceSecondSuccess = ''
+        this.updateServiceSecondError = 'Server error: ' + err?.error;
       }
     })
   }

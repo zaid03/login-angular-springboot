@@ -292,40 +292,70 @@
                                 <div class="row-one">
                                     <div class="data-one">
                                         <p>Unidad tramitadora</p>
-                                        <textarea [(ngModel)]="datosObject.depd1C"></textarea>
-                                        <textarea [(ngModel)]="datosObject.depd1D" class="moreWidth"></textarea>
+                                        <textarea 
+                                            [(ngModel)]="datosObject.depd1C"
+                                            #d1c
+                                        ></textarea>
+                                        <textarea 
+                                            [(ngModel)]="datosObject.depd1D" 
+                                            class="moreWidth"
+                                            #d1d
+                                        ></textarea>
                                     </div>
                                 </div>
                                 <div class="row-two">
                                     <div class="data-two">
                                         <p>Órgano gestor</p>
-                                        <textarea [(ngModel)]="datosObject.depd2C"></textarea>
-                                        <textarea [(ngModel)]="datosObject.depd2D" class="moreWidth"></textarea>
+                                        <textarea 
+                                            [(ngModel)]="datosObject.depd2C"
+                                            #d2c
+                                        ></textarea>
+                                        <textarea 
+                                            [(ngModel)]="datosObject.depd2D" 
+                                            class="moreWidth"
+                                            #d2d
+                                        ></textarea>
                                     </div>
                                 </div>
                                 <div class="row-three">
                                     <div class="data-three">
                                         <p>Oficina contable </p>
-                                        <textarea [(ngModel)]="datosObject.depd3C"></textarea>
-                                        <textarea [(ngModel)]="datosObject.depd3D" class="moreWidth"></textarea>
+                                        <textarea 
+                                            [(ngModel)]="datosObject.depd3C"
+                                            #d3c
+                                        ></textarea>
+                                        <textarea 
+                                            [(ngModel)]="datosObject.depd3D" 
+                                            class="moreWidth"
+                                            #d3d
+                                        ></textarea>
                                     </div>
                                 </div>
                                 <div class="row-four">
                                     <div class="data-four">
                                         <p>Datos de contacto</p>
-                                        <textarea [(ngModel)]="datosObject.depdco"></textarea>
+                                        <textarea 
+                                            [(ngModel)]="datosObject.depdco"
+                                            #dco
+                                        ></textarea>
                                     </div>
                                 </div>
                                 <div class="row-five">
                                     <div class="data-five">
                                         <p>Datos de entrega</p>
-                                        <textarea [(ngModel)]="datosObject.depden"></textarea>
+                                        <textarea 
+                                            [(ngModel)]="datosObject.depden"
+                                            #den
+                                        ></textarea>
                                     </div>
                                 </div>
-                            </div>
+                                <h1 class="errorBtn">{{updateServiceSecondError}}</h1>
+                            <h1 class="successBtn">{{updateServiceSecondSuccess}}</h1>
                             <div class="action-btns">
-                                <button class="save-btn">Guardar</button>
+                                <button class="save-btn" (click)="updateServiceSecond(selectedService.depcod, d1c.value, d1d.value, d2c.value, d2d.value, d3c.value, d3d.value, dco.value, den.value)">Guardar</button>
                             </div>
+                            </div>
+                            
                         </ng-container>
                         <ng-container *ngSwitchCase="'almacen'">
                             <div class="almacen-title" *ngIf="almacenArray">
