@@ -61,7 +61,8 @@
 }
 
 .services-list,
-.personas-list {
+.personas-list,
+.almacen-list {
     width: 99%;
     display: flex;
     flex-direction: column;
@@ -70,7 +71,8 @@
 }
 
 .services-table,
-.personas-table {
+.personas-table,
+.almacen-table {
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.06);
@@ -81,7 +83,8 @@
 }
 
 .services-table thead th,
-.personas-table thead th {
+.personas-table thead th,
+.almacen-table thead th {
     border: 1px solid #e6edf3;
     padding: 8px 12px;
     text-align: center;
@@ -97,7 +100,8 @@
 }
 
 .services-table tbody td,
-.personas-table tbody td {
+.personas-table tbody td,
+.almacen-table tbody td {
     border: 1px solid #f0f5f9;
     padding: 10px 12px;
     text-align: center;
@@ -108,7 +112,8 @@
 }
 
 .services-table tbody tr:hover,
-.personas-table tbody tr:hover {
+.personas-table tbody tr:hover,
+.almacen-table tbody tr:hover {
     background-color: #f0f7ff;
 }
 
@@ -159,7 +164,13 @@
 .first-data p,
 .second-data p,
 .third-data p,
-.left-add p {
+.left-add p,
+.data-one p,
+.data-two p,
+.data-three p,
+.data-four p,
+.data-five p,
+.almacen-title p {
     font-size: 14px;
     font-weight: bold;
     color: #1c5d8c;
@@ -168,7 +179,13 @@
 .first-data textarea,
 .second-data textarea,
 .third-data textarea,
-.right-add textarea {
+.right-add textarea,
+.data-one textarea,
+.data-two textarea,
+.data-three textarea,
+.data-four textarea,
+.data-five textarea,
+.almacen-title textarea {
     border: 1px solid #1c5d8c;
     height: 20px;
     padding: 2px 4px;
@@ -177,13 +194,19 @@
 }
 
 .moreWidth{
-    width: 300px;
+    width: 380px;
 }
 
 .first-data textarea:focus,
 .second-data textarea:focus,
 .third-data textarea:focus,
-.right-add textarea:focus  {
+.right-add textarea:focus,
+.data-one textarea:focus,
+.data-two textarea:focus,
+.data-three textarea:focus,
+.data-four textarea:focus,
+.data-five textarea:focus,
+.almacen-title textarea:focus {
     outline: none;
     border-color: #042b5a;
     outline: none;
@@ -287,4 +310,45 @@
 
 .smallWidth {
     width: 10%;
+}
+
+.perstana-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.row-one,
+.row-two,
+.row-three,
+.row-four,
+.row-five {
+    padding: 1%;
+}
+
+.data-one,
+.data-two,
+.data-three,
+.data-four,
+.data-five {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.data-four textarea,
+.data-five textarea {
+    width: 80%;
+    height: 150px;
+}
+
+.almacen-title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.almacen-title textarea {
+    width: 360px;
 }

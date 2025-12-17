@@ -238,7 +238,7 @@
                         </button>
                         <button type="button"
                             [class.active]="option === 'datos'"
-                            (click)="setOption('datos')"
+                            (click)="[setOption('datos'), datos(selectedService)]"
                         >
                             Datos para pedidos
                         </button>
@@ -285,10 +285,67 @@
                             </div>
                         </ng-container>
                         <ng-container *ngSwitchCase="'datos'">
-                            <h1>datos grid</h1>
+                            <h3>Pestaña Datos para Pedidos</h3>
+                            <h1>{{datosError}}</h1>
+                            <div class="perstana-content" *ngIf="datosObject">
+                                <div class="row-one">
+                                    <div class="data-one">
+                                        <p>Unidad tramitadora</p>
+                                        <textarea [(ngModel)]="datosObject.depd1C"></textarea>
+                                        <textarea [(ngModel)]="datosObject.depd1D" class="moreWidth"></textarea>
+                                    </div>
+                                </div>
+                                <div class="row-two">
+                                    <div class="data-two">
+                                        <p>Órgano gestor</p>
+                                        <textarea [(ngModel)]="datosObject.depd2C"></textarea>
+                                        <textarea [(ngModel)]="datosObject.depd2D" class="moreWidth"></textarea>
+                                    </div>
+                                </div>
+                                <div class="row-three">
+                                    <div class="data-three">
+                                        <p>Oficina contable </p>
+                                        <textarea [(ngModel)]="datosObject.depd3C"></textarea>
+                                        <textarea [(ngModel)]="datosObject.depd3D" class="moreWidth"></textarea>
+                                    </div>
+                                </div>
+                                <div class="row-four">
+                                    <div class="data-four">
+                                        <p>Datos de contacto</p>
+                                        <textarea [(ngModel)]="datosObject.depdco"></textarea>
+                                    </div>
+                                </div>
+                                <div class="row-five">
+                                    <div class="data-five">
+                                        <p>Datos de entrega</p>
+                                        <textarea [(ngModel)]="datosObject.depden"></textarea>
+                                    </div>
+                                </div>
+                            </div>
                         </ng-container>
                         <ng-container *ngSwitchCase="'almacen'">
-                            <h1>almcen grid</h1>
+                            <div class="almacen-title">
+                                <p>Nombre</p>
+                                <textarea>test</textarea>   
+                            </div>
+                            <h3>Tipos</h3>
+                            <h1>{{almacenErro}}</h1>
+                            <div class="almacen-list">
+                                <table class="almacen-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Código Tipo</th>
+                                            <th>Tipo de Almacenaje</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>test</td>
+                                            <td>test</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </ng-container>
                     </div>
                 </div>

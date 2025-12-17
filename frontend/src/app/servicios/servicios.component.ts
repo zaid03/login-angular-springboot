@@ -8,6 +8,7 @@ import { environment } from '../../environments/environment';
 
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
+import { Serializer } from '@angular/compiler';
 
 @Component({
   selector: 'app-servicios',
@@ -278,7 +279,11 @@ export class ServiciosComponent {
   servicesDetailSuccess: string = '';
   detailFlags = { depalm: false, depcom: false, depint: false };
   showDetails(services: any) {
+    this.almacenErro = '';
+    this.datosError = '';
+    this.personasError = '';
     this.selectedService = services;
+    this.option = 'personas';
     this.detailFlags = {
       depalm: services?.depalm === 1,
       depcom: services?.depcom === 1,
@@ -309,6 +314,9 @@ export class ServiciosComponent {
     this.servicesDetailSuccess = '';
     this.updateServiceSuccessMessage = '';
     this.updateServiceErrorMessage = '';
+    this.almacenErro = '';
+    this.datosError = '';
+    this.personasError = '';
   }
 
   option: 'personas' | 'datos' | 'almacen' = 'personas';
@@ -422,6 +430,9 @@ export class ServiciosComponent {
   personasPage = 0;
   personasPageSize = 10;
   fetchPersonas(depcod: string): void {
+    this.almacenErro = '';
+    this.datosError = '';
+    this.personasError = '';
     if (!depcod) {
       this.personasError = 'codigo extraviado'
       return;
@@ -461,4 +472,15 @@ export class ServiciosComponent {
       this.personasPage = inputPage - 1;
     }
   }
+
+  datosError: string = '';
+  datosObject: any = null;
+  datos(service: any) {
+    this.almacenErro = '';
+    this.datosError = '';
+    this.personasError = '';
+    this.datosObject = service;
+  }
+
+  almacenErro: string = '';
 }
