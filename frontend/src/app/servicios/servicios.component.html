@@ -251,7 +251,38 @@
                     </div>
                     <div class="detail-switch-content" [ngSwitch]="option">
                         <ng-container *ngSwitchCase="'personas'">
-                            <h1>personas grid</h1>
+                            <h3 class="title-personas">Personas</h3>
+                            <h1 class="errorBtn">{{personasError}}</h1>
+                            <div class="personas-list">
+                                <table class="personas-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Código Persona</th>
+                                            <th>Nombre</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let p of paginatedPersonas">
+                                            <td>{{ p[0] }}</td>
+                                            <td>{{ p[1] }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="pagination-controls">
+                                    <button (click)="personasPrevPage()" [disabled]="personasPage === 0">Anterior</button>
+                                    <span>Página</span>
+                                    <input
+                                        type="number"
+                                        min="1"
+                                        [max]="personasTotalPages"
+                                        [value]="personasPage + 1"
+                                        (change)="personasGoToPage($event)"
+                                        class="pagination-input"
+                                    />
+                                    <span>de {{ personasTotalPages }}</span>
+                                    <button (click)="personasNextPage()" [disabled]="personasPage + 1 >= personasTotalPages">Siguiente</button>
+                                </div>
+                            </div>
                         </ng-container>
                         <ng-container *ngSwitchCase="'datos'">
                             <h1>datos grid</h1>

@@ -60,7 +60,8 @@
     margin: 5px;
 }
 
-.services-list {
+.services-list,
+.personas-list {
     width: 99%;
     display: flex;
     flex-direction: column;
@@ -68,7 +69,8 @@
     align-items: center;
 }
 
-.services-table {
+.services-table,
+.personas-table {
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.06);
@@ -78,7 +80,8 @@
     overflow: hidden;
 }
 
-.services-table thead th {
+.services-table thead th,
+.personas-table thead th {
     border: 1px solid #e6edf3;
     padding: 8px 12px;
     text-align: center;
@@ -93,7 +96,8 @@
   width: 80px;
 }
 
-.services-table tbody td {
+.services-table tbody td,
+.personas-table tbody td {
     border: 1px solid #f0f5f9;
     padding: 10px 12px;
     text-align: center;
@@ -103,7 +107,8 @@
     font-weight: 600;
 }
 
-.services-table tbody tr:hover{
+.services-table tbody tr:hover,
+.personas-table tbody tr:hover {
     background-color: #f0f7ff;
 }
 
@@ -114,10 +119,12 @@
 }
 
 .modal h3,
-.add-confirm-modal h3{
+.add-confirm-modal h3,
+.title-personas {
     margin: 10px;
     color: #1c5d8c;
     text-align: center;
+    font-size: 22px;
 }
 
 .detail-container {

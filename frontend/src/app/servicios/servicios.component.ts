@@ -295,6 +295,8 @@ export class ServiciosComponent {
         this.servicesDetailError = 'No se encuentra la descripción del cgecod.';
       }
     })
+
+    this.fetchPersonas(services.depcod);
   }
 
   toggleDetailFlag(field: 'depalm' | 'depcom' | 'depint', value: boolean): void {
@@ -413,5 +415,50 @@ export class ServiciosComponent {
         this.addServiceErrorMessage = 'Server error: ' + err?.error;
       }
     })
+  }
+
+  personasError: string = '';
+  personas: any[] = [];
+  personasPage = 0;
+  personasPageSize = 10;
+  fetchPersonas(depcod: string): void {
+    if (!depcod) {
+      this.personasError = 'codigo extraviado'
+      return;
+    }
+
+    this.http.get<any>(`${environment.backendUrl}/api/depe/fetch-service-personas/${this.entcod}/${this.eje}/${depcod}`).subscribe({
+      next: (res) => {
+        this.personas = res;
+        this.personasPage = 0;
+      },
+      error: (err) => {
+        this.personasError = 'Server error: ' + err?.error;
+      }
+    })
+  }
+
+  get paginatedPersonas(): any[] {
+    const start = this.personasPage * this.personasPageSize;
+    return this.personas.slice(start, start + this.personasPageSize);
+  }
+
+  get personasTotalPages(): number {
+    return Math.max(1, Math.ceil(this.personas.length / this.personasPageSize));
+  }
+
+  personasPrevPage(): void {
+    if (this.personasPage > 0) this.personasPage--;
+  }
+
+  personasNextPage(): void {
+    if (this.personasPage < this.personasTotalPages - 1) this.personasPage++;
+  }
+
+  personasGoToPage(event: any): void {
+    const inputPage = Number(event.target.value);
+    if (inputPage >= 1 && inputPage <= this.personasTotalPages) {
+      this.personasPage = inputPage - 1;
+    }
   }
 }
