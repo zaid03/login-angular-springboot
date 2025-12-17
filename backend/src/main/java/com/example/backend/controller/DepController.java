@@ -102,4 +102,46 @@ public class DepController {
                 .body("Update failed: " + ex.getMostSpecificCause().getMessage());
         }
     }
+
+    //modifying rest of service 
+    public record ServiceUpdateSecond(
+    String depd1c, String depd1d,
+    String depd2c, String depd2d,
+    String depd3c, String depd3d,
+    String depdco, String depden) {}
+    @PatchMapping("/update-service-second/{ent}/{eje}/{depcod}")
+    public ResponseEntity<?> updateServiceSecond(
+        @PathVariable Integer ent,
+        @PathVariable String eje,
+        @PathVariable String depcod,
+        @RequestBody ServiceUpdateSecond payload
+    ) {
+        try {
+            if (payload == null ||
+                payload.depd1c() == null || payload.depd1d() == null ||
+                payload.depd2c() == null || payload.depd2d() == null ||
+                payload.depd3c() == null || payload.depd3d() == null ||
+                payload.depdco() == null || payload.depden() == null) {
+                return ResponseEntity.badRequest().body("Faltan datos obligatorios.");
+            }
+
+            int updated = depRepository.updateServiceSecond(
+                payload.depd1c(), payload.depd1d(),
+                payload.depd2c(), payload.depd2d(),
+                payload.depd3c(), payload.depd3d(),
+                payload.depdco(), payload.depden(),
+                ent, eje, depcod
+            );
+
+            if (updated == 0) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No se encontró ninguna centro gestor para los datos.");
+            }
+            return ResponseEntity.noContent().build();
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Update failed: " + ex.getMostSpecificCause().getMessage());
+        }
+    }
+    
 }

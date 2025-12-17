@@ -63,4 +63,37 @@ public interface DepRepository  extends JpaRepository<Dep, DepId> {
 
     //for adding a service
     List<Dep> findByENTAndEJEAndDEPCOD(int ent, String eje, String depcod);
+
+    //modifying the rest of the service
+    @Modifying
+    @Transactional
+    @Query("""
+        UPDATE Dep d
+        SET 
+            d.DEPD1C = :DEPD1C, 
+            d.DEPD1D = :DEPD1D, 
+            d.DEPD2C = :DEPD2C, 
+            d.DEPD2D = :DEPD2D, 
+            d.DEPD3C = :DEPD3C,
+            d.DEPD3D = :DEPD3D,
+            d.DEPDCO = :DEPDCO,
+            d.DEPDEN = :DEPDEN
+        where 
+            d.ENT = :ENT
+            AND d.EJE = :EJE
+            AND d.DEPCOD = :DEPCOD  
+    """)
+    int updateServiceSecond(
+        @Param("DEPD1C") String DEPD1C,
+        @Param("DEPD1D") String DEPD1D,
+        @Param("DEPD2C") String DEPD2C,
+        @Param("DEPD2D") String DEPD2D,
+        @Param("DEPD3C") String DEPD3C,
+        @Param("DEPD3D") String DEPD3D,
+        @Param("DEPDCO") String DEPDCO,
+        @Param("DEPDEN") String DEPDEN,
+        @Param("ENT") Integer ENT,
+        @Param("EJE") String EJE,
+        @Param("DEPCOD") String DEPCOD
+    );
 }
