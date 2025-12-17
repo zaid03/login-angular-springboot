@@ -484,4 +484,20 @@ export class ServiciosComponent {
   }
 
   almacenErro: string = '';
+  almacenArray: any = null;
+  almacenDatos(depcod: string) {
+    if (!depcod) {
+      this.almacenErro = 'codigo extraviato';
+    }
+
+    this.http.get<any>(`${environment.backendUrl}/api/mag/fetch-service-personas/${this.entcod}/${depcod}`).subscribe({
+      next: (res) => {
+        this.almacenArray = res;
+        console.log(this.almacenArray)
+      },
+      error: (err) => {
+        this.almacenErro = 'Server error: ' + err?.error;
+      }
+    })
+  }
 }

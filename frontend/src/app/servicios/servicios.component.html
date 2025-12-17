@@ -244,7 +244,7 @@
                         </button>
                         <button type="button"
                             [class.active] = "option === 'almacen'"
-                            (click)="setOption('almacen')"
+                            (click)="[setOption('almacen'), almacenDatos(selectedService.depcod)]"
                         >
                             Almacen
                         </button>
@@ -324,9 +324,9 @@
                             </div>
                         </ng-container>
                         <ng-container *ngSwitchCase="'almacen'">
-                            <div class="almacen-title">
+                            <div class="almacen-title" *ngIf="almacenArray">
                                 <p>Nombre</p>
-                                <textarea>test</textarea>   
+                                <textarea [(ngModel)]="almacenArray.magnom">test</textarea>   
                             </div>
                             <h3>Tipos</h3>
                             <h1>{{almacenErro}}</h1>
