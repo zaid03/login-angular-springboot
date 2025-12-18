@@ -40,6 +40,10 @@
     gap: 10px;
 }
 
+.successBtn {
+    margin-top: 5px;
+}
+
 .facturas-list {
     width: 99%;
     display: flex;
@@ -54,6 +58,7 @@
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.06);
     max-width: 99%;
+    table-layout: fixed;
     border-collapse: collapse;
     margin-bottom: 24px;
     overflow: hidden;
@@ -68,6 +73,7 @@
     color: #1c5d8c;
     font-size: 15px;
     font-weight: 700;
+    width: 120px;
 }
 
 .facturas-table th:first-child,

@@ -39,8 +39,6 @@ export class FacturasComponent {
   private backupFacturas: any[] = [];
   page = 0;
   pageSize = 20;
-  facturaMessage: String = '';
-  facturaIsError: boolean = false;
   facturaMessageSuccess: String = '';
   facturaMessageIsSuccess: boolean = false;
   estadoMessage: string = '';
@@ -52,7 +50,6 @@ export class FacturasComponent {
   private defaultFacturas: any[] = [];
   ngOnInit(): void{
     this.estadoMessage = '';
-    this.facturaIsError = false;
     const entidad = sessionStorage.getItem('Entidad');
     const eje = sessionStorage.getItem('EJERCICIO');
     const cge = sessionStorage.getItem('CENTROGESTOR');
@@ -110,9 +107,59 @@ export class FacturasComponent {
           this.updatePagination();
         }
       }, error: (err) => {
-        this.facturaIsError = true;
-        this.facturaMessage = 'Server error: ' + (err?.message || err?.statusText || err);
+        this.filterFacturaMessage= 'Server error: ' + (err?.message || err?.statusText || err);
       }
+    });
+  }
+
+  sortField: 'facnum' | 'tercod' | 'ternom' | 'ternif' | 'facfre' | 'facimp' | 'facdoc' | 'facann' | 'facfac' | 'facdat' | 'facado' | 'facfco' |'getPendingApply(p)' | 'cgecod' | 'getStaus(p.facado, p.facimp, p.faciec, p.facidi)' | null = null;
+  sortColumn: string = '';
+  sortDirection: 'asc' | 'desc' = 'asc';
+  private defaultProveedores: any[] = [];
+    toggleSort(column: string) {
+    if (this.sortColumn === column) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortColumn = column;
+      this.sortDirection = 'asc';
+    }
+    this.applySort();
+    this.page = 0;
+    this.updatePagination();
+  }
+
+  private applySort(): void {
+    if (!this.sortColumn) return;
+    this.facturas.sort((a, b) => {
+      let aValue: any;
+      let bValue: any;
+
+      // Handle computed columns
+      if (this.sortColumn === 'getPendingApply(p)') {
+        aValue = this.getPendingApply(a);
+        bValue = this.getPendingApply(b);
+      } else if (this.sortColumn === 'getStaus(p.facado, p.facimp, p.faciec, p.facidi)') {
+        aValue = this.getStaus(a.facado, a.facimp, a.faciec, a.facidi);
+        bValue = this.getStaus(b.facado, b.facimp, b.faciec, b.facidi);
+      } else {
+        // Default: direct property
+        aValue = a[this.sortColumn];
+        bValue = b[this.sortColumn];
+      }
+
+      // Try to compare as numbers if possible
+      const aNum = Number(aValue);
+      const bNum = Number(bValue);
+      if (!isNaN(aNum) && !isNaN(bNum)) {
+        return this.sortDirection === 'asc' ? aNum - bNum : bNum - aNum;
+      }
+
+      // Otherwise compare as strings
+      aValue = (aValue ?? '').toString().toUpperCase();
+      bValue = (bValue ?? '').toString().toUpperCase();
+      if (aValue < bValue) return this.sortDirection === 'asc' ? -1 : 1;
+      if (aValue > bValue) return this.sortDirection === 'asc' ? 1 : -1;
+      return 0;
     });
   }
 
@@ -125,57 +172,6 @@ export class FacturasComponent {
     if (this.page >= total) {
       this.page = total - 1;
     }
-  }
-  
-  toggleSort(field: 'facnum' | 'facdat' | 'facfre' | 'facfco'): void {
-    if (this.sortField !== field) {
-      this.sortField = field;
-      this.sortDirection = 'asc';
-    } else if (this.sortDirection === 'asc') {
-      this.sortDirection = 'desc';
-    } else {
-      this.sortField = null;
-      this.sortDirection = 'asc';
-      this.facturas = [...this.defaultFacturas];
-      this.page = 0;
-      this.updatePagination();
-      return;
-    }
-
-    this.applySort();
-  }
-
-  sortField: 'facnum' | 'facdat' | 'facfre' | 'facfco' | null = null;
-  sortDirection: 'asc' | 'desc' = 'asc';
-  private applySort(): void {
-    if (!this.sortField) {
-      return;
-    }
-
-    const field = this.sortField;
-    const source = [...this.defaultFacturas];
-    const sorted = source.sort((a: any, b: any) => {
-      if (field === 'facnum') {
-        const aNum = Number(a.facnum ?? a.FACNUM ?? 0);
-        const bNum = Number(b.facnum ?? b.FACNUM ?? 0);
-        return this.sortDirection === 'asc' ? aNum - bNum : bNum - aNum;
-      }
-
-      const toTime = (value: any) => {
-        if (!value && value !== 0) return 0;
-        const date = new Date(value);
-        return isNaN(date.getTime()) ? 0 : date.getTime();
-      };
-
-      const aTime = toTime(a[field] ?? a[field.toUpperCase()]);
-      const bTime = toTime(b[field] ?? b[field.toUpperCase()]);
-
-      return this.sortDirection === 'asc' ? aTime - bTime : bTime - aTime;
-    });
-
-    this.facturas = sorted;
-    this.page = 0;
-    this.updatePagination();
   }
 
 
@@ -393,13 +389,12 @@ export class FacturasComponent {
   
   filterFacturas(): void {
     if (this.entcod == null || this.eje == null || !this.centroGestor) {
-      this.facturaMessage = 'Faltan datos de sesión.';
+      this.filterFacturaMessage= 'Faltan datos de sesión.';
       return;
     }
 
-    this.facturaMessage = '';
+    this.filterFacturaMessage= '';
     this.facturaMessageSuccess = '';
-    this.filterFacturaMessage = '';
 
     const estadoMap: Record<string, string> = {
       'contabilizadas': 'CONT',
@@ -481,7 +476,7 @@ export class FacturasComponent {
         next: (res) => {
           if (res.status === 204 || !res.body || res.body.length === 0) {
             this.facturaMessageIsSuccess = true;
-            this.facturaMessage = 'No hay facturas para los filtros seleccionados.';
+            this.filterFacturaMessage= 'No hay facturas para los filtros seleccionados.';
             this.facturas = [];
             this.facturas = [];
             this.defaultFacturas = [];
@@ -501,8 +496,7 @@ export class FacturasComponent {
           }
         },
         error: (err) => {
-          this.facturaIsError = true;
-          this.facturaMessage = typeof err.error === 'string'
+          this.filterFacturaMessage= typeof err.error === 'string'
             ? err.error
             : 'Error al buscar facturas.';
         }
@@ -520,7 +514,6 @@ export class FacturasComponent {
     this.fromDate = '';
     this.toDate = '';
     this.filterFacturaMessage = '';
-    this.facturaMessage = '';
     this.facturaMessageSuccess = '';
     this.page = 0;
     this.sortField = null;
@@ -613,4 +606,33 @@ export class FacturasComponent {
     }
   }
 
+  private startX: number = 0;
+  private startWidth: number = 0;
+  private resizingColIndex: number | null = null;
+  startResize(event: MouseEvent, colIndex: number) {
+    this.resizingColIndex = colIndex;
+    this.startX = event.pageX;
+    const th = (event.target as HTMLElement).parentElement as HTMLElement;
+    this.startWidth = th.offsetWidth;
+
+    document.addEventListener('mousemove', this.onResizeMove);
+    document.addEventListener('mouseup', this.stopResize);
+  }
+
+  // for columns resizing
+  onResizeMove = (event: MouseEvent) => {
+    if (this.resizingColIndex === null) return;
+    const table = document.querySelector('.facturas-table') as HTMLTableElement;
+    if (!table) return;
+    const th = table.querySelectorAll('th')[this.resizingColIndex] as HTMLElement;
+    if (!th) return;
+    const diff = event.pageX - this.startX;
+    th.style.width = (this.startWidth + diff) + 'px';
+  };
+
+  stopResize = () => {
+    document.removeEventListener('mousemove', this.onResizeMove);
+    document.removeEventListener('mouseup', this.stopResize);
+    this.resizingColIndex = null;
+  };
 }
