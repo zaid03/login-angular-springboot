@@ -147,7 +147,6 @@ app-sidebar {
 .articulos-cancel-confirm-btn,
 .proveedor-saving-btn,
 .proveedor-cancel-btn,
-.menu-panel button,
 .cge-save-btn,
 .cge-delete-btn,
 .centroGestor-add-btn,
@@ -157,13 +156,14 @@ app-sidebar {
 .login-button,
 .Limpiar-btn,
 .save-btn,
-.delete-btn  {
-  background-color: #1d4ed8;
+.delete-btn,
+.deconnect-btn  {
+  background-color: #38249b;
   color: #fff;
   border: none;
-  padding: 8px 12px;
+  padding: 4px 8px;
   border-radius: 6px;
-  font-size: 0.95rem;
+  font-size: 0.8rem;
   cursor: pointer;
   transition: background-color 0.2s;
   font-weight: 700;
@@ -197,13 +197,13 @@ app-sidebar {
 .save-btn-articulos:hover,
 .articulos-cancel-confirm-btn:hover,
 .proveedor-saving-btn:hover,
-.menu-panel button:hover,
 .cge-save-btn:hover,
 .centroGestor-add-btn:hover,
 .cge-delete-confirm-btn:hover,
 .login-button:hover,
-.save-btn:hover {
-  background-color: #094fa3;
+.save-btn:hover,
+.deconnect-btn:hover {
+  background-color: #25176b;
   color: #e6edf3;
 }
 
@@ -321,17 +321,53 @@ app-sidebar {
   transition: color 0.2s;
 }
 
-/* 3 dots menu */
-.title-menu{
-  text-align: center;
+/* title, search and 3 dots menu */
+.title-menu {
   width: 100%;
   display: flex;
+}
+
+.title-area {
+  width: 21%;
+  display: flex;
+  align-items: center;
   justify-content: center;
 }
 
 .margin-title {
-  width: 97%;
+  color: #38249b;
+  font-size: 20px;
 }
+
+.search-holder{
+  width: 78%;
+}
+
+.proveedores-search {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.search-form {
+  display: flex;
+  align-items: center;
+}
+
+.search-bar {
+  padding: 4px 6px;
+  border-radius: 20px;
+  border: 1px solid #bbb;
+  font-size: 16px;
+  width: 200px;
+}
+
+.search-bar:focus {
+  border-color: #094fa3;
+  outline: none;
+  background: #fff;
+}
+
 .group-menu{
   position: relative;
   cursor: pointer;
@@ -364,6 +400,24 @@ app-sidebar {
   gap: 8px;
   z-index: 3000;
   border: 1px solid rgba(28, 93, 140, 0.08);
+}
+
+.menu-panel button {
+  padding: 4px 6px;
+  color: #666666;
+  background: #f7f7f7;
+  border-radius: 4px;
+  border: none;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.menu-panel button:hover {
+  background-color: #38249b;
+  color: #e6edf3;  
+  outline: none;
 }
 
 /* table styles for ordering */

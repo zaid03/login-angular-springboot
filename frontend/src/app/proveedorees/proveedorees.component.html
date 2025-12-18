@@ -1,14 +1,27 @@
     
 <div class="proveedores-page">
-    <div 
-        class="sidebar-backdrop" 
-        *ngIf="!sidebar.collapsed" 
-        (click)="sidebar.collapsed = true">
-    </div>
     <app-sidebar #sidebar></app-sidebar>
     <div class="proveedores-container" [class.blurred]="!sidebar.collapsed">
         <div class="title-menu">
-            <h2 class="margin-title">Lista de Proveedores</h2>  
+            <div class="title-area">
+                <h2 class="margin-title">Gestión de Proveedores</h2>  
+            </div>
+            <div class="search-holder">
+                <div class="proveedores-search">
+                    <form class="search-form" (submit)="onSearchFormSubmit($event)">
+                        <input type="text" class="search-bar" placeholder="Buscar proveedor" name="search" [(ngModel)]="searchTerm" (keyup.enter)="search()"/>
+                        <div class="search-options">
+                            <label>
+                                <input type="radio" name="optiones" value="Todos" [(ngModel)]="filterOption" /> Todos
+                                <input type="radio" name="optiones" value="noBloqueados" [(ngModel)]="filterOption" /> No Bloqueados
+                                <input type="radio" name="optiones" value="Bloqueados" [(ngModel)]="filterOption"  /> Bloqueados
+                            </label>
+                        </div>
+                        <button type="button" class="search-button-proveedores" (click)="search()">Buscar</button>
+                        <button type="button" class="search-button-proveedores" (click)="clearSearch()">Limpiar</button>
+                    </form>
+                </div> 
+            </div>
             <div class="group-menu" (click)="toggleMenu($event)">
                 <div class="dot"></div>
                 <div class="dot"></div>
@@ -20,20 +33,7 @@
                 </div>
             </div>
         </div>
-        <div class="proveedores-search">
-            <form class="search-form" (submit)="onSearchFormSubmit($event)">
-                <input type="text" class="search-bar" placeholder="Buscar proveedor" name="search" [(ngModel)]="searchTerm" (keyup.enter)="search()"/>
-                <div class="search-options">
-                    <label>
-                        <input type="radio" name="optiones" value="Todos" [(ngModel)]="filterOption" /> Todos
-                        <input type="radio" name="optiones" value="noBloqueados" [(ngModel)]="filterOption" /> No Bloqueados
-                        <input type="radio" name="optiones" value="Bloqueados" [(ngModel)]="filterOption"  /> Bloqueados
-                    </label>
-                </div>
-                <button type="button" class="search-button-proveedores" (click)="search()">Buscar</button>
-                <button type="button" class="search-button-proveedores" (click)="clearSearch()">Limpiar</button>
-            </form>
-        </div> 
+        
 
         <div class="proveedores-list">
             <h1 class="errorBtn">{{error}}</h1>

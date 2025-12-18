@@ -18,7 +18,6 @@
 .burger-btn {
   outline: none;
   position: fixed;
-  top: 16px;
   left: 8px;
   font-size: 2rem;
   background: none;
@@ -73,31 +72,14 @@
   overflow: hidden;
 }
 
-.menu button {
-  border: none;
+.deconnect-btn {
   width: 100%;
-  background-color: #1d4ed8;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 8px 14px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  font-weight: 700;
-  outline: none;
 }
 
-.menu button:hover,
 .choice:hover,
 .menu-item a:hover {
-  background-color: #094fa3;
+  background-color: #38249b;
   color: #e6edf3;   
-}
-
-.color {
-  color: #094fa3;
-  font-weight: bold;
 }
 
 .drop-down-menu {
