@@ -38,9 +38,6 @@ export class ProveedoreesComponent {
   proveedores: any[] = [];
   private backupProveedores: any[] = [];
   error: string | null = null;
-  sortField: 'tercod' | 'ternom' | null = null;
-  sortDirection: 'asc' | 'desc' = 'asc';
-  private defaultProveedores: any[] = [];
   ngOnInit(): void {
     this.error = '';
     const entidad = sessionStorage.getItem('Entidad');
@@ -76,40 +73,40 @@ export class ProveedoreesComponent {
       });
   }
 
-  toggleSort(field: 'tercod' | 'ternom'): void {
-    if (this.sortField !== field) {
-      this.sortField = field;
-      this.sortDirection = 'asc';
-    } else if (this.sortDirection === 'asc') {
-      this.sortDirection = 'desc';
+  sortField: 'tercod' | 'ternom' | 'ternif' | 'terali' | 'tertel' | 'terdom' | 'tercpo' | 'terpob' | 'terayt' | 'terfax' | 'terweb' | 'tercoe' | 'terobs' | null = null;
+  sortColumn: string = '';
+  sortDirection: 'asc' | 'desc' = 'asc';
+  private defaultProveedores: any[] = [];
+    toggleSort(column: string) {
+    if (this.sortColumn === column) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
     } else {
-      this.sortField = null;
+      this.sortColumn = column;
       this.sortDirection = 'asc';
-      this.proveedores = [...this.defaultProveedores];
-      this.page = 0;
-      this.updatePaginatedProveedores();
-      return;
     }
     this.applySort();
+    this.page = 0;
+    this.updatePaginatedProveedores();
   }
 
   private applySort(): void {
-    const sorted = [...this.proveedores].sort((a, b) => {
-      if (this.sortField === 'tercod') {
-        const aNum = Number(a.tercod ?? 0);
-        const bNum = Number(b.tercod ?? 0);
+    if (!this.sortColumn) return;
+    this.proveedores.sort((a, b) => {
+      let aValue = a[this.sortColumn];
+      let bValue = b[this.sortColumn];
+
+      const aNum = Number(aValue);
+      const bNum = Number(bValue);
+      if (!isNaN(aNum) && !isNaN(bNum)) {
         return this.sortDirection === 'asc' ? aNum - bNum : bNum - aNum;
       }
-      const aName = (a.ternom ?? '').toString().toUpperCase();
-      const bName = (b.ternom ?? '').toString().toUpperCase();
-      return this.sortDirection === 'asc'
-        ? aName.localeCompare(bName)
-        : bName.localeCompare(aName);
-    });
 
-    this.proveedores = sorted;
-    this.page = 0;
-    this.updatePaginatedProveedores();
+      aValue = (aValue ?? '').toString().toUpperCase();
+      bValue = (bValue ?? '').toString().toUpperCase();
+      if (aValue < bValue) return this.sortDirection === 'asc' ? -1 : 1;
+      if (aValue > bValue) return this.sortDirection === 'asc' ? 1 : -1;
+      return 0;
+    });
   }
 
   private updatePaginatedProveedores(): void {
@@ -1113,4 +1110,34 @@ export class ProveedoreesComponent {
   proveedoresSearchNext() {
     if (this.proveedoresSearchPage + 1 < this.proveedoresSearchTotalPages) this.proveedoresSearchPage++;
   }
+
+  private startX: number = 0;
+  private startWidth: number = 0;
+  private resizingColIndex: number | null = null;
+  startResize(event: MouseEvent, colIndex: number) {
+    this.resizingColIndex = colIndex;
+    this.startX = event.pageX;
+    const th = (event.target as HTMLElement).parentElement as HTMLElement;
+    this.startWidth = th.offsetWidth;
+
+    document.addEventListener('mousemove', this.onResizeMove);
+    document.addEventListener('mouseup', this.stopResize);
+  }
+
+  // for columns resizing
+  onResizeMove = (event: MouseEvent) => {
+    if (this.resizingColIndex === null) return;
+    const table = document.querySelector('.main-table') as HTMLTableElement;
+    if (!table) return;
+    const th = table.querySelectorAll('th')[this.resizingColIndex] as HTMLElement;
+    if (!th) return;
+    const diff = event.pageX - this.startX;
+    th.style.width = (this.startWidth + diff) + 'px';
+  };
+
+  stopResize = () => {
+    document.removeEventListener('mousemove', this.onResizeMove);
+    document.removeEventListener('mouseup', this.stopResize);
+    this.resizingColIndex = null;
+  };
 }

@@ -40,39 +40,71 @@
             <table class="main-table">
                 <thead>
                     <tr>
-                        <th 
-                            class="sortable" 
-                            (click)="toggleSort('tercod')"
-                        >
+                        <th class="sortable resizable" (click)="toggleSort('tercod')">
                             Código 
-                            <span 
-                                class="sort-indicator" 
-                            >
-                            {{ sortDirection === 'asc' ? '▲' : '▼' }}
-                            </span>
+                            <span class="sort-indicator" *ngIf="sortColumn === 'tercod'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                            <div class="resizer" (mousedown)="startResize($event, 0)"></div>
                         </th>
-                        <th
-                            class="sortable"
-                            (click)="toggleSort('ternom')" 
-                        >
+                        <th class="sortable resizable" (click)="toggleSort('ternom')">
                             Nombre
-                            <span 
-                                class="sort-indicator" 
-                            >
-                                {{ sortDirection === 'asc' ? '▲' : '▼' }}
-                            </span>
+                            <span class="sort-indicator" *ngIf="sortColumn === 'ternom'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                            <div class="resizer" (mousedown)="startResize($event, 1)"></div>
                         </th>
-                        <th>NIF</th>
-                        <th>Alias</th>
-                        <th>Teléfono</th>
-                        <th>Domicilio</th>
-                        <th>Código Postal</th>
-                        <th>Municipio</th>
-                        <th>Código contable</th>
-                        <th>Fax</th>
-                        <th>Web</th>
-                        <th>Correo electrónico</th>
-                        <th>Observaciones</th>
+                        <th class="sortable resizable" (click)="toggleSort('ternif')">
+                            NIF
+                            <span class="sort-indicator" *ngIf="sortColumn === 'ternif'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                            <div class="resizer" (mousedown)="startResize($event, 2)"></div>
+                        </th>
+                        <th class="sortable resizable" (click)="toggleSort('terali')">
+                            Alias
+                            <span class="sort-indicator" *ngIf="sortColumn === 'terali'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                            <div class="resizer" (mousedown)="startResize($event, 3)"></div>
+                        </th>
+                        <th class="sortable resizable" (click)="toggleSort('tertel')">
+                            Teléfono
+                            <span class="sort-indicator" *ngIf="sortColumn === 'tertel'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                            <div class="resizer" (mousedown)="startResize($event, 4)"></div>
+                        </th>
+                        <th class="sortable resizable" (click)="toggleSort('terdom')">
+                            Domicilio
+                            <span class="sort-indicator" *ngIf="sortColumn === 'terdom'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                            <div class="resizer" (mousedown)="startResize($event, 5)"></div>
+                        </th>
+                        <th class="sortable resizable" (click)="toggleSort('tercpo')">
+                            Código Postal
+                            <span class="sort-indicator" *ngIf="sortColumn === 'tercpo'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                            <div class="resizer" (mousedown)="startResize($event, 6)"></div>
+                        </th>
+                        <th class="sortable resizable" (click)="toggleSort('terpob')">
+                            Municipio
+                            <span class="sort-indicator" *ngIf="sortColumn === 'terpob'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                            <div class="resizer" (mousedown)="startResize($event, 7)"></div>
+                        </th>
+                        <th class="sortable resizable" (click)="toggleSort('terayt')">
+                            Código contable
+                            <span class="sort-indicator" *ngIf="sortColumn === 'terayt'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                            <div class="resizer" (mousedown)="startResize($event, 8)"></div>
+                        </th>
+                        <th class="sortable resizable" (click)="toggleSort('terfax')">
+                            Fax
+                            <span class="sort-indicator" *ngIf="sortColumn === 'terfax'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                            <div class="resizer" (mousedown)="startResize($event, 9)"></div>
+                        </th>
+                        <th class="sortable resizable" (click)="toggleSort('terweb')">
+                            Web
+                            <span class="sort-indicator" *ngIf="sortColumn === 'terweb'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                            <div class="resizer" (mousedown)="startResize($event, 10)"></div>
+                        </th>
+                        <th class="sortable resizable" (click)="toggleSort('tercoe')">
+                            Correo electrónico
+                            <span class="sort-indicator" *ngIf="sortColumn === 'tercoe'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                            <div class="resizer" (mousedown)="startResize($event, 11)"></div>
+                        </th>
+                        <th class="sortable resizable" (click)="toggleSort('terobs')">
+                            Observaciones
+                            <span class="sort-indicator" *ngIf="sortColumn === 'terobs'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                            <div class="resizer" (mousedown)="startResize($event, 12)"></div>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>

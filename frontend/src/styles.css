@@ -429,3 +429,19 @@ th.sortable {
   margin-left: 4px;
   font-size: 0.75rem;
 }
+
+/* table's movability */
+.resizable {
+  position: relative;
+}
+
+.resizer {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 9px;
+  height: 100%;
+  cursor: col-resize;
+  user-select: none;
+  z-index: 2;
+}
