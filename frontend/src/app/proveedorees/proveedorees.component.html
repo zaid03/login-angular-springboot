@@ -7,7 +7,7 @@
                 <h2 class="margin-title">Gestión de Proveedores</h2>  
             </div>
             <div class="search-holder">
-                <div class="proveedores-search">
+                <div class="search-container">
                     <form class="search-form" (submit)="onSearchFormSubmit($event)">
                         <input type="text" class="search-bar" placeholder="Buscar proveedor" name="search" [(ngModel)]="searchTerm" (keyup.enter)="search()"/>
                         <div class="search-options">
@@ -17,8 +17,10 @@
                                 <input type="radio" name="optiones" value="Bloqueados" [(ngModel)]="filterOption"  /> Bloqueados
                             </label>
                         </div>
-                        <button type="button" class="search-button-proveedores" (click)="search()">Buscar</button>
-                        <button type="button" class="search-button-proveedores" (click)="clearSearch()">Limpiar</button>
+                        <div class="search-btns">
+                            <button type="button" class="search-button-proveedores" (click)="search()">Buscar</button>
+                            <button type="button" class="search-button-proveedores" (click)="clearSearch()">Limpiar</button>
+                        </div>
                     </form>
                 </div> 
             </div>

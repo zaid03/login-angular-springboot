@@ -8,7 +8,75 @@
     <app-sidebar #sidebar></app-sidebar>
     <div class="facturas-container" [class.blurred]="!sidebar.collapsed">
         <div class="title-menu">
-            <h2 class="margin-title">Lista de Facturas </h2>  
+            <div class="title-area">
+                <h2 class="margin-title">Gestión de Facturas</h2>  
+            </div>
+            <div class="search-holder">
+                <div class="search-container">
+                    <div class="search-form">
+                        <input 
+                            type="text" 
+                            class="search-bar" 
+                            placeholder="factura" 
+                            name="search"
+                            [(ngModel)]="searchQuery"
+                        >
+                        <input 
+                            type="text" 
+                            name="factura" 
+                            class="search-bar smallWidth"
+                            placeholder="Eje"
+                            [(ngModel)]="facturaSearch"
+                            maxlength="4"
+                            inputmode="numeric"
+                            pattern="[0-9]*"
+                            (input)="onEjeInput($event)"
+                        />
+                        <input 
+                            type="text" 
+                            name="Gestor" 
+                            class="search-bar smallWidth"
+                            placeholder="centro de gestión faltante"
+                            [(ngModel)]="centroGestor"
+                            maxlength="4"
+                            disabled
+                        />
+                        <div class="more-search-options">
+                            <select [(ngModel)]="fechaTipo">
+                                <option value="" disabled selected>Fecha</option>
+                                <option value="registro">Registro</option>
+                                <option value="factura">Factura</option>
+                                <option value="contable">Contable</option>
+                            </select>
+                            Desde
+                            <input 
+                                type="date" 
+                                name="desde" 
+                                class="fecha-dato" 
+                                [(ngModel)] = "fromDate"
+                            >   
+                            Hasta
+                            <input 
+                                type="date" 
+                                name="hasta" 
+                                class="fecha-dato" 
+                                [(ngModel)] = "toDate"
+                            > 
+                            <select [(ngModel)]="estadoTipo">
+                                <option value="contabilizadas">Contabilizadas</option>
+                                <option value="no-contabilizadas">No Contabilizadas</option>
+                                <option value="aplicadas">Ptes. Aplicadas</option>
+                                <option value="sin-aplicadas">Ptes. Sin aplicar</option>
+                                <option value="">Todas</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="btns">
+                        <button type="button" class="search-button" (click)="filterFacturas()">Buscar</button>
+                        <button type="button" class="search-button" (click)="forgetAll()">Limpiar</button>
+                    </div>
+                </div>
+            </div>
             <div class="group-menu" (click)="toggleMenu($event)">
                 <div class="dot"></div>
                 <div class="dot"></div>
@@ -19,149 +87,8 @@
                 </div>
             </div>
         </div>
-        <div class="facturas-search">   
-            <form class="search-form">
-                <input 
-                    type="text" 
-                    class="search-bar" 
-                    placeholder="Buscar factura" 
-                    name="search"
-                    [(ngModel)]="searchQuery"
-                >
-                <div class="search-options">
-                    <label for="registro" class="ej-factura">Ej Factura</label>
-                    <input 
-                        type="text" 
-                        name="factura" 
-                        class="option-search" 
-                        placeholder="Ingrese EJE"
-                        [(ngModel)]="facturaSearch"
-                        maxlength="4"
-                        inputmode="numeric"
-                        pattern="[0-9]*"
-                        (input)="onEjeInput($event)"
-                    />
-                    <label for="registro">C.Gestor</label>
-                    <input 
-                        type="text" 
-                        name="Gestor" 
-                        class="option-search" 
-                        placeholder="centro de gestión faltante"
-                        [(ngModel)]="centroGestor"
-                        maxlength="4"
-                        disabled
-                    />
-                </div>
-            </form>
-            <div class="more-search-options">
-                <div class="fecha">
-                    <p>Fecha</p>
-                    <div class="choice">
-                        <input 
-                            type="radio" 
-                            name="fecha-option" 
-                            class="fecha-dato" 
-                            [(ngModel)] = "fechaTipo"
-                            value="registro"
-                        > Registro
-                    </div>
-                    <div class="choice">
-                        <input 
-                            type="radio" 
-                            name="fecha-option" 
-                            class="fecha-dato" 
-                            [(ngModel)] = "fechaTipo"
-                            value="factura"
-                        > 
-                        Factura
-                    </div>
-                    <div class="choice margin-bottom">
-                        <input 
-                            type="radio" 
-                            name="fecha-option" 
-                            class="fecha-dato" 
-                            [(ngModel)] = "fechaTipo"
-                            value="contable"
-                        > 
-                        Contable
-                    </div>
-                    <div class="fecha-dates">
-                        <input 
-                            type="date" 
-                            name="desde" 
-                            class="fecha-dato" 
-                            [(ngModel)] = "fromDate"
-                        > 
-                        Desde
-                        <input 
-                            type="date" 
-                            name="hasta" 
-                            class="fecha-dato" 
-                            [(ngModel)] = "toDate"
-                        > 
-                        Hasta
-                    </div>
-                </div>
-                <div class="estado">
-                    <p>Estado</p>
-                    <div class="option">
-                        <input 
-                            type="radio" 
-                            name="estado" 
-                            class="fecha-dato"
-                            [(ngModel)] = "estadoTipo"
-                            value="contabilizadas" 
-                        > 
-                        Contabilizadas
-                    </div>
-                    <div class="option">
-                        <input 
-                            type="radio" 
-                            name="estado" 
-                            class="fecha-dato" 
-                            [(ngModel)] = "estadoTipo"
-                            value="no-contabilizadas"
-                        > 
-                        No Contabilizadas
-                    </div>
-                    <div class="option">
-                        <input 
-                            type="radio" 
-                            name="estado" 
-                            class="fecha-dato" 
-                            [(ngModel)] = "estadoTipo"
-                            value="aplicadas"
-                        > 
-                        Ptes. Aplicadas
-                    </div>
-                    <div class="option">
-                        <input 
-                            type="radio" 
-                            name="estado" 
-                            class="fecha-dato" 
-                            [(ngModel)] = "estadoTipo"
-                            value="sin-aplicadas" 
-                        > 
-                        Ptes. Sin aplicar
-                    </div>
-                    <div class="option">
-                        <input 
-                            type="radio" 
-                            name="estado" 
-                            class="fecha-dato" 
-                        > 
-                        Todas
-                    </div>
-                </div>
-            </div>  
-            
-        </div>
         <h1 class="successBtn">{{ estadoMessage }}</h1>
         <h1 class="errorBtn">{{ filterFacturaMessage }}</h1>
-        <div class="btns">
-            <button type="button" class="search-button" (click)="filterFacturas()">Buscar</button>
-            <button type="button" class="search-button" (click)="forgetAll()">Limpiar</button>
-        </div>
 
         <div class="facturas-list">
             <h1 class="successBtn">{{facturaMessageSuccess}}</h1>

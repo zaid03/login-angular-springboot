@@ -1,32 +1,3 @@
-.proveedores-page {
-  display: flex;
-  min-height: 100vh;
-  background: #f0f0f0;
-}
-
-.sidebar-backdrop {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  z-index: 1500;
-}
-
-app-sidebar {
-  flex-shrink: 0;
-  z-index: 2000;
-}
-
-.proveedores-container {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  background: #f0f0f0;
-  padding: 0 0 40px 0;
-  min-height: 100vh;
-  z-index: 1;
-}
-
 .proveedores-container.blurred {
   filter: blur(1.2px);
   pointer-events: none;
@@ -43,6 +14,10 @@ app-sidebar {
 
 .search-button-proveedores{
   margin-right: 10px;
+}
+
+.search-btns {
+  margin-left: 10px;  
 }
 
 .guardar-btn{

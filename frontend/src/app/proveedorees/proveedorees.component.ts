@@ -17,9 +17,6 @@ import { environment } from '../../environments/environment';
   styleUrls: ['./proveedorees.component.css']
 })
 export class ProveedoreesComponent {
-  sidebarOpen = false;
-  toggleSidebar() { this.sidebarOpen = !this.sidebarOpen; }
-  closeSidebar() { this.sidebarOpen = false; }
   private entcod: number | null = null;
 
   showMenu = false;
