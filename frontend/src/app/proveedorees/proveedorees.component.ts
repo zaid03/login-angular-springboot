@@ -1121,7 +1121,6 @@ export class ProveedoreesComponent {
     document.addEventListener('mouseup', this.stopResize);
   }
 
-  // for columns resizing
   onResizeMove = (event: MouseEvent) => {
     if (this.resizingColIndex === null) return;
     const table = document.querySelector('.main-table') as HTMLTableElement;

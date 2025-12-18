@@ -134,7 +134,6 @@ export class FacturasComponent {
       let aValue: any;
       let bValue: any;
 
-      // Handle computed columns
       if (this.sortColumn === 'getPendingApply(p)') {
         aValue = this.getPendingApply(a);
         bValue = this.getPendingApply(b);
@@ -142,19 +141,16 @@ export class FacturasComponent {
         aValue = this.getStaus(a.facado, a.facimp, a.faciec, a.facidi);
         bValue = this.getStaus(b.facado, b.facimp, b.faciec, b.facidi);
       } else {
-        // Default: direct property
         aValue = a[this.sortColumn];
         bValue = b[this.sortColumn];
       }
 
-      // Try to compare as numbers if possible
       const aNum = Number(aValue);
       const bNum = Number(bValue);
       if (!isNaN(aNum) && !isNaN(bNum)) {
         return this.sortDirection === 'asc' ? aNum - bNum : bNum - aNum;
       }
 
-      // Otherwise compare as strings
       aValue = (aValue ?? '').toString().toUpperCase();
       bValue = (bValue ?? '').toString().toUpperCase();
       if (aValue < bValue) return this.sortDirection === 'asc' ? -1 : 1;
@@ -619,7 +615,6 @@ export class FacturasComponent {
     document.addEventListener('mouseup', this.stopResize);
   }
 
-  // for columns resizing
   onResizeMove = (event: MouseEvent) => {
     if (this.resizingColIndex === null) return;
     const table = document.querySelector('.facturas-table') as HTMLTableElement;
