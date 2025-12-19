@@ -6,6 +6,7 @@ import com.example.backend.dto.TpeDto;
 import com.example.backend.sqlserver2.model.Tpe;
 import com.example.backend.sqlserver2.repository.TpeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -44,40 +45,50 @@ public class TpeController {
     }
 
     // modifying the data
-    @PutMapping("/modify/{ent}/{tercod}")
+    @PutMapping("/modify/{ent}/{tercod}/{tpecod}")
     public ResponseEntity<?> modifyTpe(
         @PathVariable Integer ent,
         @PathVariable Integer tercod,
+        @PathVariable Integer tpecod,
         @RequestBody TpeDto update
     ) {
-        List<Tpe> list = tpeRepository.findByEntAndTercod(ent, tercod);
-        if (list == null || list.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(Collections.singletonMap("message", "No Tpe entries found to modify"));
+        try {
+            List<Tpe> list = tpeRepository.findByEntAndTercodAndTpecod(ent, tercod, tpecod);
+            if (list == null || list.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Collections.singletonMap("message", "No se encontró a nadie"));
+            }
+
+            Tpe tpe = list.get(0);
+            if (update.gettpenom() != null) tpe.settpenom(update.gettpenom());
+            if (update.gettpetel() != null) tpe.settpetel(update.gettpetel());
+            if (update.gettpetmo() != null) tpe.settpetmo(update.gettpetmo());
+            if (update.gettpecoe() != null) tpe.settpecoe(update.gettpecoe());
+            if (update.gettpeobs() != null) tpe.settpeobs(update.gettpeobs());
+            tpeRepository.saveAll(list);
+
+            return ResponseEntity.ok(Collections.singletonMap("message", "Campos actualizados exitosamente"));
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error de actualización de esta persona: " + ex.getMostSpecificCause().getMessage());
         }
-
-        list.forEach(tpe -> {
-            tpe.settpenom(update.gettpenom());
-            tpe.settpetel(update.gettpetel());
-            tpe.settpetmo(update.gettpetmo());
-            tpe.settpecoe(update.gettpecoe());
-            tpe.settpeobs(update.gettpeobs());
-        });
-
-        tpeRepository.saveAll(list);
-        return ResponseEntity.ok(Collections.singletonMap("message", "Tpe entries modified successfully"));
     }
 
     // Deleting data
-    @DeleteMapping("/delete/{ent}/{tercod}")
+    @DeleteMapping("/delete/{ent}/{tercod}/{tpecod}")
     @Transactional
-    public ResponseEntity<?> deleteTpe(@PathVariable Integer ent, @PathVariable Integer tercod) {
-        List<Tpe> list = tpeRepository.findByEntAndTercod(ent, tercod);
+    public ResponseEntity<?> deleteTpe(
+        @PathVariable Integer ent, 
+        @PathVariable Integer tercod,
+        @PathVariable Integer tpecod
+    ) {
+        List<Tpe> list = tpeRepository.findByEntAndTercodAndTpecod(ent, tercod, tpecod);
         if (list == null || list.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(Collections.singletonMap("message", "No Tpe entries found to delete"));
         }
-        tpeRepository.deleteByEntAndTercod(ent, tercod);
+        tpeRepository.deleteByEntAndTercodAndTpecod(ent, tercod, tpecod);
         return ResponseEntity.ok(Collections.singletonMap("message", "Tpe entries deleted successfully"));
     }
+
+    //adding a persona de contacto
 }

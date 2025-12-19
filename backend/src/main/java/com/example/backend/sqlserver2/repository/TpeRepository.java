@@ -22,8 +22,8 @@ public interface TpeRepository extends JpaRepository<Tpe, TpeId> {
     );
 
     // modifying the data
-    List<Tpe> findByEntAndTercod(Integer ent, Integer tercod);
+    List<Tpe> findByEntAndTercodAndTpecod(Integer ent, Integer tercod, Integer Tpecod);
 
     // Deleting data
-    void deleteByEntAndTercod(Integer ent, Integer tercod);
+    void deleteByEntAndTercodAndTpecod(Integer ent, Integer tercod, Integer Tpecod);
 }

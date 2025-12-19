@@ -4,6 +4,7 @@ import com.example.backend.sqlserver2.model.Ter;
 import com.example.backend.dto.TerDto;
 import com.example.backend.sqlserver2.repository.TerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Optional;
+
 @RestController
 @RequestMapping("/api/ter")
 public class TerController {
@@ -113,31 +115,34 @@ public class TerController {
 
     //for modifying a Ter record
     @PutMapping("/updateFields/{tercod}")
-    public ResponseEntity<?> updateTerFields(@PathVariable Integer tercod, @RequestBody TerDto update) {
-        Optional<Ter> optionalTer = terRepository.findByTERCOD(tercod);
+    public ResponseEntity<?> updateTerFields(
+        @PathVariable Integer tercod, 
+        @RequestBody TerDto update
+    ) {
+        try {
+            Optional<Ter> optionalTer = terRepository.findByTERCOD(tercod);
 
-        if (optionalTer.isPresent()) {
-            Ter ter = optionalTer.get();
-            ter.setTERWEB(update.getTERWEB());
-            ter.setTEROBS(update.getTEROBS());
-            ter.setTERBLO(update.getTERBLO());
-            ter.setTERACU(update.getTERACU());
-            System.out.println("TERWEB: " + ter.getTERWEB());
-            System.out.println("TEROBS: " + ter.getTEROBS());
-            System.out.println("TERBLO: " + ter.getTERBLO());
-            System.out.println("TERACU: " + ter.getTERACU());
+            if (optionalTer.isEmpty()) {
+                return ResponseEntity.ok("El proveedor no existe");  
+            }
 
-            System.out.println("Before save: " + ter);
-            terRepository.save(ter); 
+            if (optionalTer.isPresent()) {
+                Ter ter = optionalTer.get();
+                ter.setTERWEB(update.getTERWEB());
+                ter.setTEROBS(update.getTEROBS());
+                ter.setTERBLO(update.getTERBLO());
+                ter.setTERACU(update.getTERACU());
+                terRepository.save(ter); 
+            }
+            return ResponseEntity.ok("Campos actualizados exitosamente.");  
 
-            return ResponseEntity.ok("Fields updated successfully.");   
-        } else {
-            return ResponseEntity.status(404).body("Ter not found.");
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error actualizar el proveedor: " + ex.getMostSpecificCause().getMessage());
         }
     }
 
     //for selected proveedores to be added from sicalwin
-@PostMapping(value = "/save-proveedores/{ent}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/save-proveedores/{ent}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     public ResponseEntity<?> createMultipleForEnt(@PathVariable int ent, @RequestBody(required = false) List<TerDto> dtos) {
         try {

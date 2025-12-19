@@ -486,7 +486,7 @@ export class ProveedoreesComponent {
           this.contactPersons = null;           
           this.personasContactoErrorMessage = 'No se encontraron personas de contacto.';
         } else {
-          this.contactPersons = respArray[0];
+          this.contactPersons = respArray;
           this.personasContactoErrorMessage = '';
          }
           this.page = 0;
@@ -588,8 +588,7 @@ export class ProveedoreesComponent {
         this.messageSuccess = 'Proveedor actualizado correctamente';
       },
       error: (err) => {
-        console.error('Error:', err);
-        this.messageError = 'Error al guardar el proveedor';
+        this.messageError = err?.error || 'Error al guardar el proveedor'
       }
     });
   }
@@ -606,31 +605,37 @@ export class ProveedoreesComponent {
 
   personasContactoErrorMessage: string = '';
   personasContactoSuccessMessage: string = '';
-  // updatepersonas(){
-  //   this.personasContactoErrorMessage = '';
-  //   this.personasContactoSuccessMessage = '';
+  updatepersonas(tpecod: number, nom: string, telefon: string, movil: string, email: string, obs: string){
+    this.personasContactoErrorMessage = '';
+    this.personasContactoSuccessMessage = '';
+    if (!nom) {
+      this.personasContactoErrorMessage = 'El nombre de la persona no debe estar vacío';
+      return;
+    }
+    const updateFields = {
+      TPENOM : nom,
+      TPETEL : telefon,
+      TPETMO : movil,
+      TPECOE : email,
+      TPEOBS : obs
+    }
 
-  //   const updateFields = {
-  //     TPENOM : this.contactPersons.tpenom,
-  //     TPETEL : this.contactPersons.tpetel,
-  //     TPETMO : this.contactPersons.tpetmo,
-  //     TPECOE : this.contactPersons.tpecoe,
-  //     TPEOBS : this.contactPersons.tpeobs
-  //   }
-  //   this.http.put(
-  //     `${environment.backendUrl}/api/more/modify/${this.selectedProveedor.tercod}`,
-  //     updateFields,
-  //     { responseType: 'text' }
-  //   ).subscribe({
-  //     next: (res) => {
-  //       this.personasContactoSuccessMessage = 'Persona de contacto actualizada correctamente';
-  //     },
-  //     error: (err) => {
-  //       console.error('Error:', err);
-  //       this.personasContactoErrorMessage = 'Error al guardar la persona de contacto';
-  //     }
-  //   });
-  // }
+    console.log(updateFields);
+    this.http.put(
+      `${environment.backendUrl}/api/more/modify/${this.entcod}/${this.selectedProveedor.tercod}/${tpecod}`,
+      updateFields,
+      { responseType: 'text' }
+    ).subscribe({
+      next: (res) => {
+        this.personasContactoErrorMessage = '';
+        this.personasContactoSuccessMessage = 'Persona de contacto actualizada correctamente';
+      },
+      error: (err) => {
+        this.personasContactoSuccessMessage = '';
+        this.personasContactoErrorMessage = err?.error || 'Error al guardar la persona de contacto';
+      }
+    });
+  }
 
   deletepersona(){
     this.http.delete(

@@ -241,7 +241,6 @@
                             >
                                 Personas de Contacto
                             </button>
-
                             <button
                                 class="tab-btn"
                                 role="tab"
@@ -271,23 +270,23 @@
                             <tbody>
                                 <tr *ngFor="let c of contactPersons">          
                                     <td>
-                                        <input type="text" [(ngModel)]="c.tpenom" placeholder="Nombre" />
+                                        <input type="text" [(ngModel)]="c.tpenom" placeholder="Nombre" #nom/>
                                     </td>
                                     <td>
-                                        <input type="text" [(ngModel)]="c.tpetel"/>
+                                        <input type="text" [(ngModel)]="c.tpetel" #telefon/>
                                     </td>      
                                     <td>
-                                        <input type="text" [(ngModel)]="c.tpetmo"/>
+                                        <input type="text" [(ngModel)]="c.tpetmo" #movil/>
                                     </td>
                                     <td>
-                                        <input type="email" [(ngModel)]="c.tpecoe"/>
+                                        <input type="email" [(ngModel)]="c.tpecoe" #email/>
                                     </td>
                                     <td>
-                                        <input type="text" [(ngModel)]="contactPersons.tpeobs"/>
+                                        <input type="text" [(ngModel)]="c.tpeobs" #obs/>
                                     </td>
                                     <td>
                                         <button class="delete-btn-personas" (click)="deletepersona()">-</button>
-                                        <button class="save-btn-articulos">💾</button>
+                                        <button class="save-btn-articulos" (click)="updatepersonas(c.tpecod, nom.value, telefon.value, movil.value, email.value, obs.value)">💾</button>
                                     </td>
                                 </tr>
                             </tbody>
