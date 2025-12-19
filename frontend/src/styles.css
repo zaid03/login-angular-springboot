@@ -59,41 +59,6 @@ app-sidebar {
   z-index: 1500;
 }
 
-/* component styles */
-.familia-page,
-.centroGestor-page {
-  display: flex;
-  min-height: 100vh;
-  background: #f0f0f0;
-}
-
-.familia-container.blurred,
-.centroGestor-container.blurred {
-  filter: blur(1.2px);
-  pointer-events: none;
-  user-select: none;
-}
-
-.familia-container,
-.centroGestor-container {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  background: #f0f0f0;
-  padding: 0 0 40px 0;
-  min-height: 100vh;
-  z-index: 1;
-}
-
-.familia-container h2,
-.centroGestor-container h2 {
-  margin: 10px;
-  color: #38249b;
-  font-size: 32px;
-}
-
 /* error messages */
 .errorBtn{
   margin-bottom:1%; 
@@ -139,8 +104,6 @@ app-sidebar {
 .pag-btn,
 .add-btn,
 .guardar-btn,
-.pers-btn,
-.Articulo-btn,
 .delete-btn-personas,
 .save-btn-articulos,
 .delete-btn-articulos,
@@ -193,8 +156,6 @@ app-sidebar {
 .pag-btn:hover,
 .add-btn:hover,
 .guardar-btn:hover,
-.pers-btn:hover,
-.Articulo-btn:hover,
 .save-btn-articulos:hover,
 .articulos-cancel-confirm-btn:hover,
 .proveedor-saving-btn:hover,
@@ -311,29 +272,33 @@ app-sidebar {
   z-index: 3000 !important;
 }
 
-/* .close-btn-fct,
-.close-btn-btn {
-  position: absolute;
-  top: 16px;
-  right: 18px;
-  background: none;
-  border: none;
-  font-size: 2rem;
-  color: red;
-  cursor: pointer;
-  transition: color 0.2s;
-} */
+.btns {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
 
-/* page-container */
+/* page-container and list */
+.familia-container.blurred,
+.centroGestor-container.blurred {
+  filter: blur(1.2px);
+  pointer-events: none;
+  user-select: none;
+}
+
 .facturas-page,
-.proveedores-page {
+.proveedores-page,
+.familia-page,
+.centroGestor-page {
   display: flex;
   min-height: 100vh;
   background: #f0f0f0;
 }
 
 .proveedores-container,
-.facturas-container {
+.facturas-container,
+.familia-container,
+.centroGestor-container {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -343,6 +308,83 @@ app-sidebar {
   padding: 0 0 40px 0;
   min-height: 100vh;
   z-index: 1;
+}
+
+.familia-container h2,
+.centroGestor-container h2 {
+  margin: 10px;
+  color: #38249b;
+  font-size: 32px;
+}
+
+.proveedores-list,
+.facturas-list {
+  width: 95%;
+  max-width: 95%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 14px;
+}
+
+.main-table,
+.facturas-table,
+.albaranes-table,
+.personas-contacto-table,
+.articulo-table,
+.anadir-proveedores-table,
+.proveedor-anadir-table-sw {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  max-width: 99%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+
+.main-table th,
+.facturas-table thead th,
+.albaranes-table thead th,
+.personas-contacto-table th,
+.articulo-table th,
+.anadir-proveedores-table th,
+.proveedor-anadir-table-sw th {
+  border: 1px solid #e6edf3;
+  padding: 8px 12px;
+  text-align: center;
+  background: #f7f7f9;
+  color: #1c5d8c;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.main-table td,
+.facturas-table tbody td,
+.albaranes-table tbody td,
+.personas-contacto-table td,
+.articulo-table td,
+.anadir-proveedores-table td,
+.proveedor-anadir-table-sw td {
+  border: 1px solid #f0f5f9;
+  padding: 6px 10px;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 15px;
+  color: #222;
+  font-weight: 600;
+}
+
+.facturas-table tbody tr:hover,
+.albaranes-table tbody tr:hover, 
+.main-table tr:hover,
+.personas-contacto-table tr:hover
+.articulo-table tr:hover,
+.anadir-proveedores-table tr:hover,
+.proveedor-anadir-table-sw tr:hover {
+  background-color: #f0f7ff;
 }
 
 /* title, search */
@@ -504,4 +546,58 @@ th.sortable {
 
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+/* grid buttons (tabs like) */
+.more-detail-container {
+  background: transparent;
+  padding-top: 8px;
+  border-bottom: 1px solid #e6edf3;
+}
+
+.tabs {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  padding-left: 6px;
+}
+
+.tab-btn {
+  background: #eef4f8;
+  border: 1px solid #d7e6f1;
+  color: #15526f;
+  padding: 8px 14px;
+  border-radius: 6px 6px 0 0;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
+  box-shadow: none;
+}
+
+.tab-btn:hover {
+  filter: brightness(0.98);
+  transform: translateY(-1px);
+}
+
+.tab-btn.active-tab {
+  background: #ffffff;
+  border-color: #1c5d8c;
+  color: #1c5d8c;
+  box-shadow: 0 8px 20px rgba(28,93,140,0.10);
+  transform: translateY(-3px);
+}
+
+.tab-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(28,93,140,0.06);
+}
+
+.custom-grid-modal {
+  border-radius: 10px;
+  z-index: 1200;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: #f7fafd;
 }

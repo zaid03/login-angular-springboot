@@ -213,7 +213,9 @@
             <div class="modal-backdrop" *ngIf="selectedFacturas" (click)="closeDetails()"></div>
             <div class="display" >
                 <div class="modal" *ngIf="selectedFacturas">
-                    <button class="close-btn-fct" (click)="closeDetails()">×</button>
+                    <div class="btns">
+                        <button class="close-btn-btn" (click)="closeDetails()">×</button>
+                    </div>
                     <h3>Detalles de Factura</h3>
 
                     <div class="data">

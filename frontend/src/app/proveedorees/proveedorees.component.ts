@@ -175,6 +175,7 @@ export class ProveedoreesComponent {
     this.personasContactoError = '';
     this.personasContactoErrorMessage = '';
     this.personasContactoSuccessMessage = '';
+    this.activeDetailTab = null;
     this.articuloError = '';
     this.articuloSuccessMessage = '';
     this.articuloErrorMessage = '';
@@ -468,11 +469,13 @@ export class ProveedoreesComponent {
 
   showContactPersonsGrid = false;
   contactPersons: any = null;
+  activeDetailTab: 'contact' | 'articulo' | null = null;
   personasContactoError: string = '';
   showContactPersons(proveedore: any){
     this.messageError = '';
     this.messageSuccess = '';
     this.showContactPersonsGrid = true;
+    this.activeDetailTab = 'contact';
     this.showArticulosGrid = false;
     this.selectedProveedor = proveedore;
     this.personasContactoError = ''
@@ -505,6 +508,7 @@ export class ProveedoreesComponent {
   showArticulos(proveedore: any){
     this.messageSuccess = ''
     this.showArticulosGrid = true;
+    this.activeDetailTab = 'articulo';
     this.showContactPersonsGrid = false;
     this.selectedProveedor = proveedore;
     const tercod = proveedore.tercod;

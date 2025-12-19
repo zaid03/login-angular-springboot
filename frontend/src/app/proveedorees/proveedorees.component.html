@@ -228,10 +228,30 @@
                             <textarea [(ngModel)]="selectedProveedor.terobs"></textarea>
                         </div>
                     </div>
-                    <div class="more">
-                        <button class="pers-btn" (click)="showContactPersons(selectedProveedor)">Personas de Contacto</button>
-                        <button class="Articulo-btn" (click)="showArticulos(selectedProveedor)">Articulo</button>
+                    <div class="more-detail-container">
+                        <div class="tabs" role="tablist" aria-label="Detalle tabs">
+                           <button
+                                class="tab-btn"
+                                role="tab"
+                                [attr.aria-selected]="activeDetailTab === 'contact'"
+                                [class.active-tab]="activeDetailTab === 'contact'"
+                                (click)="showContactPersons(selectedProveedor)"
+                            >
+                                Personas de Contacto
+                            </button>
+
+                            <button
+                                class="tab-btn"
+                                role="tab"
+                                [attr.aria-selected]="activeDetailTab === 'articulo'"
+                                [class.active-tab]="activeDetailTab === 'articulo'"
+                                (click)="showArticulos(selectedProveedor)"
+                            >
+                                Artículos
+                            </button> 
+                        </div>
                     </div>
+                    
                     <div class="custom-grid-modal" *ngIf="showContactPersonsGrid">
                         <h3>Personas de Contacto</h3>
                         <h1 class="errorBtn">{{ personasContactoError }}</h1>
