@@ -148,7 +148,7 @@
                 <div class="modal" *ngIf="selectedProveedor">
                     <div class="btns">
                         <button class="guardar-btn" (click)="saveChanges()">💾</button>
-                        <button class="close-btn-btn" (click)="closeDetails()">×</button>
+                        <button class="close-btn-btn" (click)="closeDetails()">✖</button>
                     </div>
                     <h3>Detalles del Proveedor</h3>
                     <h1 class="errorBtn">{{ messageError }}</h1>
@@ -294,8 +294,9 @@
                         <button class="guardar-btn" (click)="updatepersonas()">Guardar</button>
                     </div>
                     <div class="custom-grid-modal" *ngIf="showArticulosGrid">
-                        <h3>Artículos</h3>
+                        <button class="add-btn" (click)="showHello()">+</button>
                         <h1 class="errorBtn">{{ articuloError }}</h1>
+                        <h1 class="successBtn">{{ articuloSuccessMessage }}</h1>
                         <table class="articulo-table">
                             <thead>
                                 <tr>
@@ -344,16 +345,13 @@
                                     <td>
                                         <input type="number" [(ngModel)]="articulo.aprpre" placeholder="Precio acuerdo" />
                                     </td>
-                                    <td class="articulo-personas-grid-buttons">
+                                    <td>
                                         <button class="delete-btn-articulos" (click)="openDeleteConfirm(articulo)">-</button>
                                         <button class="save-btn-articulos" (click)="updatearticulos(articulo)">💾</button>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
-                        <h1 class="errorBtn">{{ articuloErrorMessage }}</h1>
-                        <h1 class="successBtn">{{ articuloSuccessMessage }}</h1>
-                        <button class="add-btn" (click)="showHello()">Añadir</button>
                     </div>
                 </div>
             </div>
@@ -369,13 +367,13 @@
         <p><strong>Subfamilia:</strong> {{ articuloToDelete.asucod }}</p>
         <p><strong>Artículo:</strong> {{ articuloToDelete.artcod }}</p>
     </div>
-    <button class="articulos-delete-confirm-btn" (click)="confirmDelete()">Sí, eliminar</button>
-    <button class="articulos-cancel-confirm-btn" (click)="closeDeleteConfirm()">Cancelar</button>
+    <button class="articulos-delete-confirm-btn" (click)="confirmDelete()">-</button>
+    <button class="articulos-cancel-confirm-btn" (click)="closeDeleteConfirm()">✖</button>
 </div>
 
 <div class="modal-backdrop" *ngIf="showHelloGrid" (click)="hideHello()"></div>
 <div class="hello-modal" *ngIf="showHelloGrid">
-    <button class="close-btn-btn" (click)="hideHello()">×</button>
+    <button class="close-btn-btn" (click)="hideHello()">✖</button>
     <form class="anadir-articulo-form">
         <div class="search-anadir">
             <input type="radio" class="checkbox" [(ngModel)]="searchType" [value]="'familia'" value="familia" name="searchType" />Familia

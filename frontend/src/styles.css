@@ -278,6 +278,10 @@ app-sidebar {
   justify-content: flex-end;
 }
 
+/* delete modal */
+.delete-confirm-modal { position: fixed; top: 30%; left: 50%; border-radius: 10px; transform: translate(-50%, 0); background: #fff; border: 1px solid #aaa; padding: 24px; z-index: 5000; min-width: 300px; box-shadow: 0 2px 16px rgba(0,0,0,0.2); text-align: center; }
+.delete-confirm-modal h3 { font-size: 1.3rem; font-weight: 700; color: rgb(117, 28, 28); margin-bottom: 18px; letter-spacing: 0.5px; }
+
 /* page-container and list */
 .familia-container.blurred,
 .centroGestor-container.blurred {
@@ -356,7 +360,7 @@ app-sidebar {
   padding: 8px 12px;
   text-align: center;
   background: #f7f7f9;
-  color: #1c5d8c;
+  color: #25176b;
   font-size: 15px;
   font-weight: 700;
 }
@@ -565,7 +569,7 @@ th.sortable {
 .tab-btn {
   background: #eef4f8;
   border: 1px solid #d7e6f1;
-  color: #15526f;
+  color: #38249b;
   padding: 8px 14px;
   border-radius: 6px 6px 0 0;
   font-weight: 600;
@@ -581,8 +585,8 @@ th.sortable {
 
 .tab-btn.active-tab {
   background: #ffffff;
-  border-color: #1c5d8c;
-  color: #1c5d8c;
+  border-color: #25176b;
+  color: #25176b;
   box-shadow: 0 8px 20px rgba(28,93,140,0.10);
   transform: translateY(-3px);
 }
@@ -600,4 +604,11 @@ th.sortable {
   justify-content: center;
   align-items: center;
   background: #f7fafd;
+}
+
+.modal h3,
+.custom-grid-modal h3 {
+  margin: 10px;
+  color: #38249b;
+  text-align: center;
 }

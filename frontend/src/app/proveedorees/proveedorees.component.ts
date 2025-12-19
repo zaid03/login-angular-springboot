@@ -178,7 +178,6 @@ export class ProveedoreesComponent {
     this.activeDetailTab = null;
     this.articuloError = '';
     this.articuloSuccessMessage = '';
-    this.articuloErrorMessage = '';
     this.selectedProveedor = null;
     this.contactPersons = null;
     this.articulos = null;
@@ -656,10 +655,9 @@ export class ProveedoreesComponent {
   }
 
   articuloSuccessMessage: string = '';
-  articuloErrorMessage: string = '';
   updatearticulos(articulo: any){
     this.articuloSuccessMessage = '';
-    this.articuloErrorMessage = '';
+    this.articuloError = '';
 
     const updateFields = {
       ENT: this.entcod,
@@ -684,7 +682,7 @@ export class ProveedoreesComponent {
       },
       error: (err) => {
         console.error('Error:', err);
-        this.articuloErrorMessage = 'Error al guardar el artículo';
+        this.articuloError = 'Error al guardar el artículo';
       }
     });
   }
@@ -713,7 +711,7 @@ export class ProveedoreesComponent {
         },
         error: (err) => {
           console.error('Error:', err);
-          this.articuloErrorMessage = 'Error al eliminar el artículo';
+          this.articuloError = 'Error al eliminar el artículo';
         }
       });
   }
@@ -799,7 +797,7 @@ export class ProveedoreesComponent {
 
           this.getDescription(newRow, index, artcod, afacod, asucod);
           this.articuloSuccessMessage = '';
-          this.articuloErrorMessage = '';
+          this.articuloError = '';
         }
       },
       error: (err) => {
@@ -820,7 +818,7 @@ export class ProveedoreesComponent {
     this.showDeleteConfirm = false;
     this.articuloToDelete = null;
     this.articuloSuccessMessage = '';
-    this.articuloErrorMessage = '';
+    this.articuloError = '';
   }
 
   confirmDelete() {
