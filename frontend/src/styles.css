@@ -27,22 +27,22 @@ body, html {
   box-shadow: inset 0 2px 6px rgba(28,93,140,0.05);
 }
 ::-webkit-scrollbar-thumb{
-  background: linear-gradient(180deg,#1c5d8c,#14485f);
+  background: linear-gradient(180deg,#38249b,#25176b);
   border-radius:12px;
   border:3px solid#f1f8fc;
   box-shadow: inset 0 2px 4px rgba(0,0,0,0.08);
 }
 ::-webkit-scrollbar-thumb:hover{
-  background: linear-gradient(180deg,#144a6d,#0f3746);
+  background: linear-gradient(180deg,#25176b,#25176b);
 }
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: #1c5d8c#f1f8fc;
+  scrollbar-color: #38249b#f1f8fc;
 }
 
 html { scroll-behavior: smooth; }
-:focus { outline: 3px solid rgba(28,93,140,0.18); outline-offset: 2px; }
+:focus { outline: 3px solid #25176b; outline-offset: 2px; }
 
 .new-grid-modal { scrollbar-width: thin; }
 .new-grid-modal::-webkit-scrollbar { width:10px; }
@@ -345,6 +345,7 @@ app-sidebar {
 /* title, search */
 .title-menu {
   width: 100%;
+  padding-top: 5px;
   display: flex;
 }
 
@@ -358,7 +359,6 @@ app-sidebar {
 .margin-title {
   color: #38249b;
   font-size: 20px;
-  margin-left: 15px !important;
 }
 
 .search-holder{
@@ -477,4 +477,28 @@ th.sortable {
   cursor: col-resize;
   user-select: none;
   z-index: 2;
+}
+
+/* waiting animation spinner */
+.loading-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-size: 1.2rem;
+  color: #25176b;
+  padding: 24px 0;
+}
+
+.spinner {
+  width: 28px;
+  height: 28px;
+  border: 4px solid #e6edf3;
+  border-top: 4px solid #38249b;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }

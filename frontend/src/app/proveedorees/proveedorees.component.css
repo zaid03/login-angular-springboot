@@ -4,6 +4,10 @@
   user-select: none;
 }
 
+.margin-title {
+  margin-left: 20%;
+}
+
 .proveedores-search label {
   display: flex;
   font-size: 15px;
@@ -204,104 +208,108 @@
   text-align: center;
 }
 
-.first-row,
-.second-row,
-.third-row,
-.fourth-row,
-.fifth-row,
-.ninth-row,
-.sixth-row,
-.seventh-row,
-.eighth-row,
-.tenth-row {
-  padding: 10px;
+/*  */
+.detail-container {
   display: flex;
-  gap: 20px;
-}
-
-.first-data,
-.second-data,
-.third-data,
-.fourth-data,
-.fifth-data,
-.ninth-data,
-.sixth-data,
-.seventh-data,
-.eighth-data {
-  display: flex;
+  flex-wrap: wrap;
   align-items: center;
+  padding: 5px;
   gap: 10px;
 }
 
-.first-data p,
-.second-data p,
-.third-data p,
-.fourth-data p,
-.fifth-data p,
-.ninth-data p,
-.sixth-data p,
-.seventh-data p,
-.eighth-data p,
-.tenth-data p {
+.chunk-one,
+.chunk-two,
+.chunk-three,
+.chunk-four {
+  width: 30%;
+  display: flex;
+  padding: 2px;
+}
+
+.left {
+  width: 20%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  
+}
+
+.right {
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.on-three,
+.on-two {
+  display: flex;
+  gap: 10px;
+}
+
+.margiin {
+  margin-top: 10px;
+}
+
+.chunk-one p,
+.chunk-two p,
+.chunk-three p,
+.chunk-four p,
+.observ p,
+.acuerdo {
   font-size: 14px;
   font-weight: bold;
   color: #1c5d8c;
 }
 
-.first-data textarea, 
-.second-data textarea, 
-.third-data textarea, 
-.fourth-data textarea, 
-.fifth-data textarea, 
-.ninth-data textarea,
-.sixth-data textarea,
-.seventh-data textarea,
-.eighth-data textarea,
-.tenth-data textarea {
+.chunk-one textarea,
+.chunk-two textarea,
+.chunk-three textarea,
+.chunk-four textarea,
+.observ textarea {
   height: 20px;
   padding: 2px 4px;
   border-radius: 6px;
-  width: 250px;
   min-width: 80px;
-  max-width: 500px;
+  max-width: 290px;
   font-weight: bold;
 }
 
-.seventh-data textarea,
-.eighth-data textarea {
-  max-width: 780px !important;
+.chunk-one textarea:focus,
+.chunk-two textarea:focus,
+.chunk-three textarea:focus,
+.chunk-four textarea:focus,
+.observ textarea {
+  outline: none;
+  border: 1px solid #1c5d8c;
 }
 
-.tenth-data textarea {
+.smallArea {
+  width: 80px;
+}
+
+.largeArea {
+  width: 250px;
+}
+
+.observ {
+  display: flex;
+  align-items: center;
+  width: 50%;
+  gap: 10px;
+}
+
+.observ textarea {
+  width: 90%;
   height: 100px;
-  width: 300px;
-  max-width: 400px;
+  max-width: 100%;
 }
-
-.special-grid {
-  display: flex;
-}
-
-.left {
-  width: 70%;
-}
-
-.right {
-  width: 30%;
-}
-
-.more {
-  display: flex;
-  gap: 16px;
-  margin-top: 18px;
-}
-
+/*  */
 .custom-grid-modal {
   margin-top: 18px;
   background: #f7fafd;
   border-radius: 10px;
   padding: 14px 10px;
-  box-shadow: 0 1px 4px rgba(44,62,80,0.07);
   max-width: 100%;
   z-index: 1200;
   display: flex;
@@ -491,4 +499,13 @@
 
 .selected-row { 
   background: #e6f0ff; 
+}
+
+@media (min-width: 1700px) {
+  .chunk-one,
+  .chunk-three,
+  .chunk-three,
+  .chunk-four {
+    width: 22%;
+  }
 }

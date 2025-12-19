@@ -48,8 +48,10 @@ export class FacturasComponent {
   constructor(private http: HttpClient, private router: Router) {}
 
   private defaultFacturas: any[] = [];
+  isLoading: boolean = false;
   ngOnInit(): void{
     this.estadoMessage = '';
+    this.isLoading = true;
     const entidad = sessionStorage.getItem('Entidad');
     const eje = sessionStorage.getItem('EJERCICIO');
     const cge = sessionStorage.getItem('CENTROGESTOR');
@@ -98,16 +100,19 @@ export class FacturasComponent {
           this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
           this.facturas = [];
           this.defaultFacturas = [];
-            this.updatePagination();
+          this.updatePagination();
+          this.isLoading = false;
         } else {
           this.facturas = response;
           this.backupFacturas = Array.isArray(response) ? [...response] : [];
           this.defaultFacturas = [...this.backupFacturas];
           this.page = 0;
           this.updatePagination();
+          this.isLoading = false;
         }
       }, error: (err) => {
         this.filterFacturaMessage= 'Server error: ' + (err?.message || err?.statusText || err);
+        this.isLoading = false;
       }
     });
   }
@@ -116,7 +121,7 @@ export class FacturasComponent {
   sortColumn: string = '';
   sortDirection: 'asc' | 'desc' = 'asc';
   private defaultProveedores: any[] = [];
-    toggleSort(column: string) {
+  toggleSort(column: string) {
     if (this.sortColumn === column) {
       this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
     } else {
@@ -384,6 +389,7 @@ export class FacturasComponent {
   }
   
   filterFacturas(): void {
+    this.isLoading = true;
     if (this.entcod == null || this.eje == null || !this.centroGestor) {
       this.filterFacturaMessage= 'Faltan datos de sesión.';
       return;
@@ -479,6 +485,7 @@ export class FacturasComponent {
             this.sortField = null;
             this.sortDirection = 'asc';
             this.updatePagination();
+            this.isLoading = false;
             return;
           }
           const body = res.body ?? [];
@@ -490,11 +497,13 @@ export class FacturasComponent {
             this.page = 0;
             this.updatePagination();
           }
+          this.isLoading = false;
         },
         error: (err) => {
           this.filterFacturaMessage= typeof err.error === 'string'
             ? err.error
             : 'Error al buscar facturas.';
+          this.isLoading = false;
         }
       });
   }

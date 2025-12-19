@@ -35,8 +35,10 @@ export class ProveedoreesComponent {
   proveedores: any[] = [];
   private backupProveedores: any[] = [];
   error: string | null = null;
+  isLoading: boolean = false;
   ngOnInit(): void {
     this.error = '';
+    this.isLoading = true;
     const entidad = sessionStorage.getItem('Entidad');
 
     if (entidad) {
@@ -62,10 +64,12 @@ export class ProveedoreesComponent {
             this.defaultProveedores = [...this.backupProveedores];
             this.page = 0;
             this.updatePaginatedProveedores();
+            this.isLoading = false;
           }
         },
         error: (err) => {
           this.error = 'Server error';
+          this.isLoading = false;
         }
       });
   }
@@ -197,6 +201,7 @@ export class ProveedoreesComponent {
   searchTerm: string = '';
   filterOption: string = 'noBloqueados';
   search() {
+    this.isLoading = true
     this.error = '';
     if (this.searchTerm.trim() === '') {
       this.proveedores = [];
@@ -213,9 +218,11 @@ export class ProveedoreesComponent {
                 this.error = 'No se encontraron proveedores no bloqueados con el código ingresado.';
               }
               this.page = 0;
+              this.isLoading = false;
             },
             error: (err) => {
               this.error = 'Server error';
+              this.isLoading = false;
             }
           })
         } else if ((this.searchTerm.length > 5)) {
@@ -226,9 +233,11 @@ export class ProveedoreesComponent {
                 this.error = 'No se encontraron proveedores no bloqueados con el Nif ingresado.';
               }
               this.page = 0;
+              this.isLoading = false;
             },
             error: (err) => {
               this.error = 'Server error';
+              this.isLoading = false;
             }
           })
         }
@@ -241,9 +250,11 @@ export class ProveedoreesComponent {
                 this.error = 'No se encontraron proveedores bloqueados con el codigo ingresado.';
               }
               this.page = 0;
+              this.isLoading = false;
             },
             error: (err) => {
               this.error = 'Server error';
+              this.isLoading = false;
             }
           })
         } if ((this.searchTerm.length > 5)) {
@@ -254,9 +265,11 @@ export class ProveedoreesComponent {
                 this.error = 'No se encontraron proveedores bloqueados con el NIF ingresado.';
               }
               this.page = 0;
+              this.isLoading = false;
             },
             error: (err) => {
               this.error = 'Server error';
+              this.isLoading = false;
             }
           })
         }
@@ -269,9 +282,11 @@ export class ProveedoreesComponent {
                 this.error = 'No se encontraron proveedores con el codigo ingresado.';
               }
               this.page = 0;
+              this.isLoading = false;
             },
             error: (err) => {
               this.error = 'Server error';
+              this.isLoading = false;
             }
           })
         } else if ((this.searchTerm.length > 5)) {
@@ -282,9 +297,11 @@ export class ProveedoreesComponent {
                 this.error = 'No se encontraron proveedores con el NIF ingresado.';
               }
               this.page = 0;
+              this.isLoading = false;
             },
             error: (err) => {
               this.error = 'Server error';
+              this.isLoading = false;
             }
           })
         }
@@ -298,9 +315,11 @@ export class ProveedoreesComponent {
               this.error = 'No se encontraron proveedores no bloqueados con el valor ingresado.';
             }
             this.page = 0;
+            this.isLoading = false;
           },
           error: (err) => {
             this.error = 'Server error';
+            this.isLoading = false;
           }
         })
       } if(this.filterOption === 'Bloqueados') {
@@ -311,9 +330,11 @@ export class ProveedoreesComponent {
               this.error = 'No se encontraron proveedores no bloqueados con el valor ingresado.';
             }
             this.page = 0;
+            this.isLoading = false;
           },
           error: (err) => {
             this.error = 'Server error';
+            this.isLoading = false;
           }
         })
       } if(this.filterOption === 'Todos') {
@@ -324,9 +345,11 @@ export class ProveedoreesComponent {
               this.error = 'No se encontraron proveedores bloqueados con el valor ingresado.';
             }
             this.page = 0;
+            this.isLoading = false;
           },
           error: (err) => {
             this.error = 'Server error';
+            this.isLoading = false;
           }
         })
       }
@@ -339,9 +362,11 @@ export class ProveedoreesComponent {
               this.error = 'No se encontraron proveedores no bloqueados con el valor ingresado.';
             }
             this.page = 0;
+            this.isLoading = false;
           },
           error: (err) => {
             this.error = 'Server error';
+            this.isLoading = false;
           }
         })
       }
@@ -353,9 +378,11 @@ export class ProveedoreesComponent {
               this.error = 'No se encontraron proveedores bloqueados con el valor ingresado.';
             }
             this.page = 0;
+            this.isLoading = false;
           },
           error: (err) => {
             this.error = 'Server error';
+            this.isLoading = false;
           }
         })
       }

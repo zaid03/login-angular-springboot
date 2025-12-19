@@ -37,6 +37,10 @@
         </div>
         <div class="proveedores-list">
             <h1 class="errorBtn">{{error}}</h1>
+            <div *ngIf="isLoading" class="loading-message">
+                <div class="spinner"></div>
+                <span>Cargando</span>
+            </div>
             <table class="main-table">
                 <thead>
                     <tr>
@@ -143,104 +147,87 @@
             <div class="display" >
                 <div class="modal" *ngIf="selectedProveedor">
                     <button class="close-btn-btn" (click)="closeDetails()">×</button>
+                    <button class="guardar-btn" (click)="saveChanges()">💾</button>
                     <h3>Detalles del Proveedor</h3>
-                    <div class="first-row">
-                        <div class="first-data">
-                            <p>Nombre</p>
-                            <textarea [(ngModel)]="selectedProveedor.ternom"></textarea>
-                        </div>
-                        <div class="first-data">
-                            <p>Código</p>
-                            <textarea [(ngModel)]="selectedProveedor.tercod"></textarea>
-                        </div>
-                    </div>
-                    <div class="second-row">
-                        <div class="second-data">
-                            <p>Alias</p>
-                            <textarea [(ngModel)]="selectedProveedor.terali"></textarea>
-                        </div>
-                    </div>
-                    <div class="third-row">
-                        <div class="third-data">
-                            <p>Dirección</p>
-                            <textarea [(ngModel)]="selectedProveedor.terdom"></textarea>
-                        </div>
-                        <div class="third-data">
-                            <p>NIF</p>
-                            <textarea [(ngModel)]="selectedProveedor.ternif"></textarea>
-                        </div>
-                    </div>
-                    <div class="fourth-row">
-                        <div class="fourth-data">
-                            <p>C.P</p>
-                            <textarea [(ngModel)]="selectedProveedor.tercpo"></textarea>
-                        </div>
-                        <div class="fourth-data">
-                            <p>Provincia</p>
-                            <textarea [(ngModel)]="selectedProveedor.procod"></textarea>
-                            <textarea [(ngModel)]="selectedProveedor.terpob"></textarea>
-                        </div>
-                    </div>
-                    <div class="fifth-row">
-                        <div class="fifth-data">
-                            <p>C.contable</p>
-                            <textarea [(ngModel)]="selectedProveedor.terayt"></textarea>
-                        </div>
-                        <div class="fifth-data">
-                            <label style="display: flex; align-items: center; gap: 2px;">
-                                <input type="checkbox"
-                                [checked]="selectedProveedor.terblo == 1"
-                                (change)="onCheckboxGeneric($event, 'terblo')"
-                                class="checkbox" />
-                                Bloqueado
-                            </label>
-                        </div>
-                    </div>
-                    <div class="special-grid">
-                        <div class="left">
-                            <div class="sixth-row">
-                                <div class="sixth-data">
-                                    <p>Teléfono</p>
-                                    <textarea [(ngModel)]="selectedProveedor.tertel"></textarea>
-                                </div>
-                                <div class="sixth-data">
-                                    <p>Fax</p>
-                                    <textarea [(ngModel)]="selectedProveedor.terfax"></textarea>
-                                </div>
+                    <div class="detail-container">
+                        <div class="chunk-one">
+                            <div class="left">
+                                <p>Nombre</p>
+                                <p>Alias</p>
+                                <p>Dirección</p>
                             </div>
-                            <div class="seventh-row">
-                                <div class="seventh-data">
-                                    <p>Web</p>
-                                    <textarea [(ngModel)]="selectedProveedor.terweb"></textarea>
-                                </div>
-                            </div>
-                            <div class="eighth-row">
-                                <div class="eighth-data">
-                                    <p>Correo electrónico</p>
-                                    <textarea [(ngModel)]="selectedProveedor.tercoe"></textarea>
-                                </div>
+                            <div class="right">
+                                <textarea class="largeArea" [(ngModel)]="selectedProveedor.ternom"></textarea>
+                                <textarea class="largeArea" [(ngModel)]="selectedProveedor.terali"></textarea>
+                                <textarea class="largeArea" [(ngModel)]="selectedProveedor.terdom"></textarea>
                             </div>
                         </div>
-                        <div class="right">
-                            <div class="tenth-row">
-                                <div class="tenth-data">
-                                    <p>Observaciones:</p>
-                                    <textarea [(ngModel)]="selectedProveedor.terobs"></textarea>
+                        <div class="chunk-two">
+                            <div class="left">
+                                <p>Código</p>
+                                <p>Provincia</p>
+                                <p>C.P</p>
+                            </div>
+                            <div class="right">
+                                <div class="on-three">
+                                    <textarea class="smallArea" [(ngModel)]="selectedProveedor.tercod"></textarea>
+                                    <p>NIF</p>
+                                    <textarea class="smallArea" [(ngModel)]="selectedProveedor.ternif"></textarea>
                                 </div>
+                                <div class="on-two">
+                                    <textarea class="smallArea" [(ngModel)]="selectedProveedor.procod"></textarea>
+                                    <textarea class="largeArea" [(ngModel)]="selectedProveedor.terpob"></textarea>
+                                </div>
+                                <textarea class="smallArea" [(ngModel)]="selectedProveedor.tercpo"></textarea>
                             </div>
                         </div>
+                        <div class="chunk-three">
+                            <div class="left">
+                                <p>C.contable</p>
+                                <p>Bloqueado</p>
+                                <p>Teléfono</p>
+                            </div>
+                            <div class="right">
+                                <textarea class="largeArea" [(ngModel)]="selectedProveedor.terayt"></textarea>
+                                <div class="bloq">
+                                    <input type="checkbox"
+                                        [checked]="selectedProveedor.terblo == 1"
+                                        (change)="onCheckboxGeneric($event, 'terblo')"
+                                        class="checkbox" 
+                                    />
+                                </div>
+                                <textarea class="largeArea" [(ngModel)]="selectedProveedor.tertel"></textarea>
+                            </div>
+                        </div>
+                        <div class="chunk-four">
+                            <div class="left">
+                                <p>Fax</p>
+                                <p>Web</p>
+                                <p>Correo electrónico</p>
+                            </div>
+                            <div class="right">
+                                <textarea class="largeArea" [(ngModel)]="selectedProveedor.terfax"></textarea>
+                                <textarea class="largeArea" [(ngModel)]="selectedProveedor.terweb"></textarea>
+                                <textarea class="largeArea margiin" [(ngModel)]="selectedProveedor.tercoe"></textarea>
+                            </div>
+                        </div>
+                        <div class="acuerdo">
+                            <input type="checkbox"
+                                [checked]="selectedProveedor.teracu == 1"
+                                (change)="onCheckboxGeneric($event, 'teracu')"
+                                class="checkbox" 
+                            />
+                                Tiene acuerdo marco
+                        </div>
+                        <div class="observ">
+                            <p>Observaciones:</p>
+                            <textarea [(ngModel)]="selectedProveedor.terobs"></textarea>
+                        </div>
                     </div>
-                    <div class="ninth-row">
-                        <input type="checkbox"
-                            [checked]="selectedProveedor.teracu == 1"
-                            (change)="onCheckboxGeneric($event, 'teracu')"
-                            class="checkbox" 
-                        />
-                            Tiene acuerdo marco
-                    </div>
+                    
                     <h1 class="errorBtn">{{ messageError }}</h1>
                     <h1 class="successBtn">{{ messageSuccess }}</h1>
-                    <button class="guardar-btn" (click)="saveChanges()">Guardar</button>
+                    
                     <div class="more">
                         <button class="pers-btn" (click)="showContactPersons(selectedProveedor)">Personas de Contacto</button>
                         <button class="Articulo-btn" (click)="showArticulos(selectedProveedor)">Articulo</button>

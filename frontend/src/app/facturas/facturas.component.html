@@ -92,6 +92,10 @@
 
         <div class="facturas-list">
             <h1 class="successBtn">{{facturaMessageSuccess}}</h1>
+            <div *ngIf="isLoading" class="loading-message">
+                <div class="spinner"></div>
+                <span>Cargando</span>
+            </div>
             <table class="facturas-table">
                 <thead>
                     <tr>
