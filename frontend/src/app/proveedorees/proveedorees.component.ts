@@ -172,7 +172,6 @@ export class ProveedoreesComponent {
   closeDetails() {
     this.messageError = '';
     this.messageSuccess = '';
-    this.personasContactoError = '';
     this.personasContactoErrorMessage = '';
     this.personasContactoSuccessMessage = '';
     this.activeDetailTab = null;
@@ -469,7 +468,6 @@ export class ProveedoreesComponent {
   showContactPersonsGrid = false;
   contactPersons: any = null;
   activeDetailTab: 'contact' | 'articulo' | null = null;
-  personasContactoError: string = '';
   showContactPersons(proveedore: any){
     this.messageError = '';
     this.messageSuccess = '';
@@ -477,7 +475,7 @@ export class ProveedoreesComponent {
     this.activeDetailTab = 'contact';
     this.showArticulosGrid = false;
     this.selectedProveedor = proveedore;
-    this.personasContactoError = ''
+    this.personasContactoErrorMessage = ''
     this.articuloError = '';
     const tercod = proveedore.tercod;
 
@@ -486,15 +484,15 @@ export class ProveedoreesComponent {
         const respArray = Array.isArray(response) ? response : (response ? [response] : []);
         if (respArray.length === 0) { 
           this.contactPersons = null;           
-          this.personasContactoError = 'No se encontraron personas de contacto.';
+          this.personasContactoErrorMessage = 'No se encontraron personas de contacto.';
         } else {
           this.contactPersons = respArray[0];
-          this.personasContactoError = '';
+          this.personasContactoErrorMessage = '';
          }
           this.page = 0;
       },
       error: (err) => {
-        this.personasContactoError = 'No se encontraron personas de contacto.';
+        this.personasContactoErrorMessage = 'No se encontraron personas de contacto.';
         this.contactPersons = [];
         this.page = 0;
       } 
@@ -512,7 +510,7 @@ export class ProveedoreesComponent {
     this.selectedProveedor = proveedore;
     const tercod = proveedore.tercod;
     this.articuloError = ''
-    this.personasContactoError = ''
+    this.personasContactoErrorMessage = ''
     
     this.http.get<any[]>(`${environment.backendUrl}/api/more/by-apr/${this.entcod}/${tercod}`)
       .subscribe({ next: (response) => {
@@ -608,31 +606,31 @@ export class ProveedoreesComponent {
 
   personasContactoErrorMessage: string = '';
   personasContactoSuccessMessage: string = '';
-  updatepersonas(){
-    this.personasContactoErrorMessage = '';
-    this.personasContactoSuccessMessage = '';
+  // updatepersonas(){
+  //   this.personasContactoErrorMessage = '';
+  //   this.personasContactoSuccessMessage = '';
 
-    const updateFields = {
-      TPENOM : this.contactPersons.tpenom,
-      TPETEL : this.contactPersons.tpetel,
-      TPETMO : this.contactPersons.tpetmo,
-      TPECOE : this.contactPersons.tpecoe,
-      TPEOBS : this.contactPersons.tpeobs
-    }
-    this.http.put(
-      `${environment.backendUrl}/api/more/modify/${this.selectedProveedor.tercod}`,
-      updateFields,
-      { responseType: 'text' }
-    ).subscribe({
-      next: (res) => {
-        this.personasContactoSuccessMessage = 'Persona de contacto actualizada correctamente';
-      },
-      error: (err) => {
-        console.error('Error:', err);
-        this.personasContactoErrorMessage = 'Error al guardar la persona de contacto';
-      }
-    });
-  }
+  //   const updateFields = {
+  //     TPENOM : this.contactPersons.tpenom,
+  //     TPETEL : this.contactPersons.tpetel,
+  //     TPETMO : this.contactPersons.tpetmo,
+  //     TPECOE : this.contactPersons.tpecoe,
+  //     TPEOBS : this.contactPersons.tpeobs
+  //   }
+  //   this.http.put(
+  //     `${environment.backendUrl}/api/more/modify/${this.selectedProveedor.tercod}`,
+  //     updateFields,
+  //     { responseType: 'text' }
+  //   ).subscribe({
+  //     next: (res) => {
+  //       this.personasContactoSuccessMessage = 'Persona de contacto actualizada correctamente';
+  //     },
+  //     error: (err) => {
+  //       console.error('Error:', err);
+  //       this.personasContactoErrorMessage = 'Error al guardar la persona de contacto';
+  //     }
+  //   });
+  // }
 
   deletepersona(){
     this.http.delete(
@@ -655,37 +653,37 @@ export class ProveedoreesComponent {
   }
 
   articuloSuccessMessage: string = '';
-  updatearticulos(articulo: any){
-    this.articuloSuccessMessage = '';
-    this.articuloError = '';
+  // updatearticulos(articulo: any){
+  //   this.articuloSuccessMessage = '';
+  //   this.articuloError = '';
 
-    const updateFields = {
-      ENT: this.entcod,
-      TERCOD: this.selectedProveedor.tercod,
-      AFACOD : articulo.afacod,
-      ASUCOD : articulo.asucod,
-      ARTCOD : articulo.artcod,
-      APRREF : articulo.aprref,
-      APRUEM : articulo.apruem,
-      APROBS : articulo.aprobs,
-      APRACU : articulo.apracu,
-      APRPRE : articulo.aprpre
-    }
+  //   const updateFields = {
+  //     ENT: this.entcod,
+  //     TERCOD: this.selectedProveedor.tercod,
+  //     AFACOD : articulo.afacod,
+  //     ASUCOD : articulo.asucod,
+  //     ARTCOD : articulo.artcod,
+  //     APRREF : articulo.aprref,
+  //     APRUEM : articulo.apruem,
+  //     APROBS : articulo.aprobs,
+  //     APRACU : articulo.apracu,
+  //     APRPRE : articulo.aprpre
+  //   }
 
-    this.http.put(
-      `${environment.backendUrl}/api/more/update-apr`,
-      updateFields,
-      { responseType: 'text' }
-    ).subscribe({
-      next: (res) => {
-        this.articuloSuccessMessage = 'Artículo actualizado correctamente';
-      },
-      error: (err) => {
-        console.error('Error:', err);
-        this.articuloError = 'Error al guardar el artículo';
-      }
-    });
-  }
+  //   this.http.put(
+  //     `${environment.backendUrl}/api/more/update-apr`,
+  //     updateFields,
+  //     { responseType: 'text' }
+  //   ).subscribe({
+  //     next: (res) => {
+  //       this.articuloSuccessMessage = 'Artículo actualizado correctamente';
+  //     },
+  //     error: (err) => {
+  //       console.error('Error:', err);
+  //       this.articuloError = 'Error al guardar el artículo';
+  //     }
+  //   });
+  // }
 
   deletearticulo(articulo: any){
     const params = [
@@ -714,6 +712,15 @@ export class ProveedoreesComponent {
           this.articuloError = 'Error al eliminar el artículo';
         }
       });
+  }
+
+  showPersonasGrid = false;
+  showPersonas() {
+    this.showPersonasGrid = true;
+  }
+
+  hidePersonas() {
+    this.showPersonasGrid = false;
   }
 
   showHelloGrid = false;

@@ -26,17 +26,20 @@
 .chunk-three p,
 .chunk-four p,
 .observ p,
-.acuerdo { font-size: 14px; font-weight: bold; color: #38249b; }
+.acuerdo,
+.left-persona p { font-size: 14px; font-weight: bold; color: #38249b; }
 .chunk-one textarea,
 .chunk-two textarea,
 .chunk-three textarea,
 .chunk-four textarea,
-.observ textarea { height: 20px; padding: 2px 4px; border-radius: 6px; min-width: 80px; max-width: 290px; font-weight: bold; }
+.observ textarea,
+.right-persona textarea { height: 20px; padding: 2px 4px; border-radius: 6px; min-width: 80px; max-width: 290px; font-weight: bold; }
 .chunk-one textarea:focus,
 .chunk-two textarea:focus,
 .chunk-three textarea:focus,
 .chunk-four textarea:focus,
-.observ textarea { outline: none; border: 1px solid #1c5d8c; }
+.observ textarea:focus,
+.right-persona textarea:focus { outline: none; border: 1px solid #1c5d8c; }
 .smallArea { width: 80px; }
 .largeArea { width: 250px; }
 .observ { width: 50%; gap: 10px; }
@@ -61,6 +64,7 @@
 .articulo-table h2{ text-align: center; font-size: 15px; color: #333; margin: 0; padding: 0; }
 .add-btn { margin-top: 10px; }
 .save-btn-articulos {margin-top: 10px;}
+.delete-btn-personas { margin-right: 10px; }
 /* sub tables and lists */
 /* delete-modal */
 .delete-confirm-modal div { margin-bottom: 18px; }
@@ -68,17 +72,24 @@
 .delete-confirm-modal strong { color: #2c3e50; font-weight: 600; font-weight: bold; }
 /* delete-modal */
 /* add articulo modal */
-.hello-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 16px; box-shadow: 0 8px 32px rgba(44, 62, 80, 0.18), 0 1.5px 6px rgba(44,62,80,0.08); padding: 32px 48px; min-width: 300px; min-height: 120px; z-index: 3000; display: flex; flex-direction: column; align-items: center; }
+.hello-modal,
+.personas-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 16px; box-shadow: 0 8px 32px rgba(44, 62, 80, 0.18), 0 1.5px 6px rgba(44,62,80,0.08); padding: 25px 30px; min-width: 300px; min-height: 120px; z-index: 3000; display: flex; flex-direction: column; align-items: center; }
 .anadir-articulo-form { display: flex; flex-direction: column; align-items: stretch; gap: 18px; width: 100%; max-width: 420px; margin: 0 auto; padding: 0; }
 .anadir-articulo-form .search-anadir-input { width: 100%; margin: 0; display: flex; align-items: center; gap: 0; }
 .anadir-articulo-form .search-bar { flex: 1; padding: 10px 14px; border-radius: 20px; border: 1px solid #bbb; font-size: 16px; background: #f7f7f7; transition: border-color 0.2s; font-family: inherit; height: 18px; }
-.anadir-articulo-form .search-bar:focus { border-color: #1c5d8c; outline: none; background: #fff; }
+.anadir-articulo-form .search-bar:focus { border-color: #38249b; outline: none; background: #fff; }
 .anadir-articulo-form .search-anadir { display: flex; align-items: center; gap: 18px; margin-bottom: 0; margin-right: 0; padding: 0; }
 .anadir-articulo-form .search-anadir input[type="radio"].checkbox { margin: 0 6px 0 0; accent-color: #1c5d8c; width: 18px; height: 18px; vertical-align: middle; }
 .anadir-articulo-form .search-anadir label { font-size: 1rem; color: #333; font-weight: 500; margin-right: 10px; display: flex; align-items: center; gap: 4px; }
 .anadir-articulo-form h1 { margin: 10px 0 0 0; font-size: 1.1em; text-align: center; }
+.pagination-controls { justify-content: center;}
 /* add articulo modal */
-
+/* add personas modal */
+.personas-modal {width: 40%;}
+.personas-add-container { width: 100%; display: flex; margin: 5px;}
+.left-persona { width: 20%; display: flex; flex-direction: column; gap: 20px;}
+.right-persona { display: flex; flex-direction: column; width: 80%; gap: 12px;}
+/* add personas modal */
 
 
 .proveedor-grid-modal{
@@ -178,10 +189,6 @@
 }
 
 @media (min-width: 1700px) {
-  .chunk-one,
-  .chunk-three,
-  .chunk-three,
-  .chunk-four {
-    width: 22%;
-  }
+  .chunk-one, .chunk-two, .chunk-three, .chunk-four { width: 22%; }
+  .save-btn-articulos {margin-left: 10px;}
 }

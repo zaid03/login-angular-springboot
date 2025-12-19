@@ -147,10 +147,12 @@
             <div class="display" >
                 <div class="modal" *ngIf="selectedProveedor">
                     <div class="btns">
+                        <div class="title-detail">
+                            <h3>Detalles del Proveedor</h3>
+                        </div>
                         <button class="guardar-btn" (click)="saveChanges()">💾</button>
                         <button class="close-btn-btn" (click)="closeDetails()">✖</button>
                     </div>
-                    <h3>Detalles del Proveedor</h3>
                     <h1 class="errorBtn">{{ messageError }}</h1>
                     <h1 class="successBtn">{{ messageSuccess }}</h1>
                     <div class="detail-container">
@@ -161,9 +163,9 @@
                                 <p>Dirección</p>
                             </div>
                             <div class="right">
-                                <textarea class="largeArea" [(ngModel)]="selectedProveedor.ternom"></textarea>
-                                <textarea class="largeArea" [(ngModel)]="selectedProveedor.terali"></textarea>
-                                <textarea class="largeArea" [(ngModel)]="selectedProveedor.terdom"></textarea>
+                                <textarea class="largeArea" [(ngModel)]="selectedProveedor.ternom" readonly></textarea>
+                                <textarea class="largeArea" [(ngModel)]="selectedProveedor.terali" readonly></textarea>
+                                <textarea class="largeArea" [(ngModel)]="selectedProveedor.terdom" readonly></textarea>
                             </div>
                         </div>
                         <div class="chunk-two">
@@ -174,15 +176,15 @@
                             </div>
                             <div class="right">
                                 <div class="on-three">
-                                    <textarea class="smallArea" [(ngModel)]="selectedProveedor.tercod"></textarea>
+                                    <textarea class="smallArea" [(ngModel)]="selectedProveedor.tercod" readonly></textarea>
                                     <p>NIF</p>
-                                    <textarea class="smallArea" [(ngModel)]="selectedProveedor.ternif"></textarea>
+                                    <textarea class="smallArea" [(ngModel)]="selectedProveedor.ternif" readonly></textarea>
                                 </div>
                                 <div class="on-two">
-                                    <textarea class="smallArea" [(ngModel)]="selectedProveedor.procod"></textarea>
-                                    <textarea class="largeArea" [(ngModel)]="selectedProveedor.terpob"></textarea>
+                                    <textarea class="smallArea" [(ngModel)]="selectedProveedor.procod" readonly></textarea>
+                                    <textarea class="largeArea" [(ngModel)]="selectedProveedor.terpob" readonly></textarea>
                                 </div>
-                                <textarea class="smallArea" [(ngModel)]="selectedProveedor.tercpo"></textarea>
+                                <textarea class="smallArea" [(ngModel)]="selectedProveedor.tercpo" readonly></textarea>
                             </div>
                         </div>
                         <div class="chunk-three">
@@ -192,7 +194,7 @@
                                 <p>Teléfono</p>
                             </div>
                             <div class="right">
-                                <textarea class="largeArea" [(ngModel)]="selectedProveedor.terayt"></textarea>
+                                <textarea class="largeArea" [(ngModel)]="selectedProveedor.terayt" readonly></textarea>
                                 <div class="bloq">
                                     <input type="checkbox"
                                         [checked]="selectedProveedor.terblo == 1"
@@ -200,7 +202,7 @@
                                         class="checkbox" 
                                     />
                                 </div>
-                                <textarea class="largeArea" [(ngModel)]="selectedProveedor.tertel"></textarea>
+                                <textarea class="largeArea" [(ngModel)]="selectedProveedor.tertel" readonly></textarea>
                             </div>
                         </div>
                         <div class="chunk-four">
@@ -210,9 +212,9 @@
                                 <p>Correo electrónico</p>
                             </div>
                             <div class="right">
-                                <textarea class="largeArea" [(ngModel)]="selectedProveedor.terfax"></textarea>
+                                <textarea class="largeArea" [(ngModel)]="selectedProveedor.terfax" readonly></textarea>
                                 <textarea class="largeArea" [(ngModel)]="selectedProveedor.terweb"></textarea>
-                                <textarea class="largeArea margiin" [(ngModel)]="selectedProveedor.tercoe"></textarea>
+                                <textarea class="largeArea margiin" [(ngModel)]="selectedProveedor.tercoe" readonly></textarea>
                             </div>
                         </div>
                         <div class="acuerdo">
@@ -251,10 +253,10 @@
                             </button> 
                         </div>
                     </div>
-                    
                     <div class="custom-grid-modal" *ngIf="showContactPersonsGrid">
-                        <h3>Personas de Contacto</h3>
-                        <h1 class="errorBtn">{{ personasContactoError }}</h1>
+                        <button class="add-btn" (click)="showPersonas()">+</button>
+                        <h1 class="errorBtn">{{ personasContactoErrorMessage }}</h1>
+                        <h1 class="successBtn">{{ personasContactoSuccessMessage }}</h1>
                         <table class="personas-contacto-table">
                             <thead>
                                 <tr>
@@ -267,31 +269,29 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr *ngIf="contactPersons">          
+                                <tr *ngFor="let c of contactPersons">          
                                     <td>
-                                        <input type="text" [(ngModel)]="contactPersons.tpenom" placeholder="Nombre" />
+                                        <input type="text" [(ngModel)]="c.tpenom" placeholder="Nombre" />
                                     </td>
                                     <td>
-                                        <input type="text" [(ngModel)]="contactPersons.tpetel" placeholder="Teléfono" />
+                                        <input type="text" [(ngModel)]="c.tpetel"/>
                                     </td>      
                                     <td>
-                                        <input type="text" [(ngModel)]="contactPersons.tpetmo" placeholder="Móvil" />
+                                        <input type="text" [(ngModel)]="c.tpetmo"/>
                                     </td>
                                     <td>
-                                        <input type="email" [(ngModel)]="contactPersons.tpecoe" placeholder="Correo electrónico" />
+                                        <input type="email" [(ngModel)]="c.tpecoe"/>
                                     </td>
                                     <td>
-                                        <input type="text" [(ngModel)]="contactPersons.tpeobs" placeholder="Observaciones" />
+                                        <input type="text" [(ngModel)]="contactPersons.tpeobs"/>
                                     </td>
                                     <td>
                                         <button class="delete-btn-personas" (click)="deletepersona()">-</button>
+                                        <button class="save-btn-articulos">💾</button>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
-                        <h1 class="errorBtn">{{ personasContactoErrorMessage }}</h1>
-                        <h1 class="successBtn">{{ personasContactoSuccessMessage }}</h1>
-                        <button class="guardar-btn" (click)="updatepersonas()">Guardar</button>
                     </div>
                     <div class="custom-grid-modal" *ngIf="showArticulosGrid">
                         <button class="add-btn" (click)="showHello()">+</button>
@@ -347,7 +347,7 @@
                                     </td>
                                     <td>
                                         <button class="delete-btn-articulos" (click)="openDeleteConfirm(articulo)">-</button>
-                                        <button class="save-btn-articulos" (click)="updatearticulos(articulo)">💾</button>
+                                        <button class="save-btn-articulos">💾</button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -371,9 +371,35 @@
     <button class="articulos-cancel-confirm-btn" (click)="closeDeleteConfirm()">✖</button>
 </div>
 
+<div class="modal-backdrop" *ngIf="showPersonasGrid" (click)="hidePersonas()"></div>
+<div class="personas-modal" *ngIf="showPersonasGrid">
+    <div class="btns">
+        <button class="save-btn">💾</button>
+        <button class="close-btn-btn" (click)="hidePersonas()">✖</button>
+    </div>
+    <div class="personas-add-container">
+        <div class="left-persona">
+            <p>Nombre</p>
+            <p>Télefono</p>
+            <p>Movil</p>
+            <p>Correo electrónico</p>
+            <p>Observaciones</p>
+        </div>
+        <div class="right-persona">
+            <textarea></textarea>
+            <textarea></textarea>
+            <textarea></textarea>
+            <textarea></textarea>
+            <textarea></textarea>
+        </div>
+    </div>
+</div>
+
 <div class="modal-backdrop" *ngIf="showHelloGrid" (click)="hideHello()"></div>
 <div class="hello-modal" *ngIf="showHelloGrid">
-    <button class="close-btn-btn" (click)="hideHello()">✖</button>
+    <div class="btns">
+        <button class="close-btn-btn" (click)="hideHello()">✖</button>
+    </div>
     <form class="anadir-articulo-form">
         <div class="search-anadir">
             <input type="radio" class="checkbox" [(ngModel)]="searchType" [value]="'familia'" value="familia" name="searchType" />Familia
