@@ -157,7 +157,8 @@ app-sidebar {
 .Limpiar-btn,
 .save-btn,
 .delete-btn,
-.deconnect-btn  {
+.deconnect-btn,
+.close-btn-btn  {
   background-color: #38249b;
   color: #fff;
   border: none;
@@ -219,7 +220,8 @@ app-sidebar {
 .centroGestor-delete-confirm-btn,
 .cge-cancel-confirm-btn,
 .Limpiar-btn,
-.delete-btn {
+.delete-btn,
+.close-btn-btn {
   background-color: rgb(221, 66, 66);
 }
 
@@ -235,7 +237,8 @@ app-sidebar {
 .centroGestor-delete-confirm-btn:hover,
 .cge-cancel-confirm-btn:hover,
 .Limpiar-btn:hover,
-.delete-btn:hover {
+.delete-btn:hover,
+.close-btn-btn:hover {
   background-color: rgb(117, 28, 28);
 }
 
@@ -308,7 +311,7 @@ app-sidebar {
   z-index: 3000 !important;
 }
 
-.close-btn-fct,
+/* .close-btn-fct,
 .close-btn-btn {
   position: absolute;
   top: 16px;
@@ -319,7 +322,7 @@ app-sidebar {
   color: red;
   cursor: pointer;
   transition: color 0.2s;
-}
+} */
 
 /* page-container */
 .facturas-page,

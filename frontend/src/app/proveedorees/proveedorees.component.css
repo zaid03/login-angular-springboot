@@ -24,12 +24,6 @@
   margin-left: 10px;  
 }
 
-.guardar-btn{
-  width: 10%;
-  float: right;
-  margin-left: auto;
-}
-
 .save-btn-articulos {
   padding: 6px 12px !important;
 }
@@ -303,6 +297,12 @@
   width: 90%;
   height: 100px;
   max-width: 100%;
+}
+
+.btns {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
 }
 /*  */
 .custom-grid-modal {

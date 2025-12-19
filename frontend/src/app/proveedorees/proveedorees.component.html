@@ -146,9 +146,13 @@
             <div class="modal-backdrop" *ngIf="selectedProveedor" (click)="closeDetails()"></div>
             <div class="display" >
                 <div class="modal" *ngIf="selectedProveedor">
-                    <button class="close-btn-btn" (click)="closeDetails()">×</button>
-                    <button class="guardar-btn" (click)="saveChanges()">💾</button>
+                    <div class="btns">
+                        <button class="guardar-btn" (click)="saveChanges()">💾</button>
+                        <button class="close-btn-btn" (click)="closeDetails()">×</button>
+                    </div>
                     <h3>Detalles del Proveedor</h3>
+                    <h1 class="errorBtn">{{ messageError }}</h1>
+                    <h1 class="successBtn">{{ messageSuccess }}</h1>
                     <div class="detail-container">
                         <div class="chunk-one">
                             <div class="left">
@@ -224,10 +228,6 @@
                             <textarea [(ngModel)]="selectedProveedor.terobs"></textarea>
                         </div>
                     </div>
-                    
-                    <h1 class="errorBtn">{{ messageError }}</h1>
-                    <h1 class="successBtn">{{ messageSuccess }}</h1>
-                    
                     <div class="more">
                         <button class="pers-btn" (click)="showContactPersons(selectedProveedor)">Personas de Contacto</button>
                         <button class="Articulo-btn" (click)="showArticulos(selectedProveedor)">Articulo</button>
