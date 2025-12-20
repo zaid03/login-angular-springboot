@@ -622,20 +622,21 @@ export class ProveedoreesComponent {
     });
   }
 
-  // deletepersona(){
-  //   this.http.delete(
-  //     `${environment.backendUrl}/api/more/delete/${this.selectedProveedor.tercod}`,
-  //     { responseType: 'text' }).subscribe({
-  //       next: (res) => {
-  //       this.personasContactoSuccessMessage = 'Persona de contacto eliminada correctamente';
-  //       this.contactPersons = null; 
-  //       },
-  //       error: (err) => {
-  //         console.error('Error:', err);
-  //         this.personasContactoErrorMessage = 'Error al eliminar la persona de contacto';
-  //       }
-  //     });
-  // }
+  deletepersona(persona: any){
+    const tercod = persona.tercod;
+    const tpecod = persona.tpecod;
+    this.http.delete(
+      `${environment.backendUrl}/api/more/delete/${this.entcod}/${tercod}/${tpecod}`,
+      { responseType: 'text' }).subscribe({
+      next: (res) => {
+      this.personasContactoSuccessMessage = 'Persona de contacto eliminada correctamente';
+      // this.contactPersons = null; 
+      },
+      error: (err) => {
+        this.personasContactoErrorMessage = err.error ?? 'Error al eliminar la persona de contacto';
+      }
+    });
+  }
 
   showDeletePersona = false;
   personaToDelete: any = null;
@@ -654,7 +655,7 @@ export class ProveedoreesComponent {
 
   confirmDeletePersona() {
     if (this.showDeletePersona) {
-      // this.deletearticulo(this.articuloToDelete);
+      this.deletepersona(this.personaToDelete);
       this.closeDeletePersonas();
     }
   }

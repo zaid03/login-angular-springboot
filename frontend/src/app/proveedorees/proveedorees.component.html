@@ -374,7 +374,10 @@
 <div class="delete-confirm-modal" *ngIf="showDeletePersona">
     <h3>¿Seguro que quieres eliminar este Persona?</h3>
     <div *ngIf="personaToDelete">
-        
+        <div class="detailPersonnaDelete">
+            <p>Nombre</p>
+            <textarea [(ngModel)]="personaToDelete.tpenom" readonly></textarea>
+        </div>
     </div>
     <button class="articulos-delete-confirm-btn" (click)="confirmDeletePersona()">-</button>
     <button class="articulos-cancel-confirm-btn" (click)="closeDeletePersonas()">✖</button>
