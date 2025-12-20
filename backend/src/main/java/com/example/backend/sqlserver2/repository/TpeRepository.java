@@ -23,7 +23,7 @@ public interface TpeRepository extends JpaRepository<Tpe, TpeId> {
         @Param("tercod") Integer tercod
     );
 
-    // modifying the data
+    // modifying a persona de contacto
     @Modifying
     @Transactional
     @Query("""
@@ -48,6 +48,12 @@ public interface TpeRepository extends JpaRepository<Tpe, TpeId> {
         @Param("tercod") Integer tercod,
         @Param("tpecod") Integer tpecod
     );
+
+    //adding a persona
+    boolean existsByEntAndTercodAndTpenom(Integer ent, Integer tercod, String tpenom);
+
+    @Query("SELECT MAX(t.tpecod) FROM Tpe t WHERE t.ent = :ent AND t.tercod = :tercod")
+    Integer findMaxTpecodByEntAndTercod(@Param("ent") Integer ent, @Param("tercod") Integer tercod);
 
     // Deleting data
     void deleteByEntAndTercodAndTpecod(Integer ent, Integer tercod, Integer Tpecod);

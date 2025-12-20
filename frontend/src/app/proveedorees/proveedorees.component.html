@@ -373,9 +373,16 @@
 <div class="modal-backdrop" *ngIf="showPersonasGrid" (click)="hidePersonas()"></div>
 <div class="personas-modal" *ngIf="showPersonasGrid">
     <div class="btns">
-        <button class="save-btn">💾</button>
+        <button class="save-btn" (click)="addPersonas(
+        nombreadd.value, 
+        telefonoadd.value, 
+        moviladd.value, 
+        correoadd.value, 
+        observacionesadd.value
+    )">💾</button>
         <button class="close-btn-btn" (click)="hidePersonas()">✖</button>
     </div>
+    <h1 class="errorBtn">{{personaContactoaddError}}</h1>
     <div class="personas-add-container">
         <div class="left-persona">
             <p>Nombre</p>
@@ -385,11 +392,11 @@
             <p>Observaciones</p>
         </div>
         <div class="right-persona">
-            <textarea></textarea>
-            <textarea></textarea>
-            <textarea></textarea>
-            <textarea></textarea>
-            <textarea></textarea>
+            <textarea #nombreadd></textarea>
+            <textarea #telefonoadd></textarea>
+            <textarea #moviladd></textarea>
+            <textarea #correoadd></textarea>
+            <textarea #observacionesadd></textarea>
         </div>
     </div>
 </div>

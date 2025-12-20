@@ -616,6 +616,37 @@ export class ProveedoreesComponent {
 
   personasContactoErrorMessage: string = '';
   personasContactoSuccessMessage: string = '';
+  personaContactoaddError: string = '';
+  addPersonas(tpenom: string, tpetel: string, tpetmo: string, tpecoe: string, tpeobs: string) {
+    this.personasContactoSuccessMessage = '';
+    this.personasContactoErrorMessage = '';
+    this.personaContactoaddError = '';
+    const tercod = this.personaInfo.tercod;
+
+    if(!tpenom) {
+      this.personaContactoaddError = 'Nombre requirido'
+      return;
+    }
+
+    const payload = {
+      "tpenom" : tpenom,
+      "tpetel" : tpetel,
+      "tpetmo" : tpetmo,
+      "tpecoe" : tpecoe,
+      "tpeobs" : tpeobs
+    }
+
+    this.http.post(`${environment.backendUrl}/api/more/add/${this.entcod}/${tercod}`, payload, { responseType: 'text' }).subscribe({
+      next: (res) => {
+        this.personasContactoSuccessMessage = 'Persona Agregado exitosamente';
+        this.hidePersonas();
+      },
+      error: (err) => {
+        this.personaContactoaddError = err.error ?? 'Se ha producido un error.';
+      }
+    })
+  }
+
   updatepersonas(tpecod: number, nom: string, telefon: string, movil: string, email: string, obs: string){
     this.personasContactoErrorMessage = '';
     this.personasContactoSuccessMessage = '';
@@ -630,8 +661,6 @@ export class ProveedoreesComponent {
       tpecoe : email,
       tpeobs : obs
     }
-
-    console.log(updateFields);
     this.http.put(
       `${environment.backendUrl}/api/more/modify/${this.entcod}/${this.selectedProveedor.tercod}/${tpecod}`,
       updateFields,
@@ -731,8 +760,10 @@ export class ProveedoreesComponent {
   }
 
   showPersonasGrid = false;
+  personaInfo: any = [];
   showPersonas() {
     this.showPersonasGrid = true;
+    this.personaInfo = this.selectedProveedor;
   }
 
   hidePersonas() {

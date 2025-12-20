@@ -82,6 +82,50 @@ public class TpeController {
         }
     }
 
+    //adding a persona de contacto
+    public record personaAdd(String tpenom, String tpetel, String tpetmo, String tpecoe, String tpeobs) {}
+    @PostMapping("/add/{ent}/{tercod}")
+    @Transactional
+    public ResponseEntity<?> addTpe(
+        @PathVariable Integer ent,
+        @PathVariable Integer tercod,
+        @RequestBody personaAdd payload
+    ) {
+        try {
+            if (payload == null || payload.tpenom() == null) {
+                return ResponseEntity.badRequest().body("nombre requerido.");
+            }
+
+            boolean name = tpeRepository.existsByEntAndTercodAndTpenom(ent, tercod, payload.tpenom());
+            if (name){
+                return ResponseEntity.badRequest().body("nombre existe.");
+            }
+
+            Integer maxTpecod = tpeRepository.findMaxTpecodByEntAndTercod(ent, tercod);
+            int nextTpecod = (maxTpecod == null ? 1 : maxTpecod + 1);
+            Tpe tpe = new Tpe();
+            tpe.setent(ent);
+            tpe.settercod(tercod);
+            tpe.settpecod(nextTpecod);
+            tpe.settpenom(payload.tpenom());
+            tpe.settpetel(payload.tpetel());
+            tpe.settpetmo(payload.tpetmo());
+            tpe.settpecoe(payload.tpecoe());
+            tpe.settpeobs(payload.tpeobs());
+
+            tpeRepository.save(tpe);
+
+            return ResponseEntity.status(HttpStatus.CREATED).body("Persona de contacto agregada correctamente.");
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("La inserción falló: " + ex.getMostSpecificCause().getMessage());
+        }
+    }
+
+
+
+
+
     // Deleting data
     // @DeleteMapping("/delete/{ent}/{tercod}/{tpecod}")
     // @Transactional
