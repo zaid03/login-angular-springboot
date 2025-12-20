@@ -622,19 +622,41 @@ export class ProveedoreesComponent {
     });
   }
 
-  deletepersona(){
-    this.http.delete(
-      `${environment.backendUrl}/api/more/delete/${this.selectedProveedor.tercod}`,
-      { responseType: 'text' }).subscribe({
-        next: (res) => {
-        this.personasContactoSuccessMessage = 'Persona de contacto eliminada correctamente';
-        this.contactPersons = null; 
-        },
-        error: (err) => {
-          console.error('Error:', err);
-          this.personasContactoErrorMessage = 'Error al eliminar la persona de contacto';
-        }
-      });
+  // deletepersona(){
+  //   this.http.delete(
+  //     `${environment.backendUrl}/api/more/delete/${this.selectedProveedor.tercod}`,
+  //     { responseType: 'text' }).subscribe({
+  //       next: (res) => {
+  //       this.personasContactoSuccessMessage = 'Persona de contacto eliminada correctamente';
+  //       this.contactPersons = null; 
+  //       },
+  //       error: (err) => {
+  //         console.error('Error:', err);
+  //         this.personasContactoErrorMessage = 'Error al eliminar la persona de contacto';
+  //       }
+  //     });
+  // }
+
+  showDeletePersona = false;
+  personaToDelete: any = null;
+  openDeletePersonas(persona: any) {
+    this.personaToDelete = persona;
+    console.log(this.personaToDelete)
+    this.showDeletePersona = true;
+  }
+
+  closeDeletePersonas() {
+    this.showDeletePersona = false;
+    this.personaToDelete = null;
+    this.personasContactoSuccessMessage = '';
+    this.personasContactoErrorMessage = '';
+  }
+
+  confirmDeletePersona() {
+    if (this.showDeletePersona) {
+      // this.deletearticulo(this.articuloToDelete);
+      this.closeDeletePersonas();
+    }
   }
 
   //articulos related functions
@@ -839,6 +861,7 @@ export class ProveedoreesComponent {
   showDeleteConfirm = false;
   articuloToDelete: any = null;
   openDeleteConfirm(articulo: any) {
+    console.log(articulo)
     this.articuloToDelete = articulo;
     this.showDeleteConfirm = true;
   }

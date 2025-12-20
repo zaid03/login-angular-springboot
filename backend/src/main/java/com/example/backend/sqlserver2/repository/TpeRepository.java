@@ -56,5 +56,10 @@ public interface TpeRepository extends JpaRepository<Tpe, TpeId> {
     Integer findMaxTpecodByEntAndTercod(@Param("ent") Integer ent, @Param("tercod") Integer tercod);
 
     // Deleting data
-    void deleteByEntAndTercodAndTpecod(Integer ent, Integer tercod, Integer Tpecod);
+    boolean existsByEntAndTercodAndTpecod(Integer ent, Integer tercod, Integer tpecod);
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM Tpe t WHERE t.ent = :ent AND t.tercod = :tercod AND t.tpecod = :tpecod")
+    int deleteByEntAndTercodAndTpecod(@Param("ent") Integer ent, @Param("tercod") Integer tercod, @Param("tpecod") Integer tpecod);
 }

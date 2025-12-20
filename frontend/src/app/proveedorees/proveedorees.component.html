@@ -285,7 +285,7 @@
                                         <input type="text" [(ngModel)]="c.tpeobs" #obs/>
                                     </td>
                                     <td>
-                                        <button class="delete-btn-personas" (click)="deletepersona()">-</button>
+                                        <button class="delete-btn-personas" (click)="openDeletePersonas(c)">-</button>
                                         <button class="save-btn-articulos" (click)="updatepersonas(c.tpecod, nom.value, telefon.value, movil.value, email.value, obs.value)">💾</button>
                                     </td>
                                 </tr>
@@ -370,16 +370,14 @@
     <button class="articulos-cancel-confirm-btn" (click)="closeDeleteConfirm()">✖</button>
 </div>
 
-<div class="modal-backdrop" *ngIf="showDeleteConfirm" (click)="closeDeleteConfirm()"></div>
-<div class="delete-confirm-modal" *ngIf="showDeleteConfirm">
-    <h3>¿Seguro que quieres eliminar este artículo?</h3>
-    <div *ngIf="articuloToDelete">
-        <p><strong>Familia:</strong> {{ articuloToDelete.afacod }}</p>
-        <p><strong>Subfamilia:</strong> {{ articuloToDelete.asucod }}</p>
-        <p><strong>Artículo:</strong> {{ articuloToDelete.artcod }}</p>
+<div class="modal-backdrop" *ngIf="showDeletePersona" (click)="closeDeleteConfirm()"></div>
+<div class="delete-confirm-modal" *ngIf="showDeletePersona">
+    <h3>¿Seguro que quieres eliminar este Persona?</h3>
+    <div *ngIf="personaToDelete">
+        
     </div>
-    <button class="articulos-delete-confirm-btn" (click)="confirmDelete()">-</button>
-    <button class="articulos-cancel-confirm-btn" (click)="closeDeleteConfirm()">✖</button>
+    <button class="articulos-delete-confirm-btn" (click)="confirmDeletePersona()">-</button>
+    <button class="articulos-cancel-confirm-btn" (click)="closeDeletePersonas()">✖</button>
 </div>
 
 <div class="modal-backdrop" *ngIf="showPersonasGrid" (click)="hidePersonas()"></div>

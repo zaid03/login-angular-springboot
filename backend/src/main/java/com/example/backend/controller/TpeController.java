@@ -122,26 +122,19 @@ public class TpeController {
         }
     }
 
-
-
-
-
-    // Deleting data
-    // @DeleteMapping("/delete/{ent}/{tercod}/{tpecod}")
-    // @Transactional
-    // public ResponseEntity<?> deleteTpe(
-    //     @PathVariable Integer ent, 
-    //     @PathVariable Integer tercod,
-    //     @PathVariable Integer tpecod
-    // ) {
-    //     List<Tpe> list = tpeRepository.findByEntAndTercodAndTpecod(ent, tercod, tpecod);
-    //     if (list == null || list.isEmpty()) {
-    //         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-    //             .body(Collections.singletonMap("message", "No Tpe entries found to delete"));
-    //     }
-    //     tpeRepository.deleteByEntAndTercodAndTpecod(ent, tercod, tpecod);
-    //     return ResponseEntity.ok(Collections.singletonMap("message", "Tpe entries deleted successfully"));
-    // }
-
-    //adding a persona de contacto
+    //Deleting a persona de contacto
+    @DeleteMapping("/delete/{ent}/{tercod}/{tpecod}")
+    @Transactional
+    public ResponseEntity<?> deleteTpe(
+        @PathVariable Integer ent, 
+        @PathVariable Integer tercod,
+        @PathVariable Integer tpecod
+    ) {
+        int deleted = tpeRepository.deleteByEntAndTercodAndTpecod(ent, tercod, tpecod);
+        if (deleted == 0) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Collections.singletonMap("message", "No se encontró la persona para eliminar"));
+        }
+        return ResponseEntity.ok(Collections.singletonMap("message", "La persona ha sido eliminada con éxito"));
+    }
 }
