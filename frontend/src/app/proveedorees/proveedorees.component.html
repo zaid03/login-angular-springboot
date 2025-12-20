@@ -370,16 +370,22 @@
     <button class="articulos-cancel-confirm-btn" (click)="closeDeleteConfirm()">✖</button>
 </div>
 
+<div class="modal-backdrop" *ngIf="showDeleteConfirm" (click)="closeDeleteConfirm()"></div>
+<div class="delete-confirm-modal" *ngIf="showDeleteConfirm">
+    <h3>¿Seguro que quieres eliminar este artículo?</h3>
+    <div *ngIf="articuloToDelete">
+        <p><strong>Familia:</strong> {{ articuloToDelete.afacod }}</p>
+        <p><strong>Subfamilia:</strong> {{ articuloToDelete.asucod }}</p>
+        <p><strong>Artículo:</strong> {{ articuloToDelete.artcod }}</p>
+    </div>
+    <button class="articulos-delete-confirm-btn" (click)="confirmDelete()">-</button>
+    <button class="articulos-cancel-confirm-btn" (click)="closeDeleteConfirm()">✖</button>
+</div>
+
 <div class="modal-backdrop" *ngIf="showPersonasGrid" (click)="hidePersonas()"></div>
 <div class="personas-modal" *ngIf="showPersonasGrid">
     <div class="btns">
-        <button class="save-btn" (click)="addPersonas(
-        nombreadd.value, 
-        telefonoadd.value, 
-        moviladd.value, 
-        correoadd.value, 
-        observacionesadd.value
-    )">💾</button>
+        <button class="save-btn" (click)="addPersonas(nombreadd.value, telefonoadd.value, moviladd.value, correoadd.value, observacionesadd.value)">💾</button>
         <button class="close-btn-btn" (click)="hidePersonas()">✖</button>
     </div>
     <h1 class="errorBtn">{{personaContactoaddError}}</h1>
