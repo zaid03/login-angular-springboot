@@ -630,7 +630,11 @@ export class ProveedoreesComponent {
       { responseType: 'text' }).subscribe({
       next: (res) => {
       this.personasContactoSuccessMessage = 'Persona de contacto eliminada correctamente';
-      // this.contactPersons = null; 
+      if (Array.isArray(this.contactPersons)) {
+        this.contactPersons = this.contactPersons.filter((p: any) =>
+          !(p.tercod === tercod && p.tpecod === tpecod)
+        );
+      }
       },
       error: (err) => {
         this.personasContactoErrorMessage = err.error ?? 'Error al eliminar la persona de contacto';
