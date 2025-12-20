@@ -44,51 +44,60 @@ public class TpeController {
         }
     }
 
-    // modifying the data
+    // modifying personas de contacto
+    public record personaContacto(String tpenom, String tpetel, String tpetmo, String tpecoe, String tpeobs) {}
+
     @PutMapping("/modify/{ent}/{tercod}/{tpecod}")
     public ResponseEntity<?> modifyTpe(
         @PathVariable Integer ent,
         @PathVariable Integer tercod,
         @PathVariable Integer tpecod,
-        @RequestBody TpeDto update
+        @RequestBody personaContacto payload
     ) {
         try {
-            List<Tpe> list = tpeRepository.findByEntAndTercodAndTpecod(ent, tercod, tpecod);
-            if (list == null || list.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(Collections.singletonMap("message", "No se encontró a nadie"));
+            if (payload == null || payload.tpenom() == null) {
+                return ResponseEntity.badRequest().body("nombre requerido.");
             }
 
-            Tpe tpe = list.get(0);
-            if (update.gettpenom() != null) tpe.settpenom(update.gettpenom());
-            if (update.gettpetel() != null) tpe.settpetel(update.gettpetel());
-            if (update.gettpetmo() != null) tpe.settpetmo(update.gettpetmo());
-            if (update.gettpecoe() != null) tpe.settpecoe(update.gettpecoe());
-            if (update.gettpeobs() != null) tpe.settpeobs(update.gettpeobs());
-            tpeRepository.saveAll(list);
+            int updated = tpeRepository.updatePersona(
+                payload.tpenom(),
+                payload.tpetel(),
+                payload.tpetmo(),
+                payload.tpecoe(),
+                payload.tpeobs(),
+                ent,
+                tercod,
+                tpecod
+            );
 
-            return ResponseEntity.ok(Collections.singletonMap("message", "Campos actualizados exitosamente"));
-        } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error de actualización de esta persona: " + ex.getMostSpecificCause().getMessage());
+            if (updated == 0) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No se encontró ninguna persona de contacto para los datos.");
+            }
+
+            return ResponseEntity.noContent().build();
+        } catch(DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("La actualización falló: " + ex.getMostSpecificCause().getMessage());
         }
     }
 
     // Deleting data
-    @DeleteMapping("/delete/{ent}/{tercod}/{tpecod}")
-    @Transactional
-    public ResponseEntity<?> deleteTpe(
-        @PathVariable Integer ent, 
-        @PathVariable Integer tercod,
-        @PathVariable Integer tpecod
-    ) {
-        List<Tpe> list = tpeRepository.findByEntAndTercodAndTpecod(ent, tercod, tpecod);
-        if (list == null || list.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(Collections.singletonMap("message", "No Tpe entries found to delete"));
-        }
-        tpeRepository.deleteByEntAndTercodAndTpecod(ent, tercod, tpecod);
-        return ResponseEntity.ok(Collections.singletonMap("message", "Tpe entries deleted successfully"));
-    }
+    // @DeleteMapping("/delete/{ent}/{tercod}/{tpecod}")
+    // @Transactional
+    // public ResponseEntity<?> deleteTpe(
+    //     @PathVariable Integer ent, 
+    //     @PathVariable Integer tercod,
+    //     @PathVariable Integer tpecod
+    // ) {
+    //     List<Tpe> list = tpeRepository.findByEntAndTercodAndTpecod(ent, tercod, tpecod);
+    //     if (list == null || list.isEmpty()) {
+    //         return ResponseEntity.status(HttpStatus.NOT_FOUND)
+    //             .body(Collections.singletonMap("message", "No Tpe entries found to delete"));
+    //     }
+    //     tpeRepository.deleteByEntAndTercodAndTpecod(ent, tercod, tpecod);
+    //     return ResponseEntity.ok(Collections.singletonMap("message", "Tpe entries deleted successfully"));
+    // }
 
     //adding a persona de contacto
 }

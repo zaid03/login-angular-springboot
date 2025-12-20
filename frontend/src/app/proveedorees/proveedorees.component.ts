@@ -200,13 +200,13 @@ export class ProveedoreesComponent {
   searchTerm: string = '';
   filterOption: string = 'noBloqueados';
   search() {
-    this.isLoading = true
     this.error = '';
     if (this.searchTerm.trim() === '') {
-      this.proveedores = [];
+      this.error = 'Ingrese algo para buscar';
       return;
     }
 
+    this.isLoading = true
     if(/^\d+$/.test(this.searchTerm)) {
       if(this.filterOption === 'noBloqueados') {
         if ((this.searchTerm.length <= 5)) {
@@ -215,6 +215,7 @@ export class ProveedoreesComponent {
               this.proveedores = response;
               if (response.length === 0) {
                 this.error = 'No se encontraron proveedores no bloqueados con el código ingresado.';
+                this.isLoading = false;
               }
               this.page = 0;
               this.isLoading = false;
@@ -230,6 +231,7 @@ export class ProveedoreesComponent {
               this.proveedores = response;
               if (response.length === 0) {
                 this.error = 'No se encontraron proveedores no bloqueados con el Nif ingresado.';
+                this.isLoading = false;
               }
               this.page = 0;
               this.isLoading = false;
@@ -247,6 +249,7 @@ export class ProveedoreesComponent {
               this.proveedores = response;
               if (response.length === 0) {
                 this.error = 'No se encontraron proveedores bloqueados con el codigo ingresado.';
+                this.isLoading = false;
               }
               this.page = 0;
               this.isLoading = false;
@@ -262,6 +265,7 @@ export class ProveedoreesComponent {
               this.proveedores = response;
               if (response.length === 0) {
                 this.error = 'No se encontraron proveedores bloqueados con el NIF ingresado.';
+                this.isLoading = false;
               }
               this.page = 0;
               this.isLoading = false;
@@ -279,6 +283,7 @@ export class ProveedoreesComponent {
               this.proveedores = response;
               if (response.length === 0) {
                 this.error = 'No se encontraron proveedores con el codigo ingresado.';
+                this.isLoading = false;
               }
               this.page = 0;
               this.isLoading = false;
@@ -294,6 +299,7 @@ export class ProveedoreesComponent {
               this.proveedores = response;
               if (response.length === 0) {
                 this.error = 'No se encontraron proveedores con el NIF ingresado.';
+                this.isLoading = false;
               }
               this.page = 0;
               this.isLoading = false;
@@ -312,6 +318,7 @@ export class ProveedoreesComponent {
             this.proveedores = response;
             if (response.length === 0) {
               this.error = 'No se encontraron proveedores no bloqueados con el valor ingresado.';
+              this.isLoading = false;
             }
             this.page = 0;
             this.isLoading = false;
@@ -327,6 +334,7 @@ export class ProveedoreesComponent {
             this.proveedores = response;
             if (response.length === 0) {
               this.error = 'No se encontraron proveedores no bloqueados con el valor ingresado.';
+              this.isLoading = false;
             }
             this.page = 0;
             this.isLoading = false;
@@ -342,6 +350,7 @@ export class ProveedoreesComponent {
             this.proveedores = response;
             if (response.length === 0) {
               this.error = 'No se encontraron proveedores bloqueados con el valor ingresado.';
+              this.isLoading = false;
             }
             this.page = 0;
             this.isLoading = false;
@@ -359,6 +368,7 @@ export class ProveedoreesComponent {
             this.proveedores = response;
             if (response.length === 0) {
               this.error = 'No se encontraron proveedores no bloqueados con el valor ingresado.';
+              this.isLoading = false;
             }
             this.page = 0;
             this.isLoading = false;
@@ -375,6 +385,7 @@ export class ProveedoreesComponent {
             this.proveedores = response;
             if (response.length === 0) {
               this.error = 'No se encontraron proveedores bloqueados con el valor ingresado.';
+              this.isLoading = false;
             }
             this.page = 0;
             this.isLoading = false;
@@ -613,11 +624,11 @@ export class ProveedoreesComponent {
       return;
     }
     const updateFields = {
-      TPENOM : nom,
-      TPETEL : telefon,
-      TPETMO : movil,
-      TPECOE : email,
-      TPEOBS : obs
+      tpenom : nom,
+      tpetel : telefon,
+      tpetmo : movil,
+      tpecoe : email,
+      tpeobs : obs
     }
 
     console.log(updateFields);
