@@ -745,70 +745,6 @@ export class ProveedoreesComponent {
     });
   }
 
-  anadirErrorMessage: string = '';
-  anadirmessage: string = '';
-  addArticulo(){
-    const newArticulo = {
-      ENT: this.entcod,
-      TERCOD: this.selectedProveedor.tercod,
-      AFACOD: this.selectedFamilia || '*',
-      ASUCOD: this.selectedSubfamilia || '*',
-      ARTCOD: this.selectedArticulo || '*',
-    };
-
-    if ((this.articulos ?? []).some((a: any) =>
-      (a.afacod ?? '*') === newArticulo.AFACOD &&
-      (a.asucod ?? '*') === newArticulo.ASUCOD &&
-      (a.artcod ?? '*') === newArticulo.ARTCOD)) {
-      this.anadirErrorMessage = 'El artículo ya está en la lista.';
-      return;
-    }
-
-    this.http.post(
-      `${environment.backendUrl}/api/more/add-apr`,
-      newArticulo,
-      { responseType: 'text' }
-    ).subscribe({
-      next: (res) => {
-        this.anadirmessage = 'Artículo añadido correctamente';
-
-        if (this.showArticulosGrid) {
-          const newRow = {
-            afacod: this.selectedFamilia || '*',
-            asucod: this.selectedSubfamilia || '*',
-            artcod: this.selectedArticulo || '*',
-            ent: this.entcod,
-            tercod: this.selectedProveedor.tercod,
-            description: ''
-          };
-          if (!this.articulos) this.articulos = [];
-          this.articulos.push(newRow);
-
-          const artcod = String(newRow.artcod ?? '').trim();
-          const afacod = String(newRow.afacod ?? '').trim();
-          const asucod = String(newRow.asucod ?? '').trim();
-          const index = this.articulos.length - 1;
-
-          this.getDescription(newRow, index, artcod, afacod, asucod);
-          this.articuloSuccessMessage = '';
-          this.articuloError = '';
-        }
-      },
-      error: (err) => {
-        console.error('Error:', err);
-        this.anadirmessage = 'Error al añadir el artículo';
-      }
-    });
-  }
-
-  selectedSearchRow: any = null;
-  selectSearchRow(item: any) {
-    this.selectedSearchRow = item;
-    this.selectedFamilia = item.afacod;
-    this.selectedSubfamilia = item.asucod;
-    this.selectedArticulo = item.artcod;
-  }
-
   updatearticulos(articulo: any){
     this.articuloSuccessMessage = '';
     this.articuloError = '';
@@ -889,6 +825,70 @@ export class ProveedoreesComponent {
     }
   }
 
+  anadirErrorMessage: string = '';
+  anadirmessage: string = '';
+  addArticulo(){
+    const newArticulo = {
+      ENT: this.entcod,
+      TERCOD: this.selectedProveedor.tercod,
+      AFACOD: this.selectedFamilia || '*',
+      ASUCOD: this.selectedSubfamilia || '*',
+      ARTCOD: this.selectedArticulo || '*',
+    };
+
+    if ((this.articulos ?? []).some((a: any) =>
+      (a.afacod ?? '*') === newArticulo.AFACOD &&
+      (a.asucod ?? '*') === newArticulo.ASUCOD &&
+      (a.artcod ?? '*') === newArticulo.ARTCOD)) {
+      this.anadirErrorMessage = 'El artículo ya está en la lista.';
+      return;
+    }
+
+    this.http.post(
+      `${environment.backendUrl}/api/more/add-apr`,
+      newArticulo,
+      { responseType: 'text' }
+    ).subscribe({
+      next: (res) => {
+        this.anadirmessage = 'Artículo añadido correctamente';
+
+        if (this.showArticulosGrid) {
+          const newRow = {
+            afacod: this.selectedFamilia || '*',
+            asucod: this.selectedSubfamilia || '*',
+            artcod: this.selectedArticulo || '*',
+            ent: this.entcod,
+            tercod: this.selectedProveedor.tercod,
+            description: ''
+          };
+          if (!this.articulos) this.articulos = [];
+          this.articulos.push(newRow);
+
+          const artcod = String(newRow.artcod ?? '').trim();
+          const afacod = String(newRow.afacod ?? '').trim();
+          const asucod = String(newRow.asucod ?? '').trim();
+          const index = this.articulos.length - 1;
+
+          this.getDescription(newRow, index, artcod, afacod, asucod);
+          this.articuloSuccessMessage = '';
+          this.articuloError = '';
+        }
+      },
+      error: (err) => {
+        console.error('Error:', err);
+        this.anadirmessage = 'Error al añadir el artículo';
+      }
+    });
+  }
+
+  selectedSearchRow: any = null;
+  selectSearchRow(item: any) {
+    this.selectedSearchRow = item;
+    this.selectedFamilia = item.afacod;
+    this.selectedSubfamilia = item.asucod;
+    this.selectedArticulo = item.artcod;
+  }
+  
   searchType: string = 'familia';
   searchValue: string = '';
   searchResults: any[] = [];
