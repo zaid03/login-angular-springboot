@@ -24,14 +24,26 @@ public interface AprRepository extends JpaRepository<Apr, Integer> {
     //modifying an articulo
     @Modifying
     @Transactional
-    @Query("UPDATE Apr a SET a.APRREF = :aprref, a.APRPRE = :aprpre, a.APRUEM = :apruem, a.APROBS = :aprobs, a.APRACU = :apracud " +
-        "WHERE a.ENT = :ent AND a.TERCOD = :tercod AND a.AFACOD = :afacod AND a.ASUCOD = :asucod AND a.ARTCOD = :artcod")
-    int updateOneApr(
+    @Query("""
+        UPDATE Apr a SET 
+            a.APRREF = :aprref, 
+            a.APRPRE = :aprpre, 
+            a.APRUEM = :apruem, 
+            a.APROBS = :aprobs, 
+            a.APRACU = :apracu 
+        WHERE 
+            a.ENT = :ent 
+            AND a.TERCOD = :tercod 
+            AND a.AFACOD = :afacod 
+            AND a.ASUCOD = :asucod 
+            AND a.ARTCOD = :artcod
+    """)
+    int updateArticulo(
         @Param("aprref") String aprref,
         @Param("aprpre") Double aprpre,
         @Param("apruem") Double apruem,
         @Param("aprobs") String aprobs,
-        @Param("apracud") Integer apracud,
+        @Param("apracu") Integer apracu,
         @Param("ent") Integer ent,
         @Param("tercod") Integer tercod,
         @Param("afacod") String afacod,

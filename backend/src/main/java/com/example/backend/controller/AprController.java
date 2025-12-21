@@ -1,9 +1,12 @@
 package com.example.backend.controller;
 
+import com.example.backend.controller.CgeController.centroAdd;
 import com.example.backend.dto.AprDto;
 import com.example.backend.sqlserver2.model.Apr;
 import com.example.backend.sqlserver2.repository.AprRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,24 +28,44 @@ public class AprController {
         return ResponseEntity.ok(result);
     }
 
-    // Modifying the data
-    @PutMapping("/update-apr")
-    public ResponseEntity<String> updateApr(@RequestBody AprDto aprDto) {
-        int updated = aprRepository.updateOneApr(
-            aprDto.getAPRREF(),
-            aprDto.getAPRPRE(),
-            aprDto.getAPRUEM(),
-            aprDto.getAPROBS(),
-            aprDto.getAPRACU(),
-            aprDto.getENT(),
-            aprDto.getTERCOD(),
-            aprDto.getAFACOD(),
-            aprDto.getASUCOD(),
-            aprDto.getARTCOD()
-        );
-        return ResponseEntity.ok(updated + " row(s) updated");
-    }
+    // Modifying an articulo
+    public record articulo(String aprref, double aprpre, double apruem, String aprobs, Integer apracu) {}
 
+    @PatchMapping("/update-apr/{ent}/{tercod}/{afacod}/{asucod}/{artcod}")
+    public ResponseEntity<?> updateArticulo(
+        @PathVariable Integer ent,
+        @PathVariable Integer tercod,
+        @PathVariable String afacod,
+        @PathVariable String asucod,
+        @PathVariable String artcod,
+        @RequestBody articulo payload
+    ) {
+        try {
+            int articulo = aprRepository.updateArticulo(
+                payload.aprref(),
+                payload.aprpre(),
+                payload.apruem(),
+                payload.aprobs(),
+                payload.apracu(),
+                ent,
+                tercod,
+                afacod,
+                asucod,
+                artcod
+            );
+
+            if (articulo == 0) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No se encontró ninguno articulo para los datos.");
+            }
+
+            return ResponseEntity.noContent().build();
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("La actualización falló.: " + ex.getMostSpecificCause().getMessage());
+        }
+    }
+    
     // Deleting data
     @DeleteMapping("/delete-apr")
     public ResponseEntity<String> deleteApr(
