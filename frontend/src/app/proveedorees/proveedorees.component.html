@@ -256,6 +256,10 @@
                         <button class="add-btn" (click)="showPersonas()">+</button>
                         <h1 class="errorBtn">{{ personasContactoErrorMessage }}</h1>
                         <h1 class="successBtn">{{ personasContactoSuccessMessage }}</h1>
+                        <div *ngIf="isLoading" class="loading-message">
+                            <div class="spinner"></div>
+                            <span>Cargando</span>
+                        </div>
                         <table class="personas-contacto-table">
                             <thead>
                                 <tr>
@@ -296,6 +300,10 @@
                         <button class="add-btn" (click)="showHello()">+</button>
                         <h1 class="errorBtn">{{ articuloError }}</h1>
                         <h1 class="successBtn">{{ articuloSuccessMessage }}</h1>
+                        <div *ngIf="isLoading" class="loading-message">
+                            <div class="spinner"></div>
+                            <span>Cargando</span>
+                        </div>
                         <table class="articulo-table">
                             <thead>
                                 <tr>

@@ -539,22 +539,26 @@ export class ProveedoreesComponent {
     this.articuloError = '';
     const tercod = proveedore.tercod;
 
+    this.isLoading = true;
     this.http.get<any[]>(`${environment.backendUrl}/api/more/by-tpe/${this.entcod}/${tercod}`)
       .subscribe({ next: (response) => {
         const respArray = Array.isArray(response) ? response : (response ? [response] : []);
         if (respArray.length === 0) { 
           this.contactPersons = null;           
           this.personasContactoErrorMessage = 'No se encontraron personas de contacto.';
+          this.isLoading = false;
         } else {
           this.contactPersons = respArray;
           this.personasContactoErrorMessage = '';
-         }
+          this.isLoading = false;
+        }
           this.page = 0;
       },
       error: (err) => {
         this.personasContactoErrorMessage = 'No se encontraron personas de contacto.';
         this.contactPersons = [];
         this.page = 0;
+        this.isLoading = false;
       } 
     });
   }
@@ -714,6 +718,7 @@ export class ProveedoreesComponent {
     this.articuloError = ''
     this.personasContactoErrorMessage = ''
     
+    this.isLoading = true;
     this.http.get<any[]>(`${environment.backendUrl}/api/more/by-apr/${this.entcod}/${tercod}`)
       .subscribe({ next: (response) => {
         this.articulos = Array.isArray(response) ? response : (response ? [response] : []);
@@ -726,14 +731,16 @@ export class ProveedoreesComponent {
           this.anadirmessage = '';
           this.anadirErrorMessage = '';
         });
-
+        this.isLoading = false;
         if (response.length === 0) {
           this.articuloError = 'No se encontraron artículos.';
+          this.isLoading = false;
         }
         this.page = 0;
       },
       error: (err) => {
         this.articuloError = 'No se encontraron artículos.';
+        this.isLoading = false;
       } 
     });
   }
