@@ -51,7 +51,7 @@ public interface AprRepository extends JpaRepository<Apr, Integer> {
         @Param("artcod") String artcod
     );
 
-    //deleting data
+    //deleting an articulo
     @Transactional
     int deleteByENTAndTERCODAndAFACODAndASUCODAndARTCOD(
         Integer ent, Integer tercod, String afacod, String asucod, String artcod

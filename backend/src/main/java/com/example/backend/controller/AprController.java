@@ -77,9 +77,9 @@ public class AprController {
     ) {
         int deleted = aprRepository.deleteByENTAndTERCODAndAFACODAndASUCODAndARTCOD(ent, tercod, afacod, asucod, artcod);
         if (deleted > 0) {
-            return ResponseEntity.ok("Apr deleted successfully");
+            return ResponseEntity.ok("articulo eliminado exitosamente");
         } else {
-            return ResponseEntity.status(404).body("Apr not found");
+            return ResponseEntity.status(404).body("articulo extraviado");
         }
     }
 
