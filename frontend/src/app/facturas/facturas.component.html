@@ -276,53 +276,49 @@
                                 <textarea class="tallTextarea" [ngModel]="selectedFacturas.conccr"></textarea>  
                             </div>
                         </div>
-                        <div class="tall-chunk">
-                            <div class="left-one">
-                                <div class="data-one">
-                                    <p>Forma de pago</p>
+                        <div class="chunk-four">
+                            <div class="left">
+                                <p>Forma de pago</p>
+                                <p>Ordinal de pago</p>     
+                            </div>
+                            <div class="right">
+                                <div class="on-two">
                                     <textarea class="smallTextarea" [ngModel]="selectedFacturas.facfpg"></textarea>
-                                </div>
-                                <div class="data-one">
-                                    <p>Ordinal de pago</p>
-                                    <textarea class="smallTextarea" [ngModel]="selectedFacturas.facopg"></textarea>
-                                </div>
-                                <div class="data-one">
                                     <p>Tipo de pago</p>
                                     <textarea class="smallTextarea" [ngModel]="selectedFacturas.factpg"></textarea>
                                 </div>
-                            </div>
-                            <div class="right-one">
-                                <div class="p-side">
+                                <div class="on-two">
+                                    <textarea class="smallTextarea" [ngModel]="selectedFacturas.facopg"></textarea>
                                     <p>ADO</p>
-                                    <p>Des.Fact/ADO:</p>
-                                    
-                                </div>
-                                <div class="t-side">
-                                    <textarea class="tallTextarea" [(ngModel)]="selectedFacturas.facado"></textarea>
-                                    <textarea class="tallTextarea" [(ngModel)]="selectedFacturas.factxt"></textarea>
-                                    
+                                    <textarea class="averageTextarea" [(ngModel)]="selectedFacturas.facado"></textarea>
                                 </div>
                             </div>
                         </div>
-                        <div class="accountings">
-                            <div class="data-account">
+                        <div class="chunk-five">
+                            <div class="left">
+                                <p>Des.Fact/ADO:</p>
+                            </div>
+                            <div class="right">
+                                <textarea class="tallTextarea" [(ngModel)]="selectedFacturas.factxt"></textarea>
+                            </div>
+                        </div>
+                        <div class="chunk-six">
+                            <div class="left">
                                 <p>Total Factura</p>
-                                <textarea class="averageTextarea" [ngModel]="selectedFacturas.facimp | currency:'EUR':'symbol':'1.2-2':'es-ES'"></textarea>
-                            </div>
-                            <div class="data-account">
-                                <p>Aplicado:</p>
-                                <textarea class="averageTextarea" [ngModel]="selectedFacturas.faciec | currency:'EUR':'symbol':'1.2-2':'es-ES'"></textarea>
-                            </div>
-                            <div class="data-account">
-                                <p>Apl. diferencias:</p>
-                                <textarea class="averageTextarea" [ngModel]="selectedFacturas.facidi | currency:'EUR':'symbol':'1.2-2':'es-ES'"></textarea>
-                            </div>
-                            <div class="data-account">
-                                <p>Pte.Aplicar</p>
-                                <textarea class="averageTextarea" [value]="getPendingApply(selectedFacturas) | currency:'EUR':'symbol':'1.2-2':'es-ES'" readonly></textarea>
-                            </div>
-                            <div class="data-account">
+                                <p>Apl.diferencias</p>
                                 <p>Descuentos</p>
+                            </div>
+                            <div class="right">
+                                <div class="on-two">
+                                    <textarea class="averageTextarea" [ngModel]="selectedFacturas.facimp | currency:'EUR':'symbol':'1.2-2':'es-ES'"></textarea>
+                                    <p>Aplicado</p>
+                                    <textarea class="averageTextarea" [ngModel]="selectedFacturas.faciec | currency:'EUR':'symbol':'1.2-2':'es-ES'"></textarea>
+                                </div>
+                                <div class="on-two">
+                                    <textarea class="averageTextarea" [ngModel]="selectedFacturas.facidi | currency:'EUR':'symbol':'1.2-2':'es-ES'"></textarea>
+                                    <p>Pte.Apli</p>
+                                    <textarea class="averageTextarea" [value]="getPendingApply(selectedFacturas) | currency:'EUR':'symbol':'1.2-2':'es-ES'" readonly></textarea>
+                                </div>
                                 <textarea class="averageTextarea" [value]="selectedFacturas.facdto | currency:'EUR':'symbol':'1.2-2':'es-ES'" readonly></textarea>
                             </div>
                         </div>

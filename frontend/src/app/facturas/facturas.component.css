@@ -20,7 +20,9 @@
 .chunk-one,
 .chunk-two,
 .chunk-three,
-.chunk-four { width: 30%; display: flex; padding: 2px; }
+.chunk-four,
+.chunk-five,
+.chunk-six { width: 30%; display: flex; padding: 2px; }
 .left { width: 25%; display: flex; flex-direction: column; gap: 20px; }
 .right { width: 75%; display: flex; flex-direction: column; gap: 10px;}
 .special-needs {width: 50%;}
@@ -30,33 +32,33 @@
 .chunk-two p,
 .chunk-three p,
 .chunk-four p,
-.tall-chunk p,
+.chunk-five p,
 .accountings p,
-.observ p { font-size: 14px; font-weight: bold; color: #1c5d8c; }
+.observ p,
+.chunk-six p { font-size: 14px; font-weight: bold; color: #1c5d8c; }
 .chunk-one textarea,
 .chunk-two textarea,
 .chunk-three textarea,
 .chunk-four textarea,
-.tall-chunk textarea,
+.chunk-five textarea,
 .accountings textarea,
-.observ textarea { height: 20px; padding: 2px 4px; border-radius: 6px; font-weight: bold; }
+.observ textarea,
+.chunk-six textarea { height: 20px; padding: 2px 4px; border-radius: 6px; font-weight: bold; }
 .chunk-one textarea:focus,
 .chunk-two textarea:focus,
 .chunk-three textarea:focus,
 .chunk-four textarea:focus,
-.tall-chunk textarea:focus,
+.chunk-five textarea:focus,
 .accountings textarea:focus,
-.observ textarea:focus { outline: none; border-color: #042b5a; outline: none; background: #fff; } 
+.observ textarea:focus,
+.chunk-six textarea:focus { outline: none; border-color: #042b5a; outline: none; background: #fff; } 
 .special-chunk { width: 33%; }
 .tallTextarea {width: 220px; max-width: 240px;}
 .averageTextarea{ width: 100px; max-width: 160px;}
 .smallTextarea{width: 60px; max-width: 100px;}
-.tall-chunk { display: flex; width: 100%;}
-.left-one { width: 40%; display: flex; align-items: center; gap: 10px;}
-.data-one { width: 30%; display: flex; flex-direction: column; gap: 8px;}
-.right-one{ width: 60%; display: flex; gap: 10px;}
-.p-side { display: flex; flex-direction: column; gap: 20px;}
-.t-side { display: flex; flex-direction: column; gap: 10px;}
+
+
+
 .accountings { width: 100%; display: flex; gap: 10px; flex-wrap: wrap;}
 .data-account { width: 15%; display: flex; flex-direction: column; gap: 5px;}
 .observ { width: 50%; display: flex; gap: 5px; align-items: center;}
