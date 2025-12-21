@@ -809,37 +809,34 @@ export class ProveedoreesComponent {
     this.selectedArticulo = item.artcod;
   }
 
-  // updatearticulos(articulo: any){
-  //   this.articuloSuccessMessage = '';
-  //   this.articuloError = '';
+  updatearticulos(articulo: any){
+    this.articuloSuccessMessage = '';
+    this.articuloError = '';
 
-  //   const updateFields = {
-  //     ENT: this.entcod,
-  //     TERCOD: this.selectedProveedor.tercod,
-  //     AFACOD : articulo.afacod,
-  //     ASUCOD : articulo.asucod,
-  //     ARTCOD : articulo.artcod,
-  //     APRREF : articulo.aprref,
-  //     APRUEM : articulo.apruem,
-  //     APROBS : articulo.aprobs,
-  //     APRACU : articulo.apracu,
-  //     APRPRE : articulo.aprpre
-  //   }
+    const tercod = this.selectedProveedor.tercod;
+    const afacod = articulo.afacod;
+    const asucod = articulo.asucod;
+    const artcud = articulo.artcod;
 
-  //   this.http.put(
-  //     `${environment.backendUrl}/api/more/update-apr`,
-  //     updateFields,
-  //     { responseType: 'text' }
-  //   ).subscribe({
-  //     next: (res) => {
-  //       this.articuloSuccessMessage = 'Artículo actualizado correctamente';
-  //     },
-  //     error: (err) => {
-  //       console.error('Error:', err);
-  //       this.articuloError = 'Error al guardar el artículo';
-  //     }
-  //   });
-  // }
+    const updateFields = {
+      aprref : articulo.aprref,
+      apruem : articulo.apruem,
+      aprobs : articulo.aprobs,
+      apracu : articulo.apracu,
+      aprpre : articulo.aprpre
+    }
+
+    this.http.patch(`${environment.backendUrl}/api/more/update-apr/${this.entcod}/${tercod}/${afacod}/${asucod}/${artcud}`,updateFields,{ responseType: 'text' }).subscribe({
+      next: (res) => {
+        this.articuloError = '';
+        this.articuloSuccessMessage = 'Artículo actualizado correctamente';
+      },
+      error: (err) => {
+        this.articuloSuccessMessage = '';
+        this.articuloError = err.error.error || err.error || 'Error al guardar el artículo';
+      }
+    });
+  }
 
   deletearticulo(articulo: any){
     const params = [
