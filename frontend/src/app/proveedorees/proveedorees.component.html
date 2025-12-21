@@ -247,6 +247,7 @@
                                 [attr.aria-selected]="activeDetailTab === 'articulo'"
                                 [class.active-tab]="activeDetailTab === 'articulo'"
                                 (click)="showArticulos(selectedProveedor)"
+                                [disabled]="!selectedProveedor?.teracu || selectedProveedor.teracu != 1"
                             >
                                 Artículos
                             </button> 

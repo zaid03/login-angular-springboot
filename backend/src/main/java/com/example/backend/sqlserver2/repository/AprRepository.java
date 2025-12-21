@@ -15,13 +15,13 @@ import com.example.backend.sqlserver2.model.Apr;
 @Repository
 public interface AprRepository extends JpaRepository<Apr, Integer> {
 
-    //select * from APR where ENT = :ent and TERCOD = :tercod
+    //select all articulos
     @Query("SELECT new com.example.backend.dto.AprDto(a.ENT, a.TERCOD, a.AFACOD, a.ASUCOD, a.ARTCOD, a.APRREF, a.APRPRE, a.APRUEM, a.APROBS, a.APRACU) FROM Apr a WHERE a.ENT = :ent  AND a.TERCOD = :tercod")
     List<AprDto> findByEnt(
         @Param("ent") Integer ent, @Param("tercod") Integer tercod
     );
 
-    //modifying the data
+    //modifying an articulo
     @Modifying
     @Transactional
     @Query("UPDATE Apr a SET a.APRREF = :aprref, a.APRPRE = :aprpre, a.APRUEM = :apruem, a.APROBS = :aprobs, a.APRACU = :apracud " +
