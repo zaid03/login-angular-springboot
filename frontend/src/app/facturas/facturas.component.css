@@ -1,200 +1,68 @@
-.facturas-container.blurred {
-    filter: blur(1.2px);
-    pointer-events: none;
-    user-select: none;
-}
-
-.search-container {
-    gap: 20px;
-}
-
-.search-form {
-    gap: 20px;
-}
-
-.more-search-options {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
+.facturas-container.blurred { filter: blur(1.2px); pointer-events: none; user-select: none;}
+/* search container and inputs */
+.search-container { gap: 20px; }
+.search-form { gap: 20px; }
+.more-search-options { display: flex; align-items: center; gap: 10px; }
 .more-search-options select,
-.more-search-options input[type="date"] {
-    padding: 4px 6px;
-    border-radius: 20px;
-    border: 1px solid #bbb;
-    color: #25176b;
-    font-size: 15px;
-    transition: border 0.2s, box-shadow 0.2s;
-    outline: none;
-    box-shadow: 0 1px 4px rgba(56,36,155,0.04);
-}
-
+.more-search-options input[type="date"] { padding: 4px 6px; border-radius: 20px; border: 1px solid #bbb; color: #25176b; font-size: 15px; transition: border 0.2s, box-shadow 0.2s; outline: none; box-shadow: 0 1px 4px rgba(56,36,155,0.04); }
 .more-search-options select:focus,
-.more-search-options input[type="date"]:focus {
-    outline: none;
-}
-
-.btns{
-    display: flex;
-    gap: 10px;
-}
-
-.successBtn {
-    margin-top: 5px;
-}
-
+.more-search-options input[type="date"]:focus { outline: none; }
+.successBtn { margin-top: 5px; }
+/* search container and inputs */
 /* table style */
 .facturas-table th:first-child,
 .facturas-table th:nth-child(10),
 .facturas-table th:nth-child(5),
-.facturas-table th:nth-child(12)  {
-  width: 80px;
-}
-
-.modal h3 {
-    margin: 10px;
-    color: #1c5d8c;
-    text-align: center;
-}
-
-.data{
-    margin-top: 10px;
-    display: flex;
-}
-
-.left{
-    width: 70%;
-}
-
-.left input,
-.right input {
-    font-weight: 700;
-}
-
-.right{
-    width: 30%;
-}
-
-.first-row, 
-.second-row, 
-.third-row, 
-.fourth-row, 
-.fifth-row, 
-.sixth-row,
-.seventh-row {
-    display: flex;
-    margin: 10px;
-}
-
-.first-data, 
-.second-data, 
-.third-data, 
-.fourth-data,
-.seventh-data,
-.eighth-data,
-.ninth-data,
-.tenth-data,
-.eleventh-data,
-.twelfth-data,
-.thirteenth-data {
-    width: 100%;
-    height: auto;
-    margin-right: 2%;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 1%;
-}
-
-.fifth-data,
-.sixth-data {
-    width: 100%;
-    height: auto;
-    margin-right: 2%;
-    padding: 1%;
-}
-
-.first-data p, 
-.second-data p, 
-.third-data p, 
-.fourth-data p, 
-.fifth-data p, 
-.sixth-data p,
-.seventh-data p,
-.eighth-data p,
-.ninth-data p,
-.tenth-data p,
-.eleventh-data p,
-.twelfth-data p,
-.thirteenth-data p {
-    font-size: 14px;
-    font-weight: bold;
-    color: #1c5d8c;
-}
-
-.width{
-    width: 200px;
-}
-
-.margin{
-    margin-bottom: 10%;
-}
-
-.first-data textarea, 
-.second-data textarea, 
-.third-data textarea, 
-.fourth-data textarea, 
-.fifth-data textarea, 
-.sixth-data textarea,
-.sixth-data textarea,
-.seventh-data textarea,
-.eighth-data textarea,
-.ninth-data textarea,
-.tenth-data textarea,
-.eleventh-data textarea,
-.twelfth-data textarea,
-.thirteenth-data textarea  {
-    border: 1px solid #1c5d8c;
-    height: 20px;
-    padding: 2px 4px;
-    border-radius: 6px;
-    max-width: 200px;
-    font-weight: bold;
-}
-
-.fifth-data textarea {
-    min-width: 85%;
-    max-width: 100% !important;
-}
-
-.first-data textarea:focus,
-.second-data textarea:focus,
-.third-data textarea:focus,
-.fourth-data textarea:focus, 
-.fifth-data textarea:focus, 
-.sixth-data textarea:focus,
-.seventh-data textarea:focus,
-.eighth-data textarea:focus,
-.ninth-data textarea:focus,
-.tenth-data textarea:focus,
-.eleventh-data textarea:focus,
-.twelfth-data textarea:focus,
-.thirteenth-data textarea:focus  {
-    outline: none;
-    border-color: #042b5a;
-    outline: none;
-    background: #fff;
-} 
-
-.eighth-data textarea,
-.ninth-data textarea,
-.tenth-data textarea,
-.eleventh-data textarea,
-.twelfth-data textarea {
-    text-align: right;
-}
-
+.facturas-table th:nth-child(12) {width: 80px; }
+/* table style */
+/* main-detail grid */
+.detail-container { display: flex; flex-wrap: wrap; align-items: center; padding: 5px; gap: 10px; }
+.chunk-one,
+.chunk-two,
+.chunk-three,
+.chunk-four { width: 30%; display: flex; padding: 2px; }
+.left { width: 25%; display: flex; flex-direction: column; gap: 20px; }
+.right { width: 75%; display: flex; flex-direction: column; gap: 10px;}
+.special-needs {width: 50%;}
+.on-three,
+.on-two { display: flex; gap: 10px; align-items: center;}
+.chunk-one p,
+.chunk-two p,
+.chunk-three p,
+.chunk-four p,
+.tall-chunk p,
+.accountings p,
+.observ p { font-size: 14px; font-weight: bold; color: #1c5d8c; }
+.chunk-one textarea,
+.chunk-two textarea,
+.chunk-three textarea,
+.chunk-four textarea,
+.tall-chunk textarea,
+.accountings textarea,
+.observ textarea { height: 20px; padding: 2px 4px; border-radius: 6px; font-weight: bold; }
+.chunk-one textarea:focus,
+.chunk-two textarea:focus,
+.chunk-three textarea:focus,
+.chunk-four textarea:focus,
+.tall-chunk textarea:focus,
+.accountings textarea:focus,
+.observ textarea:focus { outline: none; border-color: #042b5a; outline: none; background: #fff; } 
+.special-chunk { width: 33%; }
+.tallTextarea {width: 220px; max-width: 240px;}
+.averageTextarea{ width: 100px; max-width: 160px;}
+.smallTextarea{width: 60px; max-width: 100px;}
+.tall-chunk { display: flex; width: 100%;}
+.left-one { width: 40%; display: flex; align-items: center; gap: 10px;}
+.data-one { width: 30%; display: flex; flex-direction: column; gap: 8px;}
+.right-one{ width: 60%; display: flex; gap: 10px;}
+.p-side { display: flex; flex-direction: column; gap: 20px;}
+.t-side { display: flex; flex-direction: column; gap: 10px;}
+.accountings { width: 100%; display: flex; gap: 10px; flex-wrap: wrap;}
+.data-account { width: 15%; display: flex; flex-direction: column; gap: 5px;}
+.observ { width: 50%; display: flex; gap: 5px; align-items: center;}
+.observ textarea { width: 90%; max-width: 100%; height: 40px;}
+/* main-detail grid */
+/* sub detail grids */
 .detail-switch,
 .detail-switch-second {
     display: flex;
@@ -247,3 +115,7 @@
     justify-content: center;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
 }
+/* sub detail grids */
+
+@media (min-width: 1700px) { .tallTextarea {width: 250px; max-width: 300px;}
+.averageTextarea{ width: 120px; max-width: 190px;} }

@@ -214,123 +214,121 @@
             <div class="display" >
                 <div class="modal" *ngIf="selectedFacturas">
                     <div class="btns">
-                        <button class="close-btn-btn" (click)="closeDetails()">×</button>
+                        <div class="title-detail">
+                            <h3>Detalles del Factura</h3>
+                        </div>
+                        <button class="guardar-btn">💾</button>
+                        <button class="close-btn-btn" (click)="closeDetails()">✖</button>
                     </div>
-                    <h3>Detalles de Factura</h3>
-
-                    <div class="data">
-                        <div class="left">
-                            <div class="first-row">
-                                <div class="first-data">
-                                    <p>Núm. Reg.</p>
-                                    <textarea [(ngModel)]="selectedFacturas.facnum"></textarea>
-                                </div>
-                                <div class="first-data">
+                    <div class="detail-container">
+                        <div class="chunk-one">
+                            <div class="left">
+                                <p>Núm. Reg.</p>
+                                <p>Núm.Factura:</p>
+                                <p>R.C.F:</p>
+                            </div>
+                            <div class="right">
+                                <div class="on-two">
+                                    <textarea class="smallTextarea" [(ngModel)]="selectedFacturas.facnum"></textarea>
                                     <p>F.Contable</p>
-                                    <textarea [ngModel]="selectedFacturas.facfco | date:'dd-MM-yyyy'"></textarea>
+                                    <textarea class="averageTextarea" [ngModel]="selectedFacturas.facfco | date:'dd-MM-yyyy'"></textarea>
                                 </div>
-                                <div class="first-data">
-                                    <p>ADO</p>
-                                    <textarea [(ngModel)]="selectedFacturas.facado"></textarea>
-                                </div>  
-                            </div>
-                            <div class="second-row">
-                                <div class="second-data">
-                                    <p>R.C.F:</p>
-                                    <textarea [(ngModel)]="selectedFacturas.facfac"></textarea>
-                                    <textarea [(ngModel)]="selectedFacturas.facann" ></textarea>
-                                    <textarea [(ngModel)]="selectedFacturas.factdc"></textarea>
-                                </div>
-                                <div class="second-data">
-                                    <p>Núm.Factura:</p>
-                                    <textarea [(ngModel)]="selectedFacturas.facdoc"></textarea>
-                                </div>
-                            </div>
-                            <div class="third-row">
-                                <div class="third-data">
-                                    <p>Proveedor:</p>
-                                    <textarea [(ngModel)]="selectedFacturas.tercod"></textarea>
-                                    <textarea class="width" [(ngModel)]="selectedFacturas.ternom"></textarea>
-                                </div>
-                            </div>
-                            <div class="fourth-row">
-                                <div class="fourth-data">
-                                    <p>NIF</p>
-                                    <textarea [(ngModel)]="selectedFacturas.ternif"></textarea>
-                                </div>
-                                <div class="fourth-data">
-                                    <p>Fecha Factura</p>
-                                    <textarea [ngModel]="selectedFacturas.facdat | date:'dd-MM-yyyy'"></textarea>
-                                </div>
-                                <div class="fourth-data">
-                                    <p>C.Gestor</p>
-                                    <textarea [value]="selectedFacturas.cgecod" readonly></textarea>
-                                </div>
-                            </div>
-                            <div class="fifth-row">
-                                <div class="fifth-data">
-                                    <p style="margin-bottom: 10px;">Des.Fact/ADO:</p>
-                                    <textarea [(ngModel)]="selectedFacturas.factxt"></textarea>
-                                </div>
-                                <div class="fifth-data">
-                                    <p style="margin-bottom: 10px;">F.Registro</p>
-                                    <textarea [ngModel]="selectedFacturas.facfre | date:'dd-MM-yyyy'"></textarea>
-                                </div>  
-                            </div>
-                            <div class="sixth-row">
-                                <div class="sixth-data">
-                                    <p style="margin-bottom: 10px;">Tipo de contrato</p>
-                                    <textarea [ngModel]="selectedFacturas.conctp"></textarea>
-                                </div>
-                                <div class="sixth-data">
-                                    <p style="margin-bottom: 10px;">Procedimiento de contacto</p>
-                                    <textarea [ngModel]="selectedFacturas.concpr"></textarea>
-                                </div>
-                                <div class="sixth-data">
-                                    <p style="margin-bottom: 10px;">Criterio de puntuación</p>
-                                    <textarea [ngModel]="selectedFacturas.conccr"></textarea>
-                                </div>
-                            </div>
-                            <div class="seventh-row">
-                                <div class="seventh-data">
-                                    <p style="margin-bottom: 10px;">Forma de pago</p>
-                                    <textarea [ngModel]="selectedFacturas.facfpg"></textarea>
-                                </div>
-                                <div class="seventh-data">
-                                    <p style="margin-bottom: 10px;">Ordinal de pago</p>
-                                    <textarea [ngModel]="selectedFacturas.facopg"></textarea>
-                                </div>
-                                <div class="seventh-data">
-                                    <p style="margin-bottom: 10px;">Tipo de pago</p>
-                                    <textarea [ngModel]="selectedFacturas.factpg"></textarea>
+                                <textarea class="tallTextarea" [(ngModel)]="selectedFacturas.facdoc"></textarea>
+                                <div class="on-two">
+                                    <textarea class="smallTextarea" [(ngModel)]="selectedFacturas.facfac"></textarea>
+                                    <textarea class="smallTextarea" [(ngModel)]="selectedFacturas.facann" ></textarea>
+                                    <textarea class="smallTextarea" [(ngModel)]="selectedFacturas.factdc"></textarea>
                                 </div>
                             </div>
                         </div>
-                        <div class="right">
-                            <div class="eighth-data margin">
-                                <p style="margin-bottom: 10px;">Total Factura</p>
-                                <textarea [ngModel]="selectedFacturas.facimp | currency:'EUR':'symbol':'1.2-2':'es-ES'"></textarea>
+                        <div class="chunk-two">
+                            <div class="left">
+                                <p>Proveedor:</p>
+                                <p>NIF</p>
+                                <p>Fecha Factura</p>
                             </div>
-                            <div class="ninth-data margin">
+                            <div class="right">
+                                <div class="on-two">
+                                    <textarea class="smallTextarea" [(ngModel)]="selectedFacturas.tercod"></textarea>
+                                    <textarea class="tallTextarea" [(ngModel)]="selectedFacturas.ternom"></textarea>
+                                </div>
+                                <div class="on-two">
+                                    <textarea class="averageTextarea" [(ngModel)]="selectedFacturas.ternif"></textarea>
+                                    <p>C.Gestor</p>
+                                    <textarea class="smallTextarea" [value]="selectedFacturas.cgecod" readonly></textarea>
+                                </div>
+                                <div class="on-two">
+                                    <textarea class="averageTextarea" [ngModel]="selectedFacturas.facdat | date:'dd-MM-yyyy'"></textarea>
+                                    <p>F.Registro</p>
+                                    <textarea class="averageTextarea" [ngModel]="selectedFacturas.facfre | date:'dd-MM-yyyy'"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chunk-three special-chunk">
+                            <div class="left special-needs">
+                                <p>Tipo de contrato</p>
+                                <p>Criterio de puntuación</p>
+                                <p>Procedimiento de contacto</p>
+                            </div>
+                            <div class="right">
+                                <textarea class="tallTextarea" [ngModel]="selectedFacturas.conctp"></textarea>
+                                <textarea class="tallTextarea" [ngModel]="selectedFacturas.concpr"></textarea>
+                                <textarea class="tallTextarea" [ngModel]="selectedFacturas.conccr"></textarea>  
+                            </div>
+                        </div>
+                        <div class="tall-chunk">
+                            <div class="left-one">
+                                <div class="data-one">
+                                    <p>Forma de pago</p>
+                                    <textarea class="smallTextarea" [ngModel]="selectedFacturas.facfpg"></textarea>
+                                </div>
+                                <div class="data-one">
+                                    <p>Ordinal de pago</p>
+                                    <textarea class="smallTextarea" [ngModel]="selectedFacturas.facopg"></textarea>
+                                </div>
+                                <div class="data-one">
+                                    <p>Tipo de pago</p>
+                                    <textarea class="smallTextarea" [ngModel]="selectedFacturas.factpg"></textarea>
+                                </div>
+                            </div>
+                            <div class="right-one">
+                                <div class="p-side">
+                                    <p>ADO</p>
+                                    <p>Des.Fact/ADO:</p>
+                                    
+                                </div>
+                                <div class="t-side">
+                                    <textarea class="tallTextarea" [(ngModel)]="selectedFacturas.facado"></textarea>
+                                    <textarea class="tallTextarea" [(ngModel)]="selectedFacturas.factxt"></textarea>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accountings">
+                            <div class="data-account">
+                                <p>Total Factura</p>
+                                <textarea class="averageTextarea" [ngModel]="selectedFacturas.facimp | currency:'EUR':'symbol':'1.2-2':'es-ES'"></textarea>
+                            </div>
+                            <div class="data-account">
                                 <p>Aplicado:</p>
-                                <textarea [ngModel]="selectedFacturas.faciec | currency:'EUR':'symbol':'1.2-2':'es-ES'"></textarea>
+                                <textarea class="averageTextarea" [ngModel]="selectedFacturas.faciec | currency:'EUR':'symbol':'1.2-2':'es-ES'"></textarea>
                             </div>
-                            <div class="tenth-data margin">
+                            <div class="data-account">
                                 <p>Apl. diferencias:</p>
-                                <textarea [ngModel]="selectedFacturas.facidi | currency:'EUR':'symbol':'1.2-2':'es-ES'"></textarea>
+                                <textarea class="averageTextarea" [ngModel]="selectedFacturas.facidi | currency:'EUR':'symbol':'1.2-2':'es-ES'"></textarea>
                             </div>
-                            <div class="eleventh-data margin">
+                            <div class="data-account">
                                 <p>Pte.Aplicar</p>
-                                <textarea [value]="getPendingApply(selectedFacturas) | currency:'EUR':'symbol':'1.2-2':'es-ES'" readonly></textarea>
+                                <textarea class="averageTextarea" [value]="getPendingApply(selectedFacturas) | currency:'EUR':'symbol':'1.2-2':'es-ES'" readonly></textarea>
                             </div>
-                            <div class="twelfth-data margin">
+                            <div class="data-account">
                                 <p>Descuentos</p>
-                                <textarea [value]="selectedFacturas.facdto | currency:'EUR':'symbol':'1.2-2':'es-ES'" readonly></textarea>
+                                <textarea class="averageTextarea" [value]="selectedFacturas.facdto | currency:'EUR':'symbol':'1.2-2':'es-ES'" readonly></textarea>
                             </div>
-                            <div class="thirteenth-data margin">
-                                <p>Observaciones:</p>
-                                <textarea [(ngModel)]="selectedFacturas.facobs"></textarea>
-                            </div>
+                        </div>
+                        <div class="observ">
+                            <p>Observaciones:</p>
+                            <textarea [(ngModel)]="selectedFacturas.facobs"></textarea>
                         </div>
                     </div>
                     <div class="more-details">
