@@ -56,11 +56,6 @@
 .tallTextarea {width: 220px; max-width: 240px;}
 .averageTextarea{ width: 100px; max-width: 160px;}
 .smallTextarea{width: 60px; max-width: 100px;}
-
-
-
-.accountings { width: 100%; display: flex; gap: 10px; flex-wrap: wrap;}
-.data-account { width: 15%; display: flex; flex-direction: column; gap: 5px;}
 .observ { width: 50%; display: flex; gap: 5px; align-items: center;}
 .observ textarea { width: 90%; max-width: 100%; height: 40px;}
 /* main-detail grid */
