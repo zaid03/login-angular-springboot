@@ -60,58 +60,9 @@
 .observ textarea { width: 90%; max-width: 100%; height: 40px;}
 /* main-detail grid */
 /* sub detail grids */
-.detail-switch,
-.detail-switch-second {
-    display: flex;
-    gap: 12px;
-    margin: 16px 0;
-}
-
-.detail-switch button,
-.detail-switch-second button {
-    padding: 6px 14px;
-    border-radius: 6px;
-    border: 1px solid #1d4ed8;
-    background: #fff;
-    color: #1d4ed8;   
-    cursor: pointer;
-    font-size: 16px;
-    transition: all 0.2s ease;
-    outline: none;
-}
-
-.detail-switch button.active,
-.detail-switch-second button.active {
-    background: #1d4ed8;
-    color: #fff;
-}
-
-.detail-switch button:hover,
-.detail-switch-second button:hover {
-    background-color: #094fa3;
-    color: #e6edf3;
-}
-
-.detail-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    padding: 16px;
-    border: 1px solid #e5e7eb;
-    border-radius: 10px;
-    background: #f9fafb;
-}
-
-.detail-card {
-    background: #fff;
-    border-radius: 8px;
-    padding: 12px;
-    display: flex;
-    align-content: center;
-    justify-content: center;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
-}
+.detail-grid { display: flex; flex-direction: column; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); padding: 16px; border: 1px solid #e5e7eb; border-radius: 10px; background: #f9fafb; }
+.detail-card { background: #fff; border-radius: 8px; padding: 12px; display: flex; align-content: center; justify-content: center; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08); }
+.albaranes-table { width: 100%; }
 /* sub detail grids */
 
 @media (min-width: 1700px) { .tallTextarea {width: 250px; max-width: 300px;}

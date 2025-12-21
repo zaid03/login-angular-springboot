@@ -327,39 +327,61 @@
                             <textarea [(ngModel)]="selectedFacturas.facobs"></textarea>
                         </div>
                     </div>
-                    <div class="more-details">
-                        <div class="detail-switch"> 
-                            <button type="button"
-                                    [class.active]="detailView === 'Albaranes'"
-                                    (click)="detailView = 'Albaranes'">
+                    <div class="more-detail-container">
+                        <div class="tabs" role="tablist" aria-label="Detalle tabs">
+                            <button
+                                class="tab-btn"
+                                role="tab" 
+                                type="button"
+                                [class.active]="detailView === 'Albaranes'"
+                                (click)="detailView = 'Albaranes'"
+                            >
                                 Albaranes
                             </button>
-                            <button type="button"
-                                    [class.active]="detailView === 'Contabilización'"
-                                    (click)="detailView = 'Contabilización'">
+                            <button 
+                                class="tab-btn"
+                                role="tab" 
+                                type="button"
+                                [class.active]="detailView === 'Contabilización'"
+                                (click)="detailView = 'Contabilización'"
+                            >
                                 Datos Contabilización
                             </button>
                         </div>
-
+                    </div>
+                    <div class="more-details">
                         <div class="detail-grid" *ngIf="detailView === 'Albaranes'">
-                            <div class="detail-switch-second">
-                                <button type="button"
+                            <div class="more-detail-container">
+                                <div class="tabs" role="tablist" aria-label="Opciones de Albaranes">
+                                    <button
+                                        class="tab-btn"
+                                        role="tab"
+                                        type="button"
                                         [class.active]="albaranesOptio === 'albaranes'"
-                                        (click)="setAlbaranesOptio('albaranes', selectedFacturas?.facnum)">
-                                    Albaranes
-                                </button>
-                                <button type="button"
+                                        (click)="setAlbaranesOptio('albaranes', selectedFacturas?.facnum)"
+                                    >
+                                        Albaranes
+                                    </button>
+                                    <button
+                                        class="tab-btn"
+                                        role="tab"
+                                        type="button"
                                         [class.active]="albaranesOptio === 'aplicaciones'"
-                                        (click)="setAlbaranesOptio('aplicaciones', selectedFacturas?.facnum)">
-                                    Aplicaciones
-                                </button>
-                                <button type="button"
-                                    [class.active] = "albaranesOptio === 'descuentos'"
-                                    (click)="setAlbaranesOptio('descuentos', selectedFacturas?.facnum)">
-                                    Descuentos
-                                </button>
+                                        (click)="setAlbaranesOptio('aplicaciones', selectedFacturas?.facnum)"
+                                    >
+                                        Aplicaciones
+                                    </button>
+                                    <button
+                                        class="tab-btn"
+                                        role="tab"
+                                        type="button"
+                                        [class.active]="albaranesOptio === 'descuentos'"
+                                        (click)="setAlbaranesOptio('descuentos', selectedFacturas?.facnum)"
+                                    >
+                                        Descuentos
+                                    </button>
+                                </div>
                             </div>
-
                             <div class="detail-switch-second-content">
                                 <ng-container [ngSwitch]="albaranesOptio">
                                     <ng-container *ngSwitchCase="'albaranes'">
