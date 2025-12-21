@@ -525,6 +525,10 @@ app-sidebar {
   outline: none;
 }
 
+.menu-panel button:focus {
+  outline: none;
+}
+
 /* table styles for ordering */
 th.sortable {
   cursor: pointer;

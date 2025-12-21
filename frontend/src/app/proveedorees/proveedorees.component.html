@@ -469,8 +469,14 @@
 
 <div class="modal-backdrop" *ngIf="showProveedorModal" (click)="closeProveedorModal()"></div>
 <div class="proveedor-grid-modal" *ngIf="showProveedorModal">
-    <button class="close-btn-btn" (click)="closeProveedorModal()">×</button>
-    <h3>Añadir un Proveedor</h3>
+    <div class="btns">
+        <button class="proveedor-saving-btn" (click)="saveProveedorees()" [disabled]="isSaving || selectedProveediresFromResults.length === 0">
+            <span *ngIf="!isSaving">💾</span>
+            <span *ngIf="isSaving">Guardando...</span>
+        </button>
+        <button class="close-btn-btn" (click)="closeProveedorModal()">×</button>
+    </div>
+    <h1 class="successBtn">{{ guardarMessageProveedor }}</h1>
     <div class="content-container-for-proveedor">
         <form class="proveedor-anadir-form">
             <div class="search-anadir">
@@ -512,6 +518,7 @@
                 APELL
             </div>   
         </form>
+        <h1 class="errorBtn">{{ anadirProveedorErrorMessage }}</h1>
         <table class="proveedor-anadir-table-sw">
             <thead>
                 <tr>
@@ -542,26 +549,16 @@
                 </tr>
             </tbody>
         </table>
-        <h1 class="errorBtn">{{ anadirProveedorErrorMessage }}</h1>
         <div class="pagination-controls" *ngIf="proveedoresSearchResults.length > proveedoresSearchPageSize">
             <button class="pag-btn" (click)="proveedoresSearchPrev()" [disabled]="proveedoresSearchPage === 0">Anterior</button>
             <span> {{ proveedoresSearchPage + 1 }} de {{ proveedoresSearchTotalPages }}</span>
             <button class="pag-btn" (click)="proveedoresSearchNext()" [disabled]="proveedoresSearchPage + 1 >= proveedoresSearchTotalPages">Siguiente</button>
         </div>
     </div>
-    <h1 class="successBtn">{{ guardarMessageProveedor }}</h1>
     <div class="modal-actions">
         <div class="selection-summary" style="display:flex;gap:8px;align-items:center;">
             <span>Seleccionados: {{ selectedProveediresFromResults.length }}</span>
             <button class="proveedor-cancel-btn" (click)="clearSelectedProveedores()" [disabled]="selectedProveediresFromResults.length === 0">Limpiar</button>
         </div>
-        <button class="proveedor-saving-btn" (click)="saveProveedorees()" [disabled]="isSaving || selectedProveediresFromResults.length === 0">
-            <span *ngIf="!isSaving">Guardar</span>
-            <span *ngIf="isSaving">Guardando...</span>
-        </button>
-    </div>
-    <div class="save-messages" style="margin-top:8px;">  
-        <p *ngIf="saveSuccess" class="successMessageProveedor">{{ saveSuccess }}</p>
-        <p *ngIf="saveError" class="errorMessageProveedor">{{ saveError }}</p>
     </div>
 </div>

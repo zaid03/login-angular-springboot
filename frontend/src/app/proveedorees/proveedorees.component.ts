@@ -888,7 +888,7 @@ export class ProveedoreesComponent {
     this.selectedSubfamilia = item.asucod;
     this.selectedArticulo = item.artcod;
   }
-  
+
   searchType: string = 'familia';
   searchValue: string = '';
   searchResults: any[] = [];
@@ -1186,8 +1186,6 @@ export class ProveedoreesComponent {
   }
 
   isSaving = false;
-  saveError = '';
-  saveSuccess = '';
   proveedoresSearchPage: number = 0;
   proveedoresSearchPageSize: number = 10;
   get paginatedProveedoresSearchResults() {
