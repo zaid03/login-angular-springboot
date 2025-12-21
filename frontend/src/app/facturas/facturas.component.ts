@@ -39,7 +39,6 @@ export class FacturasComponent {
   private backupFacturas: any[] = [];
   page = 0;
   pageSize = 20;
-  facturaMessageSuccess: String = '';
   facturaMessageIsSuccess: boolean = false;
   estadoMessage: string = '';
   isEstadoMessage: boolean = false;
@@ -97,7 +96,7 @@ export class FacturasComponent {
       next: (response) => {
         if (!Array.isArray(response) || response.length === 0) {
           this.facturaMessageIsSuccess = true;
-          this.facturaMessageSuccess = 'No hay facturas por las medidas de búsqueda';
+          this.filterFacturaMessage = 'No hay facturas por las medidas de búsqueda';
           this.facturas = [];
           this.defaultFacturas = [];
           this.updatePagination();
@@ -396,7 +395,7 @@ export class FacturasComponent {
     }
 
     this.filterFacturaMessage= '';
-    this.facturaMessageSuccess = '';
+    this.filterFacturaMessage = '';
 
     const estadoMap: Record<string, string> = {
       'contabilizadas': 'CONT',
@@ -519,7 +518,6 @@ export class FacturasComponent {
     this.fromDate = '';
     this.toDate = '';
     this.filterFacturaMessage = '';
-    this.facturaMessageSuccess = '';
     this.page = 0;
     this.sortField = null;
     this.sortDirection = 'asc';
