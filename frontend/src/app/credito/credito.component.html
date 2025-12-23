@@ -35,66 +35,82 @@
                         <th 
                             class="sortable" 
                             (click)="setSort('gbseco')"
+                            class="sortable resizable"
                         >   Aplicación
                             <span *ngIf="sortField === 'gbseco'">
                                 {{ sortDirection === 'asc' ? '▲' : '▼' }}
                             </span>
+                            <div class="resizer" (mousedown)="startResize($event, 0)"></div>
                         </th>
                         <th 
                             class="sortable" 
                             (click)="setSort('partidaDesc')"
+                            class="sortable resizable"
                         >   Desc.Aplicación
                             <span *ngIf="sortField === 'partidaDesc'">
                                 {{ sortDirection === 'asc' ? '▲' : '▼' }}
                             </span>
+                            <div class="resizer" (mousedown)="startResize($event, 1)"></div>
                         </th>
                         <th 
                             class="sortable" 
                             (click)="setSort('gbsope')"
+                            class="sortable resizable"
                         >   Operación contable
                             <span *ngIf="sortField === 'gbsope'">
                                 {{ sortDirection === 'asc' ? '▲' : '▼' }}
                             </span>
+                            <div class="resizer" (mousedown)="startResize($event, 2)"></div>
                         </th>
                         <th 
                             class="sortable" 
                             (click)="setSort('gbsref')"
+                            class="sortable resizable"
                         >   Ref.contable
                             <span *ngIf="sortField === 'gbsref'">
                                 {{ sortDirection === 'asc' ? '▲' : '▼' }}
                             </span>
+                            <div class="resizer" (mousedown)="startResize($event, 3)"></div>
                         </th>
                         <th 
                             class="sortable" 
                             (click)="setSort('limporte')"
+                            class="sortable resizable"
                         >   Imp.Operación
                             <span *ngIf="sortField === 'limporte'">
                                 {{ sortDirection === 'asc' ? '▲' : '▼' }}
                             </span>
+                            <div class="resizer" (mousedown)="startResize($event, 4)"></div>
                         </th>
                         <th 
                             class="sortable" 
                             (click)="setSort('saldo')"
+                            class="sortable resizable"
                         >   Saldo Operación
                             <span *ngIf="sortField === 'saldo'">
                                 {{ sortDirection === 'asc' ? '▲' : '▼' }}
                             </span>
+                            <div class="resizer" (mousedown)="startResize($event, 5)"></div>
                         </th>
                         <th 
                             class="sortable" 
                             (click)="setSort('gbsiut')"
+                            class="sortable resizable"
                         >   Pte.Contabilizar SCAP
                             <span *ngIf="sortField === 'gbsiut'">
                                 {{ sortDirection === 'asc' ? '▲' : '▼' }}
                             </span>
+                            <div class="resizer" (mousedown)="startResize($event, 6)"></div>
                         </th>
                         <th 
                             class="sortable" 
                             (click)="setSort('gbsict')"
+                            class="sortable resizable"
                         >   Disponible
                             <span *ngIf="sortField === 'gbsict'">
                                 {{ sortDirection === 'asc' ? '▲' : '▼' }}
                             </span>
+                            <div class="resizer" (mousedown)="startResize($event, 7)"></div>
                         </th>
                     </tr>
                 </thead>
