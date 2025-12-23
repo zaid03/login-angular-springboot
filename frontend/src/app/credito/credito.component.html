@@ -152,58 +152,73 @@
                         <button class="save-btn" (click)="guardarDetelles(selectedBolsas.gbsimp, getKBoldis(selectedBolsas.gbsimp, selectedBolsas.gbsibg, selectedBolsas.gbsius), selectedBolsas.gbsref)">💾</button>
                         <button class="close-btn-btn" (click)="closeDetails()">×</button>
                     </div>
-                    <div class="detail-container"></div>
-                    <div class="first-row">
-                        <div class="first-data">
-                            <p>Centro Gestor:</p>
-                            <textarea [(ngModel)]="selectedBolsas.cgecod" readonly></textarea>
-                            <textarea type="text" [(ngModel)]="selectedBolsas.cgedes" readonly></textarea>
-                        </div>
-                        <div class="first-data">
-                            <p>Cerrado:</p>
-                            <textarea [value]="getkCGECIC(selectedBolsas.cgecic)" readonly></textarea>
-                        </div>
-                    </div>
-                    <div class="second-row">
-                        <div class="data-name">
-                            <p>Contabilidad</p>
-                        </div>
-                        <div class="data-name">
-                            <p>Bolsa</p>
-                        </div>
-                    </div>
-                    <div class="third-row">
-                        <div class="third-data">
-                            <p>Applicación:</p>
-                            <textarea [(ngModel)]="bolsaCombo" readonly></textarea>
-                            <textarea [value]="selectedBolsas?.partidas?.[0]?.desc || ''" readonly></textarea>
-                        </div>
-                        <div class="third-data">
-                            <div class="third-data-special">
-                                <p>Fecha bolsa</p>
-                                <textarea [value]="selectedBolsas?.gbsfop | date:'dd/MM/yyyy'" readonly></textarea>
+                    <div class="detail-container">
+                        <div class="first-half">
+                            <div class="left">
+                                <div class="detail-title">
+                                    <p>Contabilidad</p>
+                                </div>
+                                <div class="wrap">
+                                    <div class="chunk-one">
+                                        <div class="chunk-left">
+                                            <p>Centro Gestor:</p>
+                                            <p>Applicación:</p>
+                                        </div>
+                                        <div class="chunk-right">
+                                            <div class="on-two">
+                                                <textarea class="smallTextarea" [(ngModel)]="selectedBolsas.cgecod" readonly></textarea>
+                                                <textarea class="tallTextarea" type="text" [(ngModel)]="selectedBolsas.cgedes" readonly></textarea>
+                                            </div>
+                                            <div class="on-two">
+                                                <textarea class="averageTextarea" [(ngModel)]="bolsaCombo" readonly></textarea>
+                                                <textarea class="averageTextarea" [value]="selectedBolsas?.partidas?.[0]?.desc || ''" readonly></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="chunk-two">
+                                        <div class="chunk-left">
+                                            <p>Operación</p>
+                                            <p>Referencia</p>
+                                            <p>Importe Op.</p>
+                                        </div>
+                                        <div class="chunk-right">
+                                            <textarea class="tallTextarea" [(ngModel)]="selectedBolsas.gbsope" readonly></textarea>
+                                            <textarea class="tallTextarea" [(ngModel)]="selectedBolsas.gbsref" readonly></textarea>
+                                            <textarea class="tallTextarea" [value]="selectedBolsas?.limporte" readonly></textarea>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="third-data-special">
-                                <p>Suplemento 413</p>
-                                <textarea [(ngModel)]="selectedBolsas.gbs413" readonly></textarea>
+                            <div class="right">
+                                <div class="detail-title">
+                                    <p>Bolsa</p>
+                                    <span>{{ getkCGECIC(selectedBolsas.cgecic) }}</span>
+                                </div>
+                                 <div class="wrap">
+                                    <div class="chunk-three width">
+                                        <div class="chunk-left">
+                                            <p>Fecha bolsa</p>
+                                        </div>
+                                        <div class="chunk-right">
+                                            <div class="on-two">
+                                                <textarea class="averageTextarea" [value]="selectedBolsas?.gbsfop | date:'dd/MM/yyyy'" readonly></textarea>
+                                                <p>Suplemento 413</p>
+                                                <textarea class="averageTextarea" [(ngModel)]="selectedBolsas.gbs413" readonly></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                 </div>
                             </div>
                         </div>
+                        <div class="second-half">
+
+                        </div>
                     </div>
+
+
+
+
                     <div class="fourth-row">
-                        <div class="fourth-data">
-                            <div class="fourth-data-special">
-                                <p>Operación</p>
-                                <textarea [(ngModel)]="selectedBolsas.gbsope" readonly></textarea>
-                            </div>
-                            <div class="fourth-data-special">
-                                <p>Referencia</p>
-                                <textarea [(ngModel)]="selectedBolsas.gbsref" readonly></textarea>
-                            </div>
-                            <div class="fourth-data-special">
-                                <p>Importe Op.</p>
-                                <textarea [value]="selectedBolsas?.limporte" readonly></textarea>
-                            </div>
-                        </div>
                         <div class="fourth-data bordering left">
                             <div class="fourth-data-special">
                                 <p>Importe bolsa</p>
