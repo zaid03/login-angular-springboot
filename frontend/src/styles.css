@@ -316,7 +316,8 @@ app-sidebar {
 .facturas-page,
 .proveedores-page,
 .familia-page,
-.centroGestor-page {
+.centroGestor-page,
+.credito-page {
   display: flex;
   min-height: 100vh;
   background: #f0f0f0;
@@ -325,7 +326,8 @@ app-sidebar {
 .proveedores-container,
 .facturas-container,
 .familia-container,
-.centroGestor-container {
+.centroGestor-container,
+.credito-container {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -337,15 +339,9 @@ app-sidebar {
   z-index: 1;
 }
 
-.familia-container h2,
-.centroGestor-container h2 {
-  margin: 10px;
-  color: #38249b;
-  font-size: 32px;
-}
-
 .proveedores-list,
-.facturas-list {
+.facturas-list,
+.credito-list {
   width: 95%;
   max-width: 95%;
   display: flex;
@@ -361,7 +357,8 @@ app-sidebar {
 .personas-contacto-table,
 .articulo-table,
 .anadir-proveedores-table,
-.proveedor-anadir-table-sw {
+.proveedor-anadir-table-sw,
+.credito-table {
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.06);
@@ -378,7 +375,8 @@ app-sidebar {
 .personas-contacto-table th,
 .articulo-table th,
 .anadir-proveedores-table th,
-.proveedor-anadir-table-sw th {
+.proveedor-anadir-table-sw th,
+.credito-table thead th {
   border: 1px solid #e6edf3;
   padding: 8px 12px;
   text-align: center;
@@ -394,7 +392,8 @@ app-sidebar {
 .personas-contacto-table td,
 .articulo-table td,
 .anadir-proveedores-table td,
-.proveedor-anadir-table-sw td {
+.proveedor-anadir-table-sw td,
+.credito-table tbody td {
   border: 1px solid #f0f5f9;
   padding: 6px 10px;
   text-align: center;
@@ -410,7 +409,8 @@ app-sidebar {
 .personas-contacto-table tr:hover
 .articulo-table tr:hover,
 .anadir-proveedores-table tr:hover,
-.proveedor-anadir-table-sw tr:hover {
+.proveedor-anadir-table-sw tr:hover,
+.credito-table tbody tr:hover {
   background-color: #f0f7ff;
 }
 
@@ -428,7 +428,8 @@ app-sidebar {
   justify-content: center;
 }
 
-.margin-title {
+.margin-title,
+.cge-text {
   color: #38249b;
   font-size: 20px;
 }

@@ -8,7 +8,15 @@
     <app-sidebar #sidebar></app-sidebar>
     <div class="credito-container" [class.blurred]="!sidebar.collapsed">
         <div class="title-menu">
-            <h2 class="margin-title">Lista de Bolsas de credito</h2>  
+            <div class="title-area">
+                <h2 class="margin-title">Bolsas de crédito</h2>  
+            </div>
+            <div class="search-holder">
+                <div class="cge-text">
+                    <p>Centro Gestor: </p>
+                    <span>{{centroGestor}}</span>
+                </div>
+            </div>
             <div class="group-menu" (click)="toggleMenu($event)">
                 <div class="dot"></div>
                 <div class="dot"></div>
@@ -19,21 +27,8 @@
                 </div>
             </div>
         </div>
-        <div class="credito-search">
-            <form class="search-form">
-                <input 
-                    type="text" 
-                    class="search-bar" 
-                    placeholder="Buscar factura" 
-                    name="search"
-                    maxlength="4"
-                    [(ngModel)]="centroGestor"
-                    readonly
-                >
-            </form>
-        </div>
         <div class="credito-list">
-            <h1 style="margin-bottom:2%; font-family: inherit; color: red; font-size: inherit;" id="error">{{ tableMessage }}</h1>
+            <h1 class="errorBtn">{{ tableMessage }}</h1>
             <table class="credito-table">
                 <thead>
                     <tr>
@@ -89,8 +84,13 @@
             <div class="modal-backdrop" *ngIf="selectedBolsas" (click)="closeDetails()"></div>
             <div class="display" >
                 <div class="modal" *ngIf="selectedBolsas">
-                    <button class="close-btn-fct" (click)="closeDetails()">×</button>
-                    <h3>Detalles de Bolsa</h3>
+                    <div class="btns">
+                        <div class="title-detail">
+                            <h3>Detalles de Bolsa</h3>
+                        </div>
+                        <button class="save-btn" (click)="guardarDetelles(selectedBolsas.gbsimp, getKBoldis(selectedBolsas.gbsimp, selectedBolsas.gbsibg, selectedBolsas.gbsius), selectedBolsas.gbsref)">💾</button>
+                        <button class="close-btn-btn" (click)="closeDetails()">×</button>
+                    </div>
                     <div class="first-row">
                         <div class="first-data">
                             <p>Centro Gestor:</p>
@@ -221,7 +221,7 @@
                     </div>
                     <h1 class="successBtn">{{ guardarMesageSuccess }}</h1>
                     <h1 class="errorBtn">{{ guardarMesage }}</h1>
-                    <button class="save-btn" (click)="guardarDetelles(selectedBolsas.gbsimp, getKBoldis(selectedBolsas.gbsimp, selectedBolsas.gbsibg, selectedBolsas.gbsius), selectedBolsas.gbsref)">Guardar</button>
+                    
                 </div>
             </div>
         </div>
