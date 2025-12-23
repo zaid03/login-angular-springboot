@@ -17,6 +17,7 @@ import { environment } from '../../environments/environment';
   providers: [CurrencyPipe]
 })
 export class CreditoComponent {
+  //3 dots menu
   showMenu = false;
   toggleMenu(event: MouseEvent): void {
     event.stopPropagation();
@@ -28,6 +29,7 @@ export class CreditoComponent {
     this.showMenu = false;
   }
 
+  //global variables
   private entcod: number | null = null;
   private eje: number | null = null;
   public centroGestor: string = '';
@@ -129,41 +131,79 @@ export class CreditoComponent {
     });
   }
 
-  toggleSort(field: 'gbsref'): void {
-    if (this.sortField !== field) {
+  //main table functions
+  sortField: string | null = null;
+  sortDirection: 'asc' | 'desc' = 'asc';
+
+  setSort(field: string) {
+    if (this.sortField === field) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
       this.sortField = field;
       this.sortDirection = 'asc';
-    } else if (this.sortDirection === 'asc') {
-      this.sortDirection = 'desc';
-    } else {
-      this.sortField = null;
-      this.sortDirection = 'asc';
-      this.creditos = [...this.defaultCreditos];
-      this.page = 0;
-      this.updatePagination();
-      return;
     }
-
     this.applySort();
   }
 
-  sortField: 'gbsref' | null = null;
-  sortDirection: 'asc' | 'desc' = 'asc';
-  private applySort(): void {
-    if (!this.sortField) {
-      return;
-    }
-
+  //still need fixing
+  applySort() {
+    if (!this.sortField) return;
     const field = this.sortField;
-    const sorted = [...this.defaultCreditos].sort((a, b) => {
-      const aVal = (a?.[field] ?? '').toString().toUpperCase();
-      const bVal = (b?.[field] ?? '').toString().toUpperCase();
-      return this.sortDirection === 'asc'
-        ? aVal.localeCompare(bVal, 'es')
-        : bVal.localeCompare(aVal, 'es');
-    });
+    this.creditos = [...this.creditos].sort((a, b) => {
+      let aVal: any;
+      let bVal: any;
 
-    this.creditos = sorted;
+      if (field === 'partidaDesc') {
+        aVal = a?.partidas?.[0]?.desc ?? '';
+        bVal = b?.partidas?.[0]?.desc ?? '';
+        return this.sortDirection === 'asc'
+          ? String(aVal).localeCompare(String(bVal), 'es')
+          : String(bVal).localeCompare(String(aVal), 'es');
+      }
+
+      if (field === 'gbsref') {
+        aVal = a?.gbsref ?? '';
+        bVal = b?.gbsref ?? '';
+        return this.sortDirection === 'asc'
+          ? String(aVal).localeCompare(String(bVal), 'es')
+          : String(bVal).localeCompare(String(aVal), 'es');
+      }
+
+      if (field === 'gbseco' || field === 'gbsope') {
+        aVal = Number(a?.[field] ?? 0);
+        bVal = Number(b?.[field] ?? 0);
+        return this.sortDirection === 'asc' ? aVal - bVal : bVal - aVal;
+      }
+
+      if (['limporte', 'saldo', 'gbsiut', 'gbsict'].includes(field)) {
+        const parseMoney = (val: any) => {
+          if (typeof val === 'number') return val;
+          if (!val) return 0;
+          return parseFloat(String(val).replace(/[€\s]/g, '').replace('.', '').replace(',', '.')) || 0;
+        };
+        aVal = parseMoney(a?.[field]);
+        bVal = parseMoney(b?.[field]);
+        return this.sortDirection === 'asc' ? aVal - bVal : bVal - aVal;
+      }
+
+      if (field === 'acpeco') {
+        aVal = Number(this.getkAcPeCo(a.gbsiut, a.gbsict));
+        bVal = Number(this.getkAcPeCo(b.gbsiut, b.gbsict));
+        return this.sortDirection === 'asc' ? aVal - bVal : bVal - aVal;
+      }
+
+      if (field === 'disponible') {
+        aVal = Number(this.getkdispon(a.saldo, this.getkAcPeCo(a.gbsiut, a.gbsict)));
+        bVal = Number(this.getkdispon(b.saldo, this.getkAcPeCo(b.gbsiut, b.gbsict)));
+        return this.sortDirection === 'asc' ? aVal - bVal : bVal - aVal;
+      }
+
+      aVal = a?.[field] ?? '';
+      bVal = b?.[field] ?? '';
+      return this.sortDirection === 'asc'
+        ? String(aVal).localeCompare(String(bVal), 'es')
+        : String(bVal).localeCompare(String(aVal), 'es');
+    });
     this.page = 0;
     this.updatePagination();
   }
@@ -307,6 +347,7 @@ export class CreditoComponent {
     }
   }
 
+  //main detail grid functions
   selectedBolsas: any = null;
   showDetails(factura: any) {
     this.guardarisError = false;
@@ -433,15 +474,15 @@ export class CreditoComponent {
     console.log("payload here: ", payload);
 
     this.http.patch<void>(`${environment.backendUrl}/api/gbs/${this.entcod}/${this.eje}/${this.initialCentroGestor}/${gbsref}`, payload)
-      .subscribe({
-        next: () => {
-          this.guardarisSuccess = true;
-          this.guardarMesageSuccess = 'Bolsa actualizada correctamente';
-        },
-        error: (err) => {
-          this.guardarisError = true;
-          this.guardarMesage = err?.ex ?? 'Error al actualizar';
-        }
-      });
+    .subscribe({
+      next: () => {
+        this.guardarisSuccess = true;
+        this.guardarMesageSuccess = 'Bolsa actualizada correctamente';
+      },
+      error: (err) => {
+        this.guardarisError = true;
+        this.guardarMesage = err?.ex ?? 'Error al actualizar';
+      }
+    });
   }
 }

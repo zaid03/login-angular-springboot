@@ -32,25 +32,70 @@
             <table class="credito-table">
                 <thead>
                     <tr>
-                        <th>Aplicación</th>
-                        <th>Desc. Aplicación</th>
-                        <th>Operación contable</th>
-                        <th
-                            class="sortable"
-                            (click)="toggleSort('gbsref')"
-
-                        >
-                            Ref. contable
-                            <span 
-                                class="sort-indicator" 
-                            >
-                            {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                        <th 
+                            class="sortable" 
+                            (click)="setSort('gbseco')"
+                        >   Aplicación
+                            <span *ngIf="sortField === 'gbseco'">
+                                {{ sortDirection === 'asc' ? '▲' : '▼' }}
                             </span>
                         </th>
-                        <th>Imp. Operación</th>
-                        <th>Saldo Operación</th>
-                        <th>Pte. Contabilizar SCAP</th>
-                        <th>Disponible</th>
+                        <th 
+                            class="sortable" 
+                            (click)="setSort('partidaDesc')"
+                        >   Desc.Aplicación
+                            <span *ngIf="sortField === 'partidaDesc'">
+                                {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                            </span>
+                        </th>
+                        <th 
+                            class="sortable" 
+                            (click)="setSort('gbsope')"
+                        >   Operación contable
+                            <span *ngIf="sortField === 'gbsope'">
+                                {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                            </span>
+                        </th>
+                        <th 
+                            class="sortable" 
+                            (click)="setSort('gbsref')"
+                        >   Ref.contable
+                            <span *ngIf="sortField === 'gbsref'">
+                                {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                            </span>
+                        </th>
+                        <th 
+                            class="sortable" 
+                            (click)="setSort('limporte')"
+                        >   Imp.Operación
+                            <span *ngIf="sortField === 'limporte'">
+                                {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                            </span>
+                        </th>
+                        <th 
+                            class="sortable" 
+                            (click)="setSort('saldo')"
+                        >   Saldo Operación
+                            <span *ngIf="sortField === 'saldo'">
+                                {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                            </span>
+                        </th>
+                        <th 
+                            class="sortable" 
+                            (click)="setSort('gbsiut')"
+                        >   Pte.Contabilizar SCAP
+                            <span *ngIf="sortField === 'gbsiut'">
+                                {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                            </span>
+                        </th>
+                        <th 
+                            class="sortable" 
+                            (click)="setSort('gbsict')"
+                        >   Disponible
+                            <span *ngIf="sortField === 'gbsict'">
+                                {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                            </span>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
