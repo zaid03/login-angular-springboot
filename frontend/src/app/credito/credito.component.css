@@ -84,11 +84,11 @@
 .first-data textarea, 
 .third-data textarea {
     border: 1px solid #1c5d8c;
-    height: 20px;
+    /* height: 20px; */
     padding: 2px 4px;
     border-radius: 6px;
-    min-width: 150px;
-    max-width: 400px;
+    /* min-width: 150px; */
+    /* max-width: 400px; */
     font-weight: bold;
 }
 
@@ -102,7 +102,7 @@
     border: 1px solid #1c5d8c;
     padding: 2px 4px;
     border-radius: 6px;
-    max-width: 200px;
+    /* max-width: 200px; */
     font-weight: 700;
     height: 20px;
 }
@@ -157,9 +157,5 @@
         font-size: 13px;
     }
 
-    .fourth-data textarea,
-    .fifth-data textarea, 
-    .fifth-data-special textarea {
-        max-width: 90px;
-    }
+    
 }
