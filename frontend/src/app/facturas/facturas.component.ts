@@ -17,6 +17,7 @@ import { environment } from '../../environments/environment';
   styleUrls: ['./facturas.component.css']
 })
 export class FacturasComponent {
+  //3 dots menu 
   showMenu = false;
   toggleMenu(event: MouseEvent): void {
     event.stopPropagation();
@@ -28,6 +29,7 @@ export class FacturasComponent {
     this.showMenu = false;
   }
 
+  //global variables
   private entcod: number | null = null;
   private eje: number | null = null;
   public centroGestor: string = '';
@@ -116,6 +118,7 @@ export class FacturasComponent {
     });
   }
 
+  //main table functions
   sortField: 'facnum' | 'tercod' | 'ternom' | 'ternif' | 'facfre' | 'facimp' | 'facdoc' | 'facann' | 'facfac' | 'facdat' | 'facado' | 'facfco' |'getPendingApply(p)' | 'cgecod' | 'getStaus(p.facado, p.facimp, p.faciec, p.facidi)' | null = null;
   sortColumn: string = '';
   sortDirection: 'asc' | 'desc' = 'asc';
@@ -195,6 +198,35 @@ export class FacturasComponent {
       this.page = inputPage - 1;
     }
   }
+
+  private startX: number = 0;
+  private startWidth: number = 0;
+  private resizingColIndex: number | null = null;
+  startResize(event: MouseEvent, colIndex: number) {
+    this.resizingColIndex = colIndex;
+    this.startX = event.pageX;
+    const th = (event.target as HTMLElement).parentElement as HTMLElement;
+    this.startWidth = th.offsetWidth;
+
+    document.addEventListener('mousemove', this.onResizeMove);
+    document.addEventListener('mouseup', this.stopResize);
+  }
+
+  onResizeMove = (event: MouseEvent) => {
+    if (this.resizingColIndex === null) return;
+    const table = document.querySelector('.facturas-table') as HTMLTableElement;
+    if (!table) return;
+    const th = table.querySelectorAll('th')[this.resizingColIndex] as HTMLElement;
+    if (!th) return;
+    const diff = event.pageX - this.startX;
+    th.style.width = (this.startWidth + diff) + 'px';
+  };
+
+  stopResize = () => {
+    document.removeEventListener('mousemove', this.onResizeMove);
+    document.removeEventListener('mouseup', this.stopResize);
+    this.resizingColIndex = null;
+  };
 
   DownloadPDF() {
     const doc = new jsPDF({orientation: 'landscape', unit: 'mm', format: 'a4'});
@@ -324,6 +356,7 @@ export class FacturasComponent {
     URL.revokeObjectURL(url);
   }
 
+  //detail grid functions
   selectedFacturas: any = null;
   detallesMessage: String = '';
   fettalesIsError: boolean = false;
@@ -370,6 +403,7 @@ export class FacturasComponent {
     return '';
   }
 
+  //search functions
   fechaTipo: 'registro' | 'factura' | 'contable' | '' = '';
   estadoTipo: 'contabilizadas' | 'no-contabilizadas' | 'aplicadas' | 'sin-aplicadas' | '' = 'no-contabilizadas';
   fromDate: string = '';
@@ -533,6 +567,7 @@ export class FacturasComponent {
     }
   }
 
+  //albaranes grid's detail
   detailView: 'Albaranes' | 'Contabilización' = 'Albaranes';
   albaranesOptio: 'albaranes' | 'aplicaciones' | 'descuentos' = 'albaranes';
   albaranes: any[] = [];
@@ -608,33 +643,5 @@ export class FacturasComponent {
       });
     }
   }
-
-  private startX: number = 0;
-  private startWidth: number = 0;
-  private resizingColIndex: number | null = null;
-  startResize(event: MouseEvent, colIndex: number) {
-    this.resizingColIndex = colIndex;
-    this.startX = event.pageX;
-    const th = (event.target as HTMLElement).parentElement as HTMLElement;
-    this.startWidth = th.offsetWidth;
-
-    document.addEventListener('mousemove', this.onResizeMove);
-    document.addEventListener('mouseup', this.stopResize);
-  }
-
-  onResizeMove = (event: MouseEvent) => {
-    if (this.resizingColIndex === null) return;
-    const table = document.querySelector('.facturas-table') as HTMLTableElement;
-    if (!table) return;
-    const th = table.querySelectorAll('th')[this.resizingColIndex] as HTMLElement;
-    if (!th) return;
-    const diff = event.pageX - this.startX;
-    th.style.width = (this.startWidth + diff) + 'px';
-  };
-
-  stopResize = () => {
-    document.removeEventListener('mousemove', this.onResizeMove);
-    document.removeEventListener('mouseup', this.stopResize);
-    this.resizingColIndex = null;
-  };
+  
 }
