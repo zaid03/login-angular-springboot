@@ -113,19 +113,19 @@
                 </thead>
                 <tbody>
                     <tr *ngFor="let p of paginatedProveedores" [class.grey-row]="p.terblo == 1">
-                        <td>{{ p.tercod }}</td>
-                        <td class="truncate" title="{{ p.ternom }}" (click)="showDetails(p)" style="cursor: pointer;">{{ p.ternom }}</td>
-                        <td class="truncate" title="{{ p.ternif }}">{{ p.ternif }}</td>
-                        <td class="truncate" title="{{ p.terali }}">{{ p.terali }}</td>
-                        <td class="truncate" title="{{ p.tertel }}">{{ p.tertel }}</td>
-                        <td class="truncate" title="{{ p.terdom }}">{{ p.terdom }}</td>
-                        <td class="truncate" title="{{ p.tercpo }}">{{ p.tercpo }}</td>
-                        <td class="truncate" title="{{ p.terpob }}">{{ p.terpob }}</td>
-                        <td class="truncate" title="{{ p.terayt }}">{{ p.terayt }}</td>
-                        <td class="truncate" title="{{ p.terfax }}">{{ p.terfax }}</td>
-                        <td class="truncate" title="{{ p.terweb }}">{{ p.terweb }}</td>
-                        <td class="truncate" title="{{ p.tercoe }}">{{ p.tercoe }}</td>
-                        <td class="truncate" title="{{ p.terobs }}">{{ p.terobs }}</td>
+                        <td (click)="showDetails(p)" style="cursor: pointer;">{{ p.tercod }}</td>
+                        <td>{{ p.ternom }}</td>
+                        <td>{{ p.ternif }}</td>
+                        <td>{{ p.terali }}</td>
+                        <td>{{ p.tertel }}</td>
+                        <td>{{ p.terdom }}</td>
+                        <td>{{ p.tercpo }}</td>
+                        <td>{{ p.terpob }}</td>
+                        <td>{{ p.terayt }}</td>
+                        <td>{{ p.terfax }}</td>
+                        <td>{{ p.terweb }}</td>
+                        <td>{{ p.tercoe }}</td>
+                        <td>{{ p.terobs }}</td>
                     </tr>
                 </tbody>
             </table>

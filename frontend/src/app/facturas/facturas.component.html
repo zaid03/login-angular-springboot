@@ -176,8 +176,8 @@
                 </thead>
                 <tbody>
                     <tr *ngFor="let p of paginatedFacturas">
-                        <td>{{ p.facnum }}</td>
-                        <td (click)="showDetails(p)" style="cursor: pointer;">{{ p.tercod }}</td>
+                        <td (click)="showDetails(p)" style="cursor: pointer;">{{ p.facnum }}</td>
+                        <td>{{ p.tercod }}</td>
                         <td>{{ p.ternom }}</td>
                         <td>{{ p.ternif }}</td>
                         <td>{{ p.facfre | date:'dd-MM-yyyy'}}</td>
