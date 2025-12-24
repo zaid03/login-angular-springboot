@@ -341,8 +341,8 @@ export class FacturasComponent {
       return s;
     };
 
-    const header = columns.map(c => escapeCsv(c.header)).join(',');
-    const bodyLines = rows.map(r => columns.map(c => escapeCsv((r as any)[c.dataKey])).join(','));
+    const header = columns.map(c => escapeCsv(c.header)).join(';');
+    const bodyLines = rows.map(r => columns.map(c => escapeCsv((r as any)[c.dataKey])).join(';'));
 
     const csvContent = '\uFEFF' + [header, ...bodyLines].join('\r\n');
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
