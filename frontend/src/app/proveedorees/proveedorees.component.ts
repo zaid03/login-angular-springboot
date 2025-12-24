@@ -453,17 +453,28 @@ export class ProveedoreesComponent {
       return;
     }
     const columns = [
-      'tercod', 'ternom', 'terali', 'ternif', 'terdom', 'tercpo', 'terpob',
-      'tertel', 'terfax', 'terweb', 'tercoe', 'terobs', 'terayt'
+      { header: 'Código', key: 'tercod' },
+      { header: 'Nombre', key: 'ternom' },
+      { header: 'Alias', key: 'terali' },
+      { header: 'NIF', key: 'ternif' },
+      { header: 'Domicilio', key: 'terdom' },
+      { header: 'Código Postal', key: 'tercpo' },
+      { header: 'Municipio', key: 'terpob' },
+      { header: 'Teléfono', key: 'tertel' },
+      { header: 'Fax', key: 'terfax' },
+      { header: 'Web', key: 'terweb' },
+      { header: 'Correo electrónico', key: 'tercoe' },
+      { header: 'Observaciones', key: 'terobs' },
+      { header: 'Código contable', key: 'terayt' }
     ];
 
     const csvRows = [
-      columns.map(col => `"${col}"`).join(',')
+      columns.map(col => `"${col.header}"`).join(';')
     ];
 
     data.forEach(row => {
-      const values = columns.map(col => `"${row[col] !== undefined ? row[col] : ''}"`);
-      csvRows.push(values.join(','));
+      const values = columns.map(col => `"${row[col.key] !== undefined ? row[col.key] : ''}"`);
+      csvRows.push(values.join(';'));
     });
 
     const csvContent = csvRows.join('\r\n');
@@ -477,7 +488,8 @@ export class ProveedoreesComponent {
     link.click();
     document.body.removeChild(link);
   }
-    messageSuccess: string = '';
+
+  messageSuccess: string = '';
   messageError: string = '';
   saveChanges() {
     const updateFields ={

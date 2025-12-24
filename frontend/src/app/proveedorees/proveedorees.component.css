@@ -7,12 +7,19 @@
 .search-btns { margin-left: 10px; } 
 /* search */
 /* main-list and table */
-/* .main-table td:first-child { width: 64px; }
-.truncate { max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } */
-/* .main-table th:first-child,
-.main-table th:nth-child(10),
-.main-table th:nth-child(5),
-.main-table th:nth-child(12) {width: 5px !important; border: 1px solid blue;} */
+.main-table tbody td:first-child,
+.main-table tbody td:nth-child(5),
+.main-table tbody td:nth-child(7),
+.main-table tbody td:nth-child(9) { text-align: left; }
+.main-table tbody td:nth-child(2),
+.main-table tbody td:nth-child(3),
+.main-table tbody td:nth-child(4),
+.main-table tbody td:nth-child(6),
+.main-table tbody td:nth-child(8),
+.main-table tbody td:nth-child(10),
+.main-table tbody td:nth-child(11),
+.main-table tbody td:nth-child(12),
+.main-table tbody td:nth-child(13) { text-align: right;}
 /* main-list and table */
 /* detail grid */
 .detail-container { display: flex; flex-wrap: wrap; align-items: center; padding: 5px; gap: 10px; }

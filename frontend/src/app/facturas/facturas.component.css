@@ -10,10 +10,20 @@
 .successBtn { margin-top: 5px; }
 /* search container and inputs */
 /* table style */
-/* .facturas-table th:first-child,
-.facturas-table th:nth-child(10),
-.facturas-table th:nth-child(5),
-.facturas-table th:nth-child(12) {width: 80px; } */
+.facturas-table tbody td:first-child,
+.facturas-table tbody td:nth-child(2),
+.facturas-table tbody td:nth-child(5),
+.facturas-table tbody td:nth-child(6),
+.facturas-table tbody td:nth-child(7),
+.facturas-table tbody td:nth-child(8),
+.facturas-table tbody td:nth-child(9),
+.facturas-table tbody td:nth-child(10),
+.facturas-table tbody td:nth-child(11),
+.facturas-table tbody td:nth-child(12),
+.facturas-table tbody td:nth-child(13) { text-align: left; }
+.facturas-table tbody td:nth-child(3),
+.facturas-table tbody td:nth-child(14),
+.facturas-table tbody td:nth-child(15) { text-align: right;}
 /* table style */
 /* main-detail grid */
 .detail-container { display: flex; flex-wrap: wrap; align-items: center; padding: 5px; gap: 10px; }
