@@ -190,4 +190,39 @@ public class TerController {
         System.out.println("=== END DEBUG raw body ===");
         return ResponseEntity.ok("received length=" + (raw==null?0:raw.length()));
     }
+
+    //rest of search queries
+    //to filter with bloqueado option only
+    @GetMapping("/filter/{ent}")
+    public ResponseEntity<?> filterBloqueado(
+        @PathVariable Integer ent
+    ) {
+        try {
+            List<Ter> proveedores = terRepository.filterByBloqueado(ent);
+
+            if (proveedores.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("proveedores no encontrados");
+            }
+            return ResponseEntity.ok(proveedores);
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al filter de proveedores: " + ex.getMostSpecificCause().getMessage());
+        }
+    }
+
+    //to filter with no bloqueado option only
+    @GetMapping("/filter-no/{ent}")
+    public ResponseEntity<?> filterNoBloqueado(
+        @PathVariable Integer ent
+    ) {
+        try {
+            List<Ter> proveedores = terRepository.filterByNoBloqueado(ent);
+
+            if (proveedores.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("proveedores no encontrados");
+            }
+            return ResponseEntity.ok(proveedores);
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al filter de proveedores: " + ex.getMostSpecificCause().getMessage());
+        }
+    }
 }
