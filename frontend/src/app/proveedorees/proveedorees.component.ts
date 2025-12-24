@@ -601,11 +601,17 @@ export class ProveedoreesComponent {
       next: (res) => {
         this.personasContactoSuccessMessage = 'Persona Agregado exitosamente';
         this.hidePersonas();
+        this.reloadContactPersons();
       },
       error: (err) => {
         this.personaContactoaddError = err.error ?? 'Se ha producido un error.';
       }
     })
+  }
+
+  reloadContactPersons() {
+    if (!this.selectedProveedor) return;
+    this.showContactPersons(this.selectedProveedor);
   }
 
   updatepersonas(tpecod: number, nom: string, telefon: string, movil: string, email: string, obs: string){
