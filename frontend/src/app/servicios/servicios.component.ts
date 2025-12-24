@@ -33,6 +33,7 @@ export class ServiciosComponent {
 
   private entcod: number | null = null;
   private eje: number | null = null;
+  private perfil: string | null = null;
   services: any[] = [];
   private backupServices: any[] = [];
   private defaultServices: any[] = [];
@@ -46,6 +47,7 @@ export class ServiciosComponent {
     this.servicessMessageError = '';
     const entidad = sessionStorage.getItem('Entidad');
     const eje = sessionStorage.getItem('EJERCICIO');
+    const percod = sessionStorage.getItem('Perfil');
 
     if (entidad) {
       const parsed = JSON.parse(entidad);
@@ -55,14 +57,17 @@ export class ServiciosComponent {
       const parsed = JSON.parse(eje);
       this.eje = parsed.eje;
     }
+    if(percod) {
+      const parsed = JSON.parse(percod);
+      this.perfil = parsed.PERCOD;
+    }
 
-    if (!entidad || this.entcod === null || !eje || this.eje === null) {
+    if (!entidad || this.entcod === null || !eje || this.eje === null || !percod) {
       sessionStorage.clear();
       alert('You must be logged in to access this page.');
       this.router.navigate(['/login']);
       return;
     }
-
     this.fetchServices();
   }
 
@@ -359,7 +364,7 @@ export class ServiciosComponent {
 
   private fetchServices(): void {
     if (this.entcod === null || this.eje === null) return;
-    this.http.get<any>(`${environment.backendUrl}/api/dep/fetch-services/${this.entcod}/${this.eje}`).subscribe({
+    this.http.get<any>(`${environment.backendUrl}/api/dep/fetch-services/${this.entcod}/${this.eje}/${this.perfil}`).subscribe({
       next: (res) => {
         this.services = res;
         this.backupServices = Array.isArray(res) ? [...res] : [];
@@ -368,7 +373,7 @@ export class ServiciosComponent {
         this.updatePagination();
       },
       error: (err) => {
-        this.servicessMessageError = 'Server error: ' + err?.error;
+        this.servicessMessageError = err?.error?.error || 'Error desconocido';
       }
     });
   }

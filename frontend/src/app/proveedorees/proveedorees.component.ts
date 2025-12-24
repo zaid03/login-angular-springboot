@@ -196,12 +196,43 @@ export class ProveedoreesComponent {
   filterOption: string = 'noBloqueados';
   search() {
     this.error = '';
+    this.isLoading = true
     if (this.searchTerm.trim() === '') {
-      this.error = 'Ingrese algo para buscar';
-      return;
+      if (this.filterOption === 'Bloqueados') {
+        this.http.get<any[]>(`${environment.backendUrl}/api/ter/filter/${this.entcod}`).subscribe({
+          next: (response) => {
+            this.proveedores = response;
+            if (response.length === 0) {
+              this.error = 'No se encontraron proveedores no bloqueados con el código ingresado.';
+              this.isLoading = false;
+            }
+            this.page = 0;
+            this.isLoading = false;
+          },
+          error: (err) => {
+            this.error = 'Server error';
+            this.isLoading = false;
+          }
+        })
+      } else if (this.filterOption === 'noBloqueados') {
+        this.http.get<any[]>(`${environment.backendUrl}/api/ter/filter-no/${this.entcod}`).subscribe({
+          next: (response) => {
+            this.proveedores = response;
+            if (response.length === 0) {
+              this.error = 'No se encontraron proveedores no bloqueados con el código ingresado.';
+              this.isLoading = false;
+            }
+            this.page = 0;
+            this.isLoading = false;
+          },
+          error: (err) => {
+            this.error = 'Server error';
+            this.isLoading = false;
+          }
+        })
+      }
     }
 
-    this.isLoading = true
     if(/^\d+$/.test(this.searchTerm)) {
       if(this.filterOption === 'noBloqueados') {
         if ((this.searchTerm.length <= 5)) {
