@@ -215,7 +215,7 @@
                         <div class="title-detail">
                             <h3>Detalles del Factura</h3>
                         </div>
-                        <button class="guardar-btn">💾</button>
+                        <button class="guardar-btn">✔</button>
                         <button class="close-btn-btn" (click)="closeDetails()">✖</button>
                     </div>
                     <div class="detail-container">
@@ -227,15 +227,15 @@
                             </div>
                             <div class="right">
                                 <div class="on-two">
-                                    <textarea class="smallTextarea" [(ngModel)]="selectedFacturas.facnum"></textarea>
+                                    <h1>{{selectedFacturas.facnum}}</h1>
                                     <p>F.Contable</p>
-                                    <textarea class="averageTextarea" [ngModel]="selectedFacturas.facfco | date:'dd-MM-yyyy'"></textarea>
+                                    <h1>{{selectedFacturas.facfco | date:'dd-MM-yyyy'}}</h1>
                                 </div>
-                                <textarea class="tallTextarea" [(ngModel)]="selectedFacturas.facdoc"></textarea>
+                                <h1>{{selectedFacturas.facdoc}}</h1>
                                 <div class="on-two">
-                                    <textarea class="smallTextarea" [(ngModel)]="selectedFacturas.facfac"></textarea>
-                                    <textarea class="smallTextarea" [(ngModel)]="selectedFacturas.facann" ></textarea>
-                                    <textarea class="smallTextarea" [(ngModel)]="selectedFacturas.factdc"></textarea>
+                                    <h1>{{selectedFacturas.facfac}}</h1>
+                                    <h1>{{selectedFacturas.facann}}</h1>
+                                    <h1>{{selectedFacturas.factdc}}</h1>
                                 </div>
                             </div>
                         </div>
@@ -247,18 +247,18 @@
                             </div>
                             <div class="right">
                                 <div class="on-two">
-                                    <textarea class="smallTextarea" [(ngModel)]="selectedFacturas.tercod"></textarea>
-                                    <textarea class="tallTextarea" [(ngModel)]="selectedFacturas.ternom"></textarea>
+                                    <h1>{{selectedFacturas.tercod}}</h1>
+                                    <h1>{{selectedFacturas.ternom}}</h1>
                                 </div>
                                 <div class="on-two">
-                                    <textarea class="averageTextarea" [(ngModel)]="selectedFacturas.ternif"></textarea>
+                                    <h1>{{selectedFacturas.ternif}}</h1>
                                     <p>C.Gestor</p>
-                                    <textarea class="smallTextarea" [value]="selectedFacturas.cgecod" readonly></textarea>
+                                    <h1>{{selectedFacturas.cgecod}}</h1>
                                 </div>
                                 <div class="on-two">
-                                    <textarea class="averageTextarea" [ngModel]="selectedFacturas.facdat | date:'dd-MM-yyyy'"></textarea>
+                                    <h1>{{selectedFacturas.facdat | date:'dd-MM-yyyy'}}</h1>
                                     <p>F.Registro</p>
-                                    <textarea class="averageTextarea" [ngModel]="selectedFacturas.facfre | date:'dd-MM-yyyy'"></textarea>
+                                    <h1>{{selectedFacturas.facfre | date:'dd-MM-yyyy'}}</h1>
                                 </div>
                             </div>
                         </div>
@@ -269,9 +269,9 @@
                                 <p>Procedimiento de contacto</p>
                             </div>
                             <div class="right">
-                                <textarea class="tallTextarea" [ngModel]="selectedFacturas.conctp"></textarea>
-                                <textarea class="tallTextarea" [ngModel]="selectedFacturas.concpr"></textarea>
-                                <textarea class="tallTextarea" [ngModel]="selectedFacturas.conccr"></textarea>  
+                                <h1>{{selectedFacturas.conctp}}</h1>
+                                <h1>{{selectedFacturas.concpr}}</h1>
+                                <h1>{{selectedFacturas.conccr}}</h1>
                             </div>
                         </div>
                         <div class="chunk-four">
@@ -281,14 +281,14 @@
                             </div>
                             <div class="right">
                                 <div class="on-two">
-                                    <textarea class="smallTextarea" [ngModel]="selectedFacturas.facfpg"></textarea>
+                                    <h1>{{selectedFacturas.facfpg}}</h1>
                                     <p>Tipo de pago</p>
-                                    <textarea class="smallTextarea" [ngModel]="selectedFacturas.factpg"></textarea>
+                                    <h1>{{selectedFacturas.factpg}}</h1>
                                 </div>
                                 <div class="on-two">
-                                    <textarea class="smallTextarea" [ngModel]="selectedFacturas.facopg"></textarea>
+                                    <h1>{{selectedFacturas.facopg || '#'}}</h1>
                                     <p>ADO</p>
-                                    <textarea class="averageTextarea" [(ngModel)]="selectedFacturas.facado"></textarea>
+                                    <h1>{{selectedFacturas.facado}}</h1>
                                 </div>
                             </div>
                         </div>
@@ -297,11 +297,11 @@
                                 <p>Des.Fact/ADO:</p>
                             </div>
                             <div class="right">
-                                <textarea class="tallTextarea" [(ngModel)]="selectedFacturas.factxt"></textarea>
+                                <h1>{{selectedFacturas.factxt}}</h1>
                             </div>
                         </div>
                         <div class="chunk-six">
-                            <div class="left">
+                            <div class="left gap">
                                 <p>Total Factura</p>
                                 <p>Apl.diferencias</p>
                                 <p>Descuentos</p>
@@ -389,7 +389,7 @@
                                             <table class="albaranes-table">
                                                 <thead>
                                                     <tr>
-                                                        <th><strong>Número albarán</strong></th>
+                                                        <th>Número albarán</th>
                                                         <th>Referencia</th>
                                                         <th>Fecha</th>
                                                         <th>Base imponible</th>
@@ -412,7 +412,6 @@
                                             </table>
                                         </div>
                                     </ng-container>
-
                                     <ng-container *ngSwitchCase="'aplicaciones'">
                                         <h1 class="successBtn">{{moreInfoMessageSuccess}}</h1>
                                         <h1 class="errorBtn">{{moreInfoMessageError}}</h1>

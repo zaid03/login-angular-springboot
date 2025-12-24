@@ -150,7 +150,7 @@
                         <div class="title-detail">
                             <h3>Detalles del Proveedor</h3>
                         </div>
-                        <button class="guardar-btn" (click)="saveChanges()">💾</button>
+                        <button class="guardar-btn" (click)="saveChanges()">✔</button>
                         <button class="close-btn-btn" (click)="closeDetails()">✖</button>
                     </div>
                     <h1 class="errorBtn">{{ messageError }}</h1>
@@ -163,9 +163,9 @@
                                 <p>Dirección</p>
                             </div>
                             <div class="right">
-                                <textarea class="largeArea" [(ngModel)]="selectedProveedor.ternom" readonly></textarea>
-                                <textarea class="largeArea" [(ngModel)]="selectedProveedor.terali" readonly></textarea>
-                                <textarea class="largeArea" [(ngModel)]="selectedProveedor.terdom" readonly></textarea>
+                                <h1>{{selectedProveedor.ternom}}</h1>
+                                <h1>{{selectedProveedor.terali}}</h1>
+                                <h1>{{selectedProveedor.terdom}}</h1>
                             </div>
                         </div>
                         <div class="chunk-two">
@@ -176,15 +176,15 @@
                             </div>
                             <div class="right">
                                 <div class="on-three">
-                                    <textarea class="smallArea" [(ngModel)]="selectedProveedor.tercod" readonly></textarea>
+                                    <h1>{{selectedProveedor.tercod}}</h1>
                                     <p>NIF</p>
-                                    <textarea class="smallArea" [(ngModel)]="selectedProveedor.ternif" readonly></textarea>
+                                    <h1>{{selectedProveedor.ternif}}</h1>
                                 </div>
                                 <div class="on-two">
-                                    <textarea class="smallArea" [(ngModel)]="selectedProveedor.procod" readonly></textarea>
-                                    <textarea class="largeArea" [(ngModel)]="selectedProveedor.terpob" readonly></textarea>
+                                    <h1>{{selectedProveedor.procod}}</h1>
+                                    <h1>{{selectedProveedor.terpob}}</h1>
                                 </div>
-                                <textarea class="smallArea" [(ngModel)]="selectedProveedor.tercpo" readonly></textarea>
+                                <h1>{{selectedProveedor.tercpo}}</h1>
                             </div>
                         </div>
                         <div class="chunk-three">
@@ -194,7 +194,7 @@
                                 <p>Teléfono</p>
                             </div>
                             <div class="right">
-                                <textarea class="largeArea" [(ngModel)]="selectedProveedor.terayt" readonly></textarea>
+                                <h1>{{selectedProveedor.terayt}}</h1>
                                 <div class="bloq">
                                     <input type="checkbox"
                                         [checked]="selectedProveedor.terblo == 1"
@@ -202,19 +202,19 @@
                                         class="checkbox" 
                                     />
                                 </div>
-                                <textarea class="largeArea" [(ngModel)]="selectedProveedor.tertel" readonly></textarea>
+                                <h1>{{selectedProveedor.tertel}}</h1>
                             </div>
                         </div>
                         <div class="chunk-four">
                             <div class="left">
-                                <p>Fax</p>
+                                <p class="margin">Fax</p>
                                 <p>Web</p>
                                 <p>Correo electrónico</p>
                             </div>
                             <div class="right">
-                                <textarea class="largeArea" [(ngModel)]="selectedProveedor.terfax" readonly></textarea>
+                                <h1>{{selectedProveedor.terfax}}</h1>
                                 <textarea class="largeArea" [(ngModel)]="selectedProveedor.terweb"></textarea>
-                                <textarea class="largeArea margiin" [(ngModel)]="selectedProveedor.tercoe" readonly></textarea>
+                                <h1>{{selectedProveedor.tercoe}}</h1>
                             </div>
                         </div>
                         <div class="acuerdo">
@@ -291,7 +291,7 @@
                                     </td>
                                     <td>
                                         <button class="delete-btn-personas" (click)="openDeletePersonas(c)">-</button>
-                                        <button class="save-btn-articulos" (click)="updatepersonas(c.tpecod, nom.value, telefon.value, movil.value, email.value, obs.value)">💾</button>
+                                        <button class="save-btn-articulos" (click)="updatepersonas(c.tpecod, nom.value, telefon.value, movil.value, email.value, obs.value)">✔</button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -335,13 +335,13 @@
                                         <h2 >{{ articulo.description}}</h2>
                                     </td>
                                     <td>
-                                        <input type="text" [(ngModel)]="articulo.aprref" placeholder="Referencia Prov." />
+                                        <input type="text" [(ngModel)]="articulo.aprref"/>
                                     </td>
                                     <td>
-                                        <input type="number" [(ngModel)]="articulo.apruem" placeholder="Unidades en embalaje" />
+                                        <input type="number" [(ngModel)]="articulo.apruem"/>
                                     </td>
                                     <td>
-                                        <input type="text" [(ngModel)]="articulo.aprobs" placeholder="Observaciones" />
+                                        <input type="text" [(ngModel)]="articulo.aprobs"/>
                                     </td>
                                     <td>
                                         <input type="checkbox"
@@ -351,11 +351,11 @@
                                         />
                                     </td>
                                     <td>
-                                        <input type="number" [(ngModel)]="articulo.aprpre" placeholder="Precio acuerdo" />
+                                        <input type="number" [(ngModel)]="articulo.aprpre"/>
                                     </td>
                                     <td>
-                                        <button class="delete-btn-articulos" (click)="openDeleteConfirm(articulo)">-</button>
-                                        <button class="save-btn-articulos" (click)="updatearticulos(articulo)">💾</button>
+                                        <button class="delete-btn-personas" (click)="openDeleteConfirm(articulo)">-</button>
+                                        <button class="save-btn-articulos" (click)="updatearticulos(articulo)">✔</button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -395,13 +395,13 @@
 <div class="modal-backdrop" *ngIf="showPersonasGrid" (click)="hidePersonas()"></div>
 <div class="personas-modal" *ngIf="showPersonasGrid">
     <div class="btns">
-        <button class="save-btn" (click)="addPersonas(nombreadd.value, telefonoadd.value, moviladd.value, correoadd.value, observacionesadd.value)">💾</button>
+        <button class="save-btn" (click)="addPersonas(nombreadd.value, telefonoadd.value, moviladd.value, correoadd.value, observacionesadd.value)">✔</button>
         <button class="close-btn-btn" (click)="hidePersonas()">✖</button>
     </div>
     <h1 class="errorBtn">{{personaContactoaddError}}</h1>
     <div class="personas-add-container">
         <div class="left-persona">
-            <p>Nombre</p>
+            <p>Nombre*</p>
             <p>Télefono</p>
             <p>Movil</p>
             <p>Correo electrónico</p>
@@ -471,7 +471,7 @@
 <div class="proveedor-grid-modal" *ngIf="showProveedorModal">
     <div class="btns">
         <button class="proveedor-saving-btn" (click)="saveProveedorees()" [disabled]="isSaving || selectedProveediresFromResults.length === 0">
-            <span *ngIf="!isSaving">💾</span>
+            <span *ngIf="!isSaving">✔</span>
             <span *ngIf="isSaving">Guardando...</span>
         </button>
         <button class="close-btn-btn" (click)="closeProveedorModal()">×</button>
