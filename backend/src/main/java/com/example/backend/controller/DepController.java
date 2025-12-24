@@ -18,15 +18,16 @@ public class DepController {
     private DepRepository depRepository;
 
     //fetching all services
-    @GetMapping("/fetch-services/{ent}/{eje}")
+    @GetMapping("/fetch-services/{ent}/{eje}/{percod}")
     public ResponseEntity<?> fetchAllservices(
         @PathVariable Integer ent,
-        @PathVariable String eje
+        @PathVariable String eje,
+        @PathVariable String percod
     ) {
         try {
-            List<Dep> services = depRepository.findByENTAndEJE(ent, eje);
+            List<Dep> services = depRepository.findByEntAndEjeAndPercod(ent, eje, percod);
             if (services.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontraron servicios para los siguientes entidad y ejercicio.");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontraron servicios");
             }
             return ResponseEntity.ok(services);
         } catch (DataAccessException ex) {

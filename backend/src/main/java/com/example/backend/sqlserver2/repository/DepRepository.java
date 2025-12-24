@@ -32,7 +32,18 @@ public interface DepRepository  extends JpaRepository<Dep, DepId> {
     );
 
     //fetching all services
-    List<Dep> findByENTAndEJE(int ent, String eje);
+    @Query("""
+        SELECT d FROM Dep d
+        JOIN Dpe p ON d.ENT = p.ENT AND d.EJE = p.EJE AND d.DEPCOD = p.DEPCOD
+        WHERE d.ENT = :ent
+        AND d.EJE = :eje
+        AND p.PERCOD = :percod
+    """)
+    List<Dep> findByEntAndEjeAndPercod(
+        @Param("ent") Integer ent,
+        @Param("eje") String eje,
+        @Param("percod") String percod
+    );
 
     //modifying a service
     @Modifying
