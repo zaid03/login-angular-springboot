@@ -191,6 +191,7 @@ export class EntregaComponent {
     })
   }
 
+  detallesMessageErrorDelete: string = '';
   entregaSuccess: string = '';
   deleteEntrega(lencod: number) {
     this.emptyAllMessages();
@@ -202,18 +203,38 @@ export class EntregaComponent {
       next: (res) => {
         this.entregaSuccess = 'Lugar de entrega eliminado exitosamente'
         this.entregas = this.entregas.filter((e: any) => e.lencod !== lencod);
+        this.closeDeleteConfirm();
         this.closeDetails();
       },
       error: (err) => {
-        this.detallesMessageError = err.error || 'server error';
+        this.detallesMessageErrorDelete = err.error || 'server error';
         this.emptyAllMessages();
       }
     })
   }
 
+  showDeleteConfirm = false;
+  entregaToDelete: any = null;
+  openDeleteConfirm(entrega: any) {
+    this.entregaToDelete = entrega;
+    this.showDeleteConfirm = true;
+  }
+
+  closeDeleteConfirm() {
+    this.showDeleteConfirm = false;
+    this.entregaToDelete = null;
+  }
+
+  confirmDelete() {
+    if (this.entregaToDelete) {
+      this.deleteEntrega(this.entregaToDelete.lencod);
+    }
+  }
+
   //misc
   emptyAllMessages() {
     const timeoutId = setTimeout(() => {
+      this.detallesMessageErrorDelete = '';
       this.entregasError = '';
       this.detallesMessageError = '';
       this.detallesMessageSuccess = '';

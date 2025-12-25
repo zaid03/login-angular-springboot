@@ -24,3 +24,5 @@
 .smallText { width: 80px; max-width: 150px;}
 .specialText {width: 625px; max-width: 800px; min-height: 100px;}
 .center {justify-content: center;}
+.delete-confirm-modal {top: 220px;}
+.articulos-delete-confirm-btn { margin-right: 10px;}

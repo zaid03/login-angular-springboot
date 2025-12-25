@@ -118,10 +118,21 @@
                         </div>
                     </div>
                     <div class="btns">
-                        <button class="delete-btn" (click)="deleteEntrega(selectedEntregas.lencod)">-</button>
+                        <button class="delete-btn" (click)="openDeleteConfirm(selectedEntregas)">-</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
+
+<div class="modal-backdrop" *ngIf="showDeleteConfirm" (click)="closeDeleteConfirm()"></div>
+<div class="delete-confirm-modal" *ngIf="showDeleteConfirm">
+    <h3>¿Seguro que quieres eliminar este entrega?</h3>
+    <div *ngIf="entregaToDelete">
+        
+    </div>
+    <h1 class="errorBtn">{{detallesMessageErrorDelete}}</h1>
+    <button class="articulos-delete-confirm-btn" (click)="confirmDelete()">-</button>
+    <button class="articulos-cancel-confirm-btn" (click)="closeDeleteConfirm()">✖</button>
 </div>
