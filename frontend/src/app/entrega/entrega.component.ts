@@ -169,6 +169,11 @@ export class EntregaComponent {
 
   updateEntrega(lencod: number, lendes: string, lentxt: string) {
     this.emptyAllMessages();
+
+    if (!lencod || !lendes) {
+      this.detallesMessageError = 'Descripción requirido'
+      return;
+    }
     const payload = {
       "LENDES" : lendes,
       "LENTXT" : lentxt
@@ -177,17 +182,42 @@ export class EntregaComponent {
     this.http.patch(`${environment.backendUrl}/api/Len/update-lugar/${lencod}`, payload).subscribe({
       next: (res) => {
         this.detallesMessageSuccess = 'Lugares de entrega actualizada exitosamente'
+        this.emptyAllMessages();
       },
       error: (err) => {
         this.detallesMessageError = err.error || 'server error';
+        this.emptyAllMessages();
+      }
+    })
+  }
+
+  entregaSuccess: string = '';
+  deleteEntrega(lencod: number) {
+    this.emptyAllMessages();
+    if (!lencod) {
+      return;
+    }
+
+    this.http.delete(`${environment.backendUrl}/api/Len/delete-lugar/${lencod}`).subscribe({
+      next: (res) => {
+        this.entregaSuccess = 'Lugar de entrega eliminado exitosamente'
+        this.entregas = this.entregas.filter((e: any) => e.lencod !== lencod);
+        this.closeDetails();
+      },
+      error: (err) => {
+        this.detallesMessageError = err.error || 'server error';
+        this.emptyAllMessages();
       }
     })
   }
 
   //misc
   emptyAllMessages() {
-    this.entregasError = '';
-    this.detallesMessageError = '';
-    this.detallesMessageSuccess = '';
+    const timeoutId = setTimeout(() => {
+      this.entregasError = '';
+      this.detallesMessageError = '';
+      this.detallesMessageSuccess = '';
+      this.entregaSuccess = '';
+    }, 2000);
   }
 }

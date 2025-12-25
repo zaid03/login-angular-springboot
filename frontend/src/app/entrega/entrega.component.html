@@ -32,7 +32,7 @@
                 </div>
             </div>
         </div>
-        <h1 class="successBtn">test1</h1>
+        <h1 class="successBtn">{{entregaSuccess}}</h1>
         <h1 class="errorBtn">{{entregasError}}</h1>
         <div class="entrega-list">
             <div *ngIf="isLoading" class="loading-message">
@@ -95,7 +95,7 @@
                             <div class="right">
                                 <div class="on-two">
                                     <h1>{{selectedEntregas.lencod}}</h1>
-                                    <p>Descripción</p>
+                                    <p>Descripción*</p>
                                     <textarea 
                                         class="tallText" 
                                         [(ngModel)]="selectedEntregas.lendes"
@@ -116,6 +116,9 @@
                                 ></textarea>
                             </div>
                         </div>
+                    </div>
+                    <div class="btns">
+                        <button class="delete-btn" (click)="deleteEntrega(selectedEntregas.lencod)">-</button>
                     </div>
                 </div>
             </div>
