@@ -167,6 +167,22 @@ export class EntregaComponent {
     this.emptyAllMessages();
   }
 
+  updateEntrega(lencod: number, lendes: string, lentxt: string) {
+    this.emptyAllMessages();
+    const payload = {
+      "LENDES" : lendes,
+      "LENTXT" : lentxt
+    }
+
+    this.http.patch(`${environment.backendUrl}/api/Len/update-lugar/${lencod}`, payload).subscribe({
+      next: (res) => {
+        this.detallesMessageSuccess = 'Lugares de entrega actualizada exitosamente'
+      },
+      error: (err) => {
+        this.detallesMessageError = err.error || 'server error';
+      }
+    })
+  }
 
   //misc
   emptyAllMessages() {

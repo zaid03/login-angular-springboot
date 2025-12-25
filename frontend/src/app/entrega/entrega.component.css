@@ -16,6 +16,7 @@
 .right { width: 95%; display: flex; flex-direction: column; gap: 10px;}
 .on-two { display: flex; gap: 10px; align-items: center;}
 .left p,
+.right h1,
 .right p { font-size: 14px; font-weight: bold; color: #25176b; }
 .chunk textarea { height: 20px; padding: 2px 4px; border-radius: 6px; font-weight: bold; color: #162a3a;}
 .chunk textarea:focus { outline: none; border-color: #042b5a; outline: none; background: #fff; } 
