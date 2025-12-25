@@ -307,7 +307,8 @@ app-sidebar {
 
 /* page-container and list */
 .familia-container.blurred,
-.centroGestor-container.blurred {
+.centroGestor-container.blurred,
+.entrega-container.blurred {
   filter: blur(1.2px);
   pointer-events: none;
   user-select: none;
@@ -317,7 +318,8 @@ app-sidebar {
 .proveedores-page,
 .familia-page,
 .centroGestor-page,
-.credito-page {
+.credito-page,
+.entrega-page {
   display: flex;
   min-height: 100vh;
   background: #f0f0f0;
@@ -327,7 +329,8 @@ app-sidebar {
 .facturas-container,
 .familia-container,
 .centroGestor-container,
-.credito-container {
+.credito-container,
+.entrega-container {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -341,7 +344,8 @@ app-sidebar {
 
 .proveedores-list,
 .facturas-list,
-.credito-list {
+.credito-list,
+.entrega-list {
   width: 98%;
   max-width: 98%;
   display: flex;
@@ -357,7 +361,8 @@ app-sidebar {
 .articulo-table,
 .anadir-proveedores-table,
 .proveedor-anadir-table-sw,
-.credito-table {
+.credito-table,
+.entrega-table {
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.06);
@@ -375,7 +380,8 @@ app-sidebar {
 .articulo-table th,
 .anadir-proveedores-table th,
 .proveedor-anadir-table-sw th,
-.credito-table thead th {
+.credito-table thead th,
+.entrega-table thead th {
   border: 1px solid #e6edf3;
   padding: 8px 12px;
   text-align: center;
@@ -392,7 +398,8 @@ app-sidebar {
 .articulo-table td,
 .anadir-proveedores-table td,
 .proveedor-anadir-table-sw td,
-.credito-table tbody td {
+.credito-table tbody td,
+.entrega-table tbody td {
   border: 1px solid #f0f5f9;
   padding: 6px 10px;
   text-align: center;
@@ -410,7 +417,8 @@ app-sidebar {
 .articulo-table tr:hover,
 .anadir-proveedores-table tr:hover,
 .proveedor-anadir-table-sw tr:hover,
-.credito-table tbody tr:hover {
+.credito-table tbody tr:hover,
+.entrega-table tbody tr:hover {
   background-color: #f0f7ff;
 }
 
@@ -479,7 +487,6 @@ app-sidebar {
   cursor: pointer;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   gap: 4px;
 }

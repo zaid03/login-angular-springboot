@@ -22,6 +22,7 @@
 .facturas-table tbody td:nth-child(12),
 .facturas-table tbody td:nth-child(13) { text-align: left; }
 .facturas-table tbody td:nth-child(3),
+.facturas-table tbody td:nth-child(4),
 .facturas-table tbody td:nth-child(14),
 .facturas-table tbody td:nth-child(15) { text-align: right;}
 /* table style */

@@ -177,7 +177,6 @@ export class FacturasComponent {
     }
   }
 
-
   get paginatedFacturas(): any[] {
     if (!this.facturas || this.facturas.length === 0) return [];
     const start = this.page * this.pageSize;
