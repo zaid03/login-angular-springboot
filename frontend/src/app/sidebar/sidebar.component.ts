@@ -86,7 +86,7 @@ export class SidebarComponent implements OnInit {
   }
 
   navigateTo(code: string): void {
-    if (this.isDisabled(code) && code !== 'familia' && code !== 'centroGestor' && code !== 'servicios') {
+    if (this.isDisabled(code) && code !== 'familia' && code !== 'centroGestor' && code !== 'servicios' && code !== 'entrega') {
       console.warn('Not allowed:', code);
       return;
     }
@@ -114,6 +114,9 @@ export class SidebarComponent implements OnInit {
         break;
       case 'servicios':
         this.router.navigate(['/servicios']);
+        break;
+      case 'entrega':
+        this.router.navigate(['/entrega']);
         break;
       default:
         console.warn('No route configured for code:', code);
