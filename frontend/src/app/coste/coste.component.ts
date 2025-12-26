@@ -8,6 +8,7 @@ import { environment } from '../../environments/environment';
 
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
+import { retry } from 'rxjs';
 
 @Component({
   selector: 'app-entrega',
@@ -342,8 +343,8 @@ export class CosteComponent {
   updateEntrega(ccocod: string, ccodes: string) {
     this.emptyAllMessages();
 
-    if (!ccocod || !ccodes) {
-      this.detallesMessageError = 'Todos los campos son obligatorios'
+    if (!ccodes) {
+      this.detallesMessageError = 'descripción requerida'
       return;
     }
     const payload = {
@@ -402,7 +403,46 @@ export class CosteComponent {
     })
   }
 
+  //adding entrega grid functions
+  showAddGrid = false;
+  costesNew: any = [];
+  errorAddcoste: string = '';
+  showAdd() {
+    this.showAddGrid = true;
+    this.costesNew = this.selectedCoste;
+  }
 
+  hideAdd() {
+    this.showAddGrid = false;
+  }
+
+  addCoste(ccocod: string, ccodes: string) {
+    if(!ccocod || !ccodes) {
+      this.emptyAllMessages();
+      this.errorAddcoste = 'Todos los campos son obligatorios';
+      return;
+    }
+
+    const payload = {
+      "ENT" : this.entcod,
+      "EJE" : this.eje,
+      "CCOCOD" : ccocod,
+      "CCODES" : ccodes
+    }
+
+    this.http.post(`${environment.backendUrl}/api/cco/Insert-centro`, payload).subscribe({
+      next: (res) => {
+        this.costeSuccess = 'centro de coste a agregada exitosamente';
+        this.hideAdd();
+        this.fetchCostes();
+        this.emptyAllMessages();
+      },
+      error: (err) => {
+        this.errorAddcoste = err.error || 'server error';
+        this.emptyAllMessages();
+      }
+    })
+  }
   //misc
   emptyAllMessages() {
     const timeoutId = setTimeout(() => {
@@ -411,6 +451,7 @@ export class CosteComponent {
       this.detallesMessageSuccess = '';
       this.costeSuccess = '';
       this.detallesMessageErrorDelete = '';
-    }, 5000)
+      this.errorAddcoste = '';
+    }, 10000)
   }
 }
