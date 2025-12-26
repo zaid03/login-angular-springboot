@@ -338,6 +338,29 @@ export class CosteComponent {
     textarea.value = textarea.value.replace(/\D/g, '').slice(0, 4);
     this.selectedCoste.ccocod = textarea.value;
   }
+
+  updateEntrega(ccocod: string, ccodes: string) {
+    this.emptyAllMessages();
+
+    if (!ccocod || !ccodes) {
+      this.detallesMessageError = 'Todos los campos son obligatorios'
+      return;
+    }
+    const payload = {
+      "CCODES" : ccodes
+    }
+
+    this.http.patch(`${environment.backendUrl}/api/cco/update-centro/${this.entcod}/${this.eje}/${ccocod}`, payload).subscribe({
+      next: (res) => {
+        this.detallesMessageSuccess = 'Lugares de entrega actualizada exitosamente'
+        this.emptyAllMessages();
+      },
+      error: (err) => {
+        this.detallesMessageError = err.error || 'server error';
+        this.emptyAllMessages();
+      }
+    })
+  }
   //misc
   emptyAllMessages() {
     const timeoutId = setTimeout(() => {

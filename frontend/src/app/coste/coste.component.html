@@ -83,7 +83,7 @@
                         <div class="title-detail">
                             <h3>Detalles del centro de coste</h3>
                         </div>
-                        <button class="guardar-btn">✔</button>
+                        <button class="guardar-btn" (click)="updateEntrega(selectedCoste.ccocod, description.value)">✔</button>
                         <button class="close-btn-btn" (click)="closeDetails()">✖</button>
                     </div>
                     <h1 class="errorBtn">{{detallesMessageError}}</h1>
@@ -91,16 +91,11 @@
                     <div class="detail-container">
                         <div class="chunk">
                             <div class="left center">
-                                <p>código*</p>
+                                <p>código</p>
                             </div>
                             <div class="right">
                                 <div class="on-two">
-                                    <textarea
-                                        class="smallText"
-                                        [(ngModel)]="selectedCoste.ccocod"
-                                        (input)="filterDigits($event)"
-                                        #codigo
-                                    ></textarea>
+                                    <h1>{{selectedCoste.ccocod}}</h1>
                                     <p>Descripción*</p>
                                     <textarea 
                                         class="tallText" 
