@@ -12,6 +12,7 @@ import { FamiliaComponent } from './familia/familia.component';
 import { CgeComponent } from './cge/cge.component';
 import { ServiciosComponent } from './servicios/servicios.component';
 import { EntregaComponent } from './entrega/entrega.component';
+import { CosteComponent } from './coste/coste.component';
 
 export const routes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -26,6 +27,7 @@ export const routes: Routes = [
     { path: 'centroGestor', component: CgeComponent},
     { path: 'servicios', component: ServiciosComponent},
     { path: 'entrega', component: EntregaComponent},
+    { path: 'coste', component: CosteComponent},
     { path: '', redirectTo: '/login', pathMatch: 'full' }, //route by default
 ];
 
