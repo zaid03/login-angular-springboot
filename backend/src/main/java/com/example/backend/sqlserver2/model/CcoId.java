@@ -8,6 +8,8 @@ public class CcoId implements Serializable {
     private String EJE;
     private String CCOCOD; 
 
+    public CcoId() {}
+    
     public CcoId(Integer ENT, String EJE, String CCOCOD) {
         this.ENT = ENT;
         this.EJE = EJE;

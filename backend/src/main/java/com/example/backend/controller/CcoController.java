@@ -38,7 +38,7 @@ public class CcoController {
     }
 
     //search by ccocod also needed for adding
-    @GetMapping("/fetch-all/{ENT}/{EJE}/{CCOCOD}")
+    @GetMapping("/filter-by/{ENT}/{EJE}/{CCOCOD}")
     public ResponseEntity<?> searchCoste(
         @PathVariable Integer ENT,
         @PathVariable String EJE,
@@ -58,7 +58,7 @@ public class CcoController {
     }
 
     //search by ccodes
-    @GetMapping("/fetch-all/{ENT}/{EJE}/{CCODES}")
+    @GetMapping("/filter-by-des/{ENT}/{EJE}/{CCODES}")
     public ResponseEntity<?> searchCosteLike(
         @PathVariable Integer ENT,
         @PathVariable String EJE,
@@ -109,7 +109,7 @@ public class CcoController {
 
     //update a centro coste
     public record updateCentro(String CCODES) {}
-    @PostMapping("/update-centro/{ENT}/{EJE}/{CCOCOD}")
+    @PatchMapping("/update-centro/{ENT}/{EJE}/{CCOCOD}")
     public ResponseEntity<?> UpdateCentro(
         @PathVariable Integer ENT,
         @PathVariable String EJE,
