@@ -361,12 +361,56 @@ export class CosteComponent {
       }
     })
   }
+
+  showDeleteConfirm = false;
+  costeToDelete: any = null;
+  openDeleteConfirm(coste: any) {
+    this.costeToDelete = coste;
+    this.showDeleteConfirm = true;
+  }
+
+  closeDeleteConfirm() {
+    this.showDeleteConfirm = false;
+    this.costeToDelete = null;
+  }
+
+  confirmDelete() {
+    if (this.costeToDelete) {
+      this.deleteCoste(this.costeToDelete.ccocod);
+    }
+  }
+
+  detallesMessageErrorDelete: string = '';
+  costeSuccess: string = '';
+  deleteCoste(ccocod: number) {
+    this.emptyAllMessages();
+    if (!ccocod) {
+      return;
+    }
+
+    this.http.delete(`${environment.backendUrl}/api/cco/delete-coste/${this.entcod}/${this.eje}/${ccocod}`).subscribe({
+      next: (res) => {
+        this.costeSuccess = 'Lugar de entrega eliminado exitosamente'
+        this.costes = this.costes.filter((e: any) => e.ccocod !== ccocod);
+        this.closeDeleteConfirm();
+        this.closeDetails();
+      },
+      error: (err) => {
+        this.detallesMessageErrorDelete = err.error || 'server error';
+        this.emptyAllMessages();
+      }
+    })
+  }
+
+
   //misc
   emptyAllMessages() {
     const timeoutId = setTimeout(() => {
       this.costeError = '';
       this.detallesMessageError = '';
       this.detallesMessageSuccess = '';
-    }, 2000)
+      this.costeSuccess = '';
+      this.detallesMessageErrorDelete = '';
+    }, 5000)
   }
 }

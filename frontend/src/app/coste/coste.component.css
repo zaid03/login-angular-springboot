@@ -25,4 +25,6 @@
 .right-add textarea:focus { outline: none; border-color: #042b5a; outline: none; background: #fff; } 
 .tallText { width: 450px; max-width: 625px;}
 .smallText { width: 50px; max-width: 80px;}
+.delete-confirm-modal {top: 220px;}
+.articulos-delete-confirm-btn { margin-right: 10px;}
 /* detail grid */
