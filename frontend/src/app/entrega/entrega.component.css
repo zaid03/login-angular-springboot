@@ -17,12 +17,23 @@
 .on-two { display: flex; gap: 10px; align-items: center;}
 .left p,
 .right h1,
-.right p { font-size: 14px; font-weight: bold; color: #25176b; }
-.chunk textarea { height: 20px; padding: 2px 4px; border-radius: 6px; font-weight: bold; color: #162a3a;}
-.chunk textarea:focus { outline: none; border-color: #042b5a; outline: none; background: #fff; } 
+.right p,
+.left-add p { font-size: 14px; font-weight: bold; color: #25176b; }
+.chunk textarea,
+.right-add textarea { height: 20px; padding: 2px 4px; border-radius: 6px; font-weight: bold; color: #162a3a;}
+.chunk textarea:focus,
+.right-add textarea:focus { outline: none; border-color: #042b5a; outline: none; background: #fff; } 
 .tallText { width: 450px; max-width: 625px;}
 .smallText { width: 80px; max-width: 150px;}
 .specialText {width: 625px; max-width: 800px; min-height: 100px;}
 .center {justify-content: center;}
 .delete-confirm-modal {top: 220px;}
 .articulos-delete-confirm-btn { margin-right: 10px;}
+/* add grid */
+.entrega-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 16px; box-shadow: 0 8px 32px rgba(44, 62, 80, 0.18), 0 1.5px 6px rgba(44,62,80,0.08); padding: 25px 30px; min-width: 500px; min-height: 120px; z-index: 3000; display: flex; flex-direction: column; align-items: center; }
+.add-container { display: flex; width: 100%;}
+.left-add { width: 20%; display: flex; flex-direction: column; gap: 20px;}
+.right-add { display: flex; flex-direction: column; gap: 10px;}
+.averageText {width: 220px; max-width: 350px;}
+.height {height: 100px !important;}
+/* add grid */

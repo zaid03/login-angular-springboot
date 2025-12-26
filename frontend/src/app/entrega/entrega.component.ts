@@ -231,6 +231,20 @@ export class EntregaComponent {
     }
   }
 
+  //adding entrega grid functions
+  showAddGrid = false;
+  personaInfo: any = [];
+  showAdd() {
+    this.showAddGrid = true;
+    this.personaInfo = this.selectedEntregas;
+  }
+
+  hideAdd() {
+    this.showAddGrid = false;
+  }
+
+  errorAddEntrega: string = '';
+  
   //misc
   emptyAllMessages() {
     const timeoutId = setTimeout(() => {

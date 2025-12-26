@@ -28,7 +28,7 @@
                 <div class="menu-panel" *ngIf="showMenu">
                     <button class="download-btn">Descargar como Excel</button>
                     <button class="download-btn">Impreso</button>
-                    <button class="download-btn">Añadir</button>
+                    <button class="download-btn" (click)="showAdd()">Añadir</button>
                 </div>
             </div>
         </div>
@@ -135,4 +135,23 @@
     <h1 class="errorBtn">{{detallesMessageErrorDelete}}</h1>
     <button class="articulos-delete-confirm-btn" (click)="confirmDelete()">-</button>
     <button class="articulos-cancel-confirm-btn" (click)="closeDeleteConfirm()">✖</button>
+</div>
+
+<div class="modal-backdrop" *ngIf="showAddGrid" (click)="hideAdd()"></div>
+<div class="entrega-modal" *ngIf="showAddGrid">
+    <div class="btns">
+        <button class="save-btn" >✔</button>
+        <button class="close-btn-btn" (click)="hideAdd()">✖</button>
+    </div>
+    <h1 class="errorBtn">{{errorAddEntrega}}</h1>
+    <div class="add-container">
+        <div class="left-add">
+            <p>Descripción*</p>
+            <p>Texto</p>
+        </div>
+        <div class="right-add">
+            <textarea class="averageText" #desc></textarea>
+            <textarea class="averageText height" #texto></textarea>
+        </div>
+    </div>
 </div>
