@@ -57,7 +57,7 @@
                 </thead>
                 <tbody>
                     <tr *ngFor="let c of paginatedCostes">
-                        <td>{{c.ccocod}}</td>
+                        <td (click)="showDetails(c)" style="cursor: pointer;">{{c.ccocod}}</td>
                         <td>{{c.ccodes}}</td>
                     </tr>
                 </tbody>
@@ -75,6 +75,46 @@
                 />
                 <span>de {{ totalPages }}</span>
                 <button (click)="nextPage()" [disabled]="page + 1 >= totalPages">Siguiente</button>
+            </div>
+            <div class="modal-backdrop" *ngIf="selectedCoste" (click)="closeDetails()"></div>
+            <div class="display">
+                <div class="modal" *ngIf="selectedCoste">
+                    <div class="btns">
+                        <div class="title-detail">
+                            <h3>Detalles del centro de coste</h3>
+                        </div>
+                        <button class="guardar-btn">✔</button>
+                        <button class="close-btn-btn" (click)="closeDetails()">✖</button>
+                    </div>
+                    <h1 class="errorBtn">{{detallesMessageError}}</h1>
+                    <h1 class="successBtn">{{detallesMessageSuccess}}</h1>
+                    <div class="detail-container">
+                        <div class="chunk">
+                            <div class="left center">
+                                <p>código*</p>
+                            </div>
+                            <div class="right">
+                                <div class="on-two">
+                                    <textarea
+                                        class="smallText"
+                                        [(ngModel)]="selectedCoste.ccocod"
+                                        (input)="filterDigits($event)"
+                                        #codigo
+                                    ></textarea>
+                                    <p>Descripción*</p>
+                                    <textarea 
+                                        class="tallText" 
+                                        [(ngModel)]="selectedCoste.ccodes"
+                                        #description
+                                    ></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="btns">
+                            <button class="delete-btn">-</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -318,10 +318,32 @@ export class CosteComponent {
     printWindow.print();
   }
 
+  //detail grid functions
+  selectedCoste: any = null;
+  detallesMessageError: String = '';
+  detallesMessageSuccess: string = '';
+  fettalesIsError: boolean = false;
+
+  showDetails(coste: any) {
+    this.selectedCoste = coste;
+  }
+
+  closeDetails() {
+    this.selectedCoste = null;
+    this.emptyAllMessages();
+  }
+
+  filterDigits(event: Event) {
+    const textarea = event.target as HTMLTextAreaElement;
+    textarea.value = textarea.value.replace(/\D/g, '').slice(0, 4);
+    this.selectedCoste.ccocod = textarea.value;
+  }
   //misc
   emptyAllMessages() {
     const timeoutId = setTimeout(() => {
       this.costeError = '';
+      this.detallesMessageError = '';
+      this.detallesMessageSuccess = '';
     }, 2000)
   }
 }

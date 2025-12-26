@@ -24,7 +24,6 @@
 .chunk textarea:focus,
 .right-add textarea:focus { outline: none; border-color: #042b5a; outline: none; background: #fff; } 
 .tallText { width: 450px; max-width: 625px;}
-.smallText { width: 80px; max-width: 150px;}
 .specialText {width: 625px; max-width: 800px; min-height: 100px;}
 .center {justify-content: center;}
 .delete-confirm-modal {top: 220px;}

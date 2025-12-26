@@ -8,3 +8,20 @@
 .coste-table tbody td:first-child{text-align: left;}
 .coste-table tbody td:nth-child(2){text-align: right;}
 /* main-list and table */
+/* detail grid */
+.modal{ width: 65%;}
+.detail-container { display: flex;flex-direction: column; gap: 10px; padding: 1%;}
+.chunk{ display: flex; padding: 2px; gap: 5px;}
+.left { width: 5%; display: flex; flex-direction: column; gap: 10px; justify-content: center; }
+.right { width: 95%; display: flex; flex-direction: column; gap: 10px;}
+.on-two { display: flex; gap: 10px; align-items: center;}
+.left p,
+.right p,
+.left-add p { font-size: 14px; font-weight: bold; color: #25176b; }
+.chunk textarea,
+.right-add textarea { height: 20px; padding: 2px 4px; border-radius: 6px; font-weight: bold; color: #162a3a;}
+.chunk textarea:focus,
+.right-add textarea:focus { outline: none; border-color: #042b5a; outline: none; background: #fff; } 
+.tallText { width: 450px; max-width: 625px;}
+.smallText { width: 50px; max-width: 80px;}
+/* detail grid */
