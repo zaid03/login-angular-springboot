@@ -188,10 +188,54 @@ export class CosteComponent {
     this.resizingColIndex = null;
   };
 
+  searchText: string = '';
+  filterEntrega() {
+    this.emptyAllMessages();
+
+    if(!this.searchText) {
+      this.costeError = 'Introduzca una centro de coste para buscar';
+      return;
+    }
+
+    const isNumber = /^[0-9]+$/;
+    const isChar = /^[A-Za-z]+$/;
+    const isAlphanumeric = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$/;
+
+    if(isNumber.test(this.searchText)) {
+      this.http.get<any[]>(`${environment.backendUrl}/api/cco/filter-by/${this.entcod}/${this.eje}/${this.searchText}`).subscribe({
+        next: (res) => {
+          this.costes = res;
+        },
+        error: (err) => {
+          this.costeError = err.error || 'server error';
+          this.emptyAllMessages();
+        }
+      });
+    }
+    if(isChar.test(this.searchText) || isAlphanumeric.test(this.searchText)) {
+      this.http.get<any[]>(`${environment.backendUrl}/api/cco/filter-by-des/${this.entcod}/${this.eje}/${this.searchText}`).subscribe({
+        next: (res) => {
+          this.costes = res;
+        },
+        error: (err) => {
+          this.costeError = err.error || 'server error';
+          this.emptyAllMessages();
+        }
+      });
+    }
+  }
+
+  limpiarFiltro() {
+    this.costes = [...this.backupCostes];
+    this.searchText = '';
+    this.costeError = '';
+    this.page = 0;
+  }
+
   //misc
   emptyAllMessages() {
     const timeoutId = setTimeout(() => {
       this.costeError = '';
-    })
+    }, 2000)
   }
 }

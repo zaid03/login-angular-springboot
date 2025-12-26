@@ -28,7 +28,7 @@ public class CcoController {
             List<?> centros =  ccoRepository.findByENTAndEJE(ENT, EJE);
             if (centros.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("Centro de costos no encontrado : ");
+                .body("Centro de costos no encontrado ");
             }
             return ResponseEntity.ok(centros);
         } catch (DataAccessException ex) {
@@ -48,7 +48,7 @@ public class CcoController {
             List<?> centros =  ccoRepository.findByENTAndEJEAndCCOCOD(ENT, EJE, CCOCOD);
             if (centros.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("Centro de costos no encontrado : ");
+                .body("Centro de costos no encontrado");
             }
             return ResponseEntity.ok(centros);
         } catch (DataAccessException ex) {
@@ -68,7 +68,7 @@ public class CcoController {
             List<?> centros =  ccoRepository.findByENTAndEJEAndCCODESContaining(ENT, EJE, CCODES);
             if (centros.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("Centro de costos no encontrado : ");
+                .body("Centro de costos no encontrado");
             }
             return ResponseEntity.ok(centros);
         } catch (DataAccessException ex) {
