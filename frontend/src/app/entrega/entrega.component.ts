@@ -97,13 +97,21 @@ export class EntregaComponent {
   private applySort(): void {
     if (!this.sortColumn) return;
     this.entregas.sort((a, b) => {
-      let aValue: any;
-      let bValue: any;
+      let aValue: any = a[this.sortColumn];
+      let bValue: any = b[this.sortColumn];
 
-      const aNum = Number(aValue);
-      const bNum = Number(bValue);
-      if (!isNaN(aNum) && !isNaN(bNum)) {
-        return this.sortDirection === 'asc' ? aNum - bNum : bNum - aNum;
+      if (this.sortColumn === 'lencod') {
+        aValue = Number(aValue);
+        bValue = Number(bValue);
+        return this.sortDirection === 'asc' ? aValue - bValue : bValue - aValue;
+      }
+
+      if (this.sortColumn === 'lendes') {
+        aValue = (aValue ?? '').toString().toUpperCase();
+        bValue = (bValue ?? '').toString().toUpperCase();
+        if (aValue < bValue) return this.sortDirection === 'asc' ? -1 : 1;
+        if (aValue > bValue) return this.sortDirection === 'asc' ? 1 : -1;
+        return 0;
       }
 
       aValue = (aValue ?? '').toString().toUpperCase();

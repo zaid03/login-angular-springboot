@@ -1,0 +1,10 @@
+/* search */
+.title-area { width: 30%; }
+.search-holder { justify-content: flex-start; width: 69%; }
+.search-container { margin-left: 15%; gap: 10px; }
+/* search */
+/* main-list and table */
+.coste-list { width: 40%; }
+.coste-table tbody td:first-child{text-align: left;}
+.coste-table tbody td:nth-child(2){text-align: right;}
+/* main-list and table */
