@@ -13,11 +13,12 @@
                             class="search-bar" 
                             name="search"
                             placeholder="Buscar Lugar de Entrega"
+                            [(ngModel)]="searchText"
                         >
                     </div>
                     <div class="btns">
-                        <button type="button" class="search-button">Buscar</button>
-                        <button type="button" class="search-button">Limpiar</button>
+                        <button type="button" class="search-button" (click)="filterEntrega()">Buscar</button>
+                        <button type="button" class="search-button" (click)="limpiarFiltro()">Limpiar</button>
                     </div>
                 </div>
             </div>

@@ -152,6 +152,50 @@ export class EntregaComponent {
     this.resizingColIndex = null;
   };
 
+  searchText: string = '';
+  filterEntrega() {
+    this.emptyAllMessages();
+
+    if(!this.searchText) {
+      this.entregasError = 'Introduzca una entrega para buscar';
+      return;
+    }
+
+    const isNumber = /^[0-9]+$/;
+    const isChar = /^[A-Za-z]+$/;
+    const isAlphanumeric = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$/;
+
+    if(isNumber.test(this.searchText)) {
+      this.http.get<any[]>(`${environment.backendUrl}/api/Len/filter-lencod/${this.searchText}`).subscribe({
+        next: (res) => {
+          this.entregas = res;
+        },
+        error: (err) => {
+          this.entregasError = err.error || 'server error';
+          this.emptyAllMessages();
+        }
+      });
+    }
+    if(isChar.test(this.searchText) || isAlphanumeric.test(this.searchText)) {
+      this.http.get<any[]>(`${environment.backendUrl}/api/Len/filter-lendes/${this.searchText}`).subscribe({
+        next: (res) => {
+          this.entregas = res;
+        },
+        error: (err) => {
+          this.entregasError = err.error || 'server error';
+          this.emptyAllMessages();
+        }
+      });
+    }
+  }
+
+  limpiarFiltro() {
+    this.entregas = [...this.backupentregas];
+    this.searchText = '';
+    this.entregasError = '';
+    this.page = 0;
+  }
+
   //detail grid functions
   selectedEntregas: any = null;
   detallesMessageError: String = '';
