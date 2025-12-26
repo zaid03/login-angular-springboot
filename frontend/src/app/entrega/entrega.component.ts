@@ -244,7 +244,42 @@ export class EntregaComponent {
   }
 
   errorAddEntrega: string = '';
-  
+  addEntrega(lendes: string, lentxt: string) {
+    this.emptyAllMessages();
+    if (!lendes) {
+      this.errorAddEntrega = 'Descripción requirido'
+      return;
+    }
+    const payload = {
+      "lendes" : lendes,
+      "lentxt" : lentxt
+    }
+    
+    this.http.post(`${environment.backendUrl}/api/Len/add-lugar`, payload).subscribe({
+      next: (res) => {
+        this.entregaSuccess = 'Lugar de entrega agregada exitosamente';
+        this.fetchEntregas();
+        this.emptyAllMessages();
+        this.hideAdd();
+      },
+      error: (err) => {
+        this.errorAddEntrega = err.error || 'server error';
+        this.emptyAllMessages();
+      }
+    })
+  }
+
+  fetchEntregas() {
+    this.http.get<any[]>(`${environment.backendUrl}/api/Len/fetch-all`).subscribe({
+      next: (res) => {
+        this.entregas = res;
+        this.backupentregas = [...this.entregas];
+      },
+      error: (err) => {
+        this.entregasError = err.error?.error || 'server error';
+      }
+    });
+  }
   //misc
   emptyAllMessages() {
     const timeoutId = setTimeout(() => {
@@ -253,6 +288,7 @@ export class EntregaComponent {
       this.detallesMessageError = '';
       this.detallesMessageSuccess = '';
       this.entregaSuccess = '';
+      this.errorAddEntrega = '';
     }, 2000);
   }
 }

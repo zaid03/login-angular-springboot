@@ -140,7 +140,7 @@
 <div class="modal-backdrop" *ngIf="showAddGrid" (click)="hideAdd()"></div>
 <div class="entrega-modal" *ngIf="showAddGrid">
     <div class="btns">
-        <button class="save-btn" >✔</button>
+        <button class="save-btn" (click)="addEntrega(desc.value, texto.value)">✔</button>
         <button class="close-btn-btn" (click)="hideAdd()">✖</button>
     </div>
     <h1 class="errorBtn">{{errorAddEntrega}}</h1>
