@@ -1,6 +1,5 @@
 package com.example.backend.controller;
 
-import com.example.backend.controller.CgeController.centroAdd;
 import com.example.backend.dto.AprDto;
 import com.example.backend.sqlserver2.model.Apr;
 import com.example.backend.sqlserver2.repository.AprRepository;

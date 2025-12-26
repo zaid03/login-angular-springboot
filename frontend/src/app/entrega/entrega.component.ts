@@ -283,6 +283,7 @@ export class EntregaComponent {
     printWindow.document.close();
     printWindow.print();
   }
+  
   //detail grid functions
   selectedEntregas: any = null;
   detallesMessageError: String = '';
