@@ -1,6 +1,5 @@
 package com.example.backend.controller;
 
-import com.example.backend.sqlserver1.model.Ayt;
 import com.example.backend.sqlserver1.repository.AytRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
