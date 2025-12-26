@@ -97,4 +97,38 @@ public class LenController {
                 .body("delete failed: " + ex.getMostSpecificCause().getMessage());
         }
     }
+
+    //search with lencod
+    @GetMapping("/filter-lencod/{LENCOD}")
+    public ResponseEntity<?> filterLugaresLen(
+        @PathVariable Integer LENCOD
+    ) {
+        try {
+            List<?> lugares = lenRepository.filterByLencod(LENCOD);
+            if (lugares.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontraron lugares de entregas");
+            }
+            return ResponseEntity.ok(lugares);
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("filter failed: " + ex.getMostSpecificCause().getMessage());
+        }
+    }
+
+    //search with lendes
+    @GetMapping("/filter-lendes/{LENDES}")
+    public ResponseEntity<?> filterLugaresDes(
+        @PathVariable String LENDES
+    ) {
+        try {
+            List<?> lugares = lenRepository.filterByLendes(LENDES);
+            if (lugares.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontraron lugares de entregas");
+            }
+            return ResponseEntity.ok(lugares);
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("filter failed: " + ex.getMostSpecificCause().getMessage());
+        }
+    }
 }
