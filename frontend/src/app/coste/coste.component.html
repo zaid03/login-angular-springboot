@@ -27,8 +27,8 @@
                 <div class="dot"></div>
                 <div class="dot"></div>
                 <div class="menu-panel" *ngIf="showMenu">
-                    <button class="download-btn">Descargar como Excel</button>
-                    <button class="download-btn">Impreso</button>
+                    <button class="download-btn" (click)="downloadExcel()">Descargar como Excel</button>
+                    <button class="download-btn" (click)="print()">Impreso</button>
                     <button class="download-btn">Añadir</button>
                 </div>
             </div>

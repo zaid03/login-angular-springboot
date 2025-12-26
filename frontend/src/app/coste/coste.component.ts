@@ -232,6 +232,92 @@ export class CosteComponent {
     this.page = 0;
   }
 
+  downloadExcel() {
+    this.emptyAllMessages();
+    const rows = this.backupCostes.length ? this.backupCostes : this.costes;
+    if (!rows || rows.length === 0) {
+      this.costeError = 'No hay datos para exportar.';
+      return;
+    }
+  
+    const exportRows = rows.map((row, index) => ({
+      '#': index + 1,
+      Código: row.ccocod ?? '',
+      Descripción: row.ccodes ?? '',
+    }));
+  
+    const worksheet = XLSX.utils.aoa_to_sheet([]);
+    XLSX.utils.sheet_add_aoa(worksheet, [['Listado de Centro de Coste']], { origin: 'A1' });
+    worksheet['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 3 } }];
+    XLSX.utils.sheet_add_aoa(worksheet, [['#', 'Código', 'Descripción']], { origin: 'A2' });
+    XLSX.utils.sheet_add_json(worksheet, exportRows, { origin: 'A3', skipHeader: true });
+
+    worksheet['!cols'] = [
+      { wch: 6 },
+      { wch: 15 },
+      { wch: 40 }
+    ];
+  
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Centro_Coste');
+    const buffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    saveAs(
+      new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }),
+      'Centro_Coste.xlsx'
+    );
+  }
+
+  print() {
+    const rows = this.backupCostes.length ? this.backupCostes : this.costes;
+    if (!rows?.length) {
+      this.costeError = 'No hay datos para imprimir.';
+      return;
+    }
+
+    const htmlRows = rows.map((row, index) => `
+      <tr>
+        <td>${index + 1}</td>
+        <td>${row.ccocod ?? ''}</td>
+        <td>${row.ccodes ?? ''}</td>
+      </tr>
+    `).join('');
+
+    const printWindow = window.open('', '_blank', 'width=900,height=700');
+    if (!printWindow) return;
+
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Listado de Centro de Coste</title>
+          <style>
+            body { font-family: 'Poppins', sans-serif; padding: 24px; }
+            h1 { text-align: center; margin-bottom: 16px; }
+            table { width: 100%; border-collapse: collapse; }
+            th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
+            th { background: #f3f4f6; }
+          </style>
+        </head>
+        <body>
+          <h1>Listado de Centro de Coste</h1>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Código</th>
+                <th>Descripción</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${htmlRows}
+            </tbody>
+          </table>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
+  }
+
   //misc
   emptyAllMessages() {
     const timeoutId = setTimeout(() => {
