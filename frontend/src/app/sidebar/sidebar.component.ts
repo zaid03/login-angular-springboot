@@ -19,46 +19,57 @@ function safeParse(raw: string | null) {
 export class SidebarComponent implements OnInit {
   usucod: string | null = null;
   perfil: string | null = null;
-  esContable: boolean = false;
-  allowedMnucods: string[] = [];
+  entcod: number | null = null;
+  public eje: number | null = null;
+
+  allowedMnucods: string[] = JSON.parse(sessionStorage.getItem('menus') || '[]');
+  esContable: boolean = sessionStorage.getItem('escontable') === 'true';
+  centroGestor: string = sessionStorage.getItem('CENTROGESTOR') || '';
 
   logoPath = 'assets/images/logo_iass.png';
 
   constructor(private router: Router) {}
 
   ngOnInit(): void {
-    const usucod = sessionStorage.getItem('USUCOD');
-    const entidad = sessionStorage.getItem('Entidad');
-    const perfil = sessionStorage.getItem('Perfil');
-    const menus = sessionStorage.getItem('mnucods');
+    const rawEntidad = sessionStorage.getItem('Entidad');
+    const rawPerfil  = sessionStorage.getItem('Perfil');
+    const rawMnus    = sessionStorage.getItem('mnucods');
     const rawContable = sessionStorage.getItem('EsContable');
+    const rawEje = sessionStorage.getItem('EJERCICIO');
+    const rawCge = sessionStorage.getItem('CENTROGESTOR');
+
+    const entidadObj = safeParse(rawEntidad);
+    const perfilObj  = safeParse(rawPerfil);
     const ContableOBJ = safeParse(rawContable);
+    const ejeObs = safeParse(rawEje);
+    const cgeObs = safeParse(rawCge);
+
+    this.usucod = sessionStorage.getItem('USUCOD');
+    this.entcod = entidadObj.ENTCOD ?? null;
+    this.perfil = perfilObj.PERCOD ?? null;
     this.esContable = ContableOBJ.value === true || ContableOBJ.value === 'true';
+    this.eje = ejeObs.eje ?? null;
+    this.centroGestor = cgeObs.value ?? null;
 
-
-    if (menus) {
-      try {
-        const parsed = JSON.parse(menus);
-        const arr = Array.isArray(parsed) ? parsed : (parsed.menus || parsed.items || []);
-        this.allowedMnucods = arr.map((item: any) => (item?.mnucod ?? item?.mnucod?.toString() ?? '').toString().trim()).filter((s: string) => s);
-      } catch (e) {
-        console.warn('Failed to parse puaData:', e);
-        this.allowedMnucods = [];
-      }
-    } else {
-      console.warn('No menus found in sessionStorage (puaData missing)');
-      this.allowedMnucods = [];
-    }
-
-    if (!usucod || !entidad || !perfil) {
-      sessionStorage.clear();
-      alert('Missing session data. You must be logged in.');
+    if (!this.usucod || this.entcod == null || !this.perfil) {
+      alert('Missing session data. reiniciar el flujo.');
       this.router.navigate(['/login']);
       return;
     }
 
-    this.usucod = usucod;
-    this.perfil = JSON.parse(perfil).PERCOD;
+    if (rawMnus) {
+      try {
+        const parsed = JSON.parse(rawMnus);
+        this.allowedMnucods = parsed
+          .map((m: any) =>
+            typeof m === 'string'
+              ? m
+              : (m.MNUCOD ?? m.mnucod ?? m.MENUCOD ?? m.code ?? m.codigo ?? m.id))
+          .filter(Boolean);
+      } catch {
+        console.warn('Invalid mnucods JSON');
+      }
+    }
   }
 
   logout(): void {
@@ -83,6 +94,14 @@ export class SidebarComponent implements OnInit {
       return;
     }
     this.router.navigate(['/facturas']);
+  }
+
+  isMonitorDisabled(): boolean {
+    return !this.allowedMnucods.includes('acMCon') || !this.esContable;
+  }
+
+  isCentroGestorDisabled(): boolean {
+    return !this.allowedMnucods.includes('acGBSM') || !this.centroGestor;
   }
 
   navigateTo(code: string): void {

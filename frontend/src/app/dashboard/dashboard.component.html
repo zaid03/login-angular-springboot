@@ -11,7 +11,7 @@
             <a class="choice">Proveedores</a>
             <div class="menu-content">
               <div class="menu-item">
-                <a class="acTer" [class.disabled]="isDisabled('acTer')" (click)="proveedorees()">Gestión de Proveedores</a>
+                <a class="acTer" [class.disabled]="isDisabled('acTer')" (click)="isDisabled('acTer') ? null : proveedorees()">Gestión de Proveedores</a>
                 <a class="acCoTer" [class.disabled]="isDisabled('acCoTer')">Consulta de Proveedores</a>
               </div>
             </div>
@@ -21,7 +21,7 @@
             <a class="choice">Gestion de credito</a>
             <div class="menu-content">
               <div class="menu-item">
-                <a class="acGBS" [class.disabled]="isDisabled('acGBS')" (click)="navigateTo('acGBS')">Bolsas de crédito</a>
+                <a class="acGBS" [class.disabled]="isDisabled('acGBS')" (click)="isDisabled('acGBS') ? null : navigateTo('acGBS')">Bolsas de crédito</a>
               </div>
             </div>
           </div>
@@ -30,9 +30,16 @@
             <a class="choice">Contabilización</a>
             <div class="menu-content">
               <div class="menu-item">
-                <a class="acFac" [class.disabled]="isFacturasDisabled()" [attr.aria-disabled]="isFacturasDisabled()" (click)="facturas()">Gestión de Facturas</a>   
+                <a class="acFac"
+                  [class.disabled]="isFacturasDisabled()"
+                  [attr.aria-disabled]="isFacturasDisabled()"
+                  (click)="isFacturasDisabled() ? null : facturas()">Gestión de Facturas
+                </a>  
                 <a class="acFacC" [class.disabled]="isDisabled('acFacC')">Consulta de Facturas</a>
-                <a class="acMCon" [class.disabled]="isDisabled('acMCon')">Monitor de contabilización</a>
+                <a class="acMCon"
+                  [class.disabled]="isMonitorDisabled()"
+                  (click)="isMonitorDisabled() ? null : navigateTo('acMCon')">Monitor de contabilización
+                </a>
               </div>
             </div>
           </div>
@@ -41,7 +48,10 @@
             <div class="menu-content">
               <div class="menu-item">
                 <a class="Fam-Sub" (click)="navigateTo('familia')">Familia y subfamilia</a>
-                <a class="cge" (click)="navigateTo('centroGestor')">Centro Gestor</a>
+                <a class="cge"
+                  [class.disabled]="isCentroGestorDisabled()"
+                  (click)="isCentroGestorDisabled() ? null : navigateTo('centroGestor')">Centro Gestor
+                </a>
                 <a class="services" (click)="navigateTo('servicios')">Servicios</a>
                 <a class="services" (click)="navigateTo('entrega')">Lugares de Entrega</a>
                 <a class="services margin" (click)="navigateTo('coste')">Centro de coste</a>

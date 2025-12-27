@@ -20,10 +20,11 @@ export class DashboardComponent implements OnInit {
   usucod: string | null = null;
   perfil: string | null = null;
   entcod: number | null = null;
-  public centroGestor: string = '';
   public eje: number | null = null;
-  allowedMnucods: string[] = [];
-  esContable: boolean = false;
+
+  allowedMnucods: string[] = JSON.parse(sessionStorage.getItem('menus') || '[]');
+  esContable: boolean = sessionStorage.getItem('escontable') === 'true';
+  centroGestor: string = sessionStorage.getItem('CENTROGESTOR') || '';
 
   logoPath = 'assets/images/logo_iass.png';
 
@@ -91,12 +92,21 @@ export class DashboardComponent implements OnInit {
   isFacturasDisabled(): boolean {
     return this.isDisabled('acFac') || !this.esContable;
   }
+
   facturas(): void{
     if (this.isFacturasDisabled()) {
       console.warn('Not allowed');
       return;
     }
     this.router.navigate(['/facturas']);
+  }
+
+  isMonitorDisabled(): boolean {
+    return !this.allowedMnucods.includes('acMCon') || !this.esContable;
+  }
+
+  isCentroGestorDisabled(): boolean {
+    return !this.allowedMnucods.includes('acGBSM') || !this.centroGestor;
   }
 
   navigateTo(code: string): void {
