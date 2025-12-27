@@ -3,6 +3,7 @@ package com.example.backend.controller;
 import com.example.backend.sqlserver2.model.Cco;
 import com.example.backend.sqlserver2.model.CcoId;
 import com.example.backend.sqlserver2.repository.CcoRepository;
+import com.example.backend.sqlserver2.repository.DepRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -17,6 +18,7 @@ import java.util.List;
 public class CcoController {
     @Autowired
     private CcoRepository ccoRepository;
+    @Autowired DepRepository depRepository;
 
     //selecting all centros de coste
     @GetMapping("/fetch-all/{ENT}/{EJE}")
@@ -148,10 +150,17 @@ public class CcoController {
         @PathVariable String CCOCOD
     ) {
         try {
+
             CcoId id = new CcoId(ENT, EJE, CCOCOD);
             if(!ccoRepository.existsById(id)) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body("No se encontró el centro de coste para eliminar.");
+            }
+
+            long costes = depRepository.countByEntAndAfacod(ENT, EJE, CCOCOD);
+            if (costes > 0) {
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("No se puede borrar un centro de coste con centros gestores asociados");
             }
 
             ccoRepository.deleteById(id);

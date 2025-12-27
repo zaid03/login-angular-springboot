@@ -1,16 +1,16 @@
 package com.example.backend.sqlserver2.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.backend.sqlserver2.model.Dep;
 import com.example.backend.sqlserver2.model.DepId;
-
-import java.util.List;
 
 @Repository
 public interface DepRepository  extends JpaRepository<Dep, DepId> {
@@ -140,5 +140,19 @@ public interface DepRepository  extends JpaRepository<Dep, DepId> {
         @Param("search") String search,
         @Param("cgecod") String cgecod,
         @Param("perfil") String perfil
+    );
+
+    //needed for deleting centro de coste
+    @Query("""
+        SELECT COUNT(*)
+        FROM Dep d
+        WHERE d.ENT = :ENT
+        AND d.EJE = :EJE
+        AND d.CCOCOD = :CCOCOD
+    """)
+    Long countByEntAndAfacod(
+        @Param("ENT") Integer ENT,
+        @Param("EJE") String EJE,
+        @Param("CCOCOD") String CCOCOD
     );
 }
