@@ -15,25 +15,19 @@ import { environment } from '../../environments/environment';
 export class EntComponent implements OnInit {
   tableData: any[] = [];
   loading = false;
-  errorMsg = '';
 
   constructor(private http: HttpClient, private router: Router) {}
 
   ngOnInit(): void{
     const USUCOD = sessionStorage.getItem('USUCOD');
     if (!USUCOD) {
-      alert('No session. Login.');
+      alert('No session');
       this.router.navigate(['/login']);
       return;
     }
 
     this.http.get<any>(`${environment.backendUrl}/api/filter`, { params: { usucod: USUCOD } }).subscribe({
       next: (filterResponse) => {
-        if (filterResponse.error) {
-          this.errorMsg = 'server error';
-          this.router.navigate(['/login']);
-          return;
-        } 
         if (Array.isArray(filterResponse) && filterResponse.length > 1) {
           this.tableData = filterResponse;            
         } else if (Array.isArray(filterResponse) && filterResponse.length === 1) {
@@ -41,13 +35,15 @@ export class EntComponent implements OnInit {
           this.tableData = [row];
           this.selectRow(row);
         } else {
-          this.errorMsg = 'No data returned for user.';
+          alert('No se encontraron entidades');
           sessionStorage.clear();
           this.router.navigate(['/']);
         }
       },
       error: (err) => {
-        this.errorMsg = err?.error ?? 'Error loading data.';
+        alert(err?.error ?? 'Server Error');
+        sessionStorage.clear();
+        this.router.navigate(['/']);
       }
     });
   }
@@ -65,16 +61,10 @@ export class EntComponent implements OnInit {
           this.router.navigate(['/eje']);
         },
         error: err => {
-          console.error('mnucods error status:', err.status, 'body:', err.error);
-          if (err.status === 401) {
-            alert('Sesión expirada o token inválido. Inicie sesión nuevamente.');
-            this.router.navigate(['/login']);
-          } else {
-            alert('Error loading menus.');
-            this.router.navigate(['/login']);
-          }
+          alert('No se encontraron menús por usuario');
+          sessionStorage.clear();
+          this.router.navigate(['/login']);
         }
       }).add(() => this.loading = false);
   }
-
 }

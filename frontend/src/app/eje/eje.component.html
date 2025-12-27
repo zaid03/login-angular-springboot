@@ -16,8 +16,7 @@
         </tr>
       </tbody>
     </table>  
-    <div *ngIf="!tableData.length && !loading" class="errorBtn">Sin ejercicios para mostrar.</div>
-    <div *ngIf="loading">Cargando...</div>
+    <div *ngIf="loading" class="color">Cargando...</div>
     <button class="cancel-btn" (click)="cancelar()">Volver</button>
   </div>
 </div>

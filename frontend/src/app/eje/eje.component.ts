@@ -32,6 +32,7 @@ export class EjeComponent implements OnInit {
 
     if (!USUCOD) {
       alert('Login required.');
+      sessionStorage.clear();
       this.router.navigate(['/login']);
       return;
     }
@@ -56,8 +57,7 @@ export class EjeComponent implements OnInit {
           }
         },
         error: err => {
-          console.error('EJE error', err);
-          alert('Error cargando ejercicios.');
+          alert(err.message);
           this.router.navigate(['/ent']);
         }
       }).add(() => this.loading = false);
