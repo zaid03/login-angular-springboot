@@ -20,7 +20,7 @@ function safeParse(raw: string | null) {
 export class CentrogestorComponent implements OnInit {
   tableData: any[] = [];
   loading = false;
-
+  ENTCOD: number | null = null;
   constructor(private http: HttpClient, private router: Router) {}
 
   ngOnInit(): void {
@@ -29,17 +29,18 @@ export class CentrogestorComponent implements OnInit {
     const perObj = safeParse(sessionStorage.getItem('Perfil'));
     const ejeObj = safeParse(sessionStorage.getItem('EJERCICIO'));
 
-    const ENTCOD = entObj.ENTCOD;
+    this.ENTCOD = entObj.ENTCOD;
     const PERCOD = perObj.PERCOD;
     const EJE = ejeObj.eje;
 
     if (!USUCOD) { this.fail('/login','Login required'); return; }
-    if (ENTCOD == null) { this.fail('/ent','Entidad missing'); return; }
+    if (this.ENTCOD == null) { this.fail('/ent','Entidad missing'); return; }
     if (PERCOD == null) { this.fail('/ent','Perfil missing'); return; }
     if (EJE == null)    { this.fail('/eje','Ejercicio missing'); return; }
 
     this.loading = true;
-    this.http.get<any[]>(`${environment.backendUrl}/api/centrogestor/percod/${PERCOD}/ent/${ENTCOD}/eje/${EJE}`)
+    this.fetchSwVarables();
+    this.http.get<any[]>(`${environment.backendUrl}/api/centrogestor/percod/${PERCOD}/ent/${this.ENTCOD}/eje/${EJE}`)
       .subscribe({
         next: resp => {
           if (resp?.length > 1) {
@@ -47,7 +48,6 @@ export class CentrogestorComponent implements OnInit {
           } else if (resp?.length === 1) {
             this.storeAndGo(resp[0]);
           } else {
-            // Proceed with null center (business decision)
             sessionStorage.setItem('CENTROGESTOR', JSON.stringify({ value: null}));
             sessionStorage.setItem('CENTROGESTOR_NAME', JSON.stringify({ value: null}));
             sessionStorage.setItem('ESTADOGC', JSON.stringify({ value: 0}));
@@ -97,5 +97,25 @@ export class CentrogestorComponent implements OnInit {
     sessionStorage.setItem('ESTADOGC', JSON.stringify({ value: 0}));
     sessionStorage.setItem('EsContable', JSON.stringify({ value: false}));
     this.router.navigate(['/dashboard']);
+  }
+
+  sicalVariables: any = [];
+  fetchSwVarables() {
+    this.http.get(`${environment.backendUrl}/api/ayt/fetch-all/${this.ENTCOD}`).subscribe({
+      next: (res) => {
+        this.sicalVariables = res;
+        if (this.sicalVariables === 0) {
+          alert("Faltan parámetros para conectar los WS en la configuración");
+          this.router.navigate(['/']);
+        }
+        
+        sessionStorage.setItem('WSORG', JSON.stringify({ WSORG: this.sicalVariables[0].ent_ORG}));
+        sessionStorage.setItem('WSENT', JSON.stringify({ WSENT: this.sicalVariables[0].ent_COD }));
+      },
+      error: (err) => {
+        alert("Server error");
+        this.router.navigate(['/']);
+      }
+    })
   }
 }

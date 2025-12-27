@@ -71,6 +71,7 @@ export class EntComponent implements OnInit {
             this.router.navigate(['/login']);
           } else {
             alert('Error loading menus.');
+            this.router.navigate(['/login']);
           }
         }
       }).add(() => this.loading = false);
