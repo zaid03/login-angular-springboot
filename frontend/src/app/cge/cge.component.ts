@@ -37,8 +37,6 @@ export class CgeComponent {
   centroGestores: any[] = [];
   private backupCentroGestores: any[] = [];
   private defaultCentroGestores: any[] = [];
-  sortField: 'cgecod' | 'cgedes' | null = null;
-  sortDirection: 'asc' | 'desc' = 'asc';
   page = 0;
   pageSize = 20;
   isLoading: boolean = false;
@@ -184,7 +182,9 @@ export class CgeComponent {
     this.updatePagination();
   }
 
-  toggleSort(field: 'cgecod' | 'cgedes'): void {
+  sortField: string | null = null;
+  sortDirection: 'asc' | 'desc' = 'asc';
+  toggleSort(field: string): void {
     if (this.sortField !== field) {
       this.sortField = field;
       this.sortDirection = 'asc';
@@ -198,32 +198,32 @@ export class CgeComponent {
       this.updatePagination();
       return;
     }
-
     this.applySort();
   }
 
   private applySort(): void {
-    if (!this.sortField) {
-      return;
-    }
+    if (!this.sortField) return;
 
     const base = [...this.defaultCentroGestores];
     const sorted = base.sort((a, b) => {
-      const aVal = (this.sortField === 'cgecod'
-        ? (a.cgecod ?? '').toString()
-        : (a.cgedes ?? '').toString()
-      ).toUpperCase();
-
-      const bVal = (this.sortField === 'cgecod'
-        ? (b.cgecod ?? '').toString()
-        : (b.cgedes ?? '').toString()
-      ).toUpperCase();
-
+      let aVal: any, bVal: any;
+      if (this.sortField === 'cgecicDisplay') {
+        aVal = this.getkCGECIC(a.cgecic);
+        bVal = this.getkCGECIC(b.cgecic);
+        aVal = (aVal ?? '').toString().toUpperCase();
+        bVal = (bVal ?? '').toString().toUpperCase();
+        return this.sortDirection === 'asc'
+          ? aVal.localeCompare(bVal, 'es')
+          : bVal.localeCompare(aVal, 'es');
+      }
+      aVal = a[this.sortField!];
+      bVal = b[this.sortField!];
+      aVal = (aVal ?? '').toString().toUpperCase();
+      bVal = (bVal ?? '').toString().toUpperCase();
       return this.sortDirection === 'asc'
         ? aVal.localeCompare(bVal, 'es')
         : bVal.localeCompare(aVal, 'es');
     });
-
     this.centroGestores = sorted;
     this.page = 0;
     this.updatePagination();
@@ -239,6 +239,35 @@ export class CgeComponent {
       this.page = total - 1;
     }
   }
+
+  private startX: number = 0;
+  private startWidth: number = 0;
+  private resizingColIndex: number | null = null;
+  startResize(event: MouseEvent, colIndex: number) {
+    this.resizingColIndex = colIndex;
+    this.startX = event.pageX;
+    const th = (event.target as HTMLElement).parentElement as HTMLElement;
+    this.startWidth = th.offsetWidth;
+
+    document.addEventListener('mousemove', this.onResizeMove);
+    document.addEventListener('mouseup', this.stopResize);
+  }
+
+  onResizeMove = (event: MouseEvent) => {
+    if (this.resizingColIndex === null) return;
+    const table = document.querySelector('.centroGestor-table') as HTMLTableElement;
+    if (!table) return;
+    const th = table.querySelectorAll('th')[this.resizingColIndex] as HTMLElement;
+    if (!th) return;
+    const diff = event.pageX - this.startX;
+    th.style.width = (this.startWidth + diff) + 'px';
+  };
+
+  stopResize = () => {
+    document.removeEventListener('mousemove', this.onResizeMove);
+    document.removeEventListener('mouseup', this.stopResize);
+    this.resizingColIndex = null;
+  };
 
   excelDownload() {
     const rows = this.backupCentroGestores.length ? this.backupCentroGestores : this.centroGestores;

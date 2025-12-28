@@ -50,21 +50,31 @@
             <table class="centroGestor-table">
                 <thead>
                     <tr>
-                        <th
-                            class="sortable"
-                            (click)="toggleSort('cgecod')"
-                        >
+                        <th class="sortable resizable" (click)="toggleSort('cgecod')">
                             Código
-                            <span 
-                                class="sort-indicator" 
-                            >
-                                {{ sortDirection === 'asc' ? '▲' : '▼' }}
-                            </span>
+                            <span class="sort-indicator" *ngIf="sortField === 'cgecod'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                            <div class="resizer" (mousedown)="startResize($event, 0)"></div>
                         </th>
-                        <th>Descripción</th>
-                        <th>Orgánica</th>
-                        <th>Programa</th>
-                        <th>Cierre contable</th>
+                        <th class="sortable resizable" (click)="toggleSort('cgedes')">
+                            Descripción
+                            <span class="sort-indicator" *ngIf="sortField === 'cgedes'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                            <div class="resizer" (mousedown)="startResize($event, 1)"></div>
+                        </th>
+                        <th class="sortable resizable" (click)="toggleSort('cgeorg')">
+                            Orgánica
+                            <span class="sort-indicator" *ngIf="sortField === 'cgeorg'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                            <div class="resizer" (mousedown)="startResize($event, 2)"></div>
+                        </th>
+                        <th class="sortable resizable" (click)="toggleSort('cgefun')">
+                            Programa
+                            <span class="sort-indicator" *ngIf="sortField === 'cgefun'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                            <div class="resizer" (mousedown)="startResize($event, 3)"></div>
+                        </th>
+                        <th class="sortable resizable" (click)="toggleSort('cgecicDisplay')">
+                            Cierre contable
+                            <span class="sort-indicator" *ngIf="sortField === 'cgecicDisplay'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                            <div class="resizer" (mousedown)="startResize($event, 4)"></div>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -93,7 +103,7 @@
                 <button (click)="nextPage()" [disabled]="page + 1 >= totalPages">Siguiente</button>
             </div>
             <div class="modal-backdrop" *ngIf="selectedCentroGestor" (click)="closeDetails()"></div>
-            <div class="display" >
+            <div class="display">
                 <div class="modal" *ngIf="selectedCentroGestor">
                     <button class="close-btn-fct" (click)="closeDetails()">×</button>
                     <h3>Detalles de centro gestor</h3>
