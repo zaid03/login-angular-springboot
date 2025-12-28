@@ -16,6 +16,7 @@ import { environment } from '../../environments/environment';
   styleUrls: ['./cge.component.css']
 })
 export class CgeComponent {
+  //3 dots menu
   showMenu = false;
   toggleMenu(event: MouseEvent): void {
     event.stopPropagation();
@@ -29,6 +30,7 @@ export class CgeComponent {
 
   constructor(private http: HttpClient, private router: Router) {}
 
+  //global variables
   private entcod: number | null = null;
   private eje: number | null = null;
   public cge: string = '';
@@ -39,8 +41,10 @@ export class CgeComponent {
   sortDirection: 'asc' | 'desc' = 'asc';
   page = 0;
   pageSize = 20;
+  isLoading: boolean = false;
 
   ngOnInit() {
+    this.isLoading = true;
     const entidad = sessionStorage.getItem('Entidad');
     const eje = sessionStorage.getItem('EJERCICIO');
     const cge = sessionStorage.getItem('CENTROGESTOR');
@@ -78,13 +82,16 @@ export class CgeComponent {
           this.centroGestores = [];
           this.SearchDownMessageError = typeof res.body === 'string' ? res.body : 'sin resultados.';
         }
+        this.isLoading = false;
       }, error: (err) => {
         this.centroGestores = [];
         this.SearchDownMessageError = typeof err.error === 'string' ? err.error : 'server Error';
+        this.isLoading = false;
       }
     })
   }
 
+  //main table functions
   get paginatedFamilias(): any[] {
     if (!this.centroGestores || this.centroGestores.length === 0) return [];
     const start = this.page * this.pageSize;
@@ -338,6 +345,7 @@ export class CgeComponent {
     printWindow.print();
   }
 
+  //detail grid functions
   selectedCentroGestor: any = null;
   centroGestorSuccessMessage: String = '';
   centroGestorErrorMessage: string = '';
@@ -388,6 +396,39 @@ export class CgeComponent {
     }
   }
 
+  showDeleteConfirm: boolean = false;
+  centroGestorToDelete: any = null;
+  openDeleteConfirm(cgecod: string) {
+    this.centroGestorToDelete = cgecod;
+    this.showDeleteConfirm = true;
+  }
+
+  closeDeleteConfirm() {
+    this.centroGestorToDelete = null;
+    this.showDeleteConfirm = false;
+  }
+
+  confirmDelete(): void {
+    if (this.centroGestorToDelete) {
+      this.deleteCentroGestor(this.centroGestorToDelete);
+      this.closeDeleteConfirm();
+    }
+  }
+
+  deleteCentroGestor(cgecod: string) {
+    this.http.delete<any>(`${environment.backendUrl}/api/cge/delete-centro-gestor/${this.entcod}/${this.eje}/${cgecod}`).subscribe({
+      next: (res) => {
+        this.successAddCentroGestor = 'cge eliminado exitosamente';
+        this.centroGestores = this.centroGestores.filter(c => c.cgecod !== cgecod);
+        this.backupCentroGestores = this.backupCentroGestores.filter(c => c.cgecod !== cgecod);
+        this.closeDetails();
+      }, error: (err) => {
+        this.centroGestorErrorMessage = err?.error ?? 'Error al eliminar la familia.';
+      }
+    })
+  }
+
+  //add grid functions
   showAddConfirm: boolean = false;
   centroGestorAddError: string = '';
   launchAddCentroGestor() {
@@ -442,35 +483,5 @@ export class CgeComponent {
     })
   }
 
-  showDeleteConfirm: boolean = false;
-  centroGestorToDelete: any = null;
-  openDeleteConfirm(cgecod: string) {
-    this.centroGestorToDelete = cgecod;
-    this.showDeleteConfirm = true;
-  }
-
-  closeDeleteConfirm() {
-    this.centroGestorToDelete = null;
-    this.showDeleteConfirm = false;
-  }
-
-  confirmDelete(): void {
-    if (this.centroGestorToDelete) {
-      this.deleteCentroGestor(this.centroGestorToDelete);
-      this.closeDeleteConfirm();
-    }
-  }
-
-  deleteCentroGestor(cgecod: string) {
-    this.http.delete<any>(`${environment.backendUrl}/api/cge/delete-centro-gestor/${this.entcod}/${this.eje}/${cgecod}`).subscribe({
-      next: (res) => {
-        this.successAddCentroGestor = 'cge eliminado exitosamente';
-        this.centroGestores = this.centroGestores.filter(c => c.cgecod !== cgecod);
-        this.backupCentroGestores = this.backupCentroGestores.filter(c => c.cgecod !== cgecod);
-        this.closeDetails();
-      }, error: (err) => {
-        this.centroGestorErrorMessage = err?.error ?? 'Error al eliminar la familia.';
-      }
-    })
-  }
+  
 }

@@ -8,7 +8,27 @@
     <app-sidebar #sidebar></app-sidebar>
     <div class="centroGestor-container" [class.blurred]="!sidebar.collapsed">
         <div class="title-menu">
-            <h2 class="margin-title">Lista de centros gestión </h2>  
+            <div class="title-area">
+                <h2 class="margin-title">Lista de centros gestión</h2>  
+            </div>
+            <div class="search-holder">
+                <div class="search-container">
+                    <div class="search-form">
+                        <input 
+                            type="text" 
+                            class="search-bar"
+                            name="search"
+                            [(ngModel)]="searchTerm"
+                            (ngModelChange)="searchTerm = $event"
+                            (input)="handleSearchInput($event)"
+                            placeholder="Buscar centro gestor"
+                        >
+                    </div>
+                    <div class="btns">
+                        <button class="search-btn" (click)="searchCentroGestor()">Buscar</button>
+                    </div>
+                </div>
+            </div>
             <div class="group-menu" (click)="toggleMenu($event)">
                 <div class="dot"></div>
                 <div class="dot"></div>
@@ -20,23 +40,13 @@
                 </div>
             </div>
         </div>
-        <div class="centroGestor-search">
-            <form class="search-form">
-                <input 
-                    type="text" 
-                    class="search-bar"
-                    name="search"
-                    [(ngModel)]="searchTerm"
-                    (ngModelChange)="searchTerm = $event"
-                    (input)="handleSearchInput($event)"
-                    placeholder="Buscar centro gestor"
-                >
-            </form>
-            <button class="search-btn" (click)="searchCentroGestor()">Buscar</button>
-        </div>
         <h1 class="errorBtn">{{ SearchDownMessageError }}</h1>
         <div class="centroGestor-list">
             <h1 class="successBtn">{{ successAddCentroGestor }}</h1>
+            <div *ngIf="isLoading" class="loading-message">
+                <div class="spinner"></div>
+                <span>Cargando</span>
+            </div>
             <table class="centroGestor-table">
                 <thead>
                     <tr>

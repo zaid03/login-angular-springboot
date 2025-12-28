@@ -38,7 +38,10 @@ export class FamiliaComponent {
   tableMessage: string = '';
   page = 0;
   pageSize = 20;
+  isLoading: boolean = false;
+
   ngOnInit():void {
+    this.isLoading = true;
     const entidad = sessionStorage.getItem('Entidad');
     if (entidad) {
       const parsed = JSON.parse(entidad);
@@ -56,14 +59,17 @@ export class FamiliaComponent {
       next: (response) => {
         if (response.error) {
           this.tableMessage = 'Error: ' + response.error || 'Server error';
+          this.isLoading = false;
         } else {
           this.familias = Array.isArray(response) ? [...response] : [];
           this.backupFamilias = [...this.familias];
           this.defaultFamilias = [...this.familias];
           this.page = 0;
+          this.isLoading = false;
         }
       },error: (err) => {
         this.tableMessage = 'Server error';
+        this.isLoading = false;
       }
     })
   }
