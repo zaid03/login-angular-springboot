@@ -29,6 +29,10 @@
         </div>
         <div class="credito-list">
             <h1 class="errorBtn">{{ tableMessage }}</h1>
+            <div *ngIf="isLoading" class="loading-message">
+                <div class="spinner"></div>
+                <span>Cargando</span>
+            </div>
             <table class="credito-table">
                 <thead>
                     <tr>
