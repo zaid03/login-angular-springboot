@@ -440,19 +440,20 @@ export class CgeComponent {
   confirmDelete(): void {
     if (this.centroGestorToDelete) {
       this.deleteCentroGestor(this.centroGestorToDelete);
-      this.closeDeleteConfirm();
     }
   }
 
+  deleErr: string = '';
   deleteCentroGestor(cgecod: string) {
     this.http.delete<any>(`${environment.backendUrl}/api/cge/delete-centro-gestor/${this.entcod}/${this.eje}/${cgecod}`).subscribe({
       next: (res) => {
         this.successAddCentroGestor = 'cge eliminado exitosamente';
         this.centroGestores = this.centroGestores.filter(c => c.cgecod !== cgecod);
         this.backupCentroGestores = this.backupCentroGestores.filter(c => c.cgecod !== cgecod);
+        this.closeDeleteConfirm();
         this.closeDetails();
       }, error: (err) => {
-        this.centroGestorErrorMessage = err?.error ?? 'Error al eliminar la familia.';
+        this.deleErr = err?.error ?? 'Error al eliminar la familia.';
       }
     })
   }

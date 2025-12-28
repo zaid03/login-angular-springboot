@@ -105,80 +105,81 @@
             <div class="modal-backdrop" *ngIf="selectedCentroGestor" (click)="closeDetails()"></div>
             <div class="display">
                 <div class="modal" *ngIf="selectedCentroGestor">
-                    <button class="close-btn-fct" (click)="closeDetails()">×</button>
-                    <h3>Detalles de centro gestor</h3>
-                    <div class="top">
-                        <div class="left">
-                            <div class="detail-info">
-                                <p>Código</p>
-                                <textarea 
-                                    [(ngModel)]="selectedCentroGestor.cgecod"
-                                    readonly
-                                ></textarea>
-                            </div>
-                            <div class="detail-info">
-                                <p>Orgánica</p>
-                                <textarea 
-                                    [(ngModel)]="selectedCentroGestor.cgeorg"
-                                    #cgeorg
-                                ></textarea>
-                            </div>
-                            <div class="detail-info">
-                                <p>Programa</p>
-                                <textarea 
-                                    [(ngModel)]="selectedCentroGestor.cgefun"
-                                    (input)="allowOnlyDigits($event)"
-                                    #cgefun
-                                ></textarea>
-                            </div>
-                            <div class="detail-info-descr">
-                                <p>Descripción</p>
-                                <textarea 
-                                    [(ngModel)]="selectedCentroGestor.cgedes" 
-                                    class="width"
-                                    #cgedes
-                                ></textarea>
-                            </div>
+                    <div class="btns">
+                        <div class="title-detail">
+                            <h3>Detalles de centro gestor</h3>
                         </div>
-                        <div class="right">
-                            <h3>Estado contable</h3>
-                            <div class="input-container">
-                                <input 
-                                    type="radio" 
-                                    name="cont-option" 
-                                    [checked]="isCgecic(0)"
-                                    (change)="setCgecic(0)"
-                                >
-                                Abierto<br>
-                                <input 
-                                    type="radio" 
-                                    name="cont-option" 
-                                    [checked]="isCgecic(2)"
-                                    (change)="setCgecic(2)"
-                                >
-                                Cerrado Para Contabilizar<br>
-                                <input 
-                                    type="radio" 
-                                    name="cont-option" 
-                                    [checked]="isCgecic(1)"
-                                    (change)="setCgecic(1)"
-                                >
-                                Cerrado
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bottom">
-                        <p>Dirección para pedido</p>
-                        <textarea 
-                            [(ngModel)]="selectedCentroGestor.cgedat"
-                            #cgedat
-                        ></textarea>
-                    </div>
+                        <button class="guardar-btn" (click)="updateCentroGestor(selectedCentroGestor.cgecod ,cgedes.value ,cgeorg.value ,cgefun.value, cgedat.value)">✔</button>
+                        <button class="close-btn-btn" (click)="closeDetails()">✖</button>
+                    </div>   
                     <h1 class="successBtn">{{ centroGestorSuccessMessage }}</h1>
                     <h1 class="errorBtn">{{ centroGestorErrorMessage }}</h1>
-                    <div class="btn-container">
-                        <button class="cge-save-btn" (click)="updateCentroGestor(selectedCentroGestor.cgecod ,cgedes.value ,cgeorg.value ,cgefun.value, cgedat.value)">Guardar</button>
-                        <button class="cge-delete-btn" (click)="openDeleteConfirm(selectedCentroGestor.cgecod)">Borrar</button>
+                    <div class="detail-container">
+                        <div class="chunk">
+                            <div class="left">
+                                <p>Código</p>
+                                <p>Programa</p>
+                                <p>Estado contable</p>
+                            </div>
+                            <div class="right">
+                                <div class="on-two">
+                                    <h1>{{selectedCentroGestor.cgecod}}</h1>
+                                    <p>Orgánica</p>
+                                    <textarea
+                                        class="mediumText" 
+                                        [(ngModel)]="selectedCentroGestor.cgeorg"
+                                        #cgeorg
+                                    ></textarea>
+                                </div>
+                                <div class="on-two">
+                                    <textarea 
+                                        class="smallText" 
+                                        [(ngModel)]="selectedCentroGestor.cgefun"
+                                        (input)="allowOnlyDigits($event)"
+                                        #cgefun
+                                    ></textarea>
+                                    <p>Descripción</p>
+                                    <textarea 
+                                        class="tallText" 
+                                        [(ngModel)]="selectedCentroGestor.cgedes" 
+                                        #cgedes
+                                    ></textarea>
+                                </div>
+                                <div class="on-two margin">
+                                    <input 
+                                        type="radio" 
+                                        name="cont-option" 
+                                        [checked]="isCgecic(0)"
+                                        (change)="setCgecic(0)"
+                                    >
+                                    <span class="radio-name">Abierto</span>
+                                    <input 
+                                        type="radio" 
+                                        name="cont-option" 
+                                        [checked]="isCgecic(2)"
+                                        (change)="setCgecic(2)"
+                                    >
+                                    <span class="radio-name">Cerrado Para Contabilizar</span>
+                                    <input 
+                                        type="radio" 
+                                        name="cont-option" 
+                                        [checked]="isCgecic(1)"
+                                        (change)="setCgecic(1)"
+                                    >
+                                    <span class="radio-name">Cerrado</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="long-text">
+                            <p>Dirección para pedido</p>
+                            <textarea 
+                                [(ngModel)]="selectedCentroGestor.cgedat"
+                                #cgedat
+                            ></textarea>
+                        </div>
+                    </div>
+                    <div class="btns">
+                        <button class="cge-delete-btn" (click)="openDeleteConfirm(selectedCentroGestor.cgecod)">-</button>
                     </div> 
                 </div>
             </div>
@@ -186,6 +187,13 @@
     </div>
 </div>
 
+<div class="modal-backdrop" *ngIf="showDeleteConfirm" (click)="closeDeleteConfirm()"></div>
+<div class="delete-confirm-modal" *ngIf="showDeleteConfirm">
+    <h3>¿Seguro que quieres eliminar este Centro gestor?</h3>
+    <h1 class="errorBtn">{{deleErr}}</h1>
+    <button class="cge-delete-confirm-btn" (click)="confirmDelete()">-</button>
+    <button class="cge-cancel-confirm-btn" (click)="closeDeleteConfirm()">✖</button>
+</div>
 
 <div class="modal-backdrop" *ngIf="showAddConfirm" (click)="closeAddConfirm()"></div>
 <div class="add-confirm-modal" *ngIf="showAddConfirm">
@@ -241,12 +249,3 @@
     <button class="centroGestor-delete-confirm-btn" (click)="closeAddConfirm()">Cancelar</button>
 </div>
 
-<div class="modal-backdrop" *ngIf="showDeleteConfirm" (click)="closeDeleteConfirm()"></div>
-<div class="delete-confirm-modal" *ngIf="showDeleteConfirm">
-    <h3>¿Seguro que quieres eliminar este Centro gestor?</h3>
-    <div *ngIf="centroGestorToDelete">
-        <p><strong>Centro gestor:</strong> {{ centroGestorToDelete }}</p>
-    </div>
-    <button class="cge-delete-confirm-btn" (click)="confirmDelete()">Sí, eliminar</button>
-    <button class="cge-cancel-confirm-btn" (click)="closeDeleteConfirm()">Cancelar</button>
-</div>
