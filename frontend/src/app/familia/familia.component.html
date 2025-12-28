@@ -8,7 +8,25 @@
     <app-sidebar #sidebar></app-sidebar>
     <div class="familia-container" [class.blurred]="!sidebar.collapsed">
         <div class="title-menu">
-            <h2 class="margin-title">Listado de Familias</h2> 
+            <div class="title-area">
+                <h2 class="margin-title">Gestión de Familias</h2>  
+            </div>
+            <div class="search-holder">
+                <div class="search-container">
+                    <div class="search-form">
+                        <input 
+                            type="text" 
+                            class="search-bar"
+                            placeholder="Buscar familias" 
+                            name="search"
+                            [(ngModel)]="searchTerm"
+                        >
+                    </div>
+                    <div class="btns">
+                        <button class="search-btn" (click)="searchFamilias()">Buscar</button>
+                    </div>
+                </div>
+            </div>
             <div class="group-menu" (click)="toggleMenu($event)">
                 <div class="dot"></div>
                 <div class="dot"></div>
@@ -20,38 +38,22 @@
                 </div>
             </div>
         </div>
-        
-        <div class="familia-search">
-            <form class="search-form">
-                <input 
-                    type="text" 
-                    class="search-bar"
-                    placeholder="Buscar familias" 
-                    name="search"
-                    [(ngModel)]="searchTerm"
-                >
-            </form>
-            <button class="search-btn" (click)="searchFamilias()">Buscar</button>
-        </div>
-        <h1 class="errorBtn">{{ familiaMessageError }}</h1>
         <div class="familia-list">
             <h1 class="errorBtn">{{ tableMessage }}</h1>
             <h1 class="successBtn">{{ familiaMessage }}</h1>
             <table class="familia-table">
                 <thead>
                     <tr>
-                        <th
-                            class="sortable"
-                            (click)="toggleSort('afacod')"
-                        >
+                        <th class="sortable resizable" (click)="toggleSort('afacod')">
                             Familia
-                            <span 
-                                class="sort-indicator" 
-                            >
-                                {{ sortDirection === 'asc' ? '▲' : '▼' }}
-                            </span>
+                            <span class="sort-indicator" *ngIf="sortField === 'afacod'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                            <div class="resizer" (mousedown)="startResize($event, 0)"></div>
                         </th>
-                        <th>Descripción</th>
+                        <th class="sortable resizable" (click)="toggleSort('afades')">
+                            Descripción
+                            <span class="sort-indicator" *ngIf="sortField === 'afades'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                            <div class="resizer" (mousedown)="startResize($event, 1)"></div>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>

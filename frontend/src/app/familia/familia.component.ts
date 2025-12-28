@@ -38,9 +38,6 @@ export class FamiliaComponent {
   tableMessage: string = '';
   page = 0;
   pageSize = 20;
-  private defaultFamilias: any[] = [];
-  sortField: 'afacod' | null = null;
-  sortDirection: 'asc' | 'desc' = 'asc';
   ngOnInit():void {
     const entidad = sessionStorage.getItem('Entidad');
     if (entidad) {
@@ -71,17 +68,14 @@ export class FamiliaComponent {
     })
   }
 
-  
-
   //main table functions
-  familiaMessageError: string = '';
   public searchTerm: string = '';
   searchFamilias(): void {
-    this.familiaMessageError = '';
+    this.tableMessage = '';
     const term = this.searchTerm.trim();
 
     if (!term) {
-      this.familiaMessageError = 'Introduzca una familia para buscar'
+      this.tableMessage = 'Introduzca una familia para buscar'
       this.familias = [...this.backupFamilias];
       this.defaultFamilias = [...this.familias];
       this.sortField = null;
@@ -110,7 +104,7 @@ export class FamiliaComponent {
     }
 
     if (this.familias.length === 0) {
-      this.familiaMessageError = 'Este familia o subfamilia no existe';
+      this.tableMessage = 'Este familia o subfamilia no existe';
     }
     
     this.defaultFamilias = [...this.familias];
@@ -208,7 +202,10 @@ export class FamiliaComponent {
     printWindow.print();
   }
 
-  toggleSort(field: 'afacod'): void {
+  private defaultFamilias: any[] = [];
+  sortField: 'afacod' | 'afades' | null = null;
+  sortDirection: 'asc' | 'desc' = 'asc';
+  toggleSort(field: 'afacod' | 'afades'): void {
     if (this.sortField !== field) {
       this.sortField = field;
       this.sortDirection = 'asc';
@@ -233,8 +230,35 @@ export class FamiliaComponent {
 
     const base = [...this.defaultFamilias];
     const sorted = base.sort((a, b) => {
-      const aVal = (a.afacod ?? '').toString().toUpperCase();
-      const bVal = (b.afacod ?? '').toString().toUpperCase();
+      let aVal = a[this.sortField!];
+      let bVal = b[this.sortField!];
+
+      if (this.sortField === 'afacod') {
+        const aNum = Number(aVal);
+        const bNum = Number(bVal);
+        const bothNumeric = !isNaN(aNum) && !isNaN(bNum);
+
+        if (bothNumeric) {
+          return this.sortDirection === 'asc' ? aNum - bNum : bNum - aNum;
+        } else {
+          aVal = (aVal ?? '').toString().toUpperCase();
+          bVal = (bVal ?? '').toString().toUpperCase();
+          return this.sortDirection === 'asc'
+            ? aVal.localeCompare(bVal)
+            : bVal.localeCompare(aVal);
+        }
+      }
+
+      if (this.sortField === 'afades') {
+        aVal = (aVal ?? '').toString().toUpperCase();
+        bVal = (bVal ?? '').toString().toUpperCase();
+        return this.sortDirection === 'asc'
+          ? aVal.localeCompare(bVal)
+          : bVal.localeCompare(aVal);
+      }
+
+      aVal = (aVal ?? '').toString().toUpperCase();
+      bVal = (bVal ?? '').toString().toUpperCase();
       return this.sortDirection === 'asc'
         ? aVal.localeCompare(bVal)
         : bVal.localeCompare(aVal);
@@ -244,6 +268,35 @@ export class FamiliaComponent {
     this.page = 0;
   }
   
+  private startX: number = 0;
+  private startWidth: number = 0;
+  private resizingColIndex: number | null = null;
+  startResize(event: MouseEvent, colIndex: number) {
+    this.resizingColIndex = colIndex;
+    this.startX = event.pageX;
+    const th = (event.target as HTMLElement).parentElement as HTMLElement;
+    this.startWidth = th.offsetWidth;
+
+    document.addEventListener('mousemove', this.onResizeMove);
+    document.addEventListener('mouseup', this.stopResize);
+  }
+
+  onResizeMove = (event: MouseEvent) => {
+    if (this.resizingColIndex === null) return;
+    const table = document.querySelector('.familia-table') as HTMLTableElement;
+    if (!table) return;
+    const th = table.querySelectorAll('th')[this.resizingColIndex] as HTMLElement;
+    if (!th) return;
+    const diff = event.pageX - this.startX;
+    th.style.width = (this.startWidth + diff) + 'px';
+  };
+
+  stopResize = () => {
+    document.removeEventListener('mousemove', this.onResizeMove);
+    document.removeEventListener('mouseup', this.stopResize);
+    this.resizingColIndex = null;
+  };
+
   get paginatedFamilias(): any[] {
     if (!this.familias || this.familias.length === 0) return [];
     const start = this.page * this.pageSize;
@@ -269,7 +322,7 @@ export class FamiliaComponent {
   selectedFamilias: any = null;
   showDetails(familia: any) {
     this.tableMessage = '';
-    this.familiaMessageError = '';
+    this.tableMessage = '';
     this.selectedFamilias = familia;
     this.FetchSubfamilias(this.selectedFamilias.afacod);
   }
