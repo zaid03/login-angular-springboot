@@ -19,6 +19,7 @@
 .right h1,
 .right p,
 .left-add p { font-size: 14px; font-weight: bold; color: #25176b; }
+.right h1 {color: #162a3a;}
 .chunk textarea,
 .right-add textarea { height: 20px; padding: 2px 4px; border-radius: 6px; font-weight: bold; color: #162a3a;}
 .chunk textarea:focus,

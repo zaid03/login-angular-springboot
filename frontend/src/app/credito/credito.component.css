@@ -9,28 +9,41 @@
 .credito-container td:nth-child(5) { text-align: right !important; }
 /* main-table */
 /* main grid detail */
-.detail-container { width: 99%; padding: 1px; }
-.first-half { width: 100%; display: flex; }
-.left { width: 50%; display: flex; flex-direction: column; flex-wrap: wrap; gap: 10px; justify-items: center; align-items: center; }
-.wrap{ width: 100%; display: flex; flex-wrap: wrap; gap: 15px; }
-.right { width: 50%; gap: 10px; display: flex; flex-direction: column; justify-items: center; align-items: center; }
+.detail-container,
+.acumolados { width: 99%; padding: 1px; display: flex; flex-wrap: wrap;}
+.acumolados { flex-direction: column; align-items: center; margin-top: 5px;}
 .detail-title { justify-content: center; display: flex; gap: 10px; }
 .chunk-one,
-.chunk-two,
-.chunk-three{width: 70%; display: flex; padding: 2px;}
-.on-two { display: flex; gap: 10px; align-items: center;}
-.chunk-left { width: 25%; display: flex; flex-direction: column; gap: 20px; }
+.chunk-two { display: flex; flex-direction: column; padding: 2px;}
+.chunk-one {width: 30%;}
+.chunk-two {width: 60%; }
+.detail-chunk-container { display: flex; gap: 10px;}
+.detail-chunk-container .left { width: 25%; display: flex; flex-direction: column; gap: 10px;}
+.detail-chunk-container .right { display: flex; flex-direction: column; gap: 10px;}
+.on-two { display: flex; gap: 15px; align-items: center;}
+.chunk-left { width: 25%; display: flex; flex-direction: column; gap: 10px; }
 .chunk-right { width: 75%; display: flex; flex-direction: column; gap: 10px;}
-.detail-title,
-.chunk-left p,
-.chunk-right p { font-size: 14px; font-weight: bold; color: #25176b; }
-.chunk-right textarea{ height: 20px; padding: 2px 4px; border-radius: 6px; font-weight: bold;}
-.chunk-right textarea:focus { outline: none; border-color: #042b5a; outline: none; background: #fff; }
-.tallTextarea {width: 220px; max-width: 240px;}
-.averageTextarea{ width: 100px; max-width: 160px;}
-.smallTextarea{width: 50px; max-width: 100px;}
+.special { width: 12% !important;}
+.detail-container p,
+.boll,
+.detail-container h1,
+.acumolados h1,
+.acumolados p { font-size: 14px; font-weight: bold; color: #25176b; }
+.detail-container h1,
+.acumolados h1 {color: #162a3a;}
+.conta-one textarea { height: 20px; padding: 2px 4px; border-radius: 6px; font-weight: bold;}
+.conta-one textarea:focus { outline: none; border-color: #042b5a; outline: none; background: #fff; }
+.smallTextarea{width: 80px; max-width: 100px;} 
 .width {width: 75%;}
-
+.conta-first,
+.conta-second { display: flex; margin-top: 1%; gap: 15px;}
+.conta-one,
+.conta-two,
+.conta-three,
+.conta-four { width: 20%; display: flex; flex-direction: column; gap: 10px;}
+.conta-sign { width: 2%; display: flex; align-items: flex-end; justify-content: center;}
+.fix {margin-top: 5px;}
+.detail-acumolados-container { width: 80%; display: flex;  justify-content: center; gap: 10px;}
 /* main grid detail */
 
 
