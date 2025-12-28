@@ -17,6 +17,7 @@ import { environment } from '../../environments/environment';
   styleUrls: ['./familia.component.css']
 })
 export class FamiliaComponent {
+  //3 dots menu 
   showMenu = false;
   toggleMenu(event: MouseEvent): void {
     event.stopPropagation();
@@ -30,13 +31,13 @@ export class FamiliaComponent {
 
   constructor(private http: HttpClient, private router: Router) {}
   
+  //global variables
   private entcod: number | null = null;
   familias: any[] = [];
   private backupFamilias: any[] = [];
   tableMessage: string = '';
   page = 0;
   pageSize = 20;
-
   private defaultFamilias: any[] = [];
   sortField: 'afacod' | null = null;
   sortDirection: 'asc' | 'desc' = 'asc';
@@ -70,79 +71,9 @@ export class FamiliaComponent {
     })
   }
 
-  toggleSort(field: 'afacod'): void {
-    if (this.sortField !== field) {
-      this.sortField = field;
-      this.sortDirection = 'asc';
-      this.defaultFamilias = [...this.familias];
-    } else if (this.sortDirection === 'asc') {
-      this.sortDirection = 'desc';
-    } else {
-      this.sortField = null;
-      this.sortDirection = 'asc';
-      this.familias = [...this.defaultFamilias];
-      this.page = 0;
-      return;
-    }
-
-    this.applySort();
-  }
-
-  private applySort(): void {
-    if (!this.sortField) {
-      return;
-    }
-
-    const base = [...this.defaultFamilias];
-    const sorted = base.sort((a, b) => {
-      const aVal = (a.afacod ?? '').toString().toUpperCase();
-      const bVal = (b.afacod ?? '').toString().toUpperCase();
-      return this.sortDirection === 'asc'
-        ? aVal.localeCompare(bVal)
-        : bVal.localeCompare(aVal);
-    });
-
-    this.familias = sorted;
-    this.page = 0;
-  }
   
-  get paginatedFamilias(): any[] {
-    if (!this.familias || this.familias.length === 0) return [];
-    const start = this.page * this.pageSize;
-    return this.familias.slice(start, start + this.pageSize);
-  }
-  get totalPages(): number {
-    return Math.max(1, Math.ceil((this.familias?.length ?? 0) / this.pageSize));
-  }
-  prevPage(): void {
-    if (this.page > 0) this.page--;
-  }
-  nextPage(): void {
-    if (this.page < this.totalPages - 1) this.page++;
-  }
-  goToPage(event: any): void {
-    const inputPage = Number(event.target.value);
-    if (inputPage >= 1 && inputPage <= this.totalPages) {
-      this.page = inputPage - 1;
-    }
-  }
 
-  selectedFamilias: any = null;
-  showDetails(familia: any) {
-    this.tableMessage = '';
-    this.familiaMessageError = '';
-    this.selectedFamilias = familia;
-    this.FetchSubfamilias(this.selectedFamilias.afacod);
-  }
-
-  closeDetails() {
-    this.selectedFamilias = null;
-    this.familiaErrorMessage = '';
-    this.familiaSucessMessage = '';
-    this.successUpdateMEssage = '';
-    this.errorUpdateMessage = '';
-  }
-
+  //main table functions
   familiaMessageError: string = '';
   public searchTerm: string = '';
   searchFamilias(): void {
@@ -277,6 +208,80 @@ export class FamiliaComponent {
     printWindow.print();
   }
 
+  toggleSort(field: 'afacod'): void {
+    if (this.sortField !== field) {
+      this.sortField = field;
+      this.sortDirection = 'asc';
+      this.defaultFamilias = [...this.familias];
+    } else if (this.sortDirection === 'asc') {
+      this.sortDirection = 'desc';
+    } else {
+      this.sortField = null;
+      this.sortDirection = 'asc';
+      this.familias = [...this.defaultFamilias];
+      this.page = 0;
+      return;
+    }
+
+    this.applySort();
+  }
+
+  private applySort(): void {
+    if (!this.sortField) {
+      return;
+    }
+
+    const base = [...this.defaultFamilias];
+    const sorted = base.sort((a, b) => {
+      const aVal = (a.afacod ?? '').toString().toUpperCase();
+      const bVal = (b.afacod ?? '').toString().toUpperCase();
+      return this.sortDirection === 'asc'
+        ? aVal.localeCompare(bVal)
+        : bVal.localeCompare(aVal);
+    });
+
+    this.familias = sorted;
+    this.page = 0;
+  }
+  
+  get paginatedFamilias(): any[] {
+    if (!this.familias || this.familias.length === 0) return [];
+    const start = this.page * this.pageSize;
+    return this.familias.slice(start, start + this.pageSize);
+  }
+  get totalPages(): number {
+    return Math.max(1, Math.ceil((this.familias?.length ?? 0) / this.pageSize));
+  }
+  prevPage(): void {
+    if (this.page > 0) this.page--;
+  }
+  nextPage(): void {
+    if (this.page < this.totalPages - 1) this.page++;
+  }
+  goToPage(event: any): void {
+    const inputPage = Number(event.target.value);
+    if (inputPage >= 1 && inputPage <= this.totalPages) {
+      this.page = inputPage - 1;
+    }
+  }
+
+  //detail grid functions
+  selectedFamilias: any = null;
+  showDetails(familia: any) {
+    this.tableMessage = '';
+    this.familiaMessageError = '';
+    this.selectedFamilias = familia;
+    this.FetchSubfamilias(this.selectedFamilias.afacod);
+  }
+
+  closeDetails() {
+    this.selectedFamilias = null;
+    this.familiaErrorMessage = '';
+    this.familiaSucessMessage = '';
+    this.successUpdateMEssage = '';
+    this.errorUpdateMessage = '';
+  }
+
   afacodError:string = '';
   subfamilias: any[] = [];
   mta:any[] = [];
@@ -374,38 +379,7 @@ export class FamiliaComponent {
     })
   }
 
-  showAddConfirm: boolean = false;
-  launchAddFamilia() {
-    this.showAddConfirm = true;
-  }
-
-  familiaMessage: string = '';
-  familiaAddError: string = '';
-  addFamilia(familia: string, descripcion: string): void {
-    this.familiaAddError = '';
-
-    if (!familia || !descripcion) { 
-      this.familiaAddError = 'Se requiere descripción de la familia';
-      return;
-    }
-
-    const ent = this.entcod;
-    const payload = { ent, afacod: familia, afades: descripcion };
-    this.http.post<any>(`${environment.backendUrl}/api/afa/Insert-familia`, payload).subscribe({
-      next: () => {
-        this.familiaMessage = 'familia agregada exitosamente'
-        this.closeAddConfirm();
-      }, error: (err) => {
-        this.familiaAddError = err?.error ?? 'Se ha producido un error.';
-      }
-    });
-  }
-
-  closeAddConfirm() {
-    this.showAddConfirm = false;
-    this.familiaAddError = '';
-  }
-
+  //subfamilia grid inside detail grid functions
   errorUpdateMessage: string = '';
   successUpdateMEssage: string = '';
   updateSubfamilia(afacod:string, asucod: string, Description:string, Economica: string, almacenaje: any) {
@@ -516,5 +490,38 @@ export class FamiliaComponent {
         this.almacenajes = [];
       },
     });
+  }
+
+  //add familia grid functions
+  showAddConfirm: boolean = false;
+  launchAddFamilia() {
+    this.showAddConfirm = true;
+  }
+
+  familiaMessage: string = '';
+  familiaAddError: string = '';
+  addFamilia(familia: string, descripcion: string): void {
+    this.familiaAddError = '';
+
+    if (!familia || !descripcion) { 
+      this.familiaAddError = 'Se requiere descripción de la familia';
+      return;
+    }
+
+    const ent = this.entcod;
+    const payload = { ent, afacod: familia, afades: descripcion };
+    this.http.post<any>(`${environment.backendUrl}/api/afa/Insert-familia`, payload).subscribe({
+      next: () => {
+        this.familiaMessage = 'familia agregada exitosamente'
+        this.closeAddConfirm();
+      }, error: (err) => {
+        this.familiaAddError = err?.error ?? 'Se ha producido un error.';
+      }
+    });
+  }
+
+  closeAddConfirm() {
+    this.showAddConfirm = false;
+    this.familiaAddError = '';
   }
 }
