@@ -415,19 +415,21 @@ export class FamiliaComponent {
   confirmDelete(): void {
     if (this.familiaToDelete) {
       this.deleteFamilia(this.familiaToDelete);
-      this.closeDeleteConfirm();
     }
   }
 
+  delErr: string = '';
   deleteFamilia(afacod: string): void {
+    this.delErr = '';
     this.http.delete(`${environment.backendUrl}/api/art/delete-familia/${this.entcod}/${afacod}`).subscribe({
       next: () => {
         this.familiaSucessMessage = 'Familia eliminado correctamente';
         this.familias = this.familias.filter(f => f.afacod !== afacod);
         this.backupFamilias = this.backupFamilias.filter(f => f.afacod !== afacod);
+        this.closeDeleteConfirm();
         this.closeDetails();
       }, error: (err) => {
-        this.familiaErrorMessage = err?.error ?? 'Error al eliminar la familia.';
+        this.delErr = err?.error ?? 'Error al eliminar la familia.';
       }
     })
   }
@@ -557,7 +559,7 @@ export class FamiliaComponent {
     this.familiaAddError = '';
 
     if (!familia || !descripcion) { 
-      this.familiaAddError = 'Se requiere descripción de la familia';
+      this.familiaAddError = 'Se requiere familia y descripción';
       return;
     }
 

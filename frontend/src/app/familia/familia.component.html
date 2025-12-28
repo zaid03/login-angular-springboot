@@ -81,42 +81,44 @@
             <div class="modal-backdrop" *ngIf="selectedFamilias" (click)="closeDetails()"></div>
             <div class="display" >
                 <div class="modal" *ngIf="selectedFamilias">
-                    <button class="close-btn-fct" (click)="closeDetails()">×</button>
-                    <h3>Detalles de Familia</h3>
-                    <div class="details">
-                        <div class="left-row">
-                            <p>Familia</p>
-                            <p>Descripción</p>
+                    <div class="btns">
+                        <div class="title-detail">
+                            <h3>Detalles de Familia</h3>
                         </div>
-                        <div class="right-row">
-                            <textarea 
-                                [(ngModel)]="selectedFamilias.afacod" 
-                                readonly 
-                            ></textarea>
-                            <textarea
-                                [value]="selectedFamilias.afades" 
-                                #descripcionRef
-                                class="width" 
-                            ></textarea>
+                        <button class="guardar-btn" (click)="updateFamilia(selectedFamilias.afacod, descripcionRef.value)">✔</button>
+                        <button class="close-btn-btn" (click)="closeDetails()">✖</button>
+                    </div>                    
+                    <div class="detail-container">
+                        <div class="chunk">
+                            <div class="left">
+                                <p>Familia</p>
+                            </div>
+                            <div class="right">
+                                <div class="on-two">
+                                    <h1>{{selectedFamilias.afacod}}</h1>
+                                    <p>Descripción</p>
+                                    <textarea
+                                        [value]="selectedFamilias.afades" 
+                                        #descripcionRef
+                                        class="tallText" 
+                                    ></textarea>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <h4 class="errorBtn">{{ familiaErrorMessage }}</h4>
-                    <h4 class="successBtn">{{ familiaSucessMessage }}</h4>
-                    <div class="action-buttons">  
-                        <button 
-                            class="familia-save-btn" 
-                            (click)="updateFamilia(selectedFamilias.afacod, descripcionRef.value)"
-                        >
-                        Guardar
-                        </button>
+                    <h1 class="errorBtn">{{ familiaErrorMessage }}</h1>
+                    <h1 class="successBtn">{{ familiaSucessMessage }}</h1>
+                    <div class="btns">
                         <button 
                             class="familia-delete-btn" 
                             (click)="openDeleteConfirm(selectedFamilias.afacod)"
-                        >
-                        Eliminar</button>
+                        >-</button>
                     </div>
                     <div class="subfamilias">
-                        <h1>Subfamilia</h1>
+                        <h3>Subfamilia</h3>
+                        <div class="butt">
+                            <button class="subFamilias-add-btn" (click)="launchAddSubFamilia()">+</button>
+                        </div>
                         <h4 class="errorBtn">{{ afacodError }}</h4>
                         <table class="subfamilia-table">
                             <thead>
@@ -131,28 +133,21 @@
                             <tbody>
                                 <tr *ngFor="let s of subfamilias">
                                     <td>
-                                        <input 
-                                            type="text" 
-                                            [(ngModel)]="s.asucod" 
-                                            readonly
-                                        />
+                                        <p>{{s.asucod}}</p>
                                     </td>
                                     <td>
-                                        <input
-                                            type="text"
-                                            [(ngModel)]="s.asudes"
-                                            class="width"
+                                        <textarea [(ngModel)]="s.asudes"
+                                            class="tallText"
                                             #Description
-                                        />
+                                        ></textarea>
                                     </td>
                                     <td>
-                                        <input
-                                            type="text"
-                                            [(ngModel)]="s.asueco" 
+                                        <textarea
                                             maxlength="5"
+                                            [(ngModel)]="s.asueco"
                                             #Economica
                                             (input)="allowOnlyDigits($event)"
-                                        />
+                                        ></textarea>
                                     </td>
                                     <td>
                                         <ng-container>
@@ -168,7 +163,7 @@
                                                     *ngFor="let almacen of s.mta"
                                                     [ngValue]="almacen.mtacod"
                                                 >
-                                                    {{ almacen.mtacod }} - {{ almacen.mtades }}
+                                                    {{ almacen.mtades }}
                                                 </option>
                                             </select>
                                         </ng-container>
@@ -188,9 +183,6 @@
                         </table>
                         <h4 class="errorBtn">{{ errorUpdateMessage }}</h4>
                         <h4 class="successBtn">{{ successUpdateMEssage }}</h4>
-                        <div class="button-subs">
-                            <button class="subFamilias-add-btn" (click)="launchAddSubFamilia()">Añadir</button>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -201,71 +193,46 @@
 <div class="modal-backdrop" *ngIf="showDeleteConfirm" (click)="closeDeleteConfirm()"></div>
 <div class="delete-confirm-modal" *ngIf="showDeleteConfirm">
     <h3>¿Seguro que quieres eliminar este Familia?</h3>
-    <div *ngIf="familiaToDelete">
-        <p><strong>Familia:</strong> {{ familiaToDelete }}</p>
-    </div>
-    <button class="articulos-delete-confirm-btn" (click)="confirmDelete()">Sí, eliminar</button>
-    <button class="articulos-cancel-confirm-btn" (click)="closeDeleteConfirm()">Cancelar</button>
-</div>
-
-<div class="modal-backdrop" *ngIf="showAddConfirm" (click)="closeAddConfirm()"></div>
-<div class="add-confirm-modal" *ngIf="showAddConfirm">
-    <h3>Añadir una Familia</h3>
-    <div class="add-content">
-        <div class="left-row">
-            <p>Familia</p>
-            <p>Descripción</p>
-        </div>
-        <div class="right-row">
-            <input 
-                type="text" 
-                name="familia" 
-                maxlength="4"
-                (input)="familiaInput.value = familiaInput.value.toUpperCase()"
-                #familiaInput
-            />
-            <input 
-                type="text" 
-                name="Descripción" 
-                class="width"  
-                #descripcionInput
-            />
-        </div>
-    </div>
-    <h1 class="errorBtn">{{ familiaAddError }}</h1>
-    <button class="familias-add-btn" (click)="addFamilia(familiaInput.value, descripcionInput.value)">Añadir</button>
-    <button class="articulos-delete-confirm-btn" (click)="closeAddConfirm()">Cancelar</button>
+    <h1 class="errorBtn">{{delErr}}</h1>
+    <button class="articulos-delete-confirm-btn" (click)="confirmDelete()">-</button>
+    <button class="articulos-cancel-confirm-btn" (click)="closeDeleteConfirm()">✖</button>
 </div>
 
 <div class="modal-backdrop" *ngIf="showAddConfirmSub" (click)="closeAddConfirmSub()"></div>
 <div class="add-sub-modal" *ngIf="showAddConfirmSub">
-    <h3>Añadir una Subfamilia</h3>
+    <div class="btns">
+        <div class="title">
+            <h3>Añadir una Subfamilia</h3>    
+        </div>
+        <button class="familias-add-btn" (click)="addSub(subfamiliaInput.value, descripcionInput.value, economicaInput.value, almacenajeInput.value)">+</button>
+        <button class="articulos-delete-confirm-btn" (click)="closeAddConfirmSub()">✖</button>
+    </div>
+    <h1 class="errorBtn">{{ subAddError }}</h1>
     <div class="add-content">
-        <div class="left-row">
+        <div class="left-add">
             <p>Subfamilia</p>
             <p>Descripción</p>
             <p>Económica</p>
             <p>Tipo de almacenaje</p>
         </div>
-        <div class="right-row">
-            <input 
-                type="text" 
+        <div class="right-add">
+            <textarea 
+                class="tallText"
                 name="subfamilia" 
                 maxlength="4"
                 (input)="forceUppercase($event)"
                 #subfamiliaInput
-            />
-            <input 
-                type="text" 
+            ></textarea>
+            <textarea
+                class="tallText"
                 name="Descripción" 
                 #descripcionInput
-            />
-            <input 
-                type="text" 
-                name="economica" 
+            ></textarea>
+            <textarea
+                class="tallText"
                 #economicaInput
                 (input)="allowOnlyDigits($event)"
-            />
+            ></textarea>
             <select
                 name="almacenaje"
                 #almacenajeInput
@@ -277,7 +244,35 @@
             </select>
         </div>
     </div>
-    <h1 class="errorBtn">{{ subAddError }}</h1>
-    <button class="familias-add-btn" (click)="addSub(subfamiliaInput.value, descripcionInput.value, economicaInput.value, almacenajeInput.value)">Añadir</button>
-    <button class="articulos-delete-confirm-btn" (click)="closeAddConfirmSub()">Cancelar</button>
 </div>
+
+<div class="modal-backdrop" *ngIf="showAddConfirm" (click)="closeAddConfirm()"></div>
+<div class="add-confirm-modal" *ngIf="showAddConfirm">
+    <div class="btns">
+        <div class="title">
+            <h3>Añadir una Familia</h3>  
+        </div>
+        <button class="familias-add-btn" (click)="addFamilia(familiaInput.value, descripcionInput.value)">+</button>
+        <button class="articulos-delete-confirm-btn" (click)="closeAddConfirm()">✖</button>
+    </div>
+    <h1 class="errorBtn">{{ familiaAddError }}</h1>
+    <div class="add-content">
+        <div class="left-add">
+            <p>Familia</p>
+            <p>Descripción</p>
+        </div>
+        <div class="right-add">
+            <textarea
+                class="addSmallText"
+                maxlength="4"
+                (input)="familiaInput.value = familiaInput.value.toUpperCase()"
+                #familiaInput
+            ></textarea>
+            <textarea
+                class="addTallText"  
+                #descripcionInput
+            ></textarea>
+        </div>
+    </div>
+</div>
+
