@@ -197,9 +197,16 @@
 
 <div class="modal-backdrop" *ngIf="showAddConfirm" (click)="closeAddConfirm()"></div>
 <div class="add-confirm-modal" *ngIf="showAddConfirm">
-    <h3>Añadir un Centro Gestor</h3>
-    <div class="add-content">
-        <div class="left-add">
+    <div class="btns">
+        <div class="title">
+            <h3>Añadir un Centro Gestor</h3>
+        </div>
+        <button class="centroGestor-add-btn" (click)="AddCentroGestor(codigo.value, organica.value, programa.value, description.value, direction.value)">+</button>
+        <button class="centroGestor-delete-confirm-btn" (click)="closeAddConfirm()">✖</button>
+    </div>
+    <h1 class="errorBtn">{{ centroGestorAddError }}</h1>
+    <div class="chunk more-chunk">
+        <div class="left width">
             <p>Código</p>
             <p>Orgánica</p>
             <p>Programa</p>
@@ -207,18 +214,20 @@
             <p>Dirección para pedido</p>
             <p>Estado contable</p>
         </div>
-        <div class="right-add">
+        <div class="right more">
             <textarea
+                class="smallText"
                 (input)="setCgeToUpper($event)"
                 #codigo
             ></textarea>
-            <textarea #organica></textarea>
+            <textarea class="smallText" #organica></textarea>
             <textarea
+                class="smallText"
                 (input)="allowOnlyDigits($event)"
                 #programa
             ></textarea>
-            <textarea #description class="longWidth"></textarea>
-            <textarea #direction class="longWidth"></textarea>
+            <textarea #description class="tallText"></textarea>
+            <textarea #direction class="tallText"></textarea>
             <div class="estado-inputs">
                 <input 
                     type="radio" 
@@ -226,26 +235,23 @@
                     [checked]="newCgecic === 0"
                     (change)="setAddCgecic(0)"
                 >
-                Abierto<br>
+                <span class="radio-name">Abierto</span>
                 <input 
                     type="radio" 
                     name="cont-option" 
                     [checked]="newCgecic === 2"
                     (change)="setAddCgecic(2)"
                 >
-                Cerrado Para Contabilizar<br>
+                <span class="radio-name">Cerrado Para Contabilizar</span>
                 <input 
                     type="radio" 
                     name="cont-option" 
                     [checked]="newCgecic === 1"
                     (change)="setAddCgecic(1)"
                 >
-                Cerrado
+                <span class="radio-name">Cerrado</span>
             </div>
         </div>
     </div>
-    <h1 class="errorBtn">{{ centroGestorAddError }}</h1>
-    <button class="centroGestor-add-btn" (click)="AddCentroGestor(codigo.value, organica.value, programa.value, description.value, direction.value)">Añadir</button>
-    <button class="centroGestor-delete-confirm-btn" (click)="closeAddConfirm()">Cancelar</button>
 </div>
 

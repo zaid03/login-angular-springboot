@@ -31,80 +31,21 @@
 .smallText { width: 60px; max-width: 120px;}
 .tallText { width: 220px; max-width: 300px;}
 .margin { margin-top: 5px;}
-.on-two input[type="radio"] { margin: 0 6px 0 0; accent-color: #25176b; width: 18px; height: 18px; vertical-align: middle; outline: none; box-shadow: none; }
-.on-two input[type="radio"]:focus { outline: none; }
+.on-two input[type="radio"],
+.estado-inputs input[type="radio"] { margin: 0 6px 0 0; accent-color: #25176b; width: 18px; height: 18px; vertical-align: middle; outline: none; box-shadow: none; }
+.on-two input[type="radio"]:focus,
+.estado-inputs input[type="radio"]:focus { outline: none; }
 .long-text { width: 50%; display: flex; flex-direction: column; gap: 10px; }
 .long-text textarea { width: 80%; max-width: 95%; height: 80px;}
 /* detail grid */
 /* delete grid */
 .cge-delete-confirm-btn { margin-right: 10px; }
 /* delete grid */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-.add-confirm-modal {
-    position: fixed;
-    top: 15%;
-    left: 50%;
-    border-radius: 10px;
-    transform: translate(-50%, 0);
-    background: #fff;
-    border: 1px solid #aaa;
-    padding: 24px;
-    z-index: 2000;
-    width: 900px;
-    min-width: 800px;
-    box-shadow: 0 2px 16px rgba(0,0,0,0.2);
-    text-align: center;
-}
-
-
-
-.add-content {
-    display: flex;
-    padding: 1%;
-}
-
-.left-add {
-    width: 20%;
-    padding: 1%;
-    display: flex;
-    flex-direction: column;
-    text-align: left;
-    gap: 12px;
-}
-
-.right-add {
-    width: 80%;
-    display: flex;
-    flex-direction: column;
-    padding: 1%;
-    gap: 10px;
-}
-
-.right-add textarea {
-    width: 10%;
-    max-width: 90%;
-}
-
-
-
-.estado-inputs {
-    display: flex;
-    gap: 10px;
-}
-
-
+/* add grid */
+.add-confirm-modal { top: 15%; width: 40%;}
+.more-chunk { width: 100%;}
+.width {width: 30%; text-align: left;}
+.more { gap: 12px; width: 70%;}
+.estado-inputs {display: flex; gap: 10px;}
+.title{width: 80%;}
+/* add grid */
