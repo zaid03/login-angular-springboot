@@ -111,8 +111,10 @@ public interface DepRepository  extends JpaRepository<Dep, DepId> {
     //search function
     @Query("""
         SELECT d FROM Dep d
+        JOIN Dpe p ON d.ENT = p.ENT AND d.EJE = p.EJE AND d.DEPCOD = p.DEPCOD
         WHERE d.ENT = :ent
         AND d.EJE = :eje
+        AND p.PERCOD = :percod
         AND (
                 (:search IS NULL)
                     OR (
@@ -137,6 +139,7 @@ public interface DepRepository  extends JpaRepository<Dep, DepId> {
     List<Dep> searchServices(
         @Param("ent") Integer ent,
         @Param("eje") String eje,
+        @Param("percod") String percod,
         @Param("search") String search,
         @Param("cgecod") String cgecod,
         @Param("perfil") String perfil

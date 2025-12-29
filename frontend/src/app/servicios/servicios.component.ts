@@ -335,7 +335,8 @@ export class ServiciosComponent {
 
     const params: any = {
       ent: this.entcod,
-      eje: this.eje
+      eje: this.eje,
+      percod: this.perfil
     };
     if (this.searchServicio && this.searchServicio.trim() !== '') {
       params.search = this.searchServicio;
