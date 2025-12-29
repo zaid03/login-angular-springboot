@@ -370,37 +370,34 @@
 
 <div class="modal-backdrop" *ngIf="showAddConfirm" (click)="closeAddConfirm()"></div>
 <div class="add-confirm-modal" *ngIf="showAddConfirm">
-    <h3>Añadir un servicio</h3>
-    <div class="add-content">
+    <div class="btns">
+        <div class="title">
+            <h3>Añadir un servicio</h3>
+        </div>
+        <button class="add-btn" (click)="addService(codigo.value, description.value, centroCoste.value, centroGestor.value)">+</button>
+        <button class="cancel-btn" (click)="closeAddConfirm()">✖</button>
+    </div>
+    <h1 class="errorBtn">{{ addServiceErrorMessage }}</h1>
+    <div class="add-container">
         <div class="left-add">
             <p>Código</p>
+            <p>Centro de Coste</p>
+            <p>Centro Gestor</p>
             <p>Descripción</p>
             <p>Almacén/Farmacia</p>
             <p>Comprador</p>
             <p>Contabilidad</p>
-            <p>Centro de Coste</p>
-            <p>Centro Gestor</p>
         </div>
         <div class="right-add">
-            <textarea
-                class="smallWidth"
-                (input)="setInputToUpper($event)"
-                #codigo
-            ></textarea>
+            <textarea class="short" (input)="setInputToUpper($event)" #codigo ></textarea>
+            <textarea class="short" #centroCoste ></textarea>
+            <textarea class="short" #centroGestor></textarea>
             <textarea #description></textarea>
             <div class="checkboxes">
                 <input type="checkbox" [(ngModel)]="addDepalm">
                 <input type="checkbox" [(ngModel)]="addDepcom">
                 <input type="checkbox" [(ngModel)]="addDepint">
             </div>
-            <textarea
-                class="smallWidth" 
-                #centroCoste
-            ></textarea>
-            <textarea #centroGestor></textarea>
         </div>
     </div>
-    <h1 class="errorBtn">{{ addServiceErrorMessage }}</h1>
-    <button class="add-btn" (click)="addService(codigo.value, description.value, centroCoste.value, centroGestor.value)">Añadir</button>
-    <button class="cancel-btn" (click)="closeAddConfirm()">Cancelar</button>
 </div>
