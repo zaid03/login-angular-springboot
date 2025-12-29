@@ -620,7 +620,8 @@ export class ServiciosComponent {
       "depcom": this.addDepcom ? 1 : 0,
       "depint": this.addDepint ? 1 : 0,
       "ccocod": cco,
-      "cgecod": cge
+      "cgecod": cge,
+      "percod": this.perfil
     }
 
     this.http.post(`${environment.backendUrl}/api/dep/Insert-service`, payload).subscribe({

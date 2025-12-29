@@ -42,7 +42,8 @@
 .long {width: 280px; max-width: 400px;}
 .short {width: 80px; max-width: 120px;}
 .right { display: flex; gap: 10px;}
-.right input[type="checkbox"] { margin: 0; accent-color: #25176b; width: 14px; height: 18px; vertical-align: middle; outline: none; box-shadow: none; }
+.right input[type="checkbox"],
+.checkboxes input[type="checkbox"] { margin: 0; accent-color: #25176b; width: 14px; height: 18px; vertical-align: middle; outline: none; box-shadow: none; }
 /* detail grid */
 /* detail grid's grids */
 .perstana-content {width: 100%; padding: 0.5%;}

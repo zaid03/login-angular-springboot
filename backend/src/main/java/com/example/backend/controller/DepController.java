@@ -16,13 +16,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.backend.sqlserver2.model.Dep;
+import com.example.backend.sqlserver2.model.Dpe;
 import com.example.backend.sqlserver2.repository.DepRepository;
+import com.example.backend.sqlserver2.repository.DpeRepository;
 
 @RestController
 @RequestMapping("/api/dep")
 public class DepController {
     @Autowired
     private DepRepository depRepository;
+    @Autowired
+    private DpeRepository dpeRepository;
 
     //fetching all services
     @GetMapping("/fetch-services/{ent}/{eje}/{percod}")
@@ -79,13 +83,13 @@ public class DepController {
     }
 
     //adding a service
-    public record serviceAdd(Integer ent, String eje, String depcod, String depdes, Integer depalm, Integer depcom, Integer depint, String ccocod, String cgecod) {}
+    public record serviceAdd(Integer ent, String eje, String depcod, String depdes, Integer depalm, Integer depcom, Integer depint, String ccocod, String cgecod, String percod) {}
     @PostMapping("/Insert-service")
     public ResponseEntity<?> addCentroGestor(
         @RequestBody serviceAdd payload
     ) {
         try {
-            if (payload == null || payload.ent() == null || payload.eje() == null || payload.depcod() == null || payload.depdes() == null || payload.depalm() == null || payload.depcom() == null || payload.depint() == null || payload.ccocod() == null || payload.cgecod() == null) {
+            if (payload == null || payload.ent() == null || payload.eje() == null || payload.depcod() == null || payload.depdes() == null || payload.depalm() == null || payload.depcom() == null || payload.depint() == null || payload.ccocod() == null || payload.cgecod() == null || payload.percod == null) {
                 return ResponseEntity.badRequest().body("Faltan datos obligatorios.");
             }
             if(!depRepository.findByENTAndEJEAndDEPCOD(payload.ent(), payload.eje(), payload.depcod()).isEmpty()) {
@@ -102,8 +106,15 @@ public class DepController {
             nueva.setDEPCOM(payload.depcom());
             nueva.setCCOCOD(payload.ccocod());
             nueva.setCGECOD(payload.cgecod());
-
             depRepository.save(nueva);
+
+            Dpe nuevoDpe = new Dpe();
+            nuevoDpe.setENT(payload.ent());
+            nuevoDpe.setEJE(payload.eje());
+            nuevoDpe.setDEPCOD(payload.depcod());
+            nuevoDpe.setPERCOD(payload.percod());
+            dpeRepository.save(nuevoDpe);
+            
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
