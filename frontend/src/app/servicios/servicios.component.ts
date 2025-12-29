@@ -18,6 +18,7 @@ import { Serializer } from '@angular/compiler';
   styleUrls: ['./servicios.component.css']
 })
 export class ServiciosComponent {
+  //3 dots menu
   showMenu = false;
   toggleMenu(event: MouseEvent): void {
     event.stopPropagation();
@@ -31,6 +32,7 @@ export class ServiciosComponent {
 
   constructor(private http: HttpClient, private router: Router) {}
 
+  //global variables
   private entcod: number | null = null;
   private eje: number | null = null;
   private perfil: string | null = null;
@@ -71,18 +73,24 @@ export class ServiciosComponent {
     this.fetchServices();
   }
 
-  private updatePagination(): void {
-    const total = this.totalPages;
-    if (total === 0) {
-      this.page = 0;
-      return;
-    }
-    if (this.page >= total) {
-      this.page = total - 1;
-    }
+  //main table functions
+  private fetchServices(): void {
+    if (this.entcod === null || this.eje === null) return;
+    this.http.get<any>(`${environment.backendUrl}/api/dep/fetch-services/${this.entcod}/${this.eje}/${this.perfil}`).subscribe({
+      next: (res) => {
+        this.services = res;
+        this.backupServices = Array.isArray(res) ? [...res] : [];
+        this.defaultServices = [...this.backupServices];
+        this.page = 0;
+        this.updatePagination();
+      },
+      error: (err) => {
+        this.servicessMessageError = err?.error?.error || 'Error desconocido';
+      }
+    });
   }
-  
-  toggleSort(field: 'depcod' | 'cgecod'): void {
+
+  toggleSort(field: 'depcod' | 'depdes' | 'cgecod' | 'ccocod' | 'depalm' | 'depcom' | 'depint'): void {
     if (this.sortField !== field) {
       this.sortField = field;
       this.sortDirection = 'asc';
@@ -100,7 +108,7 @@ export class ServiciosComponent {
     this.applySort();
   }
 
-  sortField: 'depcod' | 'cgecod' | null = null;
+  sortField: 'depcod' | 'depdes' | 'cgecod' | 'ccocod' | 'depalm' | 'depcom' | 'depint' | null = null;
   sortDirection: 'asc' | 'desc' = 'asc';
   private applySort(): void {
     if (!this.sortField) {
@@ -132,6 +140,46 @@ export class ServiciosComponent {
     this.services = sorted;
     this.page = 0;
     this.updatePagination();
+  }
+
+  private startX: number = 0;
+  private startWidth: number = 0;
+  private resizingColIndex: number | null = null;
+  startResize(event: MouseEvent, colIndex: number) {
+    this.resizingColIndex = colIndex;
+    this.startX = event.pageX;
+    const th = (event.target as HTMLElement).parentElement as HTMLElement;
+    this.startWidth = th.offsetWidth;
+
+    document.addEventListener('mousemove', this.onResizeMove);
+    document.addEventListener('mouseup', this.stopResize);
+  }
+
+  onResizeMove = (event: MouseEvent) => {
+    if (this.resizingColIndex === null) return;
+    const table = document.querySelector('.services-table') as HTMLTableElement;
+    if (!table) return;
+    const th = table.querySelectorAll('th')[this.resizingColIndex] as HTMLElement;
+    if (!th) return;
+    const diff = event.pageX - this.startX;
+    th.style.width = (this.startWidth + diff) + 'px';
+  };
+
+  stopResize = () => {
+    document.removeEventListener('mousemove', this.onResizeMove);
+    document.removeEventListener('mouseup', this.stopResize);
+    this.resizingColIndex = null;
+  };
+
+  private updatePagination(): void {
+    const total = this.totalPages;
+    if (total === 0) {
+      this.page = 0;
+      return;
+    }
+    if (this.page >= total) {
+      this.page = total - 1;
+    }
   }
 
   get paginatedServices(): any[] {
@@ -279,6 +327,59 @@ export class ServiciosComponent {
     printWindow.print();
   }
 
+  searchServicio: string = '';
+  searchCentroGestor: string = '';
+  searchPerfil: string = 'todos';
+  search() {
+    this.servicessMessageError = '';
+
+    const params: any = {
+      ent: this.entcod,
+      eje: this.eje
+    };
+    if (this.searchServicio && this.searchServicio.trim() !== '') {
+      params.search = this.searchServicio;
+    }
+    if (this.searchCentroGestor && this.searchCentroGestor.trim() !== '') {
+      params.cgecod = this.searchCentroGestor;
+    }
+    if (this.searchPerfil && this.searchPerfil !== 'todos') {
+      params.perfil = this.searchPerfil;
+    }
+
+    this.http.get<any>(`${environment.backendUrl}/api/dep/search`, { params }).subscribe({
+      next: (res) => {
+        this.services = res;
+        this.backupServices = Array.isArray(res) ? [...res] : [];
+        this.defaultServices = [...this.backupServices];
+        this.page = 0;
+        this.updatePagination();
+        if (!res.length) {
+          this.servicessMessageError = 'No se encontraron servicios con los filtros dados.';
+        } else {
+          this.servicessMessageError = '';
+        }
+      },
+      error: (err) => {
+        this.services = [];
+        this.backupServices = [];
+        this.defaultServices = [];
+        this.page = 0;
+        this.updatePagination();
+        this.servicessMessageError = err?.error || 'Error en la búsqueda.';
+      }
+    });
+  }
+
+  clearSearch() {
+    this.searchServicio = '';
+    this.searchCentroGestor = '';
+    this.searchPerfil = 'todos';
+    this.servicessMessageError = '';
+    this.fetchServices();
+  }
+
+  //detail grid functions
   selectedService: any = null;
   servicesDetailError: string = '';
   servicesDetailSuccess: string = '';
@@ -358,77 +459,6 @@ export class ServiciosComponent {
       },
       error: (err) => {
         this.updateServiceErrorMessage = err?.error;
-      }
-    })
-  }
-
-  private fetchServices(): void {
-    if (this.entcod === null || this.eje === null) return;
-    this.http.get<any>(`${environment.backendUrl}/api/dep/fetch-services/${this.entcod}/${this.eje}/${this.perfil}`).subscribe({
-      next: (res) => {
-        this.services = res;
-        this.backupServices = Array.isArray(res) ? [...res] : [];
-        this.defaultServices = [...this.backupServices];
-        this.page = 0;
-        this.updatePagination();
-      },
-      error: (err) => {
-        this.servicessMessageError = err?.error?.error || 'Error desconocido';
-      }
-    });
-  }
-
-  showAddConfirm: boolean = false;
-  servicesAddError: string = '';
-  launchAddCentroGestor() {
-    this.showAddConfirm = true;
-  }
-
-  closeAddConfirm() {
-    this.showAddConfirm = false;
-    this.servicesAddError = '';
-  }
-
-  newCge = '';
-  setInputToUpper(event: Event): void {
-    const target = event.target as HTMLTextAreaElement;
-    const upper = (target.value ?? '').toUpperCase();
-    target.value = upper;
-    this.newCge = upper;
-  }
-
-  addDepalm: boolean = false;
-  addDepcom: boolean = false;
-  addDepint: boolean = false;
-  addServicesSuccessMessage: string = '';
-  addServiceErrorMessage: string = '';
-  addService(cod: string, des:string, cco:string, cge: string) {
-    this.addServiceErrorMessage = '';
-    this.addServicesSuccessMessage = '';
-    if (cod === '' || des === '' || cco === '') {
-      this.addServiceErrorMessage = 'Todos los campos son obligatorios.'
-      return;
-    }
-
-    const payload = {
-      "ent": this.entcod,
-      "eje": this.eje,
-      "depcod": cod,
-      "depdes": des,
-      "depalm": this.addDepalm ? 1 : 0,
-      "depcom": this.addDepcom ? 1 : 0,
-      "depint": this.addDepint ? 1 : 0,
-      "ccocod": cco,
-      "cgecod": cge
-    }
-
-    this.http.post(`${environment.backendUrl}/api/dep/Insert-service`, payload).subscribe({
-      next: (res) => {
-        this.addServicesSuccessMessage = 'Servicio añadido con éxito';
-        this.closeAddConfirm();
-      },
-      error: (err) => {
-        this.addServiceErrorMessage = 'Server error: ' + err?.error;
       }
     })
   }
@@ -550,56 +580,58 @@ export class ServiciosComponent {
     })
   }
 
-  searchServicio: string = '';
-  searchCentroGestor: string = '';
-  searchPerfil: string = 'todos';
-  searchErrorMessage: string = '';
-  search() {
-    this.searchErrorMessage = '';
-
-    const params: any = {
-      ent: this.entcod,
-      eje: this.eje
-    };
-    if (this.searchServicio && this.searchServicio.trim() !== '') {
-      params.search = this.searchServicio;
-    }
-    if (this.searchCentroGestor && this.searchCentroGestor.trim() !== '') {
-      params.cgecod = this.searchCentroGestor;
-    }
-    if (this.searchPerfil && this.searchPerfil !== 'todos') {
-      params.perfil = this.searchPerfil;
-    }
-
-    this.http.get<any>(`${environment.backendUrl}/api/dep/search`, { params }).subscribe({
-      next: (res) => {
-        this.services = res;
-        this.backupServices = Array.isArray(res) ? [...res] : [];
-        this.defaultServices = [...this.backupServices];
-        this.page = 0;
-        this.updatePagination();
-        if (!res.length) {
-          this.searchErrorMessage = 'No se encontraron servicios con los filtros dados.';
-        } else {
-          this.searchErrorMessage = '';
-        }
-      },
-      error: (err) => {
-        this.services = [];
-        this.backupServices = [];
-        this.defaultServices = [];
-        this.page = 0;
-        this.updatePagination();
-        this.searchErrorMessage = err?.error || 'Error en la búsqueda.';
-      }
-    });
+  //add grid functions
+  showAddConfirm: boolean = false;
+  servicesAddError: string = '';
+  launchAddCentroGestor() {
+    this.showAddConfirm = true;
   }
 
-  clearSearch() {
-    this.searchServicio = '';
-    this.searchCentroGestor = '';
-    this.searchPerfil = 'todos';
-    this.searchErrorMessage = '';
-    this.fetchServices();
+  closeAddConfirm() {
+    this.showAddConfirm = false;
+    this.servicesAddError = '';
+  }
+
+  newCge = '';
+  setInputToUpper(event: Event): void {
+    const target = event.target as HTMLTextAreaElement;
+    const upper = (target.value ?? '').toUpperCase();
+    target.value = upper;
+    this.newCge = upper;
+  }
+
+  addDepalm: boolean = false;
+  addDepcom: boolean = false;
+  addDepint: boolean = false;
+  addServiceErrorMessage: string = '';
+  addService(cod: string, des:string, cco:string, cge: string) {
+    this.addServiceErrorMessage = '';
+    this.servicesMessageSuccess = '';
+    if (cod === '' || des === '' || cco === '') {
+      this.addServiceErrorMessage = 'Todos los campos son obligatorios.'
+      return;
+    }
+
+    const payload = {
+      "ent": this.entcod,
+      "eje": this.eje,
+      "depcod": cod,
+      "depdes": des,
+      "depalm": this.addDepalm ? 1 : 0,
+      "depcom": this.addDepcom ? 1 : 0,
+      "depint": this.addDepint ? 1 : 0,
+      "ccocod": cco,
+      "cgecod": cge
+    }
+
+    this.http.post(`${environment.backendUrl}/api/dep/Insert-service`, payload).subscribe({
+      next: (res) => {
+        this.servicesMessageSuccess = 'Servicio añadido con éxito';
+        this.closeAddConfirm();
+      },
+      error: (err) => {
+        this.addServiceErrorMessage = 'Server error: ' + err?.error;
+      }
+    })
   }
 }

@@ -6,9 +6,44 @@
     >
     </div>
     <app-sidebar #sidebar></app-sidebar>
-    <div class="familia-container" [class.blurred]="!sidebar.collapsed">
+    <div class="services-container" [class.blurred]="!sidebar.collapsed">
         <div class="title-menu">
-            <h2 class="margin-title">listas de servicios</h2> 
+            <div class="title-area">
+                <h2 class="margin-title">listas de servicios</h2>  
+            </div>
+            <div class="search-holder">
+                <div class="search-container">
+                    <div class="search-form">
+                        <label>Servicio</label>
+                        <input 
+                            type="text" 
+                            class="search-bar"
+                            placeholder="servicios" 
+                            [(ngModel)]="searchServicio"
+                        >
+                        <label>Centro gestor</label>
+                        <input 
+                            type="text" 
+                            class="search-bar"
+                            placeholder="centro gestor"
+                            (input)="setInputToUpper($event)"
+                            [(ngModel)]="searchCentroGestor" 
+                        >
+                        <label for="">Perfil de servicio</label>
+                        <select [(ngModel)]="searchPerfil">
+                            <option value="almacen">Almacén / Farmacia</option>
+                            <option value="comprador">Comprador</option>
+                            <option value="contabilidad">Contabilidad</option>
+                            <option value="peticionario">Centro peticionario</option>
+                            <option value="todos">Todos</option>
+                        </select>
+                    </div>
+                    <div class="btns Widthy">
+                        <button class="search-btn" (click)="search()">Buscar</button>
+                        <button class="Limpiar-btn" (click)="clearSearch()">Limpiar</button>
+                    </div>
+                </div>
+            </div>
             <div class="group-menu" (click)="toggleMenu($event)">
                 <div class="dot"></div>
                 <div class="dot"></div>
@@ -20,119 +55,52 @@
                 </div>
             </div>
         </div>
-        <div class="services-search">
-            <div class="search-option">
-                <label>Servicio</label>
-                <input 
-                    type="text" 
-                    class="search-bar"
-                    placeholder="Búsqueda de servicios" 
-                    [(ngModel)]="searchServicio"
-                >
-                <label>Centro gestor</label>
-                <input 
-                    type="text" 
-                    class="search-bar"
-                    placeholder="Búsqueda de centro gestor"
-                    (input)="setInputToUpper($event)"
-                    [(ngModel)]="searchCentroGestor" 
-                >
-                <div class="search-option-radio">
-                    <p>Perfil de servicio</p>
-                    <div class="choice">
-                        <input
-                            type="radio"
-                            name="choice-option"
-                            class="search-radio"
-                            [(ngModel)]="searchPerfil"
-                            value="almacen"
-                        /> Almacén / Farmacia
-                    </div>
-                    <div class="choice">
-                        <input
-                            type="radio"
-                            name="choice-option"
-                            class="search-radio"
-                            [(ngModel)]="searchPerfil"
-                            value="comprador"
-                        />Comprador
-                    </div>
-                    <div class="choice">
-                        <input
-                            type="radio"
-                            name="choice-option"
-                            class="search-radio"
-                            [(ngModel)]="searchPerfil"
-                            value="contabilidad"
-                        />Contabilidad
-                    </div>                    
-                    <div class="choice">
-                        <input
-                            type="radio"
-                            name="choice-option"
-                            class="search-radio"
-                            [(ngModel)]="searchPerfil"
-                            value="peticionario"
-                        />Centro peticionario
-                    </div>                    
-                    <div class="choice">
-                        <input
-                            type="radio"
-                            name="choice-option"
-                            class="search-radio"
-                            [(ngModel)]="searchPerfil"
-                            value="todos"
-                        />Todos
-                    </div>                                        
-                </div>
-            </div>
-            <div class="search-btns">
-                <button class="search-btn" (click)="search()">Buscar</button>
-                <button class="Limpiar-btn" (click)="clearSearch()">Limpiar</button>
-            </div>
-            <h1 class="errorBtn">{{ searchErrorMessage }}</h1>
-            <h1 class="successBtn">{{ addServicesSuccessMessage }}</h1>
-        </div>
         <div class="services-list">
             <h1 class="successBtn">{{ servicesMessageSuccess }}</h1>
             <h1 class="errorBtn">{{ servicessMessageError }}</h1>
             <table class="services-table">
                 <thead>
                     <tr>
-                        <th
-                            class="sortable"
-                            (click)="toggleSort('depcod')"
-                        >
+                        <th class="sortable resizable" (click)="toggleSort('depcod')">
                             Servicio
-                            <span 
-                                class="sort-indicator" 
-                            >
-                            {{ sortDirection === 'asc' ? '▲' : '▼' }}
-                            </span>
+                            <span class="sort-indicator" *ngIf="sortField === 'depcod'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                            <div class="resizer" (mousedown)="startResize($event, 0)"></div>
                         </th>
-                        <th>Descripción</th>
-                        <th
-                            class="sortable"
-                            (click)="toggleSort('cgecod')"
-                        >
+                        <th class="sortable resizable" (click)="toggleSort('depdes')">
+                            Descripción
+                            <span class="sort-indicator" *ngIf="sortField === 'depdes'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                            <div class="resizer" (mousedown)="startResize($event, 1)"></div>
+                        </th>
+                        <th class="sortable resizable" (click)="toggleSort('cgecod')">
                             Cód.C.G
-                            <span 
-                                class="sort-indicator" 
-                            >
-                            {{ sortDirection === 'asc' ? '▲' : '▼' }}
-                            </span>
+                            <span class="sort-indicator" *ngIf="sortField === 'cgecod'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                            <div class="resizer" (mousedown)="startResize($event, 2)"></div>
                         </th>
-                        <th>Centro de Coste</th>
-                        <th>Almacén</th>
-                        <th>Comprador/Farmacia</th>
-                        <th>Contabilidad</th>
+                        <th class="sortable resizable" (click)="toggleSort('ccocod')">
+                            Centro de Coste
+                            <span class="sort-indicator" *ngIf="sortField === 'ccocod'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                            <div class="resizer" (mousedown)="startResize($event, 3)"></div>
+                        </th>
+                        <th class="sortable resizable" (click)="toggleSort('depalm')">
+                            Almacén
+                            <span class="sort-indicator" *ngIf="sortField === 'depalm'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                            <div class="resizer" (mousedown)="startResize($event, 4)"></div>
+                        </th>
+                        <th class="sortable resizable" (click)="toggleSort('depcom')">
+                            Comprador/Farmacia
+                            <span class="sort-indicator" *ngIf="sortField === 'depcom'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                            <div class="resizer" (mousedown)="startResize($event, 5)"></div>
+                        </th>
+                        <th class="sortable resizable" (click)="toggleSort('depint')">
+                            Contabilidad
+                            <span class="sort-indicator" *ngIf="sortField === 'depint'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                            <div class="resizer" (mousedown)="startResize($event, 6)"></div>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr *ngFor="let s of paginatedServices">
-                        <td 
-                            (click)="showDetails(s)"
-                        >
+                        <td (click)="showDetails(s)" style="cursor: pointer;">
                             {{ s.depcod }}
                         </td>
                         <td>{{ s.depdes }}</td>
