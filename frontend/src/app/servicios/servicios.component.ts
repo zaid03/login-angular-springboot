@@ -386,7 +386,7 @@ export class ServiciosComponent {
   detailFlags = { depalm: false, depcom: false, depint: false };
   showDetails(services: any) {
     this.almacenErro = '';
-    this.datosError = '';
+    this.updateServiceSecondError = '';
     this.personasError = '';
     this.selectedService = services;
     this.option = 'personas';
@@ -421,11 +421,9 @@ export class ServiciosComponent {
     this.updateServiceSuccessMessage = '';
     this.updateServiceErrorMessage = '';
     this.almacenErro = '';
-    this.datosError = '';
+    this.updateServiceSecondError = '';
     this.personasError = '';
     this.personas = [];
-    this.updateServiceSecondError = '';
-    this.updateServiceSecondError = '';
   }
 
   option: 'personas' | 'datos' | 'almacen' = 'personas';
@@ -469,7 +467,7 @@ export class ServiciosComponent {
   personasPageSize = 10;
   fetchPersonas(depcod: string): void {
     this.almacenErro = '';
-    this.datosError = '';
+    this.updateServiceSecondError = '';
     this.personasError = '';
     if (!depcod) {
       this.personasError = 'codigo extraviado'
@@ -511,13 +509,12 @@ export class ServiciosComponent {
     }
   }
 
-  datosError: string = '';
   datosObject: any = null;
   datos(service: any) {
     this.updateServiceSecondError = '';
     this.updateServiceSecondSuccess = '';
     this.almacenErro = '';
-    this.datosError = '';
+    this.updateServiceSecondError = '';
     this.personasError = '';
     this.updateServiceSecondError = '';
     this.updateServiceSecondError = '';

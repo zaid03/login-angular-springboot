@@ -16,135 +16,43 @@
 .services-table tbody td:nth-child(3) { text-align: right; }
 .services-table tbody td:nth-child(4) { text-align: left; }
 /* main table */
-
-
-.detail-container {
-    display: flex;
-    justify-content: center;
-    padding: 1%;
-}
-
-.left {
-    width: 80%;
-    padding: 1%;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
+/* detail grid */
+.detail-container { display: flex; flex-direction: column; gap: 10px;}
 .first-row,
 .second-row,
-.third-row {
-    display: flex;
-    gap: 10px;
-}
+.left { display: flex; align-items: center; justify-content: center; gap: 10px;}
+.first-row p,
+.second-row p,
+.name,
+.left-detail p,
+.chunk-two p { font-size: 14px; font-weight: bold; color: #25176b; }
+.first-row h1,
+.second-row h1 {color: #162a3a; font-size: 18px;}
+.first-row textarea,
+.right-detail textarea,
+.chunk-two textarea { height: 20px; padding: 2px 4px; border-radius: 6px; font-weight: bold; color: #162a3a;}
+.first-row textarea:focus,
+.right-detail textarea:focus,
+.chunk-two textarea:focus { outline: none; border-color: #042b5a; outline: none; background: #fff; } 
+.long {width: 280px; max-width: 400px;}
+.short {width: 80px; max-width: 120px;}
+.right { display: flex; gap: 10px;}
+.right input[type="checkbox"] { margin: 0; accent-color: #25176b; width: 14px; height: 18px; vertical-align: middle; outline: none; box-shadow: none; }
+/* detail grid */
+/* detail grid's datos */
+.perstana-content {width: 100%; padding: 0.5%;}
+.detail-chunks-container {display: flex;}
+.chunk-one,
+.chunk-two {width: 50%; display: flex;}
+.left-detail { width: 25%; display: flex; flex-direction: column; gap: 20px;}
+.right-detail { width: 75%; display: flex; flex-direction: column; gap: 10px;}
+.on-two { display: flex; gap: 10px; align-items: center; }
+.heighty { height: 50px !important;}
+.gap { gap: 55px;}
+.average {width: 180px; max-width: 400px;}
+/* detail grid's datos */
 
-.first-data,
-.second-data,
-.third-data { 
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
 
-.first-data p,
-.second-data p,
-.third-data p,
-.left-add p,
-.data-one p,
-.data-two p,
-.data-three p,
-.data-four p,
-.data-five p,
-.almacen-title p,
-.search-option-radio p {
-    font-size: 14px;
-    font-weight: bold;
-    color: #1c5d8c;
-}
-
-.first-data textarea,
-.second-data textarea,
-.third-data textarea,
-.right-add textarea,
-.data-one textarea,
-.data-two textarea,
-.data-three textarea,
-.data-four textarea,
-.data-five textarea,
-.almacen-title textarea {
-    border: 1px solid #1c5d8c;
-    height: 20px;
-    padding: 2px 4px;
-    border-radius: 6px;
-    font-weight: bold;
-}
-
-.moreWidth{
-    width: 380px;
-}
-
-.first-data textarea:focus,
-.second-data textarea:focus,
-.third-data textarea:focus,
-.right-add textarea:focus,
-.data-one textarea:focus,
-.data-two textarea:focus,
-.data-three textarea:focus,
-.data-four textarea:focus,
-.data-five textarea:focus,
-.almacen-title textarea:focus {
-    outline: none;
-    border-color: #042b5a;
-    outline: none;
-    background: #fff;
-}
-
-.right {
-    padding: 1%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.choice-detail input[type="checkbox"] {
-    border: 1px solid salmon;
-    outline: none;
-}
-
-.action-btns {
-    display: flex;
-    gap: 10px;
-    justify-content: flex-end;
-}
-
-.switch-btns {
-    display: flex;
-    gap: 12px;
-    margin: 16px 0;
-}
-
-.switch-btns button {
-    padding: 6px 14px;
-    border-radius: 6px;
-    border: 1px solid #1d4ed8;
-    background: #fff;
-    color: #1d4ed8;   
-    cursor: pointer;
-    font-size: 16px;
-    transition: all 0.2s ease;
-    outline: none;
-}
-
-.switch-btns button.active {
-    background: #1d4ed8;
-    color: #fff;
-}
-
-.switch-btns button:hover {
-    background-color: #094fa3;
-    color: #e6edf3;
-}
 
 .add-confirm-modal {
     position: fixed;
@@ -188,54 +96,5 @@
     gap: 12px;
 }
 
-.checkboxes {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 20px;
-}
 
-.smallWidth {
-    width: 10%;
-}
 
-.perstana-content {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.row-one,
-.row-two,
-.row-three,
-.row-four,
-.row-five {
-    padding: 1%;
-}
-
-.data-one,
-.data-two,
-.data-three,
-.data-four,
-.data-five {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-.data-four textarea,
-.data-five textarea {
-    width: 80%;
-    height: 150px;
-}
-
-.almacen-title {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
-}
-
-.almacen-title textarea {
-    width: 360px;
-}
