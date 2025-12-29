@@ -424,6 +424,8 @@ export class ServiciosComponent {
     this.updateServiceSecondError = '';
     this.personasError = '';
     this.personas = [];
+    this.almacenArray = [];
+    this.almacenDatosArray = [];
   }
 
   option: 'personas' | 'datos' | 'almacen' = 'personas';
@@ -480,7 +482,7 @@ export class ServiciosComponent {
         this.personasPage = 0;
       },
       error: (err) => {
-        this.personasError = 'Server error: ' + err?.error;
+        this.personasError = err?.error;
       }
     })
   }
@@ -536,17 +538,16 @@ export class ServiciosComponent {
         this.almacenArray = res;
       },
       error: (err) => {
-        this.almacenErro = 'Server error: ' + err?.error;
+        this.almacenErro = err?.error;
       }
     })
 
     this.http.get<any>(`${environment.backendUrl}/api/mat/fetch-almacen/${this.entcod}/${depcod}`).subscribe({
       next: (res) => {
         this.almacenDatosArray = res;
-        console.log(this.almacenDatosArray)
       },
       error: (err) => {
-        this.almacenErro = 'Server error: ' + err?.error;
+        this.almacenErro = err?.error;
       }
     })
   }
@@ -572,7 +573,7 @@ export class ServiciosComponent {
       },
       error: (err) => {
         this.updateServiceSecondSuccess = ''
-        this.updateServiceSecondError = 'Server error: ' + err?.error;
+        this.updateServiceSecondError =  err?.error;
       }
     })
   }
