@@ -6,7 +6,8 @@
 .credito-table td:last-child,
 .credito-container td:nth-child(7),
 .credito-container td:nth-child(6),
-.credito-container td:nth-child(5) { text-align: right !important; }
+.credito-container td:nth-child(5) { text-align: left; }
+.credito-container td {text-align: right;}
 /* main-table */
 /* main grid detail */
 .detail-container,
@@ -18,11 +19,9 @@
 .chunk-one {width: 30%;}
 .chunk-two {width: 60%; }
 .detail-chunk-container { display: flex; gap: 10px;}
-.detail-chunk-container .left { width: 25%; display: flex; flex-direction: column; gap: 10px;}
-.detail-chunk-container .right { display: flex; flex-direction: column; gap: 10px;}
+.detail-chunk-container .left { width: 25%; display: flex; flex-direction: column; gap: 10px; }
+.detail-chunk-container .right { display: flex; flex-direction: column; gap: 10px; }
 .on-two { display: flex; gap: 15px; align-items: center;}
-.chunk-left { width: 25%; display: flex; flex-direction: column; gap: 10px; }
-.chunk-right { width: 75%; display: flex; flex-direction: column; gap: 10px;}
 .special { width: 12% !important;}
 .detail-container p,
 .boll,
@@ -36,12 +35,12 @@
 .smallTextarea{width: 80px; max-width: 100px;} 
 .width {width: 75%;}
 .conta-first,
-.conta-second { display: flex; margin-top: 1%; gap: 15px;}
+.conta-second { display: flex; margin-top: 1%;}
 .conta-one,
 .conta-two,
 .conta-three,
-.conta-four { width: 20%; display: flex; flex-direction: column; gap: 10px;}
-.conta-sign { width: 2%; display: flex; align-items: flex-end; justify-content: center;}
+.conta-four { width: 18%; display: flex; flex-direction: column; gap: 10px;}
+.conta-sign { font-weight: bold; font-size: 22px; width: 8%; display: flex; align-items: flex-end; justify-content: center;}
 .fix {margin-top: 5px;}
 .detail-acumolados-container { width: 80%; display: flex;  justify-content: center; gap: 10px;}
 /* main grid detail */

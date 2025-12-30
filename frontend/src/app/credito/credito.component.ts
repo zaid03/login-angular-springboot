@@ -52,6 +52,7 @@ export class CreditoComponent {
 
   isLoading: boolean = false;
   ngOnInit(): void {
+    this.limpiarMessages();
     this.isLoading = true;
     this.tableIsError = false;
     const entidad = sessionStorage.getItem('Entidad');
@@ -245,6 +246,7 @@ export class CreditoComponent {
   };
 
   DownloadPDF() {
+    this.limpiarMessages();
     const doc = new jsPDF({orientation: 'landscape', unit: 'mm', format: 'a4'});
     const columns = [
       { header: 'Aplicación', dataKey: 'aplicacion'},
@@ -298,6 +300,7 @@ export class CreditoComponent {
   }
 
   DownloadCSV() {
+    this.limpiarMessages();
     interface Column { header: string; dataKey: string; }
     const columns: Column[] = [
       { header: 'Aplicación', dataKey: 'aplicacion'},
@@ -379,10 +382,9 @@ export class CreditoComponent {
   //main detail grid functions
   selectedBolsas: any = null;
   showDetails(factura: any) {
+    this.limpiarMessages();
     this.guardarisError = false;
-    this.guardarMesage = '';
     this.guardarisSuccess = false;
-    this.guardarMesageSuccess = ''
     this.selectedBolsas = factura;
     const org = factura?.gbsorg ?? '';
     const fun = factura?.gbsfun ?? '';
@@ -392,6 +394,7 @@ export class CreditoComponent {
 
   public bolsaCombo: string = '';
   saveDetails() {
+    this.limpiarMessages();
     if (!this.selectedBolsas) return;
     const parts = this.bolsaCombo.split(' - ');
     this.selectedBolsas.gbsorg = parts[0] ?? '';
@@ -400,6 +403,7 @@ export class CreditoComponent {
   } 
 
   closeDetails() {
+    this.limpiarMessages();
     this.selectedBolsas = null;
   }
 
@@ -454,6 +458,7 @@ export class CreditoComponent {
   }
 
   guardarDetelles(gbsimp: any, getKBoldis:any, gbsref: any) {
+    this.limpiarMessages();
     const entidad = sessionStorage.getItem('Entidad');
     const eje = sessionStorage.getItem('EJERCICIO');
     const cge = sessionStorage.getItem('CENTROGESTOR');
@@ -472,11 +477,6 @@ export class CreditoComponent {
       const parsed = JSON.parse(eje);
       this.eje = parsed.eje;
     }
-
-    console.log(this.entcod);
-    console.log(this.eje);
-    console.log(this.initialCentroGestor);
-    console.log(gbsref);
 
     const toNum = (v:any) => {
       if (v === null || v === undefined || v === '') return 0;
@@ -513,5 +513,12 @@ export class CreditoComponent {
         this.guardarMesage = err?.ex ?? 'Error al actualizar';
       }
     });
+  }
+
+  //misc
+  limpiarMessages () {
+    this.tableMessage = '';
+    this.guardarMesageSuccess = '';
+    this.guardarMesage = '';
   }
 }
