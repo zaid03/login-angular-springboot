@@ -37,6 +37,7 @@ export class ProveedoreesComponent {
   error: string | null = null;
   isLoading: boolean = false;
   ngOnInit(): void {
+    this.limpiarMessages();
     this.error = '';
     this.isLoading = true;
     const entidad = sessionStorage.getItem('Entidad');
@@ -166,18 +167,14 @@ export class ProveedoreesComponent {
   }
 
   showDetails(proveedor: any) {
+    this.limpiarMessages();
     this.selectedProveedor = proveedor;
     this.error = '';
   }
 
   closeDetails() {
-    this.messageError = '';
-    this.messageSuccess = '';
-    this.personasContactoErrorMessage = '';
-    this.personasContactoSuccessMessage = '';
+    this.limpiarMessages();
     this.activeDetailTab = null;
-    this.articuloError = '';
-    this.articuloSuccessMessage = '';
     this.selectedProveedor = null;
     this.contactPersons = null;
     this.articulos = null;
@@ -195,7 +192,7 @@ export class ProveedoreesComponent {
   searchTerm: string = '';
   filterOption: string = 'noBloqueados';
   search() {
-    this.error = '';
+    this.limpiarMessages();
     this.isLoading = true
     if (this.searchTerm.trim() === '') {
       if (this.filterOption === 'Bloqueados') {
@@ -426,13 +423,13 @@ export class ProveedoreesComponent {
   }
 
   clearSearch() {
-    this.searchTerm = '';
-    this.error = '';
+    this.limpiarMessages();
     this.proveedores = [...this.backupProveedores];
     this.page = 0;
   }
   
   DownloadPDF() {
+    this.limpiarMessages();
     const doc = new jsPDF({orientation: 'landscape', unit: 'mm', format: 'a4'});
     const columns = [
       { header: 'Código', dataKey: 'tercod' },
@@ -477,6 +474,7 @@ export class ProveedoreesComponent {
   }
 
   DownloadCSV() {
+    this.limpiarMessages();
     const data = this.proveedores;
 
     if (!data || data.length === 0) {
@@ -523,6 +521,7 @@ export class ProveedoreesComponent {
   messageSuccess: string = '';
   messageError: string = '';
   saveChanges() {
+    this.limpiarMessages();
     const updateFields ={
       TERWEB : this.selectedProveedor.terweb,
       TEROBS : this.selectedProveedor.terobs,
@@ -560,6 +559,7 @@ export class ProveedoreesComponent {
   showPersonasGrid = false;
   personaInfo: any = [];
   showPersonas() {
+    this.limpiarMessages();
     this.showPersonasGrid = true;
     this.personaInfo = this.selectedProveedor;
   }
@@ -572,14 +572,11 @@ export class ProveedoreesComponent {
   contactPersons: any = null;
   activeDetailTab: 'contact' | 'articulo' | null = null;
   showContactPersons(proveedore: any){
-    this.messageError = '';
-    this.messageSuccess = '';
+    this.limpiarMessages();
     this.showContactPersonsGrid = true;
     this.activeDetailTab = 'contact';
     this.showArticulosGrid = false;
     this.selectedProveedor = proveedore;
-    this.personasContactoErrorMessage = ''
-    this.articuloError = '';
     const tercod = proveedore.tercod;
 
     this.isLoading = true;
@@ -610,9 +607,7 @@ export class ProveedoreesComponent {
   personasContactoSuccessMessage: string = '';
   personaContactoaddError: string = '';
   addPersonas(tpenom: string, tpetel: string, tpetmo: string, tpecoe: string, tpeobs: string) {
-    this.personasContactoSuccessMessage = '';
-    this.personasContactoErrorMessage = '';
-    this.personaContactoaddError = '';
+    this.limpiarMessages();
     const tercod = this.personaInfo.tercod;
 
     if(!tpenom) {
@@ -641,13 +636,13 @@ export class ProveedoreesComponent {
   }
 
   reloadContactPersons() {
+    this.limpiarMessages();
     if (!this.selectedProveedor) return;
     this.showContactPersons(this.selectedProveedor);
   }
 
   updatepersonas(tpecod: number, nom: string, telefon: string, movil: string, email: string, obs: string){
-    this.personasContactoErrorMessage = '';
-    this.personasContactoSuccessMessage = '';
+    this.limpiarMessages();
     if (!nom) {
       this.personasContactoErrorMessage = 'El nombre de la persona no debe estar vacío';
       return;
@@ -676,6 +671,7 @@ export class ProveedoreesComponent {
   }
 
   deletepersona(persona: any){
+    this.limpiarMessages();
     const tercod = persona.tercod;
     const tpecod = persona.tpecod;
     this.http.delete(
@@ -698,6 +694,7 @@ export class ProveedoreesComponent {
   showDeletePersona = false;
   personaToDelete: any = null;
   openDeletePersonas(persona: any) {
+    this.limpiarMessages();
     this.personaToDelete = persona;
     console.log(this.personaToDelete)
     this.showDeletePersona = true;
@@ -706,8 +703,7 @@ export class ProveedoreesComponent {
   closeDeletePersonas() {
     this.showDeletePersona = false;
     this.personaToDelete = null;
-    this.personasContactoSuccessMessage = '';
-    this.personasContactoErrorMessage = '';
+    this.limpiarMessages();
   }
 
   confirmDeletePersona() {
@@ -727,6 +723,7 @@ export class ProveedoreesComponent {
   asus: any[] = [];
   arts: any[] = [];
   showHello() {
+    this.limpiarMessages();
     this.searchValue = '';
     this.searchResults = [];
     this.searchType = 'familia';
@@ -739,6 +736,7 @@ export class ProveedoreesComponent {
   }
 
   hideHello() {
+    this.limpiarMessages();
     this.showHelloGrid = false;
     this.searchValue = '';
     this.searchResults = [];
@@ -747,8 +745,6 @@ export class ProveedoreesComponent {
     this.selectedFamilia = '';
     this.selectedSubfamilia = '';
     this.selectedArticulo = '';
-    this.anadirmessage = '';
-    this.anadirErrorMessage = '';
     this.afas = [];
     this.asus = [];
     this.arts = [];
@@ -758,14 +754,12 @@ export class ProveedoreesComponent {
   articulos: any = null;
   articuloError: string = '';
   showArticulos(proveedore: any){
-    this.messageSuccess = ''
+    this.limpiarMessages();
     this.showArticulosGrid = true;
     this.activeDetailTab = 'articulo';
     this.showContactPersonsGrid = false;
     this.selectedProveedor = proveedore;
     const tercod = proveedore.tercod;
-    this.articuloError = ''
-    this.personasContactoErrorMessage = ''
     
     this.isLoading = true;
     this.http.get<any[]>(`${environment.backendUrl}/api/more/by-apr/${this.entcod}/${tercod}`)
@@ -795,8 +789,7 @@ export class ProveedoreesComponent {
   }
 
   updatearticulos(articulo: any){
-    this.articuloSuccessMessage = '';
-    this.articuloError = '';
+    this.limpiarMessages();
 
     const tercod = this.selectedProveedor.tercod;
     const afacod = articulo.afacod;
@@ -824,6 +817,7 @@ export class ProveedoreesComponent {
   }
 
   deletearticulo(articulo: any){
+    this.limpiarMessages();
     const params = [
     `ent=${articulo.ent}`,
     `tercod=${articulo.tercod}`,
@@ -863,8 +857,7 @@ export class ProveedoreesComponent {
   closeDeleteConfirm() {
     this.showDeleteConfirm = false;
     this.articuloToDelete = null;
-    this.articuloSuccessMessage = '';
-    this.articuloError = '';
+    this.limpiarMessages();
   }
 
   confirmDelete() {
@@ -877,6 +870,7 @@ export class ProveedoreesComponent {
   anadirErrorMessage: string = '';
   anadirmessage: string = '';
   addArticulo(){
+    this.limpiarMessages();
     const newArticulo = {
       ENT: this.entcod,
       TERCOD: this.selectedProveedor.tercod,
@@ -942,6 +936,7 @@ export class ProveedoreesComponent {
   searchValue: string = '';
   searchResults: any[] = [];
   onSearch() {
+    this.limpiarMessages();
     this.searchPage = 0;
     this.searchResults = [];
     if (!this.searchValue || !this.searchType) return;
@@ -1028,20 +1023,19 @@ export class ProveedoreesComponent {
   anadirProveedorErrorMessage: string = '';
   openProveedorModal(): void {
     this.showProveedorModal = true;
-    this.anadirProveedorErrorMessage = '';
+    this.limpiarMessages();
     this.resetProveedorModalState();
     this.onProveedorFetch();
   }
 
   closeProveedorModal(): void {
     this.showProveedorModal = false;
-    this.clearMessages();
+    this.limpiarMessages();
     this.resetProveedorModalState();
   }
 
   private resetProveedorModalState(): void {
-    this.anadirProveedorErrorMessage = '';
-    this.searchProveedor = '';
+    this.limpiarMessages();
     this.proveedoresSearchPage = 0;
 
     if (this.fullProveedoresSearchResults && this.fullProveedoresSearchResults.length) {
@@ -1100,6 +1094,7 @@ export class ProveedoreesComponent {
   }
 
   onProveedorSearch(){
+    this.limpiarMessages();
     const q = (this.searchProveedor || '').toString().trim();
     if (!this.searchAdd) {
       this.anadirProveedorErrorMessage = 'Selecciona tipo de búsqueda';
@@ -1162,7 +1157,7 @@ export class ProveedoreesComponent {
 
   clearSelectedProveedores() {
     this.selectedProveediresFromResults = [];
-    this.clearMessages();
+    this.limpiarMessages();
   }
 
   private proveedorExistsInMainList(candidate: any): boolean {
@@ -1175,6 +1170,7 @@ export class ProveedoreesComponent {
 
   guardarMessageProveedor: string = '';
   saveProveedorees() {
+    this.limpiarMessages();
     const ent = this.entcod;
 
     if (!this.selectedProveediresFromResults || this.selectedProveediresFromResults.length === 0) {
@@ -1210,7 +1206,7 @@ export class ProveedoreesComponent {
       : new HttpHeaders({ 'Content-Type': 'application/json' });
 
     this.isSaving = true;
-    this.clearMessages();
+    this.limpiarMessages();
     this.http.post<any[]>(`${environment.backendUrl}/api/ter/save-proveedores/${ent}`, payload, { headers, observe: 'response', responseType: 'text' as 'json' })
       .subscribe({
         next: (res) => {
@@ -1226,12 +1222,6 @@ export class ProveedoreesComponent {
           const msg = err && err.error ? (typeof err.error === 'string' ? err.error : JSON.stringify(err.error)) : `Error al salvar los proveedores (status ${err.status})`;  
         }
       })
-  }
-
-  clearMessages(){
-    this.anadirProveedorErrorMessage = '';
-    this.guardarMessageProveedor = '';
-    this.anadirProveedorErrorMessage = '';
   }
 
   isSaving = false;
@@ -1283,4 +1273,20 @@ export class ProveedoreesComponent {
     document.removeEventListener('mouseup', this.stopResize);
     this.resizingColIndex = null;
   };
+
+  //mist
+  limpiarMessages() {
+    this.error = '';
+    this.messageError = '';
+    this.messageSuccess = '';
+    this.personasContactoErrorMessage = '';
+    this.personasContactoSuccessMessage = '';
+    this.articuloError = '';
+    this.articuloSuccessMessage = '';
+    this.personaContactoaddError = '';
+    this.anadirmessage = '';
+    this.anadirErrorMessage = '';
+    this.guardarMessageProveedor = '';
+    this.anadirProveedorErrorMessage = '';
+  }
 }

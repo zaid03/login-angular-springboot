@@ -5,21 +5,10 @@
 .search-options input:focus {outline: none;}
 .search-button-proveedores{ margin-right: 10px; }
 .search-btns { margin-left: 10px; } 
+.search-options input[type="radio"] { margin: 0 6px 0 0; accent-color: #25176b; width: 18px; height: 18px; vertical-align: middle; outline: none; box-shadow: none; }
 /* search */
 /* main-list and table */
-.main-table tbody td:first-child,
-.main-table tbody td:nth-child(5),
-.main-table tbody td:nth-child(7),
-.main-table tbody td:nth-child(9) { text-align: left; }
-.main-table tbody td:nth-child(2),
-.main-table tbody td:nth-child(3),
-.main-table tbody td:nth-child(4),
-.main-table tbody td:nth-child(6),
-.main-table tbody td:nth-child(8),
-.main-table tbody td:nth-child(10),
-.main-table tbody td:nth-child(11),
-.main-table tbody td:nth-child(12),
-.main-table tbody td:nth-child(13) { text-align: right;}
+.main-table tbody td { text-align: right;}
 /* main-list and table */
 /* detail grid */
 .detail-container { display: flex; flex-wrap: wrap; align-items: center; padding: 5px; gap: 10px; }
