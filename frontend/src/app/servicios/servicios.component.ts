@@ -45,8 +45,7 @@ export class ServiciosComponent {
   pageSize = 20;
 
   ngOnInit() {
-    this.servicesMessageSuccess = '';
-    this.servicessMessageError = '';
+    this.limpiarMessages();
     const entidad = sessionStorage.getItem('Entidad');
     const eje = sessionStorage.getItem('EJERCICIO');
     const percod = sessionStorage.getItem('Perfil');
@@ -214,6 +213,7 @@ export class ServiciosComponent {
   }
 
   excelDownload() {
+    this.limpiarMessages();
     const rows = this.backupServices.length ? this.backupServices : this.services;
     if (!rows || rows.length === 0) {
       this.servicessMessageError = 'No hay datos para exportar.';
@@ -262,6 +262,7 @@ export class ServiciosComponent {
   }
 
   toPrint() {
+    this.limpiarMessages();
     const rows = this.backupServices.length ? this.backupServices : this.services;
     if (!rows?.length) {
       this.servicessMessageError = 'No hay datos para imprimir.';
@@ -331,7 +332,7 @@ export class ServiciosComponent {
   searchCentroGestor: string = '';
   searchPerfil: string = 'todos';
   search() {
-    this.servicessMessageError = '';
+    this.limpiarMessages();
 
     const params: any = {
       ent: this.entcod,
@@ -357,8 +358,6 @@ export class ServiciosComponent {
         this.updatePagination();
         if (!res.length) {
           this.servicessMessageError = 'No se encontraron servicios con los filtros dados.';
-        } else {
-          this.servicessMessageError = '';
         }
       },
       error: (err) => {
@@ -376,7 +375,7 @@ export class ServiciosComponent {
     this.searchServicio = '';
     this.searchCentroGestor = '';
     this.searchPerfil = 'todos';
-    this.servicessMessageError = '';
+    this.limpiarMessages();
     this.fetchServices();
   }
 
@@ -386,9 +385,7 @@ export class ServiciosComponent {
   servicesDetailSuccess: string = '';
   detailFlags = { depalm: false, depcom: false, depint: false };
   showDetails(services: any) {
-    this.almacenErro = '';
-    this.updateServiceSecondError = '';
-    this.personasError = '';
+    this.limpiarMessages();
     this.selectedService = services;
     this.option = 'personas';
     this.detailFlags = {
@@ -417,13 +414,7 @@ export class ServiciosComponent {
 
   closeDetails() {
     this.selectedService = null;
-    this.servicesDetailError = '';
-    this.servicesDetailSuccess = '';
-    this.updateServiceSuccessMessage = '';
-    this.updateServiceErrorMessage = '';
-    this.almacenErro = '';
-    this.updateServiceSecondError = '';
-    this.personasError = '';
+    this.limpiarMessages();
     this.personas = [];
     this.almacenArray = [];
     this.almacenDatosArray = [];
@@ -437,8 +428,7 @@ export class ServiciosComponent {
   updateServiceSuccessMessage: string = '';
   updateServiceErrorMessage: string = ''
   updateService(cod:string, des: string, cco:string) {
-    this.updateServiceSuccessMessage = '';
-    this.updateServiceErrorMessage = '';
+    this.limpiarMessages();
 
     if (cod === '' || des === '' || cco === '') {
       this.updateServiceErrorMessage = 'Todos los campos son obligatorios.'
@@ -455,6 +445,7 @@ export class ServiciosComponent {
 
     this.http.patch(`${environment.backendUrl}/api/dep/update-service/${this.entcod}/${this.eje}/${cod}`, payload).subscribe({
       next: (res) => {
+        console.log("here")
         this.updateServiceSuccessMessage = 'servicio actualizado exitosamente'
         this.fetchServices();
       },
@@ -469,9 +460,7 @@ export class ServiciosComponent {
   personasPage = 0;
   personasPageSize = 10;
   fetchPersonas(depcod: string): void {
-    this.almacenErro = '';
-    this.updateServiceSecondError = '';
-    this.personasError = '';
+    this.limpiarMessages();
     if (!depcod) {
       this.personasError = 'codigo extraviado'
       return;
@@ -514,13 +503,7 @@ export class ServiciosComponent {
 
   datosObject: any = null;
   datos(service: any) {
-    this.updateServiceSecondError = '';
-    this.updateServiceSecondSuccess = '';
-    this.almacenErro = '';
-    this.updateServiceSecondError = '';
-    this.personasError = '';
-    this.updateServiceSecondError = '';
-    this.updateServiceSecondError = '';
+    this.limpiarMessages();
     this.datosObject = service;
   }
 
@@ -528,8 +511,7 @@ export class ServiciosComponent {
   almacenArray: any = null;
   almacenDatosArray: any[] = [];
   almacenDatos(depcod: string) {
-    this.updateServiceSecondError = '';
-    this.updateServiceSecondSuccess = '';
+    this.limpiarMessages();
     if (!depcod) {
       this.almacenErro = 'codigo extraviato';
     }
@@ -556,6 +538,7 @@ export class ServiciosComponent {
   updateServiceSecondError: string = '';
   updateServiceSecondSuccess: string = '';
   updateServiceSecond(depcod: string, depd1c:string, depd1d:string, depd2c:string, depd2d:string, depd3c:string, depd3d:string, depdco:string, depden:string) {
+    this.limpiarMessages();
     const payload = {
       "depd1c": depd1c,
       "depd1d": depd1d,
@@ -569,11 +552,9 @@ export class ServiciosComponent {
 
     this.http.patch(`${environment.backendUrl}/api/dep/update-service-second/${this.entcod}/${this.eje}/${depcod}`, payload).subscribe({
       next: (res) => {
-        this.updateServiceSecondError = '';
         this.updateServiceSecondSuccess = 'Se ha actualizado la pestaña Detalles del pedido';
       },
       error: (err) => {
-        this.updateServiceSecondSuccess = ''
         this.updateServiceSecondError =  err?.error;
       }
     })
@@ -583,12 +564,13 @@ export class ServiciosComponent {
   showAddConfirm: boolean = false;
   servicesAddError: string = '';
   launchAddCentroGestor() {
+    this.limpiarMessages();
     this.showAddConfirm = true;
   }
 
   closeAddConfirm() {
     this.showAddConfirm = false;
-    this.servicesAddError = '';
+    this.limpiarMessages();
   }
 
   newCge = '';
@@ -604,8 +586,7 @@ export class ServiciosComponent {
   addDepint: boolean = false;
   addServiceErrorMessage: string = '';
   addService(cod: string, des:string, cco:string, cge: string) {
-    this.addServiceErrorMessage = '';
-    this.servicesMessageSuccess = '';
+    this.limpiarMessages();
     if (cod === '' || des === '' || cco === '') {
       this.addServiceErrorMessage = 'Todos los campos son obligatorios.'
       return;
@@ -633,5 +614,20 @@ export class ServiciosComponent {
         this.addServiceErrorMessage = 'Server error: ' + err?.error;
       }
     })
+
+    this.fetchServices();
+  }
+
+  //misc
+  limpiarMessages() {
+    this.servicesMessageSuccess = '';
+    this.servicessMessageError = '';
+    this.updateServiceSuccessMessage = '';
+    this.updateServiceErrorMessage = '';
+    this.personasError = '';
+    this.updateServiceSecondError = '';
+    this.updateServiceSecondSuccess = '';
+    this.almacenErro = '';
+    this.addServiceErrorMessage = '';
   }
 }

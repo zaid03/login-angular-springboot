@@ -11,10 +11,14 @@
 .almacen-table { width: 90%; }
 .services-table th:first-child,
 .services-table th:nth-child(3)  { width: 80px; }
+.services-table th:nth-child(4),
+.services-table th:nth-child(5),
+.services-table th:nth-child(6),
+.services-table th:nth-child(7) {width: 120px;}
 .services-table tbody td:first-child,
 .services-table tbody td:nth-child(2),
-.services-table tbody td:nth-child(3) { text-align: right; }
-.services-table tbody td:nth-child(4) { text-align: left; }
+.services-table tbody td:nth-child(3),
+.services-table tbody td:nth-child(4) { text-align: right; }
 /* main table */
 /* detail grid */
 .detail-container { display: flex; flex-direction: column; gap: 10px;}
@@ -55,14 +59,13 @@
 .on-two { display: flex; gap: 10px; align-items: center; }
 .heighty { height: 50px !important;}
 .gap { gap: 55px;}
-.average {width: 180px; max-width: 400px;}
 .almacen-title { margin-top: 5px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px;}
 /* detail grid's grids */
 /* add grid */
 .add-confirm-modal { position: fixed; top: 15%; left: 50%; width: 50%; }
 .add-container { display: flex;}
-.left-add { width: 20%; display: flex; flex-direction: column; text-align: left; gap: 16px; }
+.left-add { width: 20%; display: flex; flex-direction: column; text-align: left; gap: 18px; }
 .right-add { width: 80%; display: flex; flex-direction: column; gap: 10px; }
-.checkboxes {display: flex; flex-direction: column; align-items: flex-start; gap: 25px;}
+.checkboxes {display: flex; flex-direction: column; align-items: flex-start; gap: 22px;}
 .title {width: 80%;}
 /* add grid */
