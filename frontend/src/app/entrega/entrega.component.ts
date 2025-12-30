@@ -182,7 +182,6 @@ export class EntregaComponent {
         },
         error: (err) => {
           this.entregasError = err.error || 'server error';
-          this.emptyAllMessages();
         }
       });
     }
@@ -193,7 +192,6 @@ export class EntregaComponent {
         },
         error: (err) => {
           this.entregasError = err.error || 'server error';
-          this.emptyAllMessages();
         }
       });
     }
@@ -322,11 +320,9 @@ export class EntregaComponent {
     this.http.patch(`${environment.backendUrl}/api/Len/update-lugar/${lencod}`, payload).subscribe({
       next: (res) => {
         this.detallesMessageSuccess = 'Lugares de entrega actualizada exitosamente'
-        this.emptyAllMessages();
       },
       error: (err) => {
         this.detallesMessageError = err.error || 'server error';
-        this.emptyAllMessages();
       }
     })
   }
@@ -348,7 +344,6 @@ export class EntregaComponent {
       },
       error: (err) => {
         this.detallesMessageErrorDelete = err.error || 'server error';
-        this.emptyAllMessages();
       }
     })
   }
@@ -399,12 +394,10 @@ export class EntregaComponent {
       next: (res) => {
         this.entregaSuccess = 'Lugar de entrega agregada exitosamente';
         this.fetchEntregas();
-        this.emptyAllMessages();
         this.hideAdd();
       },
       error: (err) => {
         this.errorAddEntrega = err.error || 'server error';
-        this.emptyAllMessages();
       }
     })
   }
@@ -422,13 +415,11 @@ export class EntregaComponent {
   }
   //misc
   emptyAllMessages() {
-    const timeoutId = setTimeout(() => {
-      this.detallesMessageErrorDelete = '';
-      this.entregasError = '';
-      this.detallesMessageError = '';
-      this.detallesMessageSuccess = '';
-      this.entregaSuccess = '';
-      this.errorAddEntrega = '';
-    }, 2000);
+    this.detallesMessageErrorDelete = '';
+    this.entregasError = '';
+    this.detallesMessageError = '';
+    this.detallesMessageSuccess = '';
+    this.entregaSuccess = '';
+    this.errorAddEntrega = '';
   }
 }
