@@ -26,6 +26,7 @@
                     </div>
                     <div class="btns">
                         <button class="search-btn" (click)="searchCentroGestor()">Buscar</button>
+                        <button class="delete-btn" (click)="limpiarSearch()">Limpiar</button>
                     </div>
                 </div>
             </div>
@@ -207,10 +208,10 @@
     <h1 class="errorBtn">{{ centroGestorAddError }}</h1>
     <div class="chunk more-chunk">
         <div class="left width">
-            <p>Código</p>
+            <p>Código*</p>
             <p>Orgánica</p>
             <p>Programa</p>
-            <p>Descripción</p>
+            <p>Descripción*</p>
             <p>Dirección para pedido</p>
             <p>Estado contable</p>
         </div>

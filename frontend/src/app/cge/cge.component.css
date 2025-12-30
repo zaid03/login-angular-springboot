@@ -6,11 +6,7 @@
 .centroGestor-list { width: 90%; }
 /* main table */
 .centroGestor-table thead th:nth-child(2) { width: 30%; }
-.centroGestor-table tbody td:first-child,
-.centroGestor-table tbody td:nth-child(2),
-.centroGestor-table tbody td:nth-child(3),
-.centroGestor-table tbody td:nth-child(5) { text-align: right; }
-.centroGestor-table tbody td:nth-child(4) { text-align: left; }
+.centroGestor-table tbody td { text-align: right; }
 /* main table */
 /* detail grid */
 .detail-container { display: flex; gap: 5px;}

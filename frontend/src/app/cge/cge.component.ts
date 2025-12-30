@@ -42,6 +42,7 @@ export class CgeComponent {
   isLoading: boolean = false;
 
   ngOnInit() {
+    this.limpiarMessages();
     this.isLoading = true;
     const entidad = sessionStorage.getItem('Entidad');
     const eje = sessionStorage.getItem('EJERCICIO');
@@ -69,6 +70,11 @@ export class CgeComponent {
       return;
     }
 
+    this.fetchCentro();
+  }
+
+  //main table functions
+  fetchCentro() {
     this.http.get<any>(`${environment.backendUrl}/api/cge/fetch-all/${this.entcod}/${this.eje}`).subscribe({
       next: (res) => {
         this.centroGestores = Array.isArray(res) ? [...res] : [];
@@ -88,8 +94,6 @@ export class CgeComponent {
       }
     })
   }
-
-  //main table functions
   get paginatedFamilias(): any[] {
     if (!this.centroGestores || this.centroGestores.length === 0) return [];
     const start = this.page * this.pageSize;
@@ -142,14 +146,14 @@ export class CgeComponent {
     input.value = value;
 
     if (!value) {
-      this.SearchDownMessageError = '';
+      this.limpiarMessages();
       this.centroGestores = [...this.backupCentroGestores];
       this.page = 0;
     }
   }
 
   searchCentroGestor(): void {
-    this.SearchDownMessageError = '';
+    this.limpiarMessages();
     const term = this.searchTerm.trim();
 
     if (!term) {
@@ -180,6 +184,16 @@ export class CgeComponent {
     this.sortDirection = 'asc';
     this.page = 0;
     this.updatePagination();
+  }
+
+  limpiarSearch() {
+    this.limpiarMessages();
+    this.centroGestores = [...this.backupCentroGestores];
+    this.defaultCentroGestores = [...this.backupCentroGestores];
+    this.page = 0
+    this.searchTerm = '';
+    this.sortField = null;
+    this.sortDirection = 'asc';
   }
 
   sortField: string | null = null;
@@ -270,6 +284,7 @@ export class CgeComponent {
   };
 
   excelDownload() {
+    this.limpiarMessages();
     const rows = this.backupCentroGestores.length ? this.backupCentroGestores : this.centroGestores;
     if (!rows || rows.length === 0) {
       this.SearchDownMessageError = 'No hay datos para exportar.';
@@ -314,6 +329,7 @@ export class CgeComponent {
   }
 
   toPrint() {
+    this.limpiarMessages();
     const rows = this.backupCentroGestores.length ? this.backupCentroGestores : this.centroGestores;
     if (!rows?.length) {
       this.SearchDownMessageError = 'No hay datos para imprimir.';
@@ -379,18 +395,17 @@ export class CgeComponent {
   centroGestorSuccessMessage: String = '';
   centroGestorErrorMessage: string = '';
   showDetails(centroGestor: any) {
+    this.limpiarMessages();
     this.selectedCentroGestor = centroGestor;
   }
 
   closeDetails() {
     this.selectedCentroGestor = null;
-    this.centroGestorSuccessMessage = '';
-    this.centroGestorErrorMessage = '';
+    this.limpiarMessages();
   }
 
   updateCentroGestor(cge: string, des: string, org: string, fun: string, dat: string) {
-    this.centroGestorSuccessMessage = '';
-    this.centroGestorErrorMessage = '';
+    this.limpiarMessages();
     const payload = {
       cgedes: des,
       cgeorg: org,
@@ -406,12 +421,10 @@ export class CgeComponent {
 
     this.http.patch<any>(`${environment.backendUrl}/api/cge/update-familia/${this.entcod}/${this.eje}/${cge}`, payload).subscribe({
       next: (res) => {
-        this.centroGestorErrorMessage = '';
         this.centroGestorSuccessMessage = 'Centro gestor actualizado con éxito';
       }, 
       error: (err) => {
         const message = err?.error ?? 'Error al actualizar la centro gestor.';
-        this.centroGestorSuccessMessage = '';
         this.centroGestorErrorMessage = message;
       }
     })
@@ -428,6 +441,7 @@ export class CgeComponent {
   showDeleteConfirm: boolean = false;
   centroGestorToDelete: any = null;
   openDeleteConfirm(cgecod: string) {
+    this.limpiarMessages();
     this.centroGestorToDelete = cgecod;
     this.showDeleteConfirm = true;
   }
@@ -445,6 +459,7 @@ export class CgeComponent {
 
   deleErr: string = '';
   deleteCentroGestor(cgecod: string) {
+    this.limpiarMessages();
     this.http.delete<any>(`${environment.backendUrl}/api/cge/delete-centro-gestor/${this.entcod}/${this.eje}/${cgecod}`).subscribe({
       next: (res) => {
         this.successAddCentroGestor = 'cge eliminado exitosamente';
@@ -462,12 +477,13 @@ export class CgeComponent {
   showAddConfirm: boolean = false;
   centroGestorAddError: string = '';
   launchAddCentroGestor() {
+    this.limpiarMessages();
     this.showAddConfirm = true;
   }
 
   closeAddConfirm() {
     this.showAddConfirm = false;
-    this.centroGestorAddError = '';
+    this.limpiarMessages();
   }
 
   newCgecic = 0;
@@ -483,12 +499,11 @@ export class CgeComponent {
   }
 
   successAddCentroGestor = '';
-  AddCentroGestor(cod: string, des: string, org: string, fun: string, dat: string) {
-    this.centroGestorAddError = '';
-    this.successAddCentroGestor = '';
+  AddCentroGestor(cod: string, org: string, fun: string, des: string,  dat: string) {
+    this.limpiarMessages();
 
     if (!cod || !des) {
-      this.centroGestorAddError = 'Se requieren centrgo gestor y descripción'
+      this.centroGestorAddError = 'Se requieren codigo y descripción'
       return;
     }
     const payload = {
@@ -501,10 +516,12 @@ export class CgeComponent {
       "cgedat" : dat,
       "cgecic" : this.newCgecic
     }
+    console.log(payload)
 
     this.http.post<any>(`${environment.backendUrl}/api/cge/Insert-familia`,payload).subscribe({
       next: (res) => {
         this.successAddCentroGestor = 'centro gestor añadido con éxito'
+        this.fetchCentro();
         this.closeAddConfirm();
       },
       error: (err) => {
@@ -513,5 +530,13 @@ export class CgeComponent {
     })
   }
 
-  
+  //misc
+  limpiarMessages() {
+    this.SearchDownMessageError = '';
+    this.successAddCentroGestor = '';
+    this.centroGestorSuccessMessage = '';
+    this.centroGestorErrorMessage = '';
+    this.deleErr = '';
+    this.centroGestorAddError = '';
+  }
 }
