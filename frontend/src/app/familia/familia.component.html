@@ -24,6 +24,7 @@
                     </div>
                     <div class="btns">
                         <button class="search-btn" (click)="searchFamilias()">Buscar</button>
+                        <button class="delete-btn" (click)="limpiarSearch()">Limpiar</button>
                     </div>
                 </div>
             </div>
@@ -262,8 +263,8 @@
     <h1 class="errorBtn">{{ familiaAddError }}</h1>
     <div class="add-content">
         <div class="left-add">
-            <p>Familia</p>
-            <p>Descripción</p>
+            <p>Familia*</p>
+            <p>Descripción*</p>
         </div>
         <div class="right-add">
             <textarea

@@ -41,6 +41,7 @@ export class FamiliaComponent {
   isLoading: boolean = false;
 
   ngOnInit():void {
+    this.limpiarMessages();
     this.isLoading = true;
     const entidad = sessionStorage.getItem('Entidad');
     if (entidad) {
@@ -54,7 +55,11 @@ export class FamiliaComponent {
       this.router.navigate(['/login']);
       return;
     }
+    this.fetchFamilias();
+  }
 
+  //main table functions
+  fetchFamilias() {
     this.http.get<any>(`${environment.backendUrl}/api/afa/by-ent/${this.entcod}`).subscribe({
       next: (response) => {
         if (response.error) {
@@ -73,11 +78,9 @@ export class FamiliaComponent {
       }
     })
   }
-
-  //main table functions
   public searchTerm: string = '';
   searchFamilias(): void {
-    this.tableMessage = '';
+    this.limpiarMessages();
     const term = this.searchTerm.trim();
 
     if (!term) {
@@ -119,7 +122,18 @@ export class FamiliaComponent {
     this.page = 0;
   }
 
+  limpiarSearch() {
+    this.limpiarMessages();
+    this.familias = [...this.backupFamilias];
+    this.defaultFamilias = [...this.backupFamilias];
+    this.searchTerm = '';
+    this.sortField = null;
+    this.sortDirection = 'asc';
+    this.page = 0;
+  }
+
   excelDownload() {
+    this.limpiarMessages();
     const rows = this.backupFamilias.length ? this.backupFamilias : this.familias;
     if (!rows || rows.length === 0) {
       this.tableMessage = 'No hay datos para exportar.';
@@ -156,6 +170,7 @@ export class FamiliaComponent {
   }
 
   toPrint() {
+    this.limpiarMessages();
     const rows = this.backupFamilias.length ? this.backupFamilias : this.familias;
     if (!rows?.length) {
       this.tableMessage = 'No hay datos para imprimir.';
@@ -327,18 +342,14 @@ export class FamiliaComponent {
   //detail grid functions
   selectedFamilias: any = null;
   showDetails(familia: any) {
-    this.tableMessage = '';
-    this.tableMessage = '';
+    this.limpiarMessages();
     this.selectedFamilias = familia;
     this.FetchSubfamilias(this.selectedFamilias.afacod);
   }
 
   closeDetails() {
     this.selectedFamilias = null;
-    this.familiaErrorMessage = '';
-    this.familiaSucessMessage = '';
-    this.successUpdateMEssage = '';
-    this.errorUpdateMessage = '';
+    this.limpiarMessages();
   }
 
   afacodError:string = '';
@@ -391,16 +402,15 @@ export class FamiliaComponent {
   familiaErrorMessage:string = '';
   familiaSucessMessage: string = '';
   updateFamilia(afacod: string, afades: string): void {
+    this.limpiarMessages();
     if (!afacod) { return; }
     const payload = (afades ?? '').trim();
 
     this.http.patch<any>(`${environment.backendUrl}/api/afa/update-familia/${this.entcod}/${afacod}`, payload, { headers: { 'Content-Type': 'text/plain' }, observe: 'response' }).subscribe({
       next: (response) => {
-        this.familiaErrorMessage = '';
         this.familiaSucessMessage = 'Familia actualizada con éxito';
       }, error: (err) => {
         const message = err?.error ?? 'Error al actualizar la familia.';
-        this.familiaSucessMessage = '';
         this.familiaErrorMessage = message;
       }
     })
@@ -426,7 +436,7 @@ export class FamiliaComponent {
 
   delErr: string = '';
   deleteFamilia(afacod: string): void {
-    this.delErr = '';
+    this.limpiarMessages();
     this.http.delete(`${environment.backendUrl}/api/art/delete-familia/${this.entcod}/${afacod}`).subscribe({
       next: () => {
         this.familiaSucessMessage = 'Familia eliminado correctamente';
@@ -444,6 +454,7 @@ export class FamiliaComponent {
   errorUpdateMessage: string = '';
   successUpdateMEssage: string = '';
   updateSubfamilia(afacod:string, asucod: string, Description:string, Economica: string, almacenaje: any) {
+    this.limpiarMessages();
     const almacenajeNum = Number(almacenaje);
     if (!afacod || !asucod || !Description || !Economica || !almacenajeNum) {
       this.errorUpdateMessage = 'datos faltantes';
@@ -484,16 +495,13 @@ export class FamiliaComponent {
 
   closeAddConfirmSub() {
     this.showAddConfirmSub = false;
-    this.subAddError = '';
+    this.limpiarMessages();
   }
 
   subAddError: string = '';
   addSub(asucod: string, asudes: string, asueco: string, mtacod: string): void {
-    this.subAddError = '';
-    this.errorUpdateMessage = '';
-    this.successUpdateMEssage = '';
+    this.limpiarMessages();
     this.launchAddSubFamilia();
-
     this.fetchAlmacenaje()
 
     if (!this.selectedFamilias) {
@@ -544,6 +552,7 @@ export class FamiliaComponent {
 
   almacenajes: any[] = [];
   fetchAlmacenaje() {
+    this.limpiarMessages();
     this.http.get<any[]>(`${environment.backendUrl}/api/mta/all-mta/${this.entcod}`).subscribe({
       next: (mtas) => {
         this.almacenajes = Array.isArray(mtas) ? mtas : [];
@@ -562,7 +571,7 @@ export class FamiliaComponent {
   familiaMessage: string = '';
   familiaAddError: string = '';
   addFamilia(familia: string, descripcion: string): void {
-    this.familiaAddError = '';
+    this.limpiarMessages();
 
     if (!familia || !descripcion) { 
       this.familiaAddError = 'Se requiere familia y descripción';
@@ -574,6 +583,8 @@ export class FamiliaComponent {
     this.http.post<any>(`${environment.backendUrl}/api/afa/Insert-familia`, payload).subscribe({
       next: () => {
         this.familiaMessage = 'familia agregada exitosamente'
+        this.fetchFamilias();
+        this.limpiarMessages();
         this.closeAddConfirm();
       }, error: (err) => {
         this.familiaAddError = err?.error ?? 'Se ha producido un error.';
@@ -583,6 +594,16 @@ export class FamiliaComponent {
 
   closeAddConfirm() {
     this.showAddConfirm = false;
+    this.limpiarMessages();
+  }
+
+  //misc
+  limpiarMessages() {
+    this.tableMessage = '';
+    this.familiaMessage = '';
+    this.familiaErrorMessage = '';
+    this.familiaSucessMessage = '';
+    this.subAddError = '';
     this.familiaAddError = '';
   }
 }
