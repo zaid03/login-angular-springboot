@@ -5,8 +5,8 @@
 /* search */
 /* main-list and table */
 .coste-list { width: 40%; }
-.coste-table tbody td:first-child{text-align: left;}
-.coste-table tbody td:nth-child(2){text-align: right;}
+.coste-table tbody td {text-align: right;}
+.coste-table thead th:first-child { width: 20%;}
 /* main-list and table */
 /* detail grid */
 .modal{ width: 65%;}
