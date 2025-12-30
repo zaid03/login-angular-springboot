@@ -10,21 +10,14 @@
 .successBtn { margin-top: 5px; }
 /* search container and inputs */
 /* table style */
-.facturas-table tbody td:first-child,
-.facturas-table tbody td:nth-child(2),
-.facturas-table tbody td:nth-child(5),
 .facturas-table tbody td:nth-child(6),
-.facturas-table tbody td:nth-child(7),
-.facturas-table tbody td:nth-child(8),
-.facturas-table tbody td:nth-child(9),
-.facturas-table tbody td:nth-child(10),
-.facturas-table tbody td:nth-child(11),
-.facturas-table tbody td:nth-child(12),
-.facturas-table tbody td:nth-child(13) { text-align: left; }
-.facturas-table tbody td:nth-child(3),
-.facturas-table tbody td:nth-child(4),
-.facturas-table tbody td:nth-child(14),
-.facturas-table tbody td:nth-child(15) { text-align: right;}
+.facturas-table tbody td:nth-child(13),
+.albaranes-table tbody td:nth-child(4),
+.app tbody td:nth-child(3),
+.desc tbody td:nth-child(5),
+.desc tbody td:nth-child(7) { text-align: left; }
+.facturas-table tbody td,
+.albaranes-table tbody td { text-align: right;}
 /* table style */
 /* main-detail grid */
 .detail-container { display: flex; flex-wrap: wrap; align-items: center; padding: 5px; gap: 10px; }

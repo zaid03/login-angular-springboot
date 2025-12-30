@@ -51,7 +51,7 @@ export class FacturasComponent {
   private defaultFacturas: any[] = [];
   isLoading: boolean = false;
   ngOnInit(): void{
-    this.estadoMessage = '';
+    this.limpiarMEssages();
     this.isLoading = true;
     const entidad = sessionStorage.getItem('Entidad');
     const eje = sessionStorage.getItem('EJERCICIO');
@@ -228,6 +228,7 @@ export class FacturasComponent {
   };
 
   DownloadPDF() {
+    this.limpiarMEssages();
     const doc = new jsPDF({orientation: 'landscape', unit: 'mm', format: 'a4'});
     const columns = [
       { header: 'Número Registro', dataKey: 'facnum'},
@@ -296,6 +297,7 @@ export class FacturasComponent {
   }
 
   DownloadCSV() {
+    this.limpiarMEssages();
     interface Column { header: string; dataKey: string; }
 
     const columns: Column[] = [
@@ -361,6 +363,7 @@ export class FacturasComponent {
   fettalesIsError: boolean = false;
 
   showDetails(factura: any) {
+    this.limpiarMEssages();
     this.selectedFacturas = factura;
     this.detailView = 'Albaranes';
     this.setAlbaranesOptio('albaranes', factura?.facnum);
@@ -368,7 +371,7 @@ export class FacturasComponent {
 
   closeDetails() {
     this.selectedFacturas = null;
-    this.detallesMessage = '';
+    this.limpiarMEssages();
   }
 
   public getPendingApply(f: any): number {
@@ -421,6 +424,7 @@ export class FacturasComponent {
   }
   
   filterFacturas(): void {
+    this.limpiarMEssages();
     this.isLoading = true;
     if (this.entcod == null || this.eje == null || !this.centroGestor) {
       this.filterFacturaMessage= 'Faltan datos de sesión.';
@@ -541,6 +545,7 @@ export class FacturasComponent {
   }
 
   forgetAll(): void{
+    this.limpiarMEssages();
     this.facturaSearch = '';
     this.searchQuery = '';
     this.centroGestor = this.initialCentroGestor || '';
@@ -550,7 +555,6 @@ export class FacturasComponent {
     this.estadoTipo = 'no-contabilizadas';
     this.fromDate = '';
     this.toDate = '';
-    this.filterFacturaMessage = '';
     this.page = 0;
     this.sortField = null;
     this.sortDirection = 'asc';
@@ -582,8 +586,7 @@ export class FacturasComponent {
 
   setAlbaranesOptio(option: 'albaranes' | 'aplicaciones' | 'descuentos', facnum: number): void {
     this.albaranesOptio = option;
-    this.moreInfoMessageSuccess = '';
-    this.moreInfoMessageError = '';
+    this.limpiarMEssages();
 
     if ( option === 'albaranes') {
       this.http.get<any>(`${environment.backendUrl}/api/alb/${this.entcod}/${this.eje}/${facnum}`).subscribe({
@@ -643,4 +646,15 @@ export class FacturasComponent {
     }
   }
   
+  //misc 
+  limpiarMEssages() {
+    this.estadoMessage = '';
+    this.filterFacturaMessage = '';
+    this.moreInfoMessageSuccess = '';
+    this.moreInfoMessageError = '';
+    this.moreInfoMessageError = '';
+    this.moreInfoMessageSuccess = '';
+    this.moreInfoMessageSuccess = '';
+    this.moreInfoMessageError = '';
+  }
 }
