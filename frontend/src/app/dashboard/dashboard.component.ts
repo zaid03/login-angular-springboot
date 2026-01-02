@@ -5,11 +5,6 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
 
-function safeParse(raw: string | null) {
-  if (!raw) return {};
-  try { return JSON.parse(raw); } catch { return {}; }
-}
-
 @Component({
   selector: 'app-dashboard',
   standalone: true,

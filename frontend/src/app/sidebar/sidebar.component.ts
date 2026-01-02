@@ -17,142 +17,105 @@ function safeParse(raw: string | null) {
   styleUrls: ['./sidebar.component.css']
 })
 export class SidebarComponent implements OnInit {
+  //global variables
   usucod: string | null = null;
   perfil: string | null = null;
-  entcod: number | null = null;
-  public eje: number | null = null;
-
-  allowedMnucods: string[] = JSON.parse(sessionStorage.getItem('menus') || '[]');
-  esContable: boolean = sessionStorage.getItem('escontable') === 'true';
-  centroGestor: string = sessionStorage.getItem('CENTROGESTOR') || '';
+  cge: string = '';
+  esContable: boolean = false;
+  allowedMnucods: string[] = [];
 
   logoPath = 'assets/images/logo_iass.png';
 
   constructor(private router: Router) {}
 
   ngOnInit(): void {
-    const rawEntidad = sessionStorage.getItem('Entidad');
-    const rawPerfil  = sessionStorage.getItem('Perfil');
-    const rawMnus    = sessionStorage.getItem('mnucods');
-    const rawContable = sessionStorage.getItem('EsContable');
-    const rawEje = sessionStorage.getItem('EJERCICIO');
-    const rawCge = sessionStorage.getItem('CENTROGESTOR');
+    const profile = sessionStorage.getItem('Perfil');
+    const user = sessionStorage.getItem('USUCOD');
+    const centroGestor = sessionStorage.getItem('CENTROGESTOR');
+    const contable = sessionStorage.getItem('EsContable');
+    const menus = sessionStorage.getItem('mnucods');
 
-    const entidadObj = safeParse(rawEntidad);
-    const perfilObj  = safeParse(rawPerfil);
-    const ContableOBJ = safeParse(rawContable);
-    const ejeObs = safeParse(rawEje);
-    const cgeObs = safeParse(rawCge);
+    if (profile) { const parsed = JSON.parse(profile); this.perfil = parsed.PERCOD;}
+    if (user) { this.usucod = user;}
+    if (centroGestor) { const parsed = JSON.parse(centroGestor); this.cge = parsed.value;}
+    if (contable) { const parsed = JSON.parse(contable); this.esContable = parsed.value;}
+    if (menus) {
+      const parsed = JSON.parse(menus);
+      this.allowedMnucods = parsed
+        .map((m: any) =>
+          typeof m === 'string'
+            ? m
+            : (m.MNUCOD ?? m.mnucod ?? m.MENUCOD ?? m.code ?? m.codigo ?? m.id))
+        .filter(Boolean);
+    }
+  }
 
-    this.usucod = sessionStorage.getItem('USUCOD');
-    this.entcod = entidadObj.ENTCOD ?? null;
-    this.perfil = perfilObj.PERCOD ?? null;
-    this.esContable = ContableOBJ.value === true || ContableOBJ.value === 'true';
-    this.eje = ejeObs.eje ?? null;
-    this.centroGestor = cgeObs.value ?? null;
-
-    if (!this.usucod || this.entcod == null || !this.perfil) {
-      alert('Missing session data. reiniciar el flujo.');
-      this.router.navigate(['/login']);
-      return;
+  isDisabled(code: string): boolean {
+    if ((code === 'acFac' || code === 'acMCon' || code === 'acRCon') && !this.esContable) {
+      return true;
+    }
+    if (code === 'acGBSM' && !this.cge) {
+      return true;
     }
 
-    if (rawMnus) {
-      try {
-        const parsed = JSON.parse(rawMnus);
-        this.allowedMnucods = parsed
-          .map((m: any) =>
-            typeof m === 'string'
-              ? m
-              : (m.MNUCOD ?? m.mnucod ?? m.MENUCOD ?? m.code ?? m.codigo ?? m.id))
-          .filter(Boolean);
-      } catch {
-        console.warn('Invalid mnucods JSON');
-      }
+    return !this.allowedMnucods.includes(code);
+  }
+
+  navigateTo(code: string): void {
+    switch (code) {
+      case 'ejercicios':
+        break;
+      case 'centroGestor':
+        this.router.navigate(['/centroGestor']);
+        break;
+      case 'coste':
+        this.router.navigate(['/coste']);
+        break;
+      case 'servicios':
+        this.router.navigate(['/servicios']);
+        break;
+      case 'personas':
+        break;
+      case 'entrega':
+        this.router.navigate(['/entrega']);
+        break;
+      case 'Cproveedores':
+        break;
+      case 'proveedorees':
+        this.router.navigate(['/proveedorees']);
+        break;
+      case 'contratos':
+        break;
+      case 'Cfactura':
+        break;
+      case 'facturas':
+        this.router.navigate(['/facturas']);
+        break;
+      case 'contabilizacion':
+        break;
+      case 'Fcontabilizadas':
+        break;
+      case 'Ccredito':
+        break;
+      case 'credito':
+        this.router.navigate(['credito']);
+        break;
+      case 'credito-Cge':
+        break;
+      case 'familia':
+        this.router.navigate(['/familia'])
+        break;
+      case 'panel':
+        this.router.navigate(['/dashboard']);
+        break;
+      default:
+        break;
     }
   }
 
   logout(): void {
     sessionStorage.clear();
     window.location.href = `${environment.casLoginUrl.replace('/login', '/logout')}?service=${environment.frontendUrl}/login`;
-  }
-
-  proveedorees(): void {
-    if (this.isDisabled('acTer')) {
-      console.warn('Not allowed');
-      return;
-    }
-    this.router.navigate(['/proveedorees']);
-  }
-
-  isFacturasDisabled(): boolean {
-    return this.isDisabled('acFac') || !this.esContable;
-  }
-  facturas(): void{
-    if (this.isFacturasDisabled()) {
-      console.warn('Not allowed');
-      return;
-    }
-    this.router.navigate(['/facturas']);
-  }
-
-  isMonitorDisabled(): boolean {
-    return !this.allowedMnucods.includes('acMCon') || !this.esContable;
-  }
-
-  isCentroGestorDisabled(): boolean {
-    return !this.allowedMnucods.includes('acGBSM') || !this.centroGestor;
-  }
-
-  navigateTo(code: string): void {
-    if (this.isDisabled(code) && code !== 'familia' && code !== 'centroGestor' && code !== 'servicios' && code !== 'entrega' && code !== 'coste') {
-      console.warn('Not allowed:', code);
-      return;
-    }
-
-    switch (code) {
-      case 'acTer':
-        this.router.navigate(['/proveedorees']);
-        break;
-      case 'acFac':
-        if (this.esContable) {
-          this.router.navigate(['/facturas']);
-          break;
-        } else {
-          console.warn("not allowed");
-        }
-        break
-      case 'acGBS':
-        this.router.navigate(['credito']);
-        break;
-      case 'familia':
-        this.router.navigate(['/familia'])
-        break;
-      case 'centroGestor':
-        this.router.navigate(['/centroGestor']);
-        break;
-      case 'servicios':
-        this.router.navigate(['/servicios']);
-        break;
-      case 'entrega':
-        this.router.navigate(['/entrega']);
-        break;
-      case 'coste':
-        this.router.navigate(['/coste']);
-        break;
-      default:
-        console.warn('No route configured for code:', code);
-    }
-  }
-
-  isDisabled(code: string): boolean {
-    if (!code) return true;
-    const normalized = code.toString().trim();
-    return !this.allowedMnucods.some((c: string) => c === normalized);
-  }
-
-  dashboard(): void {
-    this.router.navigate(['/dashboard']);
   }
 
   collapsed = true;
@@ -162,5 +125,4 @@ export class SidebarComponent implements OnInit {
     this.collapsed = !this.collapsed;
     this.collapsedChange.emit(this.collapsed);
   }
-
 }
