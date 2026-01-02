@@ -25,6 +25,8 @@ export class DashboardComponent implements OnInit {
   cge: string = '';
   esContable: boolean = false;
   Estado: number = 0;
+  comprado: boolean = false;
+  almacen: boolean = false;
   allowedMnucods: string[] = [];
   logoPath = 'assets/images/logo_iass.png';
 
@@ -39,15 +41,19 @@ export class DashboardComponent implements OnInit {
     const centroGestor = sessionStorage.getItem('CENTROGESTOR');
     const status = sessionStorage.getItem('ESTADOGC');
     const contable = sessionStorage.getItem('EsContable');
+    const comprador = sessionStorage.getItem('EsComprador');
+    const almcenar = sessionStorage.getItem('EsAlmacen');
     const menus = sessionStorage.getItem('mnucods');
 
-    if (profile) { const parsed = JSON.parse(profile); this.perfil = parsed.PERCOD; }
-    if (user) { this.usucod = user; }
-    if (ent) { const parsed = JSON.parse(ent); this.entcod = parsed.ENTCOD; }
-    if (session) { const parsed = JSON.parse(session); this.eje = parsed.eje; }
-    if (centroGestor) { const parsed = JSON.parse(centroGestor); this.cge = parsed.value; }
-    if (status) { const parsed = JSON.parse(status); this.Estado = parsed.value; }
-    if (contable) { const parsed = JSON.parse(contable); this.esContable = parsed.value; }
+    if (profile) { const parsed = JSON.parse(profile); this.perfil = parsed.PERCOD;}
+    if (user) { this.usucod = user;}
+    if (ent) { const parsed = JSON.parse(ent); this.entcod = parsed.ENTCOD;}
+    if (session) { const parsed = JSON.parse(session); this.eje = parsed.eje;}
+    if (centroGestor) { const parsed = JSON.parse(centroGestor); this.cge = parsed.value;}
+    if (status) { const parsed = JSON.parse(status); this.Estado = parsed.value;}
+    if (contable) { const parsed = JSON.parse(contable); this.esContable = parsed.value;}
+    if (comprador) { const parsed = JSON.parse(comprador); this.comprado = parsed.value;}
+    if (almcenar) { const parsed = JSON.parse(almcenar); this.almacen = parsed.value;}
     if (menus) {
       const parsed = JSON.parse(menus);
       this.allowedMnucods = parsed
@@ -64,9 +70,7 @@ export class DashboardComponent implements OnInit {
       return;
     }
     
-    if (this.Estado > 0) {
-      this.getStatus(this.Estado);
-    }
+    if (this.Estado > 0) { this.getStatus(this.Estado); }
   }
 
   isDisabled(code: string): boolean {
@@ -81,7 +85,6 @@ export class DashboardComponent implements OnInit {
   }
 
   navigateTo(code: string): void {
-
     switch (code) {
       case 'ejercicios':
         break;
@@ -102,7 +105,6 @@ export class DashboardComponent implements OnInit {
       case 'Cproveedores':
         break;
       case 'proveedorees':
-        console.log("clicked")
         this.router.navigate(['/proveedorees']);
         break;
       case 'contratos':

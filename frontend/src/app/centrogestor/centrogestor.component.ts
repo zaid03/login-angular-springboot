@@ -23,6 +23,11 @@ export class CentrogestorComponent implements OnInit {
   ENTCOD: number | null = null;
   constructor(private http: HttpClient, private router: Router) {}
 
+  private fail(route: string, msg: string) {
+    alert(msg);
+    this.router.navigate([route]);
+  }
+
   ngOnInit(): void {
     const USUCOD = sessionStorage.getItem('USUCOD');
     const entObj = safeParse(sessionStorage.getItem('Entidad'));
@@ -32,7 +37,7 @@ export class CentrogestorComponent implements OnInit {
     this.ENTCOD = entObj.ENTCOD;
     const PERCOD = perObj.PERCOD;
     const EJE = ejeObj.eje;
-
+    
     if (!USUCOD) { this.fail('/login','Login required'); return; }
     if (this.ENTCOD == null) { this.fail('/ent','Entidad missing'); return; }
     if (PERCOD == null) { this.fail('/ent','Perfil missing'); return; }
@@ -51,7 +56,9 @@ export class CentrogestorComponent implements OnInit {
             sessionStorage.setItem('CENTROGESTOR', JSON.stringify({ value: null}));
             sessionStorage.setItem('CENTROGESTOR_NAME', JSON.stringify({ value: null}));
             sessionStorage.setItem('ESTADOGC', JSON.stringify({ value: 0}));
-            sessionStorage.setItem('EsContable', JSON.stringify({ value: false}));
+            sessionStorage.setItem('EsContable', JSON.stringify({value: false}));
+            sessionStorage.setItem('EsComprador', JSON.stringify({value: false}));
+            sessionStorage.setItem('EsAlmacen', JSON.stringify({value : false}));
             this.router.navigate(['/dashboard']);
           }
         },
@@ -63,21 +70,16 @@ export class CentrogestorComponent implements OnInit {
       }).add(() => this.loading = false);
   }
 
-  private fail(route: string, msg: string) {
-    alert(msg);
-    this.router.navigate([route]);
-  }
-
   private storeAndGo(item: any) {
-    sessionStorage.setItem('CENTROGESTOR', JSON.stringify({ value: item[0] }));
-    if (item[1] === 1) {
-      sessionStorage.setItem('EsContable', JSON.stringify({ value: true}));
-    }
-    if (item[1] === 0){
-      sessionStorage.setItem('EsContable', JSON.stringify({ value: false}));
-    }
-    sessionStorage.setItem('CENTROGESTOR_NAME', JSON.stringify({ value: item[2]}));
-    sessionStorage.setItem('ESTADOGC', JSON.stringify({ value: item[3]}));
+    sessionStorage.setItem('CENTROGESTOR', JSON.stringify({ value: item.cgecod }));
+    if (item.depint === 1) { sessionStorage.setItem('EsContable', JSON.stringify({ value: true})); }
+    if (item.depint === 0){ sessionStorage.setItem('EsContable', JSON.stringify({ value: false})); }
+    if (item.depalm === 1) { sessionStorage.setItem('EsAlmacen', JSON.stringify({ value: true})); }
+    if (item.depalm === 0){ sessionStorage.setItem('EsAlmacen', JSON.stringify({ value: false})); }
+    if (item.depcom === 1) { sessionStorage.setItem('EsComprador', JSON.stringify({ value: true})); }
+    if (item.depcom === 0){ sessionStorage.setItem('EsComprador', JSON.stringify({ value: false})); }
+    sessionStorage.setItem('CENTROGESTOR_NAME', JSON.stringify({ value: item.cgedes}));
+    sessionStorage.setItem('ESTADOGC', JSON.stringify({ value: item.cgecic}));
     this.router.navigate(['/dashboard']);
   }
 
@@ -96,6 +98,8 @@ export class CentrogestorComponent implements OnInit {
     sessionStorage.setItem('CENTROGESTOR_NAME', JSON.stringify({ value: null}));
     sessionStorage.setItem('ESTADOGC', JSON.stringify({ value: 0}));
     sessionStorage.setItem('EsContable', JSON.stringify({ value: false}));
+    sessionStorage.setItem('EsComprador', JSON.stringify({value: false}));
+    sessionStorage.setItem('EsAlmacen', JSON.stringify({value : false}));
     this.router.navigate(['/dashboard']);
   }
 
