@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, JsonPipe } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
@@ -25,12 +26,12 @@ export class DashboardComponent implements OnInit {
   cge: string = '';
   esContable: boolean = false;
   Estado: number = 0;
-  comprado: boolean = false;
-  almacen: boolean = false;
+  esComprador: boolean = false;
+  esAlmacen: boolean = false;
   allowedMnucods: string[] = [];
   logoPath = 'assets/images/logo_iass.png';
 
-  constructor(private router: Router) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   //main functions
   ngOnInit(): void {
@@ -52,8 +53,8 @@ export class DashboardComponent implements OnInit {
     if (centroGestor) { const parsed = JSON.parse(centroGestor); this.cge = parsed.value;}
     if (status) { const parsed = JSON.parse(status); this.Estado = parsed.value;}
     if (contable) { const parsed = JSON.parse(contable); this.esContable = parsed.value;}
-    if (comprador) { const parsed = JSON.parse(comprador); this.comprado = parsed.value;}
-    if (almcenar) { const parsed = JSON.parse(almcenar); this.almacen = parsed.value;}
+    if (comprador) { const parsed = JSON.parse(comprador); this.esComprador = parsed.value;}
+    if (almcenar) { const parsed = JSON.parse(almcenar); this.esAlmacen = parsed.value;}
     if (menus) {
       const parsed = JSON.parse(menus);
       this.allowedMnucods = parsed
@@ -153,7 +154,53 @@ export class DashboardComponent implements OnInit {
     this.router.navigate(['/centro-gestor']);
   }
   
-  goToServices() {
-    
+  //services grid functions
+  showServices: boolean = false;
+  
+  launchAddCentroGestor() {
+    this.showServices = true;
+    this.fetchServices();
+  }
+
+  closeShowServices() {
+    this.showServices = false;
+  }
+
+  servicesError: string = '';
+  services: any[] = [];
+  page: number = 0;
+  pageSize: number = 20;
+  private fetchServices(): void {
+    this.servicesError = '';
+    if (this.entcod === null || this.eje === null) return;
+    this.http.get<any>(`${environment.backendUrl}/api/dep/fetch-services/${this.entcod}/${this.eje}/${this.perfil}`).subscribe({
+      next: (res) => {
+        this.services = res;
+        this.page = 0;
+      },
+      error: (err) => {
+        this.servicesError = err?.error?.error || 'Error desconocido';
+      }
+    });
+  }
+  get paginatedServices(): any[] {
+    if (!this.services || this.services.length === 0) return [];
+    const start = this.page * this.pageSize;
+    return this.services.slice(start, start + this.pageSize);
+  }
+  get totalPages(): number {
+    return Math.max(1, Math.ceil((this.services?.length ?? 0) / this.pageSize));
+  }
+  prevPage(): void {
+    if (this.page > 0) this.page--;
+  }
+  nextPage(): void {
+    if (this.page < this.totalPages - 1) this.page++;
+  }
+  goToPage(event: any): void {
+    const inputPage = Number(event.target.value);
+    if (inputPage >= 1 && inputPage <= this.totalPages) {
+      this.page = inputPage - 1;
+    }
   }
 }

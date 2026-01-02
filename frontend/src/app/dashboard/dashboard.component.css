@@ -45,4 +45,13 @@
 .services-btn {width: 30%; margin-top: 5px;}
 .checkboxes input[type="checkbox"] { margin: 0; accent-color: #25176b; width: 16px; height: 25px; vertical-align: middle; outline: none; box-shadow: none; }
 /* dashboard */
+/* services grid */
+.add-confirm-modal {width: 80%;}
+.title {width: 97%;}
+.user-services-table thead th:first-child,
+.user-services-table thead th:last-child,
+.user-services-table thead th:nth-child(4),
+.user-services-table thead th:nth-child(5) {width: 90px;}
+.user-services-table tbody td input[type="checkbox"] { margin: 0; accent-color: #25176b; width: 14px; height: 18px; vertical-align: middle; outline: none; box-shadow: none; }
+/* services grid */
 .margin{ margin-top: 5px; }
