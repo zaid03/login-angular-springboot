@@ -24,8 +24,8 @@ export class DashboardComponent implements OnInit {
   eje: number | null = null;
   cge: string = '';
   esContable: boolean = false;
-  Estado: number | null = null;
-  allowedMnucods: [] = [];
+  Estado: number = 0;
+  allowedMnucods: string[] = [];
   logoPath = 'assets/images/logo_iass.png';
 
   constructor(private router: Router) {}
@@ -47,110 +47,104 @@ export class DashboardComponent implements OnInit {
     if (session) { const parsed = JSON.parse(session); this.eje = parsed.eje; }
     if (centroGestor) { const parsed = JSON.parse(centroGestor); this.cge = parsed.value; }
     if (status) { const parsed = JSON.parse(status); this.Estado = parsed.value; }
-    if (contable) { const parsed = JSON.parse(contable); this.esContable = parsed.value; console.log(this.esContable)}
-    if (menus) { const parsed = JSON.parse(menus); this.allowedMnucods = parsed; }
+    if (contable) { const parsed = JSON.parse(contable); this.esContable = parsed.value; }
+    if (menus) {
+      const parsed = JSON.parse(menus);
+      this.allowedMnucods = parsed
+        .map((m: any) =>
+          typeof m === 'string'
+            ? m
+            : (m.MNUCOD ?? m.mnucod ?? m.MENUCOD ?? m.code ?? m.codigo ?? m.id))
+        .filter(Boolean);
+    }
 
+    if (!this.usucod || this.entcod == null || !this.perfil || !this.allowedMnucods) {
+      alert('Missing session data. reiniciar el flujo.');
+      this.router.navigate(['/login']);
+      return;
+    }
     
-
-    
-
-    // if (!this.usucod || this.entcod == null || !this.perfil) {
-    //   alert('Missing session data. reiniciar el flujo.');
-    //   this.router.navigate(['/login']);
-    //   return;
-    // }
-
-    // if (rawMnus) {
-    //   try {
-    //     const parsed = JSON.parse(rawMnus);
-    //     this.allowedMnucods = parsed
-    //       .map((m: any) =>
-    //         typeof m === 'string'
-    //           ? m
-    //           : (m.MNUCOD ?? m.mnucod ?? m.MENUCOD ?? m.code ?? m.codigo ?? m.id))
-    //       .filter(Boolean);
-    //   } catch {
-    //     console.warn('Invalid mnucods JSON');
-    //   }
-    // }
+    if (this.Estado > 0) {
+      this.getStatus(this.Estado);
+    }
   }
 
-  // isDisabled(code: string): boolean {
-  //   return !this.allowedMnucods.includes(code);
-  // }
+  isDisabled(code: string): boolean {
+    if ((code === 'acFac' || code === 'acMCon' || code === 'acRCon') && !this.esContable) {
+      return true;
+    }
+    if (code === 'acGBSM' && !this.cge) {
+      return true;
+    }
 
-  logout(): void {
-    sessionStorage.clear();
-    window.location.href = `${environment.casLoginUrl.replace('/login', '/logout')}?service=${environment.frontendUrl}/login`;
+    return !this.allowedMnucods.includes(code);
   }
-
-  // proveedorees(): void {
-  //   if (this.isDisabled('acTer')) {
-  //     console.warn('Not allowed');
-  //     return;
-  //   }
-  //   this.router.navigate(['/proveedorees']);
-  // }
-
-  // isFacturasDisabled(): boolean {
-  //   return this.isDisabled('acFac') || !this.esContable;
-  // }
-
-  // facturas(): void{
-  //   if (this.isFacturasDisabled()) {
-  //     console.warn('Not allowed');
-  //     return;
-  //   }
-  //   this.router.navigate(['/facturas']);
-  // }
-
-  // isMonitorDisabled(): boolean {
-  //   return !this.allowedMnucods.includes('acMCon') || !this.esContable;
-  // }
-
-  // isCentroGestorDisabled(): boolean {
-  //   return !this.allowedMnucods.includes('acGBSM') || !this.centroGestor;
-  // }
 
   navigateTo(code: string): void {
-    // if (this.isDisabled(code) && code !== 'familia' && code !== 'centroGestor' && code !== 'servicios' && code !== 'entrega' && code !== 'coste') {
-    //   console.warn('Not allowed:', code);
-    //   return;
-    // }
 
     switch (code) {
-      case 'acTer':
-        this.router.navigate(['/proveedorees']);
-        break;
-      case 'acFac':
-        if (this.esContable) {
-          this.router.navigate(['/facturas']);
-          break;
-        } else {
-          console.warn("not allowed");
-        }
-        break
-      case 'acGBS':
-        this.router.navigate(['credito']);
-        break;
-      case 'familia':
-        this.router.navigate(['/familia'])
+      case 'ejercicios':
         break;
       case 'centroGestor':
         this.router.navigate(['/centroGestor']);
         break;
+      case 'coste':
+        this.router.navigate(['/coste']);
+        break;
       case 'servicios':
         this.router.navigate(['/servicios']);
+        break;
+      case 'personas':
         break;
       case 'entrega':
         this.router.navigate(['/entrega']);
         break;
-      case 'coste':
-        this.router.navigate(['/coste']);
+      case 'Cproveedores':
+        break;
+      case 'proveedorees':
+        console.log("clicked")
+        this.router.navigate(['/proveedorees']);
+        break;
+      case 'contratos':
+        break;
+      case 'Cfactura':
+        break;
+      case 'facturas':
+        this.router.navigate(['/facturas']);
+        break;
+      case 'contabilizacion':
+        break;
+      case 'Fcontabilizadas':
+        break;
+      case 'Ccredito':
+        break;
+      case 'credito':
+        this.router.navigate(['credito']);
+        break;
+      case 'credito-Cge':
+        break;
+      case 'familia':
+        this.router.navigate(['/familia'])
         break;
       default:
-        console.warn('No route configured for code:', code);
+        break;
     }
+  }
+
+  centroGestorStatus: string = '';
+  getStatus(estado: number) {
+    if (estado === 1) {
+      return this.centroGestorStatus = 'Centro Gestor CERRADO'
+    }
+    if (estado === 2) {
+      return this.centroGestorStatus = 'Centro Gestor CERRADO para CONTABILIZAR'
+    }
+    return;
+  }
+
+  logout(): void {
+    sessionStorage.clear();
+    window.location.href = `${environment.casLoginUrl.replace('/login', '/logout')}?service=${environment.frontendUrl}/login`;
   }
 
   goToCge() {
@@ -158,6 +152,6 @@ export class DashboardComponent implements OnInit {
   }
   
   goToServices() {
-    this.router.navigate(['/servicios']);
+    
   }
 }

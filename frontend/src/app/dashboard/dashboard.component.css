@@ -23,15 +23,26 @@
 /* sidebar */
 /* dashboard */
 .right { flex: 1; min-width: 0; display: flex; flex-direction: column; background: #f0f0f0; }
-.dashboard { padding: 40px 32px; background: #fff; margin: 32px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); }
-.dashboard h1 { margin-top: 10px; color: #38249b; font-size: 50px; }
-.dashboard p,
-.dashboard h6,
-.variable-names h4 { font-size: 32px; font-weight: bold; color: #38249b ; }
-.parameters { width: 80%; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-.variable-names{ width: 50%; }
-.variable-names h4 { font-size: 18px; }
-.services-btn { margin-top: 10px; }
-.cge-class{ display: flex; gap: 10px; }
-.margin{ margin-top: 5px; }
+.dashboard { padding: 40px 32px; background: #fff; margin: 32px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.04);}
+.dashboard h1,
+.dashboard h2,
+.left-params p,
+.status,
+.connection-data p { font-size: 32px; font-weight: bold; color: #38249b ; }
+.dashboard h1 {font-size: 50px;}
+.left-params p,
+.status,
+.connection-data p { font-size: 18px; }
+.connection-data { display: flex;}
+.width { width: 50%;}
+.parameters {  display: flex;}
+.left-params { width: 50%; display: flex;}
+.second-left { width: 30%;}
+.second-right { width: 70%;}
+.on-wo { display: flex; gap: 10px;}
+.status { color: rgb(221, 66, 66)}  
+.right-params {width: 50%;}
+.services-btn {width: 30%; margin-top: 5px;}
+.checkboxes input[type="checkbox"] { margin: 0; accent-color: #25176b; width: 16px; height: 25px; vertical-align: middle; outline: none; box-shadow: none; }
 /* dashboard */
+.margin{ margin-top: 5px; }
