@@ -8,8 +8,8 @@
               <p>Perfil</p>
             </div>
             <div class="right-add">
-              <p>{{ usucod }}</p>
-              <p>{{ perfil }}</p>
+              <!-- <p>{{ usucod }}</p>
+              <p>{{ perfil }}</p> -->
             </div>
           </div>
           <button (click)="logout()">Desconectarse</button>
@@ -21,10 +21,10 @@
             <div class="menu-content">
               <div class="menu-item">
                 <a class="acEje">Consulta de Ejercicios</a>
-                <a class="acCGe"
+                <!-- <a class="acCGe"
                   [class.disabled]="isCentroGestorDisabled()"
                   (click)="isCentroGestorDisabled() ? null : navigateTo('centroGestor')">Centros Gestores
-                </a>
+                </a> -->
                 <a class="AcCCo" (click)="navigateTo('coste')">Centros de Coste</a>
                 <a class="acDep" (click)="navigateTo('servicios')">Servicios</a>
                 <a class="acPer">Personas</a>
@@ -38,8 +38,8 @@
             <a class="choice">Proveedores</a>
             <div class="menu-content">
               <div class="menu-item">
-                <a class="acCoTer" [class.disabled]="isDisabled('acCoTer')">Consulta de Proveedores</a>
-                <a class="acTer" [class.disabled]="isDisabled('acTer')" (click)="isDisabled('acTer') ? null : proveedorees()">Gestión de Proveedores</a>
+                <!-- <a class="acCoTer" [class.disabled]="isDisabled('acCoTer')">Consulta de Proveedores</a>
+                <a class="acTer" [class.disabled]="isDisabled('acTer')" (click)="isDisabled('acTer') ? null : proveedorees()">Gestión de Proveedores</a> -->
                 <a class="acCon">Gestión de Contratos</a>
               </div>
             </div>
@@ -49,19 +49,19 @@
             <a class="choice">Contabilidad</a>
             <div class="menu-content">
               <div class="menu-item">
-                <a class="acFacC" [class.disabled]="isDisabled('acFacC')">Consulta de Facturas</a>
+                <!-- <a class="acFacC" [class.disabled]="isDisabled('acFacC')">Consulta de Facturas</a>
                 <a class="acFac"
                   [class.disabled]="isFacturasDisabled()"
                   [attr.aria-disabled]="isFacturasDisabled()"
                   (click)="isFacturasDisabled() ? null : facturas()">Gestión de Facturas
-                </a> 
-                <a class="acMCon"
+                </a>  -->
+                <!-- <a class="acMCon"
                   [class.disabled]="isMonitorDisabled()"
                   (click)="isMonitorDisabled() ? null : navigateTo('acMCon')">Monitor de Contabilización
-                </a>
+                </a> -->
                 <a class="acRCon">Gestión de Facturas Contabilizadas</a>
                 <a class="acCoGBSM">Consulta Bolsa de Crédito</a>
-                <a class="acGBS" [class.disabled]="isDisabled('acGBS')" (click)="isDisabled('acGBS') ? null : navigateTo('acGBS')">Gestión Bolsa de Crédito</a>
+                <!-- <a class="acGBS" [class.disabled]="isDisabled('acGBS')" (click)="isDisabled('acGBS') ? null : navigateTo('acGBS')">Gestión Bolsa de Crédito</a> -->
                 <a class="acGBSM">Gestión Bolsa de Crédito por Centro Gestor</a>
               </div>
             </div>
@@ -92,7 +92,7 @@
             <h4>Entidad: {{ entcod }}</h4>
             <h4>Ejercicio: {{ eje }}</h4>
             <div class="cge-class">
-              <h4 class="margin">Centro gestor: {{ centroGestor }}</h4>
+              <h4 class="margin">Centro gestor: {{ cge }}</h4>
               <button class="cge-btn" (click)="goToCge()">Cambiar Centro Gestor</button>
             </div>
             <button class="services-btn" (click)="goToServices()">Ver Servicios</button>
