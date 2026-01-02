@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.backend.dto.DepWithCgeDto;
 import com.example.backend.sqlserver2.model.Dep;
 import com.example.backend.sqlserver2.model.DepId;
 
@@ -33,13 +34,23 @@ public interface DepRepository  extends JpaRepository<Dep, DepId> {
 
     //fetching all services
     @Query("""
-        SELECT d FROM Dep d
-        JOIN Dpe p ON d.ENT = p.ENT AND d.EJE = p.EJE AND d.DEPCOD = p.DEPCOD
+        SELECT new com.example.backend.dto.DepWithCgeDto(
+            d.DEPCOD, d.DEPDES, d.DEPALM, d.DEPCOM, d.DEPINT, d.CGECOD, g.CGEDES
+        )
+        FROM Dep d
+        JOIN Dpe p 
+            ON d.ENT = p.ENT 
+            AND d.EJE = p.EJE 
+            AND d.DEPCOD = p.DEPCOD
+        JOIN Cge g 
+            ON g.ENT = d.ENT 
+            AND g.EJE = d.EJE 
+            AND g.CGECOD = d.CGECOD
         WHERE d.ENT = :ent
         AND d.EJE = :eje
         AND p.PERCOD = :percod
     """)
-    List<Dep> findByEntAndEjeAndPercod(
+    List<DepWithCgeDto> findByEntAndEjeAndPercod(
         @Param("ent") Integer ent,
         @Param("eje") String eje,
         @Param("percod") String percod

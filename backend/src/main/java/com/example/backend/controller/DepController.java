@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.backend.dto.DepWithCgeDto;
 import com.example.backend.sqlserver2.model.Dep;
 import com.example.backend.sqlserver2.model.Dpe;
 import com.example.backend.sqlserver2.repository.DepRepository;
@@ -36,7 +37,7 @@ public class DepController {
         @PathVariable String percod
     ) {
         try {
-            List<Dep> services = depRepository.findByEntAndEjeAndPercod(ent, eje, percod);
+            List<DepWithCgeDto> services = depRepository.findByEntAndEjeAndPercod(ent, eje, percod);
             if (services.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontraron servicios");
             }
