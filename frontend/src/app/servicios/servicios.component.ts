@@ -445,7 +445,6 @@ export class ServiciosComponent {
 
     this.http.patch(`${environment.backendUrl}/api/dep/update-service/${this.entcod}/${this.eje}/${cod}`, payload).subscribe({
       next: (res) => {
-        console.log("here")
         this.updateServiceSuccessMessage = 'servicio actualizado exitosamente'
         this.fetchServices();
       },
@@ -531,28 +530,28 @@ export class ServiciosComponent {
 
   updateServiceSecondError: string = '';
   updateServiceSecondSuccess: string = '';
-  // updateServiceSecond(depcod: string, depd1c:string, depd1d:string, depd2c:string, depd2d:string, depd3c:string, depd3d:string, depdco:string, depden:string) {
-  //   this.limpiarMessages();
-  //   const payload = {
-  //     "depd1c": depd1c,
-  //     "depd1d": depd1d,
-  //     "depd2c": depd2c,
-  //     "depd2d": depd2d,
-  //     "depd3c": depd3c,
-  //     "depd3d": depd3d,
-  //     "depdco": depdco,
-  //     "depden": depden
-  //   }
+  updateServiceSecond(depcod: string, depd1c:string, depd1d:string, depd2c:string, depd2d:string, depd3c:string, depd3d:string, depdco:string, depden:string) {
+    this.limpiarMessages();
+    const payload = {
+      "depd1c": depd1c,
+      "depd1d": depd1d,
+      "depd2c": depd2c,
+      "depd2d": depd2d,
+      "depd3c": depd3c,
+      "depd3d": depd3d,
+      "depdco": depdco,
+      "depden": depden
+    }
 
-  //   this.http.patch(`${environment.backendUrl}/api/dep/update-service-second/${this.entcod}/${this.eje}/${depcod}`, payload).subscribe({
-  //     next: (res) => {
-  //       this.updateServiceSecondSuccess = 'Se ha actualizado la pestaña Detalles del pedido';
-  //     },
-  //     error: (err) => {
-  //       this.updateServiceSecondError =  err?.error;
-  //     }
-  //   })
-  // }
+    this.http.patch(`${environment.backendUrl}/api/dep/update-service-second/${this.entcod}/${this.eje}/${depcod}`, payload).subscribe({
+      next: (res) => {
+        this.updateServiceSecondSuccess = 'Se ha actualizado la pestaña Detalles del pedido';
+      },
+      error: (err) => {
+        this.updateServiceSecondError =  err?.error;
+      }
+    })
+  }
 
   //add grid functions
   showAddConfirm: boolean = false;
