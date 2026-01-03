@@ -46,6 +46,7 @@
 .long {width: 280px; max-width: 400px;}
 .short {width: 80px; max-width: 120px;}
 .right { display: flex; gap: 10px;}
+.services-table tbody td input[type="checkbox"],
 .right input[type="checkbox"],
 .checkboxes input[type="checkbox"] { margin: 0; accent-color: #25176b; width: 14px; height: 18px; vertical-align: middle; outline: none; box-shadow: none; }
 /* detail grid */

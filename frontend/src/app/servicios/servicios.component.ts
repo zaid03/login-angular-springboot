@@ -75,7 +75,7 @@ export class ServiciosComponent {
   //main table functions
   private fetchServices(): void {
     if (this.entcod === null || this.eje === null) return;
-    this.http.get<any>(`${environment.backendUrl}/api/dep/fetch-services/${this.entcod}/${this.eje}/${this.perfil}`).subscribe({
+    this.http.get<any>(`${environment.backendUrl}/api/dep/fetch-services/${this.entcod}/${this.eje}`).subscribe({
       next: (res) => {
         this.services = res;
         this.backupServices = Array.isArray(res) ? [...res] : [];

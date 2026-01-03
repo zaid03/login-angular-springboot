@@ -108,23 +108,26 @@
                         <td>{{ s.ccocod }}</td>
                         <td>
                             <input 
-                                type="radio"
+                                type="checkbox"
                                 [checked]="s.depalm === 1"
                                 class="locked-radio"
+                                (click)="$event.preventDefault()"
                             >  
                         </td>
                         <td>
                             <input 
-                                type="radio"
+                                type="checkbox"
                                 [checked]="s.depcom === 1"
                                 class="locked-radio"
+                                (click)="$event.preventDefault()"
                             >
                         </td>
                         <td>
                             <input
-                                type="radio"
+                                type="checkbox"
                                 [checked]="s.depint === 1"
                                 class="locked-radio"
+                                (click)="$event.preventDefault()"
                             >   
                         </td>
                     </tr>
