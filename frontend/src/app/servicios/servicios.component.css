@@ -21,45 +21,45 @@
 .services-table tbody td:nth-child(4) { text-align: right; }
 /* main table */
 /* detail grid */
-.detail-container { display: flex; flex-direction: column; gap: 10px;}
-.first-row,
-.second-row,
-.left { display: flex; align-items: center; justify-content: center; gap: 10px;}
-.first-row p,
-.second-row p,
+.detail-container { display: flex; flex-wrap: wrap;}
+.chunk-one,
+.chunk-two { width: 40%; display: flex;}
+.chunk-two { width: 50%;}
+.chunk-three { width: 8%;}
+.chunk-four { width: 99%; margin-top: 10px; display: flex;}
+.on-two { display: flex; gap: 15px; align-items: center;}
+.left {width: 20%;display: flex; flex-direction: column; gap: 20px;}
+.right {width: 80%;display: flex; flex-direction: column; gap: 10px;}
+.first-det,
+.second-det {width: 50%; display: flex; gap: 10px;}
+.special { width: 70%; height: 100px;}
+.detail-container .left p,
+.detail-container .right p,
 .name,
-.left-detail p,
-.chunk-two p,
 .almacen-title p,
-.left-add p { font-size: 14px; font-weight: bold; color: #25176b; }
-.first-row h1,
-.second-row h1,
+.left-add p,
+.first-det p,
+.second-det p { font-size: 14px; font-weight: bold; color: #25176b; }
+.detail-container .right h1,
 .almacen-title  h1 {color: #162a3a; font-size: 18px;}
-.first-row textarea,
-.right-detail textarea,
+.chunk-one textarea,
 .chunk-two textarea,
-.right-add textarea { height: 20px; padding: 2px 4px; border-radius: 6px; font-weight: bold; color: #162a3a;}
-.first-row textarea:focus,
-.right-detail textarea:focus,
+.right-add textarea,
+.first-det textarea,
+.second-det textarea { height: 20px; padding: 2px 4px; border-radius: 6px; font-weight: bold; color: #162a3a;}
+.chunk-one textarea:focus,
 .chunk-two textarea:focus,
-.right-add textarea:focus { outline: none; border-color: #042b5a; outline: none; background: #fff; } 
-.long {width: 280px; max-width: 400px;}
-.short {width: 80px; max-width: 120px;}
-.right { display: flex; gap: 10px;}
+.right-add textarea:focus,
+.first-det textarea:focus,
+.second-det textarea:focus { outline: none; border-color: #042b5a; outline: none; background: #fff; } 
+.long {width: 70%; max-width: 90%;}
+.short {width: 80px; max-width: 180px;}
 .services-table tbody td input[type="checkbox"],
-.right input[type="checkbox"],
+.chunk-three input[type="checkbox"],
 .checkboxes input[type="checkbox"] { margin: 0; accent-color: #25176b; width: 14px; height: 18px; vertical-align: middle; outline: none; box-shadow: none; }
 /* detail grid */
 /* detail grid's grids */
-.perstana-content {width: 100%; padding: 0.5%;}
-.detail-chunks-container {display: flex;}
-.chunk-one,
-.chunk-two {width: 50%; display: flex;}
-.left-detail { width: 25%; display: flex; flex-direction: column; gap: 20px;}
-.right-detail { width: 75%; display: flex; flex-direction: column; gap: 10px;}
-.on-two { display: flex; gap: 10px; align-items: center; }
 .heighty { height: 50px !important;}
-.gap { gap: 55px;}
 .almacen-title { margin-top: 5px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px;}
 /* detail grid's grids */
 /* add grid */

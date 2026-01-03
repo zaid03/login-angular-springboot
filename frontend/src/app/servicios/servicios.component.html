@@ -160,45 +160,112 @@
                     <h1 class="successBtn">{{ updateServiceSuccessMessage }}</h1>
                     <h1 class="errorBtn">{{ updateServiceErrorMessage }}</h1>
                     <div class="detail-container">
-                        <div class="first-row">
-                            <p>Código</p>
-                            <h1>{{selectedService.depcod}}</h1>
-                            <p>Centro de coste</p>
-                            <textarea 
-                                class="short"
-                                [(ngModel)]="selectedService.ccocod"
-                                #cco
-                            ></textarea>
-                            <p>Descripción</p>
-                            <textarea 
-                                class="long" 
-                                [(ngModel)]="selectedService.depdes"
-                                #des
-                            ></textarea>
-                        </div>
-                        <div class="second-row">
+                        <div class="chunk-one">
                             <div class="left">
+                                <p>Código</p>
+                                <p>Descripción</p>
                                 <p>Centro Gestor</p>
-                                <h1>{{selectedService.cgecod}}</h1>
-                                <h1>{{selectedService.cgedes}}</h1>
                             </div>
                             <div class="right">
-                                <input
-                                    type="checkbox"
-                                    [ngModel]="detailFlags.depalm"
-                                    (ngModelChange)="toggleDetailFlag('depalm', $event)"
-                                > <span class="name">Almacenar</span> 
-                                <input
-                                    type="checkbox"
-                                    [ngModel]="detailFlags.depcom"
-                                    (ngModelChange)="toggleDetailFlag('depcom', $event)"
-                                > <span class="name">Comprar</span> 
-                                <input
-                                    type="checkbox"
-                                    [ngModel]="detailFlags.depint"
-                                    (ngModelChange)="toggleDetailFlag('depint', $event)"
-                                > <span class="name">Contabilizar</span>
+                                <div class="on-two">
+                                    <h1>{{selectedService.depcod}}</h1>
+                                    <p>Centro de coste</p>
+                                    <textarea 
+                                        class="short"
+                                        [(ngModel)]="selectedService.ccocod"
+                                        #cco
+                                    ></textarea>
+                                </div>
+                                <textarea 
+                                    class="long" 
+                                    [(ngModel)]="selectedService.depdes"
+                                    #des
+                                ></textarea>
+                                <div class="on-two">
+                                    <h1>{{selectedService.cgecod}}</h1>
+                                    <h1>{{selectedService.cgedes}}</h1>
+                                </div>
                             </div>
+                        </div>
+                        <div class="chunk-two">
+                            <div class="left">
+                                <p>Unidad tramitadora</p>
+                                <p>Órgano gestor</p>
+                                <p>Oficina contable</p>
+                            </div>
+                            <div class="right">
+                                <div class="on-two">
+                                    <textarea 
+                                        class="short"
+                                        [(ngModel)]="selectedService.depd1C"
+                                        #d1c
+                                    ></textarea>
+                                    <textarea 
+                                        [(ngModel)]="selectedService.depd1D" 
+                                        class="long"
+                                        #d1d
+                                    ></textarea>
+                                </div>
+                                <div class="on-two">
+                                    <textarea 
+                                        class="short"
+                                        [(ngModel)]="selectedService.depd2C"
+                                        #d2c
+                                    ></textarea>
+                                    <textarea 
+                                        [(ngModel)]="selectedService.depd2D" 
+                                        class="long"
+                                        #d2d
+                                    ></textarea>
+                                </div>
+                                <div class="on-two">
+                                    <textarea 
+                                        class="short"
+                                        [(ngModel)]="selectedService.depd3C"
+                                        #d3c
+                                    ></textarea>
+                                    <textarea 
+                                        [(ngModel)]="selectedService.depd3D" 
+                                        class="long"
+                                        #d3d
+                                    ></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chunk-three">
+                            <input
+                                type="checkbox"
+                                [ngModel]="detailFlags.depalm"
+                                (ngModelChange)="toggleDetailFlag('depalm', $event)"
+                            > <span class="name">Almacenar</span> <br>
+                            <input
+                                type="checkbox"
+                                [ngModel]="detailFlags.depcom"
+                                (ngModelChange)="toggleDetailFlag('depcom', $event)"
+                            > <span class="name">Comprar</span> <br>
+                            <input
+                                type="checkbox"
+                                [ngModel]="detailFlags.depint"
+                                (ngModelChange)="toggleDetailFlag('depint', $event)"
+                            > <span class="name">Contabilizar</span>
+                        </div>
+                    </div>
+                    <div class="chunk-four">
+                        <div class="first-det">
+                            <p>Datos de contacto</p>
+                            <textarea 
+                                class="heighty long"
+                                [(ngModel)]="selectedService.depdco"
+                                #dco
+                            ></textarea>
+                        </div>
+                        <div class="second-det">
+                            <p>Datos de entrega</p>
+                            <textarea 
+                                class="heighty long"
+                                [(ngModel)]="selectedService.depden"
+                                #den
+                            ></textarea>
                         </div>
                     </div>
                     <div class="btns">
@@ -213,14 +280,6 @@
                                 [class.active-tab]="option === 'personas'"
                                 (click)="setOption('personas')"
                             > Personas
-                            </button>
-                            <button 
-                                class="tab-btn"
-                                role="tab"
-                                [attr.aria-selected]="option === 'datos'"
-                                [class.active-tab]="option === 'datos'"
-                                (click)="[setOption('datos'), datos(selectedService)]"
-                            > Datos para pedidos
                             </button>
                             <button 
                                 class="tab-btn"
@@ -264,80 +323,6 @@
                                     />
                                     <span>de {{ personasTotalPages }}</span>
                                     <button (click)="personasNextPage()" [disabled]="personasPage + 1 >= personasTotalPages">Siguiente</button>
-                                </div>
-                            </div>
-                        </ng-container>
-                        <ng-container *ngSwitchCase="'datos'">
-                            <div class="perstana-content" *ngIf="datosObject">
-                                <div class="btns">
-                                    <button class="save-btn" (click)="updateServiceSecond(selectedService.depcod, d1c.value, d1d.value, d2c.value, d2d.value, d3c.value, d3d.value, dco.value, den.value)">✔</button>
-                                </div>
-                                <h1 class="errorBtn">{{updateServiceSecondError}}</h1>
-                                <h1 class="successBtn">{{updateServiceSecondSuccess}}</h1>
-                                <div class="detail-chunks-container">
-                                    <div class="chunk-one">
-                                        <div class="left-detail">
-                                            <p>Unidad tramitadora</p>
-                                            <p>Órgano gestor</p>
-                                            <p>Oficina contable</p>
-                                        </div>
-                                        <div class="right-detail">
-                                            <div class="on-two">
-                                                <textarea 
-                                                    class="short"
-                                                    [(ngModel)]="datosObject.depd1C"
-                                                    #d1c
-                                                ></textarea>
-                                                <textarea 
-                                                    [(ngModel)]="datosObject.depd1D" 
-                                                    class="long"
-                                                    #d1d
-                                                ></textarea>
-                                            </div>
-                                            <div class="on-two">
-                                                <textarea 
-                                                    class="short"
-                                                    [(ngModel)]="datosObject.depd2C"
-                                                    #d2c
-                                                ></textarea>
-                                                <textarea 
-                                                    [(ngModel)]="datosObject.depd2D" 
-                                                    class="long"
-                                                    #d2d
-                                                ></textarea>
-                                            </div>
-                                            <div class="on-two">
-                                                <textarea 
-                                                    class="short"
-                                                    [(ngModel)]="datosObject.depd3C"
-                                                    #d3c
-                                                ></textarea>
-                                                <textarea 
-                                                    [(ngModel)]="datosObject.depd3D" 
-                                                    class="long"
-                                                    #d3d
-                                                ></textarea>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="chunk-two">
-                                        <div class="left-detail gap">
-                                            <p>Datos de contacto</p>
-                                            <p>Datos de entrega</p>
-                                        </div>
-                                        <div class="right-detail">
-                                            <textarea 
-                                                class="heighty long"
-                                                [(ngModel)]="datosObject.depdco"
-                                                #dco
-                                            ></textarea>
-                                            <textarea 
-                                                class="heighty long"
-                                                [(ngModel)]="datosObject.depden"
-                                                #den
-                                            ></textarea>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </ng-container>

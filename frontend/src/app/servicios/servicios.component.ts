@@ -420,8 +420,8 @@ export class ServiciosComponent {
     this.almacenDatosArray = [];
   }
 
-  option: 'personas' | 'datos' | 'almacen' = 'personas';
-  setOption(next: 'personas' | 'datos' | 'almacen'): void {
+  option: 'personas' | 'almacen' = 'personas';
+  setOption(next: 'personas' | 'almacen'): void {
     this.option = next;
   }
 
@@ -501,12 +501,6 @@ export class ServiciosComponent {
     }
   }
 
-  datosObject: any = null;
-  datos(service: any) {
-    this.limpiarMessages();
-    this.datosObject = service;
-  }
-
   almacenErro: string = '';
   almacenArray: any = null;
   almacenDatosArray: any[] = [];
@@ -537,28 +531,28 @@ export class ServiciosComponent {
 
   updateServiceSecondError: string = '';
   updateServiceSecondSuccess: string = '';
-  updateServiceSecond(depcod: string, depd1c:string, depd1d:string, depd2c:string, depd2d:string, depd3c:string, depd3d:string, depdco:string, depden:string) {
-    this.limpiarMessages();
-    const payload = {
-      "depd1c": depd1c,
-      "depd1d": depd1d,
-      "depd2c": depd2c,
-      "depd2d": depd2d,
-      "depd3c": depd3c,
-      "depd3d": depd3d,
-      "depdco": depdco,
-      "depden": depden
-    }
+  // updateServiceSecond(depcod: string, depd1c:string, depd1d:string, depd2c:string, depd2d:string, depd3c:string, depd3d:string, depdco:string, depden:string) {
+  //   this.limpiarMessages();
+  //   const payload = {
+  //     "depd1c": depd1c,
+  //     "depd1d": depd1d,
+  //     "depd2c": depd2c,
+  //     "depd2d": depd2d,
+  //     "depd3c": depd3c,
+  //     "depd3d": depd3d,
+  //     "depdco": depdco,
+  //     "depden": depden
+  //   }
 
-    this.http.patch(`${environment.backendUrl}/api/dep/update-service-second/${this.entcod}/${this.eje}/${depcod}`, payload).subscribe({
-      next: (res) => {
-        this.updateServiceSecondSuccess = 'Se ha actualizado la pestaña Detalles del pedido';
-      },
-      error: (err) => {
-        this.updateServiceSecondError =  err?.error;
-      }
-    })
-  }
+  //   this.http.patch(`${environment.backendUrl}/api/dep/update-service-second/${this.entcod}/${this.eje}/${depcod}`, payload).subscribe({
+  //     next: (res) => {
+  //       this.updateServiceSecondSuccess = 'Se ha actualizado la pestaña Detalles del pedido';
+  //     },
+  //     error: (err) => {
+  //       this.updateServiceSecondError =  err?.error;
+  //     }
+  //   })
+  // }
 
   //add grid functions
   showAddConfirm: boolean = false;
