@@ -427,10 +427,10 @@ export class ServiciosComponent {
 
   updateServiceSuccessMessage: string = '';
   updateServiceErrorMessage: string = ''
-  updateService(cod:string, des: string, cco:string) {
+  updateService(cod:string, des: string) {
     this.limpiarMessages();
 
-    if (cod === '' || des === '' || cco === '') {
+    if (cod === '' || des === '') {
       this.updateServiceErrorMessage = 'Todos los campos son obligatorios.'
       return;
     }
@@ -439,8 +439,7 @@ export class ServiciosComponent {
       depdes: des,
       depalm: this.detailFlags.depalm ? 1 : 0,
       depcom: this.detailFlags.depcom ? 1 : 0,
-      depint: this.detailFlags.depint ? 1 : 0,
-      ccocod: cco
+      depint: this.detailFlags.depint ? 1 : 0
     };
 
     this.http.patch(`${environment.backendUrl}/api/dep/update-service/${this.entcod}/${this.eje}/${cod}`, payload).subscribe({

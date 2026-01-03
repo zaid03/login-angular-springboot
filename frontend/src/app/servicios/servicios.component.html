@@ -154,7 +154,7 @@
                         <div class="title-detail">
                             <h3>Detalles de Servicio</h3>
                         </div>
-                        <button class="save-btn" (click)="updateService(selectedService.depcod, des.value, cco.value); updateServiceSecond(selectedService.depcod, d1c.value, d1d.value, d2c.value, d2d.value, d3c.value, d3d.value, dco.value, den.value)">✔</button>
+                        <button class="save-btn" (click)="updateService(selectedService.depcod, des.value); updateServiceSecond(selectedService.depcod, d1c.value, d1d.value, d2c.value, d2d.value, d3c.value, d3d.value, dco.value, den.value)">✔</button>
                         <button class="close-btn-btn" (click)="closeDetails()">✖</button>
                     </div>  
                     <h1 class="successBtn">{{ updateServiceSuccessMessage }}</h1>
@@ -170,11 +170,7 @@
                                 <div class="on-two">
                                     <h1>{{selectedService.depcod}}</h1>
                                     <p>Centro de coste</p>
-                                    <textarea 
-                                        class="short"
-                                        [(ngModel)]="selectedService.ccocod"
-                                        #cco
-                                    ></textarea>
+                                    <h1>{{selectedService.ccocod}}</h1>
                                 </div>
                                 <textarea 
                                     class="long" 

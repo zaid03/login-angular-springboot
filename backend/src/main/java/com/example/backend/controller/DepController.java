@@ -75,7 +75,7 @@ public class DepController {
         @RequestBody serviceUpdate payload
     ) {
         try {
-            if (payload == null || payload.depdes() == null || payload.depalm() == null || payload.depcom() == null || payload.depint() == null || payload.ccocod() == null) {
+            if (payload == null || payload.depdes() == null || payload.depalm() == null || payload.depcom() == null || payload.depint() == null) {
                 return ResponseEntity.badRequest().body("Faltan datos obligatorios.");
             }
 
@@ -84,7 +84,6 @@ public class DepController {
                 payload.depalm(),
                 payload.depcom(),
                 payload.depint(),
-                payload.ccocod(),
                 ent,
                 eje,
                 depcod

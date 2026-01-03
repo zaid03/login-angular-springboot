@@ -77,8 +77,7 @@ public interface DepRepository  extends JpaRepository<Dep, DepId> {
             d.DEPDES = :DEPDES, 
             d.DEPALM = :DEPALM, 
             d.DEPCOM = :DEPCOM, 
-            d.DEPINT = :DEPINT, 
-            d.CCOCOD = :CCOCOD 
+            d.DEPINT = :DEPINT
         where 
             d.ENT = :ENT
             AND d.EJE = :EJE
@@ -89,7 +88,6 @@ public interface DepRepository  extends JpaRepository<Dep, DepId> {
         @Param("DEPALM") Integer DEPALM,
         @Param("DEPCOM") Integer DEPCOM,
         @Param("DEPINT") Integer DEPINT,
-        @Param("CCOCOD") String CCOCOD,
         @Param("ENT") Integer ENT,
         @Param("EJE") String EJE,
         @Param("DEPCOD") String DEPCOD
