@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.backend.dto.DepWithCgeDto;
+import com.example.backend.dto.serviciosDto;
 import com.example.backend.sqlserver2.model.Dep;
 import com.example.backend.sqlserver2.model.Dpe;
 import com.example.backend.sqlserver2.repository.DepRepository;
@@ -30,6 +31,24 @@ public class DepController {
     private DpeRepository dpeRepository;
 
     //fetching all services
+    @GetMapping("/fetch-services/{ENT}/{EJE}")
+    public ResponseEntity<?> fetchServices(
+        @PathVariable Integer ENT,
+        @PathVariable String EJE
+    ) {
+        try {
+            List<serviciosDto> services = depRepository.findByENTAndEJE(ENT, EJE);
+            if (services.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontraron servicios");
+            }
+
+            return ResponseEntity.ok(services);
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al consultar servicios: " + ex.getMostSpecificCause().getMessage());
+        }
+    }
+
+    //fetching services for a user (main panel)
     @GetMapping("/fetch-services/{ent}/{eje}/{percod}")
     public ResponseEntity<?> fetchAllservices(
         @PathVariable Integer ent,
