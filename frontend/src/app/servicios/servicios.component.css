@@ -38,21 +38,26 @@
 .name,
 .almacen-title p,
 .left-add p,
+.right-add p,
 .first-det p,
-.second-det p { font-size: 14px; font-weight: bold; color: #25176b; }
+.second-det p,
+.left-special p { font-size: 14px; font-weight: bold; color: #25176b; }
 .detail-container .right h1,
 .almacen-title  h1 {color: #162a3a; font-size: 18px;}
 .chunk-one textarea,
 .chunk-two textarea,
 .right-add textarea,
 .first-det textarea,
-.second-det textarea { height: 20px; padding: 2px 4px; border-radius: 6px; font-weight: bold; color: #162a3a;}
+.second-det textarea,
+.right-special textarea { height: 20px; padding: 2px 4px; border-radius: 6px; font-weight: bold; color: #162a3a;}
 .chunk-one textarea:focus,
 .chunk-two textarea:focus,
 .right-add textarea:focus,
 .first-det textarea:focus,
-.second-det textarea:focus { outline: none; border-color: #042b5a; outline: none; background: #fff; } 
+.second-det textarea:focus,
+.right-special textarea:focus { outline: none; border-color: #042b5a; outline: none; background: #fff; } 
 .long {width: 70%; max-width: 90%;}
+.special-long { width: 90%; max-width: 95%;}
 .short {width: 80px; max-width: 180px;}
 .services-table tbody td input[type="checkbox"],
 .chunk-three input[type="checkbox"],
@@ -64,9 +69,18 @@
 /* detail grid's grids */
 /* add grid */
 .add-confirm-modal { position: fixed; top: 15%; left: 50%; width: 50%; }
-.add-container { display: flex;}
-.left-add { width: 20%; display: flex; flex-direction: column; text-align: left; gap: 18px; }
-.right-add { width: 80%; display: flex; flex-direction: column; gap: 10px; }
-.checkboxes {display: flex; flex-direction: column; align-items: flex-start; gap: 22px;}
+.add-container { display: flex; flex-direction: column; gap: 10px;}
+.first-content,
+.second-content,
+.third-content {display: flex;}
+.left-add,
+.left-special {width: 20%; text-align: left; display: flex; flex-direction: column; gap: 20px;}
+.right-add,
+.right-special {width: 80%; display: flex; flex-direction: column; gap: 10px;}
+.on-three {display: flex; gap: 10px; align-items: center;}
+.second-content {justify-content: center;}
+.checkboxes {display: flex; gap: 10px; align-items: center;}
 .title {width: 80%;}
+.fourth-content {display: flex;}
+.left-special { gap: 50px;}
 /* add grid */

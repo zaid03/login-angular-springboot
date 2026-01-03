@@ -577,10 +577,10 @@ export class ServiciosComponent {
   addDepcom: boolean = false;
   addDepint: boolean = false;
   addServiceErrorMessage: string = '';
-  addService(cod: string, des:string, cco:string, cge: string) {
+  addService(cod: string, des:string, cco:string, cge: string, d1c_add:string, d1d_add:string, d2c_add:string, d2d_add:String, d3c_add:string, d3d_add:string, den_add:string, dco_add:string) {
     this.limpiarMessages();
-    if (cod === '' || des === '' || cco === '') {
-      this.addServiceErrorMessage = 'Todos los campos son obligatorios.'
+    if (cod === '' || des === '' || cco === '' || cge === '') {
+      this.addServiceErrorMessage = 'Se requieren Código, Descripción, Centro de Coste y Centro de Gestor'
       return;
     }
 
@@ -594,20 +594,30 @@ export class ServiciosComponent {
       "depint": this.addDepint ? 1 : 0,
       "ccocod": cco,
       "cgecod": cge,
-      "percod": this.perfil
+      "percod": this.perfil,
+      "depd1c": d1c_add,
+      "depd1d": d1d_add,
+      "depd2c": d2c_add,
+      "depd2d": d2d_add,
+      "depd3c": d3c_add,
+      "depd3d": d3d_add,
+      "depden": den_add,
+      "depdco": dco_add
     }
 
-    this.http.post(`${environment.backendUrl}/api/dep/Insert-service`, payload).subscribe({
-      next: (res) => {
-        this.servicesMessageSuccess = 'Servicio añadido con éxito';
-        this.closeAddConfirm();
-      },
-      error: (err) => {
-        this.addServiceErrorMessage = 'Server error: ' + err?.error;
-      }
-    })
+    console.log(payload)
 
-    this.fetchServices();
+    // this.http.post(`${environment.backendUrl}/api/dep/Insert-service`, payload).subscribe({
+    //   next: (res) => {
+    //     this.servicesMessageSuccess = 'Servicio añadido con éxito';
+    //     this.closeAddConfirm();
+    //   },
+    //   error: (err) => {
+    //     this.addServiceErrorMessage = 'Server error: ' + err?.error;
+    //   }
+    // })
+
+    // this.fetchServices();
   }
 
   //misc

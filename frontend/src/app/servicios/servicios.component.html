@@ -9,7 +9,7 @@
     <div class="services-container" [class.blurred]="!sidebar.collapsed">
         <div class="title-menu">
             <div class="title-area">
-                <h2 class="margin-title">listas de servicios</h2>  
+                <h2 class="margin-title">Servicios</h2>  
             </div>
             <div class="search-holder">
                 <div class="search-container">
@@ -358,29 +358,90 @@
         <div class="title">
             <h3>Añadir un servicio</h3>
         </div>
-        <button class="add-btn" (click)="addService(codigo.value, description.value, centroCoste.value, centroGestor.value)">+</button>
+        <button class="add-btn" (click)="addService(codigo.value, description.value, centroCoste.value, centroGestor.value, d1c_add.value, d1d_add.value, d2c_add.value, d2d_add.value, d3c_add.value, d3d_add.value, den_add.value, dco_add.value)">+</button>
         <button class="cancel-btn" (click)="closeAddConfirm()">✖</button>
     </div>
     <h1 class="errorBtn">{{ addServiceErrorMessage }}</h1>
     <div class="add-container">
-        <div class="left-add">
-            <p>Código*</p>
-            <p>Centro de Coste*</p>
-            <p>Centro Gestor*</p>
-            <p>Descripción*</p>
-            <p>Almacén/Farmacia</p>
-            <p>Comprador</p>
-            <p>Contabilidad</p>
+        <div class="first-content">
+            <div class="left-add">
+                <p>Código*</p>
+                <p>Descripción*</p>
+            </div>
+            <div class="right-add">
+                <div class="on-three">
+                    <textarea class="short" (input)="setInputToUpper($event)" #codigo ></textarea>
+                    <p>Centro de Coste*</p>
+                    <textarea class="short" #centroCoste ></textarea>
+                    <p>Centro Gestor*</p>
+                    <textarea class="short" #centroGestor></textarea>
+                </div>
+                <textarea class="special-long" #description></textarea>
+            </div>
         </div>
-        <div class="right-add">
-            <textarea class="short" (input)="setInputToUpper($event)" #codigo ></textarea>
-            <textarea class="short" #centroCoste ></textarea>
-            <textarea class="short" #centroGestor></textarea>
-            <textarea #description></textarea>
+        <div class="second-content">
             <div class="checkboxes">
                 <input type="checkbox" [(ngModel)]="addDepalm">
+                <span class="name">Almacén/Farmacia</span>
                 <input type="checkbox" [(ngModel)]="addDepcom">
+                <span class="name">Comprador</span>
                 <input type="checkbox" [(ngModel)]="addDepint">
+                <span class="name">Contabilidad</span>
+            </div>
+        </div>
+        <div class="third-content">
+            <div class="left-add">
+                <p>Unidad tramitadora</p>
+                <p>Órgano gestor</p>
+                <p>Oficina contable</p>
+            </div>
+            <div class="right-add">
+                <div class="on-two">
+                    <textarea 
+                        class="short"
+                        #d1c_add
+                    ></textarea>
+                    <textarea 
+                        class="long"
+                        #d1d_add
+                    ></textarea>
+                </div>
+                <div class="on-two">
+                    <textarea 
+                        class="short"
+                        #d2c_add
+                    ></textarea>
+                    <textarea 
+                        class="long"
+                        #d2d_add
+                    ></textarea>
+                </div>
+                <div class="on-two">
+                    <textarea 
+                        class="short"
+                        #d3c_add
+                    ></textarea>
+                    <textarea 
+                        class="long"
+                        #d3d_add
+                    ></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="fourth-content">
+            <div class="left-special">
+                <p>Datos de entrega</p>
+                <p>Datos de contacto</p>
+            </div>
+            <div class="right-special">
+                <textarea 
+                    class="heighty special-long"
+                    #den_add
+                ></textarea>
+                <textarea 
+                    class="heighty special-long"
+                    #dco_add
+                ></textarea>
             </div>
         </div>
     </div>
