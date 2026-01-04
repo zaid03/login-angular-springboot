@@ -94,6 +94,7 @@ export class DashboardComponent implements OnInit {
         this.router.navigate(['/servicios']);
         break;
       case 'personas':
+        this.router.navigate(['/persona']);
         break;
       case 'entrega':
         this.router.navigate(['/entrega']);
