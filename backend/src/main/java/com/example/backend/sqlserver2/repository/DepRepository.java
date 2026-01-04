@@ -132,17 +132,15 @@ public interface DepRepository  extends JpaRepository<Dep, DepId> {
     //search function
     @Query("""
         SELECT d FROM Dep d
-        JOIN Dpe p ON d.ENT = p.ENT AND d.EJE = p.EJE AND d.DEPCOD = p.DEPCOD
         WHERE d.ENT = :ent
         AND d.EJE = :eje
-        AND p.PERCOD = :percod
         AND (
                 (:search IS NULL)
                     OR (
                         (LENGTH(:search) BETWEEN 1 AND 8 AND d.DEPCOD LIKE %:search%)
                         OR
                         (LENGTH(:search) > 6 AND d.DEPDES LIKE %:search%)
-                    )
+                )
             )
         AND (
                 (:cgecod IS NULL OR :cgecod = '')
