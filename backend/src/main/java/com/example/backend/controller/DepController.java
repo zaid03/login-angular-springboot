@@ -129,6 +129,7 @@ public class DepController {
             nueva.setDEPDES(payload.depdes());
             nueva.setDEPALM(payload.depalm());
             nueva.setDEPCOM(payload.depcom());
+            nueva.setDEPINT(payload.depint());
             nueva.setCCOCOD(payload.ccocod());
             nueva.setCGECOD(payload.cgecod());
             nueva.setDEPD1C(payload.depd1c());

@@ -562,7 +562,6 @@ export class ServiciosComponent {
 
   closeAddConfirm() {
     this.showAddConfirm = false;
-    this.limpiarMessages();
   }
 
   newCge = '';
@@ -601,23 +600,22 @@ export class ServiciosComponent {
       "depd2d": d2d_add,
       "depd3c": d3c_add,
       "depd3d": d3d_add,
-      "depden": den_add,
-      "depdco": dco_add
+      "depdco": dco_add,
+      "depden": den_add
     }
 
     console.log(payload)
 
-    // this.http.post(`${environment.backendUrl}/api/dep/Insert-service`, payload).subscribe({
-    //   next: (res) => {
-    //     this.servicesMessageSuccess = 'Servicio añadido con éxito';
-    //     this.closeAddConfirm();
-    //   },
-    //   error: (err) => {
-    //     this.addServiceErrorMessage = 'Server error: ' + err?.error;
-    //   }
-    // })
-
-    // this.fetchServices();
+    this.http.post(`${environment.backendUrl}/api/dep/Insert-service`, payload).subscribe({
+      next: (res) => {
+        this.servicesMessageSuccess = 'Servicio añadido con éxito';
+        this.fetchServices();
+        this.closeAddConfirm();
+      },
+      error: (err) => {
+        this.addServiceErrorMessage = 'Server error: ' + err?.error;
+      }
+    })
   }
 
   //misc
