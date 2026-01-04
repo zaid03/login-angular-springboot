@@ -290,6 +290,7 @@
                     </div>
                     <div class="custom-grid-modal" [ngSwitch]="option">
                         <ng-container *ngSwitchCase="'personas'">
+                            <button class="add-btn">+</button>
                             <h1 class="errorBtn">{{personasError}}</h1>
                             <div class="personas-list">
                                 <table class="personas-table">
@@ -297,12 +298,14 @@
                                         <tr>
                                             <th>Código Persona</th>
                                             <th>Nombre</th>
+                                            <th>Acción</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr *ngFor="let p of paginatedPersonas">
                                             <td>{{ p[0] }}</td>
                                             <td>{{ p[1] }}</td>
+                                            <td><button class="delete-btn">-</button></td>
                                         </tr>
                                     </tbody>
                                 </table>
