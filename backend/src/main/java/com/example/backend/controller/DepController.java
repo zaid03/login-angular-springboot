@@ -20,6 +20,7 @@ import com.example.backend.sqlserver2.model.Dep;
 import com.example.backend.sqlserver2.model.Dpe;
 import com.example.backend.sqlserver2.repository.DepRepository;
 import com.example.backend.sqlserver2.repository.DpeRepository;
+import com.example.backend.sqlserver2.repository.CcoRepository;
 
 @RestController
 @RequestMapping("/api/dep")
@@ -28,6 +29,8 @@ public class DepController {
     private DepRepository depRepository;
     @Autowired
     private DpeRepository dpeRepository;
+    @Autowired
+    private CcoRepository ccoRepository;
 
     //fetching all services
     @GetMapping("/fetch-services/{ENT}/{EJE}")
@@ -96,23 +99,27 @@ public class DepController {
             return ResponseEntity.noContent().build();
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Update failed: " + ex.getMostSpecificCause().getMessage());
+                .body("La actualización falló: " + ex.getMostSpecificCause().getMessage());
         }
     }
 
     //adding a service
-    public record serviceAdd(Integer ent, String eje, String depcod, String depdes, Integer depalm, Integer depcom, Integer depint, String ccocod, String cgecod, String percod) {}
+    public record serviceAdd(Integer ent, String eje, String depcod, String depdes, Integer depalm, Integer depcom, Integer depint, String ccocod, String cgecod, String depd1c, String depd1d, String depd2c, String depd2d, String depd3c, String depd3d, String depdco, String depden, String percod) {}
     @PostMapping("/Insert-service")
     public ResponseEntity<?> addCentroGestor(
         @RequestBody serviceAdd payload
     ) {
         try {
-            if (payload == null || payload.ent() == null || payload.eje() == null || payload.depcod() == null || payload.depdes() == null || payload.depalm() == null || payload.depcom() == null || payload.depint() == null || payload.ccocod() == null || payload.cgecod() == null || payload.percod == null) {
+            if (payload == null || payload.ent() == null || payload.eje() == null || payload.depcod() == null || payload.depdes() == null || payload.depalm() == null || payload.depcom() == null || payload.depint() == null || payload.ccocod() == null || payload.cgecod() == null || payload.ccocod == null || payload.percod == null) {
                 return ResponseEntity.badRequest().body("Faltan datos obligatorios.");
             }
             if(!depRepository.findByENTAndEJEAndDEPCOD(payload.ent(), payload.eje(), payload.depcod()).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body("Este servicio ya existe   .");
+                    .body("Este servicio ya existe");
+            }
+            if(ccoRepository.countByENTAndEJEAndCCOCOD(payload.ent(), payload.eje(), payload.ccocod()) == 0) {
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("El Centro de Coste no existe");
             }
 
             Dep nueva = new Dep();
@@ -124,19 +131,27 @@ public class DepController {
             nueva.setDEPCOM(payload.depcom());
             nueva.setCCOCOD(payload.ccocod());
             nueva.setCGECOD(payload.cgecod());
+            nueva.setDEPD1C(payload.depd1c());
+            nueva.setDEPD1D(payload.depd1d());
+            nueva.setDEPD2C(payload.depd2c());
+            nueva.setDEPD2D(payload.depd2d());
+            nueva.setDEPD3C(payload.depd3c());
+            nueva.setDEPD3D(payload.depd3d());
+            nueva.setDEPDCO(payload.depdco());
+            nueva.setDEPDEN(payload.depden());
             depRepository.save(nueva);
 
-            Dpe nuevoDpe = new Dpe();
-            nuevoDpe.setENT(payload.ent());
-            nuevoDpe.setEJE(payload.eje());
-            nuevoDpe.setDEPCOD(payload.depcod());
-            nuevoDpe.setPERCOD(payload.percod());
-            dpeRepository.save(nuevoDpe);
+            // Dpe nuevoDpe = new Dpe();
+            // nuevoDpe.setENT(payload.ent());
+            // nuevoDpe.setEJE(payload.eje());
+            // nuevoDpe.setDEPCOD(payload.depcod());
+            // nuevoDpe.setPERCOD(payload.percod());
+            // dpeRepository.save(nuevoDpe);
             
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Update failed: " + ex.getMostSpecificCause().getMessage());
+                .body("la adición fallida: " + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -177,7 +192,7 @@ public class DepController {
             return ResponseEntity.noContent().build();
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Update failed: " + ex.getMostSpecificCause().getMessage());
+                .body("La actualización falló: " + ex.getMostSpecificCause().getMessage());
         }
     }
     

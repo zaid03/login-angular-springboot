@@ -52,4 +52,21 @@ public interface CcoRepository extends JpaRepository<Cco, CcoId> {
         @Param("EJE") String EJE,
         @Param("CCOCOD") String CCOCOD
     );
+
+    //needed for adding a service
+    @Query(
+        value = """
+            SELECT COUNT(*)
+            FROM CCO
+            WHERE ENT = :ENT
+            AND EJE = :EJE
+            AND CCOCOD = :CCOCOD
+        """,
+        nativeQuery = true
+    )
+    Long countByENTAndEJEAndCCOCOD(
+        @Param("ENT") Integer ENT,
+        @Param("EJE") String EJE,
+        @Param("CCOCOD") String CCOCOD
+    );
 }
