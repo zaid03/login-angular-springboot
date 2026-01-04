@@ -221,6 +221,125 @@ export class PersonaComponent {
     );
   }
 
+  toPrint() {
+    const rows = this.backuppersonas.length ? this.backuppersonas : this.personas;
+    if (!rows?.length) {
+      this.personasMessageError = 'No hay datos para imprimir.';
+      return;
+    }
+
+    const htmlRows = rows.map((row, index) => `
+      <tr>
+        <td>${index + 1}</td>
+        <td>${row.percod ?? ''}</td>
+        <td>${row.pernom ?? ''}</td>
+        <td>${row.percoe ?? ''}</td>
+        <td>${row.pertel ?? ''}</td>
+        <td>${row.pertmo ?? ''}</td>
+        <td>${row.percar ?? ''}</td>
+        <td>${row.perobs ?? ''}</td>
+      </tr>
+    `).join('');
+
+    const printWindow = window.open('', '_blank', 'width=900,height=700');
+    if (!printWindow) return;
+
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>listas de Personas</title>
+          <style>
+            body { font-family: 'Poppins', sans-serif; padding: 24px; }
+            h1 { text-align: center; margin-bottom: 16px; }
+            table { width: 100%; border-collapse: collapse; }
+            th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
+            th { background: #f3f4f6; }
+            th:last-child, td:last-child { width: 180px; }
+          </style>
+        </head>
+        <body>
+          <h1>listas de Personas</h1>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Código</th>
+                <th>Nombre</th>
+                <th>Correo Electrónico</th>
+                <th>Teléfono</th>
+                <th>Móvil</th>
+                <th>Cargo</th>
+                <th>Observaciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${htmlRows}
+            </tbody>
+          </table>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
+  }
+
+  searchPersonas: string = '';
+  search() {
+    if(this.searchPersonas === '') {
+      this.personasMessageError = 'Ingrese algo para buscar';
+      return 
+    }
+
+    if(this.searchPersonas.length <= 20) {
+      this.http.get<any>(`${environment.backendUrl}/api/Per/search-cod-nom/${this.searchPersonas}`).subscribe({
+        next: (res) => {
+          this.personas = res;
+          this.backuppersonas = Array.isArray(res) ? [...res] : [];
+          this.defaultpersonas = [...this.backuppersonas];
+          this.page = 0;
+          this.updatePagination();
+          if (!res.length) {
+            this.personasMessageError = 'No se encontraron servicios con los filtros dados.';
+          }
+        },
+        error: (err) => {
+          this.personas = [];
+          this.backuppersonas = [];
+          this.defaultpersonas = [];
+          this.page = 0;
+          this.updatePagination();
+          this.personasMessageError = err?.error || 'Error en la búsqueda.';
+        }
+      });
+    } else {
+      this.http.get<any>(`${environment.backendUrl}/api/Per/search-nom/{this.searchPersonas}`).subscribe({
+        next: (res) => {
+          this.personas = res;
+          this.backuppersonas = Array.isArray(res) ? [...res] : [];
+          this.defaultpersonas = [...this.backuppersonas];
+          this.page = 0;
+          this.updatePagination();
+          if (!res.length) {
+            this.personasMessageError = 'No se encontraron servicios con los filtros dados.';
+          }
+        },
+        error: (err) => {
+          this.personas = [];
+          this.backuppersonas = [];
+          this.defaultpersonas = [];
+          this.page = 0;
+          this.updatePagination();
+          this.personasMessageError = err?.error || 'Error en la búsqueda.';
+        }
+      });
+    }
+  }
+
+  limpiarSearch() {
+    this.searchPersonas = '';
+    this.fetchPersonas();
+  }
+
   //detail grid
   selectedPersona: any = null;
   showDetails(persona: any) {

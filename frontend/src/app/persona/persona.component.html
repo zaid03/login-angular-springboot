@@ -17,12 +17,13 @@
                         <input 
                             type="text" 
                             class="search-bar"
-                            placeholder="servicios" 
+                            placeholder="Personas" 
+                            [(ngModel)]="searchPersonas"
                         >
                     </div>
                     <div class="btns Widthy">
-                        <button class="search-btn">Buscar</button>
-                        <button class="Limpiar-btn">Limpiar</button>
+                        <button class="search-btn" (click)="search()">Buscar</button>
+                        <button class="Limpiar-btn" (click)="limpiarSearch()">Limpiar</button>
                     </div>
                 </div>
             </div>
@@ -32,7 +33,7 @@
                 <div class="dot"></div>
                 <div class="menu-panel" *ngIf="showMenu">
                     <button class="download-btn" (click)="excelDownload()">Descargar como Excel</button>
-                    <button class="print-btn">Impreso</button>
+                    <button class="print-btn" (click)="toPrint()">Impreso</button>
                     <button class="add-familia-btn">Añadir</button>
                 </div>
             </div>
