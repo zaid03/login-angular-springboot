@@ -8,7 +8,6 @@ import { environment } from '../../environments/environment';
 
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
-import { Serializer } from '@angular/compiler';
 
 @Component({
   selector: 'app-servicios',

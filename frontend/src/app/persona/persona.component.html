@@ -1,1 +1,125 @@
-<p>persona works!</p>
+<div class="persona-page">
+    <div 
+        class="sidebar-backdrop" 
+        *ngIf="!sidebar.collapsed" 
+        (click)="sidebar.collapsed = true"
+    >
+    </div>
+    <app-sidebar #sidebar></app-sidebar>
+    <div class="persona-container" [class.blurred]="!sidebar.collapsed">
+        <div class="title-menu">
+            <div class="title-area">
+                <h2 class="margin-title">Personas</h2>  
+            </div>
+            <div class="search-holder">
+                <div class="search-container">
+                    <div class="search-form">
+                        <input 
+                            type="text" 
+                            class="search-bar"
+                            placeholder="servicios" 
+                        >
+                    </div>
+                    <div class="btns Widthy">
+                        <button class="search-btn">Buscar</button>
+                        <button class="Limpiar-btn">Limpiar</button>
+                    </div>
+                </div>
+            </div>
+            <div class="group-menu" (click)="toggleMenu($event)">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="menu-panel" *ngIf="showMenu">
+                    <button class="download-btn" (click)="excelDownload()">Descargar como Excel</button>
+                    <button class="print-btn">Impreso</button>
+                    <button class="add-familia-btn">Añadir</button>
+                </div>
+            </div>
+        </div>
+        <div class="personas-list">
+            <h1 class="successBtn">{{personasMessageSuccess}}</h1>
+            <h1 class="errorBtn">{{personasMessageError}}</h1>
+            <table class="personas-table">
+                <thead>
+                    <tr>
+                        <th class="sortable resizable" (click)="toggleSort('percod')">
+                            Código
+                            <span class="sort-indicator" *ngIf="sortField === 'percod'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                            <div class="resizer" (mousedown)="startResize($event, 0)"></div>
+                        </th>
+                        <th class="sortable resizable" (click)="toggleSort('pernom')">
+                            Nombre
+                            <span class="sort-indicator" *ngIf="sortField === 'pernom'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                            <div class="resizer" (mousedown)="startResize($event, 1)"></div>
+                        </th>
+                        <th class="sortable resizable" (click)="toggleSort('percoe')">
+                            Correo Electrónico
+                            <span class="sort-indicator" *ngIf="sortField === 'percoe'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                            <div class="resizer" (mousedown)="startResize($event, 2)"></div>
+                        </th>
+                        <th class="sortable resizable" (click)="toggleSort('pertel')">
+                            Teléfono
+                            <span class="sort-indicator" *ngIf="sortField === 'pertel'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                            <div class="resizer" (mousedown)="startResize($event, 3)"></div>
+                        </th>
+                        <th class="sortable resizable" (click)="toggleSort('pertmo')">
+                            Móvil
+                            <span class="sort-indicator" *ngIf="sortField === 'pertmo'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                            <div class="resizer" (mousedown)="startResize($event, 4)"></div>
+                        </th>
+                        <th class="sortable resizable" (click)="toggleSort('percar')">
+                            Cargo
+                            <span class="sort-indicator" *ngIf="sortField === 'percar'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                            <div class="resizer" (mousedown)="startResize($event, 5)"></div>
+                        </th>
+                        <th class="sortable resizable" (click)="toggleSort('perobs')">
+                            Observaciones
+                            <span class="sort-indicator" *ngIf="sortField === 'perobs'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                            <div class="resizer" (mousedown)="startResize($event, 6)"></div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let p of paginatedPersonas">
+                        <td (click)="showDetails(p)" style="cursor: pointer;">
+                            {{p.percod}}
+                        </td>
+                        <td>{{p.pernom}}</td>
+                        <td>{{p.percoe}}</td>
+                        <td>{{p.pertel}}</td>
+                        <td>{{p.pertmo}}</td>
+                        <td>{{p.percar}}</td>
+                        <td>{{p.perobs}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="pagination-controls">
+                <button (click)="prevPage()" [disabled]="page === 0">Anterior</button>
+                <span>Página</span>
+                <input
+                type="number"
+                min="1"
+                [max]="totalPages"
+                [value]="page + 1"
+                (change)="goToPage($event)"
+                class="pagination-input"
+                />
+                <span>de {{ totalPages }}</span>
+                <button (click)="nextPage()" [disabled]="page + 1 >= totalPages">Siguiente</button>
+            </div>
+            <div class="modal-backdrop" *ngIf="selectedPersona" (click)="closeDetails()"></div>
+            <div class="display">
+                <div class="modal" *ngIf="selectedPersona">
+                    <div class="btns">
+                        <div class="title-detail">
+                            <h3>Detalles de Persona</h3>
+                        </div>
+                        <button class="save-btn">✔</button>
+                        <button class="close-btn-btn" (click)="closeDetails()">✖</button>
+                    </div>  
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
