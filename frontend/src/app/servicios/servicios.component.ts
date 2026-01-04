@@ -618,6 +618,38 @@ export class ServiciosComponent {
     })
   }
 
+  //persona grid's functions
+  showDeleteConfirm: boolean = false;
+  personaTodelete: any;
+  deleErr: string = '';
+  showDelete(persona: any) {
+    this.showDeleteConfirm = true;
+    this.personaTodelete = persona;
+  }
+
+  closeDeleteConfirm() {
+    this.showDeleteConfirm = false;
+  }
+
+  personasSuccess: string = '';
+  confirmDelete(persona: string) {
+    const depcod = this.selectedService.depcod;
+    const percod = persona;
+
+    this.http.delete(`${environment.backendUrl}/api/depe/delete-persona-service/${this.entcod}/${this.eje}/${depcod}/${percod}`).subscribe({
+      next: (res) => {
+        this.personasSuccess = 'Persona eliminada exitosamente';
+        this.closeDeleteConfirm()
+        this.fetchPersonas(depcod);
+      },
+      error: (err) => {
+        this.deleErr = err?.error;
+      }
+    })
+  }
+
+
+
   //misc
   limpiarMessages() {
     this.servicesMessageSuccess = '';
@@ -629,5 +661,7 @@ export class ServiciosComponent {
     this.updateServiceSecondSuccess = '';
     this.almacenErro = '';
     this.addServiceErrorMessage = '';
+    this.personasSuccess = '';
+    this.deleErr = '';
   }
 }

@@ -88,4 +88,9 @@
 /* add grid */
 /* add persona grid */
 .add-btn {margin: 5px;}
+.delete-btn { margin-left: 10px;}
+.delete-confirm-modal { display: flex; flex-direction: column; align-items: center; gap: 2px;}
+.persona-details { display: flex;width: 50%; text-align: left;}
+.persona-details .left-add {width: 50%; gap: 10px;}
+.delete-confirm-modal .btns {justify-content: center;}
 /* add persona grid */

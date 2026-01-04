@@ -292,6 +292,7 @@
                         <ng-container *ngSwitchCase="'personas'">
                             <button class="add-btn">+</button>
                             <h1 class="errorBtn">{{personasError}}</h1>
+                            <h1 class="successBtn">{{personasSuccess}}</h1>
                             <div class="personas-list">
                                 <table class="personas-table">
                                     <thead>
@@ -305,7 +306,7 @@
                                         <tr *ngFor="let p of paginatedPersonas">
                                             <td>{{ p[0] }}</td>
                                             <td>{{ p[1] }}</td>
-                                            <td><button class="delete-btn">-</button></td>
+                                            <td><button class="delete-btn" (click)="showDelete(p)">-</button></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -447,5 +448,25 @@
                 ></textarea>
             </div>
         </div>
+    </div>
+</div>
+
+<div class="modal-backdrop" *ngIf="showDeleteConfirm" (click)="closeDeleteConfirm()"></div>
+<div class="delete-confirm-modal" *ngIf="showDeleteConfirm">
+    <h3>¿Seguro que quieres eliminar este Persona?</h3>
+    <h1 class="errorBtn">{{deleErr}}</h1>
+    <div class="persona-details">
+        <div class="left-add">
+            <p>Código:</p>
+            <p>Nombre:</p>
+        </div>
+        <div class="right-add">
+            <p>{{personaTodelete?.[0]}}</p>
+            <p>{{personaTodelete?.[1]}}</p>
+        </div>
+    </div>
+    <div class="btns">
+        <button class="delete-btn" (click)="confirmDelete(personaTodelete?.[0])">-</button>
+        <button class="save-btn" (click)="closeDeleteConfirm()">✖</button>
     </div>
 </div>
