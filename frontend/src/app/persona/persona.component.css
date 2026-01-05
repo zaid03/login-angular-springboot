@@ -7,3 +7,35 @@
 .personas-table thead th:nth-child(2),
 .personas-table thead th:nth-child(3),
 .personas-table thead th:last-child {width: 200px;}
+/* search */
+/* detail grid */
+.detail-cotainer {display: flex; flex-direction: column; flex-wrap: wrap; gap: 10px;}
+.above,
+.below {display: flex;}
+.chunk-one,
+.chunk-two {width: 49%; display: flex;}
+.left,
+.right {display: flex; flex-direction: column; }
+.left {width: 20%; gap: 20px;}
+.right {width: 80%; gap: 10px;}
+.on-two {display: flex; align-items: center; gap: 10px;}
+.chunk-one p,
+.chunk-two p,
+.below p {font-size: 14px; font-weight: bold; color: #25176b;}
+.chunk-one h1 {color: #162a3a; font-size: 18px;}
+.chunk-one textarea,
+.chunk-two textarea,
+.below textarea {height: 20px; padding: 2px 4px; border-radius: 6px; font-weight: bold; color: #162a3a;}
+.chunk-one textarea:focus,
+.chunk-two textarea:focus,
+.below textarea:focus {outline: none; border-color: #042b5a; outline: none; background: #fff;}
+.average {width: 190px; max-width: 290px;}
+.long { width: 355px; max-width: 390px;}
+.left-special {width: 10%;}
+.right-special {width: 90%;}
+.special-long {width: 87%; max-width: 90%; height: 50px !important;}
+/* detail grid */
+/* services grid in detail */
+.servicesPersona-table { width: 90%;}
+.servicesPersona-table thead th:first-child {width: 30%;}
+/* services grid in detail */

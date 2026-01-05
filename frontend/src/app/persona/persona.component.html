@@ -118,7 +118,81 @@
                         </div>
                         <button class="save-btn">✔</button>
                         <button class="close-btn-btn" (click)="closeDetails()">✖</button>
-                    </div>  
+                    </div> 
+                    <h1 class="successBtn">{{detailMessageSuccess}}</h1>
+                    <h1 class="errorBtn">{{detailMessageError}}</h1>
+                    <div class="detail-cotainer">
+                        <div class="above">
+                            <div class="chunk-one">
+                                <div class="left">
+                                    <p>Código</p>
+                                    <p>Correo Electrónico</p>
+                                </div>
+                                <div class="right">
+                                    <div class="on-two">
+                                        <h1>{{selectedPersona.percod}}</h1>
+                                        <p>Nombre</p>
+                                        <textarea class="average" [(ngModel)]="selectedPersona.pernom"></textarea>
+                                    </div>
+                                    <textarea class="long" [(ngModel)]="selectedPersona.percoe"></textarea>
+                                </div>
+                            </div>
+                            <div class="chunk-two">
+                                <div class="left">
+                                    <p>Teléfono</p>
+                                    <p>Cargo</p>
+                                </div>
+                                <div class="right">
+                                    <div class="on-two">
+                                        <textarea class="average" [(ngModel)]="selectedPersona.pertel"></textarea>
+                                        <p>Móvil</p>
+                                        <textarea class="average" [(ngModel)]="selectedPersona.pertmo"></textarea>
+                                    </div>
+                                    <textarea class="long" [(ngModel)]="selectedPersona.percar"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="below">
+                            <div class="left-special">
+                                <p>Observaciones</p>
+                            </div>
+                            <div class="right-special">
+                                <textarea class="special-long" [(ngModel)]="selectedPersona.perobs" #desc></textarea>
+                            </div>
+                        </div>
+                    </div> 
+                    <div class="more-detail-container">
+                        <div class="tabs" role="tablist" aria-label="Detalle tabs">
+                            <button
+                                class="tab-btn"
+                                role="tab"
+                                [attr.aria-selected]="activeDetailTab === 'services'"
+                                [class.active-tab]="activeDetailTab === 'services'"
+                                (click)="showServices(selectedPersona)"
+                            >
+                                Servicios
+                            </button>
+                        </div>
+                    </div>
+                    <div class="custom-grid-modal" *ngIf="showSerivcesGrid">
+                        <button class="add-btn">+</button>
+                        <h1 class="errorBtn">{{serviceErrorMessage}}</h1>
+                        <h1 class="successBtn">{{serviceSuccessMessage}}</h1>
+                        <table class="servicesPersona-table">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Descripción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>tet</td>
+                                    <td>test</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

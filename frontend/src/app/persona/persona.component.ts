@@ -340,13 +340,27 @@ export class PersonaComponent {
     this.fetchPersonas();
   }
 
-  //detail grid
+  //detail grid functions
   selectedPersona: any = null;
+  detailMessageSuccess: string = '';
+  detailMessageError: string = '';
   showDetails(persona: any) {
     this.selectedPersona = persona;
   }
 
   closeDetails() {
     this.selectedPersona = null
+  }
+
+  //services grid functions
+  activeDetailTab: 'services' | null = null;
+  showSerivcesGrid = false;
+  personServices: any = [];
+  serviceErrorMessage: string = '';
+  serviceSuccessMessage: string = '';
+  showServices(persona: any) {
+    this.showSerivcesGrid = true;
+    this.activeDetailTab = 'services';
+    const percod = persona.percod;
   }
 }
