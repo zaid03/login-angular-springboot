@@ -62,4 +62,68 @@ public class PerController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
+
+    //for adding a persona
+    public record personaAdd(String PERCOD, String PERNOM, String PERCOE, String PERTEL, String PERTMO, String PERCAR, String PEROBS) {}
+    @PostMapping("/Insert-persona")
+    public ResponseEntity<?> addPersona(
+        @RequestBody personaAdd payload
+    ) {
+        try {
+            if(payload == null || payload.PERCOD() == null || payload.PERNOM() == null ) {
+                return ResponseEntity.badRequest().body("Faltan datos obligatorios");
+            }
+            if(perRepository.existsById(payload.PERCOD())) {
+                return ResponseEntity.badRequest().body("Esta persona ya existe");
+            }
+
+            Per nueva = new Per();
+            nueva.setPERCOD(payload.PERCOD());
+            nueva.setPERNOM(payload.PERNOM());
+            nueva.setPERCOE(payload.PERCOE());
+            nueva.setPERTEL(payload.PERTEL());
+            nueva.setPERTMO(payload.PERTMO());
+            nueva.setPERCAR(payload.PERCAR());
+            nueva.setPEROBS(payload.PEROBS());
+            perRepository.save(nueva);
+
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("la adición fallida: " + ex.getMostSpecificCause().getMessage());
+        }
+    }
+
+    //for updating a persona
+    public record personaUpdate(String PERCOD, String PERNOM, String PERCOE, String PERTEL, String PERTMO, String PERCAR, String PEROBS) {}
+    @PatchMapping("/update-persona")
+    public ResponseEntity<?> updatePersona(
+        @RequestBody personaAdd payload
+    ) {
+        try {
+            if(payload == null || payload.PERCOD() == null || payload.PERNOM() == null ) {
+                return ResponseEntity.badRequest().body("Faltan datos obligatorios");
+            }
+
+            int updated = perRepository.updatePersona(
+                payload.PERNOM(),
+                payload.PERCOE(),
+                payload.PERTEL(),
+                payload.PERTMO(),
+                payload.PERCAR(),
+                payload.PEROBS(),
+                payload.PERCOD()
+            );
+
+            if (updated == 0) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No se encontró ninguna persona para los datos.");
+            }
+
+            return ResponseEntity.noContent().build();
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("La actualización falló: " + ex.getMostSpecificCause().getMessage());
+        }
+    }
 }
