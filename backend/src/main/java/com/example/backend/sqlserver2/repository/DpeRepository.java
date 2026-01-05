@@ -1,10 +1,13 @@
 package com.example.backend.sqlserver2.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.example.backend.dto.DepCodDesDto;
 import com.example.backend.sqlserver2.model.Dpe;
 import com.example.backend.sqlserver2.model.DpeId;
 
@@ -27,5 +30,35 @@ public interface DpeRepository extends JpaRepository<Dpe, DpeId> {
         @Param("ENT") Integer ENT,
         @Param("EJE") String EJE,
         @Param("DEPCOD") String DEPCOD
+    );
+
+    //selecting a persona's services
+    @Query("""
+        SELECT new com.example.backend.dto.DepCodDesDto(d.depcod, d.depdes)
+        FROM Dpe dpe
+        JOIN Dep d ON d.ent = dpe.ent AND d.eje = dpe.eje AND d.depcod = dpe.depcod
+        WHERE dpe.ent = :ENT AND dpe.eje = :EJE AND dpe.percod = :PERCOD
+    """)
+    List<DepCodDesDto> personaServices(
+        @Param("ENT") Integer ENT,
+        @Param("EJE") String EJE,
+        @Param("PERCOD") String PERCOD
+    );
+
+    //deleting a persona's services
+    @Transactional
+    @Modifying
+    @Query("""
+        DELETE FROM Dpe d
+        WHERE d.ent = :ENT
+        AND d.eje = :EJE
+        AND d.depcod = :DEPCOD
+        AND d.percod = :PERCOD
+    """)
+    void deletePersonaService(
+        @Param("ENT") Integer ENT,
+        @Param("EJE") String EJE,
+        @Param("DEPCOD") String DEPCOD,
+        @Param("PERCOD") String PERCOD
     );
 }

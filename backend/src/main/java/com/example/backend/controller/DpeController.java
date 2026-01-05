@@ -1,5 +1,6 @@
 package com.example.backend.controller;
 
+import com.example.backend.dto.DepCodDesDto;
 import com.example.backend.sqlserver2.model.DpeId;
 import com.example.backend.sqlserver2.repository.DpeRepository;
 
@@ -38,6 +39,46 @@ public class DpeController {
     //deleting a persona from a service
     @DeleteMapping("/delete-persona-service/{ent}/{eje}/{depcod}/{percod}")
     public ResponseEntity<?> fetchAllservices(
+        @PathVariable Integer ent,
+        @PathVariable String eje,
+        @PathVariable String depcod,
+        @PathVariable String percod
+    ) {
+        try {
+            DpeId id = new DpeId(ent, eje, depcod, percod);
+            if(!dpeRepository.existsById(id)) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body("No se encontró la personna para eliminar.");
+            }
+
+            dpeRepository.deleteById(id);
+            return ResponseEntity.noContent().build();
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error durante la eliminación: " + ex.getMostSpecificCause().getMessage());
+        }
+    }
+
+    //selecting a persona's services
+    @GetMapping("/fetch-persona-service/{ent}/{eje}/{percod}")
+    public ResponseEntity<?> fetchPersonaService(
+         @PathVariable Integer ent,
+        @PathVariable String eje,
+        @PathVariable String percod
+    ) {
+        try{
+            List<DepCodDesDto> services = dpeRepository.personaServices(ent, eje, percod);
+            if (services.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se pueden encontrar servicios para esta persona.");
+            }
+            return ResponseEntity.ok(services);
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error: " + ex.getMostSpecificCause().getMessage());
+        }
+    }
+
+    //deleting a persona's services
+    @DeleteMapping("/delete-service-persona/{ent}/{eje}/{depcod}/{percod}")
+    public ResponseEntity<?> deleteService(
         @PathVariable Integer ent,
         @PathVariable String eje,
         @PathVariable String depcod,
