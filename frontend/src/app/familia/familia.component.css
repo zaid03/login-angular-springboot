@@ -10,8 +10,6 @@
 .subfamilia-table thead th:nth-child(3),
 .subfamilia-table thead th:nth-child(4),
 .subfamilia-table thead th:nth-child(5) { width: 12%; }
-.familia-table tbody td:first-child { text-align: left; }
-.familia-table tbody td:nth-child(2) { text-align: right; }
 /* all tables */
 /* detail grid */
 .detail-container { display: flex;flex-direction: column; gap: 5px; padding: 1%;}

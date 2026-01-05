@@ -15,9 +15,7 @@
 .albaranes-table tbody td:nth-child(4),
 .app tbody td:nth-child(3),
 .desc tbody td:nth-child(5),
-.desc tbody td:nth-child(7) { text-align: left; }
-.facturas-table tbody td,
-.albaranes-table tbody td { text-align: right;}
+.desc tbody td:nth-child(7) { text-align: right; }
 /* table style */
 /* main-detail grid */
 .detail-container { display: flex; flex-wrap: wrap; align-items: center; padding: 5px; gap: 10px; }

@@ -6,7 +6,6 @@
 .centroGestor-list { width: 90%; }
 /* main table */
 .centroGestor-table thead th:nth-child(2) { width: 30%; }
-.centroGestor-table tbody td { text-align: right; }
 /* main table */
 /* detail grid */
 .detail-container { display: flex; gap: 5px;}

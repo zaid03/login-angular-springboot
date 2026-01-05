@@ -7,9 +7,6 @@
 .search-btns { margin-left: 10px; } 
 .search-options input[type="radio"] { margin: 0 6px 0 0; accent-color: #25176b; width: 18px; height: 18px; vertical-align: middle; outline: none; box-shadow: none; }
 /* search */
-/* main-list and table */
-.main-table tbody td { text-align: right;}
-/* main-list and table */
 /* detail grid */
 .detail-container { display: flex; flex-wrap: wrap; align-items: center; padding: 5px; gap: 10px; }
 .chunk-one,

@@ -241,7 +241,7 @@ app-sidebar { flex-shrink: 0; z-index: 2000; }
 .personas-table tbody td,
 .almacen-table tbody td,
 .user-services-table tbody td,
-.services-table tbody td { border: 1px solid #f0f5f9; padding: 6px 10px; text-align: center; vertical-align: middle; font-size: 15px; color: #222; font-weight: 600; overflow: hidden;}
+.services-table tbody td { border: 1px solid #f0f5f9; padding: 6px 10px; text-align: center; vertical-align: middle; font-size: 15px; color: #222; font-weight: 600; overflow: hidden; text-align: left;}
 .facturas-table tbody tr:hover,
 .albaranes-table tbody tr:hover, 
 .main-table tr:hover,

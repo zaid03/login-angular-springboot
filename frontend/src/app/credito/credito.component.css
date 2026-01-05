@@ -3,11 +3,10 @@
 .cge-text { display: flex; width: 35%; font-weight: bold; gap: 10px; }
 /* search */
 /* main-table */
-.credito-table td:last-child,
+.credito-container td:nth-child(8),
 .credito-container td:nth-child(7),
 .credito-container td:nth-child(6),
-.credito-container td:nth-child(5) { text-align: left; }
-.credito-container td {text-align: right;}
+.credito-container td:nth-child(5) { text-align: right; }
 /* main-table */
 /* main grid detail */
 .detail-container,
@@ -44,24 +43,9 @@
 .fix {margin-top: 5px;}
 .detail-acumolados-container { width: 80%; display: flex;  justify-content: center; gap: 10px;}
 /* main grid detail */
-
-
-
-
-
-
-
 @media (min-width: 1380px) {
-    .modal{
-        height: 90vh !important;
-    }
-
+    .modal{height: 90vh !important; }
     .chunk-one,
     .chunk-two,
-    .chunk-three {
-        border: 1px solid mediumblue;
-        width: 45%; display: flex; padding: 2px;
-    }
-
-    
+    .chunk-three {border: 1px solid mediumblue; width: 45%; display: flex; padding: 2px; }
 }

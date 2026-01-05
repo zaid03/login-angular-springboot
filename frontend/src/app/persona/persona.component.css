@@ -7,4 +7,3 @@
 .personas-table thead th:nth-child(2),
 .personas-table thead th:nth-child(3),
 .personas-table thead th:last-child {width: 200px;}
-.personas-table tbody td { text-align: right; }

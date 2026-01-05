@@ -5,7 +5,6 @@
 /* search */
 /* main-list and table */
 .coste-list { width: 40%; }
-.coste-table tbody td {text-align: right;}
 .coste-table thead th:first-child { width: 20%;}
 /* main-list and table */
 /* detail grid */

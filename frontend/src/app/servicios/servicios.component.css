@@ -15,10 +15,9 @@
 .services-table th:nth-child(5),
 .services-table th:nth-child(6),
 .services-table th:nth-child(7) {width: 120px;}
-.services-table tbody td:first-child,
-.services-table tbody td:nth-child(2),
-.services-table tbody td:nth-child(3),
-.services-table tbody td:nth-child(4) { text-align: right; }
+.services-table tbody td:nth-child(7),
+.services-table tbody td:nth-child(6),
+.services-table tbody td:nth-child(5) { text-align: center; }
 .personas-table thead th:last-child { width: 80px;}
 /* main table */
 /* detail grid */
