@@ -1,6 +1,8 @@
 package com.example.backend.controller;
 
 import com.example.backend.dto.DepCodDesDto;
+import com.example.backend.dto.PersonaServiceRequest;
+import com.example.backend.service.DpeService;
 import com.example.backend.sqlserver2.model.DpeId;
 import com.example.backend.sqlserver2.repository.DpeRepository;
 
@@ -17,6 +19,7 @@ import java.util.List;
 public class DpeController {
     @Autowired
     private DpeRepository dpeRepository;
+
 
     //selecting personas for servicios
     @GetMapping("/fetch-service-personas/{ent}/{eje}/{depcod}")
@@ -96,5 +99,19 @@ public class DpeController {
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error durante la eliminación: " + ex.getMostSpecificCause().getMessage());
         }
+    }
+
+    //adding serivces for a person
+    private final DpeService dpeService;
+
+    public DpeController(DpeService dpeService) {
+        this.dpeService = dpeService;
+    }
+
+    @PostMapping("/add-persona-services")
+    public ResponseEntity<Void> addPersonaServices(@RequestBody PersonaServiceRequest request) {
+        System.out.println(">>> addPersonaServices controller hit");
+        dpeService.savePersonaServices(request);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }
