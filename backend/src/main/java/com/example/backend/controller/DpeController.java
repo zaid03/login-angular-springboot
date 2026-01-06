@@ -88,7 +88,7 @@ public class DpeController {
             DpeId id = new DpeId(ent, eje, depcod, percod);
             if(!dpeRepository.existsById(id)) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("No se encontró la personna para eliminar.");
+                .body("No se encontró la servicio para eliminar.");
             }
 
             dpeRepository.deleteById(id);

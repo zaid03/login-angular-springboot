@@ -1,5 +1,7 @@
 package com.example.backend.sqlserver2.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -10,8 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.backend.dto.DepCodDesDto;
 import com.example.backend.sqlserver2.model.Dpe;
 import com.example.backend.sqlserver2.model.DpeId;
-
-import java.util.List;
 
 @Repository
 public interface DpeRepository extends JpaRepository<Dpe, DpeId> {
@@ -34,10 +34,10 @@ public interface DpeRepository extends JpaRepository<Dpe, DpeId> {
 
     //selecting a persona's services
     @Query("""
-        SELECT new com.example.backend.dto.DepCodDesDto(d.depcod, d.depdes)
+        SELECT new com.example.backend.dto.DepCodDesDto(d.DEPCOD, d.DEPDES)
         FROM Dpe dpe
-        JOIN Dep d ON d.ent = dpe.ent AND d.eje = dpe.eje AND d.depcod = dpe.depcod
-        WHERE dpe.ent = :ENT AND dpe.eje = :EJE AND dpe.percod = :PERCOD
+        JOIN Dep d ON d.ENT = dpe.ENT AND d.EJE = dpe.EJE AND d.DEPCOD = dpe.DEPCOD
+        WHERE dpe.ENT = :ENT AND dpe.EJE = :EJE AND dpe.PERCOD = :PERCOD
     """)
     List<DepCodDesDto> personaServices(
         @Param("ENT") Integer ENT,
@@ -50,10 +50,10 @@ public interface DpeRepository extends JpaRepository<Dpe, DpeId> {
     @Modifying
     @Query("""
         DELETE FROM Dpe d
-        WHERE d.ent = :ENT
-        AND d.eje = :EJE
-        AND d.depcod = :DEPCOD
-        AND d.percod = :PERCOD
+        WHERE d.ENT = :ENT
+        AND d.EJE = :EJE
+        AND d.DEPCOD = :DEPCOD
+        AND d.PERCOD = :PERCOD
     """)
     void deletePersonaService(
         @Param("ENT") Integer ENT,
