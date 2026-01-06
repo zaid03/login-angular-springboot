@@ -21,14 +21,17 @@
 .on-two {display: flex; align-items: center; gap: 10px;}
 .chunk-one p,
 .chunk-two p,
-.below p {font-size: 14px; font-weight: bold; color: #25176b;}
+.below p,
+.add-container p {font-size: 14px; font-weight: bold; color: #25176b;}
 .chunk-one h1 {color: #162a3a; font-size: 18px;}
 .chunk-one textarea,
 .chunk-two textarea,
-.below textarea {height: 20px; padding: 2px 4px; border-radius: 6px; font-weight: bold; color: #162a3a;}
+.below textarea,
+.add-container textarea {height: 20px; padding: 2px 4px; border-radius: 6px; font-weight: bold; color: #162a3a;}
 .chunk-one textarea:focus,
 .chunk-two textarea:focus,
-.below textarea:focus {outline: none; border-color: #042b5a; outline: none; background: #fff;}
+.below textarea:focus,
+.add-container textarea:focus {outline: none; border-color: #042b5a; outline: none; background: #fff;}
 .average {width: 190px; max-width: 290px;}
 .long { width: 355px; max-width: 390px;}
 .left-special {width: 10%;}
@@ -39,3 +42,15 @@
 .servicesPersona-table { width: 90%;}
 .servicesPersona-table thead th:first-child {width: 30%;}
 /* services grid in detail */
+/* add persona grid */
+.add-confirm-modal { width: 45%; top: 20%;}
+.title {width: 80%;}
+.add-container {display: flex; width: 99%;}
+.left-add {width: 18%; display: flex; flex-direction: column; gap: 20px; text-align: left;}
+.right-add {width: 82%; gap: 10px; display: flex; flex-direction: column; align-items: flex-start;}
+.on-two-add {display: flex; gap: 10px; align-items: center;}
+.average-add {width: 173px; max-width: 200px;}
+.average-add-second {width: 183px;}
+.long-add {width: 430px; max-width: 99%;}
+.special-add-long {width: 430px; max-width: 99%; height: 50px !important;}
+/* add persona grid */

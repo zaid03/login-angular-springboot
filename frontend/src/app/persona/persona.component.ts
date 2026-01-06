@@ -392,11 +392,44 @@ export class PersonaComponent {
 
   //add personas grid functions
   showAddConfirm: boolean = false;
+  PersonaErrorMessage: string = '';
   showAdd() {
     this.showAddConfirm = true;
   }
 
   closeAddConfirm() {
     this.showAddConfirm = false;
+  }
+
+  addPersona(code: string, name: string, email: string, phone: string, movil: string, trans: string, obs: string) {
+    if(!code || !name) {
+      this.PersonaErrorMessage = 'Código y Nombre requerido'
+    }
+
+    const payload = {
+      "PERCOD" : code,
+      "PERNOM" : name,
+      "PERCOE" : email,
+      "PERTEL" : phone,
+      "PERTMO" : movil,
+      "PERCAR" : trans,
+      "PEROBS" : obs
+    }
+
+    this.http.post(`${environment.backendUrl}/api/Per/Insert-persona`, payload).subscribe({
+      next: (res) => {
+        this.personasMessageSuccess = 'La persona se agregó correctamente';
+        this.fetchPersonas();
+        this.closeAddConfirm();
+      },
+      error: (err) => {
+        this.PersonaErrorMessage = err.error.error;
+      }
+    })
+  }
+
+  forceUppercase(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    input.value = input.value.toUpperCase();
   }
 }

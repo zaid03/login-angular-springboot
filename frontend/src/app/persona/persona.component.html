@@ -205,7 +205,32 @@
         <div class="title">
             <h3>Añadir un Persona</h3>
         </div>
-        <button class="add-btn">+</button>
+        <button class="add-btn" (click)="addPersona(code.value, name.value, email.value, phone.value, movil.value, trans.value, obs.value)">+</button>
         <button class="cancel-btn" (click)="closeAddConfirm()">✖</button>
+    </div>
+    <h1 class="errorBtn">{{PersonaErrorMessage}}</h1>
+    <div class="add-container">
+        <div class="left-add">
+            <p>Código*</p>
+            <p>Correo Electrónico</p>
+            <p>Teléfono</p>
+            <p>Cargo</p>
+            <p>Observaciones</p>
+        </div>
+        <div class="right-add">
+            <div class="on-two-add">
+                <textarea (input)="forceUppercase($event)" class="average-add" #code></textarea>
+                <p>Nombre*</p>
+                <textarea class="average-add" #name></textarea>
+            </div>
+            <textarea class="long-add" #email></textarea>
+            <div class="on-two-add">
+                <textarea class="average-add-second" #phone></textarea>
+                <p>Móvil</p>
+                <textarea class="average-add-second" #movil></textarea>
+            </div>
+            <textarea class="long-add" #trans></textarea>
+            <textarea class="special-add-long" #obs></textarea>
+        </div>
     </div>
 </div>
