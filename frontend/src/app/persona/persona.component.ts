@@ -450,6 +450,45 @@ export class PersonaComponent {
     })
   }
 
+  addService: boolean = false;
+  showAddService() {
+    this.addService = true;
+    this.fetchServicesAdd();
+  }
+
+  closeAddService() {
+    this.addService = false;
+  }
+
+  services: any = [];
+  backupServicesAdd: any = [];
+  servicesAddError: string = '';
+  fetchServicesAdd() {
+    if (this.entcod === null || this.eje === null) return;
+    this.http.get<any>(`${environment.backendUrl}/api/dep/fetch-services/${this.entcod}/${this.eje}`).subscribe({
+      next: (res) => {
+        this.services = res;
+        this.backupServices = Array.isArray(res) ? [...res] : [];
+        this.backupServicesAdd = [...this.backupServices];
+        this.pageAdd = 0;
+      },
+      error: (err) => {
+        this.servicesAddError = err?.error?.error || 'Error desconocido';
+      }
+    });
+  }
+
+  pageAdd: number = 0;
+  get paginatedServicesAdd(): any[] {
+    console.log("paginated service ", this.paginatedPersonas)
+    if (!this.services || this.services.length === 0) return [];
+    const start = this.pageAdd * this.pageSize;
+    return this.services.slice(start, start + this.pageSize);
+  }
+  get totalPagesAdd(): number {
+    return Math.max(1, Math.ceil((this.services?.length ?? 0) / this.pageSize));
+  }
+
   //add personas grid functions
   showAddConfirm: boolean = false;
   PersonaErrorMessage: string = '';

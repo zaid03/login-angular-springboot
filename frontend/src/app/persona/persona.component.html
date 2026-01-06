@@ -175,7 +175,7 @@
                         </div>
                     </div>
                     <div class="custom-grid-modal" *ngIf="showSerivcesGrid">
-                        <button class="add-btn margin">+</button>
+                        <button type="button" class="add-btn margin" (click)="showAddService()">+</button>
                         <h1 class="errorBtn">{{serviceErrorMessage}}</h1>
                         <h1 class="successBtn">{{serviceSuccessMessage}}</h1>
                         <table class="servicesPersona-table">
@@ -195,7 +195,7 @@
                             </tbody>
                         </table>
                         <div class="pagination-controls">
-                            <button (click)="prevPage()" [disabled]="page === 0">Anterior</button>
+                            <button (click)="prevPage()" [disabled]="pageServices === 0">Anterior</button>
                             <span>Página</span>
                             <input
                             type="number"
@@ -261,4 +261,111 @@
     <h1 class="errorBtn">{{ErrorDelete}}</h1>
     <button class="delete-btn" (click)="deleteService(serviceToDelete.depcod)">-</button>
     <button class="save-btn" (click)="closeDelete()">✖</button>
+</div>
+
+<div class="modal-backdrop" *ngIf="addService" (click)="closeAddService()"></div>
+<div class="proveedor-grid-modal" *ngIf="addService">
+    <div class="btns">
+        <div class="title">
+            <h3>Añadir un Servicio</h3>
+        </div>
+        <button class="save-btn">+</button>
+        <button class="delete-btn" (click)="closeAddService()">✖</button>
+    </div>
+    <div class="title-menu">
+        <div class="search-holder">
+            <div class="search-container">
+                <div class="search-form">
+                    <label>Servicio</label>
+                    <input 
+                        type="text" 
+                        class="search-bar"
+                        placeholder="servicios" 
+
+                    >
+                    <label>Centro gestor</label>
+                    <input 
+                        type="text" 
+                        class="search-bar"
+                        placeholder="centro gestor"
+                        
+                    >
+                    <label for="">Perfil de servicio</label>
+                    <select >
+                        <option value="almacen">Almacén / Farmacia</option>
+                        <option value="comprador">Comprador</option>
+                        <option value="contabilidad">Contabilidad</option>
+                        <option value="peticionario">Centro peticionario</option>
+                        <option value="todos">Todos</option>
+                    </select>
+                </div>
+                <div class="btns Widthy">
+                    <button class="search-btn" >Buscar</button>
+                    <button class="Limpiar-btn" >Limpiar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <h1 class="errorBtn">{{servicesAddError}}</h1>
+    <table class="services-table">
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Descripción</th>
+                <th>Centro Gestor</th>
+                <th>Centro de coste</th>
+                <th>Almacén</th>
+                <th>Comprador/famarcia</th>
+                <th>Contabilidad</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let s of paginatedServicesAdd">
+                <td>{{s.depcod}}</td>
+                <td>{{s.depdes}}</td>
+                <td>{{s.cgecod}}</td>
+                <td>{{s.ccocod}}</td>
+                <td>
+                    <input 
+                        type="checkbox"
+                        [checked]="s.depalm === 1"
+                        class="locked-radio"
+                        (click)="$event.preventDefault()"
+                    >  
+                </td>
+                <td>
+                    <input 
+                        type="checkbox"
+                        [checked]="s.depcom === 1"
+                        class="locked-radio"
+                        (click)="$event.preventDefault()"
+                    >
+                </td>
+                <td>
+                    <input
+                        type="checkbox"
+                        [checked]="s.depint === 1"
+                        class="locked-radio"
+                        (click)="$event.preventDefault()"
+                    >   
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="fixing-pag">
+        <div class="pagination-controls">
+            <button (click)="prevPage()" [disabled]="pageAdd === 0">Anterior</button>
+            <span>Página</span>
+            <input
+            type="number"
+            min="1"
+            [max]="totalPagesAdd"
+            [value]="pageAdd + 1"
+            (change)="goToPage($event)"
+            class="pagination-input"
+            />
+            <span>de {{ totalPagesAdd }}</span>
+            <button (click)="nextPage()" [disabled]="pageAdd + 1 >= totalPagesAdd">Siguiente</button>
+        </div>
+    </div>
 </div>
