@@ -354,13 +354,13 @@ export class PersonaComponent {
     this.backupServices = [];
     this.activeDetailTab = null;
     this.showSerivcesGrid = false;
-    this.page = 0;
   }
 
   updatePersona(pernom: string, percoe: string, pertel: string, pertmo: string, percar: string, perobs: string) {
 
     if(!pernom) {
       this.detailMessageError = 'Nombre requerido'
+      return;
     }
 
     const payload = {
@@ -397,12 +397,13 @@ export class PersonaComponent {
     this.fetchServices(percod);
   }
 
+  pageServices: number = 0;
   fetchServices(percod: string) {
     this.http.get<any>(`${environment.backendUrl}/api/depe/fetch-persona-service/${this.entcod}/${this.eje}/${percod}`).subscribe({
       next: (res) => {
         this.personServices = res;
         this.backupServices = Array.isArray(res) ? [...res] : [];
-        this.page = 0;
+        this.pageServices = 0;
       },
       error: (err) => {
         this.serviceErrorMessage = err?.error || 'Error desconocido';
@@ -412,11 +413,41 @@ export class PersonaComponent {
 
   get paginatedServices(): any[] {
     if (!this.personServices || this.personServices.length === 0) return [];
-    const start = this.page * this.pageSize;
+    const start = this.pageServices * this.pageSize;
     return this.personServices.slice(start, start + this.pageSize);
   }
   get totalPagesServices(): number {
     return Math.max(1, Math.ceil((this.personServices?.length ?? 0) / this.pageSize));
+  }
+
+  serviceToDelete: any = [];
+  showDeleteGrid: boolean = false;
+  showDelete(service: any) {
+    this.serviceToDelete = service;
+    this.showDeleteGrid = true;
+  }
+
+  closeDelete() {
+    this.showDeleteGrid = false;
+  }
+
+  ErrorDelete: string = '';
+  deleteService(depcod: string) {
+    if(!depcod || !this.selectedPersona.percod) { return;}
+    const persona = this.selectedPersona.percod;
+    const service = depcod
+
+    console.log(persona, service)
+    this.http.delete(`${environment.backendUrl}/api/depe/delete-service-persona/${this.entcod}/${this.eje}/${service}/${persona}`).subscribe({
+      next: (res) => {
+        this.serviceSuccessMessage = 'El servicio se ha eliminado correctamente'
+        this.fetchServices(persona);
+        this.closeDelete();
+      },
+      error: (err) => {
+        this.ErrorDelete = err.error.error
+      }
+    })
   }
 
   //add personas grid functions
@@ -433,6 +464,7 @@ export class PersonaComponent {
   addPersona(code: string, name: string, email: string, phone: string, movil: string, trans: string, obs: string) {
     if(!code || !name) {
       this.PersonaErrorMessage = 'Código y Nombre requerido'
+      return;
     }
 
     const payload = {

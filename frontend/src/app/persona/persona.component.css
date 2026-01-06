@@ -19,11 +19,13 @@
 .left {width: 20%; gap: 20px;}
 .right {width: 80%; gap: 10px;}
 .on-two {display: flex; align-items: center; gap: 10px;}
-.chunk-one p,
+.chunk-one,
 .chunk-two p,
 .below p,
-.add-container p {font-size: 14px; font-weight: bold; color: #25176b;}
-.chunk-one h1 {color: #162a3a; font-size: 18px;}
+.add-container p,
+.delete-content {font-size: 14px; font-weight: bold; color: #25176b;}
+.chunk-one h1,
+.delete-content h1 {color: #162a3a; font-size: 18px;}
 .chunk-one textarea,
 .chunk-two textarea,
 .below textarea,
@@ -57,3 +59,8 @@
 .long-add {width: 430px; max-width: 99%;}
 .special-add-long {width: 430px; max-width: 99%; height: 50px !important;}
 /* add persona grid */
+/* delete grid */
+.delete-confirm-modal {top: 35%;}
+.delete-content { display: flex; width: 99%; justify-content: center; gap: 10px; align-items: center; font-size: 19px; margin-bottom: 10px;}
+.save-btn { margin-left: 10px;}
+/* delete grid */

@@ -190,7 +190,7 @@
                                 <tr *ngFor="let s of paginatedServices">
                                     <td>{{s.depcod}}</td>
                                     <td>{{s.depdes}}</td>
-                                    <td><button class="delete-btn">-</button></td>
+                                    <td><button class="delete-btn" (click)="showDelete(s)">-</button></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -201,12 +201,12 @@
                             type="number"
                             min="1"
                             [max]="totalPagesServices"
-                            [value]="page + 1"
+                            [value]="pageServices + 1"
                             (change)="goToPage($event)"
                             class="pagination-input"
                             />
                             <span>de {{ totalPagesServices }}</span>
-                            <button (click)="nextPage()" [disabled]="page + 1 >= totalPagesServices">Siguiente</button>
+                            <button (click)="nextPage()" [disabled]="pageServices + 1 >= totalPagesServices">Siguiente</button>
                         </div>
                     </div>
                 </div>
@@ -249,4 +249,16 @@
             <textarea class="special-add-long" #obs></textarea>
         </div>
     </div>
+</div>
+
+<div class="modal-backdrop" *ngIf="showDeleteGrid" (click)="closeDelete()"></div>
+<div class="delete-confirm-modal" *ngIf="showDeleteGrid">
+    <h3>¿Seguro que quieres eliminar este servicio?</h3>
+    <div class="delete-content" *ngIf="serviceToDelete">
+        <p>Código:</p>
+        <h1>{{serviceToDelete.depcod}}</h1>
+    </div>
+    <h1 class="errorBtn">{{ErrorDelete}}</h1>
+    <button class="delete-btn" (click)="deleteService(serviceToDelete.depcod)">-</button>
+    <button class="save-btn" (click)="closeDelete()">✖</button>
 </div>
