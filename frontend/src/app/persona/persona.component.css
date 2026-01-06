@@ -40,7 +40,10 @@
 /* detail grid */
 /* services grid in detail */
 .servicesPersona-table { width: 90%;}
-.servicesPersona-table thead th:first-child {width: 30%;}
+.servicesPersona-table thead th:first-child,
+.servicesPersona-table thead th:last-child {width: 20%;}
+.servicesPersona-table tbody td:last-child {text-align: center;}
+.margin { margin-top: 10px;}
 /* services grid in detail */
 /* add persona grid */
 .add-confirm-modal { width: 45%; top: 20%;}

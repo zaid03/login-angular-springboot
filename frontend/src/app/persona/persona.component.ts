@@ -350,6 +350,11 @@ export class PersonaComponent {
 
   closeDetails() {
     this.selectedPersona = null
+    this.personServices = [];
+    this.backupServices = [];
+    this.activeDetailTab = null;
+    this.showSerivcesGrid = false;
+    this.page = 0;
   }
 
   updatePersona(pernom: string, percoe: string, pertel: string, pertmo: string, percar: string, perobs: string) {
@@ -382,12 +387,36 @@ export class PersonaComponent {
   activeDetailTab: 'services' | null = null;
   showSerivcesGrid = false;
   personServices: any = [];
+  backupServices: any = [];
   serviceErrorMessage: string = '';
   serviceSuccessMessage: string = '';
   showServices(persona: any) {
     this.showSerivcesGrid = true;
     this.activeDetailTab = 'services';
     const percod = persona.percod;
+    this.fetchServices(percod);
+  }
+
+  fetchServices(percod: string) {
+    this.http.get<any>(`${environment.backendUrl}/api/depe/fetch-persona-service/${this.entcod}/${this.eje}/${percod}`).subscribe({
+      next: (res) => {
+        this.personServices = res;
+        this.backupServices = Array.isArray(res) ? [...res] : [];
+        this.page = 0;
+      },
+      error: (err) => {
+        this.serviceErrorMessage = err?.error || 'Error desconocido';
+      }
+    });
+  }
+
+  get paginatedServices(): any[] {
+    if (!this.personServices || this.personServices.length === 0) return [];
+    const start = this.page * this.pageSize;
+    return this.personServices.slice(start, start + this.pageSize);
+  }
+  get totalPagesServices(): number {
+    return Math.max(1, Math.ceil((this.personServices?.length ?? 0) / this.pageSize));
   }
 
   //add personas grid functions
@@ -431,5 +460,10 @@ export class PersonaComponent {
   forceUppercase(event: Event): void {
     const input = event.target as HTMLInputElement;
     input.value = input.value.toUpperCase();
+  }
+
+  //misc
+  limpiarMessages() {
+
   }
 }
