@@ -440,7 +440,6 @@ export class PersonaComponent {
     const persona = this.selectedPersona.percod;
     const service = depcod
 
-    console.log(persona, service)
     this.http.delete(`${environment.backendUrl}/api/depe/delete-service-persona/${this.entcod}/${this.eje}/${service}/${persona}`).subscribe({
       next: (res) => {
         this.serviceSuccessMessage = 'El servicio se ha eliminado correctamente'
@@ -483,13 +482,24 @@ export class PersonaComponent {
 
   pageAdd: number = 0;
   get paginatedServicesAdd(): any[] {
-    console.log("paginated service ", this.paginatedPersonas)
     if (!this.services || this.services.length === 0) return [];
     const start = this.pageAdd * this.pageSize;
     return this.services.slice(start, start + this.pageSize);
   }
   get totalPagesAdd(): number {
     return Math.max(1, Math.ceil((this.services?.length ?? 0) / this.pageSize));
+  }
+  prevPageAdd(): void {
+    if (this.pageAdd > 0) this.pageAdd--;
+  }
+  nextPageAdd(): void {
+    if (this.pageAdd < this.totalPages - 1) this.pageAdd++;
+  }
+  goToPageAdd(event: any): void {
+    const inputPage = Number(event.target.value);
+    if (inputPage >= 1 && inputPage <= this.totalPages) {
+      this.page = inputPage - 1;
+    }
   }
 
   setInputToUpper(event: Event):void {
@@ -545,6 +555,20 @@ export class PersonaComponent {
     this.limpiarMessages();
     this.fetchServicesAdd();
   }
+
+  linesSelected: string[] = [];
+  selectedServiceCode: string | null = null;
+  selectService(service: string) {
+    if(this.linesSelected.includes(service)) {
+      this.linesSelected = this.linesSelected.filter((s) => s !== service);
+    }
+    this.linesSelected = [...this.linesSelected, service];
+
+    console.log(this.linesSelected)
+  }
+
+  
+
 
   //add personas grid functions
   showAddConfirm: boolean = false;

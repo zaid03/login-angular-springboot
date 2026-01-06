@@ -322,7 +322,10 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let s of paginatedServicesAdd">
+            <tr *ngFor="let s of paginatedServicesAdd"
+                [class.selected-row]="linesSelected.includes(s.depcod)"
+                (click)="selectService(s.depcod)"
+            >
                 <td>{{s.depcod}}</td>
                 <td>{{s.depdes}}</td>
                 <td>{{s.cgecod}}</td>
@@ -356,18 +359,18 @@
     </table>
     <div class="fixing-pag">
         <div class="pagination-controls">
-            <button (click)="prevPage()" [disabled]="pageAdd === 0">Anterior</button>
+            <button (click)="prevPageAdd()" [disabled]="pageAdd === 0">Anterior</button>
             <span>Página</span>
             <input
             type="number"
             min="1"
             [max]="totalPagesAdd"
             [value]="pageAdd + 1"
-            (change)="goToPage($event)"
+            (change)="goToPageAdd($event)"
             class="pagination-input"
             />
             <span>de {{ totalPagesAdd }}</span>
-            <button (click)="nextPage()" [disabled]="pageAdd + 1 >= totalPagesAdd">Siguiente</button>
+            <button (click)="nextPageAdd()" [disabled]="pageAdd + 1 >= totalPagesAdd">Siguiente</button>
         </div>
     </div>
 </div>
