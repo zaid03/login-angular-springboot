@@ -195,18 +195,18 @@
                             </tbody>
                         </table>
                         <div class="pagination-controls">
-                            <button (click)="prevPage()" [disabled]="pageServices === 0">Anterior</button>
+                            <button (click)="prevPageService()" [disabled]="pageServices === 0">Anterior</button>
                             <span>Página</span>
                             <input
                             type="number"
                             min="1"
                             [max]="totalPagesServices"
                             [value]="pageServices + 1"
-                            (change)="goToPage($event)"
+                            (change)="goToPageService($event)"
                             class="pagination-input"
                             />
                             <span>de {{ totalPagesServices }}</span>
-                            <button (click)="nextPage()" [disabled]="pageServices + 1 >= totalPagesServices">Siguiente</button>
+                            <button (click)="nextPageService()" [disabled]="pageServices + 1 >= totalPagesServices">Siguiente</button>
                         </div>
                     </div>
                 </div>

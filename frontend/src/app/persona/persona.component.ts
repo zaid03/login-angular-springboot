@@ -422,6 +422,18 @@ export class PersonaComponent {
   get totalPagesServices(): number {
     return Math.max(1, Math.ceil((this.personServices?.length ?? 0) / this.pageSize));
   }
+  prevPageService(): void {
+    if (this.pageServices > 0) this.pageServices--;
+  }
+  nextPageService(): void {
+    if (this.pageServices < this.totalPages - 1) this.pageServices++;
+  }
+  goToPageService(event: any): void {
+    const inputPage = Number(event.target.value);
+    if (inputPage >= 1 && inputPage <= this.totalPages) {
+      this.pageServices = inputPage - 1;
+    }
+  }
 
   serviceToDelete: any = [];
   showDeleteGrid: boolean = false;
@@ -460,6 +472,8 @@ export class PersonaComponent {
 
   closeAddService() {
     this.addService = false;
+    this.linesSelected = [];
+    this.count = 0;
   }
 
   services: any = [];
@@ -555,6 +569,7 @@ export class PersonaComponent {
     this.limpiarMessages();
     this.fetchServicesAdd();
     this.linesSelected = [];
+    this.count = 0;
   }
 
   linesSelected: string[] = [];
@@ -576,10 +591,10 @@ export class PersonaComponent {
     if(!services) {return;}
 
     const payload = {
-      "ENT": this.entcod,
-      "EJE": this.eje,
-      "PERCOD": this.selectedPersona.percod,
-      "SERVICES": services
+      "ent": this.entcod,
+      "eje": this.eje,
+      "percod": this.selectedPersona.percod,
+      "services": services
     }
 
     this.http.post(`${environment.backendUrl}/api/depe/add-persona-services`, payload).subscribe({
