@@ -281,17 +281,19 @@
                         type="text" 
                         class="search-bar"
                         placeholder="servicios" 
-
+                        placeholder="servicios" 
+                        [(ngModel)]="searchServicio"
                     >
                     <label>Centro gestor</label>
                     <input 
                         type="text" 
                         class="search-bar"
                         placeholder="centro gestor"
-                        
+                        (input)="setInputToUpper($event)"
+                        [(ngModel)]="searchCentroGestor"
                     >
                     <label for="">Perfil de servicio</label>
-                    <select >
+                    <select [(ngModel)]="searchPerfil">
                         <option value="almacen">Almacén / Farmacia</option>
                         <option value="comprador">Comprador</option>
                         <option value="contabilidad">Contabilidad</option>
@@ -300,8 +302,8 @@
                     </select>
                 </div>
                 <div class="btns Widthy">
-                    <button class="search-btn" >Buscar</button>
-                    <button class="Limpiar-btn" >Limpiar</button>
+                    <button class="search-btn" (click)="searchServices()">Buscar</button>
+                    <button class="Limpiar-btn" (click)="clearSearch()">Limpiar</button>
                 </div>
             </div>
         </div>

@@ -34,6 +34,7 @@ export class PersonaComponent {
   //global variables
   private entcod: number | null = null;
   private eje: number | null = null;
+  private perfil: string | null = null;
   personas: any[] = [];
   private backuppersonas: any[] = [];
   private defaultpersonas: any[] = [];
@@ -45,10 +46,12 @@ export class PersonaComponent {
   ngOnInit(): void {
     const entidad = sessionStorage.getItem('Entidad');
     const eje = sessionStorage.getItem('EJERCICIO');
+    const percod = sessionStorage.getItem('Perfil');
     if (entidad) {const parsed = JSON.parse(entidad); this.entcod = parsed.ENTCOD;}
     if (eje) {const parsed = JSON.parse(eje); this.eje = parsed.eje;}
+    if (percod) {const parsed = JSON.parse(percod); this.perfil = parsed.perfil}
 
-    if (!entidad || this.entcod === null || !eje || this.eje === null ) {
+    if (!entidad || this.entcod === null || !eje || this.eje === null || this.perfil === null ) {
       sessionStorage.clear();
       alert('You must be logged in to access this page.');
       this.router.navigate(['/login']);
@@ -487,6 +490,60 @@ export class PersonaComponent {
   }
   get totalPagesAdd(): number {
     return Math.max(1, Math.ceil((this.services?.length ?? 0) / this.pageSize));
+  }
+
+  setInputToUpper(event: Event):void {
+    const target = event.target as HTMLTextAreaElement;
+    const upper = (target.value ?? '').toUpperCase();
+    target.value = upper;
+  }
+
+  searchServicio: string = '';
+  searchCentroGestor: string = '';
+  searchPerfil: string = 'todos';
+  searchServices() {
+    this.limpiarMessages();
+
+    const params: any = {
+      ent: this.entcod,
+      eje: this.eje,
+      percod: this.perfil
+    };
+    if (this.searchServicio && this.searchServicio.trim() !== '') {
+      params.search = this.searchServicio;
+    }
+    if (this.searchCentroGestor && this.searchCentroGestor.trim() !== '') {
+      params.cgecod = this.searchCentroGestor;
+    }
+    if (this.searchPerfil && this.searchPerfil !== 'todos') {
+      params.perfil = this.searchPerfil;
+    }
+
+    this.http.get<any>(`${environment.backendUrl}/api/dep/search`, { params }).subscribe({
+      next: (res) => {
+        this.services = res;
+        this.backupServices = Array.isArray(res) ? [...res] : [];
+        this.page = 0;
+        this.updatePagination();
+        if (!res.length) {
+          this.servicesAddError = 'No se encontraron servicios con los filtros dados.';
+        }
+      },
+      error: (err) => {
+        this.services = [];
+        this.backupServices = [];
+        this.pageAdd = 0;
+        this.servicesAddError = err?.error || 'Error en la búsqueda.';
+      }
+    });
+  }
+
+  clearSearch() {
+    this.searchServicio = '';
+    this.searchCentroGestor = '';
+    this.searchPerfil = 'todos';
+    this.limpiarMessages();
+    this.fetchServicesAdd();
   }
 
   //add personas grid functions
