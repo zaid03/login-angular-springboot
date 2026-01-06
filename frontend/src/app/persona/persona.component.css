@@ -23,7 +23,8 @@
 .chunk-two p,
 .below p,
 .add-container p,
-.delete-content {font-size: 14px; font-weight: bold; color: #25176b;}
+.delete-content,
+.count-selected {font-size: 14px; font-weight: bold; color: #25176b;}
 .chunk-one h1,
 .delete-content h1 {color: #162a3a; font-size: 18px;}
 .chunk-one textarea,
@@ -68,11 +69,11 @@
 .proveedor-grid-modal{ position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 95%; max-height: 80vh; overflow: auto; background: #ffffff; border-radius: 12px; padding: 18px; box-shadow: 0 12px 36px rgba(0,0,0,0.18); z-index: 4000; display: flex; flex-direction: column; gap: 12px;}
 .proveedor-grid-modal .search-holder {width: 100%;}
 .proveedor-grid-modal .search-container {width: 100%;}
-.proveedor-grid-modal .search-form {width: 80%;} 
+.proveedor-grid-modal .search-form {width: 61%;} 
 .search-form select { padding: 4px 6px; border-radius: 20px; border: 1px solid #bbb; font-size: 15px; transition: border 0.2s, box-shadow 0.2s; outline: none; box-shadow: 0 1px 4px rgba(56,36,155,0.04); }
 .search-form option { outline: none; font-weight: bold;}
 .fixing-pag {display: flex; justify-content: center;}
-.services-table tbody td:nth-child(7),
+.services-table tbody td:nth-child(7), 
 .services-table tbody td:nth-child(6),
 .services-table tbody td:nth-child(5) { text-align: center; }
 .services-table tbody td input[type="checkbox"] { margin: 0; accent-color: #25176b; width: 14px; height: 18px; vertical-align: middle; outline: none; box-shadow: none; }

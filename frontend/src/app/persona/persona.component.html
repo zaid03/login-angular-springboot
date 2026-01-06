@@ -269,7 +269,10 @@
         <div class="title">
             <h3>Añadir un Servicio</h3>
         </div>
-        <button class="save-btn">+</button>
+        <div class="count-selected">
+            <p>seleccionado {{count}} líneas</p>
+        </div>
+        <button class="save-btn" (click)="addServicePersona(linesSelected)">+</button>
         <button class="delete-btn" (click)="closeAddService()">✖</button>
     </div>
     <div class="title-menu">

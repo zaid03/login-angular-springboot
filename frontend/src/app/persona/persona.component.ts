@@ -554,6 +554,7 @@ export class PersonaComponent {
     this.searchPerfil = 'todos';
     this.limpiarMessages();
     this.fetchServicesAdd();
+    this.linesSelected = [];
   }
 
   linesSelected: string[] = [];
@@ -563,12 +564,35 @@ export class PersonaComponent {
       this.linesSelected = this.linesSelected.filter((s) => s !== service);
     }
     this.linesSelected = [...this.linesSelected, service];
-
-    console.log(this.linesSelected)
+    this.getLinesAdded()
   }
 
+  count: number = 0;
+  getLinesAdded(){
+    this.count = this.linesSelected.length;
+  }
   
+  addServicePersona(services: string[]) {
+    if(!services) {return;}
 
+    const payload = {
+      "ENT": this.entcod,
+      "EJE": this.eje,
+      "PERCOD": this.selectedPersona.percod,
+      "SERVICES": services
+    }
+
+    this.http.post(`${environment.backendUrl}/api/depe/add-persona-services`, payload).subscribe({
+      next: (res) => {
+        this.serviceSuccessMessage = 'Los servicios se han añadido correctamente';
+        this.fetchServices(this.selectedPersona.percod);
+        this.closeAddService();
+      },
+      error: (err) => {
+        this.servicesAddError = 'Server error';
+      }
+    })
+  }
 
   //add personas grid functions
   showAddConfirm: boolean = false;
