@@ -352,6 +352,32 @@ export class PersonaComponent {
     this.selectedPersona = null
   }
 
+  updatePersona(pernom: string, percoe: string, pertel: string, pertmo: string, percar: string, perobs: string) {
+
+    if(!pernom) {
+      this.detailMessageError = 'Nombre requerido'
+    }
+
+    const payload = {
+      "PERNOM" : pernom,
+      "PERCOE" : percoe,
+      "PERTEL" : pertel,
+      "PERTMO" : pertmo,
+      "PERCAR" : percar,
+      "PEROBS" : perobs,
+      "PERCOD" : this.selectedPersona.percod,
+    }
+
+    this.http.patch(`${environment.backendUrl}/api/Per/update-persona`, payload).subscribe({
+      next: (res) => {
+        this.detailMessageSuccess = 'La persona se ha actualizado correctamente';
+      },
+      error: (err) => {
+        this.detailMessageError = err.error.error;
+      }
+    })
+  }
+
   //services grid functions
   activeDetailTab: 'services' | null = null;
   showSerivcesGrid = false;
@@ -362,5 +388,15 @@ export class PersonaComponent {
     this.showSerivcesGrid = true;
     this.activeDetailTab = 'services';
     const percod = persona.percod;
+  }
+
+  //add personas grid functions
+  showAddConfirm: boolean = false;
+  showAdd() {
+    this.showAddConfirm = true;
+  }
+
+  closeAddConfirm() {
+    this.showAddConfirm = false;
   }
 }

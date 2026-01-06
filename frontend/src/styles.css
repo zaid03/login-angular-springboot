@@ -298,5 +298,5 @@ th.sortable { cursor: pointer; user-select: none; }
 .tabs { display: inline-flex; gap: 8px; align-items: center; padding-left: 6px; }
 .tab-btn { background: #eef4f8; border: 1px solid #d7e6f1; color: #38249b; padding: 8px 14px; border-radius: 6px 6px 0 0; font-weight: 600; cursor: pointer; transition: transform .12s ease, box-shadow .12s ease, background .12s ease; box-shadow: none; }
 .tab-btn:hover { filter: brightness(0.98); transform: translateY(-1px); }
-.tab-btn.active-tab { background: #ffffff; border-color: #25176b; color: #25176b; box-shadow: 0 8px 20px rgba(28,93,140,0.10); transform: translateY(-3px); }
-.tab-btn:focus { outline: none; box-shadow: 0 0 0 4px rgba(28,93,140,0.06); }
+.tab-btn.active-tab {background: #ffffff; border-color: #25176b; color: #25176b; box-shadow: 0 8px 20px rgba(28,93,140,0.10); transform: translateY(-3px);}
+.tab-btn:focus {outline: none; box-shadow: 0 0 0 4px rgba(28,93,140,0.06);}

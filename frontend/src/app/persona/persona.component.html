@@ -34,7 +34,7 @@
                 <div class="menu-panel" *ngIf="showMenu">
                     <button class="download-btn" (click)="excelDownload()">Descargar como Excel</button>
                     <button class="print-btn" (click)="toPrint()">Impreso</button>
-                    <button class="add-familia-btn">Añadir</button>
+                    <button class="add-familia-btn" (click)="showAdd()">Añadir</button>
                 </div>
             </div>
         </div>
@@ -116,7 +116,7 @@
                         <div class="title-detail">
                             <h3>Detalles de Persona</h3>
                         </div>
-                        <button class="save-btn">✔</button>
+                        <button class="save-btn" (click)="updatePersona(pernom.value, percoe.value, pertel.value, pertmo.value, percar.value, perobs.value)">✔</button>
                         <button class="close-btn-btn" (click)="closeDetails()">✖</button>
                     </div> 
                     <h1 class="successBtn">{{detailMessageSuccess}}</h1>
@@ -132,9 +132,9 @@
                                     <div class="on-two">
                                         <h1>{{selectedPersona.percod}}</h1>
                                         <p>Nombre</p>
-                                        <textarea class="average" [(ngModel)]="selectedPersona.pernom"></textarea>
+                                        <textarea class="average" [(ngModel)]="selectedPersona.pernom" #pernom></textarea>
                                     </div>
-                                    <textarea class="long" [(ngModel)]="selectedPersona.percoe"></textarea>
+                                    <textarea class="long" [(ngModel)]="selectedPersona.percoe" #percoe></textarea>
                                 </div>
                             </div>
                             <div class="chunk-two">
@@ -144,11 +144,11 @@
                                 </div>
                                 <div class="right">
                                     <div class="on-two">
-                                        <textarea class="average" [(ngModel)]="selectedPersona.pertel"></textarea>
+                                        <textarea class="average" [(ngModel)]="selectedPersona.pertel" #pertel></textarea>
                                         <p>Móvil</p>
-                                        <textarea class="average" [(ngModel)]="selectedPersona.pertmo"></textarea>
+                                        <textarea class="average" [(ngModel)]="selectedPersona.pertmo" #pertmo></textarea>
                                     </div>
-                                    <textarea class="long" [(ngModel)]="selectedPersona.percar"></textarea>
+                                    <textarea class="long" [(ngModel)]="selectedPersona.percar" #percar></textarea>
                                 </div>
                             </div>
                         </div>
@@ -157,7 +157,7 @@
                                 <p>Observaciones</p>
                             </div>
                             <div class="right-special">
-                                <textarea class="special-long" [(ngModel)]="selectedPersona.perobs" #desc></textarea>
+                                <textarea class="special-long" [(ngModel)]="selectedPersona.perobs" #perobs></textarea>
                             </div>
                         </div>
                     </div> 
@@ -196,5 +196,16 @@
                 </div>
             </div>
         </div>
+    </div>
+</div>
+
+<div class="modal-backdrop" *ngIf="showAddConfirm" (click)="closeAddConfirm()"></div>
+<div class="add-confirm-modal" *ngIf="showAddConfirm">
+    <div class="btns">
+        <div class="title">
+            <h3>Añadir un Persona</h3>
+        </div>
+        <button class="add-btn">+</button>
+        <button class="cancel-btn" (click)="closeAddConfirm()">✖</button>
     </div>
 </div>
