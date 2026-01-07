@@ -25,7 +25,8 @@
 .add-container p,
 .delete-content,
 .count-selected {font-size: 14px; font-weight: bold; color: #25176b;}
-.chunk-one h1 {color: #162a3a; font-size: 18px;}
+.chunk-one h1,
+.delete-content h1 {color: #162a3a; font-size: 18px;}
 .chunk-one textarea,
 .chunk-two textarea,
 .below textarea,

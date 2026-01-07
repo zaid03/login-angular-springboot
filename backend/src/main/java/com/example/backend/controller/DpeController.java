@@ -144,13 +144,13 @@ public class DpeController {
             List<Dpe> existing = dpeRepository.findByENTAndEJEAndPERCOD(ent, eje, percod);
             if (existing.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No se encontró la persona para eliminar.");
+                    .body("No se encontró la persona para eliminar servicios.");
             }
 
             int deletedd = dpeRepository.deletePersonaServices(ent, eje, percod);
             if (deletedd == 0) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No se encontró la persona para eliminar.");
+                    .body("No se encontró la persona para eliminar servicios.");
             }
             return ResponseEntity.noContent().build();
         } catch (DataAccessException ex) {

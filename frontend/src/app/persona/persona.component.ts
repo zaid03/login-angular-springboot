@@ -353,7 +353,7 @@ export class PersonaComponent {
 
   closeDetails() {
     this.selectedPersona = null
-    this.personServices = [];
+    this.personServicesOrigin = [];
     this.backupServices = [];
     this.activeDetailTab = null;
     this.showSerivcesGrid = false;
@@ -389,7 +389,7 @@ export class PersonaComponent {
   //services grid functions
   activeDetailTab: 'services' | null = null;
   showSerivcesGrid = false;
-  personServices: any = [];
+  personServicesOrigin: any = [];
   backupServices: any = [];
   serviceErrorMessage: string = '';
   serviceSuccessMessage: string = '';
@@ -404,7 +404,7 @@ export class PersonaComponent {
   fetchServices(percod: string) {
     this.http.get<any>(`${environment.backendUrl}/api/depe/fetch-persona-service/${this.entcod}/${this.eje}/${percod}`).subscribe({
       next: (res) => {
-        this.personServices = res;
+        this.personServicesOrigin = res;
         this.backupServices = Array.isArray(res) ? [...res] : [];
         this.pageServices = 0;
       },
@@ -415,12 +415,12 @@ export class PersonaComponent {
   }
 
   get paginatedServices(): any[] {
-    if (!this.personServices || this.personServices.length === 0) return [];
+    if (!this.personServicesOrigin || this.personServicesOrigin.length === 0) return [];
     const start = this.pageServices * this.pageSize;
-    return this.personServices.slice(start, start + this.pageSize);
+    return this.personServicesOrigin.slice(start, start + this.pageSize);
   }
   get totalPagesServices(): number {
-    return Math.max(1, Math.ceil((this.personServices?.length ?? 0) / this.pageSize));
+    return Math.max(1, Math.ceil((this.personServicesOrigin?.length ?? 0) / this.pageSize));
   }
   prevPageService(): void {
     if (this.pageServices > 0) this.pageServices--;
@@ -657,6 +657,7 @@ export class PersonaComponent {
   //compiar grid functions
   compiarPersona: boolean = false;
   gridMessag: string = '';
+  personServices: any = [];
   showCopiar(percod: string) {
     this.http.get<any>(`${environment.backendUrl}/api/depe/fetch-persona-service/${this.entcod}/${this.eje}/${percod}`).subscribe({
       next: (res) => {
@@ -680,6 +681,8 @@ export class PersonaComponent {
     this.compiarPersona = false;
     this.personServices = [];
   }
+
+ 
 
   compiarPersonaGrid: boolean = false;
   showCopiarPersonas() {
@@ -820,27 +823,12 @@ export class PersonaComponent {
   }
 
   copyPerfil() {
-    const SourcePercod = this.selectedPersona.percod;
-    const targetPercod = this.percodCopyTo;
-
-    if (!SourcePercod || !targetPercod) {this.detailMessageError = 'datos faltantes'; return;}
-
-    
-    this.http.delete(`${environment.backendUrl}/api/depe/delete-persona-Allservice/${this.entcod}/${this.eje}/${SourcePercod}`).subscribe({
-      next: (res) => {
-       console.log("servisios eliminada exitosamente")
-      },
-      error: (err) => {
-        this.detailMessageError = err?.error;
-        this.closecontinueAdCheckGrid()
-        return;
-      }
-    })
-    
+    if (!this.percodOrigin || !this.percodCopyTo) {this.detailMessageError = 'datos faltantes'; return;}
+  
     const payload = {
       "ent": this.entcod,
       "eje": this.eje,
-      "percod": targetPercod,
+      "percod": this.percodCopyTo,
       "services": this.copiedServiceCodes
     }
 
@@ -860,6 +848,19 @@ export class PersonaComponent {
         return;
       }
     })
+
+    // this.http.delete(`${environment.backendUrl}/api/depe/delete-persona-Allservice/${this.entcod}/${this.eje}/${this.percodOrigin}`).subscribe({
+    //   next: (res) => {
+    //    console.log("servisios eliminada exitosamente")
+    //   },
+    //   error: (err) => {
+    //     this.detailMessageError = err?.error;
+    //     this.closecontinueAdCheckGrid()
+    //     return;
+    //   }
+    // })
+    
+    
   }
 
   //misc
