@@ -653,6 +653,157 @@ export class PersonaComponent {
     input.value = input.value.toUpperCase();
   }
 
+
+  //compiar grid functions
+  compiarPersona: boolean = false;
+  gridMessag: string = '';
+  showCopiar(percod: string) {
+    this.http.get<any>(`${environment.backendUrl}/api/depe/fetch-persona-service/${this.entcod}/${this.eje}/${percod}`).subscribe({
+      next: (res) => {
+        this.personServices = res;
+        if (!this.personServices || this.personServices.length === 0) {
+          this.compiarPersona = false;
+          this.detailMessageError = 'Esta persona no tiene servicios';
+          return;
+        }
+        this.gridMessag = 'La persona activa tiene servicios asignados. Se borrarán para añadir los de la persona seleccionada. ¿Quiere seguir?';
+        this.compiarPersona = true;
+      },
+      error: (err) => {
+        this.detailMessageError = err?.error || 'Error al obtener servicios';
+        this.compiarPersona = false;
+      }
+    });
+  }
+
+  closeCopiar() {
+    this.compiarPersona = false;
+    this.personServices = [];
+  }
+
+  compiarPersonaGrid: boolean = false;
+  showCopiarPersonas() {
+    this.fetchPersonasForCopy();
+    this.compiarPersonaGrid = true;
+    this.closeCopiar()
+  }
+  closeShowCopiarPersonas() {
+    this.compiarPersonaGrid = false;
+  }
+
+  pageCopy: number = 0;
+  pesonasCopy: any[] = [];
+  backupPesonasCopy: any[] = [];
+  errorCopy: string = '';
+  fetchPersonasForCopy() {
+    this.http.get<any>(`${environment.backendUrl}/api/Per/fetch-all`).subscribe({
+      next: (res) => {
+        this.pesonasCopy = res;
+        this.backupPesonasCopy = [...this.pesonasCopy]
+        this.pageCopy = 0;
+      },
+      error: (err) => {
+        this.errorCopy = err?.error?.error || 'Error desconocido';
+      }
+    });
+  }
+
+  get paginatedPersonasCopy(): any[] {
+    if (!this.pesonasCopy || this.pesonasCopy.length === 0) return [];
+    const start = this.pageCopy * this.pageSize;
+    return this.pesonasCopy.slice(start, start + this.pageSize);
+  }
+  get totalPagesCopy(): number {
+    return Math.max(1, Math.ceil((this.pesonasCopy?.length ?? 0) / this.pageSize));
+  }
+  prevPageCopy(): void {
+    if (this.pageCopy > 0) this.pageCopy--;
+  }
+  nextPageCopy(): void {
+    if (this.pageCopy < this.totalPages - 1) this.pageCopy++;
+  }
+  goToPageCopy(event: any): void {
+    const inputPage = Number(event.target.value);
+    if (inputPage >= 1 && inputPage <= this.totalPages) {
+      this.pageCopy = inputPage - 1;
+    }
+  }
+
+  searchPersonasCopy: string = '';
+  searchCopy() {
+    if(this.searchPersonasCopy === '') {
+      this.errorCopy = 'Ingrese algo para buscar';
+      return 
+    }
+
+    if(this.searchPersonasCopy.length <= 20) {
+      this.http.get<any>(`${environment.backendUrl}/api/Per/search-cod-nom/${this.searchPersonasCopy}`).subscribe({
+        next: (res) => {
+          this.pesonasCopy = res;
+          this.backupPesonasCopy = [...this.pesonasCopy]
+          this.pageCopy = 0;
+          if (!res.length) {
+            this.errorCopy = 'No se encontraron servicios con los filtros dados.';
+          }
+        },
+        error: (err) => {
+          this.pesonasCopy = [];
+          this.backupPesonasCopy = [];
+          this.pageCopy = 0;
+          this.errorCopy = err?.error || 'Error en la búsqueda.';
+        }
+      });
+    } else {
+      this.http.get<any>(`${environment.backendUrl}/api/Per/search-nom/{this.searchPersonasCopy}`).subscribe({
+        next: (res) => {
+          this.pesonasCopy = res;
+          this.backupPesonasCopy = [...this.pesonasCopy]
+          this.pageCopy = 0;
+          if (!res.length) {
+            this.errorCopy = 'No se encontraron servicios con los filtros dados.';
+          }
+        },
+        error: (err) => {
+          this.pesonasCopy = [];
+          this.backupPesonasCopy = [];
+          this.pageCopy = 0;
+          this.errorCopy = err?.error || 'Error en la búsqueda.';
+        }
+      });
+    }
+  }
+
+  limpiarSearcCopy() {
+    this.searchPersonasCopy = '';
+    this.pesonasCopy = [...this.backupPesonasCopy]
+  }
+
+  continueAdCheckGrid: boolean = false;
+  continueMessag: string = '';
+  isAvailable: boolean = false;
+  showcontinueAdCheckGrid(info: any) {
+    this.fetchPersonasForCopy();
+    this.continueAdCheckGrid = true;
+    this.closeShowCopiarPersonas()
+
+    const percod = info.percod;
+    if(percod === this.selectedPersona.percod) {
+      this.isAvailable = true;
+      this.continueMessag = 'Ha seleccionado la misma persona que está editando'
+      return;
+    }
+
+    this.isAvailable = false;
+    this.continueMessag = 'Se van a borrar los servicios asignados y añadir los de la persona seleccionada. ¿Quiere seguir?'
+  }
+
+  closecontinueAdCheckGrid() {
+    this.continueAdCheckGrid = false;
+  }
+
+  next() {
+    console.log("next")
+  }
   //misc
   limpiarMessages() {
 

@@ -116,6 +116,7 @@
                         <div class="title-detail">
                             <h3>Detalles de Persona</h3>
                         </div>
+                        <button class="save-btn" (click)="showCopiar(selectedPersona.percod)">✂️</button>
                         <button class="save-btn" (click)="updatePersona(pernom.value, percoe.value, pertel.value, pertmo.value, percar.value, perobs.value)">✔</button>
                         <button class="close-btn-btn" (click)="closeDetails()">✖</button>
                     </div> 
@@ -375,5 +376,87 @@
             <span>de {{ totalPagesAdd }}</span>
             <button (click)="nextPageAdd()" [disabled]="pageAdd + 1 >= totalPagesAdd">Siguiente</button>
         </div>
+    </div>
+</div>
+
+<div class="modal-backdrop" *ngIf="compiarPersona" (click)="closeCopiar()"></div>
+<div class="add-confirm-modal placement" *ngIf="compiarPersona">
+    <div>
+        <p class="sure-msg">{{gridMessag}}</p>        
+    </div>
+    <div class="btns alignment">
+        <button class="save-btn" (click)="showCopiarPersonas()">+</button>
+        <button class="delete-btn" (click)="closeCopiar()">✖</button>
+    </div>
+</div>
+
+<div class="modal-backdrop" *ngIf="compiarPersonaGrid" (click)="closeShowCopiarPersonas()"></div>
+<div class="proveedor-grid-modal placementCopy" *ngIf="compiarPersonaGrid">
+    <div class="btns">
+        <div class="title">
+            <h3>Seleccione una persona</h3>
+        </div>
+        <button class="save-btn">+</button>
+        <button class="delete-btn" (click)="closeShowCopiarPersonas()">✖</button>
+    </div>
+    <div class="search-holder">
+        <div class="search-container">
+            <div class="search-form">
+                <input 
+                    type="text" 
+                    class="search-bar"
+                    placeholder="Personas" 
+                    [(ngModel)]="searchPersonasCopy"
+                >
+            </div>
+            <div class="btns Widthy">
+                <button class="search-btn" (click)="searchCopy()">Buscar</button>
+                <button class="Limpiar-btn" (click)="limpiarSearcCopy()">Limpiar</button>
+            </div>
+        </div>
+    </div>
+    <h1 class="errorBtn">{{errorCopy}}</h1>
+    <table class="personas-table">
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Nombre</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let p of paginatedPersonasCopy" style="cursor: pointer;" (click)="showcontinueAdCheckGrid(p)">
+                <td>
+                    {{p.percod}}
+                </td>
+                <td>{{p.pernom}}</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="pag">
+        <div class="pagination-controls">
+            <button (click)="prevPageCopy()" [disabled]="pageCopy === 0">Anterior</button>
+            <span>Página</span>
+            <input
+            type="number"
+            min="1"
+            [max]="totalPagesCopy"
+            [value]="pageCopy + 1"
+            (change)="goToPageCopy($event)"
+            class="pagination-input"
+            />
+            <span>de {{ totalPagesCopy }}</span>
+            <button (click)="nextPageCopy()" [disabled]="pageCopy + 1 >= totalPagesCopy">Siguiente</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-backdrop" *ngIf="continueAdCheckGrid" (click)="closecontinueAdCheckGrid()"></div>
+<div class="proveedor-grid-modal placementCopy" *ngIf="continueAdCheckGrid">
+    <div>
+        <p class="sure-msg">{{continueMessag}}</p>        
+    </div>
+    <div class="btns alignment">
+        <button class="save-btn" [disabled]="isAvailable" [class.disabled]="isAvailable" (click)="next()">+</button>
+        <button class="delete-btn" (click)="closecontinueAdCheckGrid()">✖</button>
     </div>
 </div>
