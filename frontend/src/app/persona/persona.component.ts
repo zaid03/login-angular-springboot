@@ -604,7 +604,7 @@ export class PersonaComponent {
         this.closeAddService();
       },
       error: (err) => {
-        this.servicesAddError = 'Server error';
+        this.servicesAddError = err.error || 'Server error';
       }
     })
   }

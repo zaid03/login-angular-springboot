@@ -1,18 +1,24 @@
 package com.example.backend.controller;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.example.backend.dto.DepCodDesDto;
 import com.example.backend.dto.PersonaServiceRequest;
 import com.example.backend.service.DpeService;
 import com.example.backend.sqlserver2.model.DpeId;
 import com.example.backend.sqlserver2.repository.DpeRepository;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.HttpStatus;
-import org.springframework.dao.DataAccessException;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/depe")
@@ -109,9 +115,20 @@ public class DpeController {
     }
 
     @PostMapping("/add-persona-services")
-    public ResponseEntity<Void> addPersonaServices(@RequestBody PersonaServiceRequest request) {
-        System.out.println(">>> addPersonaServices controller hit");
-        dpeService.savePersonaServices(request);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<?> addPersonaServices(@RequestBody PersonaServiceRequest request) {
+        try {
+            if (request.getPercod() == null || request.getPercod().trim().isEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("El código de persona (percod) es obligatorio.");
+            }
+            if (request.getServices() == null || request.getServices().isEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Debe seleccionar al menos un servicio.");
+            }
+
+            dpeService.savePersonaServices(request);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error inesperado al añadir servicios: " + ex.getMessage());
+        }
     }
 }
