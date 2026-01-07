@@ -781,13 +781,15 @@ export class PersonaComponent {
   continueAdCheckGrid: boolean = false;
   continueMessag: string = '';
   isAvailable: boolean = false;
+  percodCopyTo: string = '';
+  percodOrigin: string = ''
   showcontinueAdCheckGrid(info: any) {
-    this.fetchPersonasForCopy();
     this.continueAdCheckGrid = true;
     this.closeShowCopiarPersonas()
 
-    const percod = info.percod;
-    if(percod === this.selectedPersona.percod) {
+    this.percodCopyTo = info.percod;
+    this.percodOrigin = this.selectedPersona.percod;
+    if(this.percodCopyTo === this.percodOrigin) {
       this.isAvailable = true;
       this.continueMessag = 'Ha seleccionado la misma persona que está editando'
       return;
@@ -795,15 +797,71 @@ export class PersonaComponent {
 
     this.isAvailable = false;
     this.continueMessag = 'Se van a borrar los servicios asignados y añadir los de la persona seleccionada. ¿Quiere seguir?'
+    this.fetchAndStoreServiceCodes(this.percodOrigin);
+    console.log(this.percodCopyTo)
   }
 
   closecontinueAdCheckGrid() {
     this.continueAdCheckGrid = false;
   }
 
-  next() {
-    console.log("next")
+  copiedServiceCodes: string[] = [];
+  fetchAndStoreServiceCodes(percod: string) {
+    this.http.get<any>(`${environment.backendUrl}/api/depe/fetch-persona-service/${this.entcod}/${this.eje}/${percod}`).subscribe({
+      next: (res) => {
+        this.copiedServiceCodes = Array.isArray(res) ? res.map((s: any) => s.depcod) : [];
+        console.log(this.copiedServiceCodes)
+      },
+      error: (err) => {
+        this.copiedServiceCodes = [];
+        this.detailMessageError = err?.error || 'Error al obtener servicios';
+      }
+    });
   }
+
+  copyPerfil() {
+    const SourcePercod = this.selectedPersona.percod;
+    const targetPercod = this.percodCopyTo;
+
+    if (!SourcePercod || !targetPercod) {this.detailMessageError = 'datos faltantes'; return;}
+
+    
+    this.http.delete(`${environment.backendUrl}/api/depe/delete-persona-Allservice/${this.entcod}/${this.eje}/${SourcePercod}`).subscribe({
+      next: (res) => {
+       console.log("servisios eliminada exitosamente")
+      },
+      error: (err) => {
+        this.detailMessageError = err?.error;
+        this.closecontinueAdCheckGrid()
+        return;
+      }
+    })
+    
+    const payload = {
+      "ent": this.entcod,
+      "eje": this.eje,
+      "percod": targetPercod,
+      "services": this.copiedServiceCodes
+    }
+
+    console.log( payload)
+
+    this.http.post(`${environment.backendUrl}/api/depe/add-persona-services`, payload).subscribe({
+      next: (res) => {
+        this.personasMessageSuccess = 'Los servicios se han añadido correctamente';
+        this.fetchPersonas();
+        this.closecontinueAdCheckGrid();
+        this.closeDetails();
+      },
+      error: (err) => {
+        this.detailMessageError = err.error || 'Server error';
+        this.closecontinueAdCheckGrid()
+        this.closeDetails();
+        return;
+      }
+    })
+  }
+
   //misc
   limpiarMessages() {
 

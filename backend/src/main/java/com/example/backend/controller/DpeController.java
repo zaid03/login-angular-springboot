@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.backend.dto.DepCodDesDto;
 import com.example.backend.dto.PersonaServiceRequest;
 import com.example.backend.service.DpeService;
+import com.example.backend.sqlserver2.model.Dpe;
 import com.example.backend.sqlserver2.model.DpeId;
 import com.example.backend.sqlserver2.repository.DpeRepository;
 
@@ -129,6 +130,31 @@ public class DpeController {
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Error inesperado al añadir servicios: " + ex.getMessage());
+        }
+    }
+
+    //needed for copy perfil function
+    @DeleteMapping("/delete-persona-Allservice/{ent}/{eje}/{percod}")
+    public ResponseEntity<?> deleteServices(
+        @PathVariable Integer ent,
+        @PathVariable String eje,
+        @PathVariable String percod
+    ) {
+        try {
+            List<Dpe> existing = dpeRepository.findByENTAndEJEAndPERCOD(ent, eje, percod);
+            if (existing.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No se encontró la persona para eliminar.");
+            }
+
+            int deletedd = dpeRepository.deletePersonaServices(ent, eje, percod);
+            if (deletedd == 0) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No se encontró la persona para eliminar.");
+            }
+            return ResponseEntity.noContent().build();
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error durante la eliminación: " + ex.getMostSpecificCause().getMessage());
         }
     }
 }
