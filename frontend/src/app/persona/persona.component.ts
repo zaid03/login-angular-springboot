@@ -837,9 +837,20 @@ export class PersonaComponent {
     this.http.post(`${environment.backendUrl}/api/depe/add-persona-services`, payload).subscribe({
       next: (res) => {
         this.personasMessageSuccess = 'Los servicios se han añadido correctamente';
-        this.fetchPersonas();
-        this.closecontinueAdCheckGrid();
-        this.closeDetails();
+
+        this.http.delete(`${environment.backendUrl}/api/depe/delete-persona-Allservice/${this.entcod}/${this.eje}/${this.percodOrigin}`).subscribe({
+          next: (res) => {
+          console.log("servisios eliminada exitosamente")
+          this.fetchPersonas();
+          this.closecontinueAdCheckGrid();
+          this.closeDetails();
+          },
+          error: (err) => {
+            this.detailMessageError = err?.error;
+            this.closecontinueAdCheckGrid()
+            return;
+          }
+        })
       },
       error: (err) => {
         this.detailMessageError = err.error || 'Server error';
@@ -848,19 +859,6 @@ export class PersonaComponent {
         return;
       }
     })
-
-    // this.http.delete(`${environment.backendUrl}/api/depe/delete-persona-Allservice/${this.entcod}/${this.eje}/${this.percodOrigin}`).subscribe({
-    //   next: (res) => {
-    //    console.log("servisios eliminada exitosamente")
-    //   },
-    //   error: (err) => {
-    //     this.detailMessageError = err?.error;
-    //     this.closecontinueAdCheckGrid()
-    //     return;
-    //   }
-    // })
-    
-    
   }
 
   //misc
