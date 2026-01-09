@@ -3,8 +3,6 @@
 .search-form { width: 20%;}
 .Widthy { width: 12%;}
 /* search */
-/* .personas-table { width: 95% !important; overflow: hidden; border: 1px solid red !important;} */
-
 .personas-table thead th:first-child {width: 110px;}
 .personas-table thead th:nth-child(2),
 .personas-table thead th:nth-child(3),
