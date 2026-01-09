@@ -18,9 +18,9 @@
 .services-table tbody td:nth-child(7),
 .services-table tbody td:nth-child(6),
 .services-table tbody td:nth-child(5) { text-align: center; }
-.personas-table thead th:last-child { width: 80px;}
+.custom-grid-modal .personas-table thead th:last-child { width: 80px;}
 .personas-table tbody td:last-child {display: flex; justify-content: center;}
-.personas-table thead th:first-child {width: 220px;}
+.custom-grid-modal .personas-table thead th:first-child {width: 220px;}
 .almacen-table thead th:first-child {width: 150px;}
 /* main table */
 /* detail grid */
@@ -45,7 +45,8 @@
 .first-det p,
 .second-det p,
 .left-special p,
-.persona-details p { font-size: 14px; font-weight: bold; color: #25176b; }
+.persona-details p,
+.count-selected { font-size: 14px; font-weight: bold; color: #25176b; }
 .detail-container .right h1,
 .almacen-title  h1 {color: #162a3a; font-size: 18px;}
 .chunk-one textarea,
@@ -89,13 +90,22 @@
 .fourth-content {display: flex;}
 .left-special { gap: 50px;}
 .short-add {width: 80px; max-width: 95px;}
-.long {width: 475px; max-width: 520px;}
-.average {width: 370px; max-width: 415px;}
+.long-add {width: 475px; max-width: 520px;}
+.average-add {width: 370px; max-width: 415px;}
+.hei {height: 50px !important;}
 /* add grid */
-/* add persona grid */
+/* add new service grid */
 .custom-grid-modal .add-btn {margin: 5px;}
 .delete-btn { margin-left: 10px;}
 .delete-confirm-modal { display: flex; flex-direction: column; align-items: center; gap: 2px; border: 1px solid blue;}
 .persona-details {width: 90%; display: flex; justify-content: center; gap: 10px;}
 .delete-confirm-modal .btns {justify-content: center;}
-/* add persona grid */
+/* add new service grid */
+/* add personas for a service */
+.proveedor-grid-modal{ position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 72%; max-width: 95%; max-height: 80vh; overflow: auto; background: #ffffff; border-radius: 12px; padding: 18px; box-shadow: 0 12px 36px rgba(0,0,0,0.18); z-index: 4000; display: flex; flex-direction: column; gap: 12px;}
+.proveedor-grid-modal .search-form {width: 30%;}
+.proveedor-grid-modal .search-container {width: 100%;}
+.proveedor-grid-modal .search-holder {width: 100%;}
+.all-add-content {display: flex; flex-direction: column; align-items: center;}
+.proveedor-grid-modal .personas-table thead th:first-child {width: 190px;}
+/* add personas for a service */

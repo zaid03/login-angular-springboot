@@ -12,7 +12,7 @@
 .detail-cotainer {display: flex; flex-direction: column; flex-wrap: wrap; gap: 10px;}
 .above {display: flex;}
 .chunk-one,
-.chunk-two {width: 49%; display: flex; border: 1px solid red;}
+.chunk-two {width: 49%; display: flex;}
 .left,
 .right {display: flex; flex-direction: column; }
 .left {width: 20%; gap: 20px;}

@@ -290,7 +290,7 @@
                     </div>
                     <div class="custom-grid-modal" [ngSwitch]="option">
                         <ng-container *ngSwitchCase="'personas'">
-                            <button class="add-btn">+</button>
+                            <button class="add-btn" (click)="showAddPersonas()">+</button>
                             <h1 class="errorBtn">{{personasError}}</h1>
                             <h1 class="successBtn">{{personasSuccess}}</h1>
                             <div class="personas-list">
@@ -380,7 +380,7 @@
                     <p>Centro Gestor*</p>
                     <textarea class="short-add" #centroGestor></textarea>
                 </div>
-                <textarea class="long" #description></textarea>
+                <textarea class="long-add" #description></textarea>
             </div>
         </div>
         <div class="second-content">
@@ -406,7 +406,7 @@
                         #d1c_add
                     ></textarea>
                     <textarea 
-                        class="average"
+                        class="average-add"
                         #d1d_add
                     ></textarea>
                 </div>
@@ -416,7 +416,7 @@
                         #d2c_add
                     ></textarea>
                     <textarea 
-                        class="average"
+                        class="average-add"
                         #d2d_add
                     ></textarea>
                 </div>
@@ -426,7 +426,7 @@
                         #d3c_add
                     ></textarea>
                     <textarea 
-                        class="average"
+                        class="average-add"
                         #d3d_add
                     ></textarea>
                 </div>
@@ -439,11 +439,11 @@
             </div>
             <div class="right-special">
                 <textarea 
-                    class="long"
+                    class="long-add hei"
                     #den_add
                 ></textarea>
                 <textarea 
-                    class="long"
+                    class="long-add hei"
                     #dco_add
                 ></textarea>
             </div>
@@ -462,5 +462,70 @@
     <div class="btns">
         <button class="delete-btn" (click)="confirmDelete(personaTodelete?.[0])">-</button>
         <button class="save-btn" (click)="closeDeleteConfirm()">✖</button>
+    </div>
+</div>
+
+<div class="modal-backdrop" *ngIf="addPersonas" (click)="closeAddPersonas()"></div>
+<div class="proveedor-grid-modal" *ngIf="addPersonas">
+    <div class="btns">
+        <div class="title">
+            <h3>Selecciona las personas que deseas agregar</h3>
+        </div>
+        <div class="count-selected">
+            <p>seleccionado {{count}} líneas</p>
+        </div>
+        <button class="save-btn">+</button>
+        <button class="close-btn-btn" (click)="closeAddPersonas()">✖</button>
+    </div>
+    <div class="search-holder">
+        <div class="search-container">
+            <div class="search-form">
+                <input 
+                    type="text" 
+                    class="search-bar"
+                    placeholder="Personas" 
+                    [(ngModel)]="searchPersonasCopy"
+                >
+            </div>
+            <div class="btns Widthy">
+                <button class="search-btn" (click)="searchCopy()">Buscar</button>
+                <button class="Limpiar-btn" (click)="limpiarSearcCopy()">Limpiar</button>
+            </div>
+        </div>
+    </div>
+    <h1 class="errorBtn">{{errorCopy}}</h1>
+    <div class="all-add-content">
+        <table class="personas-table">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Nombre</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let p of paginatedPersonasCopy" style="cursor: pointer;">
+                    <td>
+                        {{p.percod}}
+                    </td>
+                    <td>{{p.pernom}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="pag">
+            <div class="pagination-controls">
+                <button (click)="prevPageCopy()" [disabled]="pageCopy === 0">Anterior</button>
+                <span>Página</span>
+                <input
+                type="number"
+                min="1"
+                [max]="totalPagesCopy"
+                [value]="pageCopy + 1"
+                (change)="goToPageCopy($event)"
+                class="pagination-input"
+                />
+                <span>de {{ totalPagesCopy }}</span>
+                <button (click)="nextPageCopy()" [disabled]="pageCopy + 1 >= totalPagesCopy">Siguiente</button>
+            </div>
+        </div>
     </div>
 </div>
