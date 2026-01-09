@@ -44,6 +44,7 @@ export class PersonaComponent {
   pageSize = 20;
 
   ngOnInit(): void {
+    this.limpiarMessages();
     const entidad = sessionStorage.getItem('Entidad');
     const eje = sessionStorage.getItem('EJERCICIO');
     const percod = sessionStorage.getItem('Perfil');
@@ -182,7 +183,8 @@ export class PersonaComponent {
     }
   }
 
-  excelDownload() { 
+  excelDownload() {
+    this.limpiarMessages(); 
     const rows = this.backuppersonas.length ? this.backuppersonas : this.personas;
     if (!rows || rows.length === 0) {
       this.personasMessageError = 'No hay datos para exportar.';
@@ -225,6 +227,7 @@ export class PersonaComponent {
   }
 
   toPrint() {
+    this.limpiarMessages();
     const rows = this.backuppersonas.length ? this.backuppersonas : this.personas;
     if (!rows?.length) {
       this.personasMessageError = 'No hay datos para imprimir.';
@@ -288,6 +291,7 @@ export class PersonaComponent {
 
   searchPersonas: string = '';
   search() {
+    this.limpiarMessages();
     if(this.searchPersonas === '') {
       this.personasMessageError = 'Ingrese algo para buscar';
       return 
@@ -341,6 +345,7 @@ export class PersonaComponent {
   limpiarSearch() {
     this.searchPersonas = '';
     this.fetchPersonas();
+    this.limpiarMessages();
   }
 
   //detail grid functions
@@ -348,6 +353,7 @@ export class PersonaComponent {
   detailMessageSuccess: string = '';
   detailMessageError: string = '';
   showDetails(persona: any) {
+    this.limpiarMessages();
     this.selectedPersona = persona;
   }
 
@@ -360,7 +366,7 @@ export class PersonaComponent {
   }
 
   updatePersona(pernom: string, percoe: string, pertel: string, pertmo: string, percar: string, perobs: string) {
-
+    this.limpiarMessages();
     if(!pernom) {
       this.detailMessageError = 'Nombre requerido'
       return;
@@ -394,6 +400,7 @@ export class PersonaComponent {
   serviceErrorMessage: string = '';
   serviceSuccessMessage: string = '';
   showServices(persona: any) {
+    this.limpiarMessages();
     this.showSerivcesGrid = true;
     this.activeDetailTab = 'services';
     const percod = persona.percod;
@@ -438,6 +445,7 @@ export class PersonaComponent {
   serviceToDelete: any = [];
   showDeleteGrid: boolean = false;
   showDelete(service: any) {
+    this.limpiarMessages();
     this.serviceToDelete = service;
     this.showDeleteGrid = true;
   }
@@ -466,6 +474,7 @@ export class PersonaComponent {
 
   addService: boolean = false;
   showAddService() {
+    this.limpiarMessages();
     this.addService = true;
     this.fetchServicesAdd();
   }
@@ -527,7 +536,6 @@ export class PersonaComponent {
   searchPerfil: string = 'todos';
   searchServices() {
     this.limpiarMessages();
-
     const params: any = {
       ent: this.entcod,
       eje: this.eje,
@@ -613,6 +621,7 @@ export class PersonaComponent {
   showAddConfirm: boolean = false;
   PersonaErrorMessage: string = '';
   showAdd() {
+    this.limpiarMessages();
     this.showAddConfirm = true;
   }
 
@@ -659,6 +668,7 @@ export class PersonaComponent {
   gridMessag: string = '';
   personServices: any = [];
   showCopiar(percod: string) {
+    this.limpiarMessages();
     this.http.get<any>(`${environment.backendUrl}/api/depe/fetch-persona-service/${this.entcod}/${this.eje}/${percod}`).subscribe({
       next: (res) => {
         this.personServices = res;
@@ -682,10 +692,9 @@ export class PersonaComponent {
     this.personServices = [];
   }
 
- 
-
   compiarPersonaGrid: boolean = false;
   showCopiarPersonas() {
+    this.limpiarMessages();
     this.fetchPersonasForCopy();
     this.compiarPersonaGrid = true;
     this.closeCopiar()
@@ -734,6 +743,7 @@ export class PersonaComponent {
 
   searchPersonasCopy: string = '';
   searchCopy() {
+    this.limpiarMessages();
     if(this.searchPersonasCopy === '') {
       this.errorCopy = 'Ingrese algo para buscar';
       return 
@@ -787,6 +797,7 @@ export class PersonaComponent {
   percodCopyTo: string = '';
   percodOrigin: string = ''
   showcontinueAdCheckGrid(info: any) {
+    this.limpiarMessages();
     this.continueAdCheckGrid = true;
     this.closeShowCopiarPersonas()
 
@@ -801,7 +812,6 @@ export class PersonaComponent {
     this.isAvailable = false;
     this.continueMessag = 'Se van a borrar los servicios asignados y añadir los de la persona seleccionada. ¿Quiere seguir?'
     this.fetchAndStoreServiceCodes(this.percodOrigin);
-    console.log(this.percodCopyTo)
   }
 
   closecontinueAdCheckGrid() {
@@ -813,7 +823,6 @@ export class PersonaComponent {
     this.http.get<any>(`${environment.backendUrl}/api/depe/fetch-persona-service/${this.entcod}/${this.eje}/${percod}`).subscribe({
       next: (res) => {
         this.copiedServiceCodes = Array.isArray(res) ? res.map((s: any) => s.depcod) : [];
-        console.log(this.copiedServiceCodes)
       },
       error: (err) => {
         this.copiedServiceCodes = [];
@@ -823,6 +832,7 @@ export class PersonaComponent {
   }
 
   copyPerfil() {
+    this.limpiarMessages();
     if (!this.percodOrigin || !this.percodCopyTo) {this.detailMessageError = 'datos faltantes'; return;}
   
     const payload = {
@@ -832,15 +842,12 @@ export class PersonaComponent {
       "services": this.copiedServiceCodes
     }
 
-    console.log( payload)
-
     this.http.post(`${environment.backendUrl}/api/depe/add-persona-services`, payload).subscribe({
       next: (res) => {
         this.personasMessageSuccess = 'Los servicios se han añadido correctamente';
 
         this.http.delete(`${environment.backendUrl}/api/depe/delete-persona-Allservice/${this.entcod}/${this.eje}/${this.percodOrigin}`).subscribe({
           next: (res) => {
-          console.log("servisios eliminada exitosamente")
           this.fetchPersonas();
           this.closecontinueAdCheckGrid();
           this.closeDetails();
@@ -863,6 +870,15 @@ export class PersonaComponent {
 
   //misc
   limpiarMessages() {
-
+    this.personasMessageSuccess = '';
+    this.personasMessageError = '';
+    this.detailMessageSuccess = '';
+    this.detailMessageError = '';
+    this.serviceErrorMessage = '';
+    this.serviceSuccessMessage = '';
+    this.PersonaErrorMessage = '';
+    this.ErrorDelete = '';
+    this.servicesAddError = '';
+    this.errorCopy = '';
   }
 }
