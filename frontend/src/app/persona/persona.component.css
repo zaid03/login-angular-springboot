@@ -3,10 +3,12 @@
 .search-form { width: 20%;}
 .Widthy { width: 12%;}
 /* search */
+/* .personas-table { width: 95% !important; overflow: hidden; border: 1px solid red !important;} */
+
 .personas-table thead th:first-child {width: 110px;}
 .personas-table thead th:nth-child(2),
 .personas-table thead th:nth-child(3),
-.personas-table thead th:last-child {width: 200px;}
+.personas-table thead th:last-child {min-width: 200px;}
 /* search */
 /* detail grid */
 .detail-cotainer {display: flex; flex-direction: column; flex-wrap: wrap; gap: 10px;}

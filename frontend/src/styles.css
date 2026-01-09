@@ -205,7 +205,7 @@ app-sidebar { flex-shrink: 0; z-index: 2000; }
 .almacen-table,
 .user-services-table,
 .services-table,
-.servicesPersona-table { background-color: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); width: 100%; table-layout: fixed; border-collapse: collapse; margin-bottom: 24px; overflow: hidden; }
+.servicesPersona-table { background-color: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); width: 100%; table-layout: fixed; border-collapse: collapse; margin-bottom: 24px; overflow: hidden; table-layout: auto !important; }
 .main-table th,
 .facturas-table thead th,
 .albaranes-table thead th,
