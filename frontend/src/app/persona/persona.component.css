@@ -10,10 +10,9 @@
 /* search */
 /* detail grid */
 .detail-cotainer {display: flex; flex-direction: column; flex-wrap: wrap; gap: 10px;}
-.above,
-.below {display: flex;}
+.above {display: flex;}
 .chunk-one,
-.chunk-two {width: 49%; display: flex;}
+.chunk-two {width: 49%; display: flex; border: 1px solid red;}
 .left,
 .right {display: flex; flex-direction: column; }
 .left {width: 20%; gap: 20px;}
@@ -21,7 +20,6 @@
 .on-two {display: flex; align-items: center; gap: 10px;}
 .chunk-one,
 .chunk-two p,
-.below p,
 .add-container p,
 .delete-content,
 .count-selected {font-size: 14px; font-weight: bold; color: #25176b;}
@@ -29,17 +27,13 @@
 .delete-content h1 {color: #162a3a; font-size: 18px;}
 .chunk-one textarea,
 .chunk-two textarea,
-.below textarea,
 .add-container textarea {height: 20px; padding: 2px 4px; border-radius: 6px; font-weight: bold; color: #162a3a;}
 .chunk-one textarea:focus,
 .chunk-two textarea:focus,
-.below textarea:focus,
 .add-container textarea:focus {outline: none; border-color: #042b5a; outline: none; background: #fff;}
-.average {width: 190px; max-width: 290px;}
-.long { width: 355px; max-width: 390px;}
-.left-special {width: 10%;}
-.right-special {width: 90%;}
-.special-long {width: 87%; max-width: 90%; height: 50px !important;}
+.average {width: 190px; max-width: 210px;}
+.long { width: 442px; max-width: 460px;}
+.height {height: 50px !important;}
 /* detail grid */
 /* services grid in detail */
 .servicesPersona-table { width: 90%;}
@@ -55,10 +49,11 @@
 .left-add {width: 18%; display: flex; flex-direction: column; gap: 20px; text-align: left;}
 .right-add {width: 82%; gap: 10px; display: flex; flex-direction: column; align-items: flex-start;}
 .on-two-add {display: flex; gap: 10px; align-items: center;}
-.average-add {width: 173px; max-width: 200px;}
-.average-add-second {width: 183px;}
-.long-add {width: 430px; max-width: 99%;}
-.special-add-long {width: 430px; max-width: 99%; height: 50px !important;}
+.average-add {width: 175px; max-width: 205px;}
+.average-add-second {width: 185px; max-width: 215px;}
+.long-add,
+.special-add-long {width: 430px; max-width: 99%;}
+.special-add-long {height: 50px !important;}
 /* add persona grid */
 /* delete grid */
 .delete-confirm-modal {top: 35%;}
