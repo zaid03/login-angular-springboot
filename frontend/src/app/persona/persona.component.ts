@@ -581,12 +581,13 @@ export class PersonaComponent {
   }
 
   linesSelected: string[] = [];
-  selectedServiceCode: string | null = null;
   selectService(service: string) {
     if(this.linesSelected.includes(service)) {
       this.linesSelected = this.linesSelected.filter((s) => s !== service);
+    } else {
+      this.linesSelected = [...this.linesSelected, service];
     }
-    this.linesSelected = [...this.linesSelected, service];
+    
     this.getLinesAdded()
   }
 
@@ -596,7 +597,7 @@ export class PersonaComponent {
   }
   
   addServicePersona(services: string[]) {
-    if(!services) {return;}
+    if(!services) {this.servicesAddError = 'Debe seleccionar al menos un servicio.'; return;}
 
     const payload = {
       "ent": this.entcod,

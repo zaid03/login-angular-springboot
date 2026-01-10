@@ -659,6 +659,8 @@ export class ServiciosComponent {
 
   closeAddPersonas() {
     this.addPersonas = false;
+    this.linesSelected = [];
+    this.count = 0;
   }
 
   fetchPersonasForCopy() {
@@ -744,11 +746,38 @@ export class ServiciosComponent {
   limpiarSearcCopy() {
     this.searchPersonasCopy = '';
     this.pesonasCopy = [...this.backupPesonasCopy]
+    this.linesSelected = [];
+    this.count = 0;
+  }
+  
+  linesSelected: string[] = [];
+  selectLines(persona: string) {
+    console.log(persona)
+    if(this.linesSelected.includes(persona)) {
+      this.linesSelected = this.linesSelected.filter((p) => p !== persona);
+    } else {
+      this.linesSelected = [...this.linesSelected, persona];
+    }
+
+    this.getLinesAdded()
   }
 
   count: number = 0;
   getLinesAdded(){
-    // this.count = this.linesSelected.length;
+    this.count = this.linesSelected.length;
+  }
+
+  addPersonasToService(personas: string[]) {
+    if(!personas) {this.errorCopy = 'Debes seleccionar al menos una persona'; return;}
+
+    const payload = {
+      "ent": this.entcod,
+      "eje": this.eje,
+      "percod": this.selectedService.depcod,
+      "services": personas
+    }
+
+    console.log(payload)
   }
 
   //misc

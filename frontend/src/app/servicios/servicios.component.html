@@ -474,7 +474,7 @@
         <div class="count-selected">
             <p>seleccionado {{count}} líneas</p>
         </div>
-        <button class="save-btn">+</button>
+        <button class="save-btn" (click)="addPersonasToService(linesSelected)">+</button>
         <button class="close-btn-btn" (click)="closeAddPersonas()">✖</button>
     </div>
     <div class="search-holder">
@@ -503,7 +503,10 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let p of paginatedPersonasCopy" style="cursor: pointer;">
+                <tr *ngFor="let p of paginatedPersonasCopy" 
+                    style="cursor: pointer;" 
+                    [class.selected-row]="linesSelected.includes(p.percod)"
+                    (click)="selectLines(p.percod)">
                     <td>
                         {{p.percod}}
                     </td>
