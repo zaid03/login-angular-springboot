@@ -772,22 +772,22 @@ export class ServiciosComponent {
     const payload = {
       "ent": this.entcod,
       "eje": this.eje,
-      "percod": this.selectedService.depcod,
-      "services": personas
+      "depcod": this.selectedService.depcod,
+      "personas": personas
     }
  
     console.log(payload)
 
-    // this.http.post(`${environment.backendUrl}/api/depe/add-services-persona`, payload).subscribe({
-    //   next: (res) => {
-    //     this.personasSuccess = 'Las personas han sido agregadas exitosamente';
-    //     this.fetchPersonas(this.selectedService.depcod);
-    //     this.closeAddPersonas();
-    //   },
-    //   error: (err) => {
-    //     this.errorCopy = err.error || 'Server error';
-    //   }
-    // })
+    this.http.post(`${environment.backendUrl}/api/depe/add-services-persona`, payload).subscribe({
+      next: (res) => {
+        this.personasSuccess = 'Las personas han sido agregadas exitosamente';
+        this.fetchPersonas(this.selectedService.depcod);
+        this.closeAddPersonas();
+      },
+      error: (err) => {
+        this.errorCopy = err.error || 'Server error';
+      }
+    })
   }
 
   //misc
