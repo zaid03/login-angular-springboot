@@ -183,4 +183,94 @@ export class EjercicioComponent {
     if (cfgest === 0) {return "Activo"}
     return "Extraviado";
   }
+
+  excelDownload() {
+    const rows = this.backupEjercicios.length ? this.backupEjercicios : this.ejercicios;
+    if (!rows || rows.length === 0) {
+      this.ejercicioError = 'No hay datos para exportar.';
+      return;
+    }
+  
+    const exportRows = rows.map((row, index) => ({
+      '#': index + 1,
+      Entidad: row.ent ?? '',
+      Ejercicio: row.eje ?? '',
+      Estado: this.getstatus(row.cfgest) ?? '',
+    }));
+  
+    const worksheet = XLSX.utils.aoa_to_sheet([]);
+    XLSX.utils.sheet_add_aoa(worksheet, [['listas de Ejercicios']], { origin: 'A1' });
+    worksheet['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 3 } }];
+    XLSX.utils.sheet_add_aoa(worksheet, [['#', 'Entidad', 'Ejercicio', 'Estado']], { origin: 'A2' });
+    XLSX.utils.sheet_add_json(worksheet, exportRows, { origin: 'A3', skipHeader: true });
+
+    worksheet['!cols'] = [
+      { wch: 6 },
+      { wch: 12 },
+      { wch: 15 },
+      { wch: 20 }
+    ];
+  
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Ejercicios');
+    const buffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    saveAs(
+      new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }),
+      'ejercicios.xlsx'
+    );
+  }
+  
+  toPrint() {
+    const rows = this.backupEjercicios.length ? this.backupEjercicios : this.ejercicios;
+    if (!rows?.length) {
+      this.ejercicioError = 'No hay datos para imprimir.';
+      return;
+    }
+
+    const htmlRows = rows.map((row, index) => `
+      <tr>
+        <td>${index + 1}</td>
+        <td>${row.ent ?? ''}</td>
+        <td>${row.eje ?? ''}</td>
+        <td>${this.getstatus(row.cfgest) ?? ''}</td>
+      </tr>
+    `).join('');
+
+    const printWindow = window.open('', '_blank', 'width=900,height=700');
+    if (!printWindow) return;
+
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>listas de ejercicios</title>
+          <style>
+            body { font-family: 'Poppins', sans-serif; padding: 24px; }
+            h1 { text-align: center; margin-bottom: 16px; }
+            table { width: 100%; border-collapse: collapse; }
+            th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
+            th { background: #f3f4f6; }
+            th:last-child, td:last-child { width: 180px; }
+          </style>
+        </head>
+        <body>
+          <h1>listas de Ejercicios</h1>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Entidad</th>
+                <th>Ejercicio</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${htmlRows}
+            </tbody>
+          </table>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
+  }
 } 

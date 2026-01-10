@@ -1,0 +1,8 @@
+/* search */
+.search-container { width: 30%;}
+.search-form { width: 75%;}
+/* search */
+/* main table */
+.services-list {width: 50%;}
+.services-list thead th:first-child { width: 25%; }
+/* main table */
