@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.backend.dto.DepCodDesDto;
 import com.example.backend.dto.PersonaServiceRequest;
+import com.example.backend.dto.ServicePersonaRequest;
+import com.example.backend.service.DpePersonasForService;
 import com.example.backend.service.DpeService;
 import com.example.backend.sqlserver2.model.Dpe;
 import com.example.backend.sqlserver2.model.DpeId;
@@ -27,6 +29,14 @@ public class DpeController {
     @Autowired
     private DpeRepository dpeRepository;
 
+    //for adding personas to services and vice versa
+    private final DpeService dpeService;
+    private final DpePersonasForService dpePersonasForService;
+
+    public DpeController(DpeService dpeService, DpePersonasForService dpePersonasForService) {
+        this.dpeService = dpeService;
+        this.dpePersonasForService = dpePersonasForService;
+    }
 
     //selecting personas for servicios
     @GetMapping("/fetch-service-personas/{ent}/{eje}/{depcod}")
@@ -109,17 +119,11 @@ public class DpeController {
     }
 
     //adding serivces for a person
-    private final DpeService dpeService;
-
-    public DpeController(DpeService dpeService) {
-        this.dpeService = dpeService;
-    }
-
     @PostMapping("/add-persona-services")
     public ResponseEntity<?> addPersonaServices(@RequestBody PersonaServiceRequest request) {
         try {
             if (request.getPercod() == null || request.getPercod().trim().isEmpty()) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("El código de persona (percod) es obligatorio.");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("El código de persona es obligatorio.");
             }
             if (request.getServices() == null || request.getServices().isEmpty()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Debe seleccionar al menos un servicio.");
@@ -155,6 +159,26 @@ public class DpeController {
             return ResponseEntity.noContent().build();
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error durante la eliminación: " + ex.getMostSpecificCause().getMessage());
+        }
+    }
+
+    //adding personas to a service
+    //adding serivces for a person
+    @PostMapping("/add-services-persona")
+    public ResponseEntity<?> addServicePersonas(@RequestBody ServicePersonaRequest request) {
+        try {
+            if (request.getDepcod() == null || request.getDepcod().trim().isEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("El código de servicio es obligatorio.");
+            }
+            if (request.getPersonas() == null || request.getPersonas().isEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Debe seleccionar al menos un persona.");
+            }
+
+            dpePersonasForService.saveServicePersonas(request);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error inesperado al añadir personas: " + ex.getMessage());
         }
     }
 }

@@ -51,7 +51,7 @@
                 <div class="menu-panel" *ngIf="showMenu">
                     <button class="download-btn" (click)="excelDownload()">Descargar como Excel</button>
                     <button class="print-btn" (click)="toPrint()">Impreso</button>
-                    <button class="add-familia-btn" (click)="launchAddCentroGestor()">Añadir</button>
+                    <button class="add-familia-btn" (click)="launchAddService()">Añadir</button>
                 </div>
             </div>
         </div>
@@ -495,7 +495,7 @@
     </div>
     <h1 class="errorBtn">{{errorCopy}}</h1>
     <div class="all-add-content">
-        <table class="personas-table">
+        <table class="personas-table-select">
             <thead>
                 <tr>
                     <th>Código</th>
