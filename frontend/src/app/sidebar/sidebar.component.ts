@@ -64,6 +64,7 @@ export class SidebarComponent implements OnInit {
   navigateTo(code: string): void {
     switch (code) {
       case 'ejercicios':
+        this.router.navigate(['/ejercicios']);
         break;
       case 'centroGestor':
         this.router.navigate(['/centroGestor']);

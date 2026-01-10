@@ -14,6 +14,7 @@ import { ServiciosComponent } from './servicios/servicios.component';
 import { EntregaComponent } from './entrega/entrega.component';
 import { CosteComponent } from './coste/coste.component';
 import { PersonaComponent } from './persona/persona.component';
+import { EjercicioComponent } from './ejercicio/ejercicio.component';
 
 export const routes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -30,6 +31,7 @@ export const routes: Routes = [
     { path: 'entrega', component: EntregaComponent},
     { path: 'coste', component: CosteComponent},
     { path: 'persona', component: PersonaComponent},
+    { path: 'ejercicios', component: EjercicioComponent},
     { path: '', redirectTo: '/login', pathMatch: 'full' }, //route by default
 ];
 
