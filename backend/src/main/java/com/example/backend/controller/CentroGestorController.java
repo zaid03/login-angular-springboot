@@ -1,7 +1,6 @@
 package com.example.backend.controller;
 
 import com.example.backend.dto.DepProjection;
-import com.example.backend.sqlserver2.model.Dep;
 import com.example.backend.sqlserver2.repository.CentroGestor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;

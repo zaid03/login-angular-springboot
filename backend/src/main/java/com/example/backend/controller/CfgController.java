@@ -3,9 +3,11 @@ package com.example.backend.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.dao.DataAccessException;
 import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
+import com.example.backend.sqlserver2.model.Cfg;
 import com.example.backend.sqlserver2.repository.CfgRepository;
 
 import java.util.List;
@@ -38,6 +40,43 @@ public class CfgController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(Map.of("error", "Database error: " + e.getMessage()));
+        }
+    }
+
+    //to fetch all ejes
+    @GetMapping("/fetch-Eje/{ENT}")
+    public ResponseEntity<?> getEJE(
+        @PathVariable Integer ENT
+    ) {
+        try {
+            List<Cfg> Eje = cfgRepository.findByENT(ENT);
+            if(Eje.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontraron ejercicios para ese datos.");
+            }
+
+            return ResponseEntity.ok(Eje);
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
+        }
+    }
+
+    //to search in eje
+    @GetMapping("/search-Eje/{ENT}/{EJE}")
+    public ResponseEntity<?> getEJE(
+        @PathVariable Integer ENT,
+        @PathVariable String EJE
+    ) {
+        try {
+            List<Cfg> Eje = cfgRepository.findByENTAndEJE(ENT, EJE);
+            if(Eje.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontraron ejercicios para ese datos.");
+            }
+
+            return ResponseEntity.ok(Eje);
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 }
