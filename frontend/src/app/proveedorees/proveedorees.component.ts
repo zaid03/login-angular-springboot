@@ -434,35 +434,39 @@ export class ProveedoreesComponent {
     const columns = [
       { header: 'Código', dataKey: 'tercod' },
       { header: 'Nombre', dataKey: 'ternom' },
-      { header: 'Alias', dataKey: 'terali' },
       { header: 'NIF', dataKey: 'ternif' },
+      { header: 'Alias', dataKey: 'terali' },
+      { header: 'Teléfono', dataKey: 'tertel' },
       { header: 'Domicilio', dataKey: 'terdom' },
       { header: 'Código Postal', dataKey: 'tercpo' },
       { header: 'Municipio', dataKey: 'terpob' },
-      { header: 'Teléfono', dataKey: 'tertel' },
-      { header: 'Correo electrónico', dataKey: 'tercoe' },
-      { header: 'Código contable', dataKey: 'terayt' }
+      { header: 'Código contable', dataKey: 'terayt' },
+      { header: 'Fax', dataKey: 'terfax' },
+      { header: 'Web', dataKey: 'terweb' },
+      { header: 'Correo electronico', dataKey: 'tercoe' },
+      { header: 'Observaciones', dataKey: 'terobs' }
     ];
     const data = this.proveedores;
 
     autoTable(doc, {
       columns,
       body: data,
-      styles: { fontSize: 6 },
-      headStyles: { fillColor: [41, 128, 185] },
-      margin: { left: 2, right: 2 },
+      styles: { fontSize: 8 },
       tableWidth: 'wrap',
       columnStyles: {
-        tercod: { cellWidth: 15 },         
-        ternom: { cellWidth: 45 },  
-        terali: { cellWidth: 45 },         
-        ternif: { cellWidth: 22 },          
-        terdom: { cellWidth: 35 },          
-        tercpo: { cellWidth: 15 },        
-        terpob: { cellWidth: 35 },          
-        tertel: { cellWidth: 22 },          
-        tercoe: { cellWidth: 35 },       
-        terayt: { cellWidth: 18 }
+        tercod: { cellWidth: 12 },         
+        ternom: { cellWidth: 25 },  
+        ternif: { cellWidth: 18 },         
+        terali: { cellWidth: 25 },          
+        tertel: { cellWidth: 18 },          
+        terdom: { cellWidth: 25 },        
+        tercpo: { cellWidth: 18 },          
+        terpob: { cellWidth: 25 },          
+        terayt: { cellWidth: 18 },       
+        terfax: { cellWidth: 18 },
+        terweb: { cellWidth: 20 },
+        tercoe: { cellWidth: 25 },
+        terobs: { cellWidth: 25 }
       },
       didDrawPage: (dataArg) => {
         doc.setFontSize(10);

@@ -162,9 +162,9 @@
                                 <p>Dirección</p>
                             </div>
                             <div class="right">
-                                <h1>{{selectedProveedor.ternom}}</h1>
-                                <h1>{{selectedProveedor.terali}}</h1>
-                                <h1>{{selectedProveedor.terdom}}</h1>
+                                <h1>{{selectedProveedor.ternom || '#'}}</h1>
+                                <h1>{{selectedProveedor.terali || '#'}}</h1>
+                                <h1>{{selectedProveedor.terdom || '#'}}</h1>
                             </div>
                         </div>
                         <div class="chunk-two">
@@ -175,15 +175,15 @@
                             </div>
                             <div class="right">
                                 <div class="on-three">
-                                    <h1>{{selectedProveedor.tercod}}</h1>
+                                    <h1>{{selectedProveedor.tercod || '#'}}</h1>
                                     <p>NIF</p>
-                                    <h1>{{selectedProveedor.ternif}}</h1>
+                                    <h1>{{selectedProveedor.ternif || '#'}}</h1>
                                 </div>
                                 <div class="on-two">
-                                    <h1>{{selectedProveedor.procod}}</h1>
-                                    <h1>{{selectedProveedor.terpob}}</h1>
+                                    <h1>{{selectedProveedor.procod || '#'}}</h1>
+                                    <h1>{{selectedProveedor.terpob || '#'}}</h1>
                                 </div>
-                                <h1>{{selectedProveedor.tercpo}}</h1>
+                                <h1>{{selectedProveedor.tercpo || '#'}}</h1>
                             </div>
                         </div>
                         <div class="chunk-three">
@@ -193,7 +193,7 @@
                                 <p>Teléfono</p>
                             </div>
                             <div class="right">
-                                <h1>{{selectedProveedor.terayt}}</h1>
+                                <h1>{{selectedProveedor.terayt || '#'}}</h1>
                                 <div class="bloq">
                                     <input type="checkbox"
                                         [checked]="selectedProveedor.terblo == 1"
@@ -201,7 +201,7 @@
                                         class="checkbox" 
                                     />
                                 </div>
-                                <h1>{{selectedProveedor.tertel}}</h1>
+                                <h1>{{selectedProveedor.tertel || '#'}}</h1>
                             </div>
                         </div>
                         <div class="chunk-four">
@@ -211,9 +211,9 @@
                                 <p>Correo electrónico</p>
                             </div>
                             <div class="right">
-                                <h1>{{selectedProveedor.terfax}}</h1>
+                                <h1>{{selectedProveedor.terfax || '#'}}</h1>
                                 <textarea class="largeArea" [(ngModel)]="selectedProveedor.terweb"></textarea>
-                                <h1>{{selectedProveedor.tercoe}}</h1>
+                                <h1>{{selectedProveedor.tercoe || '#'}}</h1>
                             </div>
                         </div>
                         <div class="acuerdo">

@@ -4,7 +4,8 @@
 .search-options input:focus {outline: none;}
 .search-button-proveedores{ margin-right: 10px; }
 .search-btns { margin-left: 10px; } 
-.search-options input[type="radio"] { margin: 0 6px 0 0; accent-color: #25176b; width: 18px; height: 18px; vertical-align: middle; outline: none; box-shadow: none; }
+.search-options input[type="radio"],
+.hello-modal .anadir-articulo-form input[type="radio"] { margin: 0 6px 0 0; accent-color: #25176b; width: 18px; height: 18px; vertical-align: middle; outline: none; box-shadow: none; }
 /* search */
 /* detail grid */
 .detail-container { display: flex; flex-wrap: wrap; align-items: center; padding: 5px; gap: 10px; }
@@ -54,7 +55,10 @@
 .observ { width: 50%; gap: 10px; }
 .observ textarea { width: 90%; height: 100px; max-width: 100%; }
 /* detail grid */
-/* sub tables and lists */
+/* sub tables and lists */  
+.articulo-table tbody td:nth-child(8),
+.articulo-table tbody td:last-child,
+.personas-contacto-table tbody td:last-child {text-align: center;}
 .articulos-delete-confirm-btn { margin-right: 10px; }
 .personas-contacto-table,
 .proveedor-anadir-table-sw { width: 100%; }
@@ -62,8 +66,10 @@
 .personas-contacto-table input[type="text"],
 .personas-contacto-table input[type="email"],
 .articulo-table input[type="number"],
-.articulo-table input[type="checkbox"],
 .articulo-table input[type="text"] { width: 100%; padding: 6px 8px; border: 1px solid #bfc9d1; border-radius: 4px; font-size: 14px; background: #fff; transition: border-color 0.2s; box-sizing: border-box; color: #162a3a; font-weight: bold;}
+.articulo-table input[type="checkbox"],
+.acuerdo input[type="checkbox"],
+.checkbox { margin: 0; accent-color: #25176b; width: 14px; height: 18px; vertical-align: middle; outline: none; box-shadow: none; }
 .personas-contacto-table input[type="text"]:focus,
 .personas-contacto-table input[type="email"]:focus,
 .articulo-table input[type="number"]:focus,
@@ -86,8 +92,7 @@
 .anadir-articulo-form .search-anadir-input { width: 100%; margin: 0; display: flex; align-items: center; gap: 0; }
 .anadir-articulo-form .search-bar { flex: 1; padding: 10px 14px; border-radius: 20px; border: 1px solid #bbb; font-size: 16px; background: #f7f7f7; transition: border-color 0.2s; font-family: inherit; height: 18px; }
 .anadir-articulo-form .search-bar:focus { border-color: #38249b; outline: none; background: #fff; }
-.anadir-articulo-form .search-anadir { display: flex; align-items: center; gap: 18px; margin-bottom: 0; margin-right: 0; padding: 0; }
-.anadir-articulo-form .search-anadir input[type="radio"].checkbox { margin: 0 6px 0 0; accent-color: #1c5d8c; width: 18px; height: 18px; vertical-align: middle; }
+.anadir-articulo-form .search-anadir { display: flex; align-items: center; gap: 18px; margin-bottom: 0; margin-right: 0; padding: 0; justify-content: center;}
 .anadir-articulo-form .search-anadir label { font-size: 1rem; color: #333; font-weight: 500; margin-right: 10px; display: flex; align-items: center; gap: 4px; }
 .anadir-articulo-form h1 { margin: 10px 0 0 0; font-size: 1.1em; text-align: center; }
 .pagination-controls { justify-content: center;}
