@@ -1,6 +1,5 @@
-.proveedores-container.blurred { filter: blur(1.2px); pointer-events: none; user-select: none; }
 /* search */
-.margin-title { margin-left: 20%; }
+.margin-title { margin-left: 20%;}
 .search-options label { display: flex; font-size: 15px; gap: 16px; color: #444; padding: 8px 14px; }
 .search-options input:focus {outline: none;}
 .search-button-proveedores{ margin-right: 10px; }

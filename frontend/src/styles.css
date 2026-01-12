@@ -158,7 +158,8 @@ app-sidebar { flex-shrink: 0; z-index: 2000; }
 .services-container.blurred,
 .persona-container.blurred,
 .ejercicio-container.blurred,
-.personasServices-page.blurred { filter: blur(1.2px); pointer-events: none; user-select: none; }
+.personasServices-page.blurred,
+.proveedores-container.blurred { filter: blur(1.2px); pointer-events: none; user-select: none; }
 .facturas-page,
 .proveedores-page,
 .familia-page,
@@ -216,8 +217,8 @@ app-sidebar { flex-shrink: 0; z-index: 2000; }
 .servicesPersona-table,
 .personas-table-select,
 .ejercicio-table,
-.personasServices-table { background-color: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); width: 100%; table-layout: fixed; border-collapse: collapse; margin-bottom: 24px; overflow: hidden; table-layout: auto !important; }
-.main-table th,
+.personasServices-table { background-color: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); width: 100%; table-layout: fixed; border-collapse: collapse; margin-bottom: 24px; overflow: hidden;}
+.main-table thead th,
 .facturas-table thead th,
 .albaranes-table thead th,
 .personas-contacto-table th,
@@ -286,6 +287,12 @@ app-sidebar { flex-shrink: 0; z-index: 2000; }
 .personas-table-select tbody tr:hover,
 .ejercicio-table tbody tr:hover,
 .personasServices-table tbody tr:hover  {background-color: #f0f7ff;}
+.ejercicio-table,
+.services-table,
+.coste-table,
+.personasServices-table,
+.entrega-table,
+.familia-table {table-layout: auto !important;}
 /* title, search */
 .title-menu { width: 100%; padding-top: 5px; display: flex; }
 .title-area { width: 18%; display: flex; align-items: center; justify-content: center; }
