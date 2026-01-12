@@ -89,7 +89,7 @@ export class SidebarComponent implements OnInit {
         this.router.navigate(['/entrega']);
         break;
       case 'Cproveedores':
-        
+        this.router.navigate(['/Cproveedores']);
         break;
       case 'proveedorees':
         this.router.navigate(['/proveedorees']);
