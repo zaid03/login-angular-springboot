@@ -12,11 +12,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.backend.dto.DepCodDesDto;
 import com.example.backend.dto.PersonaServiceRequest;
 import com.example.backend.dto.ServicePersonaRequest;
+import com.example.backend.dto.servicesPerPersons;
 import com.example.backend.service.DpePersonasForService;
 import com.example.backend.service.DpeService;
 import com.example.backend.sqlserver2.model.Dpe;
@@ -179,6 +181,45 @@ public class DpeController {
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Error inesperado al añadir personas: " + ex.getMessage());
+        }
+    }
+
+    //selecting services per personas 
+    @GetMapping("/fetch-services-personas/{ENT}/{EJE}")
+    public ResponseEntity<?> fetchPersonaService(
+        @PathVariable Integer ENT,
+        @PathVariable String EJE
+    ) {
+        try{
+            List<servicesPerPersons> services = dpeRepository.findByENTAndEJE(ENT, EJE);
+            if (services.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encuentran servicios para estas personas");
+            }
+            return ResponseEntity.ok(services);
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error: " + ex.getMostSpecificCause().getMessage());
+        }
+    }
+
+    //searching services per personas
+    @GetMapping("/search-services-personas")
+    public ResponseEntity<?> searchPersonasService(
+        @RequestParam Integer ENT,
+        @RequestParam String EJE,
+        @RequestParam(required = false) String servicio,
+        @RequestParam(required = false) String persona,
+        @RequestParam(required = false) String cgecod,
+        @RequestParam(required = false) String perfil
+    ) {
+        try{
+            List<servicesPerPersons> services = dpeRepository.searchServicesPerPersons(ENT, EJE, servicio, persona, cgecod, perfil
+            );
+            if (services.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encuentran servicios para estas personas");
+            }
+            return ResponseEntity.ok(services);
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 }
