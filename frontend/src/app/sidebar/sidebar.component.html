@@ -23,9 +23,9 @@
     <a class="choice" (click)="navigateTo('panel')">Panel Principal</a>
 
     <div class="drop-down-menu">
-      <div class="menu">
+      <div class="menu" (click)="organigrama = !organigrama" tabindex="0">
         <a class="choice">Organigrama</a>
-        <div class="menu-content">
+        <div class="menu-content" [class.open]="organigrama">
           <div class="menu-item">
             <a class="acEje" 
               [class.disabled]="isDisabled('acEje')"
@@ -57,9 +57,9 @@
         </div>
       </div>
 
-      <div class="menu">
+      <div class="menu" (click)="proveedores = !proveedores" tabindex="0">
         <a class="choice">Proveedores</a>
-        <div class="menu-content">
+        <div class="menu-content" [class.open]="proveedores">
           <div class="menu-item">
             <a class="acCoTer" 
               [class.disabled]="isDisabled('acCoTer')"
@@ -77,9 +77,9 @@
         </div>
       </div>
 
-      <div class="menu">
+      <div class="menu" (click)="contabilidad = !contabilidad" tabindex="0">
         <a class="choice">Contabilidad</a>
-        <div class="menu-content">
+        <div class="menu-content" [class.open]="contabilidad">
           <div class="menu-item">
             <a class="acFacC" 
               [class.disabled]="isDisabled('acFacC')"
@@ -115,9 +115,9 @@
         </div>
       </div>
 
-      <div class="menu">
+      <div class="menu" (click)="articulos = !articulos" tabindex="0">
         <a class="choice">Artícilos</a>
-        <div class="menu-content">
+        <div class="menu-content" [class.open]="articulos">
           <div class="menu-item">
             <a class="acAFA margin" 
               [class.disabled]="isDisabled('acAFA')"

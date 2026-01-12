@@ -16,9 +16,9 @@
       </div>
 
       <div class="drop-down-menu">
-        <div class="menu">
+        <div class="menu" (click)="organigrama = !organigrama" tabindex="0">
           <a class="choice">Organigrama</a>
-          <div class="menu-content">
+          <div class="menu-content" [class.open]="organigrama">
             <div class="menu-item">
               <a class="acEje" 
                 [class.disabled]="isDisabled('acEje')"
@@ -50,9 +50,9 @@
           </div>
         </div>
 
-        <div class="menu">
+        <div class="menu" (click)="proveedores = !proveedores" tabindex="0">
           <a class="choice">Proveedores</a>
-          <div class="menu-content">
+          <div class="menu-content" [class.open]="proveedores">
             <div class="menu-item">
               <a class="acCoTer" 
                 [class.disabled]="isDisabled('acCoTer')"
@@ -70,9 +70,9 @@
           </div>
         </div>
 
-        <div class="menu">
+        <div class="menu" (click)="contabilidad = !contabilidad" tabindex="0">
           <a class="choice">Contabilidad</a>
-          <div class="menu-content">
+          <div class="menu-content" [class.open]="contabilidad">
             <div class="menu-item">
               <a class="acFacC" 
                 [class.disabled]="isDisabled('acFacC')"
@@ -108,9 +108,9 @@
           </div>
         </div>
 
-        <div class="menu">
-          <a class="choice">Artícilos</a>
-          <div class="menu-content">
+        <div class="menu" (click)="articulos = !articulos" tabindex="0">
+          <a class="choice">Artículos</a>
+          <div class="menu-content" [class.open]="articulos">
             <div class="menu-item">
               <a class="acAFA margin" 
                 [class.disabled]="isDisabled('acAFA')"
@@ -129,9 +129,9 @@
         <img [src]="logoPath" alt="Logo" class="login-logo">
         <h1>Panel Principal</h1>
       </div>
-      <h2>Le damos la Bienvenida al panel principal de la SCAP</h2>
+      <h2>Le damos la bienvenida al panel principal de SCAP</h2>
       <div class="connection-data">
-        <p class="width">Datos de connexión:</p>
+        <p class="width">Datos de conexión:</p>
         <p>Perfil interno:</p>
       </div>
       <div class="parameters">
@@ -156,17 +156,17 @@
               type="checkbox" 
               [checked]="esContable" 
               (click)="$event.preventDefault()"
-            >Comprador<br>
+            > Comprador<br>
             <input 
               type="checkbox" 
               [checked]="esAlmacen" 
               (click)="$event.preventDefault()"
-            >Farmacia / Almacén<br>
+            > Farmacia / Almacén<br>
             <input 
               type="checkbox" 
               [checked]="esComprador" 
               (click)="$event.preventDefault()"
-            >Contable<br>
+            > Contable<br>
           </div>
           <div class="services-btn" (click)="launchAddCentroGestor()">Ver Servicios de la Persona</div>
         </div>

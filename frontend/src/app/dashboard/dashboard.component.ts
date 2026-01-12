@@ -26,6 +26,11 @@ export class DashboardComponent implements OnInit {
   allowedMnucods: string[] = [];
   logoPath = 'assets/images/logo_iass.png';
 
+  //menu variables
+  organigrama = false;
+  proveedores = false;
+  contabilidad = false;
+  articulos = false;
   constructor(private http: HttpClient, private router: Router) {}
 
   //main functions
@@ -101,16 +106,16 @@ export class DashboardComponent implements OnInit {
         this.router.navigate(['/entrega']);
         break;
       case 'Cproveedores':
+        this.router.navigate(['/Cproveedorees']);
         break;
       case 'proveedorees':
-        this.router.navigate(['/proveedorees']);
         break;
       case 'contratos':
         break;
       case 'Cfactura':
+        this.router.navigate(['/Cfacturas']);
         break;
       case 'facturas':
-        this.router.navigate(['/facturas']);
         break;
       case 'contabilizacion':
         break;
@@ -119,9 +124,9 @@ export class DashboardComponent implements OnInit {
       case 'Ccredito':
         break;
       case 'credito':
-        this.router.navigate(['credito']);
         break;
       case 'credito-Cge':
+        this.router.navigate(['credito-Cge']);
         break;
       case 'familia':
         this.router.navigate(['/familia'])

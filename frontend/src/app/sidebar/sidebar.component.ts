@@ -23,9 +23,13 @@ export class SidebarComponent implements OnInit {
   cge: string = '';
   esContable: boolean = false;
   allowedMnucods: string[] = [];
-
   logoPath = 'assets/images/logo_iass.png';
 
+  //menu variables
+  organigrama = false;
+  proveedores = false;
+  contabilidad = false;
+  articulos = false;
   constructor(private router: Router) {}
 
   ngOnInit(): void {
@@ -82,16 +86,16 @@ export class SidebarComponent implements OnInit {
         this.router.navigate(['/entrega']);
         break;
       case 'Cproveedores':
+        this.router.navigate(['/Cproveedorees']);
         break;
       case 'proveedorees':
-        this.router.navigate(['/proveedorees']);
         break;
       case 'contratos':
         break;
       case 'Cfactura':
+        this.router.navigate(['/Cfacturas']);
         break;
       case 'facturas':
-        this.router.navigate(['/facturas']);
         break;
       case 'contabilizacion':
         break;
@@ -100,9 +104,9 @@ export class SidebarComponent implements OnInit {
       case 'Ccredito':
         break;
       case 'credito':
-        this.router.navigate(['credito']);
         break;
       case 'credito-Cge':
+        this.router.navigate(['credito-Cge']);
         break;
       case 'familia':
         this.router.navigate(['/familia'])
