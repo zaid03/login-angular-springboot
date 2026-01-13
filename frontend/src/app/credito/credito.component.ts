@@ -529,11 +529,16 @@ export class CreditoComponent {
       return;
     }
 
+    const today = new Date();
     const payload = {
       gbsimp: a,
       gbsius: 0,
       gbseco: 0,
-      gbsfop: currentdate.getFullYear() + "-" + (currentdate.getMonth() + 1) + "-" + currentdate.getDate()
+      gbsfop: [
+        today.getFullYear(),
+        String(today.getMonth() + 1).padStart(2, '0'),
+        String(today.getDate()).padStart(2, '0')
+      ].join('-')
     };
 
     this.http.patch<void>(`${environment.backendUrl}/api/gbs/${this.entcod}/${this.eje}/${this.initialCentroGestor}/${gbsref}`, payload)
