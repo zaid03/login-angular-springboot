@@ -487,51 +487,64 @@ export class ConsultaProveedoresComponent {
 
   DownloadCSV() {
     this.limpiarMessages();
-    if(this.proveedores.length === 0) {
-      this.error = 'He has no data to export.';
-      return
-    }
-    const data = this.proveedores;
 
-    if (!data || data.length === 0) {
+    const source = this.backupProveedores.length ? this.backupProveedores : this.proveedores;
+    if (!source?.length) {
       this.error = 'No hay datos para exportar.';
       return;
     }
+
+    const rows = source.map((row: any, index: number) => ({
+      index: index + 1,
+      tercod: row.tercod ?? '',
+      ternom: row.ternom ?? '',
+      ternif: row.ternif ?? '',
+      terali: row.terali ?? '',
+      tertel: row.tertel ?? '',
+      terdom: row.terdom ?? '',
+      tercpo: row.tercpo ?? '',
+      terpob: row.terpob ?? '',
+      terayt: row.terayt ?? '',
+      terfax: row.terfax ?? '',
+      terweb: row.terweb ?? '',
+      tercoe: row.tercoe ?? '',
+      terobs: row.terobs ?? ''
+    }));
+
     const columns = [
+      { header: '#', key: 'index' },
       { header: 'Código', key: 'tercod' },
       { header: 'Nombre', key: 'ternom' },
-      { header: 'Alias', key: 'terali' },
       { header: 'NIF', key: 'ternif' },
+      { header: 'Alias', key: 'terali' },
+      { header: 'Teléfono', key: 'tertel' },
       { header: 'Domicilio', key: 'terdom' },
       { header: 'Código Postal', key: 'tercpo' },
       { header: 'Municipio', key: 'terpob' },
-      { header: 'Teléfono', key: 'tertel' },
+      { header: 'Código contable', key: 'terayt' },
       { header: 'Fax', key: 'terfax' },
       { header: 'Web', key: 'terweb' },
       { header: 'Correo electrónico', key: 'tercoe' },
-      { header: 'Observaciones', key: 'terobs' },
-      { header: 'Código contable', key: 'terayt' }
+      { header: 'Observaciones', key: 'terobs' }
     ];
 
     const csvRows = [
-      columns.map(col => `"${col.header}"`).join(';')
+      columns.map(col => `"${col.header}"`).join(';'),
+      ...rows.map(row =>
+        columns
+          .map(col => `"${row[col.key as keyof typeof row] ?? ''}"`)
+          .join(';')
+      )
     ];
-
-    data.forEach(row => {
-      const values = columns.map(col => `"${row[col.key] !== undefined ? row[col.key] : ''}"`);
-      csvRows.push(values.join(';'));
-    });
 
     const csvContent = csvRows.join('\r\n');
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
-    link.setAttribute('href', url);
-    link.setAttribute('download', 'proveedores.csv');
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'proveedores.csv';
     link.click();
-    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   }
 
   messageError: string = '';
