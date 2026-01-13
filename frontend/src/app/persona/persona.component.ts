@@ -8,6 +8,8 @@ import { environment } from '../../environments/environment';
 
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 @Component({
   selector: 'app-persona',
@@ -226,67 +228,50 @@ export class PersonaComponent {
     );
   }
 
-  toPrint() {
+  exportPdf() {
     this.limpiarMessages();
-    const rows = this.backuppersonas.length ? this.backuppersonas : this.personas;
-    if (!rows?.length) {
-      this.personasMessageError = 'No hay datos para imprimir.';
+    const source = this.backuppersonas.length ? this.backuppersonas : this.personas;
+    if (!source?.length) {
+      this.personasMessageError = 'No hay datos para exportar.';
       return;
     }
 
-    const htmlRows = rows.map((row, index) => `
-      <tr>
-        <td>${index + 1}</td>
-        <td>${row.percod ?? ''}</td>
-        <td>${row.pernom ?? ''}</td>
-        <td>${row.percoe ?? ''}</td>
-        <td>${row.pertel ?? ''}</td>
-        <td>${row.pertmo ?? ''}</td>
-        <td>${row.percar ?? ''}</td>
-        <td>${row.perobs ?? ''}</td>
-      </tr>
-    `).join('');
+    const rows = source.map((row: any, index: number) => ({
+      index: index + 1,
+      percod: row.percod ?? '',
+      pernom: row.pernom ?? '',
+      percoe: row.percoe ?? '',
+      pertel: row.pertel ?? '',
+      pertmo: row.pertmo ?? '',
+      percar: row.percar ?? '',
+      perobs: row.perobs ?? ''
+    }));
 
-    const printWindow = window.open('', '_blank', 'width=900,height=700');
-    if (!printWindow) return;
+    const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(14);
+    doc.text('Listado de Personas', 40, 40);
 
-    printWindow.document.write(`
-      <html>
-        <head>
-          <title>listas de Personas</title>
-          <style>
-            body { font-family: 'Poppins', sans-serif; padding: 24px; }
-            h1 { text-align: center; margin-bottom: 16px; }
-            table { width: 100%; border-collapse: collapse; }
-            th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
-            th { background: #f3f4f6; }
-            th:last-child, td:last-child { width: 180px; }
-          </style>
-        </head>
-        <body>
-          <h1>listas de Personas</h1>
-          <table>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Código</th>
-                <th>Nombre</th>
-                <th>Correo Electrónico</th>
-                <th>Teléfono</th>
-                <th>Móvil</th>
-                <th>Cargo</th>
-                <th>Observaciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${htmlRows}
-            </tbody>
-          </table>
-        </body>
-      </html>
-    `);
-    printWindow.document.close();
-    printWindow.print();
+    const columns = [
+      { header: '#', dataKey: 'index' },
+      { header: 'Código', dataKey: 'percod' },
+      { header: 'Nombre', dataKey: 'pernom' },
+      { header: 'Correo electrónico', dataKey: 'percoe' },
+      { header: 'Teléfono', dataKey: 'pertel' },
+      { header: 'Móvil', dataKey: 'pertmo' },
+      { header: 'Cargo', dataKey: 'percar' },
+      { header: 'Observaciones', dataKey: 'perobs' }
+    ];
+
+    autoTable(doc, {
+      startY: 60,
+      head: [columns.map(col => col.header)],
+      body: rows.map(row => columns.map(col => row[col.dataKey as keyof typeof row] ?? '')),
+      styles: { font: 'helvetica', fontSize: 10, cellPadding: 6 },
+      headStyles: { fillColor: [240, 240, 240], textColor: 33, fontStyle: 'bold' }
+    });
+
+    doc.save('personas.pdf');
   }
 
   searchPersonas: string = '';

@@ -1,4 +1,9 @@
-<div class="entrega-page">
+<div class="entrega-page">    
+    <div 
+        class="sidebar-backdrop" 
+        *ngIf="!sidebar.collapsed" 
+        (click)="sidebar.collapsed = true"
+    >
     <app-sidebar #sidebar></app-sidebar>
     <div class="entrega-container" [class.blurred]="!sidebar.collapsed">
         <div class="title-menu">
@@ -28,7 +33,7 @@
                 <div class="dot"></div>
                 <div class="menu-panel" *ngIf="showMenu">
                     <button class="download-btn" (click)="downloadExcel()">Exportar a Excel</button>
-                    <button class="download-btn" (click)="print()">Exportar a PDF</button>
+                    <button class="download-btn" (click)="exportPdf()">Exportar a PDF</button>
                     <button class="download-btn" (click)="showAdd()">Añadir</button>
                 </div>
             </div>

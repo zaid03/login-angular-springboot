@@ -9,6 +9,8 @@ import { environment } from '../../environments/environment';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { retry } from 'rxjs';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 @Component({
   selector: 'app-entrega',
@@ -266,55 +268,41 @@ export class CosteComponent {
     );
   }
 
-  print() {
-    const rows = this.backupCostes.length ? this.backupCostes : this.costes;
-    if (!rows?.length) {
-      this.costeError = 'No hay datos para imprimir.';
+  exportPdf() {
+    this.emptyAllMessages();
+    const source = this.backupCostes.length ? this.backupCostes : this.costes;
+
+    if (!source?.length) {
+      this.costeError = 'No hay datos para exportar.';
       return;
     }
 
-    const htmlRows = rows.map((row, index) => `
-      <tr>
-        <td>${index + 1}</td>
-        <td>${row.ccocod ?? ''}</td>
-        <td>${row.ccodes ?? ''}</td>
-      </tr>
-    `).join('');
+    const rows = source.map((row: any, index: number) => ({
+      index: index + 1,
+      ccocod: row.ccocod ?? '',
+      ccodes: row.ccodes ?? ''
+    }));
 
-    const printWindow = window.open('', '_blank', 'width=900,height=700');
-    if (!printWindow) return;
+    const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(14);
+    doc.text('Listado de Centro de Coste', 40, 40);
 
-    printWindow.document.write(`
-      <html>
-        <head>
-          <title>Listado de Centro de Coste</title>
-          <style>
-            body { font-family: 'Poppins', sans-serif; padding: 24px; }
-            h1 { text-align: center; margin-bottom: 16px; }
-            table { width: 100%; border-collapse: collapse; }
-            th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
-            th { background: #f3f4f6; }
-          </style>
-        </head>
-        <body>
-          <h1>Listado de Centro de Coste</h1>
-          <table>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Código</th>
-                <th>Descripción</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${htmlRows}
-            </tbody>
-          </table>
-        </body>
-      </html>
-    `);
-    printWindow.document.close();
-    printWindow.print();
+    const columns = [
+      { header: '#', dataKey: 'index' },
+      { header: 'Código', dataKey: 'ccocod' },
+      { header: 'Descripción', dataKey: 'ccodes' }
+    ];
+
+    autoTable(doc, {
+      startY: 60,
+      head: [columns.map(col => col.header)],
+      body: rows.map(row => columns.map(col => row[col.dataKey as keyof typeof row] ?? '')),
+      styles: { font: 'helvetica', fontSize: 10, cellPadding: 6 },
+      headStyles: { fillColor: [240, 240, 240], textColor: 33, fontStyle: 'bold' }
+    });
+
+    doc.save('centros_coste.pdf');
   }
 
   //detail grid functions

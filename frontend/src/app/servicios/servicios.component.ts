@@ -8,6 +8,8 @@ import { environment } from '../../environments/environment';
 
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 @Component({
   selector: 'app-servicios',
@@ -260,71 +262,54 @@ export class ServiciosComponent {
     );
   }
 
-  toPrint() {
+  exportPdf() {
     this.limpiarMessages();
-    const rows = this.backupServices.length ? this.backupServices : this.services;
-    if (!rows?.length) {
-      this.servicessMessageError = 'No hay datos para imprimir.';
+    const source = this.backupServices.length ? this.backupServices : this.services;
+    if (!source?.length) {
+      this.servicessMessageError = 'No hay datos para exportar.';
       return;
     }
 
-    const htmlRows = rows.map((row, index) => `
-      <tr>
-        <td>${index + 1}</td>
-        <td>${row.ent ?? ''}</td>
-        <td>${row.eje ?? ''}</td>
-        <td>${row.depcod ?? ''}</td>
-        <td>${row.depdes ?? ''}</td>
-        <td>${row.cgecod ?? ''}</td>
-        <td>${row.ccocod ?? ''}</td>
-        <td>${this.checkIfChecked(row.depalm) ?? ''}</td>
-        <td>${this.checkIfChecked(row.depcom) ?? ''}</td>
-        <td>${this.checkIfChecked(row.depint) ?? ''}</td>
-      </tr>
-    `).join('');
+    const rows = source.map((row: any, index: number) => ({
+      index: index + 1,
+      ent: row.ent ?? '',
+      eje: row.eje ?? '',
+      depcod: row.depcod ?? '',
+      depdes: row.depdes ?? '',
+      cgecod: row.cgecod ?? '',
+      ccocod: row.ccocod ?? '',
+      depalm: this.checkIfChecked(row.depalm),
+      depcom: this.checkIfChecked(row.depcom),
+      depint: this.checkIfChecked(row.depint)
+    }));
 
-    const printWindow = window.open('', '_blank', 'width=900,height=700');
-    if (!printWindow) return;
+    const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(14);
+    doc.text('Listado de servicios', 40, 40);
 
-    printWindow.document.write(`
-      <html>
-        <head>
-          <title>listas de servicios</title>
-          <style>
-            body { font-family: 'Poppins', sans-serif; padding: 24px; }
-            h1 { text-align: center; margin-bottom: 16px; }
-            table { width: 100%; border-collapse: collapse; }
-            th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
-            th { background: #f3f4f6; }
-            th:last-child, td:last-child { width: 180px; }
-          </style>
-        </head>
-        <body>
-          <h1>listas de servicios</h1>
-          <table>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Entidad</th>
-                <th>eje</th>
-                <th>Servicio</th>
-                <th>Descripción</th>
-                <th>Cód.C.G</th>
-                <th>Centro de Coste</th>
-                <th>Almacén</th>
-                <th>Comprador / Farmacia</th>
-                <th>Contabilidad</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${htmlRows}
-            </tbody>
-          </table>
-        </body>
-      </html>
-    `);
-    printWindow.document.close();
-    printWindow.print();
+    const columns = [
+      { header: '#', dataKey: 'index' },
+      { header: 'Entidad', dataKey: 'ent' },
+      { header: 'Ejercicio', dataKey: 'eje' },
+      { header: 'Servicio', dataKey: 'depcod' },
+      { header: 'Descripción', dataKey: 'depdes' },
+      { header: 'Cód. C.G.', dataKey: 'cgecod' },
+      { header: 'Centro de Coste', dataKey: 'ccocod' },
+      { header: 'Almacén', dataKey: 'depalm' },
+      { header: 'Comprador/Farmacia', dataKey: 'depcom' },
+      { header: 'Contabilidad', dataKey: 'depint' }
+    ];
+
+    autoTable(doc, {
+      startY: 60,
+      head: [columns.map(col => col.header)],
+      body: rows.map(row => columns.map(col => row[col.dataKey as keyof typeof row] ?? '')),
+      styles: { font: 'helvetica', fontSize: 10, cellPadding: 6 },
+      headStyles: { fillColor: [240, 240, 240], textColor: 33, fontStyle: 'bold' }
+    });
+
+    doc.save('servicios.pdf');
   }
 
   searchServicio: string = '';

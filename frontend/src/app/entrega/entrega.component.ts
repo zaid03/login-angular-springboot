@@ -8,6 +8,9 @@ import { environment } from '../../environments/environment';
 
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+
 @Component({
   selector: 'app-entrega',
   standalone: true,
@@ -239,55 +242,43 @@ export class EntregaComponent {
     );
   }
 
-  print() {
-    const rows = this.backupentregas.length ? this.backupentregas : this.entregas;
-    if (!rows?.length) {
-      this.entregasError = 'No hay datos para imprimir.';
+  exportPdf() {
+    this.emptyAllMessages();
+    const source = this.backupentregas.length ? this.backupentregas : this.entregas;
+
+    if (!source?.length) {
+      this.entregasError = 'No hay datos para exportar.';
       return;
     }
 
-    const htmlRows = rows.map((row, index) => `
-      <tr>
-        <td>${index + 1}</td>
-        <td>${row.lencod ?? ''}</td>
-        <td>${row.lendes ?? ''}</td>
-      </tr>
-    `).join('');
+    const rows = source.map((row: any, index: number) => ({
+      index: index + 1,
+      lencod: row.lencod ?? '',
+      lendes: row.lendes ?? '',
+      lentxt: row.lentxt ?? ''
+    }));
 
-    const printWindow = window.open('', '_blank', 'width=900,height=700');
-    if (!printWindow) return;
+    const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(14);
+    doc.text('Listado de Lugares de Entrega', 40, 40);
 
-    printWindow.document.write(`
-      <html>
-        <head>
-          <title>Listado de Lugares de Entrega</title>
-          <style>
-            body { font-family: 'Poppins', sans-serif; padding: 24px; }
-            h1 { text-align: center; margin-bottom: 16px; }
-            table { width: 100%; border-collapse: collapse; }
-            th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
-            th { background: #f3f4f6; }
-          </style>
-        </head>
-        <body>
-          <h1>Listado de Lugares de Entrega</h1>
-          <table>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Código</th>
-                <th>Descripción</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${htmlRows}
-            </tbody>
-          </table>
-        </body>
-      </html>
-    `);
-    printWindow.document.close();
-    printWindow.print();
+    const columns = [
+      { header: '#', dataKey: 'index' },
+      { header: 'Código', dataKey: 'lencod' },
+      { header: 'Descripción', dataKey: 'lendes' },
+      { header: 'Texto', dataKey: 'lentxt' }
+    ];
+
+    autoTable(doc, {
+      startY: 60,
+      head: [columns.map(col => col.header)],
+      body: rows.map(row => columns.map(col => row[col.dataKey as keyof typeof row] ?? '')),
+      styles: { font: 'helvetica', fontSize: 10, cellPadding: 6 },
+      headStyles: { fillColor: [240, 240, 240], textColor: 33, fontStyle: 'bold' }
+    });
+
+    doc.save('lugares_entrega.pdf');
   }
   
   //detail grid functions
