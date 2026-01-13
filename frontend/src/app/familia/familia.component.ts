@@ -80,6 +80,7 @@ export class FamiliaComponent {
       }
     })
   }
+
   public searchTerm: string = '';
   searchFamilias(): void {
     this.limpiarMessages();
@@ -343,12 +344,14 @@ export class FamiliaComponent {
   selectedFamilias: any = null;
   showDetails(familia: any) {
     this.limpiarMessages();
+    this.subfamilias = [];
     this.selectedFamilias = familia;
     this.FetchSubfamilias(this.selectedFamilias.afacod);
   }
 
   closeDetails() {
     this.selectedFamilias = null;
+    this.subfamilias = [];
     this.limpiarMessages();
   }
 
@@ -401,17 +404,21 @@ export class FamiliaComponent {
 
   familiaErrorMessage:string = '';
   familiaSucessMessage: string = '';
+  isUpdating: boolean = false;
   updateFamilia(afacod: string, afades: string): void {
     this.limpiarMessages();
+    this.isUpdating = true;
     if (!afacod) { return; }
     const payload = (afades ?? '').trim();
 
     this.http.patch<any>(`${environment.backendUrl}/api/afa/update-familia/${this.entcod}/${afacod}`, payload, { headers: { 'Content-Type': 'text/plain' }, observe: 'response' }).subscribe({
       next: (response) => {
         this.familiaSucessMessage = 'Familia actualizada con éxito';
+        this.isUpdating = false;
       }, error: (err) => {
         const message = err?.error ?? 'Error al actualizar la familia.';
         this.familiaErrorMessage = message;
+        this.isUpdating = false;
       }
     })
   }
@@ -434,8 +441,10 @@ export class FamiliaComponent {
     }
   }
 
+  isDeleting: boolean = false;
   delErr: string = '';
   deleteFamilia(afacod: string): void {
+    this.isDeleting = true;
     this.limpiarMessages();
     this.http.delete(`${environment.backendUrl}/api/art/delete-familia/${this.entcod}/${afacod}`).subscribe({
       next: () => {
@@ -443,21 +452,23 @@ export class FamiliaComponent {
         this.familias = this.familias.filter(f => f.afacod !== afacod);
         this.backupFamilias = this.backupFamilias.filter(f => f.afacod !== afacod);
         this.closeDeleteConfirm();
+        this.isDeleting = false;
         this.closeDetails();
       }, error: (err) => {
         this.delErr = err?.error ?? 'Error al eliminar la familia.';
+        this.isDeleting = false;
       }
     })
   }
 
   //subfamilia grid inside detail grid functions
-  errorUpdateMessage: string = '';
   successUpdateMEssage: string = '';
   updateSubfamilia(afacod:string, asucod: string, Description:string, Economica: string, almacenaje: any) {
     this.limpiarMessages();
+    this.isUpdating = true;
     const almacenajeNum = Number(almacenaje);
     if (!afacod || !asucod || !Description || !Economica || !almacenajeNum) {
-      this.errorUpdateMessage = 'datos faltantes';
+      this.afacodError = 'datos faltantes';
     }
 
     const payload = { ASUDES: Description, ASUECO: Economica, MTACOD: almacenajeNum}
@@ -465,22 +476,27 @@ export class FamiliaComponent {
     this.http.patch<any>(`${environment.backendUrl}/api/asu/update-subfamilia/${this.entcod}/${afacod}/${asucod}`, payload).subscribe({
       next: (res) => {
         this.successUpdateMEssage = 'Subfamilia actualizado con éxito';
+        this.isUpdating = false;
       }, error: (err) => {
-        this.errorUpdateMessage = 'Server error';
+        this.afacodError = 'Server error';
+        this.isUpdating = false;
       }
     })
   }
 
   deleteSubfamilia(afacod:string, asucod: string) {
+    this.isDeleting = true;
     if (!afacod || !asucod) {
-      this.errorUpdateMessage = 'datos faltantes';
+      this.afacodError = 'datos faltantes';
     }
 
     this.http.delete<any>(`${environment.backendUrl}/api/art/delete-sub-familia/${this.entcod}/${afacod}/${asucod}`).subscribe({
       next: (res) => {
-        this.successUpdateMEssage = 'Subfamilia eliminado exitosamente'
+        this.successUpdateMEssage = 'Subfamilia eliminado exitosamente';
+        this.isDeleting = false;
       }, error: (err) => {
-        this.errorUpdateMessage = err?.error ?? 'Se ha producido un error.';
+        this.afacodError = err?.error ?? 'Se ha producido un error.';
+        this.isDeleting = false;
       }
     })
   }
@@ -570,8 +586,10 @@ export class FamiliaComponent {
 
   familiaMessage: string = '';
   familiaAddError: string = '';
+  isAdding: boolean = false;
   addFamilia(familia: string, descripcion: string): void {
     this.limpiarMessages();
+    this.isAdding = true;
 
     if (!familia || !descripcion) { 
       this.familiaAddError = 'Se requiere familia y descripción';
@@ -584,17 +602,17 @@ export class FamiliaComponent {
       next: () => {
         this.familiaMessage = 'familia agregada exitosamente'
         this.fetchFamilias();
-        this.limpiarMessages();
+        this.isAdding = false;
         this.closeAddConfirm();
       }, error: (err) => {
         this.familiaAddError = err?.error ?? 'Se ha producido un error.';
+        this.isAdding = false;
       }
     });
   }
 
   closeAddConfirm() {
     this.showAddConfirm = false;
-    this.limpiarMessages();
   }
 
   //misc
@@ -605,5 +623,6 @@ export class FamiliaComponent {
     this.familiaSucessMessage = '';
     this.subAddError = '';
     this.familiaAddError = '';
+    this.afacodError = '';
   }
 }

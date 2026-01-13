@@ -92,7 +92,13 @@
                         </div>
                         <button class="guardar-btn" (click)="updateFamilia(selectedFamilias.afacod, descripcionRef.value)">✔</button>
                         <button class="close-btn-btn" (click)="closeDetails()">✖</button>
-                    </div>                    
+                    </div>  
+                    <h1 class="errorBtn">{{ familiaErrorMessage }}</h1>
+                    <h1 class="successBtn">{{ familiaSucessMessage }}</h1>
+                    <div *ngIf="isUpdating" class="loading-message">
+                        <div class="spinner"></div>
+                        <span>actualizando</span>
+                    </div>                 
                     <div class="detail-container">
                         <div class="chunk">
                             <div class="left">
@@ -111,8 +117,6 @@
                             </div>
                         </div>
                     </div>
-                    <h1 class="errorBtn">{{ familiaErrorMessage }}</h1>
-                    <h1 class="successBtn">{{ familiaSucessMessage }}</h1>
                     <div class="btns">
                         <button 
                             class="familia-delete-btn" 
@@ -124,7 +128,12 @@
                         <div class="butt">
                             <button class="subFamilias-add-btn" (click)="launchAddSubFamilia()">+</button>
                         </div>
+                        <h4 class="successBtn">{{ successUpdateMEssage }}</h4>
                         <h4 class="errorBtn">{{ afacodError }}</h4>
+                        <div *ngIf="isDeleting" class="loading-message">
+                            <div class="spinner"></div>
+                            <span>borrando</span>
+                        </div>
                         <table class="subfamilia-table">
                             <thead>
                                 <tr>
@@ -186,8 +195,6 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <h4 class="errorBtn">{{ errorUpdateMessage }}</h4>
-                        <h4 class="successBtn">{{ successUpdateMEssage }}</h4>
                     </div>
                 </div>
             </div>
@@ -199,6 +206,10 @@
 <div class="delete-confirm-modal" *ngIf="showDeleteConfirm">
     <h3>¿Seguro que quieres eliminar este Familia?</h3>
     <h1 class="errorBtn">{{delErr}}</h1>
+    <div *ngIf="isDeleting" class="loading-message">
+        <div class="spinner"></div>
+        <span>borrando</span>
+    </div>
     <button class="articulos-delete-confirm-btn" (click)="confirmDelete()">-</button>
     <button class="articulos-cancel-confirm-btn" (click)="closeDeleteConfirm()">✖</button>
 </div>
@@ -261,6 +272,10 @@
         <button class="articulos-delete-confirm-btn" (click)="closeAddConfirm()">✖</button>
     </div>
     <h1 class="errorBtn">{{ familiaAddError }}</h1>
+    <div *ngIf="isAdding" class="loading-message">
+        <div class="spinner"></div>
+        <span>añadiendo</span>
+    </div>
     <div class="add-content">
         <div class="left-add">
             <p>Familia*</p>
