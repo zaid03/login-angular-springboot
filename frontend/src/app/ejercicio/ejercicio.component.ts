@@ -44,6 +44,7 @@ export class EjercicioComponent {
   ejercicioError: string = '';
 
   ngOnInit() {
+    this.limpiarMessages();
     const entidad = sessionStorage.getItem('Entidad');
     if (entidad) {const parsed = JSON.parse(entidad); this.entcod = parsed.ENTCOD;}
     if (!entidad || this.entcod === null) {
@@ -185,6 +186,7 @@ export class EjercicioComponent {
   }
 
   excelDownload() {
+    this.limpiarMessages();
     const rows = this.backupEjercicios.length ? this.backupEjercicios : this.ejercicios;
     if (!rows || rows.length === 0) {
       this.ejercicioError = 'No hay datos para exportar.';
@@ -221,43 +223,47 @@ export class EjercicioComponent {
   }
   
   pdfDownload() {
-    if (!this.ejercicios.length) {
-      this.ejercicioError = 'No hay datos para imprimir.';
+    this.limpiarMessages();
+    this.ejercicioError = '';
+    const source = this.backupEjercicios.length ? this.backupEjercicios : this.ejercicios;
+    if (!source?.length) {
+      this.ejercicioError = 'No hay datos para exportar.';
       return;
     }
 
-    const doc = new jsPDF({orientation: 'landscape', unit: 'mm', format: 'a4'});
-    const columns = [
-      { header: '#', dataKey: 'index'},
-      { header: 'Entidad', dataKey: 'ent'},
-      { header: 'Ejercicio', dataKey: 'eje'},
-      { header: 'Estado', dataKey: 'status'}
-    ];
-
-    const rows = (this.ejercicios || []).map((p: any, idx: number) => ({
-      index: idx + 1,
-      ent: p.ent,
-      eje: p.eje,
-      status: this.getstatus(p.cfgest)
+    const rows = source.map((row: any, index: number) => ({
+      index: index + 1,
+      ent: row.ent ?? '',
+      eje: row.eje ?? '',
+      status: this.getstatus(row.cfgest)
     }));
 
+    const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(14);
+    doc.text('Listado de Ejercicios', 40, 40);
+
+    const columns = [
+      { header: '#', dataKey: 'index' },
+      { header: 'Entidad', dataKey: 'ent' },
+      { header: 'Ejercicio', dataKey: 'eje' },
+      { header: 'Estado', dataKey: 'status' }
+    ];
+
     autoTable(doc, {
-      columns,
-      body: rows,
-      styles: { fontSize: 12 },
-      tableWidth: 'wrap',
-      columnStyles: {
-        index: { cellWidth: 15},
-        ent: { cellWidth: 20 },
-        eje: { cellWidth: 22 },
-        status: { cellWidth: 22 }
-      },
-      didDrawPage: (dataArg) => {
-        doc.setFontSize(10);
-        doc.text('Lista de Ejercicios', 14, 10);
-      }
+      startY: 60,
+      head: [columns.map(col => col.header)],
+      body: rows.map(row => columns.map(col => row[col.dataKey as keyof typeof row] ?? '')),
+      styles: { font: 'helvetica', fontSize: 10, cellPadding: 6 },
+      headStyles: { fillColor: [240, 240, 240], textColor: 33, fontStyle: 'bold' }
     });
 
-    doc.save('Ejercicios.pdf');
+    doc.save('ejercicios.pdf');
+  }
+
+  //misc
+  limpiarMessages() {
+    this.ejercicioSuccess = '';
+    this.ejercicioError = '';
   }
 } 

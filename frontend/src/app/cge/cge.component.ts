@@ -7,6 +7,8 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
 
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import { environment } from '../../environments/environment';
 @Component({
   selector: 'app-cge',
@@ -328,66 +330,50 @@ export class CgeComponent {
     );
   }
 
-  toPrint() {
+  pdfDownload() {
     this.limpiarMessages();
-    const rows = this.backupCentroGestores.length ? this.backupCentroGestores : this.centroGestores;
-    if (!rows?.length) {
-      this.SearchDownMessageError = 'No hay datos para imprimir.';
+    const source = this.backupCentroGestores.length ? this.backupCentroGestores : this.centroGestores;
+    if (!source?.length) {
+      this.SearchDownMessageError = 'No hay datos para exportar.';
       return;
     }
 
-    const htmlRows = rows.map((row, index) => `
-      <tr>
-        <td>${index + 1}</td>
-        <td>${row.ent ?? ''}</td>
-        <td>${row.eje ?? ''}</td>
-        <td>${row.cgecod ?? ''}</td>
-        <td>${row.cgedes ?? ''}</td>
-        <td>${row.cgeorg ?? ''}</td>
-        <td>${row.cgefun ?? ''}</td>
-        <td>${this.getkCGECIC(row.cgecic) ?? ''}</td>
-      </tr>
-    `).join('');
+    const rows = source.map((row: any, index: number) => ({
+      index: index + 1,
+      ent: row.ent ?? '',
+      eje: row.eje ?? '',
+      cgecod: row.cgecod ?? '',
+      cgedes: row.cgedes ?? '',
+      cgeorg: row.cgeorg ?? '',
+      cgefun: row.cgefun ?? '',
+      cgecic: this.getkCGECIC(row.cgecic) ?? ''
+    }));
 
-    const printWindow = window.open('', '_blank', 'width=900,height=700');
-    if (!printWindow) return;
+    const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(14);
+    doc.text('Listado de Centros de gestor', 40, 40);
 
-    printWindow.document.write(`
-      <html>
-        <head>
-          <title>Listado de Centros de gestor</title>
-          <style>
-            body { font-family: 'Poppins', sans-serif; padding: 24px; }
-            h1 { text-align: center; margin-bottom: 16px; }
-            table { width: 100%; border-collapse: collapse; }
-            th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
-            th { background: #f3f4f6; }
-          </style>
-        </head>
-        <body>
-          <h1>Listado de Centros de gestor</h1>
-          <table>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Entidad</th>
-                <th>eje</th>
-                <th>cgecod</th>
-                <th>cgecod</th>
-                <th>Orgánica</th>
-                <th>Programa</th>
-                <th>Cierre contable</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${htmlRows}
-            </tbody>
-          </table>
-        </body>
-      </html>
-    `);
-    printWindow.document.close();
-    printWindow.print();
+    const columns = [
+      { header: '#', dataKey: 'index' },
+      { header: 'Entidad', dataKey: 'ent' },
+      { header: 'Ejercicio', dataKey: 'eje' },
+      { header: 'Código', dataKey: 'cgecod' },
+      { header: 'Descripción', dataKey: 'cgedes' },
+      { header: 'Orgánica', dataKey: 'cgeorg' },
+      { header: 'Programa', dataKey: 'cgefun' },
+      { header: 'Cierre contable', dataKey: 'cgecic' }
+    ];
+
+    autoTable(doc, {
+      startY: 60,
+      head: [columns.map(col => col.header)],
+      body: rows.map(row => columns.map(col => row[col.dataKey as keyof typeof row] ?? '')),
+      styles: { font: 'helvetica', fontSize: 10, cellPadding: 6 },
+      headStyles: { fillColor: [240, 240, 240], textColor: 33, fontStyle: 'bold' }
+    });
+
+    doc.save('Centros_gestor.pdf');
   }
 
   //detail grid functions
