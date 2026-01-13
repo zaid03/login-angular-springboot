@@ -426,6 +426,7 @@ export class ConsultaProveedoresComponent {
   clearSearch() {
     this.limpiarMessages();
     this.proveedores = [...this.backupProveedores];
+    this.searchTerm = '';
     this.page = 0;
   }
   
