@@ -489,7 +489,9 @@ export class CreditoComponent {
     }
   }
 
+  isUpdating: boolean = false;
   guardarDetelles(gbsimp: any, getKBoldis:any, gbsref: any) {
+    this.isUpdating = true;
     this.limpiarMessages();
     const entidad = sessionStorage.getItem('Entidad');
     const eje = sessionStorage.getItem('EJERCICIO');
@@ -523,6 +525,7 @@ export class CreditoComponent {
     if ( gbsimp > b) {
       this.guardarisError = true;
       this.guardarMesage = 'HA SOBREPASADO EL DISPONIBLE DE LA REFERENCIA';
+      this.isUpdating = false;
       return;
     }
 
@@ -532,17 +535,18 @@ export class CreditoComponent {
       gbseco: 0,
       gbsfop: currentdate.getFullYear() + "-" + (currentdate.getMonth() + 1) + "-" + currentdate.getDate()
     };
-    console.log("payload here: ", payload);
 
     this.http.patch<void>(`${environment.backendUrl}/api/gbs/${this.entcod}/${this.eje}/${this.initialCentroGestor}/${gbsref}`, payload)
     .subscribe({
       next: () => {
         this.guardarisSuccess = true;
         this.guardarMesageSuccess = 'Bolsa actualizada correctamente';
+        this.isUpdating = false;
       },
       error: (err) => {
         this.guardarisError = true;
-        this.guardarMesage = err?.ex ?? 'Error al actualizar';
+        this.guardarMesage = err?.error.error ?? 'Error al actualizar';
+        this.isUpdating = false;
       }
     });
   }

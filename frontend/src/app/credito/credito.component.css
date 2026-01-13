@@ -47,5 +47,5 @@
     .modal{height: 90vh !important; }
     .chunk-one,
     .chunk-two,
-    .chunk-three {border: 1px solid mediumblue; width: 45%; display: flex; padding: 2px; }
+    .chunk-three {width: 45%; display: flex; padding: 2px; }
 }

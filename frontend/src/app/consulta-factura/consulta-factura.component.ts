@@ -631,6 +631,7 @@ export class ConsultaFacturaComponent {
   setAlbaranesOptio(option: 'albaranes' | 'aplicaciones' | 'descuentos', facnum: number): void {
     this.albaranesOptio = option;
     this.limpiarMEssages();
+    this.isLoading = true;
 
     if ( option === 'albaranes') {
       this.http.get<any>(`${environment.backendUrl}/api/alb/${this.entcod}/${this.eje}/${facnum}`).subscribe({
@@ -639,14 +640,17 @@ export class ConsultaFacturaComponent {
             this.moreInfoMessageIsSuccess = true;
             this.moreInfoMessageSuccess = 'No hay albaranes por las medidas de búsqueda';
             this.albaranes = []
+            this.isLoading = false;
           } else {
             this.albaranes = response;
             console.log(this.albaranes);
             this.backipAlbaranes = Array.isArray(response) ? [...response] : [];
+            this.isLoading = false;
           }
         }, error: (err) => {
           this.moreInfoMessageIsError = true;
           this.moreInfoMessageError = err?.error ?? 'Error desconocido';
+          this.isLoading = false;
         }
       });
     }
@@ -658,14 +662,17 @@ export class ConsultaFacturaComponent {
             this.moreInfoMessageIsSuccess = true;
             this.moreInfoMessageSuccess = 'No hay aplicaciones por las medidas de búsqueda';
             this.apalicaciones = []
+            this.isLoading = false;
           } else {
             this.apalicaciones = response;
             console.log(this.apalicaciones);
             this.backupAplicaciones = Array.isArray(response) ? [...response] : [];
+            this.isLoading = false;
           }
         }, error: (err) => {
           this.moreInfoMessageIsError = true;
           this.moreInfoMessageError = err?.error ?? 'Error desconocido';
+          this.isLoading = false;
         }
       });
     }
@@ -677,14 +684,17 @@ export class ConsultaFacturaComponent {
             this.moreInfoMessageIsSuccess = true;
             this.moreInfoMessageSuccess = 'No hay descuentos por las medidas de búsqueda';
             this.descuentos = []
+            this.isLoading = false;
           } else {
             this.descuentos = response;
             console.log(this.descuentos);
             this.backupDescuentos = Array.isArray(response) ? [...response] : [];
+            this.isLoading = false;
           }
         }, error: (err) => {
           this.moreInfoMessageIsError = true;
           this.moreInfoMessageError = err?.error ?? 'Error desconocido';
+          this.isLoading = false;
         }
       });
     }
