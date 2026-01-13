@@ -1,4 +1,3 @@
-.facturas-container.blurred { filter: blur(1.2px); pointer-events: none; user-select: none;}
 /* search container and inputs */
 .search-container { gap: 20px; }
 .search-form { gap: 20px; }

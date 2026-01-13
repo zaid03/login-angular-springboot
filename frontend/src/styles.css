@@ -160,7 +160,8 @@ app-sidebar { flex-shrink: 0; z-index: 2000; }
 .ejercicio-container.blurred,
 .personasServices-page.blurred,
 .proveedores-container.blurred,
-.credito-container.blurred { filter: blur(1.2px); pointer-events: none; user-select: none; }
+.credito-container.blurred,
+.facturas-container.blurred { filter: blur(1.2px); pointer-events: none; user-select: none; }
 .facturas-page,
 .proveedores-page,
 .familia-page,
