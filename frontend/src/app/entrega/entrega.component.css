@@ -4,7 +4,7 @@
 .search-container { margin-left: 15%; gap: 10px; }
 /* search */
 /* main-list and table */
-.entrega-list { width: 40%; }
+.entrega-list { width: 50%; }
 .entrega-table thead th:first-child {width: 20%;}
 /* main-list and table */
 /* detail grid */

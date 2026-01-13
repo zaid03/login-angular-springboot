@@ -194,6 +194,7 @@ export class CosteComponent {
   searchText: string = '';
   filterEntrega() {
     this.emptyAllMessages();
+    this.isLoading = true;
 
     if(!this.searchText) {
       this.costeError = 'Introduzca una centro de coste para buscar';
@@ -208,9 +209,11 @@ export class CosteComponent {
       this.http.get<any[]>(`${environment.backendUrl}/api/cco/filter-by/${this.entcod}/${this.eje}/${this.searchText}`).subscribe({
         next: (res) => {
           this.costes = res;
+          this.isLoading = false
         },
         error: (err) => {
           this.costeError = err.error || 'server error';
+          this.isLoading = false
         }
       });
     }
@@ -218,9 +221,11 @@ export class CosteComponent {
       this.http.get<any[]>(`${environment.backendUrl}/api/cco/filter-by-des/${this.entcod}/${this.eje}/${this.searchText}`).subscribe({
         next: (res) => {
           this.costes = res;
+          this.isLoading = false
         },
         error: (err) => {
           this.costeError = err.error || 'server error';
+          this.isLoading = false
         }
       });
     }
@@ -326,11 +331,14 @@ export class CosteComponent {
     this.selectedCoste.ccocod = textarea.value;
   }
 
+  isUpdating: boolean = false;
   updateEntrega(ccocod: string, ccodes: string) {
     this.emptyAllMessages();
+    this.isUpdating = true;
 
     if (!ccodes) {
       this.detallesMessageError = 'descripción requerida'
+      this.isUpdating = false;
       return;
     }
     const payload = {
@@ -340,9 +348,11 @@ export class CosteComponent {
     this.http.patch(`${environment.backendUrl}/api/cco/update-centro/${this.entcod}/${this.eje}/${ccocod}`, payload).subscribe({
       next: (res) => {
         this.detallesMessageSuccess = 'Lugares de entrega actualizada exitosamente'
+        this.isUpdating = false;
       },
       error: (err) => {
         this.detallesMessageError = err.error || 'server error';
+        this.isUpdating = false;
       }
     })
   }
@@ -367,7 +377,9 @@ export class CosteComponent {
 
   detallesMessageErrorDelete: string = '';
   costeSuccess: string = '';
+  isDeleting: boolean = false;
   deleteCoste(ccocod: number) {
+    this.isDeleting = true;
     this.emptyAllMessages();
     if (!ccocod) {
       return;
@@ -379,9 +391,11 @@ export class CosteComponent {
         this.costes = this.costes.filter((e: any) => e.ccocod !== ccocod);
         this.closeDeleteConfirm();
         this.closeDetails();
+        this.isDeleting = false;
       },
       error: (err) => {
         this.detallesMessageErrorDelete = err.error || 'server error';
+        this.isDeleting = false;
       }
     })
   }
@@ -399,7 +413,9 @@ export class CosteComponent {
     this.showAddGrid = false;
   }
 
+  isAdding: boolean = false;
   addCoste(ccocod: string, ccodes: string) {
+    this.isAdding = true;
     this.emptyAllMessages();
     if(!ccocod || !ccodes) {
       this.errorAddcoste = 'Todos los campos son obligatorios';
@@ -418,9 +434,11 @@ export class CosteComponent {
         this.costeSuccess = 'centro de coste a agregada exitosamente';
         this.hideAdd();
         this.fetchCostes();
+        this.isAdding = false;
       },
       error: (err) => {
         this.errorAddcoste = err.error || 'server error';
+        this.isAdding = false;
       }
     })
   }

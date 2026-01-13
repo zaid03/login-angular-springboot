@@ -58,6 +58,10 @@
         <div class="services-list">
             <h1 class="successBtn">{{ servicesMessageSuccess }}</h1>
             <h1 class="errorBtn">{{ servicessMessageError }}</h1>
+            <div *ngIf="isLoading" class="loading-message">
+                <div class="spinner"></div>
+                <span>Cargando</span>
+            </div>
             <table class="services-table">
                 <thead>
                     <tr>
@@ -159,6 +163,10 @@
                     </div>  
                     <h1 class="successBtn">{{ updateServiceSuccessMessage }}</h1>
                     <h1 class="errorBtn">{{ updateServiceErrorMessage }}</h1>
+                    <div *ngIf="isUpdating" class="loading-message">
+                        <div class="spinner"></div>
+                        <span>actualizando</span>
+                    </div> 
                     <div class="detail-container">
                         <div class="chunk-one">
                             <div class="left">
@@ -293,6 +301,14 @@
                             <button class="add-btn" (click)="showAddPersonas()">+</button>
                             <h1 class="errorBtn">{{personasError}}</h1>
                             <h1 class="successBtn">{{personasSuccess}}</h1>
+                            <div *ngIf="isLoading" class="loading-message">
+                                <div class="spinner"></div>
+                                <span>Cargando</span>
+                            </div>
+                            <div *ngIf="isAdding" class="loading-message">
+                                <div class="spinner"></div>
+                                <span>añadiendo</span>
+                            </div>
                             <div class="personas-list">
                                 <table class="personas-table">
                                     <thead>
@@ -327,6 +343,10 @@
                             </div>
                         </ng-container>
                         <ng-container *ngSwitchCase="'almacen'">
+                            <div *ngIf="isLoading" class="loading-message">
+                                <div class="spinner"></div>
+                                <span>Cargando</span>
+                            </div>
                             <div class="almacen-title" *ngIf="almacenArray">
                                 <p>Nombre</p>
                                 <h1>{{almacenArray.magnom}}</h1>  
@@ -366,6 +386,10 @@
         <button class="close-btn-btn" (click)="closeAddConfirm()">✖</button>
     </div>
     <h1 class="errorBtn">{{ addServiceErrorMessage }}</h1>
+    <div *ngIf="isAdding" class="loading-message">
+        <div class="spinner"></div>
+        <span>añadiendo</span>
+    </div>
     <div class="add-container">
         <div class="first-content">
             <div class="left-add">
@@ -458,6 +482,10 @@
     <div class="persona-details">
         <p>Código:</p>
         <p>{{personaTodelete?.[0]}}</p>
+    </div>
+    <div *ngIf="isDeleting" class="loading-message">
+        <div class="spinner"></div>
+        <span>borrando</span>
     </div>
     <div class="btns">
         <button class="delete-btn" (click)="confirmDelete(personaTodelete?.[0])">-</button>

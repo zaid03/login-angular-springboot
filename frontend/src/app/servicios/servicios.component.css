@@ -97,7 +97,7 @@
 /* add new service grid */
 .custom-grid-modal .add-btn {margin: 5px;}
 .delete-btn { margin-left: 10px;}
-.delete-confirm-modal { display: flex; flex-direction: column; align-items: center; gap: 2px; border: 1px solid blue;}
+.delete-confirm-modal { display: flex; flex-direction: column; align-items: center; gap: 2px;}
 .persona-details {width: 90%; display: flex; justify-content: center; gap: 10px;}
 .delete-confirm-modal .btns {justify-content: center;}
 /* add new service grid */

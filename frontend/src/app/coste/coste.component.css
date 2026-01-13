@@ -4,7 +4,7 @@
 .search-container { margin-left: 15%; gap: 10px; }
 /* search */
 /* main-list and table */
-.coste-list { width: 40%; }
+.coste-list { width: 50%; }
 .coste-table thead th:first-child { width: 20%;}
 /* main-list and table */
 /* detail grid */
@@ -17,7 +17,8 @@
 .left p,
 .right p,
 .right h1,
-.left-add p { font-size: 14px; font-weight: bold; color: #25176b; }
+.left-add p,
+.title p { font-size: 14px; font-weight: bold; color: #25176b; }
 .right h1 {color: #162a3a;}
 .chunk textarea,
 .right-add textarea { height: 20px; padding: 2px 4px; border-radius: 6px; font-weight: bold; color: #162a3a;}
@@ -31,4 +32,5 @@
 /* add grid */
 .coste-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 16px; box-shadow: 0 8px 32px rgba(44, 62, 80, 0.18), 0 1.5px 6px rgba(44,62,80,0.08); padding: 25px 30px; min-width: 500px; min-height: 100px; z-index: 3000; display: flex; flex-direction: column; align-items: center; }
 .margin{ margin-left: 10px;}
+.title{width: 49%;}
 /* add grid */

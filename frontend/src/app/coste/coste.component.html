@@ -93,6 +93,10 @@
                     </div>
                     <h1 class="errorBtn">{{detallesMessageError}}</h1>
                     <h1 class="successBtn">{{detallesMessageSuccess}}</h1>
+                    <div *ngIf="isUpdating" class="loading-message">
+                        <div class="spinner"></div>
+                        <span>actualizando</span>
+                    </div>
                     <div class="detail-container">
                         <div class="chunk">
                             <div class="left center">
@@ -124,7 +128,10 @@
 <div class="delete-confirm-modal" *ngIf="showDeleteConfirm">
     <h3>¿Seguro que quieres eliminar este centro de coste?</h3>
     <div *ngIf="costeToDelete">
-        
+        <div *ngIf="isDeleting" class="loading-message">
+        <div class="spinner"></div>
+        <span>borrando</span>
+    </div>
     </div>
     <h1 class="errorBtn">{{detallesMessageErrorDelete}}</h1>
     <button class="articulos-delete-confirm-btn" (click)="confirmDelete()">-</button>
@@ -134,10 +141,17 @@
 <div class="modal-backdrop" *ngIf="showAddGrid" (click)="hideAdd()"></div>
 <div class="coste-modal" *ngIf="showAddGrid">
     <div class="btns">
+        <div class="title">
+            <p>Añadir un centro de coste</p>
+        </div>
         <button class="save-btn" (click)="addCoste(cod.value, desc.value)">✔</button>
         <button class="close-btn-btn" (click)="hideAdd()">✖</button>
     </div>
     <h1 class="errorBtn">{{errorAddcoste}}</h1>
+    <div *ngIf="isAdding" class="loading-message">
+        <div class="spinner"></div>
+        <span>añadiendo</span>
+    </div>
     <div class="add-container">
         <div class="chunk">
             <div class="left center">

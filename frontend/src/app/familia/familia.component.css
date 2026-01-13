@@ -4,7 +4,7 @@
 .search-container { margin-left: 15%; gap: 10px; }
 /* search */
 /* all tables */
-.familia-list { width: 40%; }
+.familia-list { width: 50%; }
 .familia-table thead th:first-child,
 .subfamilia-table thead th:first-child { width: 15%; }
 .subfamilia-table thead th:nth-child(3),

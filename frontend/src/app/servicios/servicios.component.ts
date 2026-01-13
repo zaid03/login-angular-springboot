@@ -44,8 +44,10 @@ export class ServiciosComponent {
   servicessMessageError: string = '';
   page = 0;
   pageSize = 20;
+  isLoading: boolean = false;
 
   ngOnInit() {
+    this.isLoading = true;
     this.limpiarMessages();
     const entidad = sessionStorage.getItem('Entidad');
     const eje = sessionStorage.getItem('EJERCICIO');
@@ -83,9 +85,11 @@ export class ServiciosComponent {
         this.defaultServices = [...this.backupServices];
         this.page = 0;
         this.updatePagination();
+        this.isLoading = false;
       },
       error: (err) => {
         this.servicessMessageError = err?.error?.error || 'Error desconocido';
+        this.isLoading = false;
       }
     });
   }
@@ -317,6 +321,7 @@ export class ServiciosComponent {
   searchPerfil: string = 'todos';
   search() {
     this.limpiarMessages();
+    this.isLoading = true;
 
     const params: any = {
       ent: this.entcod,
@@ -343,6 +348,7 @@ export class ServiciosComponent {
         if (!res.length) {
           this.servicessMessageError = 'No se encontraron servicios con los filtros dados.';
         }
+        this.isLoading = false;
       },
       error: (err) => {
         this.services = [];
@@ -351,6 +357,7 @@ export class ServiciosComponent {
         this.page = 0;
         this.updatePagination();
         this.servicessMessageError = err?.error || 'Error en la búsqueda.';
+        this.isLoading = false;
       }
     });
   }
@@ -411,7 +418,9 @@ export class ServiciosComponent {
 
   updateServiceSuccessMessage: string = '';
   updateServiceErrorMessage: string = ''
+  isUpdating: boolean = false;
   updateService(cod:string, des: string) {
+    this.isUpdating = true;
     this.limpiarMessages();
 
     if (cod === '' || des === '') {
@@ -430,9 +439,11 @@ export class ServiciosComponent {
       next: (res) => {
         this.updateServiceSuccessMessage = 'servicio actualizado exitosamente'
         this.fetchServices();
+        this.isUpdating = false;
       },
       error: (err) => {
         this.updateServiceErrorMessage = err?.error;
+        this.isUpdating = false;
       }
     })
   }
@@ -443,6 +454,7 @@ export class ServiciosComponent {
   personasPageSize = 10;
   fetchPersonas(depcod: string): void {
     this.limpiarMessages();
+    this.isLoading = true;
     if (!depcod) {
       this.personasError = 'codigo extraviado'
       return;
@@ -452,9 +464,11 @@ export class ServiciosComponent {
       next: (res) => {
         this.personas = res;
         this.personasPage = 0;
+        this.isLoading = false;
       },
       error: (err) => {
         this.personasError = err?.error;
+        this.isLoading = false;
       }
     })
   }
@@ -488,6 +502,7 @@ export class ServiciosComponent {
   almacenDatosArray: any[] = [];
   almacenDatos(depcod: string) {
     this.limpiarMessages();
+    this.isLoading = true;
     if (!depcod) {
       this.almacenErro = 'codigo extraviato';
     }
@@ -504,9 +519,11 @@ export class ServiciosComponent {
     this.http.get<any>(`${environment.backendUrl}/api/mat/fetch-almacen/${this.entcod}/${depcod}`).subscribe({
       next: (res) => {
         this.almacenDatosArray = res;
+        this.isLoading = false;
       },
       error: (err) => {
         this.almacenErro = err?.error;
+        this.isLoading = false;
       }
     })
   }
@@ -560,6 +577,7 @@ export class ServiciosComponent {
   addDepint: boolean = false;
   addServiceErrorMessage: string = '';
   addService(cod: string, des:string, cco:string, cge: string, d1c_add:string, d1d_add:string, d2c_add:string, d2d_add:String, d3c_add:string, d3d_add:string, den_add:string, dco_add:string) {
+    this.isAdding = true;
     this.limpiarMessages();
     if (cod === '' || des === '' || cco === '' || cge === '') {
       this.addServiceErrorMessage = 'Se requieren Código, Descripción, Centro de Coste y Centro de Gestor'
@@ -594,15 +612,18 @@ export class ServiciosComponent {
         this.servicesMessageSuccess = 'Servicio añadido con éxito';
         this.fetchServices();
         this.closeAddConfirm();
+        this.isAdding = false;
       },
       error: (err) => {
         this.addServiceErrorMessage = 'Server error: ' + err?.error;
+        this.isAdding = false;
       }
     })
   }
 
   //persona grid's functions
   showDeleteConfirm: boolean = false;
+  isDeleting: boolean = false;
   personaTodelete: any;
   deleErr: string = '';
   showDelete(persona: any) {
@@ -618,15 +639,18 @@ export class ServiciosComponent {
   confirmDelete(persona: string) {
     const depcod = this.selectedService.depcod;
     const percod = persona;
+    this.isDeleting = true;
 
     this.http.delete(`${environment.backendUrl}/api/depe/delete-persona-service/${this.entcod}/${this.eje}/${depcod}/${percod}`).subscribe({
       next: (res) => {
         this.personasSuccess = 'Persona eliminada exitosamente';
         this.closeDeleteConfirm()
         this.fetchPersonas(depcod);
+        this.isDeleting = false;
       },
       error: (err) => {
         this.deleErr = err?.error;
+        this.isDeleting = false;
       }
     })
   }
@@ -647,15 +671,19 @@ export class ServiciosComponent {
     this.count = 0;
   }
 
+  isAdding: boolean = false;
   fetchPersonasForCopy() {
+    this.isAdding = true;
     this.http.get<any>(`${environment.backendUrl}/api/Per/fetch-all`).subscribe({
       next: (res) => {
         this.pesonasCopy = res;
         this.backupPesonasCopy = [...this.pesonasCopy]
         this.pageCopy = 0;
+        this.isAdding = false;
       },
       error: (err) => {
         this.errorCopy = err?.error?.error || 'Error desconocido';
+        this.isAdding = false;
       }
     });
   }

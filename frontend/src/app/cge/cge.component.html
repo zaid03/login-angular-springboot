@@ -115,6 +115,10 @@
                     </div>   
                     <h1 class="successBtn">{{ centroGestorSuccessMessage }}</h1>
                     <h1 class="errorBtn">{{ centroGestorErrorMessage }}</h1>
+                    <div *ngIf="isUpdating" class="loading-message">
+                        <div class="spinner"></div>
+                        <span>actualizando</span>
+                    </div>
                     <div class="detail-container">
                         <div class="chunk">
                             <div class="left">
@@ -192,6 +196,10 @@
 <div class="delete-confirm-modal" *ngIf="showDeleteConfirm">
     <h3>¿Seguro que quieres eliminar este Centro gestor?</h3>
     <h1 class="errorBtn">{{deleErr}}</h1>
+    <div *ngIf="isDeleting" class="loading-message">
+        <div class="spinner"></div>
+        <span>borrando</span>
+    </div>
     <button class="cge-delete-confirm-btn" (click)="confirmDelete()">-</button>
     <button class="cge-cancel-confirm-btn" (click)="closeDeleteConfirm()">✖</button>
 </div>
@@ -206,6 +214,10 @@
         <button class="centroGestor-delete-confirm-btn" (click)="closeAddConfirm()">✖</button>
     </div>
     <h1 class="errorBtn">{{ centroGestorAddError }}</h1>
+    <div *ngIf="isAdding" class="loading-message">
+        <div class="spinner"></div>
+        <span>añadiendo</span>
+    </div>
     <div class="chunk more-chunk">
         <div class="left width">
             <p>Código*</p>

@@ -42,8 +42,10 @@ export class EjercicioComponent {
   pageSize = 20;
   ejercicioSuccess: string = '';
   ejercicioError: string = '';
+  isLoading: boolean = false;
 
   ngOnInit() {
+    this.isLoading = true;
     this.limpiarMessages();
     const entidad = sessionStorage.getItem('Entidad');
     if (entidad) {const parsed = JSON.parse(entidad); this.entcod = parsed.ENTCOD;}
@@ -67,9 +69,11 @@ export class EjercicioComponent {
         this.defaultEjercicios = [...this.backupEjercicios];
         this.page = 0;
         this.updatePagination();
+        this.isLoading = false;
       },
       error: (err) => {
         this.ejercicioError = err.error.error || 'Error desconocido';
+        this.isLoading = false;
       }
     });
   }

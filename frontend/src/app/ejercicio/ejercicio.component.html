@@ -41,6 +41,10 @@
         <div class="services-list">
             <h1 class="successBtn">{{ejercicioSuccess}}</h1>
             <h1 class="errorBtn">{{ejercicioError}}</h1>
+            <div *ngIf="isLoading" class="loading-message">
+                <div class="spinner"></div>
+                <span>Cargando</span>
+            </div>
             <table class="ejercicio-table">
                 <thead>
                     <tr>

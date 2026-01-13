@@ -390,7 +390,9 @@ export class CgeComponent {
     this.limpiarMessages();
   }
 
+  isUpdating: boolean = false;
   updateCentroGestor(cge: string, des: string, org: string, fun: string, dat: string) {
+    this.isUpdating = true;
     this.limpiarMessages();
     const payload = {
       cgedes: des,
@@ -408,10 +410,12 @@ export class CgeComponent {
     this.http.patch<any>(`${environment.backendUrl}/api/cge/update-familia/${this.entcod}/${this.eje}/${cge}`, payload).subscribe({
       next: (res) => {
         this.centroGestorSuccessMessage = 'Centro gestor actualizado con éxito';
+        this.isUpdating = false;
       }, 
       error: (err) => {
         const message = err?.error ?? 'Error al actualizar la centro gestor.';
         this.centroGestorErrorMessage = message;
+        this.isUpdating = false;
       }
     })
   }
@@ -443,8 +447,10 @@ export class CgeComponent {
     }
   }
 
+  isDeleting: boolean = false;
   deleErr: string = '';
   deleteCentroGestor(cgecod: string) {
+    this.isDeleting = true;
     this.limpiarMessages();
     this.http.delete<any>(`${environment.backendUrl}/api/cge/delete-centro-gestor/${this.entcod}/${this.eje}/${cgecod}`).subscribe({
       next: (res) => {
@@ -453,8 +459,10 @@ export class CgeComponent {
         this.backupCentroGestores = this.backupCentroGestores.filter(c => c.cgecod !== cgecod);
         this.closeDeleteConfirm();
         this.closeDetails();
+        this.isDeleting = false;
       }, error: (err) => {
         this.deleErr = err?.error ?? 'Error al eliminar la familia.';
+        this.isDeleting = false;
       }
     })
   }
@@ -485,8 +493,10 @@ export class CgeComponent {
   }
 
   successAddCentroGestor = '';
+  isAdding: boolean = false;
   AddCentroGestor(cod: string, org: string, fun: string, des: string,  dat: string) {
     this.limpiarMessages();
+    this.isAdding = true;
 
     if (!cod || !des) {
       this.centroGestorAddError = 'Se requieren codigo y descripción'
@@ -502,16 +512,17 @@ export class CgeComponent {
       "cgedat" : dat,
       "cgecic" : this.newCgecic
     }
-    console.log(payload)
 
     this.http.post<any>(`${environment.backendUrl}/api/cge/Insert-familia`,payload).subscribe({
       next: (res) => {
         this.successAddCentroGestor = 'centro gestor añadido con éxito'
         this.fetchCentro();
         this.closeAddConfirm();
+        this.isAdding = false;
       },
       error: (err) => {
         this.centroGestorAddError = err?.error ?? 'Se ha producido un error.';
+        this.isAdding = false;
       }
     })
   }
