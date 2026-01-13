@@ -30,7 +30,7 @@
 .chunk-one h1,
 .chunk-two h1,
 .chunk-three h1,
-.chunk-four h1 { font-size: 14px; font-weight: bold; color: #38249b; }
+.chunk-four h1{ font-size: 14px; font-weight: bold; color: #38249b; }
 .chunk-one h1,
 .chunk-two h1,
 .chunk-three h1,
@@ -94,30 +94,34 @@
 .anadir-articulo-form .search-bar:focus { border-color: #38249b; outline: none; background: #fff; }
 .anadir-articulo-form .search-anadir { display: flex; align-items: center; gap: 18px; margin-bottom: 0; margin-right: 0; padding: 0; justify-content: center;}
 .anadir-articulo-form .search-anadir label { font-size: 1rem; color: #333; font-weight: 500; margin-right: 10px; display: flex; align-items: center; gap: 4px; }
-.anadir-articulo-form h1 { margin: 10px 0 0 0; font-size: 1.1em; text-align: center; }
 .pagination-controls { justify-content: center;}
+.hello-modal .title {width: 80%;}
 /* add articulo modal */
 /* add personas modal */
 .personas-modal {width: 40%;}
 .personas-add-container { width: 100%; display: flex; margin: 5px;}
 .left-persona { width: 20%; display: flex; flex-direction: column; gap: 20px;}
 .right-persona { display: flex; flex-direction: column; width: 80%; gap: 12px;}
+.personas-modal .title {width: 80%;}
 /* add personas modal */
 /* delete persona modal */
 .detailPersonnaDelete { display: flex; width: 90%; align-items: center; justify-content: center; gap: 10px;}
 /* delete persona modal */
 /* adding proveedor grid style */
-/* adding proveedor grid style */
 .proveedor-grid-modal{ position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 940px; max-height: 80vh; overflow: auto; background: #ffffff; border-radius: 12px; padding: 18px; box-shadow: 0 12px 36px rgba(0,0,0,0.18); z-index: 4000; display: flex; flex-direction: column; gap: 12px; }
 .content-container-for-proveedor { display: flex; flex-direction: column; justify-content: center; align-items: center; }
-.proveedor-grid-modal h3 { margin: 6px 0 4px 0; font-size: 1.2rem; color: #1c5d8c; text-align: center; }
+.proveedor-grid-modal h3,
+.proveedor-grid-modal .title h1,
+.hello-modal .title h1 {font-size: 1.2rem; color: #38249b; text-align: center; }
 .proveedor-grid-modal .modal-actions {display: flex; gap: 10px; justify-content: flex-end; margin-top: 8px; }
 .proveedor-grid-modal .proveedor-anadir-form { display: flex; width: 95%; flex-direction: column; gap: 12px; padding: 12px; background: linear-gradient(180deg, rgba(28,93,140,0.03), rgba(20,72,95,0.01)); border-radius: 8px; border: 1px solid #e6edf3; box-shadow: 0 6px 18px rgba(17,48,71,0.06); }
 .proveedor-grid-modal .search-anadir {display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
 .proveedor-grid-modal .search-anadir .search-bar {flex: 1 1 360px; padding: 10px 14px; border-radius: 10px; border: 1px solid #dce7f1; background: #fbfeff; color: #162a3a; font-size: 0.96rem; box-shadow: inset 0 1px 0 rgba(255,255,255,0.6); }
 .proveedor-grid-modal .search-anadir .search-bar:focus {outline: none; border-color: #1c5d8c; box-shadow: 0 0 0 4px rgba(28,93,140,0.06); }
-.proveedor-grid-modal .search-anadir .checkbox { accent-color: #1c5d8c; width: 16px; height: 16px; margin: 0 6px 0 4px; vertical-align: middle; }
+.proveedor-grid-modal .search-anadir .checkbox { accent-color: #38249b; width: 16px; height: 16px; margin: 0 6px 0 4px; vertical-align: middle; }
 .proveedor-grid-modal .search-anadir label {display: inline-flex; align-items: center; gap: 6px; color: #6b7c8f; font-size: 0.96rem; }
 .selected-row { background: #e6f0ff; }
+.proveedor-grid-modal .title{width: 80%;}
+/* adding proveedor grid style */
 @media (min-width: 1700px) { .chunk-one, .chunk-two, .chunk-three, .chunk-four { width: 22%; }
 .save-btn-articulos {margin-left: 10px;} }

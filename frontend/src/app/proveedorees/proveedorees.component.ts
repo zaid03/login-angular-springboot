@@ -548,6 +548,7 @@ export class ProveedoreesComponent {
   messageSuccess: string = '';
   messageError: string = '';
   saveChanges() {
+    this.isUpdating = true;
     this.limpiarMessages();
     const updateFields ={
       TERWEB : this.selectedProveedor.terweb,
@@ -560,9 +561,11 @@ export class ProveedoreesComponent {
     ).subscribe({
       next: (res) => {
         this.messageSuccess = 'Proveedor actualizado correctamente';
+        this.isUpdating = false;
       },
       error: (err) => {
         this.messageError = err?.error || 'Error al guardar el proveedor'
+        this.isUpdating = false;
       }
     });
   }
@@ -633,8 +636,10 @@ export class ProveedoreesComponent {
   personasContactoErrorMessage: string = '';
   personasContactoSuccessMessage: string = '';
   personaContactoaddError: string = '';
+  isAdding: boolean = false;
   addPersonas(tpenom: string, tpetel: string, tpetmo: string, tpecoe: string, tpeobs: string) {
     this.limpiarMessages();
+    this.isAdding = true;
     const tercod = this.personaInfo.tercod;
 
     if(!tpenom) {
@@ -655,9 +660,11 @@ export class ProveedoreesComponent {
         this.personasContactoSuccessMessage = 'Persona Agregado exitosamente';
         this.hidePersonas();
         this.reloadContactPersons();
+        this.isAdding = false;
       },
       error: (err) => {
         this.personaContactoaddError = err.error ?? 'Se ha producido un error.';
+        this.isAdding = false;
       }
     })
   }
@@ -668,7 +675,9 @@ export class ProveedoreesComponent {
     this.showContactPersons(this.selectedProveedor);
   }
 
+  isUpdating: boolean = false;
   updatepersonas(tpecod: number, nom: string, telefon: string, movil: string, email: string, obs: string){
+    this.isUpdating = true;
     this.limpiarMessages();
     if (!nom) {
       this.personasContactoErrorMessage = 'El nombre de la persona no debe estar vacío';
@@ -689,31 +698,37 @@ export class ProveedoreesComponent {
       next: (res) => {
         this.personasContactoErrorMessage = '';
         this.personasContactoSuccessMessage = 'Persona de contacto actualizada correctamente';
+        this.isUpdating = false;
       },
       error: (err) => {
         this.personasContactoSuccessMessage = '';
         this.personasContactoErrorMessage = err?.error || 'Error al guardar la persona de contacto';
+        this.isUpdating = false;
       }
     });
   }
 
   deletepersona(persona: any){
     this.limpiarMessages();
+    this.isDeleting = true;
     const tercod = persona.tercod;
     const tpecod = persona.tpecod;
     this.http.delete(
       `${environment.backendUrl}/api/more/delete/${this.entcod}/${tercod}/${tpecod}`,
       { responseType: 'text' }).subscribe({
       next: (res) => {
-      this.personasContactoSuccessMessage = 'Persona de contacto eliminada correctamente';
-      if (Array.isArray(this.contactPersons)) {
-        this.contactPersons = this.contactPersons.filter((p: any) =>
-          !(p.tercod === tercod && p.tpecod === tpecod)
-        );
-      }
+        this.personasContactoSuccessMessage = 'Persona de contacto eliminada correctamente';
+        if (Array.isArray(this.contactPersons)) {
+          this.contactPersons = this.contactPersons.filter((p: any) =>
+            !(p.tercod === tercod && p.tpecod === tpecod)
+          );
+        }
+        this.isDeleting = false;
+        this.closeDeletePersonas();
       },
       error: (err) => {
         this.personasContactoErrorMessage = err.error ?? 'Error al eliminar la persona de contacto';
+        this.isDeleting = false;
       }
     });
   }
@@ -736,7 +751,6 @@ export class ProveedoreesComponent {
   confirmDeletePersona() {
     if (this.showDeletePersona) {
       this.deletepersona(this.personaToDelete);
-      this.closeDeletePersonas();
     }
   }
 
@@ -817,6 +831,7 @@ export class ProveedoreesComponent {
 
   updatearticulos(articulo: any){
     this.limpiarMessages();
+    this.isUpdating = true; 
 
     const tercod = this.selectedProveedor.tercod;
     const afacod = articulo.afacod;
@@ -835,15 +850,19 @@ export class ProveedoreesComponent {
       next: (res) => {
         this.articuloError = '';
         this.articuloSuccessMessage = 'Artículo actualizado correctamente';
+        this.isUpdating = false;
       },
       error: (err) => {
         this.articuloSuccessMessage = '';
         this.articuloError = err.error.error || err.error || 'Error al guardar el artículo';
+        this.isUpdating = false;
       }
     });
   }
 
+  isDeleting: boolean = false;
   deletearticulo(articulo: any){
+    this.isDeleting = true;
     this.limpiarMessages();
     const params = [
     `ent=${articulo.ent}`,
@@ -857,18 +876,20 @@ export class ProveedoreesComponent {
       `${environment.backendUrl}/api/more/delete-apr?${ params}`,
       { responseType: 'text' }).subscribe({
         next: (res) => {
-        this.articuloSuccessMessage = 'Artículo eliminado correctamente';
-        this.articulos = this.articulos.filter((a: any) =>
-        !(a.ent === articulo.ent &&
-          a.tercod === articulo.tercod &&
-          a.afacod === articulo.afacod &&
-          a.asucod === articulo.asucod &&
-          a.artcod === articulo.artcod)
-      );
+            this.articuloSuccessMessage = 'Artículo eliminado correctamente';
+            this.articulos = this.articulos.filter((a: any) =>
+            !(a.ent === articulo.ent &&
+              a.tercod === articulo.tercod &&
+              a.afacod === articulo.afacod &&
+              a.asucod === articulo.asucod &&
+              a.artcod === articulo.artcod)
+          );
+          this.isDeleting = false;
+          this.closeDeleteConfirm();
         },
         error: (err) => {
-          console.error('Error:', err);
           this.articuloError = 'Error al eliminar el artículo';
+          this.isDeleting = false;
         }
       });
   }
@@ -890,13 +911,13 @@ export class ProveedoreesComponent {
   confirmDelete() {
     if (this.articuloToDelete) {
       this.deletearticulo(this.articuloToDelete);
-      this.closeDeleteConfirm();
     }
   }
 
   anadirErrorMessage: string = '';
   anadirmessage: string = '';
   addArticulo(){
+    this.isAdding = true;
     this.limpiarMessages();
     const newArticulo = {
       ENT: this.entcod,
@@ -943,10 +964,11 @@ export class ProveedoreesComponent {
           this.articuloSuccessMessage = '';
           this.articuloError = '';
         }
+        this.isAdding = false;
       },
       error: (err) => {
-        console.error('Error:', err);
         this.anadirmessage = 'Error al añadir el artículo';
+        this.isAdding = false;
       }
     });
   }

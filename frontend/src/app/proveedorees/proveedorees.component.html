@@ -160,6 +160,10 @@
                     </div>
                     <h1 class="errorBtn">{{ messageError }}</h1>
                     <h1 class="successBtn">{{ messageSuccess }}</h1>
+                    <div *ngIf="isUpdating" class="loading-message">
+                        <div class="spinner"></div>
+                        <span>actualizando</span>
+                    </div>
                     <div class="detail-container">
                         <div class="chunk-one">
                             <div class="left">
@@ -380,6 +384,10 @@
         <p><strong>Subfamilia:</strong> {{ articuloToDelete.asucod }}</p>
         <p><strong>Artículo:</strong> {{ articuloToDelete.artcod }}</p>
     </div>
+    <div *ngIf="isDeleting" class="loading-message">
+        <div class="spinner"></div>
+        <span>borrando</span>
+    </div>
     <button class="articulos-delete-confirm-btn" (click)="confirmDelete()">-</button>
     <button class="articulos-cancel-confirm-btn" (click)="closeDeleteConfirm()">✖</button>
 </div>
@@ -389,9 +397,13 @@
     <h3>¿Seguro que quieres eliminar este Persona?</h3>
     <div *ngIf="personaToDelete">
         <div class="detailPersonnaDelete">
-            <h1 class="titleDelete">Nombre</h1>
-            <textarea [(ngModel)]="personaToDelete.tpenom" readonly></textarea>
+            <h1 class="titleDelete">Nombre:</h1>
+            <h1 class="titleDelete">{{personaToDelete.tpenom}}</h1>
         </div>
+    </div>
+    <div *ngIf="isDeleting" class="loading-message">
+        <div class="spinner"></div>
+        <span>borrando</span>
     </div>
     <button class="articulos-delete-confirm-btn" (click)="confirmDeletePersona()">-</button>
     <button class="articulos-cancel-confirm-btn" (click)="closeDeletePersonas()">✖</button>
@@ -400,10 +412,17 @@
 <div class="modal-backdrop" *ngIf="showPersonasGrid" (click)="hidePersonas()"></div>
 <div class="personas-modal" *ngIf="showPersonasGrid">
     <div class="btns">
+        <div class="title">
+            <h3>Añadir persona</h3>
+        </div>
         <button class="save-btn" (click)="addPersonas(nombreadd.value, telefonoadd.value, moviladd.value, correoadd.value, observacionesadd.value)">✔</button>
         <button class="close-btn-btn" (click)="hidePersonas()">✖</button>
     </div>
     <h1 class="errorBtn">{{personaContactoaddError}}</h1>
+    <div *ngIf="isAdding" class="loading-message">
+        <div class="spinner"></div>
+        <span>añadiendo</span>
+    </div>
     <div class="personas-add-container">
         <div class="left-persona">
             <p>Nombre*</p>
@@ -425,7 +444,16 @@
 <div class="modal-backdrop" *ngIf="showHelloGrid" (click)="hideHello()"></div>
 <div class="hello-modal" *ngIf="showHelloGrid">
     <div class="btns">
+        <div class="title">
+            <h1>Añadir articulo</h1>
+        </div>
         <button class="close-btn-btn" (click)="hideHello()">✖</button>
+    </div>
+    <h1 class="successBtn">{{ anadirmessage }}</h1>
+    <h1 class="errorBtn">{{ anadirErrorMessage }}</h1>
+    <div *ngIf="isAdding" class="loading-message">
+        <div class="spinner"></div>
+        <span>añadiendo</span>
     </div>
     <form class="anadir-articulo-form">
         <div class="search-anadir">
@@ -467,14 +495,15 @@
             <span> {{ searchPage + 1 }} de {{ searchTotalPages }}</span>
             <button class="pag-btn" (click)="searchPage = searchPage + 1" [disabled]="searchPage + 1 >= searchTotalPages">Siguiente</button>
         </div>
-        <h1 class="successBtn">{{ anadirmessage }}</h1>
-        <h1 class="errorBtn">{{ anadirErrorMessage }}</h1>
     </form>
 </div>
 
 <div class="modal-backdrop" *ngIf="showProveedorModal" (click)="closeProveedorModal()"></div>
 <div class="proveedor-grid-modal" *ngIf="showProveedorModal">
     <div class="btns">
+        <div class="title">
+            <h1>Añadir proveedor</h1>
+        </div>
         <button class="proveedor-saving-btn" (click)="saveProveedorees()" [disabled]="isSaving || selectedProveediresFromResults.length === 0">
             <span *ngIf="!isSaving">✔</span>
             <span *ngIf="isSaving">Guardando...</span>
