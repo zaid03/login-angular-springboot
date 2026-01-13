@@ -296,8 +296,10 @@ export class EntregaComponent {
     this.emptyAllMessages();
   }
 
+  isUpdating: boolean = false;
   updateEntrega(lencod: number, lendes: string, lentxt: string) {
     this.emptyAllMessages();
+    this.isUpdating = true;
 
     if (!lencod || !lendes) {
       this.detallesMessageError = 'Descripción requirido'
@@ -310,10 +312,12 @@ export class EntregaComponent {
 
     this.http.patch(`${environment.backendUrl}/api/Len/update-lugar/${lencod}`, payload).subscribe({
       next: (res) => {
-        this.detallesMessageSuccess = 'Lugares de entrega actualizada exitosamente'
+        this.detallesMessageSuccess = 'Lugares de entrega actualizada exitosamente';
+        this.isUpdating = false;
       },
       error: (err) => {
         this.detallesMessageError = err.error || 'server error';
+        this.isUpdating = false;
       }
     })
   }
@@ -321,6 +325,7 @@ export class EntregaComponent {
   detallesMessageErrorDelete: string = '';
   entregaSuccess: string = '';
   deleteEntrega(lencod: number) {
+    this.isDeleting = true;
     this.emptyAllMessages();
     if (!lencod) {
       return;
@@ -332,9 +337,11 @@ export class EntregaComponent {
         this.entregas = this.entregas.filter((e: any) => e.lencod !== lencod);
         this.closeDeleteConfirm();
         this.closeDetails();
+        this.isDeleting = false;
       },
       error: (err) => {
         this.detallesMessageErrorDelete = err.error || 'server error';
+        this.isDeleting = false;
       }
     })
   }
@@ -351,6 +358,7 @@ export class EntregaComponent {
     this.entregaToDelete = null;
   }
 
+  isDeleting: boolean = false;
   confirmDelete() {
     if (this.entregaToDelete) {
       this.deleteEntrega(this.entregaToDelete.lencod);
@@ -370,7 +378,9 @@ export class EntregaComponent {
   }
 
   errorAddEntrega: string = '';
+  isAdding: boolean = false;
   addEntrega(lendes: string, lentxt: string) {
+    this.isAdding = true;
     this.emptyAllMessages();
     if (!lendes) {
       this.errorAddEntrega = 'Descripción requirido'
@@ -386,9 +396,11 @@ export class EntregaComponent {
         this.entregaSuccess = 'Lugar de entrega agregada exitosamente';
         this.fetchEntregas();
         this.hideAdd();
+        this.isAdding = false;
       },
       error: (err) => {
         this.errorAddEntrega = err.error || 'server error';
+        this.isAdding = false;
       }
     })
   }

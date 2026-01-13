@@ -44,8 +44,10 @@ export class PersonaComponent {
   personasMessageError: string = '';
   page = 0;
   pageSize = 20;
+  isLoading: boolean = false;
 
   ngOnInit(): void {
+    this.isLoading = true;
     this.limpiarMessages();
     const entidad = sessionStorage.getItem('Entidad');
     const eje = sessionStorage.getItem('EJERCICIO');
@@ -72,9 +74,11 @@ export class PersonaComponent {
         this.defaultpersonas = [...this.backuppersonas];
         this.page = 0;
         this.updatePagination();
+        this.isLoading = false;
       },
       error: (err) => {
         this.personasMessageError = err?.error?.error || 'Error desconocido';
+        this.isLoading = false;
       }
     });
   }
@@ -276,6 +280,7 @@ export class PersonaComponent {
 
   searchPersonas: string = '';
   search() {
+    this.isLoading = true;
     this.limpiarMessages();
     if(this.searchPersonas === '') {
       this.personasMessageError = 'Ingrese algo para buscar';
@@ -290,6 +295,7 @@ export class PersonaComponent {
           this.defaultpersonas = [...this.backuppersonas];
           this.page = 0;
           this.updatePagination();
+          this.isLoading = false;
           if (!res.length) {
             this.personasMessageError = 'No se encontraron servicios con los filtros dados.';
           }
@@ -301,6 +307,7 @@ export class PersonaComponent {
           this.page = 0;
           this.updatePagination();
           this.personasMessageError = err?.error || 'Error en la búsqueda.';
+          this.isLoading = false;
         }
       });
     } else {
@@ -311,6 +318,7 @@ export class PersonaComponent {
           this.defaultpersonas = [...this.backuppersonas];
           this.page = 0;
           this.updatePagination();
+          this.isLoading = false;
           if (!res.length) {
             this.personasMessageError = 'No se encontraron servicios con los filtros dados.';
           }
@@ -322,6 +330,7 @@ export class PersonaComponent {
           this.page = 0;
           this.updatePagination();
           this.personasMessageError = err?.error || 'Error en la búsqueda.';
+          this.isLoading = false;
         }
       });
     }
@@ -350,7 +359,9 @@ export class PersonaComponent {
     this.showSerivcesGrid = false;
   }
 
+  isUpdating: boolean = false;
   updatePersona(pernom: string, percoe: string, pertel: string, pertmo: string, percar: string, perobs: string) {
+    this.isUpdating = true;
     this.limpiarMessages();
     if(!pernom) {
       this.detailMessageError = 'Nombre requerido'
@@ -370,9 +381,11 @@ export class PersonaComponent {
     this.http.patch(`${environment.backendUrl}/api/Per/update-persona`, payload).subscribe({
       next: (res) => {
         this.detailMessageSuccess = 'La persona se ha actualizado correctamente';
+        this.isUpdating = false;
       },
       error: (err) => {
         this.detailMessageError = err.error.error;
+        this.isUpdating = false;
       }
     })
   }
@@ -394,14 +407,17 @@ export class PersonaComponent {
 
   pageServices: number = 0;
   fetchServices(percod: string) {
+    this.isLoading = true;
     this.http.get<any>(`${environment.backendUrl}/api/depe/fetch-persona-service/${this.entcod}/${this.eje}/${percod}`).subscribe({
       next: (res) => {
         this.personServicesOrigin = res;
         this.backupServices = Array.isArray(res) ? [...res] : [];
         this.pageServices = 0;
+        this.isLoading = false;
       },
       error: (err) => {
         this.serviceErrorMessage = err?.error || 'Error desconocido';
+        this.isLoading = false;
       }
     });
   }
@@ -440,7 +456,9 @@ export class PersonaComponent {
   }
 
   ErrorDelete: string = '';
+  isDeleting: boolean = false;
   deleteService(depcod: string) {
+    this.isDeleting = true;
     if(!depcod || !this.selectedPersona.percod) { return;}
     const persona = this.selectedPersona.percod;
     const service = depcod
@@ -450,9 +468,11 @@ export class PersonaComponent {
         this.serviceSuccessMessage = 'El servicio se ha eliminado correctamente'
         this.fetchServices(persona);
         this.closeDelete();
+        this.isDeleting = false;
       },
       error: (err) => {
         this.ErrorDelete = err.error.error
+        this.isDeleting = false;
       }
     })
   }
@@ -615,7 +635,9 @@ export class PersonaComponent {
     this.showAddConfirm = false;
   }
 
+  isAdding: boolean = false;
   addPersona(code: string, name: string, email: string, phone: string, movil: string, trans: string, obs: string) {
+    this.isAdding = true;
     if(!code || !name) {
       this.PersonaErrorMessage = 'Código y Nombre requerido'
       return;
@@ -636,9 +658,11 @@ export class PersonaComponent {
         this.personasMessageSuccess = 'La persona se agregó correctamente';
         this.fetchPersonas();
         this.closeAddConfirm();
+        this.isAdding = false;
       },
       error: (err) => {
         this.PersonaErrorMessage = err.error.error;
+        this.isAdding = false;
       }
     })
   }
@@ -818,6 +842,7 @@ export class PersonaComponent {
   }
 
   copyPerfil() {
+    this.isAdding = true;
     this.limpiarMessages();
     if (!this.percodOrigin || !this.percodCopyTo) {this.detailMessageError = 'datos faltantes'; return;}
   
@@ -837,10 +862,12 @@ export class PersonaComponent {
           this.fetchPersonas();
           this.closecontinueAdCheckGrid();
           this.closeDetails();
+          this.isAdding = false;
           },
           error: (err) => {
             this.detailMessageError = err?.error;
-            this.closecontinueAdCheckGrid()
+            this.closecontinueAdCheckGrid();
+            this.isAdding = false;
             return;
           }
         })

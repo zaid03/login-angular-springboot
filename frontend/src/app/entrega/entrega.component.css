@@ -17,7 +17,8 @@
 .left p,
 .right h1,
 .right p,
-.left-add p { font-size: 14px; font-weight: bold; color: #25176b; }
+.left-add p,
+.title h1 { font-size: 14px; font-weight: bold; color: #25176b; }
 .right h1 {color: #162a3a;}
 .chunk textarea,
 .right-add textarea { height: 20px; padding: 2px 4px; border-radius: 6px; font-weight: bold; color: #162a3a;}
@@ -35,4 +36,5 @@
 .right-add { display: flex; flex-direction: column; gap: 10px;}
 .averageText {width: 220px; max-width: 350px;}
 .height {height: 100px !important;}
+.title {width: 55%;}
 /* add grid */

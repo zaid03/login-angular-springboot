@@ -93,6 +93,10 @@
                     </div>
                     <h1 class="errorBtn">{{detallesMessageError}}</h1>
                     <h1 class="successBtn">{{detallesMessageSuccess}}</h1>
+                    <div *ngIf="isUpdating" class="loading-message">
+                        <div class="spinner"></div>
+                        <span>actualizando</span>
+                    </div>
                     <div class="detail-container">
                         <div class="chunk">
                             <div class="left center">
@@ -138,6 +142,10 @@
     <div *ngIf="entregaToDelete">
         
     </div>
+    <div *ngIf="isDeleting" class="loading-message">
+        <div class="spinner"></div>
+        <span>borrando</span>
+    </div>
     <h1 class="errorBtn">{{detallesMessageErrorDelete}}</h1>
     <button class="articulos-delete-confirm-btn" (click)="confirmDelete()">-</button>
     <button class="articulos-cancel-confirm-btn" (click)="closeDeleteConfirm()">✖</button>
@@ -146,10 +154,17 @@
 <div class="modal-backdrop" *ngIf="showAddGrid" (click)="hideAdd()"></div>
 <div class="entrega-modal" *ngIf="showAddGrid">
     <div class="btns">
+        <div class="title">
+            <h1>Añadir un lugare de entrega</h1>
+        </div>
         <button class="save-btn" (click)="addEntrega(desc.value, texto.value)">✔</button>
         <button class="close-btn-btn" (click)="hideAdd()">✖</button>
     </div>
     <h1 class="errorBtn">{{errorAddEntrega}}</h1>
+    <div *ngIf="isAdding" class="loading-message">
+        <div class="spinner"></div>
+        <span>añadiendo</span>
+    </div>
     <div class="add-container">
         <div class="left-add">
             <p>Descripción*</p>

@@ -41,6 +41,10 @@
         <div class="personas-list">
             <h1 class="successBtn">{{personasMessageSuccess}}</h1>
             <h1 class="errorBtn">{{personasMessageError}}</h1>
+            <div *ngIf="isLoading" class="loading-message">
+                <div class="spinner"></div>
+                <span>Cargando</span>
+            </div>
             <table class="personas-table">
                 <thead>
                     <tr>
@@ -122,6 +126,10 @@
                     </div> 
                     <h1 class="successBtn">{{detailMessageSuccess}}</h1>
                     <h1 class="errorBtn">{{detailMessageError}}</h1>
+                    <div *ngIf="isUpdating" class="loading-message">
+                        <div class="spinner"></div>
+                        <span>actualizando</span>
+                    </div>
                     <div class="detail-cotainer">
                         <div class="above">
                             <div class="chunk-one">
@@ -171,6 +179,10 @@
                         <button type="button" class="add-btn margin" (click)="showAddService()">+</button>
                         <h1 class="errorBtn">{{serviceErrorMessage}}</h1>
                         <h1 class="successBtn">{{serviceSuccessMessage}}</h1>
+                        <div *ngIf="isLoading" class="loading-message">
+                            <div class="spinner"></div>
+                            <span>Cargando</span>
+                        </div>
                         <table class="servicesPersona-table">
                             <thead>
                                 <tr>
@@ -218,6 +230,10 @@
         <button class="cancel-btn" (click)="closeAddConfirm()">✖</button>
     </div>
     <h1 class="errorBtn">{{PersonaErrorMessage}}</h1>
+    <div *ngIf="isAdding" class="loading-message">
+        <div class="spinner"></div>
+        <span>añadiendo</span>
+    </div>
     <div class="add-container">
         <div class="left-add">
             <p>Código*</p>
@@ -250,6 +266,10 @@
     <div class="delete-content" *ngIf="serviceToDelete">
         <p>Código:</p>
         <h1>{{serviceToDelete.depcod}}</h1>
+    </div>
+    <div *ngIf="isDeleting" class="loading-message">
+        <div class="spinner"></div>
+        <span>borrando</span>
     </div>
     <h1 class="errorBtn">{{ErrorDelete}}</h1>
     <button class="delete-btn" (click)="deleteService(serviceToDelete.depcod)">-</button>
@@ -445,6 +465,10 @@
 <div class="proveedor-grid-modal placementCopy" *ngIf="continueAdCheckGrid">
     <div>
         <p class="sure-msg">{{continueMessag}}</p>        
+    </div>
+    <div *ngIf="isAdding" class="loading-message">
+        <div class="spinner"></div>
+        <span>añadiendo</span>
     </div>
     <div class="btns alignment">
         <button class="save-btn" [disabled]="isAvailable" [class.disabled]="isAvailable" (click)="copyPerfil()">+</button>
