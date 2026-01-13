@@ -229,67 +229,88 @@ export class FacturasComponent {
 
   DownloadPDF() {
     this.limpiarMEssages();
+    if(this.facturas.length === 0) {
+      this.filterFacturaMessage = 'He has no data to export.';
+      return
+    }
     const doc = new jsPDF({orientation: 'landscape', unit: 'mm', format: 'a4'});
     const columns = [
       { header: 'Número Registro', dataKey: 'facnum'},
-      { header: 'Fecha contable', dataKey: 'facfco'},
-      { header: 'ADO', dataKey: 'facado'},
-      { header: 'R.C.F', dataKey: 'factdc'},
-      { header: 'Núm. Factura', dataKey: 'facdoc'},
-      { header: 'Proveedor', dataKey: 'tercod'},
-      { header: 'Fecha Factura', dataKey: 'facdat'},
-      { header: 'C.gestor', dataKey: 'cgecod'},
+      { header: 'Código Prov', dataKey: 'tercod'},
+      { header: 'Nombre Proveedor', dataKey: 'ternom'},
+      { header: 'NIF Prov', dataKey: 'ternif'},
       { header: 'F.Registro', dataKey: 'facfre'},
-      { header: 'Total Factura', dataKey: 'facimp'}
+      { header: 'Importe total', dataKey: 'facimp'},
+      { header: 'Núm. Factura', dataKey: 'facdoc'},
+      { header: 'Año', dataKey: 'facann'},
+      { header: 'R.C.F', dataKey: 'facfac'},
+      { header: 'F.Factura', dataKey: 'facdat'},
+      { header: 'ADO', dataKey: 'facado'},
+      { header: 'F. contable', dataKey: 'facfco'},
+      { header: 'Pte. Aplicar', dataKey: 'pendingApply'},
+      { header: 'C. Gestor', dataKey: 'cgecod'},
+      { header: 'Estado', dataKey: 'estado'}
     ];
 
     const formatDate = (v: any) => {
       if (!v && v !== 0) return '';
       const s = String(v);
       const d = new Date(s);
-      if (!isNaN(d.getTime())) return d.toLocaleDateString();
-      return s;
+      return isNaN(d.getTime()) ? s : d.toLocaleDateString('es-ES');
     };
 
-    const rows = (this.facturas || []).map((f: any) => ({
-      facnum: f.facnum,
-      facfco: formatDate(f.facfco),
-      facado: f.facado,
-      factdc: f.factdc,
-      facdoc: f.facdoc,
-      tercod: f.tercod,
-      facdat: formatDate(f.facdat),
-      cgecod: f.cgecod,
-      facfre: formatDate(f.facfre),
-      facimp: f.facimp
+    const formatCurrency = (value: any) => {
+      if (value === null || value === undefined || value === '') return '';
+      return new Intl.NumberFormat('es-ES', {
+        style: 'currency',
+        currency: 'EUR',
+        minimumFractionDigits: 2
+      }).format(Number(value));
+    };
+
+    const rows = (this.facturas || []).map((p: any) => ({
+      facnum: p.facnum,
+      tercod: p.tercod,
+      ternom: p.ternom,
+      ternif: p.ternif,
+      facfre: formatDate(p.facfre),
+      facimp: formatCurrency(p.facimp),
+      facdoc: p.facdoc,
+      facann: p.facann,
+      facfac: p.facfac,
+      facdat: formatDate(p.facdat),
+      facado: p.facado,
+      facfco: formatDate(p.facfco),
+      pendingApply: formatCurrency(this.getPendingApply(p)),
+      cgecod: p.cgecod,
+      estado: this.getStaus(p.facado, p.facimp, p.faciec, p.facidi)
     }));
 
     autoTable(doc, {
       columns,
       body: rows,
-      startY: 16,
-      styles: { fontSize: 7 },
-      headStyles: { fillColor: [15, 76, 117] },
-      margin: { left: 8, right: 8 },
+      styles: { fontSize: 8 },
+      tableWidth: 'wrap',
       columnStyles: {
         facnum: { cellWidth: 15 },
-        facfco: { cellWidth: 35 },
-        facado: { cellWidth: 20 },
-        factdc: { cellWidth: 15 },
-        facdoc: { cellWidth: 45 },
-        tercod: { cellWidth: 35 },
-        facdat: { cellWidth: 15 },
-        cgecod: { cellWidth: 35 },
-        facfre: { cellWidth: 35 },
-        facimp: { cellWidth: 15 }
+        tercod: { cellWidth: 15 },
+        ternom: { cellWidth: 35 },
+        ternif: { cellWidth: 20 },
+        facfre: { cellWidth: 18 },
+        facimp: { cellWidth: 18 },
+        facdoc: { cellWidth: 18 },
+        facann: { cellWidth: 15 },
+        facfac: { cellWidth: 15 },
+        facdat: { cellWidth: 18 },
+        facado: { cellWidth: 18 },
+        facfco: { cellWidth: 17 },
+        pendingApply: { cellWidth: 18 },
+        cgecod: { cellWidth: 12 },
+        estado: { cellWidth: 20 }
       },
       didDrawPage: (dataArg) => {
-        doc.setFontSize(11);
-        doc.text('Lista de Facturas', 12, 10);
-        const pageCount = doc.getNumberOfPages();
-        doc.setFontSize(8);
-        const pageStr = `Página ${pageCount}`;
-        doc.text(pageStr, doc.internal.pageSize.getWidth() - 20, 10);
+        doc.setFontSize(10);
+        doc.text('Lista de Facturas', 14, 10);
       }
     });
 
