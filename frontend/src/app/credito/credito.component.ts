@@ -247,56 +247,88 @@ export class CreditoComponent {
 
   DownloadPDF() {
     this.limpiarMessages();
-    const doc = new jsPDF({orientation: 'landscape', unit: 'mm', format: 'a4'});
+
+    const source = this.backupCreditos.length ? this.backupCreditos : this.creditos;
+    if (!source?.length) {
+      this.tableIsError = true;
+      this.tableMessage = 'No hay datos para exportar.';
+      return;
+    }
+
+    const rows = source.map((row: any, index: number) => {
+      const aplicacion = `${row.gbsorg ?? ''} - ${row.gbsfun ?? ''} - ${row.gbseco ?? ''}`;
+      const acpeco = Number(this.getkAcPeCo(row.gbsiut, row.gbsict) ?? 0);
+      const disponible = Number(this.getkdispon(row.saldo, this.getkAcPeCo(row.gbsiut, row.gbsict)) ?? 0);
+
+      return {
+        index: index + 1,
+        aplicacion,
+        desc: row.partidas?.[0]?.desc ?? '',
+        gbsope: row.gbsope ?? '',
+        gbsref: row.gbsref ?? '',
+        limporte: this.formatCurrency(row.limporte),
+        saldo: this.formatCurrency(row.saldo),
+        acpeco: this.formatCurrency(acpeco),
+        disponible: this.formatCurrency(disponible)
+      };
+    });
+
     const columns = [
-      { header: 'Aplicación', dataKey: 'aplicacion'},
-      { header: 'Desc. Aplicación', dataKey: 'desc'},
-      { header: 'Operación contable', dataKey: 'gbsope'},
-      { header: 'Ref. contable', dataKey: 'gbsref'},
-      { header: 'Imp. Operación', dataKey: 'limporte'},
-      { header: 'Saldo Operación', dataKey: 'saldo'},
-      { header: 'Pte. Contabilizar SCAP', dataKey: 'getkAcPeCo'},
-      { header: 'Disponible', dataKey: 'getkdispon'}
+      { header: '#', dataKey: 'index' },
+      { header: 'Aplicación', dataKey: 'aplicacion' },
+      { header: 'Desc. Aplicación', dataKey: 'desc' },
+      { header: 'Operación contable', dataKey: 'gbsope' },
+      { header: 'Ref. contable', dataKey: 'gbsref' },
+      { header: 'Imp. Operación', dataKey: 'limporte' },
+      { header: 'Saldo Operación', dataKey: 'saldo' },
+      { header: 'Pte. Contabilizar SCAP', dataKey: 'acpeco' },
+      { header: 'Disponible', dataKey: 'disponible' }
     ];
 
-    const rows = (this.creditos || []).map((f: any) => ({
-      aplicacion: `${f.gbsorg ?? ''} - ${f.gbsfun ?? ''} - ${f.gbseco ?? ''}`,
-      desc: f.partidas[0]?.desc,
-      gbsope: f.gbsope,
-      gbsref: f.gbsref,
-      limporte: f.limporte,
-      saldo: f.saldo,
-      getkAcPeCo: this.getkAcPeCo(f.gbsiut, f.gbsict),
-      getkdispon: this.getkdispon(f.saldo, this.getkAcPeCo(f.gbsiut, f.gbsict)),
-    }));
+    const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(14);
+    doc.text('Listado de bolsas', 10, 20);
 
     autoTable(doc, {
-      columns,
-      body: rows,
-      startY: 16,
-      styles: { fontSize: 7 },
-      headStyles: { fillColor: [15, 76, 117] },
-      margin: { left: 8, right: 8 },
-      columnStyles: {
-        aplicacion: { cellWidth: 20 },
-        desc: { cellWidth: 35 },
-        gbsope: { cellWidth: 35 },
-        gbsref: { cellWidth: 35 },
-        limporte: { cellWidth: 20 },
-        saldo: { cellWidth: 20 },
-        getkAcPeCo: { cellWidth: 20 },
-        getkdispon: { cellWidth: 30 }
+      startY: 30,
+      theme: 'plain',
+      head: [columns.map(c => c.header)],
+      body: rows.map(row => columns.map(c => row[c.dataKey as keyof typeof row] ?? '')),
+      styles: { font: 'helvetica', fontSize: 8, cellPadding: 4 },
+      headStyles: {
+        fillColor: [240, 240, 240],
+        textColor: [33, 53, 71],
+        fontStyle: 'bold',
+        halign: 'left'
       },
-      didDrawPage: (dataArg) => {
-        doc.setFontSize(11);
-        doc.text('Lista de Bolsas', 12, 10);
-        const pageCount = doc.getNumberOfPages();
-        doc.setFontSize(8);
-        const pageStr = `Página ${pageCount}`;
-        doc.text(pageStr, doc.internal.pageSize.getWidth() - 20, 10);
+      tableLineColor: [200, 200, 200],
+      tableLineWidth: 0.5,
+      columnStyles: {
+        index: { cellWidth: 8 },
+        aplicacion: { cellWidth: 32 },
+        desc: { cellWidth: 40 },
+        gbsope: { cellWidth: 24 },
+        gbsref: { cellWidth: 26 },
+        limporte: { cellWidth: 24 },
+        saldo: { cellWidth: 24 },
+        acpeco: { cellWidth: 28 },
+        disponible: { cellWidth: 28 }
       }
     });
-    doc.save('Bolsas.pdf');
+
+    doc.save('bolsas.pdf');
+  }
+
+  private formatCurrency(value: any): string {
+    if (value === null || value === undefined || value === '') return '';
+    const numberValue = typeof value === 'number' ? value : Number(value);
+    if (isNaN(numberValue)) return '';
+    return new Intl.NumberFormat('es-ES', {
+      style: 'currency',
+      currency: 'EUR',
+      minimumFractionDigits: 2
+    }).format(numberValue);
   }
 
   DownloadCSV() {
@@ -318,10 +350,10 @@ export class CreditoComponent {
       desc: f.partidas[0]?.desc,
       gbsope: f.gbsope,
       gbsref: f.gbsref,
-      limporte: f.limporte,
-      saldo: f.saldo,
-      getkAcPeCo: this.getkAcPeCo(f.gbsiut, f.gbsict),
-      getkdispon: this.getkdispon(f.saldo, this.getkAcPeCo(f.gbsiut, f.gbsict)),
+      limporte: this.formatCurrency(f.limporte),
+      saldo: this.formatCurrency(f.saldo),
+      acpeco: this.formatCurrency(this.getkAcPeCo),
+      disponible: this.formatCurrency(this.getkdispon)
     }));
 
     const escapeCsv = (val: any) => {
