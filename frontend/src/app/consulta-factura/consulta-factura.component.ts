@@ -228,6 +228,22 @@ export class ConsultaFacturaComponent {
     this.resizingColIndex = null;
   };
 
+  formatDate = (v: any) => {
+    if (!v && v !== 0) return '';
+    const s = String(v);
+    const d = new Date(s);
+    return isNaN(d.getTime()) ? s : d.toLocaleDateString('es-ES');
+  };
+
+  formatCurrency = (value: any) => {
+    if (value === null || value === undefined || value === '') return '';
+    return new Intl.NumberFormat('es-ES', {
+      style: 'currency',
+      currency: 'EUR',
+      minimumFractionDigits: 2
+    }).format(Number(value));
+  };
+
   DownloadPDF() {
     this.limpiarMEssages();
     if(this.facturas.length === 0) {
@@ -253,36 +269,20 @@ export class ConsultaFacturaComponent {
       { header: 'Estado', dataKey: 'estado'}
     ];
 
-    const formatDate = (v: any) => {
-      if (!v && v !== 0) return '';
-      const s = String(v);
-      const d = new Date(s);
-      return isNaN(d.getTime()) ? s : d.toLocaleDateString('es-ES');
-    };
-
-    const formatCurrency = (value: any) => {
-      if (value === null || value === undefined || value === '') return '';
-      return new Intl.NumberFormat('es-ES', {
-        style: 'currency',
-        currency: 'EUR',
-        minimumFractionDigits: 2
-      }).format(Number(value));
-    };
-
     const rows = (this.facturas || []).map((p: any) => ({
       facnum: p.facnum,
       tercod: p.tercod,
       ternom: p.ternom,
       ternif: p.ternif,
-      facfre: formatDate(p.facfre),
-      facimp: formatCurrency(p.facimp),
+      facfre: this.formatDate(p.facfre),
+      facimp: this.formatCurrency(p.facimp),
       facdoc: p.facdoc,
       facann: p.facann,
       facfac: p.facfac,
-      facdat: formatDate(p.facdat),
+      facdat: this.formatDate(p.facdat),
       facado: p.facado,
-      facfco: formatDate(p.facfco),
-      pendingApply: formatCurrency(this.getPendingApply(p)),
+      facfco: this.formatDate(p.facfco),
+      pendingApply: this.formatCurrency(this.getPendingApply(p)),
       cgecod: p.cgecod,
       estado: this.getStaus(p.facado, p.facimp, p.faciec, p.facidi)
     }));
@@ -328,37 +328,39 @@ export class ConsultaFacturaComponent {
     interface Column { header: string; dataKey: string; }
 
     const columns: Column[] = [
-      { header: 'Número Registro', dataKey: 'facnum' },
-      { header: 'Fecha contable', dataKey: 'facfco' },
-      { header: 'ADO', dataKey: 'facado' },
-      { header: 'R.C.F', dataKey: 'factdc' },
-      { header: 'Núm. Factura', dataKey: 'facdoc' },
-      { header: 'Proveedor', dataKey: 'tercod' },
-      { header: 'Fecha Factura', dataKey: 'facdat' },
-      { header: 'C.gestor', dataKey: 'cgecod' },
-      { header: 'F.Registro', dataKey: 'facfre' },
-      { header: 'Total Factura', dataKey: 'facimp' }
+      { header: 'Número Registro', dataKey: 'facnum'},
+      { header: 'Código Prov', dataKey: 'tercod'},
+      { header: 'Nombre Proveedor', dataKey: 'ternom'},
+      { header: 'NIF Prov', dataKey: 'ternif'},
+      { header: 'F.Registro', dataKey: 'facfre'},
+      { header: 'Importe total', dataKey: 'facimp'},
+      { header: 'Núm. Factura', dataKey: 'facdoc'},
+      { header: 'Año', dataKey: 'facann'},
+      { header: 'R.C.F', dataKey: 'facfac'},
+      { header: 'F.Factura', dataKey: 'facdat'},
+      { header: 'ADO', dataKey: 'facado'},
+      { header: 'F. contable', dataKey: 'facfco'},
+      { header: 'Pte. Aplicar', dataKey: 'pendingApply'},
+      { header: 'C. Gestor', dataKey: 'cgecod'},
+      { header: 'Estado', dataKey: 'estado'}
     ];
 
-    const formatDate = (v: any) => {
-      if (v === null || v === undefined || v === '') return '';
-      const s = String(v);
-      const d = new Date(s);
-      if (!isNaN(d.getTime())) return d.toLocaleDateString();
-      return s;
-    };
-
-    const rows = (this.facturas || []).map((f: any) => ({
-      facnum: f.facnum ?? f.FACNUM ?? f.facfac ?? f.FACFAC ?? '',
-      facfco: formatDate(f.facfco ?? f.FACFCO ?? f.FACFCO),
-      facado: f.facado ?? f.FACADO ?? '',
-      factdc: f.factdc ?? f.FACTDC ?? '',
-      facdoc: f.facdoc ?? f.FACDOC ?? '',
-      tercod: f.tercod ?? f.TERCOD ?? '',
-      facdat: formatDate(f.facdat ?? f.FACDAT ?? f.FACDAT),
-      cgecod: f.cgecod ?? f.CGECOD ?? '',
-      facfre: formatDate(f.facfre ?? f.FACFRE ?? f.facfre),
-      facimp: (f.facimp ?? f.FACIMP ?? f.facimp ?? '').toString()
+    const rows = (this.facturas || []).map((p: any) => ({
+      facnum: p.facnum,
+      tercod: p.tercod,
+      ternom: p.ternom,
+      ternif: p.ternif,
+      facfre: this.formatDate(p.facfre),
+      facimp: this.formatCurrency(p.facimp),
+      facdoc: p.facdoc,
+      facann: p.facann,
+      facfac: p.facfac,
+      facdat: this.formatDate(p.facdat),
+      facado: p.facado,
+      facfco: this.formatDate(p.facfco),
+      pendingApply: this.formatCurrency(this.getPendingApply(p)),
+      cgecod: p.cgecod,
+      estado: this.getStaus(p.facado, p.facimp, p.faciec, p.facidi)
     }));
 
     const escapeCsv = (val: any) => {
