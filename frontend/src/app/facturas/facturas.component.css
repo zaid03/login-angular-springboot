@@ -76,7 +76,6 @@
 /* main-detail grid */
 /* sub detail grids */
 .detail-grid { display: flex; flex-direction: column; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); padding: 16px; border: 1px solid #e5e7eb; border-radius: 10px; background: #f9fafb; }
-.detail-card { background: #fff; border-radius: 8px; padding: 12px; display: flex; align-content: center; justify-content: center; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08); }
 .albaranes-table { width: 100%; }
 /* sub detail grids */
 @media (min-width: 1700px) { .tallTextarea {width: 250px; max-width: 300px;}

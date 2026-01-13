@@ -215,7 +215,6 @@
                         <div class="title-detail">
                             <h3>Detalles del Factura</h3>
                         </div>
-                        <button class="guardar-btn">✔</button>
                         <button class="close-btn-btn" (click)="closeDetails()">✖</button>
                     </div>
                     <div class="detail-container">
@@ -227,15 +226,15 @@
                             </div>
                             <div class="right">
                                 <div class="on-two">
-                                    <h1>{{selectedFacturas.facnum}}</h1>
+                                    <h1>{{selectedFacturas.facnum || '#'}}</h1>
                                     <p>F.Contable</p>
-                                    <h1>{{selectedFacturas.facfco | date:'dd-MM-yyyy'}}</h1>
+                                    <h1>{{selectedFacturas.facfco ? (selectedFacturas.facfco | date:'dd-MM-yyyy') : '#'}}</h1>
                                 </div>
-                                <h1>{{selectedFacturas.facdoc}}</h1>
+                                <h1>{{selectedFacturas.facdoc || '#'}}</h1>
                                 <div class="on-two">
-                                    <h1>{{selectedFacturas.facfac}}</h1>
-                                    <h1>{{selectedFacturas.facann}}</h1>
-                                    <h1>{{selectedFacturas.factdc}}</h1>
+                                    <h1>{{selectedFacturas.facfac || '#'}}</h1>
+                                    <h1>{{selectedFacturas.facann || '#'}}</h1>
+                                    <h1>{{selectedFacturas.factdc || '#'}}</h1>
                                 </div>
                             </div>
                         </div>
@@ -247,18 +246,18 @@
                             </div>
                             <div class="right">
                                 <div class="on-two">
-                                    <h1>{{selectedFacturas.tercod}}</h1>
-                                    <h1>{{selectedFacturas.ternom}}</h1>
+                                    <h1>{{selectedFacturas.tercod || '#'}}</h1>
+                                    <h1>{{selectedFacturas.ternom || '#'}}</h1>
                                 </div>
                                 <div class="on-two">
-                                    <h1>{{selectedFacturas.ternif}}</h1>
+                                    <h1>{{selectedFacturas.ternif || '#'}}</h1>
                                     <p>C.Gestor</p>
-                                    <h1>{{selectedFacturas.cgecod}}</h1>
+                                    <h1>{{selectedFacturas.cgecod || '#'}}</h1>
                                 </div>
                                 <div class="on-two">
-                                    <h1>{{selectedFacturas.facdat | date:'dd-MM-yyyy'}}</h1>
+                                    <h1>{{selectedFacturas.facdat? (selectedFacturas.facdat | date:'dd-MM-yyyy') : '#'}}</h1>
                                     <p>F.Registro</p>
-                                    <h1>{{selectedFacturas.facfre | date:'dd-MM-yyyy'}}</h1>
+                                    <h1>{{selectedFacturas.facfre? (selectedFacturas.facfre | date:'dd-MM-yyyy') : '#'}}</h1>
                                 </div>
                             </div>
                         </div>
@@ -269,9 +268,9 @@
                                 <p>Procedimiento de contacto</p>
                             </div>
                             <div class="right">
-                                <h1>{{selectedFacturas.conctp}}</h1>
-                                <h1>{{selectedFacturas.concpr}}</h1>
-                                <h1>{{selectedFacturas.conccr}}</h1>
+                                <h1>{{selectedFacturas.conctp || '#'}}</h1>
+                                <h1>{{selectedFacturas.concpr || '#'}}</h1>
+                                <h1>{{selectedFacturas.conccr || '#'}}</h1>
                             </div>
                         </div>
                         <div class="chunk-four">
@@ -281,14 +280,14 @@
                             </div>
                             <div class="right">
                                 <div class="on-two">
-                                    <h1>{{selectedFacturas.facfpg}}</h1>
+                                    <h1>{{selectedFacturas.facfpg || '#'}}</h1>
                                     <p>Tipo de pago</p>
-                                    <h1>{{selectedFacturas.factpg}}</h1>
+                                    <h1>{{selectedFacturas.factpg || '#'}}</h1>
                                 </div>
                                 <div class="on-two">
                                     <h1>{{selectedFacturas.facopg || '#'}}</h1>
                                     <p>ADO</p>
-                                    <h1>{{selectedFacturas.facado}}</h1>
+                                    <h1>{{selectedFacturas.facado || '#'}}</h1>
                                 </div>
                             </div>
                         </div>
@@ -297,32 +296,32 @@
                                 <p>Des.Fact/ADO:</p>
                             </div>
                             <div class="right">
-                                <h1>{{selectedFacturas.factxt}}</h1>
+                                <h1>{{selectedFacturas.factxt || '#'}}</h1>
                             </div>
                         </div>
                         <div class="chunk-six">
-                            <div class="left gap">
+                            <div class="left">
                                 <p>Total Factura</p>
                                 <p>Apl.diferencias</p>
                                 <p>Descuentos</p>
                             </div>
                             <div class="right">
                                 <div class="on-two">
-                                    <textarea class="averageTextarea" [ngModel]="selectedFacturas.facimp | currency:'EUR':'symbol':'1.2-2':'es-ES'"></textarea>
+                                    <h1>{{selectedFacturas.facimp? (selectedFacturas.facimp | currency:'EUR':'symbol':'1.2-2':'es-ES') : '#'}}</h1>
                                     <p>Aplicado</p>
-                                    <textarea class="averageTextarea" [ngModel]="selectedFacturas.faciec | currency:'EUR':'symbol':'1.2-2':'es-ES'"></textarea>
+                                    <h1>{{selectedFacturas.faciec? (selectedFacturas.faciec | currency:'EUR':'symbol':'1.2-2':'es-ES') : '#'}}</h1>
                                 </div>
                                 <div class="on-two">
-                                    <textarea class="averageTextarea" [ngModel]="selectedFacturas.facidi | currency:'EUR':'symbol':'1.2-2':'es-ES'"></textarea>
+                                    <h1>{{selectedFacturas.facidi? (selectedFacturas.facidi | currency:'EUR':'symbol':'1.2-2':'es-ES') : '#'}}</h1>
                                     <p>Pte.Apli</p>
-                                    <textarea class="averageTextarea" [value]="getPendingApply(selectedFacturas) | currency:'EUR':'symbol':'1.2-2':'es-ES'" readonly></textarea>
+                                    <h1>{{getPendingApply(selectedFacturas)? (getPendingApply(selectedFacturas) | currency:'EUR':'symbol':'1.2-2':'es-ES') : '#'}}</h1>
                                 </div>
-                                <textarea class="averageTextarea" [value]="selectedFacturas.facdto | currency:'EUR':'symbol':'1.2-2':'es-ES'" readonly></textarea>
+                                <h1>{{selectedFacturas.facdto? (selectedFacturas.facdto | currency:'EUR':'symbol':'1.2-2':'es-ES') : '#'}}</h1>
                             </div>
                         </div>
                         <div class="observ">
                             <p>Observaciones:</p>
-                            <textarea [(ngModel)]="selectedFacturas.facobs"></textarea>
+                            <h1>{{selectedFacturas.facobs || '#'}}</h1>
                         </div>
                     </div>
                     <div class="more-detail-container">

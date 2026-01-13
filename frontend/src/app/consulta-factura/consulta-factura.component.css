@@ -43,40 +43,20 @@
 .chunk-two h1,
 .chunk-three h1,
 .chunk-four h1,
-.chunk-five h1 { font-size: 14px; font-weight: bold; color: #25176b; }
+.chunk-five h1,
+.right h1,
+.observ h1 { font-size: 14px; font-weight: bold; color: #25176b; }
 .chunk-six h1,
 .chunk-one h1,
 .chunk-two h1,
 .chunk-three h1,
 .chunk-four h1,
-.chunk-five h1 {color: #162a3a;}
-.chunk-one textarea,
-.chunk-two textarea,
-.chunk-three textarea,
-.chunk-four textarea,
-.chunk-five textarea,
-.accountings textarea,
-.observ textarea,
-.chunk-six textarea { height: 20px; padding: 2px 4px; border-radius: 6px; font-weight: bold; color: #162a3a;}
-.chunk-one textarea:focus,
-.chunk-two textarea:focus,
-.chunk-three textarea:focus,
-.chunk-four textarea:focus,
-.chunk-five textarea:focus,
-.accountings textarea:focus,
-.observ textarea:focus,
-.chunk-six textarea:focus { outline: none; border-color: #042b5a; outline: none; background: #fff; } 
-.special-chunk { width: 33%; }
-.tallTextarea {width: 220px; max-width: 240px;}
-.averageTextarea{ width: 100px; max-width: 160px;}
-.smallTextarea{width: 60px; max-width: 100px;}
-.observ { width: 50%; display: flex; gap: 5px; align-items: center;}
-.observ textarea { width: 90%; max-width: 100%; height: 40px;}
-.gap {gap: 20px;}
+.chunk-five h1,
+.right h1,
+.observ h1 {color: #162a3a;}
 /* main-detail grid */
 /* sub detail grids */
 .detail-grid { display: flex; flex-direction: column; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); padding: 16px; border: 1px solid #e5e7eb; border-radius: 10px; background: #f9fafb; }
-.detail-card { background: #fff; border-radius: 8px; padding: 12px; display: flex; align-content: center; justify-content: center; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08); }
 .albaranes-table { width: 100%; }
 /* sub detail grids */
 @media (min-width: 1700px) { .tallTextarea {width: 250px; max-width: 300px;}
