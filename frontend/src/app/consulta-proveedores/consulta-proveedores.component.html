@@ -1,5 +1,12 @@
+
 <div class="proveedores-page">
     <app-sidebar #sidebar></app-sidebar>
+    <div 
+    class="sidebar-backdrop" 
+    *ngIf="!sidebar.collapsed" 
+    (click)="sidebar.collapsed = true"
+    >
+    </div>
     <div class="proveedores-container" [class.blurred]="!sidebar.collapsed">
         <div class="title-menu">
             <div class="title-area">

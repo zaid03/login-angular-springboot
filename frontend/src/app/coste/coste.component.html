@@ -1,3 +1,8 @@
+<div 
+  class="sidebar-backdrop" 
+  *ngIf="!sidebar.collapsed" 
+  (click)="sidebar.collapsed = true">
+</div>
 <div class="coste-page">
     <app-sidebar #sidebar></app-sidebar>
     <div class="entrega-container" [class.blurred]="!sidebar.collapsed">

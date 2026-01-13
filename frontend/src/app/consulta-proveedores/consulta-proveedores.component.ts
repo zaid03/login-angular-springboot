@@ -28,7 +28,7 @@ export class ConsultaProveedoresComponent {
 
   @HostListener('document:click')
   closeMenu(): void {
-    this.showMenu = !this.showMenu;
+    this.showMenu = false;
   }
   
   constructor(private http: HttpClient, private router: Router) {}
@@ -432,11 +432,6 @@ export class ConsultaProveedoresComponent {
   
   DownloadPDF() {
     this.limpiarMessages();
-
-    if(this.proveedores.length === 0) {
-      this.error = 'He has no data to export.';
-      return
-    }
     const doc = new jsPDF({orientation: 'landscape', unit: 'mm', format: 'a4'});
     const columns = [
       { header: 'Código', dataKey: 'tercod' },
@@ -460,6 +455,12 @@ export class ConsultaProveedoresComponent {
       body: data,
       styles: { fontSize: 8 },
       tableWidth: 'wrap',
+      headStyles: {
+        fillColor: [240, 240, 240],
+        textColor: [33, 53, 71],
+        fontStyle: 'bold',
+        halign: 'left'
+      },
       columnStyles: {
         tercod: { cellWidth: 12 },         
         ternom: { cellWidth: 25 },  

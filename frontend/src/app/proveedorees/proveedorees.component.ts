@@ -453,6 +453,12 @@ export class ProveedoreesComponent {
       body: data,
       styles: { fontSize: 8 },
       tableWidth: 'wrap',
+      headStyles: {
+        fillColor: [240, 240, 240],
+        textColor: [33, 53, 71],
+        fontStyle: 'bold',
+        halign: 'left'
+      },
       columnStyles: {
         tercod: { cellWidth: 12 },         
         ternom: { cellWidth: 25 },  

@@ -246,76 +246,91 @@ export class ConsultaFacturaComponent {
 
   DownloadPDF() {
     this.limpiarMEssages();
-    if(this.facturas.length === 0) {
-      this.filterFacturaMessage = 'He has no data to export.';
-      return
-    }
-    const doc = new jsPDF({orientation: 'landscape', unit: 'mm', format: 'a4'});
-    const columns = [
-      { header: 'Número Registro', dataKey: 'facnum'},
-      { header: 'Código Prov', dataKey: 'tercod'},
-      { header: 'Nombre Proveedor', dataKey: 'ternom'},
-      { header: 'NIF Prov', dataKey: 'ternif'},
-      { header: 'F.Registro', dataKey: 'facfre'},
-      { header: 'Importe total', dataKey: 'facimp'},
-      { header: 'Núm. Factura', dataKey: 'facdoc'},
-      { header: 'Año', dataKey: 'facann'},
-      { header: 'R.C.F', dataKey: 'facfac'},
-      { header: 'F.Factura', dataKey: 'facdat'},
-      { header: 'ADO', dataKey: 'facado'},
-      { header: 'F. contable', dataKey: 'facfco'},
-      { header: 'Pte. Aplicar', dataKey: 'pendingApply'},
-      { header: 'C. Gestor', dataKey: 'cgecod'},
-      { header: 'Estado', dataKey: 'estado'}
-    ];
 
-    const rows = (this.facturas || []).map((p: any) => ({
-      facnum: p.facnum,
-      tercod: p.tercod,
-      ternom: p.ternom,
-      ternif: p.ternif,
-      facfre: this.formatDate(p.facfre),
-      facimp: this.formatCurrency(p.facimp),
-      facdoc: p.facdoc,
-      facann: p.facann,
-      facfac: p.facfac,
-      facdat: this.formatDate(p.facdat),
-      facado: p.facado,
-      facfco: this.formatDate(p.facfco),
-      pendingApply: this.formatCurrency(this.getPendingApply(p)),
-      cgecod: p.cgecod,
-      estado: this.getStaus(p.facado, p.facimp, p.faciec, p.facidi)
+    const source = this.backupFacturas.length ? this.backupFacturas : this.facturas;
+    if (!source?.length) {
+      this.filterFacturaMessage = 'No hay datos para exportar.';
+      return;
+    }
+
+    const rows = source.map((row: any, index: number) => ({
+      index: index + 1,
+      facnum: row.facnum ?? '',
+      tercod: row.tercod ?? '',
+      ternom: row.ternom ?? '',
+      ternif: row.ternif ?? '',
+      facfre: this.formatDate(row.facfre),
+      facimp: this.formatCurrency(row.facimp),
+      facdoc: row.facdoc ?? '',
+      facann: row.facann ?? '',
+      facfac: row.facfac ?? '',
+      facdat: this.formatDate(row.facdat),
+      facado: row.facado ?? '',
+      facfco: this.formatDate(row.facfco),
+      pendingApply: this.formatCurrency(this.getPendingApply(row)),
+      cgecod: row.cgecod ?? '',
+      estado: this.getStaus(row.facado, row.facimp, row.faciec, row.facidi)
     }));
 
+    const columns = [
+      { header: '#', dataKey: 'index' },
+      { header: 'Número Registro', dataKey: 'facnum' },
+      { header: 'Código Prov', dataKey: 'tercod' },
+      { header: 'Nombre Proveedor', dataKey: 'ternom' },
+      { header: 'NIF Prov', dataKey: 'ternif' },
+      { header: 'F.Registro', dataKey: 'facfre' },
+      { header: 'Importe total', dataKey: 'facimp' },
+      { header: 'Núm. Factura', dataKey: 'facdoc' },
+      { header: 'Año', dataKey: 'facann' },
+      { header: 'R.C.F', dataKey: 'facfac' },
+      { header: 'F.Factura', dataKey: 'facdat' },
+      { header: 'ADO', dataKey: 'facado' },
+      { header: 'F. Contable', dataKey: 'facfco' },
+      { header: 'Pte. Aplicar', dataKey: 'pendingApply' },
+      { header: 'C. Gestor', dataKey: 'cgecod' },
+      { header: 'Estado', dataKey: 'estado' }
+    ];
+
+    const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(14);
+    doc.text('Listado de facturas', 10, 20);
+
     autoTable(doc, {
-      columns,
-      body: rows,
-      styles: { fontSize: 8 },
-      tableWidth: 'wrap',
-      columnStyles: {
-        facnum: { cellWidth: 15 },
-        tercod: { cellWidth: 15 },
-        ternom: { cellWidth: 35 },
-        ternif: { cellWidth: 20 },
-        facfre: { cellWidth: 18 },
-        facimp: { cellWidth: 18 },
-        facdoc: { cellWidth: 18 },
-        facann: { cellWidth: 15 },
-        facfac: { cellWidth: 15 },
-        facdat: { cellWidth: 18 },
-        facado: { cellWidth: 18 },
-        facfco: { cellWidth: 17 },
-        pendingApply: { cellWidth: 18 },
-        cgecod: { cellWidth: 12 },
-        estado: { cellWidth: 20 }
+      startY: 30,
+      theme: 'plain',
+      head: [columns.map(c => c.header)],
+      body: rows.map(row => columns.map(c => row[c.dataKey as keyof typeof row] ?? '')),
+      styles: { font: 'helvetica', fontSize: 8, cellPadding: 4 },
+      headStyles: {
+        fillColor: [240, 240, 240],
+        textColor: [33, 53, 71],
+        fontStyle: 'bold',
+        halign: 'left'
       },
-      didDrawPage: (dataArg) => {
-        doc.setFontSize(10);
-        doc.text('Lista de Facturas', 14, 10);
+      tableLineColor: [200, 200, 200],
+      tableLineWidth: 0.5,
+      columnStyles: {
+        index: { cellWidth: 8 },
+        facnum: { cellWidth: 18 },
+        tercod: { cellWidth: 18 },
+        ternom: { cellWidth: 36 },
+        ternif: { cellWidth: 20 },
+        facfre: { cellWidth: 20 },
+        facimp: { cellWidth: 22 },
+        facdoc: { cellWidth: 20 },
+        facann: { cellWidth: 15 },
+        facfac: { cellWidth: 18 },
+        facdat: { cellWidth: 20 },
+        facado: { cellWidth: 15 },
+        facfco: { cellWidth: 20 },
+        pendingApply: { cellWidth: 22 },
+        cgecod: { cellWidth: 15 },
+        estado: { cellWidth: 24 }
       }
     });
 
-    doc.save('Facturas.pdf');
+    doc.save('facturas.pdf');
   }
 
   DownloadCSV() {
