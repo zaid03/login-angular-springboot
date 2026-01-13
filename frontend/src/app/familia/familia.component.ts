@@ -7,6 +7,8 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
 
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import { environment } from '../../environments/environment';
 
 @Component({
@@ -171,56 +173,54 @@ export class FamiliaComponent {
 
   toPrint() {
     this.limpiarMessages();
-    const rows = this.backupFamilias.length ? this.backupFamilias : this.familias;
-    if (!rows?.length) {
-      this.tableMessage = 'No hay datos para imprimir.';
+    const source = this.backupFamilias.length ? this.backupFamilias : this.familias;
+    if (!source?.length) {
+      this.tableMessage = 'No hay datos para exportar.';
       return;
     }
 
-    const htmlRows = rows.map((row, index) => `
-      <tr>
-        <td>${index + 1}</td>
-        <td>${row.ent ?? ''}</td>
-        <td>${row.afacod ?? ''}</td>
-        <td>${row.afades ?? ''}</td>
-      </tr>
-    `).join('');
+    const rows = source.map((row: any, index: number) => ({
+      index: index + 1,
+      ent: row.ent ?? '',
+      afacod: row.afacod ?? '',
+      afades: row.afades ?? ''
+    }));
 
-    const printWindow = window.open('', '_blank', 'width=900,height=700');
-    if (!printWindow) return;
+    const columns = [
+      { header: '#', dataKey: 'index' },
+      { header: 'Entidad', dataKey: 'ent' },
+      { header: 'Familia', dataKey: 'afacod' },
+      { header: 'Descripción', dataKey: 'afades' }
+    ];
 
-    printWindow.document.write(`
-      <html>
-        <head>
-          <title>Listado de familias</title>
-          <style>
-            body { font-family: 'Poppins', sans-serif; padding: 24px; }
-            h1 { text-align: center; margin-bottom: 16px; }
-            table { width: 100%; border-collapse: collapse; }
-            th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
-            th { background: #f3f4f6; }
-          </style>
-        </head>
-        <body>
-          <h1>Listado de familias</h1>
-          <table>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Entidad</th>
-                <th>Familia</th>
-                <th>Descripción</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${htmlRows}
-            </tbody>
-          </table>
-        </body>
-      </html>
-    `);
-    printWindow.document.close();
-    printWindow.print();
+    const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(14);
+    doc.text('Listado de familias', 10, 20);
+
+    autoTable(doc, {
+      startY: 30,
+      theme: 'plain',
+      head: [columns.map(c => c.header)],
+      body: rows.map(row => columns.map(c => row[c.dataKey as keyof typeof row] ?? '')),
+      styles: { font: 'helvetica', fontSize: 8, cellPadding: 4 },
+      headStyles: {
+        fillColor: [240, 240, 240],
+        textColor: [33, 53, 71],
+        fontStyle: 'bold',
+        halign: 'left'
+      },
+      tableLineColor: [200, 200, 200],
+      tableLineWidth: 0.5,
+      columnStyles: {
+        index: { cellWidth: 10 },
+        ent: { cellWidth: 24 },
+        afacod: { cellWidth: 28 },
+        afades: { cellWidth: 130 }
+      }
+    });
+
+    doc.save('familias.pdf');
   }
 
   private defaultFamilias: any[] = [];
