@@ -8,6 +8,8 @@ import { environment } from '../../environments/environment';
 
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 @Component({
   selector: 'app-ejercicio',
@@ -56,12 +58,10 @@ export class EjercicioComponent {
 
   //main table functions
   private fetchEjercicios(): void {
-    console.log("here")
     if (this.entcod === null) return;
     this.http.get<any>(`${environment.backendUrl}/api/cfg/fetch-Eje/${this.entcod}`).subscribe({
       next: (res) => {
         this.ejercicios = res;
-        console.log("res;" + this.ejercicios)
         this.backupEjercicios = Array.isArray(res) ? [...res] : [];
         this.defaultEjercicios = [...this.backupEjercicios];
         this.page = 0;
@@ -220,57 +220,44 @@ export class EjercicioComponent {
     );
   }
   
-  toPrint() {
-    const rows = this.backupEjercicios.length ? this.backupEjercicios : this.ejercicios;
-    if (!rows?.length) {
+  pdfDownload() {
+    if (!this.ejercicios.length) {
       this.ejercicioError = 'No hay datos para imprimir.';
       return;
     }
 
-    const htmlRows = rows.map((row, index) => `
-      <tr>
-        <td>${index + 1}</td>
-        <td>${row.ent ?? ''}</td>
-        <td>${row.eje ?? ''}</td>
-        <td>${this.getstatus(row.cfgest) ?? ''}</td>
-      </tr>
-    `).join('');
+    const doc = new jsPDF({orientation: 'landscape', unit: 'mm', format: 'a4'});
+    const columns = [
+      { header: '#', dataKey: 'index'},
+      { header: 'Entidad', dataKey: 'ent'},
+      { header: 'Ejercicio', dataKey: 'eje'},
+      { header: 'Estado', dataKey: 'status'}
+    ];
 
-    const printWindow = window.open('', '_blank', 'width=900,height=700');
-    if (!printWindow) return;
+    const rows = (this.ejercicios || []).map((p: any, idx: number) => ({
+      index: idx + 1,
+      ent: p.ent,
+      eje: p.eje,
+      status: this.getstatus(p.cfgest)
+    }));
 
-    printWindow.document.write(`
-      <html>
-        <head>
-          <title>listas de ejercicios</title>
-          <style>
-            body { font-family: 'Poppins', sans-serif; padding: 24px; }
-            h1 { text-align: center; margin-bottom: 16px; }
-            table { width: 100%; border-collapse: collapse; }
-            th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
-            th { background: #f3f4f6; }
-            th:last-child, td:last-child { width: 180px; }
-          </style>
-        </head>
-        <body>
-          <h1>listas de Ejercicios</h1>
-          <table>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Entidad</th>
-                <th>Ejercicio</th>
-                <th>Estado</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${htmlRows}
-            </tbody>
-          </table>
-        </body>
-      </html>
-    `);
-    printWindow.document.close();
-    printWindow.print();
+    autoTable(doc, {
+      columns,
+      body: rows,
+      styles: { fontSize: 12 },
+      tableWidth: 'wrap',
+      columnStyles: {
+        index: { cellWidth: 15},
+        ent: { cellWidth: 20 },
+        eje: { cellWidth: 22 },
+        status: { cellWidth: 22 }
+      },
+      didDrawPage: (dataArg) => {
+        doc.setFontSize(10);
+        doc.text('Lista de Ejercicios', 14, 10);
+      }
+    });
+
+    doc.save('Ejercicios.pdf');
   }
 } 
