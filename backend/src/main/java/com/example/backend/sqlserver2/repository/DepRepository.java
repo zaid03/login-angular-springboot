@@ -16,21 +16,7 @@ import com.example.backend.sqlserver2.model.DepId;
 @Repository
 public interface DepRepository  extends JpaRepository<Dep, DepId> {
     //for deleting centro gestor
-    @Query(
-        value = """
-            SELECT count (*)
-            FROM Dep
-            WHERE 
-                ENT = :ENT 
-                AND EJE = :EJE 
-                AND CGECOD = :CGECOD   
-        """, nativeQuery = true
-    )
-    Long countServices(
-        @Param("ENT") Integer ENT,
-        @Param("EJE") String EJE,
-        @Param("CGECOD") String CGECOD
-    );
+    long countByENTAndEJEAndCGECOD(Integer ENT, String EJE, String CGECOD);
 
     //fetching all services
     @Query("""

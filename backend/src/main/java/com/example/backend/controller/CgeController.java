@@ -1,6 +1,7 @@
 package com.example.backend.controller;
 
 import com.example.backend.sqlserver2.model.Cge;
+import com.example.backend.sqlserver2.model.CgeId;
 import com.example.backend.sqlserver2.repository.CgeRepository;
 import com.example.backend.sqlserver2.repository.GbsRepository;
 import com.example.backend.sqlserver2.repository.DepRepository;
@@ -8,6 +9,7 @@ import com.example.backend.sqlserver2.repository.DepRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.dao.DataAccessException;
 
@@ -43,7 +45,8 @@ public class CgeController {
     //update centro gestor
     public record centroUpdate(String cgedes, String cgeorg, String cgefun, String cgedat, Integer cgecic) {}
 
-    @PatchMapping("/update-familia/{ent}/{eje}/{cge}")
+    @PatchMapping("/update-cge/{ent}/{eje}/{cge}")
+    @Transactional
     public ResponseEntity<?> updateCentro(
         @PathVariable Integer ent,
         @PathVariable String eje,
@@ -55,22 +58,24 @@ public class CgeController {
                 return ResponseEntity.badRequest().body("Faltan datos obligatorios.");
             }
 
-            int updated = cgeRepository.updateCentroGestor(
-                payload.cgedes(),
-                payload.cgeorg(),
-                payload.cgefun(),
-                payload.cgedat(),
-                payload.cgecic(),
-                ent,
-                eje,
-                cge
-            );
+            CgeId id = new CgeId(ent, eje, cge);
+            Optional<Cge> opt = cgeRepository.findById(id);
 
-            if (updated == 0) {
+            if (opt.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("No se encontró ninguna centro gestor para los datos.");
             }
+
+            Cge entity = opt.get();
+            entity.setCGEDES(payload.cgedes());
+            entity.setCGEORG(payload.cgeorg());
+            entity.setCGEFUN(payload.cgefun());
+            entity.setCGEDAT(payload.cgedat());
+            entity.setCGECIC(payload.cgecic());
+
+            cgeRepository.save(entity);
             return ResponseEntity.noContent().build();
+
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Update failed: " + ex.getMostSpecificCause().getMessage());
@@ -119,27 +124,28 @@ public class CgeController {
         @PathVariable String cgecod
     ) {
         try {
-            Long bolsas = gbsRepository.CountBolsas(ent, eje, cgecod);
+            Long bolsas = gbsRepository.countByENTAndEJEAndCGECOD(ent, eje, cgecod);
             if (bolsas > 0) {
                 return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body("No puede borrar un centro gestor que tiene bolsas de crédito");
             }
 
-            Long services = depRepository.countServices(ent, eje, cgecod);
+            long services = depRepository.countByENTAndEJEAndCGECOD(ent, eje, cgecod);
             if (services > 0) {
                 return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body("No puede borrar un centro gestor que tiene servicios");
             }
 
-            int removed = cgeRepository.deleteCentroGestor(ent, eje, cgecod);
-            return removed == 0
-            ? ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("Centro gestor no encontrada para los datos.")
-            : ResponseEntity.noContent().build();
-
+            CgeId id = new CgeId(ent, eje, cgecod);
+            if (!cgeRepository.existsById(id)) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Centro gestor no encontrado para los datos.");
+            }
+            cgeRepository.deleteById(id);
+            return ResponseEntity.noContent().build();
         } catch(DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("delete failed: " + ex.getMostSpecificCause().getMessage());
+                .body("borrando fallo: " + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -150,7 +156,7 @@ public class CgeController {
             @PathVariable String eje,
             @PathVariable String cgecod) {
         try {
-            Optional<String> description = cgeRepository.findDescription(ent, eje, cgecod);
+            Optional<String> description = cgeRepository.findFirstByENTAndEJEAndCGECOD(ent, eje, cgecod).map(Cge::getCGEDES);
             if (description.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body("No se pudo encontrar la descripción para el centro gestor solicitado.");
@@ -159,6 +165,29 @@ public class CgeController {
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("fetching failed: " + ex.getMostSpecificCause().getMessage());
+        }
+    }
+
+    //search in cge
+    @GetMapping("/search-centros/{ent}/{eje}/{term}")
+    public ResponseEntity<?> searchCentros(
+            @PathVariable Integer ent,
+            @PathVariable String eje,
+            @PathVariable String term) {
+        try {
+            List<Cge> centros =
+            cgeRepository.findByENTAndEJEAndCGECODOrENTAndEJEAndCGEDESContaining(
+                ent, eje, term,
+                ent, eje, term
+            );
+            if (centros.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("No se pudo encontrar centro gestores");
+            }
+            return ResponseEntity.ok(centros);
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("buscar fallo: " + ex.getMostSpecificCause().getMessage());
         }
     }
 }

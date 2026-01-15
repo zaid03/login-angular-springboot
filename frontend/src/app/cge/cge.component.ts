@@ -143,7 +143,10 @@ export class CgeComponent {
   public searchTerm: string = '';
   handleSearchInput(event: Event): void {
     const input = event.target as HTMLInputElement;
-    const value = (input.value ?? '').toUpperCase();
+    let value = (input.value ?? '').toUpperCase();
+    if(value.length > 4) {
+      value = value.slice(0, 4);
+    }
     this.searchTerm = value;
     input.value = value;
 
@@ -158,34 +161,30 @@ export class CgeComponent {
     this.limpiarMessages();
     const term = this.searchTerm.trim();
 
-    if (!term) {
+    if (!term || term.length < 2) {
       this.SearchDownMessageError = 'Introduzca una centro gestor para buscar'
       this.centroGestores = [...this.backupCentroGestores];
       this.page = 0;
       return;
     }
 
-    const oneToFour = /^[A-Za-z0-9]{1,4}$/
-    const moreThanFour = /^[A-Za-z0-9]{5,}$/
-    if (oneToFour.test(term)) {
-      this.centroGestores = this.backupCentroGestores.filter((f) =>
-        f.cgecod?.toString().toUpperCase() === term
-      );
-    } else if (moreThanFour.test(term)) {
-      this.centroGestores = this.backupCentroGestores.filter((f) =>
-        f.cgedes?.toString().toUpperCase().includes(term)
-      );
-    }
-
-    if (this.centroGestores.length === 0) {
-      this.SearchDownMessageError = 'Este Centro Gestor no existe';
-    }
-    
-    this.defaultCentroGestores = [...this.centroGestores];
-    this.sortField = null;
-    this.sortDirection = 'asc';
-    this.page = 0;
-    this.updatePagination();
+    this.http.get<any>(`${environment.backendUrl}/api/cge/search-centros/${this.entcod}/${this.eje}/${term}`).subscribe({
+      next: (res) => {
+        this.centroGestores = Array.isArray(res) ? [...res] : [];
+        this.defaultCentroGestores = [...this.centroGestores];
+        this.page = 0;
+        this.updatePagination();
+        if ( res.status === 404 ) {
+          this.centroGestores = [];
+          this.SearchDownMessageError = typeof res.body === 'string' ? res.body : 'sin resultados.';
+        }
+        this.isLoading = false;
+      }, error: (err) => {
+        this.centroGestores = [];
+        this.SearchDownMessageError = typeof err.error === 'string' ? err.error : 'server Error';
+        this.isLoading = false;
+      }
+    })
   }
 
   limpiarSearch() {
@@ -407,7 +406,7 @@ export class CgeComponent {
       return;
     }
 
-    this.http.patch<any>(`${environment.backendUrl}/api/cge/update-familia/${this.entcod}/${this.eje}/${cge}`, payload).subscribe({
+    this.http.patch<any>(`${environment.backendUrl}/api/cge/update-cge/${this.entcod}/${this.eje}/${cge}`, payload).subscribe({
       next: (res) => {
         this.centroGestorSuccessMessage = 'Centro gestor actualizado con éxito';
         this.isUpdating = false;
@@ -487,7 +486,10 @@ export class CgeComponent {
   newCge = '';
   setCgeToUpper(event: Event): void {
     const target = event.target as HTMLTextAreaElement;
-    const upper = (target.value ?? '').toUpperCase();
+    let upper = (target.value ?? '').toUpperCase();
+    if(upper.length > 4) {
+      upper = upper.slice(0, 4);
+    }
     target.value = upper;
     this.newCge = upper;
   }
