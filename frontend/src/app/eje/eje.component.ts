@@ -5,8 +5,6 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
 
-type Ejercicio = number | string;
-
 function safeParse(raw: string | null) {
   if (!raw) return {};
   try { return JSON.parse(raw); } catch { return {}; }
@@ -20,7 +18,7 @@ function safeParse(raw: string | null) {
   styleUrls: ['./eje.component.css']
 })
 export class EjeComponent implements OnInit {
-  tableData: Ejercicio[] = [];
+  tableData: any[] = [];
   loading = false;
 
   constructor(private http: HttpClient, private router: Router) {}
@@ -43,13 +41,13 @@ export class EjeComponent implements OnInit {
     }
 
     this.loading = true;
-    this.http.get<Ejercicio[]>(`${environment.backendUrl}/api/cfg/by-ent/${ENTCOD}`)
+    this.http.get<any>(`${environment.backendUrl}/api/cfg/by-ent/${ENTCOD}`)
       .subscribe({
         next: resp => {
           if (resp?.length > 1) {
             this.tableData = resp;
           } else if (resp?.length === 1) {
-            sessionStorage.setItem('EJERCICIO', JSON.stringify({ eje: resp[0] }));
+            sessionStorage.setItem('EJERCICIO', JSON.stringify({ eje: resp[0].eje }));
             this.router.navigate(['/centro-gestor']);
           } else {
             alert('Sin ejercicios.');
@@ -63,8 +61,8 @@ export class EjeComponent implements OnInit {
       }).add(() => this.loading = false);
   }
 
-  selectRow(item: Ejercicio): void {
-    sessionStorage.setItem('EJERCICIO', JSON.stringify({ eje: item }));
+  selectRow(item: any): void {
+    sessionStorage.setItem('EJERCICIO', JSON.stringify({ eje: item.eje }));
     this.router.navigate(['/centro-gestor']);
   }
 

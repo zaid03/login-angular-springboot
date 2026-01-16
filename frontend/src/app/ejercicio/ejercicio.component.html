@@ -18,7 +18,8 @@
                             type="text" 
                             class="search-bar"
                             placeholder="Ejercicio" 
-
+                            (input)="setInputToLimit($event)"
+                            [(ngModel)]="searchTerm"
                         >
                     </div>
                     <div class="btns">

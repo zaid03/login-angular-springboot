@@ -265,6 +265,25 @@ export class EjercicioComponent {
     doc.save('ejercicios.pdf');
   }
 
+  searchTerm = '';
+  setInputToLimit(event: Event): void {
+    const target = event.target as HTMLTextAreaElement;
+    let service = (target.value ?? '');
+    if(service.length > 4) {
+      service = service.slice(0, 4);
+    }
+    target.value = service;
+    this.searchTerm = service;
+  }
+  
+  search() {
+    this.limpiarMessages();
+
+    if(this.searchTerm === '') {
+      this.ejercicioError = 'ingresa algo para buscar';
+    }
+  }
+
   //misc
   limpiarMessages() {
     this.ejercicioSuccess = '';
