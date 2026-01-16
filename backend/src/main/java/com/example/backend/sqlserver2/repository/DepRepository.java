@@ -20,10 +20,6 @@ public interface DepRepository  extends JpaRepository<Dep, DepId> {
     // fetching services for a user (main panel)
     List<DepWithCgeView> findByENTAndEJEAndDpes_PERCOD(Integer ent, String eje, String percod);
 
-    // for search
-    List<Dep> findByENTAndEJEAndDEPCODContainingOrDEPDESContaining(Integer ENT, String EJE, String search, String search1);
-    List<Dep> findByENTAndEJEAndCGECOD(Integer ENT, String EJE, String CGECOD);
-
     // for adding a service
     List<Dep> findByENTAndEJEAndDEPCOD(int ent, String eje, String depcod);
 
