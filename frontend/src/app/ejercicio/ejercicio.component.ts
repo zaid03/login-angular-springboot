@@ -278,12 +278,33 @@ export class EjercicioComponent {
   
   search() {
     this.limpiarMessages();
+    this.isLoading = true;
 
     if(this.searchTerm === '') {
       this.ejercicioError = 'ingresa algo para buscar';
     }
+
+    this.http.get<any>(`${environment.backendUrl}/api/cfg/search-Eje/${this.entcod}/${this.searchTerm}`).subscribe({
+      next: (res) => {
+        this.ejercicios = res;
+        this.defaultEjercicios = [...this.ejercicios];
+        this.page = 0;
+        this.updatePagination();
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.ejercicioError = err.error.error || 'Error desconocido';
+        this.isLoading = false;
+      }
+    });
   }
 
+  limpiarSearch() {
+    this.limpiarMessages();
+    this.page = 0;
+    this.ejercicios = [...this.backupEjercicios];
+    this.defaultEjercicios = [...this.backupEjercicios];
+  }
   //misc
   limpiarMessages() {
     this.ejercicioSuccess = '';
