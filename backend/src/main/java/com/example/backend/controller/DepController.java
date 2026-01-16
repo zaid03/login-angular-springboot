@@ -1,11 +1,13 @@
 package com.example.backend.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,8 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.backend.dto.DepWithCgeDto;
+import com.example.backend.dto.DepWithCgeView;
 import com.example.backend.sqlserver2.model.Dep;
+import com.example.backend.sqlserver2.model.DepId;
 import com.example.backend.sqlserver2.model.Dpe;
 import com.example.backend.sqlserver2.repository.DepRepository;
 import com.example.backend.sqlserver2.repository.DpeRepository;
@@ -33,44 +36,48 @@ public class DepController {
     private CcoRepository ccoRepository;
 
     //fetching all services
-    @GetMapping("/fetch-services/{ENT}/{EJE}")
+    @GetMapping("/fetch-services/{ent}/{eje}")
     public ResponseEntity<?> fetchServices(
-        @PathVariable Integer ENT,
-        @PathVariable String EJE
+        @PathVariable Integer ent,
+        @PathVariable String eje
     ) {
         try {
-            List<Dep> services = depRepository.findByENTAndEJE(ENT, EJE);
+            List<Dep> services = depRepository.findByENTAndEJE(ent, eje);
             if (services.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontraron servicios");
             }
-
             return ResponseEntity.ok(services);
         } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al consultar servicios: " + ex.getMostSpecificCause().getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error al consultar servicios: " + ex.getMostSpecificCause().getMessage());
         }
     }
 
     //fetching services for a user (main panel)
-    @GetMapping("/fetch-services/{ent}/{eje}/{percod}")
-    public ResponseEntity<?> fetchAllservices(
+    @GetMapping("/fetch-services-persona/{ent}/{eje}/{percod}")
+    public ResponseEntity<?> fetchServicesPersona(
         @PathVariable Integer ent,
         @PathVariable String eje,
         @PathVariable String percod
     ) {
         try {
-            List<DepWithCgeDto> services = depRepository.findByEntAndEjeAndPercod(ent, eje, percod);
+            List<DepWithCgeView> services = depRepository.findByENTAndEJEAndDpes_PERCOD(ent, eje, percod);
             if (services.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontraron servicios");
             }
+
             return ResponseEntity.ok(services);
         } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al consultar servicios: " + ex.getMostSpecificCause().getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error al consultar servicios: " + ex.getMostSpecificCause().getMessage());
         }
     }
 
     //modifying a service
-    public record serviceUpdate(String depdes, Integer depalm, Integer depcom, Integer depint, String ccocod) {}
+    public record serviceUpdate(String depdes, Integer depalm, Integer depcom, Integer depint) {}
+
     @PatchMapping("/update-service/{ent}/{eje}/{depcod}")
+    @Transactional
     public ResponseEntity<?> updateCentro(
         @PathVariable Integer ent,
         @PathVariable String eje,
@@ -82,21 +89,74 @@ public class DepController {
                 return ResponseEntity.badRequest().body("Faltan datos obligatorios.");
             }
 
-            int updated = depRepository.updateService(
-                payload.depdes(),
-                payload.depalm(),
-                payload.depcom(),
-                payload.depint(),
-                ent,
-                eje,
-                depcod
-            );
+            DepId id = new DepId(ent, eje, depcod);
+            Optional<Dep> service = depRepository.findById(id);
 
-            if (updated == 0) {
+            if (service.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No se encontró ninguna centro gestor para los datos.");
+                    .body("No se encontró ningún servicio para los datos.");
             }
+
+            Dep d = service.get();
+            d.setDEPDES(payload.depdes());
+            d.setDEPALM(payload.depalm());
+            d.setDEPCOM(payload.depcom());
+            d.setDEPINT(payload.depint());
+
+            depRepository.save(d);
             return ResponseEntity.noContent().build();
+
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("La actualización falló: " + ex.getMostSpecificCause().getMessage());
+        }
+    }
+
+    //modifying rest of service 
+    public record ServiceUpdateSecond(
+    String depd1c, String depd1d,
+    String depd2c, String depd2d,
+    String depd3c, String depd3d,
+    String depdco, String depden) {}
+
+    @PatchMapping("/update-service-second/{ent}/{eje}/{depcod}")
+    @Transactional
+    public ResponseEntity<?> updateServiceSecond(
+        @PathVariable Integer ent,
+        @PathVariable String eje,
+        @PathVariable String depcod,
+        @RequestBody ServiceUpdateSecond payload
+    ) {
+        try {
+            if (payload == null ||
+                payload.depd1c() == null || payload.depd1d() == null ||
+                payload.depd2c() == null || payload.depd2d() == null ||
+                payload.depd3c() == null || payload.depd3d() == null ||
+                payload.depdco() == null || payload.depden() == null) {
+                return ResponseEntity.badRequest().body("Faltan datos obligatorios.");
+            }
+
+            DepId id = new DepId(ent, eje, depcod);
+            Optional<Dep> service = depRepository.findById(id);
+
+            if (service.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No se encontró ningún servicio para los datos.");
+            }
+
+            Dep d = service.get();
+            d.setDEPD1C(payload.depd1c());
+            d.setDEPD1D(payload.depd1d());
+            d.setDEPD2C(payload.depd2c());
+            d.setDEPD2D(payload.depd2d());
+            d.setDEPD3C(payload.depd3c());
+            d.setDEPD3D(payload.depd3d());
+            d.setDEPDCO(payload.depdco());
+            d.setDEPDEN(payload.depden());
+
+            depRepository.save(d);
+            return ResponseEntity.noContent().build();
+
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("La actualización falló: " + ex.getMostSpecificCause().getMessage());
@@ -110,7 +170,7 @@ public class DepController {
         @RequestBody serviceAdd payload
     ) {
         try {
-            if (payload == null || payload.ent() == null || payload.eje() == null || payload.depcod() == null || payload.depdes() == null || payload.depalm() == null || payload.depcom() == null || payload.depint() == null || payload.ccocod() == null || payload.cgecod() == null || payload.ccocod == null || payload.percod == null) {
+            if (payload == null || payload.ent() == null || payload.eje() == null || payload.depcod() == null || payload.depdes() == null || payload.depalm() == null || payload.depcom() == null || payload.depint() == null || payload.ccocod() == null || payload.cgecod() == null || payload.percod() == null) {
                 return ResponseEntity.badRequest().body("Faltan datos obligatorios.");
             }
             if(!depRepository.findByENTAndEJEAndDEPCOD(payload.ent(), payload.eje(), payload.depcod()).isEmpty()) {
@@ -156,66 +216,61 @@ public class DepController {
         }
     }
 
-    //modifying rest of service 
-    public record ServiceUpdateSecond(
-    String depd1c, String depd1d,
-    String depd2c, String depd2d,
-    String depd3c, String depd3d,
-    String depdco, String depden) {}
-    @PatchMapping("/update-service-second/{ent}/{eje}/{depcod}")
-    public ResponseEntity<?> updateServiceSecond(
-        @PathVariable Integer ent,
-        @PathVariable String eje,
-        @PathVariable String depcod,
-        @RequestBody ServiceUpdateSecond payload
-    ) {
-        try {
-            if (payload == null ||
-                payload.depd1c() == null || payload.depd1d() == null ||
-                payload.depd2c() == null || payload.depd2d() == null ||
-                payload.depd3c() == null || payload.depd3d() == null ||
-                payload.depdco() == null || payload.depden() == null) {
-                return ResponseEntity.badRequest().body("Faltan datos obligatorios.");
-            }
-
-            int updated = depRepository.updateServiceSecond(
-                payload.depd1c(), payload.depd1d(),
-                payload.depd2c(), payload.depd2d(),
-                payload.depd3c(), payload.depd3d(),
-                payload.depdco(), payload.depden(),
-                ent, eje, depcod
-            );
-
-            if (updated == 0) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No se encontró ninguna centro gestor para los datos.");
-            }
-            return ResponseEntity.noContent().build();
-        } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("La actualización falló: " + ex.getMostSpecificCause().getMessage());
-        }
-    }
-    
     //search function
     @GetMapping("/search")
     public ResponseEntity<?> searchServices(
         @RequestParam Integer ent,
         @RequestParam String eje,
-        @RequestParam String percod,
         @RequestParam(required = false) String search,
         @RequestParam(required = false) String cgecod,
         @RequestParam(required = false) String perfil
     ) {
         try {
-            List<Dep> results = depRepository.searchServices(ent, eje, percod, search, cgecod, perfil);
-            if (results.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontraron servicios con los filtros dados.");
+            List<Dep> base = depRepository.findByENTAndEJE(ent, eje);
+
+            if (search != null && !search.isBlank()) {
+                final String searchLower = search.toLowerCase();
+                base = base.stream()
+                    .filter(d -> {
+                        String depcod = d.getDEPCOD() == null ? "" : d.getDEPCOD().toLowerCase();
+                        String depdes = d.getDEPDES() == null ? "" : d.getDEPDES().toLowerCase();
+                        return depcod.contains(searchLower) || depdes.contains(searchLower);
+                    })
+                    .toList();
             }
-            return ResponseEntity.ok(results);
+
+            if (cgecod != null && !cgecod.isBlank()) {
+                base = base.stream()
+                    .filter(d -> cgecod.equalsIgnoreCase(d.getCGECOD()))
+                    .toList();
+            }
+
+            if (perfil != null && !perfil.isBlank() && !perfil.equalsIgnoreCase("todos")) {
+                base = base.stream()
+                    .filter(d -> {
+                        return switch (perfil.toLowerCase()) {
+                            case "almacen" -> d.getDEPALM() != null && d.getDEPALM() == 1;
+                            case "comprador" -> d.getDEPCOM() != null && d.getDEPCOM() == 1;
+                            case "contabilidad" -> d.getDEPINT() != null && d.getDEPINT() == 1;
+                            case "peticionario" ->
+                                (d.getDEPALM() == null || d.getDEPALM() == 0) &&
+                                (d.getDEPCOM() == null || d.getDEPCOM() == 0) &&
+                                (d.getDEPINT() == null || d.getDEPINT() == 0);
+                            default -> true;
+                        };
+                    })
+                    .toList();
+            }
+
+            if (base.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontraron servicios");
+            }
+
+            return ResponseEntity.ok(base);
+
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al buscar servicios: " + ex.getMostSpecificCause().getMessage());
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 }

@@ -157,7 +157,7 @@ public class CcoController {
                 .body("No se encontró el centro de coste para eliminar.");
             }
 
-            long costes = depRepository.countByEntAndAfacod(ENT, EJE, CCOCOD);
+            long costes = depRepository.countByENTAndEJEAndCCOCOD(ENT, EJE, CCOCOD);
             if (costes > 0) {
                 return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body("No se puede borrar un centro de coste con centros gestores asociados");

@@ -4,6 +4,8 @@ import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
+import { forkJoin, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-dashboard',
@@ -180,16 +182,35 @@ export class DashboardComponent implements OnInit {
   private fetchServices(): void {
     this.servicesError = '';
     if (this.entcod === null || this.eje === null) return;
-    this.http.get<any>(`${environment.backendUrl}/api/dep/fetch-services/${this.entcod}/${this.eje}/${this.perfil}`).subscribe({
+
+    this.http.get<any[]>(`${environment.backendUrl}/api/dep/fetch-services-persona/${this.entcod}/${this.eje}/${this.perfil}`).subscribe({
       next: (res) => {
-        this.services = res;
+
+        const requests = res.map(res =>
+          this.http.get(`${environment.backendUrl}/api/cge/fetch-description-services/${this.entcod}/${this.eje}/${res.cgecod}`, { responseType: 'text' })
+            .pipe(
+              map(cgedes => ({ ...res, cgedes })),
+              catchError(() => of({ ...res, cgedes: null }))
+            )
+        );
+        forkJoin(requests).subscribe({
+          next: (servicesWithDescriptions) => {
+            this.services = servicesWithDescriptions;
+            this.page = 0;
+          },
+          error: (err) => {
+            this.servicesError = 'Error al obtener descripciones de centros gestores';
+            console.error(err);
+          }
+        });
         this.page = 0;
       },
       error: (err) => {
-        this.servicesError = err?.error?.error || 'Error desconocido';
+        this.servicesError = err?.error || 'Error desconocido';
       }
     });
   }
+  
   get paginatedServices(): any[] {
     if (!this.services || this.services.length === 0) return [];
     const start = this.page * this.pageSize;

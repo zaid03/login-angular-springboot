@@ -86,12 +86,12 @@
                             <div class="resizer" (mousedown)="startResize($event, 3)"></div>
                         </th>
                         <th class="sortable resizable" (click)="toggleSort('depalm')">
-                            Almacén
+                            Almacén / Farmacia
                             <span class="sort-indicator" *ngIf="sortField === 'depalm'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
                             <div class="resizer" (mousedown)="startResize($event, 4)"></div>
                         </th>
                         <th class="sortable resizable" (click)="toggleSort('depcom')">
-                            Comprador/Farmacia
+                            Comprador
                             <span class="sort-indicator" *ngIf="sortField === 'depcom'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
                             <div class="resizer" (mousedown)="startResize($event, 5)"></div>
                         </th>
@@ -398,11 +398,11 @@
             </div>
             <div class="right-add">
                 <div class="on-three">
-                    <textarea class="short-add" (input)="setInputToUpper($event)" #codigo ></textarea>
+                    <textarea class="short-add" (input)="setInputToLimit($event)" #codigo ></textarea>
                     <p>Centro de Coste*</p>
-                    <textarea class="short-add" #centroCoste ></textarea>
+                    <textarea (input)="setInputToUpper($event)"  class="short-add" #centroCoste ></textarea>
                     <p>Centro Gestor*</p>
-                    <textarea class="short-add" #centroGestor></textarea>
+                    <textarea (input)="setInputToUpper($event)" class="short-add" #centroGestor></textarea>
                 </div>
                 <textarea class="long-add" #description></textarea>
             </div>

@@ -323,11 +323,18 @@ export class ServiciosComponent {
     this.limpiarMessages();
     this.isLoading = true;
 
+    if (this.searchServicio === '' && this.searchCentroGestor === '') {
+      this.servicessMessageError = 'Debe proporcionar al menos un filtro';
+      this.isLoading = false;
+      return;
+    }
+
+    console.log(this.searchServicio, this.searchCentroGestor, this.searchPerfil)
     const params: any = {
       ent: this.entcod,
       eje: this.eje,
-      percod: this.perfil
     };
+
     if (this.searchServicio && this.searchServicio.trim() !== '') {
       params.search = this.searchServicio;
     }
@@ -347,6 +354,7 @@ export class ServiciosComponent {
         this.updatePagination();
         if (!res.length) {
           this.servicessMessageError = 'No se encontraron servicios con los filtros dados.';
+          this.isLoading = false;
         }
         this.isLoading = false;
       },
@@ -567,9 +575,23 @@ export class ServiciosComponent {
   newCge = '';
   setInputToUpper(event: Event): void {
     const target = event.target as HTMLTextAreaElement;
-    const upper = (target.value ?? '').toUpperCase();
+    let upper = (target.value ?? '').toUpperCase();
+    if(upper.length > 4) {
+      upper = upper.slice(0, 4);
+    }
     target.value = upper;
     this.newCge = upper;
+  }
+
+  servicio = '';
+  setInputToLimit(event: Event): void {
+    const target = event.target as HTMLTextAreaElement;
+    let service = (target.value ?? '').toUpperCase();
+    if(service.length > 8) {
+      service = service.slice(0, 8);
+    }
+    target.value = service;
+    this.servicio = service;
   }
 
   addDepalm: boolean = false;
@@ -615,7 +637,7 @@ export class ServiciosComponent {
         this.isAdding = false;
       },
       error: (err) => {
-        this.addServiceErrorMessage = 'Server error: ' + err?.error;
+        this.addServiceErrorMessage = err?.error;
         this.isAdding = false;
       }
     })

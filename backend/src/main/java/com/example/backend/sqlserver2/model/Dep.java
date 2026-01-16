@@ -6,6 +6,16 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.IdClass;
 
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinColumns;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @IdClass(DepId.class)
 @Table(name = "DEP", schema = "dbo")
@@ -64,7 +74,28 @@ public class Dep {
 
     private String DEPDEN;
 
+    //relationships
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumns({
+        @JoinColumn(name = "ENT", referencedColumnName = "ENT", insertable = false, updatable = false),
+        @JoinColumn(name = "EJE", referencedColumnName = "EJE", insertable = false, updatable = false),
+        @JoinColumn(name = "CGECOD", referencedColumnName = "CGECOD", insertable = false, updatable = false)
+    })
+    private Cge cge;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "dep", fetch = FetchType.LAZY)
+    private List<Dpe> dpes;
+
     //getters and setters
+    public Cge getCge() { return cge; }
+    public void setCge(Cge cge) { this.cge = cge; }
+
+    public List<Dpe> getDpes() { return dpes; }
+    public void setDpes(List<Dpe> dpes) { this.dpes = dpes; }
+
+
     public Integer getENT() { return ENT; }
     public void setENT(Integer ENT) { this.ENT = ENT; }
 
