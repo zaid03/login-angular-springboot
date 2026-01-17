@@ -20,42 +20,33 @@ function safeParse(raw: string | null) {
 export class EjeComponent implements OnInit {
   tableData: any[] = [];
   loading = false;
+  entcod: string | null = null;
 
   constructor(private http: HttpClient, private router: Router) {}
 
   ngOnInit(): void {
-    const USUCOD = sessionStorage.getItem('USUCOD');
-    const entObj = safeParse(sessionStorage.getItem('Entidad'));
-    const ENTCOD = entObj.ENTCOD;
+    const ent = sessionStorage.getItem('Entidad');
+    if (ent) { const parsed = JSON.parse(ent); this.entcod = parsed.ENTCOD;}
 
-    if (!USUCOD) {
-      alert('Login required.');
-      sessionStorage.clear();
-      this.router.navigate(['/login']);
-      return;
-    }
-    if (ENTCOD == null) {
+    if (this.entcod == null) {
       alert('Select entidad first.');
       this.router.navigate(['/ent']);
       return;
     }
 
     this.loading = true;
-    this.http.get<any>(`${environment.backendUrl}/api/cfg/by-ent/${ENTCOD}`)
+    this.http.get<any>(`${environment.backendUrl}/api/cfg/by-ent/${this.entcod}`)
       .subscribe({
         next: resp => {
-          if (resp?.length > 1) {
+          if (resp?.length ) {
             this.tableData = resp;
           } else if (resp?.length === 1) {
             sessionStorage.setItem('EJERCICIO', JSON.stringify({ eje: resp[0].eje }));
             this.router.navigate(['/centro-gestor']);
-          } else {
-            alert('Sin ejercicios.');
-            this.router.navigate(['/ent']);
-          }
+          } 
         },
         error: err => {
-          alert(err.message);
+          alert(err.error);
           this.router.navigate(['/ent']);
         }
       }).add(() => this.loading = false);

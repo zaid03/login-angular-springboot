@@ -38,7 +38,6 @@ export class EntComponent implements OnInit {
         );
         forkJoin(requests).subscribe({
           next: (entidadesConNombre) => {
-            console.log(entidadesConNombre)
             if (Array.isArray(entidadesConNombre) && res.length > 1) {
               this.tableData = entidadesConNombre;            
             } else if (Array.isArray(res) && res.length === 1) {
