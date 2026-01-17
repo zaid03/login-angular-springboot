@@ -38,7 +38,7 @@ export class EjeComponent implements OnInit {
     this.http.get<any>(`${environment.backendUrl}/api/cfg/by-ent/${this.entcod}`)
       .subscribe({
         next: resp => {
-          if (resp?.length ) {
+          if (resp?.length > 1) {
             this.tableData = resp;
           } else if (resp?.length === 1) {
             sessionStorage.setItem('EJERCICIO', JSON.stringify({ eje: resp[0].eje }));

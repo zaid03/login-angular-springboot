@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.example.backend.dto.DepWithCgeView;
+import com.example.backend.sqlserver2.model.Cge;
 import com.example.backend.sqlserver2.model.Dep;
 import com.example.backend.sqlserver2.model.DepId;
 
@@ -25,4 +26,7 @@ public interface DepRepository  extends JpaRepository<Dep, DepId> {
 
     // needed for deleting centro de coste
     long countByENTAndEJEAndCCOCOD(Integer ENT, String EJE, String CCOCOD);
+
+    //for selecting centro gestor in login
+    List<Dep> findByENTAndEJEAndDEPCODIn(Integer ent, String eje, List<String> depcods);
 }

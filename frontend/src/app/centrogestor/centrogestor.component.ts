@@ -36,7 +36,7 @@ export class CentrogestorComponent implements OnInit {
     this.loading = true;
     this.fetchSwVarables();
     this.fetchMenus();
-    this.http.get<any[]>(`${environment.backendUrl}/api/centrogestor/percod/${this.perfil}/ent/${this.entcod}/eje/${this.eje}`)
+    this.http.get<any[]>(`${environment.backendUrl}/api/cge/${this.entcod}/${this.eje}/${this.perfil}`)
       .subscribe({
         next: resp => {
           if (resp?.length > 1) {
@@ -62,15 +62,15 @@ export class CentrogestorComponent implements OnInit {
   }
 
   private storeAndGo(item: any) {
-    sessionStorage.setItem('CENTROGESTOR', JSON.stringify({ value: item.cgecod }));
+    sessionStorage.setItem('CENTROGESTOR', JSON.stringify({ value: item.cge.cgecod }));
+    sessionStorage.setItem('CENTROGESTOR_NAME', JSON.stringify({ value: item.cge.cgedes}));
+    sessionStorage.setItem('ESTADOGC', JSON.stringify({ value: item.cge.cgecic}));
     if (item.depint === 1) { sessionStorage.setItem('EsContable', JSON.stringify({ value: true})); }
     if (item.depint === 0){ sessionStorage.setItem('EsContable', JSON.stringify({ value: false})); }
     if (item.depalm === 1) { sessionStorage.setItem('EsAlmacen', JSON.stringify({ value: true})); }
     if (item.depalm === 0){ sessionStorage.setItem('EsAlmacen', JSON.stringify({ value: false})); }
     if (item.depcom === 1) { sessionStorage.setItem('EsComprador', JSON.stringify({ value: true})); }
     if (item.depcom === 0){ sessionStorage.setItem('EsComprador', JSON.stringify({ value: false})); }
-    sessionStorage.setItem('CENTROGESTOR_NAME', JSON.stringify({ value: item.cgedes}));
-    sessionStorage.setItem('ESTADOGC', JSON.stringify({ value: item.cgecic}));
     this.router.navigate(['/dashboard']);
   }
 

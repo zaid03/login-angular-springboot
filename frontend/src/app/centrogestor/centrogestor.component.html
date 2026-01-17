@@ -12,11 +12,11 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let row of tableData">
-          <td>{{ row.cgecod }}</td>
-            <td>{{ row.cgedes }}</td>
+        <tr *ngFor="let t of tableData">
+          <td>{{ t.cge.cgecod }}</td>
+            <td>{{ t.cge.cgedes }}</td>
           <td>
-            <button (click)="selectRow(row)">Seleccionar</button>
+            <button (click)="selectRow(t)">Seleccionar</button>
           </td>
         </tr>
       </tbody>

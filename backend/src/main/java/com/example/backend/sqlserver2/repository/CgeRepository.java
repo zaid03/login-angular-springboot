@@ -13,7 +13,7 @@ public interface CgeRepository extends JpaRepository<Cge, CgeId> {
     //to fetch all centro gestores
     List<Cge> findByENTAndEJE(int ent, String eje);
 
-    //needed for adding a centro gestor
+    //needed for adding a centro gestor 
     List<Cge> findByENTAndEJEAndCGECOD(int ent, String eje, String cgecod);
 
     //fetching description for services
@@ -24,4 +24,7 @@ public interface CgeRepository extends JpaRepository<Cge, CgeId> {
         Integer ent1, String eje1, String cgecod,
         Integer ent2, String eje2, String cgedes
     );
+
+    //selecting centro gestor for login
+    List<Cge> findByENTAndEJEAndCGECODIn(Integer ent, String eje, List<String> cgecods);
 }

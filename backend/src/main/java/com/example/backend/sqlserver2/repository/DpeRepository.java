@@ -63,9 +63,10 @@ public interface DpeRepository extends JpaRepository<Dpe, DpeId> {
         @Param("PERCOD") String PERCOD
     );
 
-    //needed for copy perfil function on personas component
+    //needed for copy perfil function and selecting centro getor for login
     List<Dpe> findByENTAndEJEAndPERCOD(Integer ENT, String EJE, String PERCOD);
 
+    //deleting a persona
     @Transactional
     @Modifying
     @Query("""
