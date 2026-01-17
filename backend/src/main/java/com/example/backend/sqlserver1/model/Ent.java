@@ -7,7 +7,6 @@ import jakarta.persistence.*;
 public class Ent {
 
     @Id
-
     @Column(name = "ENTCOD", nullable = false)
     private int ENTCOD;
     @Column(name = "ENTNOM", nullable = false)
@@ -15,27 +14,14 @@ public class Ent {
     @Column(name = "ENTNIF", nullable = false)
     private String ENTNIF;
 
-
     public Ent() {}
 
-    public int getENTCOD() {
-        return ENTCOD;
-    }
-    public void setENTCOD(int ENTCOD) {
-        this.ENTCOD = ENTCOD;
-    }
+    public int getENTCOD() {return ENTCOD;}
+    public void setENTCOD(int ENTCOD) {this.ENTCOD = ENTCOD;}
 
-    public String getENTNOM() {
-        return ENTNOM;
-    }
-    public void setENTNOM(String ENTNOM) {
-        this.ENTNOM = ENTNOM;
-    }
+    public String getENTNOM() {return ENTNOM;}
+    public void setENTNOM(String ENTNOM) {this.ENTNOM = ENTNOM;}
 
-    public String getENTNIF() {
-        return ENTNIF;
-    }
-    public void setENTNIF(String ENTNIF) {
-        this.ENTNIF = ENTNIF;
-    }
+    public String getENTNIF() {return ENTNIF;}
+    public void setENTNIF(String ENTNIF) {this.ENTNIF = ENTNIF;}
 }

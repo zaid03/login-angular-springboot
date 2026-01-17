@@ -21,17 +21,17 @@ export class EntComponent implements OnInit {
   ngOnInit(): void{
     const USUCOD = sessionStorage.getItem('USUCOD');
     if (!USUCOD) {
-      alert('No session');
+      alert('no hay sesión');
       this.router.navigate(['/login']);
       return;
     }
 
-    this.http.get<any>(`${environment.backendUrl}/api/filter`, { params: { usucod: USUCOD } }).subscribe({
-      next: (filterResponse) => {
-        if (Array.isArray(filterResponse) && filterResponse.length > 1) {
-          this.tableData = filterResponse;            
-        } else if (Array.isArray(filterResponse) && filterResponse.length === 1) {
-          const row = filterResponse[0];
+    this.http.get<any>(`${environment.backendUrl}/api/pua/filter/${USUCOD}`).subscribe({
+      next: (res) => {
+        if (Array.isArray(res) && res.length > 1) {
+          this.tableData = res;            
+        } else if (Array.isArray(res) && res.length === 1) {
+          const row = res[0];
           this.tableData = [row];
           this.selectRow(row);
         } else {
@@ -41,7 +41,7 @@ export class EntComponent implements OnInit {
         }
       },
       error: (err) => {
-        alert(err?.error ?? 'Server Error');
+        alert(err?.error.error);
         sessionStorage.clear();
         this.router.navigate(['/']);
       }
@@ -49,22 +49,8 @@ export class EntComponent implements OnInit {
   }
   
   selectRow(t: any): void {
-
     sessionStorage.setItem('Entidad', JSON.stringify({ ENTCOD: t.entcod }));
     sessionStorage.setItem('Perfil', JSON.stringify({ PERCOD: t.percod }));
-
-    this.loading = true;
-    this.http.get<any[]>(`${environment.backendUrl}/api/mnucods`, { params: { PERCOD: t.percod } })
-      .subscribe({
-        next: resp => {
-          sessionStorage.setItem('mnucods', JSON.stringify(resp));
-          this.router.navigate(['/eje']);
-        },
-        error: err => {
-          alert('No se encontraron menús por usuario');
-          sessionStorage.clear();
-          this.router.navigate(['/login']);
-        }
-      }).add(() => this.loading = false);
+    this.router.navigate(['/eje']);
   }
 }

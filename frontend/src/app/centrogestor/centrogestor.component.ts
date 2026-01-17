@@ -5,11 +5,6 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
 
-function safeParse(raw: string | null) {
-  if (!raw) return {};
-  try { return JSON.parse(raw); } catch { return {}; }
-}
-
 @Component({
   selector: 'app-centrogestor',
   standalone: true,
@@ -20,32 +15,28 @@ function safeParse(raw: string | null) {
 export class CentrogestorComponent implements OnInit {
   tableData: any[] = [];
   loading = false;
-  ENTCOD: number | null = null;
+  perfil: string | null = null;
+  entcod: string | null = null;
+  eje: number | null = null;
+  cge: string = '';
+
   constructor(private http: HttpClient, private router: Router) {}
 
-  private fail(route: string, msg: string) {
-    alert(msg);
-    this.router.navigate([route]);
-  }
-
   ngOnInit(): void {
-    const USUCOD = sessionStorage.getItem('USUCOD');
-    const entObj = safeParse(sessionStorage.getItem('Entidad'));
-    const perObj = safeParse(sessionStorage.getItem('Perfil'));
-    const ejeObj = safeParse(sessionStorage.getItem('EJERCICIO'));
+    const profile = sessionStorage.getItem('Perfil');
+    const ent = sessionStorage.getItem('Entidad');
+    const session = sessionStorage.getItem('EJERCICIO');
+    const centroGestor = sessionStorage.getItem('CENTROGESTOR');
 
-    this.ENTCOD = entObj.ENTCOD;
-    const PERCOD = perObj.PERCOD;
-    const EJE = ejeObj.eje;
-    
-    if (!USUCOD) { this.fail('/login','Login required'); return; }
-    if (this.ENTCOD == null) { this.fail('/ent','Entidad missing'); return; }
-    if (PERCOD == null) { this.fail('/ent','Perfil missing'); return; }
-    if (EJE == null)    { this.fail('/eje','Ejercicio missing'); return; }
+    if (profile) { const parsed = JSON.parse(profile); this.perfil = parsed.PERCOD;}
+    if (ent) { const parsed = JSON.parse(ent); this.entcod = parsed.ENTCOD;}
+    if (session) { const parsed = JSON.parse(session); this.eje = parsed.eje;}
+    if (centroGestor) { const parsed = JSON.parse(centroGestor); this.cge = parsed.value;}
 
     this.loading = true;
     this.fetchSwVarables();
-    this.http.get<any[]>(`${environment.backendUrl}/api/centrogestor/percod/${PERCOD}/ent/${this.ENTCOD}/eje/${EJE}`)
+    this.fetchMenus();
+    this.http.get<any[]>(`${environment.backendUrl}/api/centrogestor/percod/${this.perfil}/ent/${this.entcod}/eje/${this.eje}`)
       .subscribe({
         next: resp => {
           if (resp?.length > 1) {
@@ -105,7 +96,7 @@ export class CentrogestorComponent implements OnInit {
 
   sicalVariables: any = [];
   fetchSwVarables() {
-    this.http.get(`${environment.backendUrl}/api/ayt/fetch-all/${this.ENTCOD}`).subscribe({
+    this.http.get(`${environment.backendUrl}/api/ayt/fetch-all/${this.entcod}`).subscribe({
       next: (res) => {
         this.sicalVariables = res;
         if (this.sicalVariables === 0) {
@@ -121,5 +112,19 @@ export class CentrogestorComponent implements OnInit {
         this.router.navigate(['/']);
       }
     })
+  }
+
+  fetchMenus() {
+    if(this.perfil === ''){return;}
+    this.http.get<any[]>(`${environment.backendUrl}/api/mnucods`, { 
+    params: { PERCOD: this.perfil || '' } })
+    .subscribe({
+      next: resp => {
+        sessionStorage.setItem('mnucods', JSON.stringify(resp));
+      },
+      error: err => {
+        console.warn("Los menús no se encuentran por ninguna parte.");
+      }
+    });
   }
 }

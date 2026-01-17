@@ -24,31 +24,15 @@ public class Pua {
 
     public Pua() {}
 
-    public String getUSUCOD() {
-        return USUCOD;
-    }
-    public void setUSUCOD(String USUCOD) {
-        this.USUCOD = USUCOD;
-    }
+    public String getUSUCOD() {return USUCOD;}
+    public void setUSUCOD(String USUCOD) {this.USUCOD = USUCOD;}
 
-    public Integer getAPLCOD() {
-        return APLCOD;
-    }
-    public void setAPLCOD(Integer APLCOD) {
-        this.APLCOD = APLCOD;
-    }
+    public Integer getAPLCOD() {return APLCOD;}
+    public void setAPLCOD(Integer APLCOD) {this.APLCOD = APLCOD;}
 
-    public Integer getENTCOD() {
-        return ENTCOD;
-    }
-    public void setENTCOD(Integer ENTCOD) {
-        this.ENTCOD = ENTCOD;
-    }
+    public Integer getENTCOD() {return ENTCOD;}
+    public void setENTCOD(Integer ENTCOD) {this.ENTCOD = ENTCOD;}
 
-    public String getPERCOD() {
-        return PERCOD;
-    }
-    public void setPERCOD(String PERCOD) {
-        this.PERCOD = PERCOD;
-    }
+    public String getPERCOD() {return PERCOD;}
+    public void setPERCOD(String PERCOD) {this.PERCOD = PERCOD;}
 }
