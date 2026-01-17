@@ -4,7 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
-
+import { forkJoin, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 @Component({
   selector: 'app-ent',
   standalone: true,
@@ -26,19 +27,31 @@ export class EntComponent implements OnInit {
       return;
     }
 
-    this.http.get<any>(`${environment.backendUrl}/api/pua/filter/${USUCOD}`).subscribe({
+    this.http.get<any[]>(`${environment.backendUrl}/api/pua/filter/${USUCOD}`).subscribe({
       next: (res) => {
-        if (Array.isArray(res) && res.length > 1) {
-          this.tableData = res;            
-        } else if (Array.isArray(res) && res.length === 1) {
-          const row = res[0];
-          this.tableData = [row];
-          this.selectRow(row);
-        } else {
-          alert('No se encontraron entidades');
-          sessionStorage.clear();
-          this.router.navigate(['/']);
-        }
+
+        const requests = res.map(item =>
+          this.http.get<{ entnom: string }>(`${environment.backendUrl}/api/ent/name/${item.entcod}`).pipe(
+            map(res => ({...item, entnom: res.entnom})),
+            catchError(() => of({...item, entnom: null}))
+          )
+        );
+        forkJoin(requests).subscribe({
+          next: (entidadesConNombre) => {
+            console.log(entidadesConNombre)
+            if (Array.isArray(entidadesConNombre) && res.length > 1) {
+              this.tableData = entidadesConNombre;            
+            } else if (Array.isArray(res) && res.length === 1) {
+              const row = res[0];
+              this.tableData = [row];
+              this.selectRow(row);
+            } else {
+              alert('No se encontraron entidades');
+              sessionStorage.clear();
+              this.router.navigate(['/']);
+            }
+          }
+        })
       },
       error: (err) => {
         alert(err?.error.error);
