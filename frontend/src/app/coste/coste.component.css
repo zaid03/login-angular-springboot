@@ -1,7 +1,5 @@
 /* search */
-.title-area { width: 30%; }
-.search-holder { justify-content: flex-start; width: 69%; }
-.search-container { margin-left: 15%; gap: 10px; }
+.search-container {gap: 20px;}
 /* search */
 /* main-list and table */
 .coste-list { width: 50%; }
