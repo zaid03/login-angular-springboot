@@ -603,6 +603,7 @@ export class ServiciosComponent {
     this.limpiarMessages();
     if (cod === '' || des === '' || cco === '' || cge === '') {
       this.addServiceErrorMessage = 'Se requieren Código, Descripción, Centro de Coste y Centro de Gestor'
+      this.isAdding = false;
       return;
     }
 

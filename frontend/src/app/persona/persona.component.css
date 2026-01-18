@@ -1,7 +1,5 @@
 /* search */
-.search-container { width: 90%;}
-.search-form { width: 20%;}
-.Widthy { width: 12%;}
+.search-container {gap: 10px;}
 /* search */
 .personas-table thead th:first-child {width: 110px;}
 .personas-table thead th:nth-child(2),

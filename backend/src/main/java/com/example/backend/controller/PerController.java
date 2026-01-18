@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/Per")
@@ -105,21 +106,22 @@ public class PerController {
                 return ResponseEntity.badRequest().body("Faltan datos obligatorios");
             }
 
-            int updated = perRepository.updatePersona(
-                payload.PERNOM(),
-                payload.PERCOE(),
-                payload.PERTEL(),
-                payload.PERTMO(),
-                payload.PERCAR(),
-                payload.PEROBS(),
-                payload.PERCOD()
-            );
-
-            if (updated == 0) {
+            Optional<Per> persona = perRepository.findById(payload.PERCOD());
+            if(persona.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No se encontró ninguna persona para los datos.");
+                    .body("No se encontró ningúna persona");
             }
 
+            Per personaUpdate = persona.get();
+            personaUpdate.setPERCOD(payload.PERCOD());
+            personaUpdate.setPERNOM(payload.PERNOM());
+            personaUpdate.setPERCOE(payload.PERCOE());
+            personaUpdate.setPERTEL(payload.PERTEL());
+            personaUpdate.setPERTMO(payload.PERTMO());
+            personaUpdate.setPERCAR(payload.PERCAR());
+            personaUpdate.setPEROBS(payload.PEROBS());
+
+            perRepository.save(personaUpdate);
             return ResponseEntity.noContent().build();
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
