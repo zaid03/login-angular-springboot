@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.example.backend.dto.DepWithCgeView;
-import com.example.backend.sqlserver2.model.Cge;
 import com.example.backend.sqlserver2.model.Dep;
 import com.example.backend.sqlserver2.model.DepId;
 

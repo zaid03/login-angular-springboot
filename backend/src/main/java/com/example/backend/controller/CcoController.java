@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/cco")
@@ -39,7 +40,7 @@ public class CcoController {
         }
     }
 
-    //search by ccocod also needed for adding
+    //search by ccocod
     @GetMapping("/filter-by/{ENT}/{EJE}/{CCOCOD}")
     public ResponseEntity<?> searchCoste(
         @PathVariable Integer ENT,
@@ -79,7 +80,7 @@ public class CcoController {
         }
     }
 
-    //to insert a centro
+    //to add a centro de coste
     public record newCentro(Integer ENT, String EJE, String CCOCOD, String CCODES) {}
     @PostMapping("/Insert-centro")
     public ResponseEntity<?> insertCentro(
@@ -123,18 +124,17 @@ public class CcoController {
                 return ResponseEntity.badRequest().body("Faltan datos obligatorios.");
             }
 
-            int updated = ccoRepository.updateCoste(
-                payload.CCODES(),
-                ENT,
-                EJE,
-                CCOCOD
-            );
-
-            if (updated == 0) {
-                return ResponseEntity.notFound()
-                .build();
+            CcoId id = new CcoId(ENT, EJE, CCOCOD);
+            Optional<Cco> coste = ccoRepository.findById(id);
+            if (coste.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No se encontró ningún centro de coste");
             }
 
+            Cco costeUpdate = coste.get();
+            costeUpdate.setCCODES(payload.CCODES());
+
+            ccoRepository.save(costeUpdate);
             return ResponseEntity.noContent().build();
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
