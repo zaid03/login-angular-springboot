@@ -1,15 +1,18 @@
 package com.example.backend.controller;
 
+import com.example.backend.sqlserver2.model.AsuId;
 import com.example.backend.sqlserver2.model.Art;
 import com.example.backend.sqlserver2.repository.ArtRepository;
 import com.example.backend.sqlserver2.repository.AsuRepository;
 import com.example.backend.sqlserver2.repository.AfaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/api/art")
@@ -24,32 +27,71 @@ public class ArtController {
 
     // Method to find Art records by ENT and AFACOD and artcod
     @GetMapping("/by-ent/{ent}/{afacod}/{asucod}/{artcod}")
-    public List<Art> getByEntAfacodAsucodArtcod(
+    public ResponseEntity<?> getByEntAfacodAsucodArtcod(
             @PathVariable int ent,
             @PathVariable String afacod,
             @PathVariable String asucod,
-            @PathVariable String artcod) {
-        return artRepository.findByENTAndAFACODAndASUCODAndARTCOD(ent, afacod, asucod, artcod);
+            @PathVariable String artcod
+    ) {
+        try {
+            List<Art> byAfacod = artRepository.findByENTAndAFACOD(ent, afacod);
+            List<Art> byAsucod = artRepository.findByENTAndASUCOD(ent, asucod);
+            List<Art> byArtcod = artRepository.findByENTAndARTCOD(ent, artcod);
+            
+            List<Art> combined = Stream.concat(
+                Stream.concat(byAfacod.stream(), byAsucod.stream()),
+                byArtcod.stream()
+            )
+            .distinct()
+            .toList();
+
+            return ResponseEntity.ok(combined);
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Error : " + ex.getMostSpecificCause().getMessage());
+        }
     }
 
     // Method to find art records by ent and artdes like
     @GetMapping("/by-ent-like/{ent}/{artdes}")
-    public List<Art> getByEntAndArtdesLike(
+    public ResponseEntity<?> getByEntAndArtdesLike(
             @PathVariable int ent,
-            @PathVariable String artdes) {
-        return artRepository.findByENTAndARTDESContaining(ent, artdes);
+            @PathVariable String artdes
+    ) {
+        try {
+            List<Art> articulos = artRepository.findByENTAndARTDESContaining(ent, artdes);
+            if(articulos.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body("No se encontró articulos");
+            }
+            return ResponseEntity.ok(articulos);
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Error : " + ex.getMostSpecificCause().getMessage());
+        }
     }
 
     //find an art name
     @GetMapping("/art-name/{ent}/{afacod}/{asucod}/{artcod}")
-    public List<Art> getArtName(
+    public ResponseEntity<?> getArtName(
         @PathVariable int ent,
         @PathVariable String afacod,
         @PathVariable String asucod,
-        @PathVariable String artcod) 
-        {
-        return artRepository.findArtName(ent, afacod, asucod, artcod);
+        @PathVariable String artcod
+    ) {
+        try {
+            List<Art> articulo = artRepository.findByENTAndAFACODAndASUCODAndARTCOD(ent, afacod, asucod, artcod);
+            if(articulo.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body("No se encontró articulo");
+            }
+
+            return ResponseEntity.ok(articulo);
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Error : " + ex.getMostSpecificCause().getMessage());
         }
+    }
 
     //deleting a familia
     @DeleteMapping("/delete-familia/{ent}/{afacod}")
@@ -57,19 +99,23 @@ public class ArtController {
         @PathVariable Integer ent,
         @PathVariable String afacod
     ) {
+        try {
+            long articulos = artRepository.countByENTAndAFACOD(ent, afacod);
+            if (articulos > 0) {
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("No se puede borrar una familia con artículos asociados");
+            }
 
-        long articulos = artRepository.countByEntAndAfacod(ent, afacod);
-        if (articulos > 0) {
-            return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body("No se puede borrar una familia con artículos asociados");
+            asuRepository.deleteByENTAndAFACOD(ent, afacod);
+            int removed = afaRepository.deleteByENTAndAFACOD(ent, afacod);
+            return removed == 0
+                ? ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Familia no encontrada para el código indicado.")
+                : ResponseEntity.noContent().build();
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Error : " + ex.getMostSpecificCause().getMessage());
         }
-
-        asuRepository.deleteByEntAndAfacod(ent, afacod);
-        int removed = afaRepository.deleteByEntAndAfacod(ent, afacod);
-        return removed == 0
-            ? ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Familia no encontrada para el código indicado.")
-            : ResponseEntity.noContent().build();
     }
 
     //to delete a subfamilia
@@ -79,16 +125,21 @@ public class ArtController {
         @PathVariable String afacod,
         @PathVariable String asucod
     ) {
-        long articulos = artRepository.countByEntAndAsucod(ent, asucod);
-        if (articulos > 0) {
-            return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body("No se puede borrar una subfamilia con artículos asociados");
-        }
+        try {
+            long articulos = artRepository.countByENTAndASUCOD(ent, asucod);
+            if (articulos > 0) {
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("No se puede borrar una subfamilia con artículos asociados");
+            }
 
-        int removed = asuRepository.deleteByEntAndAfacodAndAsucod(ent, afacod, asucod);
-        return removed == 0
-            ? ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("Subfamilia no encontrada para el código indicado.")
-            : ResponseEntity.noContent().build();
+            int removed = asuRepository.deleteByENTAndAFACODAndASUCOD(ent, afacod, asucod);
+            return removed == 0
+                ? ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Subfamilia no encontrada para el código indicado.")
+                : ResponseEntity.noContent().build();
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Error : " + ex.getMostSpecificCause().getMessage());
+        }
     }
 }

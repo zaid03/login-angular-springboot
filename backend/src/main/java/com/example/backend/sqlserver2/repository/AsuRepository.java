@@ -9,8 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.backend.sqlserver2.model.Asu;
 import com.example.backend.sqlserver2.model.AsuId;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 @Repository
 public interface AsuRepository extends JpaRepository<Asu, AsuId> {
@@ -28,31 +26,10 @@ public interface AsuRepository extends JpaRepository<Asu, AsuId> {
     //for deleting familias
     @Modifying
     @Transactional
-    @Query(
-        value = """
-            DELETE FROM ASU
-            WHERE ENT = :ent 
-            AND AFACOD = :afacod
-        """,
-        nativeQuery = true  
-    )
-    int deleteByEntAndAfacod(
-        @Param("ent") Integer ent,
-        @Param("afacod") String afacod
-    );
+    int deleteByENTAndAFACOD(Integer ent, String afacod);
 
     //to delete a subfamilia
     @Modifying
     @Transactional
-    @Query("""
-        DELETE FROM Asu a
-        WHERE a.ENT = :ENT
-          AND a.AFACOD = :AFACOD
-          AND a.ASUCOD = :ASUCOD
-    """)
-    int deleteByEntAndAfacodAndAsucod(
-        @Param("ENT") Integer ENT,
-        @Param("AFACOD") String AFACOD,
-        @Param("ASUCOD") String ASUCOD
-    );
+    int deleteByENTAndAFACODAndASUCOD(Integer ENT, String AFACOD, String ASUCOD);
 }

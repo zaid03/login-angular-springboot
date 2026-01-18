@@ -10,6 +10,12 @@ public class ArtId implements Serializable {
     private String ARTCOD;
 
     public ArtId() {}
+    public ArtId(Integer ENT, String AFACOD, String ASUCOD, String ARTCOD) {
+        this.ENT = ENT;
+        this.AFACOD = AFACOD;
+        this.ASUCOD = ASUCOD;
+        this.ARTCOD = ARTCOD;
+    }
 
     public Integer getENT() {return ENT;}
     public void setENT(Integer ENT) {this.ENT = ENT;}
