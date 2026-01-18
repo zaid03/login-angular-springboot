@@ -150,7 +150,6 @@ public class CcoController {
         @PathVariable String CCOCOD
     ) {
         try {
-
             CcoId id = new CcoId(ENT, EJE, CCOCOD);
             if(!ccoRepository.existsById(id)) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)

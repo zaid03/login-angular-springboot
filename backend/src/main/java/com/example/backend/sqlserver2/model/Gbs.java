@@ -68,7 +68,7 @@ public class Gbs {
     private double GBSIBG;
 
     @Column(nullable = true)
-    private double GBS413;
+    private Double GBS413;
 
     public Integer getENT() { return ENT; }
     public void setENT(Integer ENT) { this.ENT = ENT; }
@@ -102,6 +102,6 @@ public class Gbs {
     public void setGBSICT(double GBSICT) { this.GBSICT = GBSICT; }
     public double getGBSIBG() { return GBSIBG; }
     public void setGBSIBG(double GBSIBG) { this.GBSIBG = GBSIBG; }
-    public double getGBS413() { return GBS413; }
-    public void setGBS413(double GBS413) { this.GBS413 = GBS413; }
+    public Double getGBS413() { return GBS413; }
+    public void setGBS413(Double GBS413) { this.GBS413 = GBS413; }
 }

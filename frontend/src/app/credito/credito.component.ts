@@ -81,7 +81,7 @@ export class CreditoComponent {
       return;
     }
 
-    this.http.get<any>(`${environment.backendUrl}/api/gbs/${this.entcod}/${this.eje}/${this.centroGestor}`).subscribe({
+    this.http.get<any>(`${environment.backendUrl}/api/gbs/fetch-all/${this.entcod}/${this.eje}/${this.centroGestor}`).subscribe({
       next: (response) => {
         this.creditos = Array.isArray(response) ? [...response] : [];
         this.backupCreditos = [...this.creditos];
