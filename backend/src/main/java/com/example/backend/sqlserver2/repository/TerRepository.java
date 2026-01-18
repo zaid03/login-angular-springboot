@@ -143,4 +143,7 @@ public interface TerRepository extends JpaRepository<Ter, Integer> {
     AND t.TERBLO <> 1
   """)
   List<Ter> filterByNoBloqueado(@Param("ENT") int ent);
+
+  //for the main list
+  Optional<Ter> findByENTAndTERCOD(Integer ent, Integer tercod);
 }

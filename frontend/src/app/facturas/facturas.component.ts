@@ -499,6 +499,7 @@ export class FacturasComponent {
     const hasta = this.toDate?.trim() || '';
     if ((desde || hasta) && !this.fechaTipo || this.fechaTipo && !(desde || hasta)) {
       this.filterFacturaMessage = 'Seleccione un tipo de fecha y una cita antes de buscar.';
+      this.isLoading = false;
       return;
     }
 
