@@ -88,7 +88,7 @@ export class ServiciosComponent {
         this.isLoading = false;
       },
       error: (err) => {
-        this.servicessMessageError = err?.error?.error || 'Error desconocido';
+        this.servicessMessageError = err?.error || 'Error desconocido';
         this.isLoading = false;
       }
     });

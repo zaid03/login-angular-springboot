@@ -12,24 +12,30 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.backend.dto.DepCodDesDto;
+import com.example.backend.dto.PersonaDto;
 import com.example.backend.dto.PersonaServiceRequest;
 import com.example.backend.dto.ServicePersonaRequest;
-import com.example.backend.dto.servicesPerPersons;
 import com.example.backend.service.DpePersonasForService;
 import com.example.backend.service.DpeService;
+import com.example.backend.sqlserver2.model.Dep;
 import com.example.backend.sqlserver2.model.Dpe;
 import com.example.backend.sqlserver2.model.DpeId;
+import com.example.backend.sqlserver2.model.Per;
 import com.example.backend.sqlserver2.repository.DpeRepository;
+import com.example.backend.sqlserver2.repository.PerRepository;
+import com.example.backend.sqlserver2.repository.DepRepository;
 
 @RestController
 @RequestMapping("/api/depe")
 public class DpeController {
     @Autowired
     private DpeRepository dpeRepository;
+    @Autowired
+    private PerRepository perRepository;
+    @Autowired DepRepository depRepository;
 
     //for adding personas to services and vice versa
     private final DpeService dpeService;
@@ -48,11 +54,19 @@ public class DpeController {
         @PathVariable String depcod
     ) {
         try {
-            List<Object[]> personas = dpeRepository.fetchPersonas(ent, eje, depcod);
-            if (personas.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se puede encontrar a las personas de este departamento.");
-            }
-            return ResponseEntity.ok(personas);
+            List<Dpe> dpes = dpeRepository.findByENTAndEJEAndDEPCOD(ent, eje, depcod);
+
+            List<String> percods = dpes.stream()
+                .map(Dpe::getPERCOD)
+                .distinct()
+                .toList();
+
+            List<Per> personas = perRepository.findByPERCODIn(percods);
+
+            List<PersonaDto> result = personas.stream()
+                .map(p -> new PersonaDto(p.getPERCOD(), p.getPERNOM()))
+                .toList();
+            return ResponseEntity.ok(result);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al consultar personas: " + ex.getMostSpecificCause().getMessage());
         }
@@ -88,11 +102,24 @@ public class DpeController {
         @PathVariable String percod
     ) {
         try{
-            List<DepCodDesDto> services = dpeRepository.personaServices(ent, eje, percod);
-            if (services.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se pueden encontrar servicios para esta persona.");
+            List<Dpe> dpes = dpeRepository.findByENTAndEJEAndPERCOD(ent, eje, percod);
+            if (dpes.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No se encontraron servicios para esta persona");
             }
-            return ResponseEntity.ok(services);
+
+            List<String> depcods = dpes.stream()
+            .map(Dpe::getDEPCOD)
+            .distinct()
+            .toList();
+
+            List<Dep> deps = depRepository.findByENTAndEJEAndDEPCODIn(ent, eje, depcods);
+
+            List<DepCodDesDto> result = deps.stream()
+                .map(d -> new DepCodDesDto(d.getDEPCOD(), d.getDEPDES()))
+                .toList();
+
+            return ResponseEntity.ok(result);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error: " + ex.getMostSpecificCause().getMessage());
         }
@@ -153,7 +180,7 @@ public class DpeController {
                     .body("No se encontró la persona para eliminar servicios.");
             }
 
-            int deletedd = dpeRepository.deletePersonaServices(ent, eje, percod);
+            int deletedd = dpeRepository.deleteByENTAndEJEAndPERCOD(ent, eje, percod);
             if (deletedd == 0) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("No se encontró la persona para eliminar servicios.");
@@ -164,7 +191,6 @@ public class DpeController {
         }
     }
 
-    //adding personas to a service
     //adding serivces for a person
     @PostMapping("/add-services-persona")
     public ResponseEntity<?> addServicePersonas(@RequestBody ServicePersonaRequest request) {
@@ -181,45 +207,6 @@ public class DpeController {
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Error inesperado al añadir personas: " + ex.getMessage());
-        }
-    }
-
-    //selecting services per personas 
-    @GetMapping("/fetch-services-personas/{ENT}/{EJE}")
-    public ResponseEntity<?> fetchPersonaService(
-        @PathVariable Integer ENT,
-        @PathVariable String EJE
-    ) {
-        try{
-            List<servicesPerPersons> services = dpeRepository.findByENTAndEJE(ENT, EJE);
-            if (services.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encuentran servicios para estas personas");
-            }
-            return ResponseEntity.ok(services);
-        } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error: " + ex.getMostSpecificCause().getMessage());
-        }
-    }
-
-    //searching services per personas
-    @GetMapping("/search-services-personas")
-    public ResponseEntity<?> searchPersonasService(
-        @RequestParam Integer ENT,
-        @RequestParam String EJE,
-        @RequestParam(required = false) String servicio,
-        @RequestParam(required = false) String persona,
-        @RequestParam(required = false) String cgecod,
-        @RequestParam(required = false) String perfil
-    ) {
-        try{
-            List<servicesPerPersons> services = dpeRepository.searchServicesPerPersons(ENT, EJE, servicio, persona, cgecod, perfil
-            );
-            if (services.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encuentran servicios para estas personas");
-            }
-            return ResponseEntity.ok(services);
-        } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 }

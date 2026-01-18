@@ -320,8 +320,8 @@
                                     </thead>
                                     <tbody>
                                         <tr *ngFor="let p of paginatedPersonas">
-                                            <td>{{ p[0] }}</td>
-                                            <td>{{ p[1] }}</td>
+                                            <td>{{ p.percod }}</td>
+                                            <td>{{ p.pernom }}</td>
                                             <td><button class="delete-btn" (click)="showDelete(p)">-</button></td>
                                         </tr>
                                     </tbody>

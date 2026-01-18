@@ -15,4 +15,7 @@ public interface PerRepository extends JpaRepository<Per, String> {
 
     //for search in personas second case
     List<Per> findByPERNOMContaining(String PERNOM);
+
+    //selecting personas for servicios
+    List<Per> findByPERCODIn(List<String> percods);
 }
