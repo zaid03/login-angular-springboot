@@ -10,6 +10,12 @@ public class AsuId implements Serializable {
 
     public AsuId() {}
 
+    public AsuId(Integer ENT, String AFACOD, String ASUCOD) {
+        this.ENT = ENT;
+        this.AFACOD = AFACOD;
+        this.ASUCOD = ASUCOD;
+    }
+
     public Integer getENT() { return ENT; }
     public void setENT(Integer ENT) { this.ENT = ENT; }
 

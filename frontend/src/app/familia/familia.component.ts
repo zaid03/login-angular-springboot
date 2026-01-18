@@ -346,18 +346,26 @@ export class FamiliaComponent {
     this.limpiarMessages();
     this.subfamilias = [];
     this.selectedFamilias = familia;
-    this.FetchSubfamilias(this.selectedFamilias.afacod);
   }
 
   closeDetails() {
     this.selectedFamilias = null;
     this.subfamilias = [];
+    this.showSubfamiliasGrid = false;
+    this.activeDetailTab = null;
     this.limpiarMessages();
   }
 
   afacodError:string = '';
   subfamilias: any[] = [];
   mta:any[] = [];
+  activeDetailTab: 'subfamilia' | null = null;
+  showSubfamiliasGrid: boolean = false;
+  SubfamiliaGrid(afacod: String){
+    this.showSubfamiliasGrid = true;
+    this.FetchSubfamilias(afacod);
+  }
+  
   FetchSubfamilias(afacod: String) {
     if (!afacod) {
       this.afacodError = 'Familia requerido'

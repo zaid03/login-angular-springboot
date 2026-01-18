@@ -1,8 +1,11 @@
 package com.example.backend.controller;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.backend.sqlserver2.model.Asu;
+import com.example.backend.sqlserver2.model.AsuId;
 import com.example.backend.sqlserver2.repository.AsuRepository;
 
 @RestController
@@ -25,39 +29,85 @@ public class AsuController {
 
     // Method to find Asu records by ENT and AFACOD
     @GetMapping("/by-ent/{ent}/{afacod}/{asucod}")
-    public List<Asu> getByEntAndAfacodOrAsucod(
+    public ResponseEntity<?> getByEntAndAfacodOrAsucod(  // Fix: change return type
             @PathVariable int ent,
             @PathVariable String afacod,
-            @PathVariable String asucod) {
-        return asuRepository.findByEntAndAfacodOrAsucod(ent, afacod, asucod);
+            @PathVariable String asucod
+    ) {
+        try {
+            List<Asu> byAfacod = asuRepository.findByENTAndAFACOD(ent, afacod);
+        
+            List<Asu> byAsucod = asuRepository.findByENTAndASUCOD(ent, asucod);
+            
+            List<Asu> combined = Stream.concat(byAfacod.stream(), byAsucod.stream())
+                .distinct()
+                .toList();
+            
+            return ResponseEntity.ok(combined);
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Error : " + ex.getMostSpecificCause().getMessage());
+        }
     }
 
     // Method to find Asu records by ENT and ASUCOD like
     @GetMapping("/by-ent-like/{ent}/{asudes}")
-    public List<Asu> getByEntAndAsudesLike(
+    public ResponseEntity<?> getByEntAndAsudesLike(
             @PathVariable int ent,
-            @PathVariable String asudes) {
-        return asuRepository.findByENTAndASUDESContaining(ent, asudes);
+            @PathVariable String asudes
+    ) {
+        try {
+            List<Asu> subfamilias = asuRepository.findByENTAndASUDESContaining(ent, asudes);
+            if(subfamilias.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No se encontró ningún subfamilia");
+            }
+
+            return ResponseEntity.ok(subfamilias);
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Error : " + ex.getMostSpecificCause().getMessage());
+        }
     }
 
     //find an art name
     @GetMapping("/art-name/{ent}/{afacod}/{asucod}")
-    public List<Asu> getArtName(
+    public ResponseEntity<?> getArtName(
         @PathVariable int ent,
         @PathVariable String afacod,
-        @PathVariable String asucod) 
-        {
-            return asuRepository.getArtName(ent, afacod, asucod);
+        @PathVariable String asucod
+    ) {
+        try {
+            List<Asu> subfamilias = asuRepository.findByENTAndAFACODAndASUCOD(ent, afacod, asucod);
+            if(subfamilias.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No se encontró ningún subfamilia");
+            }
+            return ResponseEntity.ok(subfamilias);
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Error : " + ex.getMostSpecificCause().getMessage());
         }
+    }
 
     //filtering subs by ent and afacod
     @GetMapping("/by-ent-afacod/{ent}/{afacod}")
-    public List<Asu> getSubfamilias(
+    public ResponseEntity<?> getSubfamilias(
         @PathVariable int ent,
         @PathVariable String afacod
-    )
-    {
-        return asuRepository.findByENTAndAFACOD(ent, afacod);
+    ) {
+        try {
+            List<Asu> subfamilias = asuRepository.findByENTAndAFACOD(ent, afacod);
+            if(subfamilias.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No se encontró ningún subfamilia");
+            }
+
+            return ResponseEntity.ok(subfamilias);
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Error : " + ex.getMostSpecificCause().getMessage());
+        }
     }
 
     //for updating subs
@@ -69,25 +119,30 @@ public class AsuController {
         @PathVariable String afacod,
         @PathVariable("asucod") String asucod,
         @RequestBody newSubFamilia payload
-        ) {
-        if (payload == null || payload.ASUDES() == null || payload.ASUECO() == null || payload.MTACOD() == null) {
-            return ResponseEntity.badRequest().body("Faltan datos obligatorios.");
+    ) {
+        try {
+            if (payload == null || payload.ASUDES() == null || payload.ASUECO() == null || payload.MTACOD() == null) {
+                return ResponseEntity.badRequest().body("Faltan datos obligatorios.");
+            }
+
+            AsuId id = new AsuId(ent, afacod, asucod);
+            Optional<Asu> subfamilia = asuRepository.findById(id);
+            if (subfamilia.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No se encontró ningún centro de coste");
+            }
+
+            Asu subfamiliaUpdate = subfamilia.get();
+            subfamiliaUpdate.setASUDES(payload.ASUDES());
+            subfamiliaUpdate.setASUECO(payload.ASUECO());
+            subfamiliaUpdate.setMTACOD(payload.MTACOD());
+
+            asuRepository.save(subfamiliaUpdate);
+            return ResponseEntity.noContent().build();
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Error : " + ex.getMostSpecificCause().getMessage());
         }
-
-        int updated = asuRepository.updateSubFamilia(
-                payload.ASUDES(),
-                payload.ASUECO(),
-                payload.MTACOD(),
-                ent,
-                afacod,
-                asucod);
-
-        if (updated == 0) {
-            return ResponseEntity.notFound()
-            .build();
-        }
-
-        return ResponseEntity.noContent().build();
     }
 
     //subfamilia Add
@@ -97,24 +152,29 @@ public class AsuController {
     public ResponseEntity<?> insertSub(
         @RequestBody newSub payload
     ) {
-        if (payload == null || payload.ent() == null || payload.afacod() == null || payload.asucod() == null || payload.asudes() == null || payload.asueco() == null || payload.mtacod() == null) {
+        try {
+            if (payload == null || payload.ent() == null || payload.afacod() == null || payload.asucod() == null || payload.asudes() == null || payload.asueco() == null || payload.mtacod() == null) {
             return ResponseEntity.badRequest().body("Faltan datos obligatorios.");
+            }
+
+            if (!asuRepository.findByENTAndAFACODAndASUCOD(payload.ent(), payload.afacod(), payload.asucod()).isEmpty()) {
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("La subfamilia ya existe para ese código.");
+            }
+
+            Asu nueva = new Asu();
+            nueva.setENT(payload.ent());
+            nueva.setAFACOD(payload.afacod());
+            nueva.setASUCOD(payload.asucod());
+            nueva.setASUDES(payload.asudes());
+            nueva.setASUECO(payload.asueco());
+            nueva.setMTACOD(payload.mtacod());
+
+            asuRepository.save(nueva);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Error : " + ex.getMostSpecificCause().getMessage());
         }
-
-        if (!asuRepository.findByENTAndAFACODAndASUCOD(payload.ent(), payload.afacod(), payload.asucod()).isEmpty()) {
-            return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body("La subfamilia ya existe para ese código.");
-        }
-
-        Asu nueva = new Asu();
-        nueva.setENT(payload.ent());
-        nueva.setAFACOD(payload.afacod());
-        nueva.setASUCOD(payload.asucod());
-        nueva.setASUDES(payload.asudes());
-        nueva.setASUECO(payload.asueco());
-        nueva.setMTACOD(payload.mtacod());
-
-        asuRepository.save(nueva);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

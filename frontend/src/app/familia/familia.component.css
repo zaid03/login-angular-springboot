@@ -34,6 +34,7 @@
 .right-add select:focus,
 .subfamilia-table select:focus { outline: none; border-color: #042b5a; outline: none; background: #fff; } 
 .tallText { width: 450px; max-width: 625px;}
+.subFamilias-add-btn {margin-top: 10px;}
 /* detail grid */
 .sub-delete-btn,
 .articulos-cancel-confirm-btn { margin-left: 5px;}

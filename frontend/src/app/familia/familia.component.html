@@ -123,78 +123,93 @@
                             (click)="openDeleteConfirm(selectedFamilias.afacod)"
                         >-</button>
                     </div>
+                    <div class="more-detail-container">
+                        <div class="tabs" role="tablist" aria-label="Detalle tabs">
+                           <button
+                                class="tab-btn"
+                                role="tab"
+                                [attr.aria-selected]="activeDetailTab === 'subfamilia'"
+                                [class.active-tab]="activeDetailTab === 'subfamilia'"
+                                (click)="SubfamiliaGrid(selectedFamilias.afacod)"
+                            >
+                                Subfamilia
+                            </button>
+
+                        </div>
+                    </div>
                     <div class="subfamilias">
-                        <h3>Subfamilia</h3>
-                        <div class="butt">
-                            <button class="subFamilias-add-btn" (click)="launchAddSubFamilia()">+</button>
-                        </div>
-                        <h4 class="successBtn">{{ successUpdateMEssage }}</h4>
-                        <h4 class="errorBtn">{{ afacodError }}</h4>
-                        <div *ngIf="isDeleting" class="loading-message">
-                            <div class="spinner"></div>
-                            <span>borrando</span>
-                        </div>
-                        <table class="subfamilia-table">
-                            <thead>
-                                <tr>
-                                    <th>Subfamilia</th>
-                                    <th>Descripción</th>
-                                    <th>Económica</th>
-                                    <th>Tipo almacenaje</th>
-                                    <th>Acción</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr *ngFor="let s of subfamilias">
-                                    <td>
-                                        <p>{{s.asucod}}</p>
-                                    </td>
-                                    <td>
-                                        <textarea [(ngModel)]="s.asudes"
-                                            class="tallText"
-                                            #Description
-                                        ></textarea>
-                                    </td>
-                                    <td>
-                                        <textarea
-                                            maxlength="5"
-                                            [(ngModel)]="s.asueco"
-                                            #Economica
-                                            (input)="allowOnlyDigits($event)"
-                                        ></textarea>
-                                    </td>
-                                    <td>
-                                        <ng-container>
-                                            <select 
-                                                *ngIf="s.mta?.length; else noAlmacenaje"
-                                                class="mta-list"
-                                                [ngModel]="s.mtacod"
-                                                (ngModelChange)="onMtaChange(s, $event)"
-                                                name="almacenaje-{{ s.asucod }}"
-                                                #almacenajeModel="ngModel"
-                                            >
-                                                <option 
-                                                    *ngFor="let almacen of s.mta"
-                                                    [ngValue]="almacen.mtacod"
+                        <div class="custom-grid-modal" *ngIf="showSubfamiliasGrid">
+                            <div class="butt">
+                                <button class="subFamilias-add-btn" (click)="launchAddSubFamilia()">+</button>
+                            </div>
+                            <h4 class="successBtn">{{ successUpdateMEssage }}</h4>
+                            <h4 class="errorBtn">{{ afacodError }}</h4>
+                            <div *ngIf="isDeleting" class="loading-message">
+                                <div class="spinner"></div>
+                                <span>borrando</span>
+                            </div>
+                            <table class="subfamilia-table">
+                                <thead>
+                                    <tr>
+                                        <th>Subfamilia</th>
+                                        <th>Descripción</th>
+                                        <th>Económica</th>
+                                        <th>Tipo almacenaje</th>
+                                        <th>Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let s of subfamilias">
+                                        <td>
+                                            <p>{{s.asucod}}</p>
+                                        </td>
+                                        <td>
+                                            <textarea [(ngModel)]="s.asudes"
+                                                class="tallText"
+                                                #Description
+                                            ></textarea>
+                                        </td>
+                                        <td>
+                                            <textarea
+                                                maxlength="5"
+                                                [(ngModel)]="s.asueco"
+                                                #Economica
+                                                (input)="allowOnlyDigits($event)"
+                                            ></textarea>
+                                        </td>
+                                        <td>
+                                            <ng-container>
+                                                <select 
+                                                    *ngIf="s.mta?.length; else noAlmacenaje"
+                                                    class="mta-list"
+                                                    [ngModel]="s.mtacod"
+                                                    (ngModelChange)="onMtaChange(s, $event)"
+                                                    name="almacenaje-{{ s.asucod }}"
+                                                    #almacenajeModel="ngModel"
                                                 >
-                                                    {{ almacen.mtades }}
-                                                </option>
-                                            </select>
-                                        </ng-container>
-                                        <ng-template #noAlmacenaje>Sin datos</ng-template>
-                                    </td>
-                                    <td class="gap">
-                                        <button 
-                                            class="sub-save-btn" 
-                                            (click)="updateSubfamilia(s.afacod, s.asucod, Description.value, Economica.value, s.mtacod)"
-                                        >
-                                            ✔
-                                        </button>
-                                        <button class="sub-delete-btn" (click)="deleteSubfamilia(s.afacod, s.asucod)">-</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                                    <option 
+                                                        *ngFor="let almacen of s.mta"
+                                                        [ngValue]="almacen.mtacod"
+                                                    >
+                                                        {{ almacen.mtades }}
+                                                    </option>
+                                                </select>
+                                            </ng-container>
+                                            <ng-template #noAlmacenaje>Sin datos</ng-template>
+                                        </td>
+                                        <td class="gap">
+                                            <button 
+                                                class="sub-save-btn" 
+                                                (click)="updateSubfamilia(s.afacod, s.asucod, Description.value, Economica.value, s.mtacod)"
+                                            >
+                                                ✔
+                                            </button>
+                                            <button class="sub-delete-btn" (click)="deleteSubfamilia(s.afacod, s.asucod)">-</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
