@@ -22,24 +22,12 @@ public class Afa {
     @Column(nullable = true)
     private String AFADES;
 
-    public Integer getENT() {
-        return ENT;
-    }
-    public void setENT(Integer ENT) {
-        this.ENT = ENT;
-    }
+    public Integer getENT() {return ENT;}
+    public void setENT(Integer ENT) {this.ENT = ENT;}
 
-    public String getAFACOD() {
-        return AFACOD;
-    }
-    public void setAFACOD(String AFACOD) {
-        this.AFACOD = AFACOD;
-    }
+    public String getAFACOD() {return AFACOD;}
+    public void setAFACOD(String AFACOD) {this.AFACOD = AFACOD;}
 
-    public String getAFADES() {
-        return AFADES;
-    }
-    public void setAFADES(String AFADES) {
-        this.AFADES = AFADES;
-    }
+    public String getAFADES() {return AFADES;}
+    public void setAFADES(String AFADES) {this.AFADES = AFADES;}
 }

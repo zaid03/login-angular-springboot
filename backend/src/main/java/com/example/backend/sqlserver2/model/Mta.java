@@ -19,8 +19,10 @@ public class Mta {
 
     public Integer getENT() { return ENT; }
     public void setENT(Integer ENT) { this.ENT = ENT; }
+
     public Integer getMTACOD() { return MTACOD; }
     public void setMTACOD(Integer MTACOD) { this.MTACOD = MTACOD; }
+    
     public String getMTADES() { return MTADES; }
     public void setMTADES(String MTADES) { this.MTADES = MTADES; }
 }

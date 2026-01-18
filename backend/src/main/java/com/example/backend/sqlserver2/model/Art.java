@@ -30,38 +30,18 @@ public class Art {
     @Column(nullable = true)
     private String ARTDES;
 
-    public Integer getENT() {
-        return ENT;
-    }
-    public void setENT(Integer ENT) {
-        this.ENT = ENT;
-    }
+    public Integer getENT() {return ENT;}
+    public void setENT(Integer ENT) {this.ENT = ENT;}
 
-    public String getAFACOD() {
-        return AFACOD;
-    }
-    public void setAFACOD(String AFACOD) {
-        this.AFACOD = AFACOD;
-    }
+    public String getAFACOD() {return AFACOD;}
+    public void setAFACOD(String AFACOD) {this.AFACOD = AFACOD;}
 
-    public String getASUCOD() {
-        return ASUCOD;
-    }
-    public void setASUCOD(String ASUCOD) {
-        this.ASUCOD = ASUCOD;
-    }
+    public String getASUCOD() {return ASUCOD;}
+    public void setASUCOD(String ASUCOD) {this.ASUCOD = ASUCOD;}
 
-    public String getARTCOD() {
-        return ARTCOD;
-    }
-    public void setARTCOD(String ARTCOD) {
-        this.ARTCOD = ARTCOD;
-    }
+    public String getARTCOD() {return ARTCOD;}
+    public void setARTCOD(String ARTCOD) {this.ARTCOD = ARTCOD;}
 
-    public String getARTDES() {
-        return ARTDES;
-    }
-    public void setARTDES(String ARTDES) {
-        this.ARTDES = ARTDES;
-    }
+    public String getARTDES() {return ARTDES;}
+    public void setARTDES(String ARTDES) {this.ARTDES = ARTDES;}
 }

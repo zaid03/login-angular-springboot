@@ -409,14 +409,17 @@ export class FamiliaComponent {
     this.limpiarMessages();
     this.isUpdating = true;
     if (!afacod) { return; }
-    const payload = (afades ?? '').trim();
+    const payload = {
+      "AFADES" : afades
+    }
 
-    this.http.patch<any>(`${environment.backendUrl}/api/afa/update-familia/${this.entcod}/${afacod}`, payload, { headers: { 'Content-Type': 'text/plain' }, observe: 'response' }).subscribe({
+    this.http.patch<any>(`${environment.backendUrl}/api/afa/update-familia/${this.entcod}/${afacod}`, payload).subscribe({
       next: (response) => {
         this.familiaSucessMessage = 'Familia actualizada con éxito';
         this.isUpdating = false;
+        this.fetchFamilias();
       }, error: (err) => {
-        const message = err?.error ?? 'Error al actualizar la familia.';
+        const message = err?.error;
         this.familiaErrorMessage = message;
         this.isUpdating = false;
       }

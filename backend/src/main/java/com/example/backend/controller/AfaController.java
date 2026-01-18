@@ -1,6 +1,7 @@
 package com.example.backend.controller;
 
 import com.example.backend.sqlserver2.model.Afa;
+import com.example.backend.sqlserver2.model.AfaId;
 import com.example.backend.sqlserver2.repository.AfaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +11,7 @@ import org.springframework.dao.DataAccessException;
 
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/afa")
@@ -19,54 +21,85 @@ public class AfaController {
     private AfaRepository afaRepository;
 
     @GetMapping("/by-ent/{ent}/{afacod}")
-    public List<Afa> getByEntAndAfacod(@PathVariable int ent, @PathVariable String afacod) {
-        return afaRepository.findByENTAndAFACOD(ent, afacod);
+    public ResponseEntity<?> getByEntAndAfacod(
+        @PathVariable int ent, 
+        @PathVariable String afacod
+    ) {
+        try{
+            List<Afa> familias = afaRepository.findByENTAndAFACOD(ent, afacod);
+            if(familias.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No se encontró ningún familia");
+            }
+            return ResponseEntity.ok(familias);
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Error : " + ex.getMostSpecificCause().getMessage());
+        }
     }
 
     @GetMapping("/by-ent-like/{ent}/{afades}")
-    public List<Afa> getByEntAndAfadesLike(@PathVariable int ent, @PathVariable String afades) {
-        return afaRepository.findByENTAndAFADESContaining(ent, afades);
-    }
+    public ResponseEntity<?> getByEntAndAfadesLike(
+        @PathVariable int ent, 
+        @PathVariable String afades
+    ) {
+        try {
+            List<Afa> familias = afaRepository.findByENTAndAFADESContaining(ent, afades);
+            if(familias.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No se encontró ningún familia");
+            }
 
-    //find an art name 
-    @GetMapping("/art-name/{ent}/{afacod}")
-    public List<Afa> getArtName(
-        @PathVariable int ent,
-        @PathVariable String afacod) 
-        {
-            return afaRepository.getArtName(ent, afacod);
+            return ResponseEntity.ok(familias);
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Error : " + ex.getMostSpecificCause().getMessage());
         }
+    }
 
     //find familias by ent
     @GetMapping("/by-ent/{ent}")
-    public List<Afa> getAfaByEnt(
+    public ResponseEntity<?> getAfaByEnt(
         @PathVariable int ent
     ) {
-        return afaRepository.findByENT(ent);
+        try {
+            List<Afa> familias = afaRepository.findByENT(ent);
+            if(familias.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No se encontró ningún familia");
+            }
+
+            return ResponseEntity.ok(familias);
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Error : " + ex.getMostSpecificCause().getMessage());
+        }
     }
 
     //update description of familias
+    public record updateFamilia(String AFADES) {}
     @PatchMapping("/update-familia/{ent}/{afacod}")
     public ResponseEntity<?> updateFamilia(
         @PathVariable Integer ent,
         @PathVariable String afacod,
-        @RequestBody String afades
+        @RequestBody updateFamilia payload
     ) {
         try {
-            String value = afades != null ? afades.trim() : "";
-            if (value.startsWith("\"") && value.endsWith("\"")) {
-                value = value.substring(1, value.length() - 1);
+            if(payload == null || payload.AFADES() == null) {
+                return ResponseEntity.badRequest().body("Faltan datos obligatorios.");
             }
-            
-            int updated = afaRepository.updateFamilia (
-                value,
-                ent,
-                afacod
-            );
-            if (updated == 0) {
+
+            AfaId id = new AfaId(ent, afacod);
+            Optional<Afa> familia = afaRepository.findById(id);
+            if(familia.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No se encontró ninguna familia para los afacod.");
+                    .body("No se encontró ningún familia");
             }
+
+            Afa familiaUpdate = familia.get();
+            familiaUpdate.setAFADES(payload.AFADES());
+
+            afaRepository.save(familiaUpdate);
             return ResponseEntity.noContent().build();
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -76,7 +109,6 @@ public class AfaController {
 
     //familia add
     public record newFamilia(Integer ent, String afacod, String afades) {}
-
     @PostMapping("/Insert-familia")
     public ResponseEntity<?> insertFamilia(
         @RequestBody newFamilia payload

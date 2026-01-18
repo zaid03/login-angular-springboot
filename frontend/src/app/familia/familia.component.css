@@ -1,7 +1,6 @@
 /* search */
-.title-area { width: 30%; }
-.search-holder { justify-content: flex-start; width: 69%; }
-.search-container { margin-left: 15%; gap: 10px; }
+.title-area { width: 20%; }
+.search-container {gap: 10px; }
 /* search */
 /* all tables */
 .familia-list { width: 50%; }
