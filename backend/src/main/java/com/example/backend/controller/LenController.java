@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.dao.DataAccessException;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/Len")
@@ -38,8 +39,8 @@ public class LenController {
         @RequestBody Len newLugar
     ) {
         try {
-            Integer maxLencod = lenRepository.findMaxLencod();
-            int nextLencod = (maxLencod == null ? 1 : maxLencod + 1);
+            Len lastLen = lenRepository.findFirstByOrderByLENCODDesc();
+            int nextLencod = (lastLen == null ? 1 : lastLen.getLENCOD() + 1);
 
             newLugar.setLENCOD(nextLencod);
             lenRepository.save(newLugar);
@@ -63,20 +64,21 @@ public class LenController {
                 return ResponseEntity.badRequest().body("Faltan datos obligatorios.");
             }
 
-            int updated = lenRepository.updateLugar(
-                payload.LENDES(), 
-                payload.LENTXT(), 
-                LENCOD
-            );
-
-            if(updated == 0) {
+            Optional<Len> entrega = lenRepository.findById(LENCOD);
+            if(entrega.isEmpty()){
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No se encontró ninguna lugares de entrega para los datos.");
+                    .body("No se encontró ningúna entrega");
             }
+
+            Len entregaUpdate = entrega.get();
+            entregaUpdate.setLENDES(payload.LENDES());
+            entregaUpdate.setLENTXT(payload.LENTXT());
+
+            lenRepository.save(entregaUpdate);
             return ResponseEntity.noContent().build();
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Update failed: " + ex.getMostSpecificCause().getMessage());
+                .body("error de actualización: " + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -104,7 +106,7 @@ public class LenController {
         @PathVariable Integer LENCOD
     ) {
         try {
-            List<?> lugares = lenRepository.filterByLencod(LENCOD);
+            List<?> lugares = lenRepository.findByLENCOD(LENCOD);
             if (lugares.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontraron lugares de entregas");
             }
@@ -121,7 +123,7 @@ public class LenController {
         @PathVariable String LENDES
     ) {
         try {
-            List<?> lugares = lenRepository.filterByLendes(LENDES);
+            List<?> lugares = lenRepository.findByLENDESContaining(LENDES);
             if (lugares.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontraron lugares de entregas");
             }
