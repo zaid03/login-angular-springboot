@@ -634,7 +634,7 @@ export class FacturasComponent {
     this.isLoading = true;
 
     if ( option === 'albaranes') {
-      this.http.get<any>(`${environment.backendUrl}/api/alb/${this.entcod}/${this.eje}/${facnum}`).subscribe({
+      this.http.get<any>(`${environment.backendUrl}/api/alb/albaranes/${this.entcod}/${this.eje}/${facnum}`).subscribe({
         next: (response) => {
           if (!Array.isArray(response) || response.length === 0) {
             this.moreInfoMessageIsSuccess = true;
