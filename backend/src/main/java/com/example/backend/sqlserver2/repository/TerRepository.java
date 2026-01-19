@@ -33,14 +33,9 @@ public interface TerRepository extends JpaRepository<Ter, TerId>, JpaSpecificati
   //to filter with bloqueado or no bloqueado options only
   List<Ter> findByENTAndTERBLO(Integer ent, Integer TERBLO);
 
-  //for modifying a Ter record
-  Optional<Ter> findByTERCOD(Integer tercod);
-
   //for selected proveedores to be added from sicalwin
   @Query(value = "SELECT ISNULL(MAX(TERCOD),0) + 1 FROM dbo.TER WITH (UPDLOCK, HOLDLOCK) WHERE ENT = :ent", nativeQuery = true)
   Integer findNextTercodForEnt(@Param("ent") int ent);
-
-  
 
   //for the main list of facturas
   Optional<Ter> findByENTAndTERCOD(Integer ent, Integer tercod);

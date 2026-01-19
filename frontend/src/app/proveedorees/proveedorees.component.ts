@@ -550,14 +550,14 @@ export class ProveedoreesComponent {
   saveChanges() {
     this.isUpdating = true;
     this.limpiarMessages();
-    const updateFields ={
+    const payload ={
       TERWEB : this.selectedProveedor.terweb,
       TEROBS : this.selectedProveedor.terobs,
       TERBLO : this.selectedProveedor.terblo,
       TERACU : this.selectedProveedor.teracu
     }
 
-    this.http.put(`${environment.backendUrl}/api/ter/updateFields/${this.entcod}/${this.selectedProveedor.tercod}`, updateFields, { responseType: 'text' }
+    this.http.put(`${environment.backendUrl}/api/ter/updateFields/${this.entcod}/${this.selectedProveedor.tercod}`, payload, { responseType: 'text' }
     ).subscribe({
       next: (res) => {
         this.messageSuccess = 'Proveedor actualizado correctamente';

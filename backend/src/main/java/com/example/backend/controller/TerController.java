@@ -1,6 +1,7 @@
 package com.example.backend.controller;
 
 import com.example.backend.sqlserver2.model.Ter;
+import com.example.backend.sqlserver2.model.TerId;
 import com.example.backend.dto.TerDto;
 import com.example.backend.service.TerSearchOptions;
 import com.example.backend.sqlserver2.repository.TerRepository;
@@ -299,30 +300,31 @@ public class TerController {
     }
 
     //for modifying a Ter record
+    public record updateProveedor(String TERWEB, String TEROBS, Integer TERBLO, Integer TERACU) {};
     @PutMapping("/updateFields/{ent}/{tercod}")
     public ResponseEntity<?> updateTerFields(
         @PathVariable Integer ent,
         @PathVariable Integer tercod, 
-        @RequestBody TerDto update
+        @RequestBody updateProveedor payload
     ) {
         try {
-            Optional<Ter> optionalTer = terRepository.findByTERCOD(tercod);
-            if (optionalTer.isEmpty()) {
-                return ResponseEntity.ok("Sin resultado");  
+            TerId id = new TerId(ent, tercod);
+            Optional<Ter> proveedor = terRepository.findById(id);
+            if (proveedor.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");  
             }
 
-            if (optionalTer.isPresent()) {
-                Ter ter = optionalTer.get();
-                ter.setTERWEB(update.getTERWEB());
-                ter.setTEROBS(update.getTEROBS());
-                ter.setTERBLO(update.getTERBLO());
-                ter.setTERACU(update.getTERACU());
-                terRepository.save(ter); 
-            }
-            return ResponseEntity.ok("Campos actualizados exitosamente.");  
+            Ter updateProveedor = proveedor.get();
+            updateProveedor.setTERWEB(payload.TERWEB());
+            updateProveedor.setTEROBS(payload.TEROBS());
+            updateProveedor.setTERBLO(payload.TERBLO());
+            updateProveedor.setTERACU(payload.TERACU());
+
+            terRepository.save(updateProveedor);
+            return ResponseEntity.noContent().build();
 
         } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error actualizar el proveedor: " + ex.getMostSpecificCause().getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -332,8 +334,7 @@ public class TerController {
     public ResponseEntity<?> createMultipleForEnt(@PathVariable int ent, @RequestBody(required = false) List<TerDto> dtos) {
         try {
             if (dtos == null || dtos.isEmpty()) {
-                System.out.println("save-proveedores: empty or null body received");
-                return ResponseEntity.badRequest().body("Empty request body");
+                return ResponseEntity.badRequest().body("Faltan datos obligatorios");
             }
 
             Integer next = terRepository.findNextTercodForEnt(ent);
@@ -366,15 +367,4 @@ public class TerController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Server error: " + e.getClass().getSimpleName() + " - " + e.getMessage());
         }
     }
-
-    @PostMapping(value = "/debug/save-proveedores/{ent}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> debugSaveRaw(@PathVariable int ent, @RequestBody(required = false) String raw) {
-        System.out.println("=== DEBUG raw body ===");
-        System.out.println("ENT path = " + ent);
-        System.out.println(raw);
-        System.out.println("=== END DEBUG raw body ===");
-        return ResponseEntity.ok("received length=" + (raw==null?0:raw.length()));
-    }
-
-    
 }
