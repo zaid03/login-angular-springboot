@@ -20,7 +20,7 @@ public class AuthController {
         
         if (username == null || !validated) {
             return ResponseEntity.badRequest()
-                .body(Map.of("success", false, "error", "Missing username or not validated"));
+                .body(Map.of("Éxito", false, "Error", "Nombre de usuario faltante o no validado"));
         }
         
         String token = jwtUtil.generate(username);

@@ -26,11 +26,11 @@ public class MagController {
         try {
             Optional<MagShortDto> name = magRepository.findShortByEntAndDepcod(ent, depcod);
             if (name.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nombre de almacen no encontrado");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
             }
             return ResponseEntity.ok(name);
         } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al consultar nombre de almacen: " + ex.getMostSpecificCause().getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 }

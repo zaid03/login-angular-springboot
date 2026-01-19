@@ -29,7 +29,7 @@ public class TpeController {
             List<Tpe> personas = tpeRepository.findByENTAndTERCOD(ent, tercod);
             if(personas.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No se encontró ningún personas");
+                    .body("Sin resultado");
             }
 
             return ResponseEntity.ok(personas);
@@ -57,7 +57,7 @@ public class TpeController {
             Optional<Tpe> persona = tpeRepository.findById(id);
             if(persona.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No se encontró ningúna persona");
+                    .body("Sin resultado");
             }
 
             Tpe updatePersona = persona.get();
@@ -71,7 +71,7 @@ public class TpeController {
             return ResponseEntity.noContent().build();
         } catch(DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("La actualización falló: " + ex.getMostSpecificCause().getMessage());
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -86,12 +86,12 @@ public class TpeController {
     ) {
         try {
             if (payload == null || payload.tpenom() == null) {
-                return ResponseEntity.badRequest().body("nombre requerido.");
+                return ResponseEntity.badRequest().body("Nombre requerido.");
             }
 
             boolean name = tpeRepository.existsByENTAndTERCODAndTPENOM(ent, tercod, payload.tpenom());
             if (name){
-                return ResponseEntity.badRequest().body("nombre existe.");
+                return ResponseEntity.badRequest().body("Nombre existe.");
             }
 
             Tpe lastTpe = tpeRepository.findFirstByENTAndTERCODOrderByTPECODDesc(ent, tercod);
@@ -107,7 +107,7 @@ public class TpeController {
             tpe.setTPEOBS(payload.tpeobs());
 
             tpeRepository.save(tpe);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Persona de contacto agregada correctamente.");
+            return ResponseEntity.status(HttpStatus.CREATED).body("Persona de contacto agregada correctamente");
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("La inserción falló: " + ex.getMostSpecificCause().getMessage());
@@ -126,7 +126,7 @@ public class TpeController {
             TpeId id = new TpeId(ent, tercod, tpecod);
             if(!tpeRepository.existsById(id)) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No se encontró ningúna persona");
+                    .body("Sin resultado");
             }
             tpeRepository.deleteById(id);
             return ResponseEntity.ok("La persona ha sido eliminada con éxito");

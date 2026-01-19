@@ -30,7 +30,7 @@ public class FdtController {
         
             if(descuentos.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No se encontró ningún descuento");
+                    .body("Sin resultado");
             }
             
             List<FdtResumeDto> result = descuentos.stream()
@@ -49,7 +49,7 @@ public class FdtController {
             return ResponseEntity.ok(result);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("No se pudo recuperar el resumen de descuentos: " + ex.getMostSpecificCause().getMessage());
+                    .body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 }

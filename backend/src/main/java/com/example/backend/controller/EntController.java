@@ -24,7 +24,7 @@ public class EntController {
         try{
             Optional<EntNomProjection> name = entRepository.findProjectedByENTCOD(ent);
             if(name.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Entidad nombre no encontrado");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
             }
 
             return ResponseEntity.ok(name.get());

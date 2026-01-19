@@ -24,8 +24,7 @@ public class MtaController {
     @GetMapping("/all-mta/{ent}")
     public List<Mta> getAlmacenaje(
         @PathVariable Integer ent
-    )
-    {
+    ) {
         return mtaRepository.findByENT(ent);
     }
 
@@ -34,18 +33,16 @@ public class MtaController {
     public ResponseEntity<?> filterAlmacenaje(
         @PathVariable Integer ent,
         @PathVariable Integer mtacod
-    )
-    {
+    ) {
         try {
             List<Mta> result = mtaRepository.findByENTAndMTACOD(ent, mtacod);
             if (result.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body("No MTAs found for ent=" + ent + " and mtacod=" + mtacod);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
             }
             return ResponseEntity.ok(result);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Failed to fetch MTAs: " + ex.getMostSpecificCause().getMessage());
+                    .body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 }

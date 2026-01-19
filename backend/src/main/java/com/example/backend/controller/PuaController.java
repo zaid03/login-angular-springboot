@@ -24,7 +24,7 @@ public class PuaController {
         try{
             List<Pua> entidades = puaRepository.findByUSUCODAndAPLCOD(usucod, 7);
             if(entidades.isEmpty()){
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Entidades no encontrados");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
             }
 
             return ResponseEntity.ok(entidades);

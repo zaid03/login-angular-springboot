@@ -27,12 +27,12 @@ public class AprController {
             List<Apr> articulos = aprRepository.findByENTAndTERCOD(ent, tercod);
             if (articulos.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("artículos no encontrados");
+                    .body("Sin resultado");
             }
             return ResponseEntity.ok(articulos);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error : " + ex.getMostSpecificCause().getMessage());
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -53,7 +53,7 @@ public class AprController {
             Optional<Apr> articulo = aprRepository.findById(id);
             if(articulo.isEmpty()){
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No se encontró ningún articulo");
+                    .body("Sin resultado");
             }
             
             Apr articulosUpdate = articulo.get();
@@ -67,7 +67,7 @@ public class AprController {
             return ResponseEntity.noContent().build();
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("La actualización falló.: " + ex.getMostSpecificCause().getMessage());
+                .body("Error:" + ex.getMostSpecificCause().getMessage());
         }
     }
     
@@ -84,7 +84,7 @@ public class AprController {
             AprId id = new AprId(ent, tercod, afacod, asucod, artcod);
             if (!aprRepository.existsById(id)) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("articulo extraviado");
+                    .body("Sin resultado");
             }
             aprRepository.deleteById(id);
             return ResponseEntity.ok("articulo eliminado exitosamente");
@@ -105,7 +105,7 @@ public class AprController {
                 .body(apr.getAPRREF() + " added successfully");
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error al agregar: " + ex.getMostSpecificCause().getMessage());
+                .body("Error:" + ex.getMostSpecificCause().getMessage());
         }
     }
 }

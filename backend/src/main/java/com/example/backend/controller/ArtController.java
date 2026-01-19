@@ -47,7 +47,7 @@ public class ArtController {
             return ResponseEntity.ok(combined);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error : " + ex.getMostSpecificCause().getMessage());
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -61,12 +61,12 @@ public class ArtController {
             List<Art> articulos = artRepository.findByENTAndARTDESContaining(ent, artdes);
             if(articulos.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("No se encontró articulos");
+                .body("Sin resultado");
             }
             return ResponseEntity.ok(articulos);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error : " + ex.getMostSpecificCause().getMessage());
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -82,13 +82,13 @@ public class ArtController {
             List<Art> articulo = artRepository.findByENTAndAFACODAndASUCODAndARTCOD(ent, afacod, asucod, artcod);
             if(articulo.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("No se encontró articulo");
+                .body("Sin resultado");
             }
 
             return ResponseEntity.ok(articulo);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error : " + ex.getMostSpecificCause().getMessage());
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -109,11 +109,11 @@ public class ArtController {
             int removed = afaRepository.deleteByENTAndAFACOD(ent, afacod);
             return removed == 0
                 ? ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body("Familia no encontrada para el código indicado.")
+                        .body("Sin resultado")
                 : ResponseEntity.noContent().build();
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error : " + ex.getMostSpecificCause().getMessage());
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -134,11 +134,11 @@ public class ArtController {
             int removed = asuRepository.deleteByENTAndAFACODAndASUCOD(ent, afacod, asucod);
             return removed == 0
                 ? ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Subfamilia no encontrada para el código indicado.")
+                    .body("Sin resultado")
                 : ResponseEntity.noContent().build();
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error : " + ex.getMostSpecificCause().getMessage());
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 }

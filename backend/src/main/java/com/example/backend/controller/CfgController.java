@@ -22,14 +22,10 @@ public class CfgController {
     @GetMapping("/by-ent/{ent}")
     public ResponseEntity<?> getEJE(@PathVariable int ent) {
         try {
-            if (ent <= 0) {
-                return ResponseEntity.badRequest().body("ENT debe ser un número positivo");
-            }
-
             List<Cfg> results = cfgRepository.findEjeByENTAndCFGEST(ent, 0);
             
             if (results.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontraron ejercicios para esta entidad");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
             }
             
             return ResponseEntity.ok(results);
@@ -48,7 +44,7 @@ public class CfgController {
         try {
             List<Cfg> Eje = cfgRepository.findByENT(ENT);
             if(Eje.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontraron ejercicios para ese datos.");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
             }
 
             return ResponseEntity.ok(Eje);
@@ -67,7 +63,7 @@ public class CfgController {
         try {
             List<Cfg> Eje = cfgRepository.findByENTAndEJE(ENT, EJE);
             if(Eje.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontraron ejercicios para ese datos.");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
             }
 
             return ResponseEntity.ok(Eje);

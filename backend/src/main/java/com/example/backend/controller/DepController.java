@@ -44,12 +44,12 @@ public class DepController {
         try {
             List<Dep> services = depRepository.findByENTAndEJE(ent, eje);
             if (services.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontraron servicios");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
             }
             return ResponseEntity.ok(services);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al consultar servicios: " + ex.getMostSpecificCause().getMessage());
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -63,13 +63,13 @@ public class DepController {
         try {
             List<DepWithCgeView> services = depRepository.findByENTAndEJEAndDpes_PERCOD(ent, eje, percod);
             if (services.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontraron servicios");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
             }
 
             return ResponseEntity.ok(services);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al consultar servicios: " + ex.getMostSpecificCause().getMessage());
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -94,7 +94,7 @@ public class DepController {
 
             if (service.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No se encontró ningún servicio para los datos.");
+                    .body("Sin resultado");
             }
 
             Dep d = service.get();
@@ -108,7 +108,7 @@ public class DepController {
 
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("La actualización falló: " + ex.getMostSpecificCause().getMessage());
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -141,7 +141,7 @@ public class DepController {
 
             if (service.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No se encontró ningún servicio para los datos.");
+                    .body("Sin resultado");
             }
 
             Dep d = service.get();
@@ -159,7 +159,7 @@ public class DepController {
 
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("La actualización falló: " + ex.getMostSpecificCause().getMessage());
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -212,7 +212,7 @@ public class DepController {
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("la adición fallida: " + ex.getMostSpecificCause().getMessage());
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -263,7 +263,7 @@ public class DepController {
             }
 
             if (base.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontraron servicios");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
             }
 
             return ResponseEntity.ok(base);

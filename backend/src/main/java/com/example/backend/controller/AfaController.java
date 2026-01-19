@@ -29,7 +29,7 @@ public class AfaController {
             List<Afa> familias = afaRepository.findByENTAndAFACOD(ent, afacod);
             if(familias.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No se encontró ningún familia");
+                    .body("Sin resultado");
             }
             return ResponseEntity.ok(familias);
         } catch (DataAccessException ex) {
@@ -47,7 +47,7 @@ public class AfaController {
             List<Afa> familias = afaRepository.findByENTAndAFADESContaining(ent, afades);
             if(familias.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No se encontró ningún familia");
+                    .body("Sin resultado");
             }
 
             return ResponseEntity.ok(familias);
@@ -66,7 +66,7 @@ public class AfaController {
             List<Afa> familias = afaRepository.findByENT(ent);
             if(familias.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No se encontró ningún familia");
+                    .body("Sin resultado");
             }
 
             return ResponseEntity.ok(familias);
@@ -93,7 +93,7 @@ public class AfaController {
             Optional<Afa> familia = afaRepository.findById(id);
             if(familia.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No se encontró ningún familia");
+                    .body("Sin resultado");
             }
 
             Afa familiaUpdate = familia.get();
@@ -120,7 +120,7 @@ public class AfaController {
 
         if (!afaRepository.findByENTAndAFACOD(payload.ent(), payload.afacod()).isEmpty()) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body("La familia ya existe para ese código.");
+                .body("Sin resultado");
         }
 
         Afa nueva = new Afa();

@@ -31,7 +31,7 @@ public class FdeController {
         
             if(detalles.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No se encontró ningún applicacione");
+                    .body("Sin resultado");
             }
 
             List<FdeResumeDto> result = detalles.stream()

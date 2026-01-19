@@ -68,7 +68,7 @@ public class DpeController {
                 .toList();
             return ResponseEntity.ok(result);
         } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al consultar personas: " + ex.getMostSpecificCause().getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     } 
 
@@ -84,13 +84,13 @@ public class DpeController {
             DpeId id = new DpeId(ent, eje, depcod, percod);
             if(!dpeRepository.existsById(id)) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("No se encontró la personna para eliminar.");
+                .body("Sin resultado");
             }
 
             dpeRepository.deleteById(id);
             return ResponseEntity.noContent().build();
         } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error durante la eliminación: " + ex.getMostSpecificCause().getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -105,7 +105,7 @@ public class DpeController {
             List<Dpe> dpes = dpeRepository.findByENTAndEJEAndPERCOD(ent, eje, percod);
             if (dpes.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No se encontraron servicios para esta persona");
+                    .body("Sin resultado");
             }
 
             List<String> depcods = dpes.stream()
@@ -121,7 +121,7 @@ public class DpeController {
 
             return ResponseEntity.ok(result);
         } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error: " + ex.getMostSpecificCause().getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -137,13 +137,13 @@ public class DpeController {
             DpeId id = new DpeId(ent, eje, depcod, percod);
             if(!dpeRepository.existsById(id)) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("No se encontró la servicio para eliminar.");
+                .body("Sin resultado");
             }
 
             dpeRepository.deleteById(id);
             return ResponseEntity.noContent().build();
         } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error durante la eliminación: " + ex.getMostSpecificCause().getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -152,7 +152,7 @@ public class DpeController {
     public ResponseEntity<?> addPersonaServices(@RequestBody PersonaServiceRequest request) {
         try {
             if (request.getPercod() == null || request.getPercod().trim().isEmpty()) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("El código de persona es obligatorio.");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Falta un dato obligatorio");
             }
             if (request.getServices() == null || request.getServices().isEmpty()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Debe seleccionar al menos un servicio.");
@@ -162,7 +162,7 @@ public class DpeController {
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error inesperado al añadir servicios: " + ex.getMessage());
+                .body("Error: " + ex.getMessage());
         }
     }
 
@@ -177,13 +177,13 @@ public class DpeController {
             List<Dpe> existing = dpeRepository.findByENTAndEJEAndPERCOD(ent, eje, percod);
             if (existing.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No se encontró la persona para eliminar servicios.");
+                    .body("Sin resultado");
             }
 
             int deletedd = dpeRepository.deleteByENTAndEJEAndPERCOD(ent, eje, percod);
             if (deletedd == 0) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No se encontró la persona para eliminar servicios.");
+                    .body("Sin resultado");
             }
             return ResponseEntity.noContent().build();
         } catch (DataAccessException ex) {
@@ -206,7 +206,7 @@ public class DpeController {
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error inesperado al añadir personas: " + ex.getMessage());
+                .body("Error: " + ex.getMessage());
         }
     }
 }

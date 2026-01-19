@@ -25,7 +25,7 @@ public class LenController {
         try {
             List<?> lugares = lenRepository.findAll();
             if (lugares.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontraron lugares de entregas");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
             }
             return ResponseEntity.ok(lugares);
         } catch (DataAccessException ex) {
@@ -67,7 +67,7 @@ public class LenController {
             Optional<Len> entrega = lenRepository.findById(LENCOD);
             if(entrega.isEmpty()){
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No se encontró ningúna entrega");
+                    .body("Sin resultado");
             }
 
             Len entregaUpdate = entrega.get();
@@ -78,7 +78,7 @@ public class LenController {
             return ResponseEntity.noContent().build();
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("error de actualización: " + ex.getMostSpecificCause().getMessage());
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -90,13 +90,13 @@ public class LenController {
         try {
             if (!lenRepository.existsById(LENCOD)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("No se encontró el lugar de entrega para eliminar.");
+                .body("Sin resultado");
             }
             lenRepository.deleteById(LENCOD);
             return ResponseEntity.noContent().build();
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("delete failed: " + ex.getMostSpecificCause().getMessage());
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -108,12 +108,12 @@ public class LenController {
         try {
             List<?> lugares = lenRepository.findByLENCOD(LENCOD);
             if (lugares.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontraron lugares de entregas");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
             }
             return ResponseEntity.ok(lugares);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("filter failed: " + ex.getMostSpecificCause().getMessage());
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -125,12 +125,12 @@ public class LenController {
         try {
             List<?> lugares = lenRepository.findByLENDESContaining(LENDES);
             if (lugares.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontraron lugares de entregas");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
             }
             return ResponseEntity.ok(lugares);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("filter failed: " + ex.getMostSpecificCause().getMessage());
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 }

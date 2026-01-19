@@ -46,7 +46,7 @@ public class AsuController {
             return ResponseEntity.ok(combined);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error : " + ex.getMostSpecificCause().getMessage());
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -60,13 +60,13 @@ public class AsuController {
             List<Asu> subfamilias = asuRepository.findByENTAndASUDESContaining(ent, asudes);
             if(subfamilias.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No se encontró ningún subfamilia");
+                    .body("Sin resultado");
             }
 
             return ResponseEntity.ok(subfamilias);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error : " + ex.getMostSpecificCause().getMessage());
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -81,12 +81,12 @@ public class AsuController {
             List<Asu> subfamilias = asuRepository.findByENTAndAFACODAndASUCOD(ent, afacod, asucod);
             if(subfamilias.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No se encontró ningún subfamilia");
+                    .body("Sin resultado");
             }
             return ResponseEntity.ok(subfamilias);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error : " + ex.getMostSpecificCause().getMessage());
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -100,13 +100,13 @@ public class AsuController {
             List<Asu> subfamilias = asuRepository.findByENTAndAFACOD(ent, afacod);
             if(subfamilias.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No se encontró ningún subfamilia");
+                    .body("Sin resultado");
             }
 
             return ResponseEntity.ok(subfamilias);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error : " + ex.getMostSpecificCause().getMessage());
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -129,7 +129,7 @@ public class AsuController {
             Optional<Asu> subfamilia = asuRepository.findById(id);
             if (subfamilia.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No se encontró ningún centro de coste");
+                    .body("Sin resultado");
             }
 
             Asu subfamiliaUpdate = subfamilia.get();
@@ -141,7 +141,7 @@ public class AsuController {
             return ResponseEntity.noContent().build();
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error : " + ex.getMostSpecificCause().getMessage());
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -159,7 +159,7 @@ public class AsuController {
 
             if (!asuRepository.findByENTAndAFACODAndASUCOD(payload.ent(), payload.afacod(), payload.asucod()).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body("La subfamilia ya existe para ese código.");
+                    .body("Sin resultado");
             }
 
             Asu nueva = new Asu();
@@ -174,7 +174,7 @@ public class AsuController {
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error : " + ex.getMostSpecificCause().getMessage());
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 }

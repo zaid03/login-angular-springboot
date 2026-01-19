@@ -31,12 +31,12 @@ public class CcoController {
             List<?> centros =  ccoRepository.findByENTAndEJE(ENT, EJE);
             if (centros.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("Centro de costos no encontrado ");
+                .body("Sin resultado");
             }
             return ResponseEntity.ok(centros);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error : " + ex.getMostSpecificCause().getMessage());
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -51,12 +51,12 @@ public class CcoController {
             List<?> centros =  ccoRepository.findByENTAndEJEAndCCOCOD(ENT, EJE, CCOCOD);
             if (centros.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("Centro de costos no encontrado");
+                .body("Sin resultado");
             }
             return ResponseEntity.ok(centros);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error : " + ex.getMostSpecificCause().getMessage());
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -71,12 +71,12 @@ public class CcoController {
             List<?> centros =  ccoRepository.findByENTAndEJEAndCCODESContaining(ENT, EJE, CCODES);
             if (centros.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("Centro de costos no encontrado");
+                .body("Sin resultado");
             }
             return ResponseEntity.ok(centros);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error : " + ex.getMostSpecificCause().getMessage());
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -92,8 +92,8 @@ public class CcoController {
             }
 
             if(!ccoRepository.findByENTAndEJEAndCCOCOD(payload.ENT(), payload.EJE(), payload.CCOCOD()).isEmpty()) {
-                return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body("Centro de coste ya existe para ese código.");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body("Sin resultado");
             }
 
             Cco nueva = new Cco();
@@ -106,7 +106,7 @@ public class CcoController {
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error : " + ex.getMostSpecificCause().getMessage());
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -128,7 +128,7 @@ public class CcoController {
             Optional<Cco> coste = ccoRepository.findById(id);
             if (coste.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No se encontró ningún centro de coste");
+                    .body("Sin resultado");
             }
 
             Cco costeUpdate = coste.get();
@@ -138,7 +138,7 @@ public class CcoController {
             return ResponseEntity.noContent().build();
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error : " + ex.getMostSpecificCause().getMessage());
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -153,7 +153,7 @@ public class CcoController {
             CcoId id = new CcoId(ENT, EJE, CCOCOD);
             if(!ccoRepository.existsById(id)) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("No se encontró el centro de coste para eliminar.");
+                .body("Sin resultado");
             }
 
             long costes = depRepository.countByENTAndEJEAndCCOCOD(ENT, EJE, CCOCOD);
@@ -166,7 +166,7 @@ public class CcoController {
             return ResponseEntity.noContent().build();
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error : " + ex.getMostSpecificCause().getMessage());
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 }

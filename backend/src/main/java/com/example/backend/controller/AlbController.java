@@ -31,7 +31,7 @@ public class AlbController {
             
             if(albaranes.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No se encontró ningún albáran");
+                    .body("Sin resultado");
             }
 
             List<AlbResumeDto> result = albaranes.stream()

@@ -40,7 +40,7 @@ public class GbsController {
             Optional<Cge> cgeOpt = cgeRepository.findById(new CgeId(ent, eje, cgecod));
             if (cgeOpt.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Centro gestor no encontrado");
+                    .body("Sin resultado");
             }
             Cge cge = cgeOpt.get();
 
@@ -54,7 +54,7 @@ public class GbsController {
             return ResponseEntity.ok(result);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Update failed: " + ex.getMostSpecificCause().getMessage());
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -77,7 +77,7 @@ public class GbsController {
             Optional<Gbs> bolsa = gbsRepository.findById(id);
             if (bolsa.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No se encontró ninguna bolsa");
+                    .body("Sin resultado");
             }
 
             Gbs bolsaUpdate = bolsa.get();
@@ -90,7 +90,7 @@ public class GbsController {
             return ResponseEntity.noContent().build();
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Update failed: " + ex.getMostSpecificCause().getMessage());
+                    .body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 }

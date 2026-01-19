@@ -24,7 +24,7 @@ public class PerController {
         try {
             List<Per> personas = perRepository.findAll();
             if(personas.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontraron personas");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
             }
             return ResponseEntity.ok(personas);
         } catch (DataAccessException ex) {
@@ -40,7 +40,7 @@ public class PerController {
         try {
             List<Per> personas = perRepository.findByPERCODOrPERNOMContaining(search, search);
             if(personas.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontraron personas");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
             }
             return ResponseEntity.ok(personas);
         } catch (DataAccessException ex) {
@@ -56,7 +56,7 @@ public class PerController {
         try {
             List<Per> personas = perRepository.findByPERNOMContaining(search);
             if(personas.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontraron personas");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
             }
             return ResponseEntity.ok(personas);
         } catch (DataAccessException ex) {
@@ -91,7 +91,7 @@ public class PerController {
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("la adición fallida: " + ex.getMostSpecificCause().getMessage());
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -109,7 +109,7 @@ public class PerController {
             Optional<Per> persona = perRepository.findById(payload.PERCOD());
             if(persona.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No se encontró ningúna persona");
+                    .body("Sin resultado");
             }
 
             Per personaUpdate = persona.get();
@@ -125,7 +125,7 @@ public class PerController {
             return ResponseEntity.noContent().build();
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("La actualización falló: " + ex.getMostSpecificCause().getMessage());
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 }

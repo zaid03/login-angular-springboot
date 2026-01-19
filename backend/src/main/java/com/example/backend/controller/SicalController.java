@@ -22,12 +22,10 @@ public class SicalController {
 
     private final SicalService sicalService;
 
-    // Constructor injection of the service
     public SicalController(SicalService sicalService) {
         this.sicalService = sicalService;
     }
 
-    // Endpoint to get terceros
     @GetMapping("/terceros")
     public ResponseEntity<?> getTerceros(
             @RequestParam(required = false) String nif,
@@ -39,7 +37,7 @@ public class SicalController {
             return ResponseEntity.ok(result);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(Map.of("error", "SICAL service error: " + e.getMessage()));
+                .body("Error: " + e.getMessage());
         }
     }
 
@@ -56,7 +54,7 @@ public class SicalController {
                 "originPreview", sec.origin.substring(0, 30) + "..."
             ));
         } catch (Exception err) {
-            return ResponseEntity.status(500).body(Map.of("error", err.getMessage()));
+            return ResponseEntity.status(500).body(Map.of("Error", err.getMessage()));
         }
     }
 

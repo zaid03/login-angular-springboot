@@ -26,11 +26,11 @@ public class MatController {
         try {
             List<MatShortDto> almacenes = matRepository.findDistinctMtaByEntAndDepcod(ent, depcod);
             if (almacenes.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("codigo de almacen no encontrado");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
             }
             return ResponseEntity.ok(almacenes);
         } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al consultar almacen: " + ex.getMostSpecificCause().getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 }

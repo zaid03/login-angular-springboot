@@ -29,7 +29,6 @@ public class RpcSoapController {
         String use = params.getOrDefault("use", "encoded").toString();
         String encodingStyle = params.getOrDefault("encodingStyle", "http://schemas.xmlsoap.org/soap/encoding/").toString();
 
-        // If payload is missing, try to build from paramsMap
         Map<String, String> paramsMap = null;
             if (payload == null && params.get("paramsMap") instanceof Map) {
                 Map<?, ?> rawMap = (Map<?, ?>) params.get("paramsMap");
