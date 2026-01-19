@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { forkJoin, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+
 @Component({
   selector: 'app-ent',
   standalone: true,
@@ -23,7 +24,7 @@ export class EntComponent implements OnInit {
     const USUCOD = sessionStorage.getItem('USUCOD');
     if (!USUCOD) {
       alert('no hay sesión');
-      this.router.navigate(['/login']);
+      this.logout();
       return;
     }
 
@@ -40,22 +41,18 @@ export class EntComponent implements OnInit {
           next: (entidadesConNombre) => {
             if (Array.isArray(entidadesConNombre) && res.length > 1) {
               this.tableData = entidadesConNombre;            
-            } else if (Array.isArray(res) && res.length === 1) {
+            }  else if (Array.isArray(res) && res.length === 1) {
               const row = res[0];
               this.tableData = [row];
               this.selectRow(row);
             } else {
-              alert('No se encontraron entidades');
-              sessionStorage.clear();
-              this.router.navigate(['/']);
+              this.logout();
             }
           }
         })
       },
       error: (err) => {
-        alert(err?.error.error);
-        sessionStorage.clear();
-        this.router.navigate(['/']);
+        this.logout();
       }
     });
   }
@@ -64,5 +61,21 @@ export class EntComponent implements OnInit {
     sessionStorage.setItem('Entidad', JSON.stringify({ ENTCOD: t.entcod }));
     sessionStorage.setItem('Perfil', JSON.stringify({ PERCOD: t.percod }));
     this.router.navigate(['/eje']);
+  }
+
+  logout(): void {
+    sessionStorage.setItem('fromLogout', 'true');
+    localStorage.setItem('fromLogout', 'true');
+    sessionStorage.clear();
+    const casLogoutUrl = `${environment.casLoginUrl.replace('/login', '/logout')}`;
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    iframe.src = casLogoutUrl;
+    document.body.appendChild(iframe);
+    
+    setTimeout(() => {
+      document.body.removeChild(iframe);
+      window.location.href = `${environment.frontendUrl}/login`;
+    }, 1000);
   }
 }
