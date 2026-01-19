@@ -1,9 +1,7 @@
 package com.example.backend.controller;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import com.example.backend.dto.TpeDto;
 import com.example.backend.sqlserver2.model.Tpe;
+import com.example.backend.sqlserver2.model.TpeId;
 import com.example.backend.sqlserver2.repository.TpeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -12,41 +10,37 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
-import java.util.Map;
+import java.util.Optional;
 import java.util.List;
+
 @RestController
 @RequestMapping("/api/more")
 public class TpeController {
-    
     @Autowired
     private TpeRepository tpeRepository;
-    private static final Logger logger = LoggerFactory.getLogger(TpeController.class);
 
     // Custom query to find Tpe by ENT and TERCOD
     @GetMapping("/by-tpe/{ent}/{tercod}")
     public ResponseEntity<?> getByEntAndTercod(
         @PathVariable int ent,
-        @PathVariable int tercod) {
+        @PathVariable int tercod
+    ) {
+        try {
+            List<Tpe> personas = tpeRepository.findByENTAndTERCOD(ent, tercod);
+            if(personas.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No se encontró ningún personas");
+            }
 
-        List<TpeDto> result = tpeRepository.findDtoByEntAndTercod(ent, tercod);
-
-        if (result == null || result.isEmpty()) {
-            logger.info("No Tpe found for ent={}, tercod={}", ent, tercod);
-            Map<String, String> body = Collections.singletonMap(
-                "message",
-                String.format("No se encontró ninguna persona de contacto para este proveedor", ent, tercod)
-            );
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
-        } else {
-            logger.debug("Found {} Tpe entries for ent={}, tercod={}", result.size(), ent, tercod);
-            return ResponseEntity.ok(result);
+            return ResponseEntity.ok(personas);
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Error" + ex.getMostSpecificCause().getMessage());
         }
     }
 
     // modifying personas de contacto
     public record personaContacto(String tpenom, String tpetel, String tpetmo, String tpecoe, String tpeobs) {}
-
     @PutMapping("/modify/{ent}/{tercod}/{tpecod}")
     public ResponseEntity<?> modifyTpe(
         @PathVariable Integer ent,
@@ -59,22 +53,21 @@ public class TpeController {
                 return ResponseEntity.badRequest().body("nombre requerido.");
             }
 
-            int updated = tpeRepository.updatePersona(
-                payload.tpenom(),
-                payload.tpetel(),
-                payload.tpetmo(),
-                payload.tpecoe(),
-                payload.tpeobs(),
-                ent,
-                tercod,
-                tpecod
-            );
-
-            if (updated == 0) {
+            TpeId id = new TpeId(ent, tercod, tpecod);
+            Optional<Tpe> persona = tpeRepository.findById(id);
+            if(persona.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No se encontró ninguna persona de contacto para los datos.");
+                    .body("No se encontró ningúna persona");
             }
 
+            Tpe updatePersona = persona.get();
+            updatePersona.setTPENOM(payload.tpenom());
+            updatePersona.setTPETEL(payload.tpetel());
+            updatePersona.setTPETMO(payload.tpetmo());
+            updatePersona.setTPECOE(payload.tpecoe());
+            updatePersona.setTPEOBS(payload.tpeobs());
+  
+            tpeRepository.save(updatePersona);
             return ResponseEntity.noContent().build();
         } catch(DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -96,25 +89,24 @@ public class TpeController {
                 return ResponseEntity.badRequest().body("nombre requerido.");
             }
 
-            boolean name = tpeRepository.existsByEntAndTercodAndTpenom(ent, tercod, payload.tpenom());
+            boolean name = tpeRepository.existsByENTAndTERCODAndTPENOM(ent, tercod, payload.tpenom());
             if (name){
                 return ResponseEntity.badRequest().body("nombre existe.");
             }
 
-            Integer maxTpecod = tpeRepository.findMaxTpecodByEntAndTercod(ent, tercod);
-            int nextTpecod = (maxTpecod == null ? 1 : maxTpecod + 1);
+            Tpe lastTpe = tpeRepository.findFirstByENTAndTERCODOrderByTPECODDesc(ent, tercod);
+            int nextTpecod = (lastTpe == null ? 1 : lastTpe.getTPECOD() + 1);   
             Tpe tpe = new Tpe();
-            tpe.setent(ent);
-            tpe.settercod(tercod);
-            tpe.settpecod(nextTpecod);
-            tpe.settpenom(payload.tpenom());
-            tpe.settpetel(payload.tpetel());
-            tpe.settpetmo(payload.tpetmo());
-            tpe.settpecoe(payload.tpecoe());
-            tpe.settpeobs(payload.tpeobs());
+            tpe.setENT(ent);
+            tpe.setTERCOD(tercod);
+            tpe.setTPECOD(nextTpecod);
+            tpe.setTPENOM(payload.tpenom());
+            tpe.setTPETEL(payload.tpetel());
+            tpe.setTPETMO(payload.tpetmo());
+            tpe.setTPECOE(payload.tpecoe());
+            tpe.setTPEOBS(payload.tpeobs());
 
             tpeRepository.save(tpe);
-
             return ResponseEntity.status(HttpStatus.CREATED).body("Persona de contacto agregada correctamente.");
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -130,11 +122,17 @@ public class TpeController {
         @PathVariable Integer tercod,
         @PathVariable Integer tpecod
     ) {
-        int deleted = tpeRepository.deleteByEntAndTercodAndTpecod(ent, tercod, tpecod);
-        if (deleted == 0) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(Collections.singletonMap("message", "No se encontró la persona para eliminar"));
+        try {
+            TpeId id = new TpeId(ent, tercod, tpecod);
+            if(!tpeRepository.existsById(id)) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No se encontró ningúna persona");
+            }
+            tpeRepository.deleteById(id);
+            return ResponseEntity.ok("La persona ha sido eliminada con éxito");
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
         }
-        return ResponseEntity.ok(Collections.singletonMap("message", "La persona ha sido eliminada con éxito"));
     }
 }

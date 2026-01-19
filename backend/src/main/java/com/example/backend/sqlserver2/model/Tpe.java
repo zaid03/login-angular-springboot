@@ -1,6 +1,5 @@
 package com.example.backend.sqlserver2.model;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
@@ -12,54 +11,45 @@ import jakarta.persistence.Table;
 public class Tpe {
     
     @Id
-    @Column(name = "ENT", nullable = false)
-    private Integer ent;
+    private Integer ENT;
 
     @Id
-    @Column(name = "TERCOD", nullable = false)
-    private Integer tercod;
+    private Integer TERCOD;
 
     @Id
-    @Column(name = "TPECOD", nullable = false)
-    private Integer tpecod;
+    private Integer TPECOD;
 
-    @Column(name = "TPENOM")
-    private String tpenom;
+    private String TPENOM;
 
-    @Column(name = "TPETEL")
-    private String tpetel;
+    private String TPETEL;
 
-    @Column(name = "TPETMO")
-    private String tpetmo;
+    private String TPETMO;
 
-    @Column(name = "TPECOE")
-    private String tpecoe;
+    private String TPECOE;
 
-    @Column(name = "TPEOBS")
-    private String tpeobs;
+    private String TPEOBS;
 
+    public Integer getENT() {return ENT;}
+    public void setENT(Integer ENT) {this.ENT = ENT;}
 
-    public Integer getent() {return ent;}
-    public void setent(Integer ent) {this.ent = ent;}
+    public Integer getTERCOD() {return TERCOD;}
+    public void setTERCOD(Integer TERCOD) {this.TERCOD = TERCOD;}
 
-    public Integer gettercod() {return tercod;}
-    public void settercod(Integer tercod) {this.tercod = tercod;}
+    public Integer getTPECOD() {return TPECOD;}
+    public void setTPECOD(Integer TPECOD) {this.TPECOD = TPECOD; }
 
-    public Integer gettpecod() {return tpecod;}
-    public void settpecod(Integer tpecod) {this.tpecod = tpecod; }
+    public String getTPENOM() {return TPENOM;}
+    public void setTPENOM(String TPENOM) {this.TPENOM = TPENOM;}
 
-    public String gettpenom() {return tpenom;}
-    public void settpenom(String tpenom) {this.tpenom = tpenom;}
+    public String getTPETEL() {return TPETEL;}
+    public void setTPETEL(String TPETEL) {this.TPETEL = TPETEL;}
 
-    public String gettpetel() {return tpetel;}
-    public void settpetel(String tpetel) {this.tpetel = tpetel;}
+    public String getTPETMO() {return TPETMO;}
+    public void setTPETMO(String TPETMO) {this.TPETMO = TPETMO;}
 
-    public String gettpetmo() {return tpetmo;}
-    public void settpetmo(String tpetmo) {this.tpetmo = tpetmo;}
+    public String getTPECOE() {return TPECOE;}
+    public void setTPECOE(String TPECOE) {this.TPECOE = TPECOE;}
 
-    public String gettpecoe() {return tpecoe;}
-    public void settpecoe(String tpecoe) {this.tpecoe = tpecoe;}
-
-    public String gettpeobs() {return tpeobs;}
-    public void settpeobs(String tpeobs) {this.tpeobs = tpeobs;}
+    public String getTPEOBS() {return TPEOBS;}
+    public void setTPEOBS(String TPEOBS) {this.TPEOBS = TPEOBS;}
 }

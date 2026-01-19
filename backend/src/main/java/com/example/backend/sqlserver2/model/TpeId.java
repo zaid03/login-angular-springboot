@@ -4,29 +4,37 @@ import java.io.Serializable;
 import java.util.Objects;
 
 public class TpeId implements Serializable {
-    private Integer ent;
-    private Integer tercod;
-    private Integer tpecod;
+    private Integer ENT;
+    private Integer TERCOD;
+    private Integer TPECOD;
 
-    public Integer getent() { return ent; }
-    public void setent(Integer ent) { this.ent = ent; }
-    public Integer gettercod() { return tercod; }
-    public void settercod(Integer tercod) { this.tercod = tercod; }
-    public Integer gettpecod() { return tpecod; }
-    public void settpecod(Integer tpecod) { this.tpecod = tpecod; }
+    public TpeId() {}
+
+    public TpeId(Integer ENT, Integer TERCOD, Integer TPECOD) {
+        this.ENT = ENT;
+        this.TERCOD = TERCOD;
+        this.TPECOD = TPECOD;
+    }
+    
+    public Integer getENT() { return ENT; }
+    public void setENT(Integer ENT) { this.ENT = ENT; }
+    public Integer getTERCOD() { return TERCOD; }
+    public void setTERCOD(Integer TERCOD) { this.TERCOD = TERCOD; }
+    public Integer getTPECOD() { return TPECOD; }
+    public void setTPECOD(Integer TPECOD) { this.TPECOD = TPECOD; }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof TpeId)) return false;
         TpeId tpeId = (TpeId) o;
-        return Objects.equals(ent, tpeId.ent) &&
-               Objects.equals(tercod, tpeId.tercod) &&
-               Objects.equals(tpecod, tpeId.tpecod);
+        return Objects.equals(ENT, tpeId.ENT) &&
+               Objects.equals(TERCOD, tpeId.TERCOD) &&
+               Objects.equals(TPECOD, tpeId.TPECOD);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(ent, tercod, tpecod);
+        return Objects.hash(ENT, TERCOD, TPECOD);
     }
 }
