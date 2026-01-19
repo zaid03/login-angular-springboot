@@ -39,60 +39,27 @@ public class Tpe {
     private String tpeobs;
 
 
-    public Integer getent() {
-        return ent;
-    }
-    public void setent(Integer ent) {
-        this.ent = ent;
-    }
+    public Integer getent() {return ent;}
+    public void setent(Integer ent) {this.ent = ent;}
 
-    public Integer gettercod() {
-        return tercod;
-    }
-    public void settercod(Integer tercod) {
-        this.tercod = tercod;
-    }
+    public Integer gettercod() {return tercod;}
+    public void settercod(Integer tercod) {this.tercod = tercod;}
 
-    public Integer gettpecod() { 
-        return tpecod;
-    }
+    public Integer gettpecod() {return tpecod;}
+    public void settpecod(Integer tpecod) {this.tpecod = tpecod; }
 
-    public void settpecod(Integer tpecod) { 
-        this.tpecod = tpecod; 
-    }
+    public String gettpenom() {return tpenom;}
+    public void settpenom(String tpenom) {this.tpenom = tpenom;}
 
-    public String gettpenom() {
-        return tpenom;
-    }
-    public void settpenom(String tpenom) {
-        this.tpenom = tpenom;
-    }
+    public String gettpetel() {return tpetel;}
+    public void settpetel(String tpetel) {this.tpetel = tpetel;}
 
-    public String gettpetel() {
-        return tpetel;
-    }
-    public void settpetel(String tpetel) {
-        this.tpetel = tpetel;
-    }
+    public String gettpetmo() {return tpetmo;}
+    public void settpetmo(String tpetmo) {this.tpetmo = tpetmo;}
 
-    public String gettpetmo() {
-        return tpetmo;
-    }
-    public void settpetmo(String tpetmo) {
-        this.tpetmo = tpetmo;
-    }
+    public String gettpecoe() {return tpecoe;}
+    public void settpecoe(String tpecoe) {this.tpecoe = tpecoe;}
 
-    public String gettpecoe() {
-        return tpecoe;
-    }
-    public void settpecoe(String tpecoe) {
-        this.tpecoe = tpecoe;
-    }
-
-    public String gettpeobs() {
-        return tpeobs;
-    }
-    public void settpeobs(String tpeobs) {
-        this.tpeobs = tpeobs;
-    }
+    public String gettpeobs() {return tpeobs;}
+    public void settpeobs(String tpeobs) {this.tpeobs = tpeobs;}
 }
