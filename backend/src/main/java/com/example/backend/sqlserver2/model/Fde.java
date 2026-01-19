@@ -1,9 +1,13 @@
 package com.example.backend.sqlserver2.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.IdClass;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinColumns;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 @IdClass(FdeId.class)
@@ -34,6 +38,16 @@ public class Fde {
 
     private Double FDEDIF;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumns({
+        @JoinColumn(name = "ENT", referencedColumnName = "ENT", insertable = false, updatable = false),
+        @JoinColumn(name = "EJE", referencedColumnName = "EJE", insertable = false, updatable = false),
+        @JoinColumn(name = "FACNUM", referencedColumnName = "FACNUM", insertable = false, updatable = false)
+    })
+    private Fac fac;
+
+    public Fac getFac() { return fac; }
+    public void setFac(Fac fac) { this.fac = fac; }
 
     public Integer getENT() { return ENT; }
     public void setENT(Integer ENT) { this.ENT = ENT; }
