@@ -83,16 +83,13 @@ export class FamiliaComponent {
 
   public searchTerm: string = '';
   searchFamilias(): void {
+    this.isLoading = true;
     this.limpiarMessages();
     const term = this.searchTerm.trim();
 
     if (!term) {
-      this.tableMessage = 'Introduzca una familia para buscar'
-      this.familias = [...this.backupFamilias];
-      this.defaultFamilias = [...this.familias];
-      this.sortField = null;
-      this.sortDirection = 'asc';
-      this.page = 0;
+      this.fetchFamilias();
+      this.isLoading = false;
       return;
     }
 
@@ -102,21 +99,24 @@ export class FamiliaComponent {
         this.familias = this.backupFamilias.filter(
           (f) => f.afacod?.toString() === term
         );
+        this.isLoading = false;
       } else {
         const lower = term.toLowerCase();
         this.familias = this.backupFamilias.filter((f) =>
           f.afades?.toString().toLowerCase().includes(lower)
         );
+        this.isLoading = false;
       }
     } else {
       const lower = term.toLowerCase();
       this.familias = this.backupFamilias.filter((f) =>
         f.afades?.toString().toLowerCase().includes(lower)
       );
+      this.isLoading = false;
     }
 
     if (this.familias.length === 0) {
-      this.tableMessage = 'Este familia o subfamilia no existe';
+      this.tableMessage = 'No resultado';
     }
     
     this.defaultFamilias = [...this.familias];
