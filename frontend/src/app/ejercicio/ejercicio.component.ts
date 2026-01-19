@@ -281,7 +281,8 @@ export class EjercicioComponent {
     this.isLoading = true;
 
     if(this.searchTerm === '') {
-      this.ejercicioError = 'ingresa algo para buscar';
+      this.fetchEjercicios();
+      return;
     }
 
     this.http.get<any>(`${environment.backendUrl}/api/cfg/search-Eje/${this.entcod}/${this.searchTerm}`).subscribe({
@@ -293,7 +294,7 @@ export class EjercicioComponent {
         this.isLoading = false;
       },
       error: (err) => {
-        this.ejercicioError = err.error.error || 'Error desconocido';
+        this.ejercicioError = err.error;
         this.isLoading = false;
       }
     });
@@ -301,10 +302,12 @@ export class EjercicioComponent {
 
   limpiarSearch() {
     this.limpiarMessages();
+    this.searchTerm = '';
     this.page = 0;
     this.ejercicios = [...this.backupEjercicios];
     this.defaultEjercicios = [...this.backupEjercicios];
   }
+  
   //misc
   limpiarMessages() {
     this.ejercicioSuccess = '';

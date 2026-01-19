@@ -283,7 +283,8 @@ export class PersonaComponent {
     this.isLoading = true;
     this.limpiarMessages();
     if(this.searchPersonas === '') {
-      this.personasMessageError = 'Ingrese algo para buscar';
+      this.fetchPersonas();
+      this.isLoading = false;
       return 
     }
 
@@ -755,7 +756,7 @@ export class PersonaComponent {
   searchCopy() {
     this.limpiarMessages();
     if(this.searchPersonasCopy === '') {
-      this.errorCopy = 'Ingrese algo para buscar';
+      this.fetchPersonasForCopy();
       return 
     }
 

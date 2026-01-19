@@ -149,22 +149,16 @@ export class CgeComponent {
     }
     this.searchTerm = value;
     input.value = value;
-
-    if (!value) {
-      this.limpiarMessages();
-      this.centroGestores = [...this.backupCentroGestores];
-      this.page = 0;
-    }
   }
 
   searchCentroGestor(): void {
+    this.isLoading = true;
     this.limpiarMessages();
     const term = this.searchTerm.trim();
 
     if (!term || term.length < 2) {
-      this.SearchDownMessageError = 'Introduzca una centro gestor para buscar'
-      this.centroGestores = [...this.backupCentroGestores];
-      this.page = 0;
+      this.fetchCentro();
+      this.isLoading = false;
       return;
     }
 

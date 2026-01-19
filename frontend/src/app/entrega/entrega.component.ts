@@ -168,10 +168,12 @@ export class EntregaComponent {
   searchText: string = '';
   filterEntrega() {
     this.emptyAllMessages();
+    this.isLoading = true;
 
     if(!this.searchText) {
-      this.entregasError = 'Introduzca una entrega para buscar';
-      return;
+      this.fetchEntregas()
+      this.isLoading = false;
+      return;;
     }
 
     const isNumber = /^[0-9]+$/;
@@ -182,9 +184,11 @@ export class EntregaComponent {
       this.http.get<any[]>(`${environment.backendUrl}/api/Len/filter-lencod/${this.searchText}`).subscribe({
         next: (res) => {
           this.entregas = res;
+          this.isLoading = false;
         },
         error: (err) => {
           this.entregasError = err.error || 'server error';
+          this.isLoading = false;
         }
       });
     }
@@ -192,9 +196,11 @@ export class EntregaComponent {
       this.http.get<any[]>(`${environment.backendUrl}/api/Len/filter-lendes/${this.searchText}`).subscribe({
         next: (res) => {
           this.entregas = res;
+          this.isLoading = false;
         },
         error: (err) => {
           this.entregasError = err.error || 'server error';
+          this.isLoading = false;
         }
       });
     }

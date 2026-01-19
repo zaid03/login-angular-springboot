@@ -317,8 +317,8 @@ export class ServiciosComponent {
     this.limpiarMessages();
     this.isLoading = true;
 
-    if (this.searchServicio === '' && this.searchCentroGestor === '') {
-      this.servicessMessageError = 'Debe proporcionar al menos un filtro';
+    if (this.searchServicio === '' && this.searchCentroGestor === '' && this.searchPerfil === 'todos') {
+      this.fetchServices();
       this.isLoading = false;
       return;
     }

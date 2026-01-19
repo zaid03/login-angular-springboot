@@ -197,7 +197,8 @@ export class CosteComponent {
     this.isLoading = true;
 
     if(!this.searchText) {
-      this.costeError = 'Introduzca una centro de coste para buscar';
+      this.fetchCostes();
+      this.isLoading = false;
       return;
     }
 

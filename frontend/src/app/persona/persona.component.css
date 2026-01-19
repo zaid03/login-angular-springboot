@@ -40,7 +40,7 @@
 .servicesPersona-table tbody td:last-child {text-align: center;}
 .margin { margin-top: 10px;}
 /* services grid in detail */
-/* add persona grid */
+/* add persona grid */  
 .add-confirm-modal { width: 45%; top: 20%;}
 .title {width: 80%;}
 .add-container {display: flex; width: 99%;}
@@ -63,9 +63,10 @@
 .proveedor-grid-modal .search-holder,
 .placement .search-holder {width: 100%;}
 .proveedor-grid-modal .search-container,
-.placement .search-container {width: 100%;}
+.placement .search-container {width: 80%;}
 .proveedor-grid-modal .search-form,
-.placement .search-form {width: 61%;} 
+.proveedor-grid-modal .placement .search-form {width: 100% !important;} 
+.proveedor-grid-modal .search-container .btns{width: 15%;}
 .search-form select { padding: 4px 6px; border-radius: 20px; border: 1px solid #bbb; font-size: 15px; transition: border 0.2s, box-shadow 0.2s; outline: none; box-shadow: 0 1px 4px rgba(56,36,155,0.04); }
 .search-form option { outline: none; font-weight: bold;}
 .fixing-pag {display: flex; justify-content: center;}
@@ -79,9 +80,9 @@
 .sure-msg {font-size: 15px; font-weight: bold; margin-top: 10px;}
 .Width {width: 100%;}
 .alignment { justify-content: center;}
-.placementCopy {width: 45%;}
+.placementCopy {width: 45%; }
 .placement {top: 35%;}
-.placementCopy .search-form {width: 40%;}
+.placementCopy .search-form {width: 50% !important;}
 .placementCopy .personas-table {margin-top: 10px;}
 .pag {width: 100%; display: flex; justify-content: center;}
 .save-btn.disabled {background-color: #ccc; cursor: not-allowed; color: #e5e7eb;}
