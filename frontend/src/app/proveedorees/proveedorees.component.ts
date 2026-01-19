@@ -557,7 +557,7 @@ export class ProveedoreesComponent {
       TERACU : this.selectedProveedor.teracu
     }
 
-    this.http.put(`${environment.backendUrl}/api/ter/updateFields/${this.selectedProveedor.tercod}`, updateFields, { responseType: 'text' }
+    this.http.put(`${environment.backendUrl}/api/ter/updateFields/${this.entcod}/${this.selectedProveedor.tercod}`, updateFields, { responseType: 'text' }
     ).subscribe({
       next: (res) => {
         this.messageSuccess = 'Proveedor actualizado correctamente';
