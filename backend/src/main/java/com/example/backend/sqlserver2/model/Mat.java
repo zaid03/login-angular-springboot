@@ -1,8 +1,12 @@
 package com.example.backend.sqlserver2.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinColumns;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -18,27 +22,32 @@ public class Mat {
     @Id
     private Integer MTACOD;
 
-    public Integer getENT() {
-        return ENT;
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumns({
+        @JoinColumn(name = "ENT", referencedColumnName = "ENT", insertable = false, updatable = false),
+        @JoinColumn(name = "MAGCOD", referencedColumnName = "MAGCOD", insertable = false, updatable = false)
+    })
+    private Mag mag;
 
-    public void setENT(Integer ENT) {
-        this.ENT = ENT;
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumns({
+        @JoinColumn(name = "ENT", referencedColumnName = "ENT", insertable = false, updatable = false),
+        @JoinColumn(name = "MTACOD", referencedColumnName = "MTACOD", insertable = false, updatable = false)
+    })
+    private Mta mta;
 
-    public Integer getMAGCOD() {
-        return MAGCOD;
-    }
+    public Mag getMag() {return mag;}
+    public void setMag(Mag mag) {this.mag = mag;}
 
-    public void setMAGCOD(Integer MAGCOD) {
-        this.MAGCOD = MAGCOD;
-    }
+    public Mta getMta() {return mta;}
+    public void setMta(Mta mta) {this.mta = mta;}
 
-    public Integer getMTACOD() {
-        return MTACOD;
-    }
+    public Integer getENT() {return ENT;}
+    public void setENT(Integer ENT) {this.ENT = ENT;}
 
-    public void setMTACOD(Integer MTACOD) {
-        this.MTACOD = MTACOD;
-    }
+    public Integer getMAGCOD() {return MAGCOD;}
+    public void setMAGCOD(Integer MAGCOD) {this.MAGCOD = MAGCOD;}
+
+    public Integer getMTACOD() {return MTACOD;}
+    public void setMTACOD(Integer MTACOD) {this.MTACOD = MTACOD;}
 }

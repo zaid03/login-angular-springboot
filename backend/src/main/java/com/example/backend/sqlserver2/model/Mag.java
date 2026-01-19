@@ -80,5 +80,4 @@ public class Mag {
 
     public String getPERCOD() { return PERCOD; }
     public void setPERCOD(String PERCOD) { this.PERCOD = PERCOD; }
-
 }
