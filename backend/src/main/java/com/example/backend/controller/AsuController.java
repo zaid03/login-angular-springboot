@@ -29,7 +29,7 @@ public class AsuController {
 
     // Method to find Asu records by ENT and AFACOD
     @GetMapping("/by-ent/{ent}/{afacod}/{asucod}")
-    public ResponseEntity<?> getByEntAndAfacodOrAsucod(  // Fix: change return type
+    public ResponseEntity<?> getByEntAndAfacodOrAsucod(
             @PathVariable int ent,
             @PathVariable String afacod,
             @PathVariable String asucod

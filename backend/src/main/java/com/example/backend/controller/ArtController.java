@@ -1,6 +1,5 @@
 package com.example.backend.controller;
 
-import com.example.backend.sqlserver2.model.AsuId;
 import com.example.backend.sqlserver2.model.Art;
 import com.example.backend.sqlserver2.repository.ArtRepository;
 import com.example.backend.sqlserver2.repository.AsuRepository;

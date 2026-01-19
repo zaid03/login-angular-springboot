@@ -10,6 +10,15 @@ public class AprId implements Serializable {
     private String ASUCOD;
     private String ARTCOD;
 
+    public AprId(){}
+    public AprId(Integer ENT, Integer TERCOD, String AFACOD, String ASUCOD, String ARTCOD){
+        this.ENT = ENT;
+        this.TERCOD = TERCOD;
+        this.AFACOD = AFACOD;
+        this.ASUCOD = ASUCOD;
+        this.ARTCOD = ARTCOD;
+    }
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -920,26 +920,25 @@ export class ProveedoreesComponent {
     this.isAdding = true;
     this.limpiarMessages();
     const newArticulo = {
-      ENT: this.entcod,
-      TERCOD: this.selectedProveedor.tercod,
-      AFACOD: this.selectedFamilia || '*',
-      ASUCOD: this.selectedSubfamilia || '*',
-      ARTCOD: this.selectedArticulo || '*',
+      ent: this.entcod,
+      tercod: this.selectedProveedor.tercod,
+      afacod: this.selectedFamilia || '*',
+      asucod: this.selectedSubfamilia || '*',
+      artcod: this.selectedArticulo || '*',
     };
 
     if ((this.articulos ?? []).some((a: any) =>
-      (a.afacod ?? '*') === newArticulo.AFACOD &&
-      (a.asucod ?? '*') === newArticulo.ASUCOD &&
-      (a.artcod ?? '*') === newArticulo.ARTCOD)) {
+      (a.afacod ?? '*') === newArticulo.afacod &&
+      (a.asucod ?? '*') === newArticulo.asucod &&
+      (a.artcod ?? '*') === newArticulo.artcod)) {
       this.anadirErrorMessage = 'El artículo ya está en la lista.';
+      this.isAdding = false;
       return;
     }
 
+    console.log(newArticulo)
     this.http.post(
-      `${environment.backendUrl}/api/more/add-apr`,
-      newArticulo,
-      { responseType: 'text' }
-    ).subscribe({
+      `${environment.backendUrl}/api/more/add-apr`,newArticulo, { responseType: 'text' }).subscribe({
       next: (res) => {
         this.anadirmessage = 'Artículo añadido correctamente';
 
@@ -967,7 +966,7 @@ export class ProveedoreesComponent {
         this.isAdding = false;
       },
       error: (err) => {
-        this.anadirmessage = 'Error al añadir el artículo';
+        this.anadirErrorMessage = 'Error al añadir el artículo';
         this.isAdding = false;
       }
     });
@@ -1035,7 +1034,7 @@ export class ProveedoreesComponent {
     if (artcod === '*') {
       if (asucod === '*') {
         this.http
-          .get<any[]>(`${environment.backendUrl}/api/afa/art-name/${this.entcod}/${afacod}`)
+          .get<any[]>(`${environment.backendUrl}/api/afa/by-ent/${this.entcod}/${afacod}`)
           .subscribe({
             next: (response) => {
               const respArray = Array.isArray(response) ? response : response ? [response] : [];

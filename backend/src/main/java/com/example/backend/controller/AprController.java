@@ -1,7 +1,7 @@
 package com.example.backend.controller;
 
-import com.example.backend.dto.AprDto;
 import com.example.backend.sqlserver2.model.Apr;
+import com.example.backend.sqlserver2.model.AprId;
 import com.example.backend.sqlserver2.repository.AprRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -10,26 +10,34 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 @RestController
 @RequestMapping("/api/more")
 public class AprController {
-
     @Autowired
     private AprRepository aprRepository;
 
-    // Custom query to find Apr by ENT and TERCOD
+    // fetching articulos fr proveedor
     @GetMapping("/by-apr/{ent}/{tercod}")
-    public ResponseEntity<List<AprDto>> getApr(@PathVariable Integer ent, @PathVariable Integer tercod) {
-        List<AprDto> result = aprRepository.findByEnt(ent, tercod);
-        if (result.isEmpty()) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<?> getApr(
+        @PathVariable Integer ent, 
+        @PathVariable Integer tercod
+    ) {
+        try {
+            List<Apr> articulos = aprRepository.findByENTAndTERCOD(ent, tercod);
+            if (articulos.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("artículos no encontrados");
+            }
+            return ResponseEntity.ok(articulos);
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Error : " + ex.getMostSpecificCause().getMessage());
         }
-        return ResponseEntity.ok(result);
     }
 
     // Modifying an articulo
-    public record articulo(String aprref, double aprpre, double apruem, String aprobs, Integer apracu) {}
-
+    public record articulo(String aprref, Double aprpre, Double apruem, String aprobs, Integer apracu) {}
     @PatchMapping("/update-apr/{ent}/{tercod}/{afacod}/{asucod}/{artcod}")
     public ResponseEntity<?> updateArticulo(
         @PathVariable Integer ent,
@@ -40,24 +48,22 @@ public class AprController {
         @RequestBody articulo payload
     ) {
         try {
-            int articulo = aprRepository.updateArticulo(
-                payload.aprref(),
-                payload.aprpre(),
-                payload.apruem(),
-                payload.aprobs(),
-                payload.apracu(),
-                ent,
-                tercod,
-                afacod,
-                asucod,
-                artcod
-            );
 
-            if (articulo == 0) {
+            AprId id = new AprId(ent, tercod, afacod, asucod, artcod);
+            Optional<Apr> articulo = aprRepository.findById(id);
+            if(articulo.isEmpty()){
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No se encontró ninguno articulo para los datos.");
+                    .body("No se encontró ningún articulo");
             }
+            
+            Apr articulosUpdate = articulo.get();
+            articulosUpdate.setAPRREF(payload.aprref());
+            articulosUpdate.setAPRPRE(payload.aprpre());
+            articulosUpdate.setAPRUEM(payload.apruem());
+            articulosUpdate.setAPROBS(payload.aprobs());
+            articulosUpdate.setAPRACU(payload.apracu());
 
+            aprRepository.save(articulosUpdate);
             return ResponseEntity.noContent().build();
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -74,30 +80,32 @@ public class AprController {
         @RequestParam String asucod,
         @RequestParam String artcod
     ) {
-        int deleted = aprRepository.deleteByENTAndTERCODAndAFACODAndASUCODAndARTCOD(ent, tercod, afacod, asucod, artcod);
-        if (deleted > 0) {
+        try {
+            AprId id = new AprId(ent, tercod, afacod, asucod, artcod);
+            if (!aprRepository.existsById(id)) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("articulo extraviado");
+            }
+            aprRepository.deleteById(id);
             return ResponseEntity.ok("articulo eliminado exitosamente");
-        } else {
-            return ResponseEntity.status(404).body("articulo extraviado");
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 
     //adding data
     @PostMapping("/add-apr")
-    public ResponseEntity<String> addApr(@RequestBody AprDto aprDto) {
-        Apr apr = new Apr();
-        apr.setENT(aprDto.getENT());
-        apr.setTERCOD(aprDto.getTERCOD());
-        apr.setAFACOD(aprDto.getAFACOD());
-        apr.setASUCOD(aprDto.getASUCOD());
-        apr.setARTCOD(aprDto.getARTCOD());
-        apr.setAPRREF(aprDto.getAPRREF());
-        apr.setAPRPRE(aprDto.getAPRPRE());
-        apr.setAPRUEM(aprDto.getAPRUEM());
-        apr.setAPROBS(aprDto.getAPROBS());
-        apr.setAPRACU(aprDto.getAPRACU());
-
-        aprRepository.save(apr);
-        return ResponseEntity.ok(apr.getAPRREF() + " added successfully");
+    public ResponseEntity<?> addApr(
+        @RequestBody Apr apr
+    ) {
+        try {
+            aprRepository.save(apr);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                .body(apr.getAPRREF() + " added successfully");
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Error al agregar: " + ex.getMostSpecificCause().getMessage());
+        }
     }
 }
