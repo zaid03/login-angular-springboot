@@ -29,6 +29,11 @@ public class FdeController {
         try {
             List<Fde> detalles = fdeRepository.findByENTAndEJEAndFACNUM(ent, eje, facnum);
         
+            if(detalles.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No se encontró ningún applicacione");
+            }
+
             List<FdeResumeDto> result = detalles.stream()
                 .map(fd -> new FdeResumeDto(
                     fd.getFDEREF(),

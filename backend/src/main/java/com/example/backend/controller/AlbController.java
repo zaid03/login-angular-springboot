@@ -29,6 +29,11 @@ public class AlbController {
         try {
             List<Alb> albaranes = albRepository.findByENTAndEJEAndFACNUM(ent, eje, facnum);
             
+            if(albaranes.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No se encontró ningún albáran");
+            }
+
             List<AlbResumeDto> result = albaranes.stream()
                 .map(a -> new AlbResumeDto(
                     a.getALBNUM(),
