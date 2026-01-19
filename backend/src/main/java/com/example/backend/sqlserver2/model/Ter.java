@@ -3,12 +3,14 @@ package com.example.backend.sqlserver2.model;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
 import jakarta.persistence.Table;
 
 @Entity
+@IdClass(TerId.class)
 @Table(name = "TER", schema = "dbo")
 public class Ter {
-
+    @Id
     @Column(nullable = true)
     private Integer ENT;
 
