@@ -183,7 +183,7 @@ export class DashboardComponent implements OnInit {
     this.servicesError = '';
     if (this.entcod === null || this.eje === null) return;
 
-    this.http.get<any[]>(`${environment.backendUrl}/api/dep/fetch-services-persona/${this.entcod}/${this.eje}/${this.perfil}`).subscribe({
+    this.http.get<any[]>(`${environment.backendUrl}/api/dep/fetch-services-persona/${this.entcod}/${this.eje}/${this.usucod}`).subscribe({
       next: (res) => {
 
         const requests = res.map(res =>

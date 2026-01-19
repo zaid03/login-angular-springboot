@@ -56,8 +56,4 @@ export class EjeComponent implements OnInit {
     sessionStorage.setItem('EJERCICIO', JSON.stringify({ eje: item.eje }));
     this.router.navigate(['/centro-gestor']);
   }
-
-  cancelar(): void {
-    this.router.navigate(['/ent']);
-  }
 }

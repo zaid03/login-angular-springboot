@@ -37,6 +37,7 @@ export class ServiciosComponent {
   private entcod: number | null = null;
   private eje: number | null = null;
   private perfil: string | null = null;
+  usucod: string | null = null;
   services: any[] = [];
   private backupServices: any[] = [];
   private defaultServices: any[] = [];
@@ -52,19 +53,12 @@ export class ServiciosComponent {
     const entidad = sessionStorage.getItem('Entidad');
     const eje = sessionStorage.getItem('EJERCICIO');
     const percod = sessionStorage.getItem('Perfil');
+    const user = sessionStorage.getItem('USUCOD');
 
-    if (entidad) {
-      const parsed = JSON.parse(entidad);
-      this.entcod = parsed.ENTCOD;
-    }
-    if (eje) {
-      const parsed = JSON.parse(eje);
-      this.eje = parsed.eje;
-    }
-    if(percod) {
-      const parsed = JSON.parse(percod);
-      this.perfil = parsed.PERCOD;
-    }
+    if (entidad) {const parsed = JSON.parse(entidad);this.entcod = parsed.ENTCOD;}
+    if (eje) {const parsed = JSON.parse(eje);this.eje = parsed.eje;}
+    if(percod) {const parsed = JSON.parse(percod);this.perfil = parsed.PERCOD;}
+    if (user) { this.usucod = user;}
 
     if (!entidad || this.entcod === null || !eje || this.eje === null || !percod) {
       sessionStorage.clear();
@@ -617,7 +611,7 @@ export class ServiciosComponent {
       "depint": this.addDepint ? 1 : 0,
       "ccocod": cco,
       "cgecod": cge,
-      "percod": this.perfil,
+      "percod": this.usucod,
       "depd1c": d1c_add,
       "depd1d": d1d_add,
       "depd2c": d2c_add,

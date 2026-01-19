@@ -16,6 +16,7 @@ export class CentrogestorComponent implements OnInit {
   tableData: any[] = [];
   loading = false;
   perfil: string | null = null;
+  usucod: string | null = null;
   entcod: string | null = null;
   eje: number | null = null;
   cge: string = '';
@@ -27,16 +28,18 @@ export class CentrogestorComponent implements OnInit {
     const ent = sessionStorage.getItem('Entidad');
     const session = sessionStorage.getItem('EJERCICIO');
     const centroGestor = sessionStorage.getItem('CENTROGESTOR');
+    const user = sessionStorage.getItem('USUCOD');
 
     if (profile) { const parsed = JSON.parse(profile); this.perfil = parsed.PERCOD;}
     if (ent) { const parsed = JSON.parse(ent); this.entcod = parsed.ENTCOD;}
     if (session) { const parsed = JSON.parse(session); this.eje = parsed.eje;}
     if (centroGestor) { const parsed = JSON.parse(centroGestor); this.cge = parsed.value;}
+    if (user) {this.usucod = user}
 
     this.loading = true;
     this.fetchSwVarables();
     this.fetchMenus();
-    this.http.get<any[]>(`${environment.backendUrl}/api/cge/${this.entcod}/${this.eje}/${this.perfil}`)
+    this.http.get<any[]>(`${environment.backendUrl}/api/cge/${this.entcod}/${this.eje}/${this.usucod}`)
       .subscribe({
         next: resp => {
           if (resp?.length > 1) {
