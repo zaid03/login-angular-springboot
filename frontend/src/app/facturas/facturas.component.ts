@@ -94,6 +94,10 @@ export class FacturasComponent {
       return;
     }
 
+    this.fetchFacturas();
+  }
+
+  fetchFacturas() {
     this.http.get<any>(`${environment.backendUrl}/api/fac/${this.entcod}/${this.eje}/${this.centroGestor}`).subscribe({
       next: (response) => {
         if (!Array.isArray(response) || response.length === 0) {
@@ -449,7 +453,7 @@ export class FacturasComponent {
   }
 
   //search functions
-  fechaTipo: 'registro' | 'factura' | 'contable' | '' = '';
+  fechaTipo: 'registro' | 'factura' | 'contable' | 'Fecha' | '' = '';
   estadoTipo: 'contabilizadas' | 'no-contabilizadas' | 'aplicadas' | 'sin-aplicadas' | '' = 'no-contabilizadas';
   fromDate: string = '';
   toDate: string = '';
@@ -470,11 +474,17 @@ export class FacturasComponent {
     this.limpiarMEssages();
     this.isLoading = true;
     if (this.entcod == null || this.eje == null || !this.centroGestor) {
-      this.filterFacturaMessage= 'Faltan datos de sesión.';
+      this.filterFacturaMessage = 'Faltan datos de sesión.';
+      this.isLoading = false;
       return;
     }
 
-    this.filterFacturaMessage= '';
+    if (!this.searchQuery && !this.fechaTipo && !this.fromDate && !this.toDate && !this.facturaSearch) {
+      this.fetchFacturas();
+      this.isLoading = false;
+      return;
+    }
+
     this.filterFacturaMessage = '';
 
     const estadoMap: Record<string, string> = {
@@ -483,7 +493,7 @@ export class FacturasComponent {
       'aplicadas': 'PTE_APL',
       'sin-aplicadas': 'PTE_SIN',
       'todas': 'TODAS',
-      '': 'CONT'
+      '': 'NO_CONT' 
     };
     const fechaMap: Record<string, string> = {
       'registro': 'REGISTRO',
@@ -492,25 +502,28 @@ export class FacturasComponent {
       '': 'REGISTRO'
     };
 
-    const estado = estadoMap[this.estadoTipo ?? ''] ?? 'CONT';
+    const estado = estadoMap[this.estadoTipo ?? ''] ?? 'NO_CONT';
     const dateType = fechaMap[this.fechaTipo ?? ''] ?? 'REGISTRO';
 
     const desde = this.fromDate?.trim() || '';
     const hasta = this.toDate?.trim() || '';
-    if ((desde || hasta) && !this.fechaTipo || this.fechaTipo && !(desde || hasta)) {
-      this.filterFacturaMessage = 'Seleccione un tipo de fecha y una cita antes de buscar.';
+    if ((desde || hasta) && !this.fechaTipo) {
+      this.filterFacturaMessage = 'Seleccione un tipo de fecha antes de buscar.';
       this.isLoading = false;
       return;
     }
 
     const facann = this.facturaSearch?.trim() || '';
     let facannMode = 'ANY';
+    
     if (facann) {
       facannMode = 'VALUE';
-    } else if (estado === 'CONT') {
-      facannMode = 'NOT_NULL';
-    } else if (estado === 'NO_CONT' || estado === 'PTE_APL' || estado === 'PTE_SIN') {
-      facannMode = 'NULL';
+    } else {
+      if (estado === 'CONT') {
+        facannMode = 'NOT_NULL';
+      } else if (estado === 'NO_CONT' || estado === 'PTE_APL' || estado === 'PTE_SIN') {
+        facannMode = 'NULL';
+      }
     }
 
     const searchRaw = this.searchQuery?.trim() || '';
@@ -545,8 +558,9 @@ export class FacturasComponent {
       dateType,
       facannMode
     };
-    if (desde) params['desde'] = desde;
-    if (hasta) params['hasta'] = hasta;
+    
+    if (desde) params['fromDate'] = desde; 
+    if (hasta) params['toDate'] = hasta;    
     if (facann && facannMode === 'VALUE') params['facann'] = facann;
     if (search) {
       params['search'] = search;
@@ -554,38 +568,35 @@ export class FacturasComponent {
     }
 
     this.http.get<any[]>(`${environment.backendUrl}/api/fac/search`, { observe: 'response', params })
-      .subscribe({
-        next: (res) => {
-          if (res.status === 204 || !res.body || res.body.length === 0) {
-            this.facturaMessageIsSuccess = true;
-            this.filterFacturaMessage= 'No hay facturas para los filtros seleccionados.';
-            this.facturas = [];
-            this.facturas = [];
-            this.defaultFacturas = [];
-            this.sortField = null;
-            this.sortDirection = 'asc';
-            this.updatePagination();
-            this.isLoading = false;
-            return;
-          }
-          const body = res.body ?? [];
-          this.facturas = body;
-          this.defaultFacturas = [...body];
-          if (this.sortField) {
-            this.applySort();
-          } else {
-            this.page = 0;
-            this.updatePagination();
-          }
+    .subscribe({
+      next: (res) => {
+        if (res.status === 204 || !res.body || res.body.length === 0) {
+          this.facturaMessageIsSuccess = true;
+          this.filterFacturaMessage = 'No resultado';
+          this.facturas = [];
+          this.defaultFacturas = [];
+          this.sortField = null;
+          this.sortDirection = 'asc';
+          this.updatePagination();
           this.isLoading = false;
-        },
-        error: (err) => {
-          this.filterFacturaMessage= typeof err.error === 'string'
-            ? err.error
-            : 'Error al buscar facturas.';
-          this.isLoading = false;
+          return;
         }
-      });
+        const body = res.body ?? [];
+        this.facturas = body;
+        this.defaultFacturas = [...body];
+        if (this.sortField) {
+          this.applySort();
+        } else {
+          this.page = 0;
+          this.updatePagination();
+        }
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.filterFacturaMessage = err.error?.error || err.message || 'Error desconocido';
+        this.isLoading = false;
+      }
+    });
   }
 
   forgetAll(): void{
@@ -603,15 +614,7 @@ export class FacturasComponent {
     this.sortField = null;
     this.sortDirection = 'asc';
 
-    if (this.backupFacturas.length) {
-      this.facturas = [...this.backupFacturas];
-      this.defaultFacturas = [...this.backupFacturas];
-      this.updatePagination();
-    } else {
-      this.facturas = [];
-      this.defaultFacturas = [];
-      this.updatePagination();
-    }
+    this.fetchFacturas();
   }
 
   //albaranes grid's detail
