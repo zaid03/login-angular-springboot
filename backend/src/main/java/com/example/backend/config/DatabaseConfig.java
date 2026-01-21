@@ -24,7 +24,7 @@ import jakarta.persistence.EntityManagerFactory;
 @EnableTransactionManagement
 public class DatabaseConfig {
 
-    // SQL Server DataSource 1 (Primary) - For User Authentication and Menu System
+    // SQL Server DataSource 1 (Primary)
     @Primary
     @Bean(name = "sqlServer1DataSource")
     @ConfigurationProperties(prefix = "spring.datasource.sqlserver1")
@@ -32,7 +32,7 @@ public class DatabaseConfig {
         return DataSourceBuilder.create().build();
     }
 
-    // SQL Server DataSource 2 (Secondary) - For IASS Business Data
+    // SQL Server DataSource 2 (Secondary)
     @Bean(name = "sqlServer2DataSource")
     @ConfigurationProperties(prefix = "spring.datasource.sqlserver2")
     public DataSource sqlServer2DataSource() {
@@ -53,7 +53,7 @@ public class DatabaseConfig {
         
         return builder
                 .dataSource(dataSource)
-                .packages("com.example.backend.sqlserver1.model") // Package for auth-related entities
+                .packages("com.example.backend.sqlserver1.model") 
                 .persistenceUnit("sqlserver1")
                 .properties(properties)
                 .build();
@@ -72,7 +72,7 @@ public class DatabaseConfig {
         
         return builder
                 .dataSource(dataSource)
-                .packages("com.example.backend.sqlserver2.model") // Package for business entities
+                .packages("com.example.backend.sqlserver2.model")
                 .persistenceUnit("sqlserver2")
                 .properties(properties)
                 .build();

@@ -33,6 +33,7 @@ dependencies {
 
     providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat' // important pour WAR
 
+    testImplementation 'com.h2database:h2'  
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }

@@ -13,6 +13,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -21,9 +23,10 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/ter")
 public class TerController {
-
     @Autowired
     private TerRepository terRepository;
+
+    private static final Logger log = LoggerFactory.getLogger(TerController.class);
 
     // Get all Ter records for a specific ENT
     @GetMapping("/by-ent/{ent}")
@@ -126,15 +129,16 @@ public class TerController {
             @RequestParam String term
     ) {
         try {
+            log.info("search called ent={} term='{}'", ent, term);
             Specification<Ter> spec = TerSearchOptions.searchFiltered(ent, term);
-        List<Ter> results = terRepository.findAll(spec);
-        
-        if (results.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("Sin resultado");
-        }
-        
-        return ResponseEntity.ok(results);
+            List<Ter> results = terRepository.findAll(spec);
+            log.info("search results size={}", results.size());
+            if (results.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Sin resultado");
+            }
+            
+            return ResponseEntity.ok(results);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Error: " + ex.getMostSpecificCause().getMessage());
@@ -336,6 +340,12 @@ public class TerController {
             if (dtos == null || dtos.isEmpty()) {
                 return ResponseEntity.badRequest().body("Faltan datos obligatorios");
             }
+            for (TerDto dto : dtos) {
+                if (dto.getTERNOM() == null || dto.getTERNOM().trim().isEmpty()
+                        || dto.getTERNIF() == null || dto.getTERNIF().trim().isEmpty()) {
+                    return ResponseEntity.badRequest().body("Datos incompletos");
+                }
+            }
 
             Integer next = terRepository.findNextTercodForEnt(ent);
             if (next == null) {
@@ -361,9 +371,8 @@ public class TerController {
                 saved.add(terRepository.save(t));
             }
 
-            return ResponseEntity.ok(saved);
+            return ResponseEntity.status(HttpStatus.CREATED).body(saved);
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Server error: " + e.getClass().getSimpleName() + " - " + e.getMessage());
         }
     }

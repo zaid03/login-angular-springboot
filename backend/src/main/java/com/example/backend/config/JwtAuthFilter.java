@@ -2,6 +2,8 @@ package com.example.backend.config;
 
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
+
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -12,6 +14,7 @@ import java.io.IOException;
 import java.util.List;
 
 @Component
+@Profile("!test") 
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwt;
