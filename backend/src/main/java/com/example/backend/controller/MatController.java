@@ -11,12 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.dao.DataAccessException;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.Set;
 import java.util.stream.Collectors;
-
+import java.util.Objects;
+import java.util.function.Function;
 @RestController
 @RequestMapping("/api/mat")
 public class MatController {
@@ -30,25 +27,17 @@ public class MatController {
         @PathVariable String depcod
     ) {
         try {
-            List<Mat> matRecords = matRepository.findByENT(ent);
-            
-            Set<MatShortDto> distinctMta = matRecords.stream()
-                .filter(mat -> mat.getMag() != null && depcod.equals(mat.getMag().getDEPCOD()))
-                .map(mat -> {
-                    Mta mta = mat.getMta();
-                    return mta != null 
-                        ? new MatShortDto(mta.getMTACOD(), mta.getMTADES()) 
-                        : null;
-                })
-                .filter(dto -> dto != null)
-                .collect(Collectors.toCollection(LinkedHashSet::new));
+            var mats = matRepository.findByENT(ent);
+            var uniq = mats.stream()
+                .filter(m -> m.getMag() != null && depcod.equals(m.getMag().getDEPCOD()))
+                .map(Mat::getMta)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toMap(Mta::getMTACOD, Function.identity(), (a, b) -> a))
+                .values().stream().toList();
 
-            if (distinctMta.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No resultado");
-            }
+            if (uniq.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No resultado");
 
-            return ResponseEntity.ok(new ArrayList<>(distinctMta));
+            return ResponseEntity.ok(uniq);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + ex.getMostSpecificCause().getMessage());
         }
