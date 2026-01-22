@@ -217,20 +217,32 @@ public class TerControllerTest {
         t2.setTERNIF("222");
         saveCommitted(t1, t2);
 
+        handlerMapping.getHandlerMethods().forEach((info, method) -> {
+            var pc = info.getPatternsCondition();
+            if (pc == null) {
+                System.out.println("[no patterns] -> " + method);
+            } else {
+                pc.getPatterns().forEach(p -> System.out.println(p + " -> " + method));
+            }
+        });
+        try {
+            ResponseEntity<?> direct = terController.search(TEST_ENT, "ABC");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         // DEBUG: show DB and spec results before assertions
         List<Ter> all = terRepository.findByENT(TEST_ENT);
-        System.out.println("DB rows for TEST_ENT: " + all);
 
         Specification<Ter> spec = TerSearchOptions.searchFiltered(TEST_ENT, "ABC");
         List<Ter> specResults = terRepository.findAll(spec);
-        System.out.println("Specification results: " + specResults);
 
         // Stronger assertions that give useful failure info
         assertFalse(specResults.isEmpty(), "Specification returned no results; check TerSearchOptions.searchFiltered");
         assertTrue(specResults.stream().anyMatch(r -> Integer.valueOf(800).equals(r.getTERCOD())), "Expected tercod 800 in specResults: " + specResults);
 
-        mockMvc.perform(get("/api/ter/by-ternif-nom-ali-bloqueado/" + TEST_ENT + "/search")
-            .param("term", "ABC"))
+        mockMvc.perform(get("/api/ter/by-ternif-nom-ali-bloquado/" + TEST_ENT + "/search")
+            .param("term", "ABC")
+            .accept(MediaType.APPLICATION_JSON)) 
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$", hasSize(1)))
@@ -253,7 +265,7 @@ public class TerControllerTest {
             .collect(Collectors.toList());
         assertEquals(1, matches.size(), "Expected one non-blocked 'ABC' match in DB");
 
-        mockMvc.perform(get("/api/ter/by-nif-nom-ali-no-bloqueado/" + TEST_ENT + "/search-by-term")
+        mockMvc.perform(get("/api/ter/by-nif-nom-ali-no-bloquado/" + TEST_ENT + "/search-by-term")
             .param("term", "ABC"))
             .andDo(print())
             .andExpect(status().isOk())
@@ -277,9 +289,10 @@ public class TerControllerTest {
         .collect(Collectors.toList());
         assertEquals(1, matches.size(), "Expected one blocked 'Tech' match in DB");
 
-        mockMvc.perform(get("/api/ter/by-nom-ali-bloqueado/" + TEST_ENT + "/searchByNomOrAli")
-            .param("term", "Tech"))
-            .andDo(print()) 
+        mockMvc.perform(get("/api/ter/by-nom-ali-bloquado/" + TEST_ENT + "/searchByNomOrAli")
+                .param("term", "Tech")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$", hasSize(1)))
             .andExpect(jsonPath("$[0].tercod").value(1000));
@@ -301,7 +314,7 @@ public class TerControllerTest {
         assertEquals(1, matches.size(), "Expected one non-blocked 'Tech' match in DB");
 
 
-        mockMvc.perform(get("/api/ter/by-nom-ali-no-bloqueado/" + TEST_ENT + "/findMatchingNomOrAli")
+        mockMvc.perform(get("/api/ter/by-nom-ali-no-bloquado/" + TEST_ENT + "/findMatchingNomOrAli")
                 .param("term", "Tech"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
@@ -355,6 +368,9 @@ public class TerControllerTest {
 
     @Test
     void shouldSaveProveedores() throws Exception {
+        Integer next = terRepository.findNextTercodForEnt(TEST_ENT);
+        assertTrue(next != null && next > 0, "Unexpected next tercod for ent: " + next);
+
         String json = String.format("[{\"ENT\":%d,\"TERCOD\":200,\"TERNOM\":\"New Provider A\",\"TERNIF\":\"11111111A\",\"TERBLO\":0,\"TERACU\":0},{\"ENT\":%d,\"TERCOD\":201,\"TERNOM\":\"New Provider B\",\"TERNIF\":\"22222222B\",\"TERBLO\":0,\"TERACU\":0}]", TEST_ENT, TEST_ENT);
 
         mockMvc.perform(post("/api/ter/save-proveedores/" + TEST_ENT)
@@ -362,13 +378,12 @@ public class TerControllerTest {
                 .content(json))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].tercod").value(200))
-                .andExpect(jsonPath("$[1].tercod").value(201));
+                .andExpect(jsonPath("$[0].tercod").value(next))
+                .andExpect(jsonPath("$[1].tercod").value(next + 1));
 
         List<Ter> saved = terRepository.findByENT(TEST_ENT);
-        // register only the newly inserted ones for cleanup
         for (Ter s : saved) {
-            if (s.getTERCOD() == 200 || s.getTERCOD() == 201) {
+            if ("New Provider A".equals(s.getTERNOM()) || "New Provider B".equals(s.getTERNOM())) {
                 createdIds.add(new TerId(s.getENT(), s.getTERCOD()));
             }
         }
@@ -379,9 +394,9 @@ public class TerControllerTest {
         String json = "[{\"ENT\": " + TEST_ENT + "}]";
 
         mockMvc.perform(post("/api/ter/save-proveedores/" + TEST_ENT)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json))
-                .andExpect(status().isBadRequest());
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(json))
+            .andExpect(status().isBadRequest());
     }
 
     @Test
