@@ -24,6 +24,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 @WebMvcTest(controllers = RpcSoapController.class)
 @ActiveProfiles("test")
@@ -99,7 +100,7 @@ public class RpcSoapControllerTest {
     @Test
     void shouldReturn500WhenServiceThrows() throws Exception {
         when(rpcSoapService.callRpc(anyString(), anyString(), anyString(), anyString(),
-                any(), anyString(), anyString(), anyString(), anyMap()))
+                any(), anyString(), anyString(), anyString(), isNull()))
             .thenThrow(new RuntimeException("rpc failure"));
 
         Map<String, Object> request = Map.of("endpoint", "e", "operation", "op", "namespace", "ns");
