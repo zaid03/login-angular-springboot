@@ -4,6 +4,7 @@ import com.example.backend.config.TestSecurityConfig;
 import com.example.backend.config.TestExceptionHandler;
 import com.example.backend.sqlserver1.repository.AytRepository;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -35,7 +36,7 @@ public class AytControllerTest {
 
     @Test
     void fetchAyt_returns200WithList() throws Exception {
-        when(aytRepository.findByENTCOD(1)).thenReturn(List.of(new Object()));
+        when(aytRepository.findByENTCOD(1)).thenReturn(List.of(Mockito.mock(com.example.backend.sqlserver1.model.Ayt.class)));
 
         mockMvc.perform(get("/api/ayt/fetch-all/1").accept(MediaType.APPLICATION_JSON))
             .andDo(print())

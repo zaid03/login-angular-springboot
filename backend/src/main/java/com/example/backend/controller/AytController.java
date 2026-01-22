@@ -17,16 +17,16 @@ public class AytController {
     private AytRepository aytRepository;
 
     //to fetch ws parameters
-    @GetMapping("/fetch-all/{ENT}")
-    public ResponseEntity<?> fetchAytWs(
-        @PathVariable Integer ENT
-    ) {
+    @GetMapping("/fetch-all/{ent}")
+    public ResponseEntity<?> fetchAll(@PathVariable int ent) {
         try {
-            List<?> services = aytRepository.findByENTCOD(ENT);
-            return ResponseEntity.ok(services);
-        } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error: " + ex.getMostSpecificCause().getMessage());
+            List<com.example.backend.sqlserver1.model.Ayt> list = aytRepository.findByENTCOD(ent);
+            if (list == null || list.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
+            }
+            return ResponseEntity.ok(list);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
         }
     }
 }
