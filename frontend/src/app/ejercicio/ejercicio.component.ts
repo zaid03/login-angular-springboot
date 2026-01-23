@@ -51,7 +51,7 @@ export class EjercicioComponent {
     if (entidad) {const parsed = JSON.parse(entidad); this.entcod = parsed.ENTCOD;}
     if (!entidad || this.entcod === null) {
       sessionStorage.clear();
-      alert('You must be logged in to access this page.');
+      alert('Debes iniciar sesión para acceder a esta página.');
       this.router.navigate(['/login']);
       return;
     }

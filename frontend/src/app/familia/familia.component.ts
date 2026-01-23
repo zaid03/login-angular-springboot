@@ -53,7 +53,7 @@ export class FamiliaComponent {
 
     if (!entidad || this.entcod === null) {
       sessionStorage.clear();
-      alert('You must be logged in to access this page.');
+      alert('Debes iniciar sesión para acceder a esta página.');
       this.router.navigate(['/login']);
       return;
     }
