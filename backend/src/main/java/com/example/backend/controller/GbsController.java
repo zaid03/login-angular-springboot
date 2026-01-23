@@ -10,6 +10,7 @@ import com.example.backend.sqlserver2.repository.GbsRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -101,7 +102,26 @@ public class GbsController {
         @PathVariable String eje
     ) {
         try {
+            List<Gbs> bolsas = gbsRepository.findByENTAndEJE(ent, eje);
+            if (bolsas == null || bolsas.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
+            }
+            List<String> cgeCodes = bolsas.stream().map(Gbs::getCGECOD).distinct().collect(Collectors.toList());
+            List<Cge> cges = cgeRepository.findByENTAndEJEAndCGECODIn(ent, eje, cgeCodes);
+            Map<String, Cge> cgeByCode = cges.stream().collect(Collectors.toMap(Cge::getCGECOD, c -> c));
 
+            List<GbsWithCgeDto> result = bolsas.stream().map(g -> {
+                Cge cge = cgeByCode.get(g.getCGECOD());
+                String cgeCic = cge != null && cge.getCGECIC() != null ? String.valueOf(cge.getCGECIC()) : null;
+                return new GbsWithCgeDto(
+                    g.getCGECOD(), cge != null ? cge.getCGEDES() : null, cgeCic,
+                    g.getGBSREF(), g.getGBSOPE(), g.getGBSORG(), g.getGBSFUN(), g.getGBSECO(),
+                    g.getGBSFOP(), g.getGBSIMP(), g.getGBSIBG(), g.getGBSIUS(), g.getGBSICO(),
+                    g.getGBSIUT(), g.getGBSICT(), g.getGBS413()
+                );
+            }).collect(Collectors.toList());
+ 
+             return ResponseEntity.ok(result);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Error: " + ex.getMostSpecificCause().getMessage());
