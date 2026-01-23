@@ -394,6 +394,79 @@ export class BolsaCreditoComponent {
     }
   }
 
+
+  cgeSearch: string = '';
+  searchBolsas() {
+    this.isLoading = true;
+    if(this.cgeSearch === '') {this.fetchBolsas(); this.isLoading = false;}
+
+    this.http.get<any>(`${environment.backendUrl}/api/gbs/fetch-all/${this.entcod}/${this.eje}/${this.cgeSearch}`).subscribe({
+      next: (response) => {
+        this.creditos = Array.isArray(response) ? [...response] : [];
+        this.backupCreditos = [...this.creditos];
+        this.defaultCreditos = [...this.creditos];
+        this.creditos.forEach((item, idx) => {
+          const org = item?.gbsorg ?? '';
+          const fun = item?.gbsfun ?? '';
+          const eco = item?.gbseco ?? '';
+          this.http
+            .get<any>(`${environment.backendUrl}/api/sical/partidas?clorg=${org}&clfun=${fun}&cleco=${eco}`)
+            .subscribe({
+              next: (partidas) => {
+                const partidasArr = Array.isArray(partidas) ? partidas : [];
+                this.creditos[idx].partidas = partidasArr;
+                const des = partidasArr[0]?.desc ?? '';
+                this.creditos[idx].partidaDesc = des;
+              },
+              error: () => {
+                this.creditos[idx].partidas = [];
+              },
+            });
+            this.creditos[idx].saldo = 0;
+            this.creditos[idx].limporte = 0;
+            this.http.get<any>(`${environment.backendUrl}/api/sical/operaciones?clorg=${org}&clfun=${fun}&cleco=${eco}`)
+            .subscribe({
+              next: (operaciones) => {
+                const operacionesArr = Array.isArray(operaciones) ? operaciones : [];
+                this.creditos[idx].operaciones = operacionesArr;
+                const firstLinea = operacionesArr[0]?.lineaList?.[0] ?? {};
+                const saldo = this.creditos[idx].saldo = firstLinea?.saldo ?? 0;
+                const limporte = this.creditos[idx].limporte = firstLinea?.limporte ?? 0;
+              },
+              error: () => {
+                this.creditos[idx].operaciones = [];
+              },
+            });
+        });
+        this.sortDirection = 'asc';
+        this.page = 0;
+        this.updatePagination();
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.tableIsError = true;
+        this.tableMessage = err.error.error;
+        this.isLoading = false;
+      }
+    });
+  }
+
+  setInputToUpper(event: Event): void {
+    const target = event.target as HTMLTextAreaElement;
+    let upper = (target.value ?? '').toUpperCase();
+    if(upper.length > 4) {
+      upper = upper.slice(0, 4);
+    }
+    target.value = upper;
+    this.cgeSearch = upper;
+  }
+
+  limpiarSearch() {
+    this.limpiarMessages();
+    this.fetchBolsas();
+    this.cgeSearch = '';
+  }
+
   //main detail grid functions
   selectedBolsas: any = null;
   showDetails(factura: any) {

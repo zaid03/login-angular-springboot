@@ -12,11 +12,13 @@
                             type="text" 
                             class="search-bar"
                             placeholder="Centro gestor" 
+                            [(ngModel)]="cgeSearch"
+                            (input)="setInputToUpper($event)"
                         >
                     </div>
                     <div class="btns">
-                        <button class="search-btn" >Buscar</button>
-                        <button class="search-btn" >Limpiar</button>
+                        <button class="search-btn" (click)="searchBolsas()">Buscar</button>
+                        <button class="search-btn" (click)="limpiarSearch()">Limpiar</button>
                     </div>
                 </div>
             </div>
@@ -157,7 +159,7 @@
                             <h3>Detalles de Bolsa</h3>
                         </div>
                         <!-- <button class="save-btn">✔</button> -->
-                        <button class="close-btn-btn" (click)="closeDetails()">×</button>
+                        <button class="close-btn-btn" (click)="closeDetails()">✖</button>
                     </div>
                     <h1 class="successBtn">{{ guardarMesageSuccess }}</h1>
                     <h1 class="errorBtn">{{ guardarMesage }}</h1>
