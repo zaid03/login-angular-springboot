@@ -18,6 +18,7 @@ import { EjercicioComponent } from './ejercicio/ejercicio.component';
 import { PersonasPorServiciosComponent } from './personas-por-servicios/personas-por-servicios.component';
 import { ConsultaProveedoresComponent } from './consulta-proveedores/consulta-proveedores.component';
 import { ConsultaFacturaComponent } from './consulta-factura/consulta-factura.component';
+import { BolsaCreditoComponent } from './bolsa-credito/bolsa-credito.component';
 
 export const routes: Routes = [
     { path: 'login', component: LoginComponent },
@@ -38,6 +39,7 @@ export const routes: Routes = [
     { path: 'personas-por-servicios', component: PersonasPorServiciosComponent },
     { path: 'Cproveedores', component: ConsultaProveedoresComponent},
     { path: 'Cfactura', component: ConsultaFacturaComponent},
+    {path: 'credito', component: BolsaCreditoComponent},
     { path: '', redirectTo: '/login', pathMatch: 'full' }, //route by default
 ];
 
