@@ -10,9 +10,12 @@ import com.example.backend.sqlserver2.model.GbsId;
 
 @Repository
 public interface  GbsRepository extends JpaRepository<Gbs, GbsId>{
-    //for the main list
+    //for the main list of bolsa por cge
     List<Gbs> findByENTAndEJEAndCGECOD(int ent, String eje, String cgecod);
 
     //for deleting a centro gestor
     long countByENTAndEJEAndCGECOD(Integer ENT, String EJE, String CGECOD);
+
+    //for main list of bolsa 
+    List<Gbs> findByENTAndEJE(Integer ent, String eje);
 }

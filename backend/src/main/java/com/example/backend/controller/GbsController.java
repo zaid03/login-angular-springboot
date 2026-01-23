@@ -27,7 +27,7 @@ public class GbsController {
     @Autowired
     private CgeRepository cgeRepository;
 
-    //for the main list
+    //for the main list of bolsa por cge
     @GetMapping("fetch-all/{ent}/{eje}/{cgecod}")
     public ResponseEntity<?> getBolsas(
         @PathVariable Integer ent,
@@ -88,6 +88,20 @@ public class GbsController {
 
             gbsRepository.save(bolsaUpdate);
             return ResponseEntity.noContent().build();
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Error: " + ex.getMostSpecificCause().getMessage());
+        }
+    }
+
+    //for main list of bolsa 
+    @GetMapping("fetchAll/{ent}/{eje}")
+    public ResponseEntity<?> getBolsas(
+        @PathVariable Integer ent,
+        @PathVariable String eje
+    ) {
+        try {
+
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Error: " + ex.getMostSpecificCause().getMessage());
