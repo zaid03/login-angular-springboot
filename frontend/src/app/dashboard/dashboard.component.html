@@ -160,17 +160,17 @@
           <div class="checkboxes">
             <input 
               type="checkbox" 
-              [checked]="!esContable" 
+              [checked]="esComprador" 
               (click)="$event.preventDefault()"
             ><span class="color-text"> Comprador</span><br>
             <input 
               type="checkbox" 
-              [checked]="!esAlmacen" 
+              [checked]="esAlmacen" 
               (click)="$event.preventDefault()"
             ><span class="color-text"> Farmacia / Almacén</span><br>
             <input 
               type="checkbox" 
-              [checked]="!esComprador" 
+              [checked]="esContable" 
               (click)="$event.preventDefault()"
             ><span class="color-text"> Contable</span><br>
           </div>
