@@ -40,28 +40,28 @@ export class CentrogestorComponent implements OnInit {
     this.fetchSwVarables();
     this.fetchMenus();
     this.http.get<any[]>(`${environment.backendUrl}/api/cge/${this.entcod}/${this.eje}/${this.usucod}`)
-      .subscribe({
-        next: resp => {
-          if (resp?.length > 1) {
-            this.tableData = resp;
-          } else if (resp?.length === 1) {
-            this.storeAndGo(resp[0]);
-          } else {
-            sessionStorage.setItem('CENTROGESTOR', JSON.stringify({ value: null}));
-            sessionStorage.setItem('CENTROGESTOR_NAME', JSON.stringify({ value: null}));
-            sessionStorage.setItem('ESTADOGC', JSON.stringify({ value: 0}));
-            sessionStorage.setItem('EsContable', JSON.stringify({value: false}));
-            sessionStorage.setItem('EsComprador', JSON.stringify({value: false}));
-            sessionStorage.setItem('EsAlmacen', JSON.stringify({value : false}));
-            this.router.navigate(['/dashboard']);
-          }
-        },
-        error: err => {
-          console.error('CentroGestor error', err);
-          alert('Error cargando centro gestor.');
+    .subscribe({
+      next: resp => {
+        if (resp?.length > 1) {
+          this.tableData = resp;
+        } else if (resp?.length === 1) {
+          this.storeAndGo(resp[0]);
+        } else {
+          sessionStorage.setItem('CENTROGESTOR', JSON.stringify({ value: null}));
+          sessionStorage.setItem('CENTROGESTOR_NAME', JSON.stringify({ value: null}));
+          sessionStorage.setItem('ESTADOGC', JSON.stringify({ value: 0}));
+          sessionStorage.setItem('EsContable', JSON.stringify({value: false}));
+          sessionStorage.setItem('EsComprador', JSON.stringify({value: false}));
+          sessionStorage.setItem('EsAlmacen', JSON.stringify({value : false}));
           this.router.navigate(['/dashboard']);
         }
-      }).add(() => this.loading = false);
+      },
+      error: err => {
+        console.error('CentroGestor error', err);
+        alert('Error cargando centro gestor.');
+        this.router.navigate(['/dashboard']);
+      }
+    }).add(() => this.loading = false);
   }
 
   private storeAndGo(item: any) {
