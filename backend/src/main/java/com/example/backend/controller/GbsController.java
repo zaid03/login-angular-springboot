@@ -60,7 +60,7 @@ public class GbsController {
     }
 
     //modifying a bolsa
-    public record updateBolsa(Double GBSIMP, Double GBSIUS, String GBSECO, LocalDateTime GBSFOP) {}
+    public record updateBolsa(Double GBSIMP, Double GBSIUS, Double GBSICO, LocalDateTime GBSFOP) {}
     @PatchMapping("/{ent}/{eje}/{cgecod}/{gbsref}")
     public ResponseEntity<?> updateBolsa(
             @PathVariable Integer ent,
@@ -70,7 +70,7 @@ public class GbsController {
             @RequestBody updateBolsa payload
     ) {
         try {
-            if (payload == null || payload.GBSIMP() == null || payload.GBSIUS() == null || payload.GBSECO() == null || payload.GBSFOP() == null) {
+            if (payload == null || payload.GBSIMP() == null || payload.GBSIUS() == null || payload.GBSICO() == null || payload.GBSFOP() == null) {
                 return ResponseEntity.badRequest().body("Faltan datos obligatorios.");
             }
 
@@ -84,14 +84,14 @@ public class GbsController {
             Gbs bolsaUpdate = bolsa.get();
             bolsaUpdate.setGBSIMP(payload.GBSIMP());
             bolsaUpdate.setGBSIUS(payload.GBSIUS());
-            bolsaUpdate.setGBSECO(payload.GBSECO());
+            bolsaUpdate.setGBSICO(payload.GBSICO());
             bolsaUpdate.setGBSFOP(payload.GBSFOP());
 
             gbsRepository.save(bolsaUpdate);
             return ResponseEntity.noContent().build();
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Error: " + ex.getMostSpecificCause().getMessage());
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 

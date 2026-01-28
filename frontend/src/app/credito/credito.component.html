@@ -14,7 +14,7 @@
             <div class="search-holder">
                 <div class="cge-text">
                     <p>Centro Gestor: </p>
-                    <span>{{centroGestor}}</span>
+                    <span>{{cge}}</span>
                 </div>
             </div>
             <div class="group-menu" (click)="toggleMenu($event)">
@@ -153,7 +153,7 @@
                         <div class="title-detail">
                             <h3>Detalles de Bolsa</h3>
                         </div>
-                        <button class="save-btn" (click)="guardarDetelles(selectedBolsas.gbsimp, getKBoldis(selectedBolsas.gbsimp, selectedBolsas.gbsibg, selectedBolsas.gbsius), selectedBolsas.gbsref)">✔</button>
+                        <button class="save-btn" (click)="updateBolsa(selectedBolsas.gbsimp, getKBoldis(selectedBolsas.gbsimp, selectedBolsas.gbsibg, selectedBolsas.gbsius), selectedBolsas.gbsref)">✔</button>
                         <button class="close-btn-btn" (click)="closeDetails()">✖</button>
                     </div>
                     <h1 class="successBtn">{{ guardarMesageSuccess }}</h1>

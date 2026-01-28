@@ -30,10 +30,9 @@ export class CreditoComponent {
   }
 
   //global variables
-  private entcod: number | null = null;
-  private eje: number | null = null;
-  public centroGestor: string = '';
-  private initialCentroGestor: string = '';
+  entcod: string | null = null;
+  eje: number | null = null;
+  cge: string = '';
   creditos: any[] = [];
   private backupCreditos: any[] = [];
   private defaultCreditos: any[] = [];
@@ -42,9 +41,7 @@ export class CreditoComponent {
   page = 0;
   pageSize = 20;
   tableMessage: string = '';
-  tableIsError: boolean = false;
   guardarMesage: string = '';
-  guardarisError: boolean = false;
   guardarMesageSuccess: string = '';
   guardarisSuccess : boolean = false;
 
@@ -54,34 +51,27 @@ export class CreditoComponent {
   ngOnInit(): void {
     this.limpiarMessages();
     this.isLoading = true;
-    this.tableIsError = false;
-    const entidad = sessionStorage.getItem('Entidad');
-    const eje = sessionStorage.getItem('EJERCICIO');
-    const cge = sessionStorage.getItem('CENTROGESTOR');
+    const ent = sessionStorage.getItem('Entidad');
+    const session = sessionStorage.getItem('EJERCICIO');
+    const centroGestor = sessionStorage.getItem('CENTROGESTOR');
 
-    if (cge){
-      const parsed = JSON.parse(cge);
-      this.centroGestor = parsed.value
-      this.initialCentroGestor = this.centroGestor;
-    }
+    if (ent) { const parsed = JSON.parse(ent); this.entcod = parsed.ENTCOD;}
+    if (session) { const parsed = JSON.parse(session); this.eje = parsed.eje;}
+    if (centroGestor) { const parsed = JSON.parse(centroGestor); this.cge = parsed.value;}
 
-    if (entidad) {
-      const parsed = JSON.parse(entidad);
-      this.entcod = parsed.ENTCOD;
-    }
-    if (eje) {
-      const parsed = JSON.parse(eje);
-      this.eje = parsed.eje;
-    }
-
-    if (!entidad || this.entcod === null || !eje || this.eje === null) {
+    if (this.entcod == null || this.eje === null || this.cge === null) {
       sessionStorage.clear();
       alert('Debes iniciar sesión para acceder a esta página.');
       this.router.navigate(['/login']);
       return;
     }
 
-    this.http.get<any>(`${environment.backendUrl}/api/gbs/fetch-all/${this.entcod}/${this.eje}/${this.centroGestor}`).subscribe({
+    this.getBolsas();
+  }
+
+  //main table functions
+  getBolsas(){
+    this.http.get<any>(`${environment.backendUrl}/api/gbs/fetch-all/${this.entcod}/${this.eje}/${this.cge}`).subscribe({
       next: (response) => {
         this.creditos = Array.isArray(response) ? [...response] : [];
         this.backupCreditos = [...this.creditos];
@@ -125,14 +115,12 @@ export class CreditoComponent {
         this.isLoading = false;
       },
       error: (err) => {
-        this.tableIsError = true;
         this.tableMessage = err.error.error;
         this.isLoading = false;
       }
     });
   }
 
-  //main table functions
   sortField: string | null = null;
   sortDirection: 'asc' | 'desc' = 'asc';
 
@@ -250,7 +238,6 @@ export class CreditoComponent {
 
     const source = this.backupCreditos.length ? this.backupCreditos : this.creditos;
     if (!source?.length) {
-      this.tableIsError = true;
       this.tableMessage = 'No hay datos para exportar.';
       return;
     }
@@ -415,7 +402,6 @@ export class CreditoComponent {
   selectedBolsas: any = null;
   showDetails(factura: any) {
     this.limpiarMessages();
-    this.guardarisError = false;
     this.guardarisSuccess = false;
     this.selectedBolsas = factura;
     const org = factura?.gbsorg ?? '';
@@ -490,40 +476,11 @@ export class CreditoComponent {
   }
 
   isUpdating: boolean = false;
-  guardarDetelles(gbsimp: any, getKBoldis:any, gbsref: any) {
+  updateBolsa(gbsimp: any, getKBoldis:any, gbsref: any) {
     this.isUpdating = true;
     this.limpiarMessages();
-    const entidad = sessionStorage.getItem('Entidad');
-    const eje = sessionStorage.getItem('EJERCICIO');
-    const cge = sessionStorage.getItem('CENTROGESTOR');
 
-    if (cge){
-      const parsed = JSON.parse(cge);
-      this.centroGestor = parsed.value
-      this.initialCentroGestor = this.centroGestor;
-    }
-
-    if (entidad) {
-      const parsed = JSON.parse(entidad);
-      this.entcod = parsed.ENTCOD;
-    }
-    if (eje) {
-      const parsed = JSON.parse(eje);
-      this.eje = parsed.eje;
-    }
-
-    const toNum = (v:any) => {
-      if (v === null || v === undefined || v === '') return 0;
-      const n = Number(v);
-      return isNaN(n) ? 0 : n;
-    };
-
-    let currentdate = new Date();
-    const a = toNum (gbsimp);
-    const b = toNum(getKBoldis);
-
-    if ( gbsimp > b) {
-      this.guardarisError = true;
+    if ( gbsimp > getKBoldis) {
       this.guardarMesage = 'HA SOBREPASADO EL DISPONIBLE DE LA REFERENCIA';
       this.isUpdating = false;
       return;
@@ -531,26 +488,20 @@ export class CreditoComponent {
 
     const today = new Date();
     const payload = {
-      gbsimp: a,
-      gbsius: 0,
-      gbseco: 0,
-      gbsfop: [
-        today.getFullYear(),
-        String(today.getMonth() + 1).padStart(2, '0'),
-        String(today.getDate()).padStart(2, '0')
-      ].join('-')
+      GBSIMP: gbsimp,
+      GBSIUS: 0,
+      GBSICO: 0,
+      GBSFOP: today.toISOString().slice(0, 19)
     };
 
-    this.http.patch<void>(`${environment.backendUrl}/api/gbs/${this.entcod}/${this.eje}/${this.initialCentroGestor}/${gbsref}`, payload)
+    this.http.patch<void>(`${environment.backendUrl}/api/gbs/${this.entcod}/${this.eje}/${this.cge}/${gbsref}`, payload)
     .subscribe({
       next: () => {
-        this.guardarisSuccess = true;
         this.guardarMesageSuccess = 'Bolsa actualizada correctamente';
         this.isUpdating = false;
       },
       error: (err) => {
-        this.guardarisError = true;
-        this.guardarMesage = err?.error.error ?? 'Error al actualizar';
+        this.guardarMesage = err.error.error ?? err.error;
         this.isUpdating = false;
       }
     });

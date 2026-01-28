@@ -113,7 +113,7 @@ public class GbsControllerTest {
         Map<String, Object> payload = Map.of(
             "GBSIMP", 200.5,
             "GBSIUS", 5.0,
-            "GBSECO", "ECO",
+            "GBSICO", 10,
             "GBSFOP", "2026-01-22T12:00:00"
         );
 
@@ -134,7 +134,7 @@ public class GbsControllerTest {
         Map<String, Object> payload = Map.of(
             "GBSIMP", 1.0,
             "GBSIUS", 1.0,
-            "GBSECO", "E",
+            "GBSICO", 1.0,
             "GBSFOP", "2026-01-22T12:00:00"
         );
 
@@ -151,7 +151,7 @@ public class GbsControllerTest {
         Map<String, Object> payload = new HashMap<>();
         payload.put("GBSIMP", 1.0);
         payload.put("GBSIUS", null);
-        payload.put("GBSECO", "E");
+        payload.put("GBSICO", 1.0);
         payload.put("GBSFOP", "2026-01-22T12:00:00");
 
         mockMvc.perform(patch("/api/gbs/1/E1/C1/REF1")
@@ -170,7 +170,7 @@ public class GbsControllerTest {
         Map<String, Object> payload = Map.of(
             "GBSIMP", 1.0,
             "GBSIUS", 1.0,
-            "GBSECO", "E",
+            "GBSICO", 1.0,
             "GBSFOP", "2026-01-22T12:00:00"
         );
 
