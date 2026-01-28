@@ -215,7 +215,7 @@
                         <div class="title-detail">
                             <h3>Detalles del Factura</h3>
                         </div>
-                        <button class="guardar-btn">✔</button>
+                        <!-- <button class="guardar-btn">✔</button> -->
                         <button class="close-btn-btn" (click)="closeDetails()">✖</button>
                     </div>
                     <div class="detail-container">
@@ -308,16 +308,36 @@
                             </div>
                             <div class="right">
                                 <div class="on-two">
-                                    <textarea class="averageTextarea" [ngModel]="selectedFacturas.facimp | currency:'EUR':'symbol':'1.2-2':'es-ES'"></textarea>
+                                    <textarea 
+                                        class="averageTextarea" 
+                                        [(ngModel)]="selectedFacturas.facimp"
+                                        (blur)="formatFacField('facimp')"
+                                    ></textarea>
                                     <p>Aplicado</p>
-                                    <textarea class="averageTextarea" [ngModel]="selectedFacturas.faciec | currency:'EUR':'symbol':'1.2-2':'es-ES'"></textarea>
+                                    <textarea 
+                                        class="averageTextarea" 
+                                        [ngModel]="selectedFacturas.faciec"
+                                        (blur)="formatFacField('faciec')"
+                                    ></textarea>
                                 </div>
                                 <div class="on-two">
-                                    <textarea class="averageTextarea" [ngModel]="selectedFacturas.facidi | currency:'EUR':'symbol':'1.2-2':'es-ES'"></textarea>
+                                    <textarea 
+                                        class="averageTextarea" 
+                                        [ngModel]="selectedFacturas.facidi"
+                                        (blur)="formatFacField('facidi')"
+                                    ></textarea>
                                     <p>Pte.Apli</p>
-                                    <textarea class="averageTextarea" [value]="getPendingApply(selectedFacturas) | currency:'EUR':'symbol':'1.2-2':'es-ES'" readonly></textarea>
+                                    <textarea 
+                                        class="averageTextarea" 
+                                        [value]="getPendingApply(selectedFacturas) | currency:'EUR':'symbol':'1.2-2':'es-ES'"
+                                        readonly
+                                    ></textarea>
                                 </div>
-                                <textarea class="averageTextarea" [value]="selectedFacturas.facdto | currency:'EUR':'symbol':'1.2-2':'es-ES'" readonly></textarea>
+                                <textarea 
+                                    class="averageTextarea" 
+                                    [value]="selectedFacturas.facdto | currency:'EUR':'symbol':'1.2-2':'es-ES'"
+                                    readonly
+                                ></textarea>
                             </div>
                         </div>
                         <div class="observ">

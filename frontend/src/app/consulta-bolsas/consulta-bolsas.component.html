@@ -163,10 +163,6 @@
                     </div>
                     <h1 class="successBtn">{{ guardarMesageSuccess }}</h1>
                     <h1 class="errorBtn">{{ guardarMesage }}</h1>
-                    <div *ngIf="isUpdating" class="loading-message">
-                        <div class="spinner"></div>
-                        <span>actualizando</span>
-                    </div>
                     <div class="detail-container">
                         <div class="chunk-one">
                             <div class="detail-title">
@@ -215,8 +211,7 @@
                             <div class="conta-first">
                                 <div class="conta-one">
                                     <p>Importe bolsa</p>
-                                    <textarea class="smallTextarea" [ngModel]="selectedBolsas.gbsimp | currency:'EUR':'symbol':'1.2-2':'es-ES'"
-                                    (blur)="formatGbsimp($event)"></textarea>
+                                    <h1>{{selectedBolsas.gbsimp | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</h1>
                                 </div>
                                 <div class="conta-sign">
                                     <span class="plus">+</span>

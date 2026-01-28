@@ -403,7 +403,19 @@ export class CreditoComponent {
   showDetails(factura: any) {
     this.limpiarMessages();
     this.guardarisSuccess = false;
-    this.selectedBolsas = factura;
+    this.selectedBolsas = { ...factura };
+    if (this.selectedBolsas.gbsimp !== undefined && this.selectedBolsas.gbsimp !== null) {
+      let num = parseFloat(
+        String(this.selectedBolsas.gbsimp)
+          .replace(/\s/g, '')
+          .replace(/\./g, '')
+          .replace(',', '.')
+          .replace(/[^\d.-]/g, '')
+      );
+      if (!isNaN(num)) {
+        this.selectedBolsas.gbsimp = num.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
+      }
+    }
     const org = factura?.gbsorg ?? '';
     const fun = factura?.gbsfun ?? '';
     const eco = factura?.gbseco ?? '';
@@ -462,16 +474,16 @@ export class CreditoComponent {
     return (a - b).toFixed();
   }
 
-  formatGbsimp(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const normalized = input.value.replace(/\./g, '').replace(',', '.');
-    const amount = Number(normalized);
-    if (!isNaN(amount)) {
-      this.selectedBolsas.gbsimp = amount;
-      input.value =
-        this.currency.transform(amount, 'EUR', 'symbol', '1.2-2', 'es-ES') ?? '';
-    } else {
-      input.value = '';
+  formatGbsimp() {
+    if (!this.selectedBolsas || this.selectedBolsas.gbsimp === undefined || this.selectedBolsas.gbsimp === null) return;
+    let value = String(this.selectedBolsas.gbsimp)
+      .replace(/\s/g, '')
+      .replace(/\./g, '')     
+      .replace(',', '.')       
+      .replace(/[^\d.-]/g, '');
+    let num = parseFloat(value);
+    if (!isNaN(num)) {
+      this.selectedBolsas.gbsimp = num.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
     }
   }
 
@@ -480,7 +492,10 @@ export class CreditoComponent {
     this.isUpdating = true;
     this.limpiarMessages();
 
-    if ( gbsimp > getKBoldis) {
+    let cleanValue = gbsimp.replace(/\./g, '').replace(',', '.').replace(/[^\d.-]/g, '');
+    let parsedValue = parseFloat(cleanValue);
+
+    if ( parsedValue > getKBoldis) {
       this.guardarMesage = 'HA SOBREPASADO EL DISPONIBLE DE LA REFERENCIA';
       this.isUpdating = false;
       return;
@@ -488,12 +503,13 @@ export class CreditoComponent {
 
     const today = new Date();
     const payload = {
-      GBSIMP: gbsimp,
+      GBSIMP: parsedValue,
       GBSIUS: 0,
       GBSICO: 0,
       GBSFOP: today.toISOString().slice(0, 19)
     };
 
+    console.log(payload)
     this.http.patch<void>(`${environment.backendUrl}/api/gbs/${this.entcod}/${this.eje}/${this.cge}/${gbsref}`, payload)
     .subscribe({
       next: () => {

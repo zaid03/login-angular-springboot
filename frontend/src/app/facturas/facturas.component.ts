@@ -247,6 +247,24 @@ export class FacturasComponent {
     }).format(Number(value));
   };
 
+  formatFacField(field: 'facimp' | 'faciec' | 'facidi') {
+    if (!this.selectedFacturas || this.selectedFacturas[field] === undefined || this.selectedFacturas[field] === null) return;
+    let raw = String(this.selectedFacturas[field]).trim();
+
+    raw = raw.replace(/[^\d.,-]/g, '');
+
+    if (raw.indexOf('.') > -1 && raw.indexOf(',') > -1) {
+      raw = raw.replace(/\./g, '').replace(',', '.');
+    } else if (raw.indexOf(',') > -1) {
+      raw = raw.replace(',', '.');
+    }
+
+    let num = parseFloat(raw);
+    if (!isNaN(num)) {
+      this.selectedFacturas[field] = num.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
+    }
+  }
+
   DownloadPDF() {
     this.limpiarMEssages();
 
@@ -411,7 +429,8 @@ export class FacturasComponent {
 
   showDetails(factura: any) {
     this.limpiarMEssages();
-    this.selectedFacturas = factura;
+    this.selectedFacturas = { ...factura };
+    ['facimp', 'faciec', 'facidi'].forEach(field => this.formatFacField(field as any));
     this.detailView = 'Albaranes';
     this.setAlbaranesOptio('albaranes', factura?.facnum);
   }

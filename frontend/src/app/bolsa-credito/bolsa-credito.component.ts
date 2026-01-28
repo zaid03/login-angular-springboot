@@ -547,18 +547,19 @@ export class BolsaCreditoComponent {
     return isParenNeg ? -n : n;
   }
 
-  formatGbsimp(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const normalized = input.value.replace(/\./g, '').replace(',', '.');
-    const amount = Number(normalized);
-    if (!isNaN(amount)) {
-      this.selectedBolsas.gbsimp = amount;
-      input.value =
-        this.currency.transform(amount, 'EUR', 'symbol', '1.2-2', 'es-ES') ?? '';
-    } else {
-      input.value = '';
+  formatGbsimp() {
+    if (!this.selectedBolsas || this.selectedBolsas.gbsimp === undefined || this.selectedBolsas.gbsimp === null) return;
+    let value = String(this.selectedBolsas.gbsimp)
+      .replace(/\s/g, '')
+      .replace(/\./g, '')     
+      .replace(',', '.')       
+      .replace(/[^\d.-]/g, '');
+    let num = parseFloat(value);
+    if (!isNaN(num)) {
+      this.selectedBolsas.gbsimp = num.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
     }
   }
+
 
   isUpdating: boolean = false;
 

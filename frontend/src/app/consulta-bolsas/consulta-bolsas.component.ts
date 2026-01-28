@@ -546,21 +546,6 @@ export class ConsultaBolsasComponent {
     return isParenNeg ? -n : n;
   }
 
-  formatGbsimp(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const normalized = input.value.replace(/\./g, '').replace(',', '.');
-    const amount = Number(normalized);
-    if (!isNaN(amount)) {
-      this.selectedBolsas.gbsimp = amount;
-      input.value =
-        this.currency.transform(amount, 'EUR', 'symbol', '1.2-2', 'es-ES') ?? '';
-    } else {
-      input.value = '';
-    }
-  }
-
-  isUpdating: boolean = false;
-
   //misc
   limpiarMessages () {
     this.tableMessage = '';
