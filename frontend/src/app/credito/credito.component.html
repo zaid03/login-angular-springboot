@@ -177,23 +177,23 @@
                                 </div>
                                 <div class="right">
                                     <div class="on-two">
-                                        <h1>{{selectedBolsas.cgecod}}</h1>
-                                        <h1>{{selectedBolsas.cgedes}}</h1>
+                                        <h1>{{selectedBolsas.cgecod || '#'}}</h1>
+                                        <h1>{{selectedBolsas.cgedes || '#'}}</h1>
                                     </div>
                                     <div class="on-two">
-                                        <h1>{{bolsaCombo}}</h1>
-                                        <h1>{{selectedBolsas?.partidas?.[0]?.desc || ''}}</h1>
+                                        <h1>{{bolsaCombo || '#'}}</h1>
+                                        <h1>{{selectedBolsas?.partidas?.[0]?.desc || '#'}}</h1>
                                     </div>
-                                    <h1>{{selectedBolsas.gbsope}}</h1>
-                                    <h1>{{selectedBolsas.gbsref}}</h1>
-                                    <h1>{{selectedBolsas?.limporte}}</h1>
+                                    <h1>{{selectedBolsas.gbsope || '#'}}</h1>
+                                    <h1>{{selectedBolsas.gbsref || '#'}}</h1>
+                                    <h1>{{selectedBolsas?.limporte || '#'}}</h1>
                                 </div>
                             </div>  
                         </div>
                         <div class="chunk-two">
                             <div class="detail-title">
                                 <p>Bolsa</p>
-                                <span class="boll">{{ getkCGECIC(selectedBolsas.cgecic) }}</span>
+                                <span class="boll">{{ getkCGECIC(selectedBolsas.cgecic) || '#'}}</span>
                             </div>
                             <div class="detail-chunk-container">
                                 <div class="left special">
