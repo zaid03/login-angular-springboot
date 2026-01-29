@@ -488,14 +488,14 @@ export class CreditoComponent {
   }
 
   isUpdating: boolean = false;
-  updateBolsa(gbsimp: any, getKBoldis:any, gbsref: any) {
+  updateBolsa(gbsimp: any, getkAcPeCo:any, gbsref: any) {
     this.isUpdating = true;
     this.limpiarMessages();
 
     let cleanValue = gbsimp.replace(/\./g, '').replace(',', '.').replace(/[^\d.-]/g, '');
     let parsedValue = parseFloat(cleanValue);
 
-    if ( parsedValue > getKBoldis) {
+    if ( parsedValue > getkAcPeCo) {
       this.guardarMesage = 'HA SOBREPASADO EL DISPONIBLE DE LA REFERENCIA';
       this.isUpdating = false;
       return;
@@ -509,7 +509,6 @@ export class CreditoComponent {
       GBSFOP: today.toISOString().slice(0, 19)
     };
 
-    console.log(payload)
     this.http.patch<void>(`${environment.backendUrl}/api/gbs/${this.entcod}/${this.eje}/${this.cge}/${gbsref}`, payload)
     .subscribe({
       next: () => {
