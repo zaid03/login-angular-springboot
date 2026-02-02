@@ -686,7 +686,6 @@ export class ProveedoreesComponent {
   openDeletePersonas(persona: any) {
     this.limpiarMessages();
     this.personaToDelete = persona;
-    console.log(this.personaToDelete)
     this.showDeletePersona = true;
   }
 
@@ -841,7 +840,6 @@ export class ProveedoreesComponent {
   showDeleteConfirm = false;
   articuloToDelete: any = null;
   openDeleteConfirm(articulo: any) {
-    console.log(articulo)
     this.articuloToDelete = articulo;
     this.showDeleteConfirm = true;
   }
@@ -880,7 +878,6 @@ export class ProveedoreesComponent {
       return;
     }
 
-    console.log(newArticulo)
     this.http.post(
       `${environment.backendUrl}/api/more/add-apr`,newArticulo, { responseType: 'text' }).subscribe({
       next: (res) => {

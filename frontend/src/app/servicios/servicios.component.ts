@@ -323,7 +323,6 @@ export class ServiciosComponent {
       return;
     }
 
-    console.log(this.searchServicio, this.searchCentroGestor, this.searchPerfil)
     const params: any = {
       ent: this.entcod,
       eje: this.eje,
@@ -622,8 +621,6 @@ export class ServiciosComponent {
       "depden": den_add
     }
 
-    console.log(payload)
-
     this.http.post(`${environment.backendUrl}/api/dep/Insert-service`, payload).subscribe({
       next: (res) => {
         this.servicesMessageSuccess = 'Servicio añadido con éxito';
@@ -778,7 +775,6 @@ export class ServiciosComponent {
   
   linesSelected: string[] = [];
   selectLines(persona: string) {
-    console.log(persona)
     if(this.linesSelected.includes(persona)) {
       this.linesSelected = this.linesSelected.filter((p) => p !== persona);
     } else {
@@ -802,8 +798,6 @@ export class ServiciosComponent {
       "depcod": this.selectedService.depcod,
       "personas": personas
     }
- 
-    console.log(payload)
 
     this.http.post(`${environment.backendUrl}/api/depe/add-services-persona`, payload).subscribe({
       next: (res) => {

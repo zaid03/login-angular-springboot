@@ -668,7 +668,6 @@ export class FacturasComponent {
             this.isLoading = false;
           } else {
             this.albaranes = response;
-            console.log(this.albaranes);
             this.backipAlbaranes = Array.isArray(response) ? [...response] : [];
             this.isLoading = false;
           }
@@ -690,7 +689,6 @@ export class FacturasComponent {
             this.isLoading = false;
           } else {
             this.apalicaciones = response;
-            console.log(this.apalicaciones);
             this.backupAplicaciones = Array.isArray(response) ? [...response] : [];
             this.isLoading = false;
           }
@@ -712,7 +710,6 @@ export class FacturasComponent {
             this.isLoading = false;
           } else {
             this.descuentos = response;
-            console.log(this.descuentos);
             this.backupDescuentos = Array.isArray(response) ? [...response] : [];
             this.isLoading = false;
           }
