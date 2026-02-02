@@ -43,9 +43,10 @@
 .fix {margin-top: 5px;}
 .detail-acumolados-container { width: 80%; display: flex;  justify-content: center; gap: 10px;}
 /* main grid detail */
-@media (min-width: 1380px) {
-    .modal{height: 90vh !important; }
+@media (max-width: 1299px) {
+    .detail-chunk-container .left {width: 10%;}
     .chunk-one,
     .chunk-two,
-    .chunk-three {width: 45%; display: flex; padding: 2px; }
+    .chunk-three { width: 98%;}
+    .detail-container, .acumolados { width: 98%; }
 }
