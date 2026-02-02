@@ -116,7 +116,7 @@ export class FacturasComponent {
           this.isLoading = false;
         }
       }, error: (err) => {
-        this.filterFacturaMessage= 'Server error: ' + (err?.message || err?.statusText || err);
+        this.filterFacturaMessage= err.error.error ?? err.error;
         this.isLoading = false;
       }
     });
@@ -612,7 +612,7 @@ export class FacturasComponent {
         this.isLoading = false;
       },
       error: (err) => {
-        this.filterFacturaMessage = err.error?.error || err.message || 'Error desconocido';
+        this.filterFacturaMessage = err.error.error ?? err.error;
         this.isLoading = false;
       }
     });
@@ -674,7 +674,7 @@ export class FacturasComponent {
           }
         }, error: (err) => {
           this.moreInfoMessageIsError = true;
-          this.moreInfoMessageError = err?.error.error || err?.error;
+          this.moreInfoMessageError = err.error.error ?? err.error;
           this.isLoading = false;
         }
       });
@@ -696,7 +696,7 @@ export class FacturasComponent {
           }
         }, error: (err) => {
           this.moreInfoMessageIsError = true;
-          this.moreInfoMessageError = err?.error ?? 'Error desconocido';
+          this.moreInfoMessageError = err.error.error ?? err.error;
           this.isLoading = false;
         }
       });
@@ -718,7 +718,7 @@ export class FacturasComponent {
           }
         }, error: (err) => {
           this.moreInfoMessageIsError = true;
-          this.moreInfoMessageError = err?.error ?? 'Error desconocido';
+          this.moreInfoMessageError = err.error.error ?? err.error;
           this.isLoading = false;
         }
       });
@@ -727,7 +727,6 @@ export class FacturasComponent {
   
   //misc 
   limpiarMEssages() {
-    this.estadoMessage = '';
     this.filterFacturaMessage = '';
     this.moreInfoMessageSuccess = '';
     this.moreInfoMessageError = '';

@@ -91,7 +91,7 @@ export class CgeComponent {
         this.isLoading = false;
       }, error: (err) => {
         this.centroGestores = [];
-        this.SearchDownMessageError = typeof err.error === 'string' ? err.error : 'server Error';
+        this.SearchDownMessageError = err.error.error ?? err.error;
         this.isLoading = false;
       }
     })
@@ -175,7 +175,7 @@ export class CgeComponent {
         this.isLoading = false;
       }, error: (err) => {
         this.centroGestores = [];
-        this.SearchDownMessageError = typeof err.error === 'string' ? err.error : 'server Error';
+        this.SearchDownMessageError = err.error.error ?? err.error;
         this.isLoading = false;
       }
     })
@@ -406,7 +406,7 @@ export class CgeComponent {
         this.isUpdating = false;
       }, 
       error: (err) => {
-        const message = err?.error ?? 'Error al actualizar la centro gestor.';
+        const message = err.error.error ?? err.error;
         this.centroGestorErrorMessage = message;
         this.isUpdating = false;
       }
@@ -454,7 +454,7 @@ export class CgeComponent {
         this.closeDetails();
         this.isDeleting = false;
       }, error: (err) => {
-        this.deleErr = err?.error ?? 'Error al eliminar la familia.';
+        this.deleErr = err.error.error ?? err.error;
         this.isDeleting = false;
       }
     })
@@ -517,7 +517,7 @@ export class CgeComponent {
         this.isAdding = false;
       },
       error: (err) => {
-        this.centroGestorAddError = err?.error ?? 'Se ha producido un error.';
+        this.centroGestorAddError = err.error.error ?? err.error;
         this.isAdding = false;
       }
     })

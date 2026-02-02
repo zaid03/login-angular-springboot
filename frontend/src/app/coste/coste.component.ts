@@ -81,7 +81,7 @@ export class CosteComponent {
       },
       error: (err) => {
         this.isLoading = false;
-        this.costeError = err.error.error;
+        this.costeError = err.error.error ?? err.error;
       }
     })
   }
@@ -213,7 +213,7 @@ export class CosteComponent {
           this.isLoading = false
         },
         error: (err) => {
-          this.costeError = err.error || 'server error';
+          this.costeError = err.error.error ?? err.error;
           this.isLoading = false
         }
       });
@@ -225,7 +225,7 @@ export class CosteComponent {
           this.isLoading = false
         },
         error: (err) => {
-          this.costeError = err.error || 'server error';
+          this.costeError = err.error.error ?? err.error;
           this.isLoading = false
         }
       });
@@ -352,7 +352,7 @@ export class CosteComponent {
         this.isUpdating = false;
       },
       error: (err) => {
-        this.detallesMessageError = err.error || 'server error';
+        this.detallesMessageError = err.error.error ?? err.error;
         this.isUpdating = false;
       }
     })
@@ -395,7 +395,7 @@ export class CosteComponent {
         this.isDeleting = false;
       },
       error: (err) => {
-        this.detallesMessageErrorDelete = err.error || 'server error';
+        this.detallesMessageErrorDelete = err.error.error ?? err.error;
         this.isDeleting = false;
       }
     })
@@ -438,7 +438,7 @@ export class CosteComponent {
         this.isAdding = false;
       },
       error: (err) => {
-        this.errorAddcoste = err.error || 'server error';
+        this.errorAddcoste = err.error.error ?? err.error;
         this.isAdding = false;
       }
     })

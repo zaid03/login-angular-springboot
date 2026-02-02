@@ -77,7 +77,7 @@ export class PersonaComponent {
         this.isLoading = false;
       },
       error: (err) => {
-        this.personasMessageError = err?.error?.error || 'Error desconocido';
+        this.personasMessageError = err.error.error ?? err.error;
         this.isLoading = false;
       }
     });
@@ -307,7 +307,7 @@ export class PersonaComponent {
           this.defaultpersonas = [];
           this.page = 0;
           this.updatePagination();
-          this.personasMessageError = err?.error || 'Error en la búsqueda.';
+          this.personasMessageError = err.error.error ?? err.error;
           this.isLoading = false;
         }
       });
@@ -330,7 +330,7 @@ export class PersonaComponent {
           this.defaultpersonas = [];
           this.page = 0;
           this.updatePagination();
-          this.personasMessageError = err?.error || 'Error en la búsqueda.';
+          this.personasMessageError = err.error.error ?? err.error;
           this.isLoading = false;
         }
       });
@@ -385,7 +385,7 @@ export class PersonaComponent {
         this.isUpdating = false;
       },
       error: (err) => {
-        this.detailMessageError = err.error.error;
+        this.detailMessageError = err.error.error ?? err.error;
         this.isUpdating = false;
       }
     })
@@ -417,7 +417,7 @@ export class PersonaComponent {
         this.isLoading = false;
       },
       error: (err) => {
-        this.serviceErrorMessage = err?.error || 'Error desconocido';
+        this.serviceErrorMessage = err.error.error ?? err.error;
         this.isLoading = false;
       }
     });
@@ -472,7 +472,7 @@ export class PersonaComponent {
         this.isDeleting = false;
       },
       error: (err) => {
-        this.ErrorDelete = err.error.error
+        this.ErrorDelete = err.error.error ?? err.error;
         this.isDeleting = false;
       }
     })
@@ -504,7 +504,7 @@ export class PersonaComponent {
         this.pageAdd = 0;
       },
       error: (err) => {
-        this.servicesAddError = err?.error?.error || 'Error desconocido';
+        this.servicesAddError = err.error.error ?? err.error;
       }
     });
   }
@@ -571,7 +571,7 @@ export class PersonaComponent {
         this.services = [];
         this.backupServices = [];
         this.pageAdd = 0;
-        this.servicesAddError = err?.error || 'Error en la búsqueda.';
+        this.servicesAddError = err.error.error ?? err.error;
       }
     });
   }
@@ -619,7 +619,7 @@ export class PersonaComponent {
         this.closeAddService();
       },
       error: (err) => {
-        this.servicesAddError = err.error || 'Server error';
+        this.servicesAddError = err.error.error ?? err.error;
       }
     })
   }
@@ -662,7 +662,7 @@ export class PersonaComponent {
         this.isAdding = false;
       },
       error: (err) => {
-        this.PersonaErrorMessage = err.error.error;
+        this.PersonaErrorMessage = err.error.error ?? err.error;
         this.isAdding = false;
       }
     })
@@ -692,7 +692,7 @@ export class PersonaComponent {
         this.compiarPersona = true;
       },
       error: (err) => {
-        this.detailMessageError = err?.error || 'Error al obtener servicios';
+        this.detailMessageError = err.error.error ?? err.error;
         this.compiarPersona = false;
       }
     });
@@ -726,7 +726,7 @@ export class PersonaComponent {
         this.pageCopy = 0;
       },
       error: (err) => {
-        this.errorCopy = err?.error?.error || 'Error desconocido';
+        this.errorCopy = err.error.error ?? err.error;
       }
     });
   }
@@ -774,7 +774,7 @@ export class PersonaComponent {
           this.pesonasCopy = [];
           this.backupPesonasCopy = [];
           this.pageCopy = 0;
-          this.errorCopy = err?.error || 'Error en la búsqueda.';
+          this.errorCopy = err.error.error ?? err.error;
         }
       });
     } else {
@@ -791,7 +791,7 @@ export class PersonaComponent {
           this.pesonasCopy = [];
           this.backupPesonasCopy = [];
           this.pageCopy = 0;
-          this.errorCopy = err?.error || 'Error en la búsqueda.';
+          this.errorCopy = err.error.error ?? err.error;
         }
       });
     }
@@ -837,7 +837,7 @@ export class PersonaComponent {
       },
       error: (err) => {
         this.copiedServiceCodes = [];
-        this.detailMessageError = err?.error || 'Error al obtener servicios';
+        this.detailMessageError = err.error.error ?? err.error;
       }
     });
   }
@@ -874,7 +874,7 @@ export class PersonaComponent {
         })
       },
       error: (err) => {
-        this.detailMessageError = err.error || 'Server error';
+        this.detailMessageError = err.error.error ?? err.error;
         this.closecontinueAdCheckGrid()
         this.closeDetails();
         return;

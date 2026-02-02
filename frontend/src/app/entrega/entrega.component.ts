@@ -55,7 +55,7 @@ export class EntregaComponent {
       },
       error: (err) => {
         this.isLoading = false;
-        this.entregasError = err.error.error;
+        this.entregasError = err.error.error ?? err.error;
       }
     })
   }
@@ -187,7 +187,7 @@ export class EntregaComponent {
           this.isLoading = false;
         },
         error: (err) => {
-          this.entregasError = err.error || 'server error';
+          this.entregasError = err.error.error ?? err.error;
           this.isLoading = false;
         }
       });
@@ -199,7 +199,7 @@ export class EntregaComponent {
           this.isLoading = false;
         },
         error: (err) => {
-          this.entregasError = err.error || 'server error';
+          this.entregasError = err.error.error ?? err.error;
           this.isLoading = false;
         }
       });
@@ -322,7 +322,7 @@ export class EntregaComponent {
         this.isUpdating = false;
       },
       error: (err) => {
-        this.detallesMessageError = err.error || 'server error';
+        this.detallesMessageError = err.error.error ?? err.error;
         this.isUpdating = false;
       }
     })
@@ -346,7 +346,7 @@ export class EntregaComponent {
         this.isDeleting = false;
       },
       error: (err) => {
-        this.detallesMessageErrorDelete = err.error || 'server error';
+        this.detallesMessageErrorDelete = err.error.error ?? err.error;
         this.isDeleting = false;
       }
     })
@@ -405,7 +405,7 @@ export class EntregaComponent {
         this.isAdding = false;
       },
       error: (err) => {
-        this.errorAddEntrega = err.error || 'server error';
+        this.errorAddEntrega = err.error.error ?? err.error;
         this.isAdding = false;
       }
     })
@@ -418,10 +418,11 @@ export class EntregaComponent {
         this.backupentregas = [...this.entregas];
       },
       error: (err) => {
-        this.entregasError = err.error?.error || 'server error';
+        this.entregasError = err.error.error ?? err.error;
       }
     });
   }
+
   //misc
   emptyAllMessages() {
     this.detallesMessageErrorDelete = '';

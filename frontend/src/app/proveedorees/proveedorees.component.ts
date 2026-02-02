@@ -69,7 +69,7 @@ export class ProveedoreesComponent {
           }
         },
         error: (err) => {
-          this.error = err.error || err.error.error;
+          this.error = err.error.error ?? err.error;
           this.isLoading = false;
         }
       });
@@ -203,7 +203,7 @@ export class ProveedoreesComponent {
             this.isLoading = false;
           },
           error: (err) => {
-            this.error = err.error || err.error.error;
+            this.error = err.error.error ?? err.error;
             this.isLoading = false;
           }
         })
@@ -215,7 +215,7 @@ export class ProveedoreesComponent {
             this.isLoading = false;
           },
           error: (err) => {
-            this.error = err.error || err.error.error;
+            this.error = err.error.error ?? err.error;
             this.isLoading = false;
           }
         })
@@ -512,7 +512,7 @@ export class ProveedoreesComponent {
         this.isUpdating = false;
       },
       error: (err) => {
-        this.messageError = err?.error || 'Error al guardar el proveedor'
+        this.messageError = err.error.error ?? err.error;
         this.isUpdating = false;
       }
     });
@@ -573,7 +573,7 @@ export class ProveedoreesComponent {
           this.page = 0;
       },
       error: (err) => {
-        this.personasContactoErrorMessage = 'No se encontraron personas de contacto.';
+        this.personasContactoErrorMessage = err.error.error ?? err.error;
         this.contactPersons = [];
         this.page = 0;
         this.isLoading = false;
@@ -611,7 +611,7 @@ export class ProveedoreesComponent {
         this.isAdding = false;
       },
       error: (err) => {
-        this.personaContactoaddError = err.error ?? 'Se ha producido un error.';
+        this.personaContactoaddError = err.error.error ?? err.error;
         this.isAdding = false;
       }
     })
@@ -650,7 +650,7 @@ export class ProveedoreesComponent {
       },
       error: (err) => {
         this.personasContactoSuccessMessage = '';
-        this.personasContactoErrorMessage = err?.error || 'Error al guardar la persona de contacto';
+        this.personasContactoErrorMessage = err.error.error ?? err.error;
         this.isUpdating = false;
       }
     });
@@ -675,7 +675,7 @@ export class ProveedoreesComponent {
         this.closeDeletePersonas();
       },
       error: (err) => {
-        this.personasContactoErrorMessage = err.error ?? 'Error al eliminar la persona de contacto';
+        this.personasContactoErrorMessage = err.error.error ?? err.error;
         this.isDeleting = false;
       }
     });
@@ -764,14 +764,10 @@ export class ProveedoreesComponent {
           this.anadirErrorMessage = '';
         });
         this.isLoading = false;
-        if (response.length === 0) {
-          this.articuloError = 'No se encontraron artículos.';
-          this.isLoading = false;
-        }
         this.page = 0;
       },
       error: (err) => {
-        this.articuloError = 'No se encontraron artículos.';
+        this.articuloError = err.error.error ?? err.error;
         this.isLoading = false;
       } 
     });
@@ -802,7 +798,7 @@ export class ProveedoreesComponent {
       },
       error: (err) => {
         this.articuloSuccessMessage = '';
-        this.articuloError = err.error.error || err.error || 'Error al guardar el artículo';
+        this.articuloError = err.error.error ?? err.error;
         this.isUpdating = false;
       }
     });
@@ -836,7 +832,7 @@ export class ProveedoreesComponent {
           this.closeDeleteConfirm();
         },
         error: (err) => {
-          this.articuloError = 'Error al eliminar el artículo';
+          this.articuloError = err.error.error ?? err.error;
           this.isDeleting = false;
         }
       });
@@ -914,7 +910,7 @@ export class ProveedoreesComponent {
         this.isAdding = false;
       },
       error: (err) => {
-        this.anadirErrorMessage = 'Error al añadir el artículo';
+        this.anadirErrorMessage = err.error.error ?? err.error;
         this.isAdding = false;
       }
     });
@@ -1083,8 +1079,8 @@ export class ProveedoreesComponent {
         if (this.proveedoresSearchResults.length === 0) {
           this.anadirProveedorErrorMessage = 'No se encontraron proveedores.';
         }
-      }, error: (e) => {
-        this.anadirProveedorErrorMessage = `${e}`;
+      }, error: (err) => {
+        this.anadirProveedorErrorMessage = err.error.error ?? err.error;
       }
     });
   }
@@ -1213,9 +1209,8 @@ export class ProveedoreesComponent {
           this.guardarMessageProveedor = `Proveedores guardados correctamente (${savedCount}).`;
         },
         error: (err) => {
-          console.error('HTTP error status=', err.status, 'body=', err.error);
           this.isSaving = false;
-          const msg = err && err.error ? (typeof err.error === 'string' ? err.error : JSON.stringify(err.error)) : `Error al salvar los proveedores (status ${err.status})`;  
+          const msg = err.error.error ?? err.error;  
         }
       })
   }

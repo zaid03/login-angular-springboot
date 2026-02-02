@@ -121,7 +121,7 @@ export class BolsaCreditoComponent {
       },
       error: (err) => {
         this.tableIsError = true;
-        this.tableMessage = err.error.error;
+        this.tableMessage = err.error.error ?? err.error;
         this.isLoading = false;
       }
     });
@@ -445,7 +445,7 @@ export class BolsaCreditoComponent {
       },
       error: (err) => {
         this.tableIsError = true;
-        this.tableMessage = err.error.error;
+        this.tableMessage = err.error.error ?? err.error;
         this.isLoading = false;
       }
     });

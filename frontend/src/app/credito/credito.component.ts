@@ -115,7 +115,7 @@ export class CreditoComponent {
         this.isLoading = false;
       },
       error: (err) => {
-        this.tableMessage = err.error.error;
+        this.tableMessage = err.error.error ?? err.error;
         this.isLoading = false;
       }
     });

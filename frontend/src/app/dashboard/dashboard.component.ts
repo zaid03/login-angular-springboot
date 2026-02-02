@@ -208,7 +208,7 @@ export class DashboardComponent implements OnInit {
         this.page = 0;
       },
       error: (err) => {
-        this.servicesError = err?.error || 'Error desconocido';
+        this.servicesError = err.error.error ?? err.error;
       }
     });
   }

@@ -72,7 +72,7 @@ export class EjercicioComponent {
         this.isLoading = false;
       },
       error: (err) => {
-        this.ejercicioError = err.error.error || 'Error desconocido';
+        this.ejercicioError = err.error.error ?? err.error;
         this.isLoading = false;
       }
     });
@@ -294,7 +294,7 @@ export class EjercicioComponent {
         this.isLoading = false;
       },
       error: (err) => {
-        this.ejercicioError = err.error;
+        this.ejercicioError = err.error.error ?? err.error;
         this.isLoading = false;
       }
     });

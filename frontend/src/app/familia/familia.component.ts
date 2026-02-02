@@ -75,7 +75,7 @@ export class FamiliaComponent {
           this.isLoading = false;
         }
       },error: (err) => {
-        this.tableMessage = 'Server error';
+        this.tableMessage = err.error.error ?? err.error;
         this.isLoading = false;
       }
     })
@@ -390,8 +390,8 @@ export class FamiliaComponent {
             })
           })
         }
-      }, error: (e) => {
-        this.afacodError = 'Server Error';
+      }, error: (err) => {
+        this.afacodError = err.error.error ?? err.error;
       }
     })
   }
@@ -427,7 +427,7 @@ export class FamiliaComponent {
         this.isUpdating = false;
         this.fetchFamilias();
       }, error: (err) => {
-        const message = err?.error;
+        const message = err.error.error ?? err.error;
         this.familiaErrorMessage = message;
         this.isUpdating = false;
       }
@@ -466,7 +466,7 @@ export class FamiliaComponent {
         this.isDeleting = false;
         this.closeDetails();
       }, error: (err) => {
-        this.delErr = err?.error ?? 'Error al eliminar la familia.';
+        this.delErr = err.error.error ?? err.error;
         this.isDeleting = false;
       }
     })
@@ -489,7 +489,7 @@ export class FamiliaComponent {
         this.successUpdateMEssage = 'Subfamilia actualizado con éxito';
         this.isUpdating = false;
       }, error: (err) => {
-        this.afacodError = 'Server error';
+        this.afacodError = err.error.error ?? err.error;
         this.isUpdating = false;
       }
     })
@@ -506,7 +506,7 @@ export class FamiliaComponent {
         this.successUpdateMEssage = 'Subfamilia eliminado exitosamente';
         this.isDeleting = false;
       }, error: (err) => {
-        this.afacodError = err?.error ?? 'Se ha producido un error.';
+        this.afacodError = err.error.error ?? err.error;
         this.isDeleting = false;
       }
     })
@@ -562,7 +562,7 @@ export class FamiliaComponent {
         this.FetchSubfamilias(this.selectedFamilias.afacod);
       },
       error: (err) => {
-        this.subAddError = err?.error ?? 'Se ha producido un error al añadir la subfamilia.';
+        this.subAddError = err.error.error ?? err.error;
       }
     });
   }
@@ -616,7 +616,7 @@ export class FamiliaComponent {
         this.isAdding = false;
         this.closeAddConfirm();
       }, error: (err) => {
-        this.familiaAddError = err?.error ?? 'Se ha producido un error.';
+        this.familiaAddError = err.error.error ?? err.error;
         this.isAdding = false;
       }
     });

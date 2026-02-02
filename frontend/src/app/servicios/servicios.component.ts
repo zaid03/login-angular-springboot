@@ -82,7 +82,7 @@ export class ServiciosComponent {
         this.isLoading = false;
       },
       error: (err) => {
-        this.servicessMessageError = err?.error || 'Error desconocido';
+        this.servicessMessageError = err.error.error ?? err.error;
         this.isLoading = false;
       }
     });
@@ -358,7 +358,7 @@ export class ServiciosComponent {
         this.defaultServices = [];
         this.page = 0;
         this.updatePagination();
-        this.servicessMessageError = err?.error || 'Error en la búsqueda.';
+        this.servicessMessageError = err.error.error ?? err.error;
         this.isLoading = false;
       }
     });
@@ -394,7 +394,7 @@ export class ServiciosComponent {
         this.selectedService = {... this.selectedService, cgedes: description};
       },
       error: (err) => {
-        this.servicesDetailError = 'No se encuentra la descripción del cgecod.';
+        this.servicesDetailError = err.error.error ?? err.error;
       }
     })
 
@@ -444,7 +444,7 @@ export class ServiciosComponent {
         this.isUpdating = false;
       },
       error: (err) => {
-        this.updateServiceErrorMessage = err?.error;
+        this.updateServiceErrorMessage = err.error.error ?? err.error;
         this.isUpdating = false;
       }
     })
@@ -469,7 +469,7 @@ export class ServiciosComponent {
         this.isLoading = false;
       },
       error: (err) => {
-        this.personasError = err?.error;
+        this.personasError = err.error.error ?? err.error;
         this.isLoading = false;
       }
     })
@@ -514,7 +514,7 @@ export class ServiciosComponent {
         this.almacenArray = res;
       },
       error: (err) => {
-        this.almacenErro = err?.error;
+        this.almacenErro = err.error.error ?? err.error;
       }
     })
 
@@ -524,7 +524,7 @@ export class ServiciosComponent {
         this.isLoading = false;
       },
       error: (err) => {
-        this.almacenErro = err?.error;
+        this.almacenErro = err.error.error ?? err.error;
         this.isLoading = false;
       }
     })
@@ -550,7 +550,7 @@ export class ServiciosComponent {
         this.updateServiceSecondSuccess = 'Se ha actualizado la pestaña Detalles del pedido';
       },
       error: (err) => {
-        this.updateServiceSecondError =  err?.error;
+        this.updateServiceSecondError =  err.error.error ?? err.error;
       }
     })
   }
@@ -632,7 +632,7 @@ export class ServiciosComponent {
         this.isAdding = false;
       },
       error: (err) => {
-        this.addServiceErrorMessage = err?.error;
+        this.addServiceErrorMessage = err.error.error ?? err.error;
         this.isAdding = false;
       }
     })
@@ -666,7 +666,7 @@ export class ServiciosComponent {
         this.isDeleting = false;
       },
       error: (err) => {
-        this.deleErr = err?.error;
+        this.deleErr = err.error.error ?? err.error;
         this.isDeleting = false;
       }
     })
@@ -699,7 +699,7 @@ export class ServiciosComponent {
         this.isAdding = false;
       },
       error: (err) => {
-        this.errorCopy = err?.error?.error || 'Error desconocido';
+        this.errorCopy = err.error.error ?? err.error;
         this.isAdding = false;
       }
     });
@@ -749,7 +749,7 @@ export class ServiciosComponent {
           this.pesonasCopy = [];
           this.backupPesonasCopy = [];
           this.pageCopy = 0;
-          this.errorCopy = err?.error || 'Error en la búsqueda.';
+          this.errorCopy = err.error.error ?? err.error;
         }
       });
     } else {
@@ -758,15 +758,12 @@ export class ServiciosComponent {
           this.pesonasCopy = res;
           this.backupPesonasCopy = [...this.pesonasCopy]
           this.pageCopy = 0;
-          if (!res.length) {
-            this.errorCopy = 'No se encontraron servicios con los filtros dados.';
-          }
         },
         error: (err) => {
           this.pesonasCopy = [];
           this.backupPesonasCopy = [];
           this.pageCopy = 0;
-          this.errorCopy = err?.error || 'Error en la búsqueda.';
+          this.errorCopy = err.error.error ?? err.error;
         }
       });
     }
@@ -815,7 +812,7 @@ export class ServiciosComponent {
         this.closeAddPersonas();
       },
       error: (err) => {
-        this.errorCopy = err.error || 'Server error';
+        this.errorCopy = err.error.error ?? err.error;
       }
     })
   }
