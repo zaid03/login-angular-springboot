@@ -227,15 +227,15 @@
                             </div>
                             <div class="right">
                                 <div class="on-two">
-                                    <h1>{{selectedFacturas.facnum}}</h1>
+                                    <h1>{{selectedFacturas.facnum || '#'}}</h1>
                                     <p>F.Contable</p>
                                     <h1>{{selectedFacturas.facfco | date:'dd-MM-yyyy'}}</h1>
                                 </div>
-                                <h1>{{selectedFacturas.facdoc}}</h1>
+                                <h1>{{selectedFacturas.facdoc || '#'}}</h1>
                                 <div class="on-two">
-                                    <h1>{{selectedFacturas.facfac}}</h1>
-                                    <h1>{{selectedFacturas.facann}}</h1>
-                                    <h1>{{selectedFacturas.factdc}}</h1>
+                                    <h1>{{selectedFacturas.facfac || '#'}}</h1>
+                                    <h1>{{selectedFacturas.facann || '#'}}</h1>
+                                    <h1>{{selectedFacturas.factdc || '#'}}</h1>
                                 </div>
                             </div>
                         </div>
@@ -247,13 +247,13 @@
                             </div>
                             <div class="right">
                                 <div class="on-two">
-                                    <h1>{{selectedFacturas.tercod}}</h1>
-                                    <h1>{{selectedFacturas.ternom}}</h1>
+                                    <h1>{{selectedFacturas.tercod || '#'}}</h1>
+                                    <h1>{{selectedFacturas.ternom || '#'}}</h1>
                                 </div>
                                 <div class="on-two">
-                                    <h1>{{selectedFacturas.ternif}}</h1>
+                                    <h1>{{selectedFacturas.ternif || '#'}}</h1>
                                     <p>C.Gestor</p>
-                                    <h1>{{selectedFacturas.cgecod}}</h1>
+                                    <h1>{{selectedFacturas.cgecod || '#'}}</h1>
                                 </div>
                                 <div class="on-two">
                                     <h1>{{selectedFacturas.facdat | date:'dd-MM-yyyy'}}</h1>
@@ -269,9 +269,9 @@
                                 <p>Procedimiento de contacto</p>
                             </div>
                             <div class="right">
-                                <h1>{{selectedFacturas.conctp}}</h1>
-                                <h1>{{selectedFacturas.concpr}}</h1>
-                                <h1>{{selectedFacturas.conccr}}</h1>
+                                <h1>{{selectedFacturas.conctp || '#'}}</h1>
+                                <h1>{{selectedFacturas.concpr || '#'}}</h1>
+                                <h1>{{selectedFacturas.conccr || '#'}}</h1>
                             </div>
                         </div>
                         <div class="chunk-four">
@@ -281,14 +281,14 @@
                             </div>
                             <div class="right">
                                 <div class="on-two">
-                                    <h1>{{selectedFacturas.facfpg}}</h1>
+                                    <h1>{{selectedFacturas.facfpg || '#'}}</h1>
                                     <p>Tipo de pago</p>
-                                    <h1>{{selectedFacturas.factpg}}</h1>
+                                    <h1>{{selectedFacturas.factpg || '#'}}</h1>
                                 </div>
                                 <div class="on-two">
                                     <h1>{{selectedFacturas.facopg || '#'}}</h1>
                                     <p>ADO</p>
-                                    <h1>{{selectedFacturas.facado}}</h1>
+                                    <h1>{{selectedFacturas.facado || '#'}}</h1>
                                 </div>
                             </div>
                         </div>
@@ -297,7 +297,7 @@
                                 <p>Des.Fact/ADO:</p>
                             </div>
                             <div class="right">
-                                <h1>{{selectedFacturas.factxt}}</h1>
+                                <h1>{{selectedFacturas.factxt || '#'}}</h1>
                             </div>
                         </div>
                         <div class="chunk-six">

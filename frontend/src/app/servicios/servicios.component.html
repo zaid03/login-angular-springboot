@@ -175,9 +175,9 @@
                             </div>
                             <div class="right">
                                 <div class="on-two">
-                                    <h1>{{selectedService.depcod}}</h1>
+                                    <h1>{{selectedService.depcod || '#'}}</h1>
                                     <p>Centro de coste</p>
-                                    <h1>{{selectedService.ccocod}}</h1>
+                                    <h1>{{selectedService.ccocod || '#'}}</h1>
                                 </div>
                                 <textarea 
                                     class="long" 
@@ -185,8 +185,8 @@
                                     #des
                                 ></textarea>
                                 <div class="on-two">
-                                    <h1>{{selectedService.cgecod}}</h1>
-                                    <h1>{{selectedService.cgedes}}</h1>
+                                    <h1>{{selectedService.cgecod || '#'}}</h1>
+                                    <h1>{{selectedService.cgedes || '#'}}</h1>
                                 </div>
                             </div>
                         </div>

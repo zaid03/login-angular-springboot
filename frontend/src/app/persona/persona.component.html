@@ -139,7 +139,7 @@
                                     <p>Correo Electrónico</p>
                                 </div>
                                 <div class="right">
-                                    <h1>{{selectedPersona.percod}}</h1>
+                                    <h1>{{selectedPersona.percod || '#'}}</h1>
                                     <textarea class="long" [(ngModel)]="selectedPersona.pernom" #pernom></textarea>    
                                     <textarea class="long" [(ngModel)]="selectedPersona.percoe" #percoe></textarea>
                                 </div>

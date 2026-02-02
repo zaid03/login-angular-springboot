@@ -228,7 +228,7 @@
                                 <div class="on-two">
                                     <h1>{{selectedFacturas.facnum || '#'}}</h1>
                                     <p>F.Contable</p>
-                                    <h1>{{selectedFacturas.facfco ? (selectedFacturas.facfco | date:'dd-MM-yyyy') : '#'}}</h1>
+                                    <h1>{{selectedFacturas.facfco | date:'dd-MM-yyyy'}}</h1>
                                 </div>
                                 <h1>{{selectedFacturas.facdoc || '#'}}</h1>
                                 <div class="on-two">
@@ -255,9 +255,9 @@
                                     <h1>{{selectedFacturas.cgecod || '#'}}</h1>
                                 </div>
                                 <div class="on-two">
-                                    <h1>{{selectedFacturas.facdat? (selectedFacturas.facdat | date:'dd-MM-yyyy') : '#'}}</h1>
+                                    <h1>{{selectedFacturas.facdat | date:'dd-MM-yyyy'}}</h1>
                                     <p>F.Registro</p>
-                                    <h1>{{selectedFacturas.facfre? (selectedFacturas.facfre | date:'dd-MM-yyyy') : '#'}}</h1>
+                                    <h1>{{selectedFacturas.facfre | date:'dd-MM-yyyy'}}</h1>
                                 </div>
                             </div>
                         </div>
