@@ -32,3 +32,7 @@
 .margin{ margin-left: 10px;}
 .title{width: 49%;}
 /* add grid */
+@media (max-width: 1299px), (min-width: 1350px) {
+    .modal {top: 30%;}
+    .delete-confirm-modal {top: 30%;}
+}

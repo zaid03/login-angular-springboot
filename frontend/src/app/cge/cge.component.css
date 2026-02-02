@@ -42,3 +42,6 @@
 .estado-inputs {display: flex; gap: 10px;}
 .title{width: 80%;}
 /* add grid */
+@media (max-width: 1299px), (min-width: 1350px) {
+    .delete-confirm-modal {top: 40%;}
+}

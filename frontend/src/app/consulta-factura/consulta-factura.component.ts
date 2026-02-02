@@ -636,9 +636,12 @@ export class ConsultaFacturaComponent {
     this.albaranesOptio = option;
     this.limpiarMEssages();
     this.isLoading = true;
+    this.albaranes = [];
+    this.apalicaciones = [];
+    this.descuentos = [];
 
     if ( option === 'albaranes') {
-      this.http.get<any>(`${environment.backendUrl}/api/alb/${this.entcod}/${this.eje}/${facnum}`).subscribe({
+      this.http.get<any>(`${environment.backendUrl}/api/alb/albaranes/${this.entcod}/${this.eje}/${facnum}`).subscribe({
         next: (response) => {
           if (!Array.isArray(response) || response.length === 0) {
             this.moreInfoMessageIsSuccess = true;
@@ -653,7 +656,7 @@ export class ConsultaFacturaComponent {
           }
         }, error: (err) => {
           this.moreInfoMessageIsError = true;
-          this.moreInfoMessageError = err?.error ?? 'Error desconocido';
+          this.moreInfoMessageError = err?.error.error || err?.error;
           this.isLoading = false;
         }
       });

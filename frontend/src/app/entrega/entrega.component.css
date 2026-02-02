@@ -39,3 +39,7 @@
 .height {height: 100px !important;}
 .title {width: 55%;}
 /* add grid */
+@media (max-width: 1299px), (min-width: 1350px) {
+    .modal {top: 30%;}
+    .delete-confirm-modal {top: 30%;}
+}

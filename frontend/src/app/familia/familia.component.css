@@ -53,11 +53,6 @@
 .addTallText { width: 220px; max-width: 450px;}
 .addSmallText { width: 80px; max-width: 200px;}
 /* modals */
-@media (min-width: 1800px) {
-  .familia-container h2 { font-size: 25px; }
-  .familia-list { width: 60%; }
-  .familia-table thead th,
-  .subfamilia-table thead th { font-size: 17px; }
-  .familia-table tbody td,
-  .subfamilia-table tbody td { font-size: 16px; }
+@media (max-width: 1299px), (min-width: 1350px) {
+  .delete-confirm-modal {top: 40%;}
 }

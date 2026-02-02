@@ -654,6 +654,9 @@ export class FacturasComponent {
     this.albaranesOptio = option;
     this.limpiarMEssages();
     this.isLoading = true;
+    this.albaranes = [];
+    this.apalicaciones = [];
+    this.descuentos = [];
 
     if ( option === 'albaranes') {
       this.http.get<any>(`${environment.backendUrl}/api/alb/albaranes/${this.entcod}/${this.eje}/${facnum}`).subscribe({
@@ -671,7 +674,7 @@ export class FacturasComponent {
           }
         }, error: (err) => {
           this.moreInfoMessageIsError = true;
-          this.moreInfoMessageError = err?.error ?? 'Error desconocido';
+          this.moreInfoMessageError = err?.error.error || err?.error;
           this.isLoading = false;
         }
       });
