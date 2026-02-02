@@ -1,5 +1,5 @@
 /* search */
-.title-area { width: 20%; }
+.title-area { width: 18%; justify-content: flex-end;}
 .search-container {gap: 10px; }
 /* search */
 /* all tables */

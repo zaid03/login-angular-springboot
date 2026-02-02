@@ -2,8 +2,7 @@
     <div 
         class="sidebar-backdrop" 
         *ngIf="!sidebar.collapsed" 
-        (click)="sidebar.collapsed = true"
-    >
+        (click)="sidebar.collapsed = true">
     </div>
     <app-sidebar #sidebar></app-sidebar>
     <div class="credito-container" [class.blurred]="!sidebar.collapsed">

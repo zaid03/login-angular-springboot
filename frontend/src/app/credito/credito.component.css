@@ -1,6 +1,7 @@
 /* search */
-.cge-text { display: flex; width: 35%; font-weight: bold; gap: 10px; color: rgb(221, 66, 66);}
-.title-area {justify-content: flex-end; width: 32%;}
+.cge-text { display: flex; width: 40%; font-weight: bold; gap: 10px; color: rgb(221, 66, 66);}
+.title-area {justify-content: flex-end; width: 30%;}
+.search-holder { width: 69%;}
 /* search */
 /* main-table */
 .credito-container td:nth-child(8),

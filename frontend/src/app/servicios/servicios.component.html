@@ -2,8 +2,7 @@
     <div 
         class="sidebar-backdrop" 
         *ngIf="!sidebar.collapsed" 
-        (click)="sidebar.collapsed = true"
-    >
+        (click)="sidebar.collapsed = true">
     </div>
     <app-sidebar #sidebar></app-sidebar>
     <div class="services-container" [class.blurred]="!sidebar.collapsed">
@@ -488,7 +487,7 @@
         <span>borrando</span>
     </div>
     <div class="btns">
-        <button class="delete-btn" (click)="confirmDelete(personaTodelete?.[0])">-</button>
+        <button class="delete-btn" (click)="confirmDelete(personaTodelete.percod)">-</button>
         <button class="save-btn" (click)="closeDeleteConfirm()">✖</button>
     </div>
 </div>
