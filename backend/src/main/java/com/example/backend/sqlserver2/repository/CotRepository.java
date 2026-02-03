@@ -9,5 +9,24 @@ import java.util.List;
 
 public interface CotRepository extends JpaRepository<Cot, CotId> {
     //selecting all contratos
-    List<CotContratoProjection> findAllProjectedBy();
+    List<CotContratoProjection> findAllProjectedByConnCONTIPAndConnENTAndConnEJE(Integer CONTIP, Integer ent, String eje);
+
+    //search options
+    //search by concod bloqueado
+    List<CotContratoProjection> findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCODAndConnCONBLO(Integer CONTIP, Integer ent, String eje, Integer concod, Integer conblo);
+
+    //search by concod no bloqueado
+    List<CotContratoProjection> findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCODAndConnCONBLONot(Integer CONTIP, Integer ent, String eje, Integer concod, Integer conblo);
+
+    //search by condes bloqueado
+    List<CotContratoProjection> findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDESContainingAndConnCONBLO(Integer CONTIP, Integer ent, String eje, String condes, Integer conblo);
+
+    //search by condes no bloqueado
+    List<CotContratoProjection> findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDESContainingAndConnCONBLONot(Integer CONTIP, Integer ent, String eje, String condes, Integer conblo);
+
+    //search by bloqueado all
+    List<CotContratoProjection> findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONBLO(Integer CONTIP, Integer ent, String eje, Integer conblo);
+
+    //search by no bloqueado all
+    List<CotContratoProjection> findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONBLONot(Integer CONTIP, Integer ent, String eje, Integer conblo);
 }

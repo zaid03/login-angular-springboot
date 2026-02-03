@@ -32,7 +32,7 @@ public class Cot {
         @JoinColumn(name = "EJE", referencedColumnName = "EJE", insertable = false, updatable = false),
         @JoinColumn(name = "CONCOD", referencedColumnName = "CONCOD", insertable = false, updatable = false)
     })
-    private Conn con;
+    private Conn conn;
 
     @ManyToOne
     @JoinColumns({
@@ -41,8 +41,8 @@ public class Cot {
     })
     private Ter ter;
     
-    public Con getCon() { return con; }
-    public void setCon(Con con) { this.con = con; }
+    public Conn getConn() { return conn; }
+    public void setConn(Conn conn) { this.conn = conn; }
 
     public Ter getTer() { return ter; }
     public void setTer(Ter ter) { this.ter = ter; }

@@ -1,10 +1,10 @@
 package com.example.backend.service;
 
 public interface CotContratoProjection {
-    ConInfo getCon();
+    ConnInfo getConn();
     TerInfo getTer();
 
-    interface ConInfo {
+    interface ConnInfo {
         Integer getCONCOD();
         String getCONLOT();
         String getCONDES();

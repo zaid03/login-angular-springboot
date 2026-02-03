@@ -46,7 +46,7 @@ public class Conn {
 
     private String CONCCR;
 
-    @OneToMany(mappedBy = "con")
+    @OneToMany(mappedBy = "conn")
     @JsonIgnore
     private List<Cot> cots;
 
