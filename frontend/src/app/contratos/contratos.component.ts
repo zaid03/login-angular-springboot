@@ -72,6 +72,7 @@ export class ContratosComponent {
         this.backupContratos = Array.isArray(res) ? [...res] : [];
         this.defaultContratos = [...this.backupContratos];
         this.page = 0;
+        this.updatePagination();
         this.isLoading = false;
       },
       error: (err) => {
@@ -294,32 +295,136 @@ export class ContratosComponent {
 
     if (this.isDigitsOnly(this.searchInput)) {
       if (this.searchOption === 'noBloque') {
-
+        this.http.get<any>(`${environment.backendUrl}/api/con/searchByCodigoNoBloque/${this.entcod}/${this.eje}/${this.searchInput}`).subscribe({
+          next: (res) => {
+            this.contratos = res;
+            this.backupContratos = Array.isArray(res) ? [...res] : [];
+            this.defaultContratos = [...this.backupContratos];
+            this.page = 0;
+            this.updatePagination();
+            this.isLoading = false;
+          },
+          error: (err) => {
+            this.mainError = err.error.error ?? err.error;
+            this.isLoading = false;
+          }
+        })
       }
       else if (this.searchOption === 'Bloque') {
-
+        this.http.get<any>(`${environment.backendUrl}/api/con/searchByCodigoBloque/${this.entcod}/${this.eje}/${this.searchInput}`).subscribe({
+          next: (res) => {
+            this.contratos = res;
+            this.updatePagination();
+            this.backupContratos = Array.isArray(res) ? [...res] : [];
+            this.defaultContratos = [...this.backupContratos];
+            this.page = 0;
+            this.isLoading = false;
+          },
+          error: (err) => {
+            this.mainError = err.error.error ?? err.error;
+            this.isLoading = false;
+          }
+        })
       }
       else if (this.searchOption === 'Todos') {
-
+        this.http.get<any>(`${environment.backendUrl}/api/con/searchByCodigoTodos/${this.entcod}/${this.eje}/${this.searchInput}`).subscribe({
+          next: (res) => {
+            this.contratos = res;
+            this.updatePagination();
+            this.backupContratos = Array.isArray(res) ? [...res] : [];
+            this.defaultContratos = [...this.backupContratos];
+            this.page = 0;
+            this.isLoading = false;
+          },
+          error: (err) => {
+            this.mainError = err.error.error ?? err.error;
+            this.isLoading = false;
+          }
+        })
       }
     }
     else if (!this.isDigitsOnly(this.searchInput)) {
       if (this.searchOption === 'noBloque') {
-
+        this.http.get<any>(`${environment.backendUrl}/api/con/searchByDescNoBloque/${this.entcod}/${this.eje}/${this.searchInput}`).subscribe({
+          next: (res) => {
+            this.contratos = res;
+            this.updatePagination();
+            this.backupContratos = Array.isArray(res) ? [...res] : [];
+            this.defaultContratos = [...this.backupContratos];
+            this.page = 0;
+            this.isLoading = false;
+          },
+          error: (err) => {
+            this.mainError = err.error.error ?? err.error;
+            this.isLoading = false;
+          }
+        })
       }
       else if (this.searchOption === 'Bloque') {
-
+        this.http.get<any>(`${environment.backendUrl}/api/con/searchByDescBloque/${this.entcod}/${this.eje}/${this.searchInput}`).subscribe({
+          next: (res) => {
+            this.contratos = res;
+            this.updatePagination();
+            this.backupContratos = Array.isArray(res) ? [...res] : [];
+            this.defaultContratos = [...this.backupContratos];
+            this.page = 0;
+            this.isLoading = false;
+          },
+          error: (err) => {
+            this.mainError = err.error.error ?? err.error;
+            this.isLoading = false;
+          }
+        })
       }
       else if (this.searchOption === 'Todos') {
-
+        this.http.get<any>(`${environment.backendUrl}/api/con/searchByDescTodos/${this.entcod}/${this.eje}/${this.searchInput}`).subscribe({
+          next: (res) => {
+            this.contratos = res;
+            this.updatePagination();
+            this.backupContratos = Array.isArray(res) ? [...res] : [];
+            this.defaultContratos = [...this.backupContratos];
+            this.page = 0;
+            this.isLoading = false;
+          },
+          error: (err) => {
+            this.mainError = err.error.error ?? err.error;
+            this.isLoading = false;
+          }
+        })
       }
     }
     else if (this.searchInput === '') {
       if (this.searchOption === 'noBloque') {
-
+        this.http.get<any>(`${environment.backendUrl}/api/con/searchByNobloq/${this.entcod}/${this.eje}`).subscribe({
+          next: (res) => {
+            this.contratos = res;
+            this.updatePagination();
+            this.backupContratos = Array.isArray(res) ? [...res] : [];
+            this.defaultContratos = [...this.backupContratos];
+            this.page = 0;
+            this.isLoading = false;
+          },
+          error: (err) => {
+            this.mainError = err.error.error ?? err.error;
+            this.isLoading = false;
+          }
+        })
       }
       else if (this.searchOption === 'Bloque') {
-
+        this.http.get<any>(`${environment.backendUrl}/api/con/searchByBloqu/${this.entcod}/${this.eje}`).subscribe({
+          next: (res) => {
+            this.contratos = res;
+            this.updatePagination();
+            this.backupContratos = Array.isArray(res) ? [...res] : [];
+            this.defaultContratos = [...this.backupContratos];
+            this.page = 0;
+            this.isLoading = false;
+          },
+          error: (err) => {
+            this.mainError = err.error.error ?? err.error;
+            this.isLoading = false;
+          }
+        })
       }
       else if (this.searchOption === 'Todos') {
         this.fetchContratos();
@@ -327,10 +432,17 @@ export class ContratosComponent {
     }
   }
 
+  limpiarSearch() {
+    this.limpiarMessages();
+    this.fetchContratos();
+  }
+
   private isDigitsOnly(value: string): boolean {
     if (!value) return false;
     return /^\d+$/.test(value.trim());
   }
+
+  //detail grid
 
   //misc
   limpiarMessages() {
