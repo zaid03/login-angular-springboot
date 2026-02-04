@@ -1,0 +1,8 @@
+/* search */
+.margin-title { margin-left: 20%;}
+.search-options label { display: flex; font-size: 15px; gap: 16px; color: #444; padding: 8px 14px; }
+.search-options input:focus {outline: none;}
+.search-button-proveedores{ margin-right: 10px; }
+.search-btns { margin-left: 10px; } 
+.search-options input[type="radio"] { margin: 0 6px 0 0; accent-color: #25176b; width: 18px; height: 18px; vertical-align: middle; outline: none; box-shadow: none; }
+/* search */

@@ -1,1 +1,136 @@
-<p>contratos works!</p>
+<div class="contratos-page">
+    <app-sidebar #sidebar></app-sidebar>
+    <div 
+    class="sidebar-backdrop" 
+    *ngIf="!sidebar.collapsed" 
+    (click)="sidebar.collapsed = true"
+    >
+    </div>
+    <div class="contratos-container" [class.blurred]="!sidebar.collapsed">
+        <div class="title-menu">
+            <div class="title-area">
+                <h2 class="margin-title">Gestión de contratos</h2>  
+            </div>
+            <div class="search-holder">
+                <div class="search-container">
+                    <form class="search-form">
+                        <input 
+                            type="text" 
+                            class="search-bar" 
+                            placeholder="Buscar contratos" 
+                            name="search" 
+
+                        />
+                        <div class="search-options">
+                            <label>
+                                <input 
+                                    type="radio" 
+                                    name="optiones" 
+                                    value="Todos" 
+                                    
+                                /> Todos
+                                <input 
+                                    type="radio" 
+                                    name="optiones" 
+                                    value="noBloqueados" 
+                                    
+                                /> No Bloqueados
+                                <input 
+                                    type="radio" 
+                                    name="optiones" 
+                                    value="Bloqueados" 
+                                      
+                                /> Bloqueados
+                            </label>
+                        </div>
+                        <div class="search-btns">
+                            <button type="button" class="search-button-proveedores" >Buscar</button>
+                            <button type="button" class="search-button-proveedores" >Limpiar</button>
+                        </div>
+                    </form>
+                </div> 
+            </div>
+            <div class="group-menu" (click)="toggleMenu($event)">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="menu-panel" *ngIf="showMenu">
+                    <button type="button" >Exportar a Excel</button>
+                    <button type="button" >Exportar a PDF</button>
+                </div>
+            </div>
+        </div>
+        <div class="contratos-list">
+            <h1 class="errorBtn">{{mainError}}</h1>
+            <h1 class="successBtn">{{mainSuccess}}</h1>
+            <div *ngIf="isLoading" class="loading-message">
+                <div class="spinner"></div>
+                <span>Cargando</span>
+            </div>
+            <table class="contratos-table">
+                <thead>
+                    <tr>
+                        <th class="sortable resizable">
+                            Número
+                            <div class="resizer" (mousedown)="startResize($event, 0)"></div>
+                        </th>
+                        <th class="sortable resizable">
+                            Económica
+                            <div class="resizer" (mousedown)="startResize($event, 1)"></div>
+                        </th>
+                        <th class="sortable resizable">
+                            Descripción
+                            <div class="resizer" (mousedown)="startResize($event, 2)"></div>
+                        </th>
+                        <th class="sortable resizable">
+                            Fecha inicio
+                            <div class="resizer" (mousedown)="startResize($event, 3)"></div>
+                        </th>
+                        <th class="sortable resizable">
+                            Fecha fin
+                            <div class="resizer" (mousedown)="startResize($event, 4)"></div>
+                        </th>
+                        <th class="sortable resizable">
+                            Bloqueado
+                            <div class="resizer" (mousedown)="startResize($event, 5)"></div>
+                        </th>
+                        <th class="sortable resizable">
+                            Cód Proveedor
+                            <div class="resizer" (mousedown)="startResize($event, 6)"></div>
+                        </th>
+                        <th class="sortable resizable">
+                            Proveedor
+                            <div class="resizer" (mousedown)="startResize($event, 7)"></div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let c of paginatedContratos">
+                        <td>{{c.concod}}</td>
+                        <td>{{c.conlot}}</td>
+                        <td>{{c.condes}}</td>
+                        <td>{{c.confin?.slice(0,10)}}</td>
+                        <td>{{c.conffi?.slice(0,10)}}</td>
+                        <td>{{setBloqueado(c.conblo)}}</td>
+                        <td>{{c.tercod}}</td>
+                        <td>{{c.ternom}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="pagination-controls">
+                <button (click)="prevPage()" [disabled]="page === 0">Anterior</button>
+                <span>Página</span>
+                <input
+                type="number"
+                min="1"
+                [max]="totalPages"
+                [value]="page + 1"
+                (change)="goToPage($event)"
+                class="pagination-input"
+                />
+                <span>de {{ totalPages }}</span>
+                <button (click)="nextPage()" [disabled]="page + 1 >= totalPages">Siguiente</button>
+            </div>
+        </div>
+    </div>
+</div>
