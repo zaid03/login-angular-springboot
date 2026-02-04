@@ -471,6 +471,273 @@ export class ContratosComponent {
     this.showAddGrid = false;
   }
 
+  showProveedorGrid: boolean = false;
+  error: string = '';
+  openProveedores() {
+    this.limpiarMessages();
+    this.showProveedorGrid = true;
+    this.fetchProveedores();
+  }
+
+  closeProveedores() {
+    this.showProveedorGrid = false;
+    this.proveedores = null;
+    this.searchTerm = '';
+    this.filterOption = 'noBloqueados';
+  }
+
+  proveedores: any = [];
+  isLoadingPro: boolean = false;
+  fetchProveedores() {
+    this.isLoadingPro = true;
+    this.http.get<any>(`${environment.backendUrl}/api/ter/by-ent/${this.entcod}`).subscribe({
+      next: (response) => {
+        this.proveedores = response;
+        this.pagePro = 0;
+        this.isLoadingPro = false;
+        this.updatePaginationPro();
+      },
+      error: (err) => {
+        this.error = err.error.error ?? err.error;
+        this.isLoading = false;
+      }
+    });
+  }
+  pagePro = 0;
+  pageSizePro = 20;
+  get totalPagesPro(): number {
+    return Math.max(1, Math.ceil((this.proveedores?.length ?? 0) / this.pageSizePro));
+  }
+  get paginatedProveedores() {
+    if (!this.proveedores || this.proveedores.length === 0) return [];
+    const start = this.pagePro * this.pageSizePro;
+    return this.proveedores.slice(start, start + this.pageSizePro);
+  }
+  nextPagePro() {
+    if (this.pagePro < this.totalPagesPro - 1) {this.pagePro++;}
+  }
+  prevPagePro() {
+    if (this.pagePro > 0) {this.pagePro--;}
+  }
+  goToPagePro(event: any) {
+    const inputPage = Number(event.target.value);
+    if (inputPage >= 1 && inputPage <= this.totalPagesPro) {this.pagePro = inputPage - 1;}
+  }
+  private updatePaginationPro(): void {
+    const total = this.totalPagesPro;
+    if (total === 0) {this.pagePro = 0; return;}
+    if (this.pagePro >= total) {this.pagePro = total - 1;}
+  }
+
+  searchTerm: string = '';
+  filterOption: string = 'noBloqueados';
+  searchProveedor() {
+    this.limpiarMessages();
+    this.isLoadingPro = true
+    if (this.searchTerm.trim() === '') {
+      if (this.filterOption === 'Bloqueados') {
+        this.http.get<any[]>(`${environment.backendUrl}/api/ter/filter/${this.entcod}`).subscribe({
+          next: (response) => {
+            this.proveedores = response;
+            this.page = 0;
+            this.isLoadingPro = false;
+          },
+          error: (err) => {
+            this.error = err.error.error ?? err.error;
+            this.isLoadingPro = false;
+          }
+        })
+      } else if (this.filterOption === 'noBloqueados') {
+        this.http.get<any[]>(`${environment.backendUrl}/api/ter/filter-no/${this.entcod}`).subscribe({
+          next: (response) => {
+            this.proveedores = response;
+            this.page = 0;
+            this.isLoadingPro = false;
+          },
+          error: (err) => {
+            this.error = err.error.error ?? err.error;
+            this.isLoadingPro = false;
+          }
+        })
+      }
+    }
+
+    if(/^\d+$/.test(this.searchTerm)) {
+      if(this.filterOption === 'noBloqueados') {
+        if ((this.searchTerm.length <= 5)) {
+          this.http.get<any[]>(`${environment.backendUrl}/api/ter/by-tercod-no-bloqueado/${this.entcod}/tercod/${this.searchTerm}`).subscribe({
+            next: (response) => {
+              this.proveedores = response;
+              this.page = 0;
+              this.isLoadingPro = false;
+            },
+            error: (err) => {
+              this.error = err.error || err.error.error;
+              this.isLoadingPro = false;
+            }
+          })
+        } else if ((this.searchTerm.length > 5)) {
+          this.http.get<any[]>(`${environment.backendUrl}/api/ter/by-ternif-no-bloqueado/${this.entcod}/ternif/${this.searchTerm}`).subscribe({
+            next: (response) => {
+              this.proveedores = response;
+              this.page = 0;
+              this.isLoadingPro = false;
+            },
+            error: (err) => {
+              this.error = err.error || err.error.error;
+              this.isLoadingPro = false;
+            }
+          })
+        }
+      } else if(this.filterOption === 'Bloqueados') {
+        if ((this.searchTerm.length <= 5)) {
+          this.http.get<any[]>(`${environment.backendUrl}/api/ter/by-tercod-bloqueado/${this.entcod}/tercod/${this.searchTerm}`).subscribe({
+            next: (response) => {
+              this.proveedores = response;
+              this.page = 0;
+              this.isLoadingPro = false;
+            },
+            error: (err) => {
+              this.error = err.error || err.error.error;
+              this.isLoadingPro = false;
+            }
+          })
+        } if ((this.searchTerm.length > 5)) {
+          this.http.get<any[]>(`${environment.backendUrl}/api/ter/by-ternif-bloquado/${this.entcod}/ternif/${this.searchTerm}`).subscribe({
+            next: (response) => {
+              this.proveedores = response;
+              this.page = 0;
+              this.isLoadingPro = false;
+            },
+            error: (err) => {
+              this.error = err.error || err.error.error;
+              this.isLoadingPro = false;
+            }
+          })
+        }
+      } else if(this.filterOption === 'Todos') {
+        if ((this.searchTerm.length <= 5)){
+          this.http.get<any[]>(`${environment.backendUrl}/api/ter/by-ent/${this.entcod}/tercod/${this.searchTerm}`).subscribe({
+            next: (response) => {
+              this.proveedores = response;
+              this.page = 0;
+              this.isLoadingPro = false;
+            },
+            error: (err) => {
+              this.error = err.error || err.error.error;
+              this.isLoadingPro = false;
+            }
+          })
+        } else if ((this.searchTerm.length > 5)) {
+          this.http.get<any[]>(`${environment.backendUrl}/api/ter/by-ent/${this.entcod}/ternif/${this.searchTerm}`).subscribe({
+            next: (response) => {
+              this.proveedores = response;
+              this.page = 0;
+              this.isLoadingPro = false;
+            },
+            error: (err) => {
+              this.error = err.error || err.error.error;
+              this.isLoadingPro = false;
+            }
+          })
+        }
+      }
+    } else if (/^[a-zA-Z0-9]+$/.test(this.searchTerm)) {
+      if(this.filterOption === 'noBloqueados') {
+        this.http.get<any[]>(`${environment.backendUrl}/api/ter/by-nif-nom-ali-no-bloquado/${this.entcod}/search-by-term?term=${this.searchTerm}`).subscribe({
+          next: (response) => {
+            this.proveedores = response;
+            this.page = 0;
+            this.isLoadingPro = false;
+          },
+          error: (err) => {
+            this.error = err.error || err.error.error;
+            this.isLoadingPro = false;
+          }
+        })
+      } if(this.filterOption === 'Bloqueados') {
+        this.http.get<any[]>(`${environment.backendUrl}/api/ter/by-ternif-nom-ali-bloquado/${this.entcod}/search?term=${this.searchTerm}`).subscribe({
+          next: (response) => {
+            this.proveedores = response;
+            this.page = 0;
+            this.isLoadingPro = false;
+          },
+          error: (err) => {
+            this.error = err.error || err.error.error;
+            this.isLoadingPro = false;
+          }
+        })
+      } if(this.filterOption === 'Todos') {
+        this.http.get<any[]>(`${environment.backendUrl}/api/ter/by-ent/${this.entcod}/search-todos?term=${this.searchTerm}`).subscribe({
+          next: (response) => {
+            this.proveedores = response;
+            this.page = 0;
+            this.isLoadingPro = false;
+          },
+          error: (err) => {
+            this.error = err.error || err.error.error;
+            this.isLoadingPro = false;
+          }
+        })
+      }
+    } else {
+      if(this.filterOption === 'noBloqueados') {
+        this.http.get<any[]>(`${environment.backendUrl}/api/ter/by-nom-ali-no-bloquado/${this.entcod}/findMatchingNomOrAli?term=${this.searchTerm}`).subscribe({
+          next: (response) => {
+            this.proveedores = response;
+            this.page = 0;
+            this.isLoadingPro = false;
+          },
+          error: (err) => {
+            this.error = err.error || err.error.error;
+            this.isLoadingPro = false;
+          }
+        })
+      }
+      if(this.filterOption === 'Bloqueados') {
+        this.http.get<any[]>(`${environment.backendUrl}/api/ter/by-nom-ali-bloquado/${this.entcod}/searchByNomOrAli?term=${this.searchTerm}`).subscribe({
+          next: (response) => {
+            this.proveedores = response;
+            this.page = 0;
+            this.isLoadingPro = false;
+          },
+          error: (err) => {
+            this.error = err.error || err.error.error;
+            this.isLoadingPro = false;
+          }
+        })
+      }
+    }
+  }
+
+  clearSearch() {
+    this.limpiarMessages();
+    this.fetchProveedores();
+    this.page = 0;
+    this.searchTerm = '';
+    this.filterOption = 'noBloqueados';
+  }
+
+  proveedorTercod: number | null = null
+  proveedorTernom: string | null = null;
+  selectProveedor(codigo: any) {
+    this.proveedorTercod = codigo.tercod;
+    this.proveedorTernom = codigo.ternom;
+    this.closeProveedores();
+  }
+  
+  addContrato(economica: any, description: any, fecha_ini: any, fecha_final: any) {
+    this.isAdding = true;
+    const payload = {
+      conlot: economica,
+      condes: description,
+      confin: fecha_ini,
+      conffi: fecha_final,
+      conblo: 0
+    }
+
+  }
+
   //misc
   limpiarMessages() {
     this.mainError = '';
@@ -478,5 +745,6 @@ export class ContratosComponent {
     this.updateContratoSuccess = '';
     this.updateContratoError = '';
     this.addContratoError = '';
+    this.error = '';
   }
 }

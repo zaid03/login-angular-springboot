@@ -210,7 +210,7 @@
         <div class="title">
             <h3>Añadir un contrato</h3>
         </div>
-        <button class="add-btn" >+</button>
+        <button class="add-btn" (click)="addContrato(economica.value, description.value, fechaIni.value, fechaFin.value)">+</button>
         <button class="close-btn-btn" (click)="closeAdd()">✖</button>
     </div>
     <h1 class="errorBtn">{{addContratoError}}</h1>
@@ -221,35 +221,110 @@
     <div class="add-container">
         <div class="container-wrap">
             <div class="left-add">
-                <p>Número</p>
                 <p>Fecha inicio</p>
+                <p>Económica*</p>
             </div>
             <div class="right-add">
-                <div class="on-two">
-                    <textarea class="long-add" #numero></textarea>
-                    <p>Económica</p>
-                    <textarea class="long-add" #economica></textarea>
-                </div>
                 <div class="on-two">
                     <textarea class="long-add" #fechaIni></textarea>
                     <p class="patch">Fecha fin</p>
                     <textarea class="long-add" #fechaFin></textarea>
                 </div>
-            </div>
-        </div>
-        <div class="add-chunk-three">
-            <div class="add-content">
-                <p>Descripción</p>
-                <textarea class="long" #description></textarea>
-            </div>
-            <div class="add-content">
-                <input 
-                    type="checkbox"
-                    class="check"
-                    
-                /><span class="bloq">Bloqueado</span>
+                <div class="on-two">
+                    <textarea class="long-add" #economica></textarea>
+                    <p>Descripción*</p>
+                    <textarea class="long-add height" #description></textarea>
+                </div>  
             </div>
         </div>
     </div>
-    <button class="proveedor">⧉</button>
+    <div class="proveedor-select">
+        <h1 *ngIf="proveedorTernom">El proveedor {{proveedorTernom}} ha sido seleccionado</h1>
+        <button class="proveedor" (click)="openProveedores()">⧉</button>
+    </div>
+</div>
+
+<div class="modal-backdrop" *ngIf="showProveedorGrid" (click)="closeProveedores()"></div>
+<div class="proveedor-grid-modal" *ngIf="showProveedorGrid">
+    <div class="btns">
+        <div class="title">
+            <h1>seleccione un proveedor</h1>
+        </div>
+        <button class="close-btn-btn" (click)="closeProveedores()">✖</button>
+    </div>
+    <div class="search-holder">
+        <div class="search-container">
+            <form class="search-form">
+                <input type="text" class="search-bar" placeholder="Buscar proveedor" name="search" [(ngModel)]="searchTerm" (keyup.enter)="search()"/>
+                <div class="search-options">
+                    <label>
+                        <input type="radio" name="optiones" value="Todos" [(ngModel)]="filterOption" /> Todos
+                        <input type="radio" name="optiones" value="noBloqueados" [(ngModel)]="filterOption" /> No Bloqueados
+                        <input type="radio" name="optiones" value="Bloqueados" [(ngModel)]="filterOption"  /> Bloqueados
+                    </label>
+                </div>
+                <div class="search-btns">
+                    <button type="button" class="search-button-proveedores" (click)="searchProveedor()">Buscar</button>
+                    <button type="button" class="search-button-proveedores" (click)="clearSearch()">Limpiar</button>
+                </div>
+            </form>
+        </div> 
+    </div>
+    <h1 class="errorBtn">{{error}}</h1>
+    <div *ngIf="isLoadingPro" class="loading-message">
+        <div class="spinner"></div>
+        <span>Cargando</span>
+    </div>
+    <table class="main-table">
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Nombre</th>
+                <th>NIF</th>
+                <th>Alias</th>
+                <th>Teléfono</th>
+                <th>Domicilio</th>
+                <th>Código Postal</th>
+                <th>Municipio</th>
+                <th>Código contable</th>
+                <th>Fax</th>
+                <th>Web</th>
+                <th>Correo electrónico</th>
+                <th>Observaciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let p of paginatedProveedores" [class.grey-row]="p.terblo == 1">
+                <td style="cursor: pointer;" (click)="selectProveedor(p)">{{ p.tercod }}</td>
+                <td>{{ p.ternom }}</td>
+                <td>{{ p.ternif }}</td>
+                <td>{{ p.terali }}</td>
+                <td>{{ p.tertel }}</td>
+                <td>{{ p.terdom }}</td>
+                <td>{{ p.tercpo }}</td>
+                <td>{{ p.terpob }}</td>
+                <td>{{ p.terayt }}</td>
+                <td>{{ p.terfax }}</td>
+                <td>{{ p.terweb }}</td>
+                <td>{{ p.tercoe }}</td>
+                <td>{{ p.terobs }}</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="container-pag-wrap">
+        <div class="pagination-controls">
+            <button class="pag-btn" (click)="prevPagePro()" [disabled]="pagePro === 0">Anterior</button>
+            <span>Página</span>
+            <input
+            type="number"
+            min="1"
+            [max]="totalPagesPro"
+            [value]="pagePro + 1"
+            (change)="goToPagePro($event)"
+            class="pagination-input"
+            />
+            <span>de {{ totalPagesPro }}</span>
+            <button class="pag-btn" (click)="nextPagePro()" [disabled]="pagePro + 1 >= totalPagesPro">Siguiente</button>
+        </div>
+    </div>
 </div>
