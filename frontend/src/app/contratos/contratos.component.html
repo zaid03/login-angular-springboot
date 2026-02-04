@@ -57,6 +57,7 @@
                 <div class="menu-panel" *ngIf="showMenu">
                     <button type="button" (click)="excelDownload()">Exportar a Excel</button>
                     <button type="button" (click)="exportPdf()">Exportar a PDF</button>
+                    <button type="button" (click)="openAdd()">Añadir Contrato</button>
                 </div>
             </div>
         </div>
@@ -201,4 +202,59 @@
             </div>
         </div>
     </div>
+</div>
+
+<div class="modal-backdrop" *ngIf="showAddGrid" (click)="closeAdd()"></div>
+<div class="add-confirm-modal" *ngIf="showAddGrid">
+    <div class="btns">
+        <div class="title">
+            <h3>Añadir un contrato</h3>
+        </div>
+        <button class="add-btn" >+</button>
+        <button class="close-btn-btn" (click)="closeAdd()">✖</button>
+    </div>
+    <h1 class="errorBtn">{{addContratoError}}</h1>
+    <div *ngIf="isAdding" class="loading-message">
+        <div class="spinner"></div>
+        <span>añadiendo</span>
+    </div>
+    <div class="add-container">
+        <div class="chunk-one">
+            <div class="content">
+                <input 
+                    type="checkbox"
+                    class="check"
+                    
+                /><span class="bloq">Bloqueado</span>
+            </div>
+        </div>
+        <div class="chunk-two">
+            <div class="left">
+                <div class="left-left">
+                    <p>Número</p>
+                    <p>Fecha inicio</p>
+                    <p>Fecha fin</p>
+                </div>
+                <div class="left-right">
+                    <textarea class="average" #numero></textarea>
+                    <textarea class="average-second" #fechaIni></textarea>
+                    <textarea class="average-second" #fechaFin></textarea>
+                </div>
+            </div>
+            <div class="right">
+                <div class="content">
+                    <div class="left-left">
+                        <p>Económica</p>
+                        <p>Descripción</p>
+                    </div>
+                    <div class="right-right">
+                        <textarea class="average" #economica></textarea>
+                        <textarea class="long" #description></textarea>
+                    </div>
+                    
+                </div>
+            </div>  
+        </div>
+    </div>
+    <button class="proveedor">⧉</button>
 </div>

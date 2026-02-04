@@ -459,11 +459,24 @@ export class ContratosComponent {
     this.selectedContrato = null;
   }
 
+  showAddGrid: boolean = false;
+  addContratoError: string = '';
+  isAdding: boolean = false;
+  openAdd() {
+    this.limpiarMessages();
+    this.showAddGrid = true;
+  }
+
+  closeAdd() {
+    this.showAddGrid = false;
+  }
+
   //misc
   limpiarMessages() {
     this.mainError = '';
     this.mainSuccess = '';
     this.updateContratoSuccess = '';
     this.updateContratoError = '';
+    this.addContratoError = '';
   }
 }

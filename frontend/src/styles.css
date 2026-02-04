@@ -67,7 +67,8 @@ app-sidebar { flex-shrink: 0; z-index: 2000; }
 .delete-btn,
 .deconnect-btn,
 .close-btn-btn,
-.cge-cancel-confirm-btn  { background-color: #38249b; color: #fff; border: none; padding: 4px 8px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; transition: background-color 0.2s; font-weight: 700; outline: none; }
+.cge-cancel-confirm-btn,
+.proveedor  { background-color: #38249b; color: #fff; border: none; padding: 4px 8px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; transition: background-color 0.2s; font-weight: 700; outline: none; }
 .search-btn:hover,
 .download-btn:hover,
 .print-btn:hover,
@@ -98,7 +99,8 @@ app-sidebar { flex-shrink: 0; z-index: 2000; }
 .cge-delete-confirm-btn:hover,
 .login-button:hover,
 .save-btn:hover,
-.deconnect-btn:hover { background-color: #25176b; color: #e6edf3; }
+.deconnect-btn:hover,
+.proveedor:hover { background-color: #25176b; color: #e6edf3; }
 .familia-delete-btn,
 .articulos-delete-confirm-btn,
 .sub-delete-btn,
