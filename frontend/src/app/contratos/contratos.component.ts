@@ -443,10 +443,27 @@ export class ContratosComponent {
   }
 
   //detail grid
+  selectedContrato: any = null;
+  updateContratoSuccess: string = '';
+  updateContratoError: string = '';
+  isUpdating: boolean = false;
+  openDetails(contrato: any) {
+    this.limpiarMessages();
+    this.selectedContrato = contrato;
+    this.selectedContrato.confin = (contrato.confin ?? '').toString().slice(0,10);
+    this.selectedContrato.conffi = (contrato.conffi ?? '').toString().slice(0,10);
+  }
+
+  closeDetails() {
+    this.limpiarMessages();
+    this.selectedContrato = null;
+  }
 
   //misc
   limpiarMessages() {
     this.mainError = '';
     this.mainSuccess = '';
+    this.updateContratoSuccess = '';
+    this.updateContratoError = '';
   }
 }

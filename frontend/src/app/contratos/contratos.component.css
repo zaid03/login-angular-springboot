@@ -4,5 +4,25 @@
 .search-options input:focus {outline: none;}
 .search-button-proveedores{ margin-right: 10px; }
 .search-btns { margin-left: 10px; } 
-.search-options input[type="radio"] { margin: 0 6px 0 0; accent-color: #25176b; width: 18px; height: 18px; vertical-align: middle; outline: none; box-shadow: none; }
+.search-options input[type="radio"],
+.check { margin: 0 6px 0 0; accent-color: #25176b; width: 18px; height: 18px; vertical-align: middle; outline: none; box-shadow: none; }
 /* search */
+/* details */
+.pointer {cursor: pointer;}
+.detail-container {display: flex; flex-direction: column; gap: 10px;}
+.chunk-one,
+.chunk-two{display: flex; gap: 10px;}
+.left {display: flex; width: 30%; gap: 10px;}
+.left-left {width: 30%; display: flex; flex-direction: column; gap: 10px;}
+.left-right {display: flex; flex-direction: column; gap: 5px;}
+.right {width: 69%;}
+.content {display: flex; gap: 10px; align-items: center;}
+.chunk-one,
+.chunk-two p,
+.bloq { font-size: 18px; font-weight: bold; color: #25176b; }
+.chunk-one h1 {color: #162a3a; font-size: 20px;}
+.chunk-two textarea { height: 20px; padding: 2px 4px; border-radius: 6px; font-weight: bold; color: #162a3a;}
+.chunk-two textarea:focus{ outline: none; border-color: #042b5a; outline: none; background: #fff; }
+.average {width: 150px; max-width: 220px;} 
+.long {width: 600px; max-width: 720px; min-height: 50px;}
+/* details */
