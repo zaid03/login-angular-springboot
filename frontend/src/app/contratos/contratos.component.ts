@@ -4,10 +4,12 @@ import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { SidebarComponent } from '../sidebar/sidebar.component';
+import { environment } from '../../environments/environment';
 
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-contratos',
@@ -100,6 +102,58 @@ export class ContratosComponent {
     }
   }
 
+  toggleSort(field: 'concod' | 'conlot' | 'condes' | 'confin' | 'conffi' | 'conblo' | 'tercod' | 'ternom'): void {
+    if (this.sortField !== field) {
+      this.sortField = field;
+      this.sortDirection = 'asc';
+    } else if (this.sortDirection === 'asc') {
+      this.sortDirection = 'desc';
+    } else {
+      this.sortField = null;
+      this.sortDirection = 'asc';
+      this.contratos = [...this.defaultContratos];
+      this.page = 0;
+      this.updatePagination();
+      return;
+    }
+
+    this.applySort();
+  }
+
+  sortField: 'concod' | 'conlot' | 'condes' | 'confin' | 'conffi' | 'conblo' | 'tercod' | 'ternom' | null = null;
+  sortDirection: 'asc' | 'desc' = 'asc';
+  private applySort(): void {
+    if (!this.sortField) {
+      return;
+    }
+
+    const field = this.sortField;
+    const collator = new Intl.Collator('es', { numeric: true, sensitivity: 'base' });
+
+    const sorted = [...this.contratos].sort((a, b) => {
+      const extract = (item: any, prop: string) =>
+        (item?.[prop] ?? item?.[prop.toUpperCase()] ?? '').toString();
+
+      // if (field === 'depcod') {
+      //   const aVal = extract(a, 'depcod');
+      //   const bVal = extract(b, 'depcod');
+      //   return this.sortDirection === 'asc'
+      //     ? collator.compare(aVal, bVal)
+      //     : collator.compare(bVal, aVal);
+      // }
+
+      const aVal = extract(a, field);
+      const bVal = extract(b, field);
+      return this.sortDirection === 'asc'
+        ? collator.compare(aVal, bVal)
+        : collator.compare(bVal, aVal);
+    });
+
+    this.contratos = sorted;
+    this.page = 0;
+    this.updatePagination();
+  }
+
   private startX: number = 0;
   private startWidth: number = 0;
   private resizingColIndex: number | null = null;
@@ -129,12 +183,117 @@ export class ContratosComponent {
     this.resizingColIndex = null;
   };
 
+  private updatePagination(): void {
+    const total = this.totalPages;
+    if (total === 0) {
+      this.page = 0;
+      return;
+    }
+    if (this.page >= total) {
+      this.page = total - 1;
+    }
+  }
+
   setBloqueado(conblo: number) {
     if (conblo == 0) {return 'No';}
     else if (conblo == 1) {return 'No';}
     else {return 'no'}
   }
 
+  excelDownload() {
+    this.limpiarMessages();
+    const rows = this.backupContratos.length ? this.backupContratos : this.contratos;
+    if (!rows || rows.length === 0) {
+      this.mainError = 'No hay datos para exportar.';
+      return;
+    }
+  
+    const exportRows = rows.map((row, index) => ({
+      '#': index + 1,
+      Número: row.concod ?? '',
+      Económica : row.conlot ?? '',
+      Descripción: row.condes ?? '',
+      Fecha_inicio: row.confin ?? '',
+      Fecha_fin: row.conffi ?? '',
+      Bloqueado: this.setBloqueado(row.conblo) ?? '',
+      Cód_Proveedor: row.tercod ?? '',
+      Proveedor: row.ternom ?? ''
+    }));
+  
+    const worksheet = XLSX.utils.aoa_to_sheet([]);
+    XLSX.utils.sheet_add_aoa(worksheet, [['listas de contratos']], { origin: 'A1' });
+    worksheet['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 3 } }];
+    XLSX.utils.sheet_add_aoa(worksheet, [['#', 'Número', 'Económica', 'Descripción', 'Fecha inicio', 'Fecha fin', 'Bloqueado', 'Cód Proveedor', 'Proveedor']], { origin: 'A2' });
+    XLSX.utils.sheet_add_json(worksheet, exportRows, { origin: 'A3', skipHeader: true });
+
+    worksheet['!cols'] = [
+      { wch: 6 },
+      { wch: 10 },
+      { wch: 25 },
+      { wch: 55 },
+      { wch: 25 },
+      { wch: 25 },
+      { wch: 10 },
+      { wch: 10 },
+      { wch: 40 }
+    ];
+  
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'contratos');
+    const buffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    saveAs(
+      new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }),
+      'contratos.xlsx'
+    );
+  }
+
+  exportPdf() {
+    this.limpiarMessages();
+    const source = this.backupContratos.length ? this.backupContratos : this.contratos;
+    if (!source?.length) {
+      this.mainError = 'No hay datos para exportar.';
+      return;
+    }
+
+    const rows = source.map((row: any, index: number) => ({
+      index: index + 1,
+      concod: row.concod ?? '',
+      conlot: row.conlot ?? '',
+      condes: row.condes ?? '',
+      confin: (row.confin ?? '').toString().slice(0, 10),
+      conffi: (row.conffi ?? '').toString().slice(0, 10),
+      conblo: this.setBloqueado(row.conblo) ?? '',
+      tercod: row.tercod ?? '',
+      ternom: row.ternom ?? ''
+    }));
+
+    const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(14);
+    doc.text('Listado de contratos', 40, 40);
+
+    const columns = [
+      { header: '#', dataKey: 'index' },
+      { header: 'Número', dataKey: 'concod' },
+      { header: 'Económica', dataKey: 'conlot' },
+      { header: 'Descripción', dataKey: 'condes' },
+      { header: 'Fecha_inicio', dataKey: 'confin' },
+      { header: 'Fecha_fin', dataKey: 'conffi' },
+      { header: 'Bloqueado', dataKey: 'conblo' },
+      { header: 'Cód_Proveedor', dataKey: 'tercod' },
+      { header: 'Proveedor', dataKey: 'ternom' }
+    ];
+
+    autoTable(doc, {
+      startY: 60,
+      head: [columns.map(col => col.header)],
+      body: rows.map(row => columns.map(col => (row as any)[col.dataKey] ?? '')),
+      styles: { font: 'helvetica', fontSize: 10, cellPadding: 6 },
+      headStyles: { fillColor: [240, 240, 240], textColor: 33, fontStyle: 'bold' }
+    });
+
+    doc.save('contratos.pdf');
+  }
 
   //misc
   limpiarMessages() {

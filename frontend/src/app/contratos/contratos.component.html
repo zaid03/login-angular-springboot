@@ -55,8 +55,8 @@
                 <div class="dot"></div>
                 <div class="dot"></div>
                 <div class="menu-panel" *ngIf="showMenu">
-                    <button type="button" >Exportar a Excel</button>
-                    <button type="button" >Exportar a PDF</button>
+                    <button type="button" (click)="excelDownload()">Exportar a Excel</button>
+                    <button type="button" (click)="exportPdf()">Exportar a PDF</button>
                 </div>
             </div>
         </div>
@@ -70,36 +70,44 @@
             <table class="contratos-table">
                 <thead>
                     <tr>
-                        <th class="sortable resizable">
+                        <th class="sortable resizable" (click)="toggleSort('concod')">
                             Número
+                            <span class="sort-indicator" *ngIf="sortField === 'concod'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
                             <div class="resizer" (mousedown)="startResize($event, 0)"></div>
                         </th>
-                        <th class="sortable resizable">
+                        <th class="sortable resizable" (click)="toggleSort('conlot')">
                             Económica
+                            <span class="sort-indicator" *ngIf="sortField === 'conlot'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
                             <div class="resizer" (mousedown)="startResize($event, 1)"></div>
                         </th>
-                        <th class="sortable resizable">
+                        <th class="sortable resizable" (click)="toggleSort('condes')">
                             Descripción
+                            <span class="sort-indicator" *ngIf="sortField === 'condes'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
                             <div class="resizer" (mousedown)="startResize($event, 2)"></div>
                         </th>
-                        <th class="sortable resizable">
+                        <th class="sortable resizable" (click)="toggleSort('confin')">
                             Fecha inicio
+                            <span class="sort-indicator" *ngIf="sortField === 'confin'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
                             <div class="resizer" (mousedown)="startResize($event, 3)"></div>
                         </th>
-                        <th class="sortable resizable">
+                        <th class="sortable resizable" (click)="toggleSort('conffi')">
                             Fecha fin
+                            <span class="sort-indicator" *ngIf="sortField === 'conffi'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
                             <div class="resizer" (mousedown)="startResize($event, 4)"></div>
                         </th>
-                        <th class="sortable resizable">
+                        <th class="sortable resizable" (click)="toggleSort('conblo')">
                             Bloqueado
+                            <span class="sort-indicator" *ngIf="sortField === 'conblo'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
                             <div class="resizer" (mousedown)="startResize($event, 5)"></div>
                         </th>
-                        <th class="sortable resizable">
+                        <th class="sortable resizable" (click)="toggleSort('tercod')">
                             Cód Proveedor
+                            <span class="sort-indicator" *ngIf="sortField === 'tercod'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
                             <div class="resizer" (mousedown)="startResize($event, 6)"></div>
                         </th>
-                        <th class="sortable resizable">
+                        <th class="sortable resizable" (click)="toggleSort('ternom')">
                             Proveedor
+                            <span class="sort-indicator" *ngIf="sortField === 'ternom'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
                             <div class="resizer" (mousedown)="startResize($event, 7)"></div>
                         </th>
                     </tr>
