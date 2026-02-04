@@ -123,6 +123,41 @@ public class ConController {
         }
     }
 
+    //search by concod todos
+    @GetMapping("/searchByCodigoTodos/{ent}/{eje}/{concod}")
+    public ResponseEntity<?> searchContratosCodigoTodos(
+        @PathVariable Integer ent,
+        @PathVariable String eje,
+        @PathVariable Integer concod
+    ) {
+        try {
+            List<CotContratoProjection> rows = cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCOD(3, ent, eje, concod);
+            if (rows == null || rows.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
+            }
+
+            List<ContratoDto> dto = rows.stream().map(p -> {
+                CotContratoProjection.ConnInfo c = p.getConn();
+                CotContratoProjection.TerInfo t = p.getTer();
+                return new ContratoDto(
+                    c.getCONCOD(),
+                    c.getCONLOT(),
+                    c.getCONDES(),
+                    c.getCONFIN(),
+                    c.getCONFFI(),
+                    c.getCONBLO(),
+                    t.getTERCOD(),
+                    t.getTERNOM()
+                );
+            }).collect(Collectors.toList());
+
+            return ResponseEntity.ok(dto);
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
+        }
+    }
+
     //search by condes bloqueado
     @GetMapping("/searchByDescBloque/{ent}/{eje}/{condes}")
     public ResponseEntity<?> searchContratosDescBloqueado(
@@ -167,6 +202,41 @@ public class ConController {
     ) {
         try {
             List<CotContratoProjection> rows = cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDESContainingAndConnCONBLONot(3, ent, eje, condes, 0);
+            if (rows == null || rows.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
+            }
+
+            List<ContratoDto> dto = rows.stream().map(p -> {
+                CotContratoProjection.ConnInfo c = p.getConn();
+                CotContratoProjection.TerInfo t = p.getTer();
+                return new ContratoDto(
+                    c.getCONCOD(),
+                    c.getCONLOT(),
+                    c.getCONDES(),
+                    c.getCONFIN(),
+                    c.getCONFFI(),
+                    c.getCONBLO(),
+                    t.getTERCOD(),
+                    t.getTERNOM()
+                );
+            }).collect(Collectors.toList());
+
+            return ResponseEntity.ok(dto);
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
+        }
+    }
+
+    //search by condes todos
+    @GetMapping("/searchByDescTodos/{ent}/{eje}/{condes}")
+    public ResponseEntity<?> searchContratosDescTodos(
+        @PathVariable Integer ent,
+        @PathVariable String eje,
+        @PathVariable String condes
+    ) {
+        try {
+            List<CotContratoProjection> rows = cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDESContaining(3, ent, eje, condes);
             if (rows == null || rows.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
             }

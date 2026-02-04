@@ -133,15 +133,6 @@ export class ContratosComponent {
     const sorted = [...this.contratos].sort((a, b) => {
       const extract = (item: any, prop: string) =>
         (item?.[prop] ?? item?.[prop.toUpperCase()] ?? '').toString();
-
-      // if (field === 'depcod') {
-      //   const aVal = extract(a, 'depcod');
-      //   const bVal = extract(b, 'depcod');
-      //   return this.sortDirection === 'asc'
-      //     ? collator.compare(aVal, bVal)
-      //     : collator.compare(bVal, aVal);
-      // }
-
       const aVal = extract(a, field);
       const bVal = extract(b, field);
       return this.sortDirection === 'asc'
@@ -293,6 +284,52 @@ export class ContratosComponent {
     });
 
     doc.save('contratos.pdf');
+  }
+
+  searchInput: string = '';
+  searchOption: string = 'noBloque';
+  search() {
+    this.limpiarMessages();
+    this.isLoading = true;
+
+    if (this.isDigitsOnly(this.searchInput)) {
+      if (this.searchOption === 'noBloque') {
+
+      }
+      else if (this.searchOption === 'Bloque') {
+
+      }
+      else if (this.searchOption === 'Todos') {
+
+      }
+    }
+    else if (!this.isDigitsOnly(this.searchInput)) {
+      if (this.searchOption === 'noBloque') {
+
+      }
+      else if (this.searchOption === 'Bloque') {
+
+      }
+      else if (this.searchOption === 'Todos') {
+
+      }
+    }
+    else if (this.searchInput === '') {
+      if (this.searchOption === 'noBloque') {
+
+      }
+      else if (this.searchOption === 'Bloque') {
+
+      }
+      else if (this.searchOption === 'Todos') {
+        this.fetchContratos();
+      }
+    }
+  }
+
+  private isDigitsOnly(value: string): boolean {
+    if (!value) return false;
+    return /^\d+$/.test(value.trim());
   }
 
   //misc

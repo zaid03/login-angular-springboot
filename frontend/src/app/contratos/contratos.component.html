@@ -19,7 +19,7 @@
                             class="search-bar" 
                             placeholder="Buscar contratos" 
                             name="search" 
-
+                            [(ngModel)]="searchInput"
                         />
                         <div class="search-options">
                             <label>
@@ -27,24 +27,24 @@
                                     type="radio" 
                                     name="optiones" 
                                     value="Todos" 
-                                    
+                                    [(ngModel)]="searchOption"
                                 /> Todos
                                 <input 
                                     type="radio" 
                                     name="optiones" 
-                                    value="noBloqueados" 
-                                    
+                                    value="noBloque" 
+                                    [(ngModel)]="searchOption"
                                 /> No Bloqueados
                                 <input 
                                     type="radio" 
                                     name="optiones" 
-                                    value="Bloqueados" 
-                                      
+                                    value="Bloque" 
+                                    [(ngModel)]="searchOption"
                                 /> Bloqueados
                             </label>
                         </div>
                         <div class="search-btns">
-                            <button type="button" class="search-button-proveedores" >Buscar</button>
+                            <button type="button" class="search-button-proveedores" (click)="search()">Buscar</button>
                             <button type="button" class="search-button-proveedores" >Limpiar</button>
                         </div>
                     </form>
