@@ -19,12 +19,15 @@
 .content {display: flex; gap: 10px; align-items: center;}
 .chunk-one,
 .chunk-two p,
-.bloq { font-size: 18px; font-weight: bold; color: #25176b; }
+.bloq,
+.add-container p { font-size: 18px; font-weight: bold; color: #25176b; }
 .chunk-one h1 {color: #162a3a; font-size: 20px;}
 .chunk-two textarea,
-.chunk-one textarea { height: 20px; padding: 2px 4px; border-radius: 6px; font-weight: bold; color: #162a3a;}
+.chunk-one textarea,
+.add-container textarea { height: 20px; padding: 2px 4px; border-radius: 6px; font-weight: bold; color: #162a3a;}
 .chunk-two textarea:focus,
-.chunk-one textarea:focus { outline: none; border-color: #042b5a; outline: none; background: #fff; }
+.chunk-one textarea:focus,
+.add-container textarea:focus { outline: none; border-color: #042b5a; outline: none; background: #fff; }
 .average {width: 150px; max-width: 220px;} 
 .long {width: 600px; max-width: 720px; min-height: 50px;}
 /* details grid */
@@ -32,7 +35,13 @@
 .title {width: 80%;}
 .add-confirm-modal {width: 70% !important;}
 .add-container {display: flex; flex-direction: column; gap: 10px;}
-.add-container .left-left {text-align: left;}
-.average-second {width: 150px; max-width: 175px;}
+.container-wrap {display: flex; gap: 10px;}
+.left-add {text-align: left; display: flex; flex-direction: column; gap: 10px;}
+.right-add {display: flex; flex-direction: column; gap: 5px;}
+.on-two {display: flex; gap: 10px;}
+.add-chunk-three {display: flex; gap: 10px; }
+.add-content {display: flex; align-items: center; gap: 10px;}
+.long-add{width: 280px; max-width: 350px;}
+.patch {margin-right: 12px;}
 .proveedor {margin-top: 10px;}
 /* add grid */

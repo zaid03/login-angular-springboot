@@ -219,41 +219,36 @@
         <span>añadiendo</span>
     </div>
     <div class="add-container">
-        <div class="chunk-one">
-            <div class="content">
+        <div class="container-wrap">
+            <div class="left-add">
+                <p>Número</p>
+                <p>Fecha inicio</p>
+            </div>
+            <div class="right-add">
+                <div class="on-two">
+                    <textarea class="long-add" #numero></textarea>
+                    <p>Económica</p>
+                    <textarea class="long-add" #economica></textarea>
+                </div>
+                <div class="on-two">
+                    <textarea class="long-add" #fechaIni></textarea>
+                    <p class="patch">Fecha fin</p>
+                    <textarea class="long-add" #fechaFin></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="add-chunk-three">
+            <div class="add-content">
+                <p>Descripción</p>
+                <textarea class="long" #description></textarea>
+            </div>
+            <div class="add-content">
                 <input 
                     type="checkbox"
                     class="check"
                     
                 /><span class="bloq">Bloqueado</span>
             </div>
-        </div>
-        <div class="chunk-two">
-            <div class="left">
-                <div class="left-left">
-                    <p>Número</p>
-                    <p>Fecha inicio</p>
-                    <p>Fecha fin</p>
-                </div>
-                <div class="left-right">
-                    <textarea class="average" #numero></textarea>
-                    <textarea class="average-second" #fechaIni></textarea>
-                    <textarea class="average-second" #fechaFin></textarea>
-                </div>
-            </div>
-            <div class="right">
-                <div class="content">
-                    <div class="left-left">
-                        <p>Económica</p>
-                        <p>Descripción</p>
-                    </div>
-                    <div class="right-right">
-                        <textarea class="average" #economica></textarea>
-                        <textarea class="long" #description></textarea>
-                    </div>
-                    
-                </div>
-            </div>  
         </div>
     </div>
     <button class="proveedor">⧉</button>
