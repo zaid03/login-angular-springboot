@@ -215,7 +215,7 @@
                                 role="tab"
                                 [attr.aria-selected]="activeDetailTab === 'centroGestor'"
                                 [class.active-tab]="activeDetailTab === 'centroGestor'"
-                                (click)="showcentroGestor()"
+                                (click)="showcentroGestor(selectedContrato.concod)"
                             >
                                 Centros Gestores / D
                             </button> 
@@ -241,7 +241,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr *ngFor="let a of articulos">
+                                <tr *ngFor="let a of paginatedArticulos">
                                     <td>{{a.art.afacod}}</td>
                                     <td>{{a.art.asucod}}</td>
                                     <td>{{a.art.artcod}}</td>
@@ -262,12 +262,26 @@
                                 </tr>
                             </tbody>
                         </table>
+                        <div class="pagination-controls">
+                            <button (click)="prevPageART()" [disabled]="pageARt === 0">Anterior</button>
+                            <span>Página</span>
+                            <input
+                                type="number"
+                                min="1"
+                                [max]="totalPagesART"
+                                [value]="pageARt + 1"
+                                (change)="goToPageART($event)"
+                                class="pagination-input"
+                            />
+                            <span>de {{ totalPagesART }}</span>
+                            <button (click)="nextPageART()" [disabled]="pageARt + 1 >= totalPagesART">Siguiente</button>
+                        </div>
                     </div>
                     <div class="custom-grid-modal" *ngIf="showCentroGestorGrid">
                         <button class="add-btn" >+</button>
                         <h1 class="errorBtn">{{cgeError}}</h1>
                         <h1 class="successBtn">{{cgeSuccess}}</h1>
-                        <div *ngIf="isLoading" class="loading-message">
+                        <div *ngIf="isLoadingCentroGestor" class="loading-message">
                             <div class="spinner"></div>
                             <span>Cargando</span>
                         </div>
@@ -286,22 +300,36 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td>
+                                <tr *ngFor="let c of paginatedCentros">
+                                    <td>{{c.cgecod}}</td>
+                                    <td>{{c.cge.cgedes}}</td>
+                                    <td>{{c.cge.cgeorg}}</td>
+                                    <td>{{c.cge.cgefun}}</td>
+                                    <td>{{c.cogopd}}</td>
+                                    <td>{{c.cogimp}}</td>
+                                    <td>{{c.cogaip}}</td>
+                                    <td>{{getKdisponible(c.COGIMP, c.COGIAP)}}</td>
+                                    <td class="borderI">
                                         <button class="delete-btn" >-</button>
                                         <button class="save-btn" >✔</button>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
+                        <div class="pagination-controls">
+                            <button (click)="prevpageCNT()" [disabled]="pageCNT === 0">Anterior</button>
+                            <span>Página</span>
+                            <input
+                                type="number"
+                                min="1"
+                                [max]="totalPagesCNT"
+                                [value]="pageCNT + 1"
+                                (change)="goTopageCNT($event)"
+                                class="pagination-input"
+                            />
+                            <span>de {{ totalPagesCNT }}</span>
+                            <button (click)="nextpageCNT()" [disabled]="pageCNT + 1 >= totalPagesCNT">Siguiente</button>
+                        </div>
                     </div>
                 </div>
             </div>

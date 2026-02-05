@@ -59,6 +59,7 @@
 .articulo-table,
 .centroGestor-table {width: 98%;}
 .articulo-table tbody td:last-child,
-.centroGestor-table tbody td:last-child {display: flex; justify-content: center; gap: 10px;}
+.centroGestor-table tbody td:last-child {display: flex; justify-content: center; gap: 10px; align-items: center;}
+.borderI {border-bottom: none;}
 .currenc {height: 20px; padding: 2px 4px; border-radius: 6px; color: #162a3a; border: 1px solid #bbb; width: 95%; font-weight: bold;}
 /* articulo grid */
