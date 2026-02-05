@@ -29,7 +29,8 @@
 .add-container textarea { height: 20px; padding: 2px 4px; border-radius: 6px; font-weight: bold; color: #162a3a;}
 .chunk-two textarea:focus,
 .chunk-one textarea:focus,
-.add-container textarea:focus { outline: none; border-color: #042b5a; outline: none; background: #fff; }
+.add-container textarea:focus,
+.currenc:focus { outline: none; border-color: #042b5a; outline: none; background: #fff; }
 .average {width: 150px; max-width: 220px;} 
 .long {width: 600px; max-width: 720px; min-height: 50px;}
 /* details grid */
@@ -59,4 +60,5 @@
 .centroGestor-table {width: 98%;}
 .articulo-table tbody td:last-child,
 .centroGestor-table tbody td:last-child {display: flex; justify-content: center; gap: 10px;}
+.currenc {height: 20px; padding: 2px 4px; border-radius: 6px; color: #162a3a; border: 1px solid #bbb; width: 95%; font-weight: bold;}
 /* articulo grid */

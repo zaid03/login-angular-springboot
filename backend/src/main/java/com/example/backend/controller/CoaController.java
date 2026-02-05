@@ -61,6 +61,9 @@ public class CoaController {
 
             CoaId id = new CoaId(ent, eje, concod, afacod, asucod, artcod);
             Optional<Coa> articulo = coaRepository.findById(id);
+            if (articulo.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
+            }
 
             Coa coaUpdate = articulo.get();
             coaUpdate.setCOAPRE(payload.COAPRE());

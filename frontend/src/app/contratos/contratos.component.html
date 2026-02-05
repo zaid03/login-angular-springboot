@@ -206,7 +206,7 @@
                                 role="tab"
                                 [attr.aria-selected]="activeDetailTab === 'articulos'"
                                 [class.active-tab]="activeDetailTab === 'articulos'"
-                                (click)="showArticulos()"
+                                (click)="showArticulos(selectedContrato.concod)"
                             >
                                 Artículos
                             </button>
@@ -225,7 +225,7 @@
                         <button class="add-btn">+</button>
                         <h1 class="errorBtn">{{articulosError}}</h1>
                         <h1 class="successBtn">{{articulosSuccess}}</h1>
-                        <div *ngIf="isLoading" class="loading-message">
+                        <div *ngIf="isLoadingArticulos" class="loading-message">
                             <div class="spinner"></div>
                             <span>Cargando</span>
                         </div>
@@ -241,15 +241,23 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
+                                <tr *ngFor="let a of articulos">
+                                    <td>{{a.art.afacod}}</td>
+                                    <td>{{a.art.asucod}}</td>
+                                    <td>{{a.art.artcod}}</td>
+                                    <td>{{a.art.artdes}}</td>
+                                    <td>
+                                        <input
+                                            type="text"
+                                            class="currenc"
+                                            [value]="a.editingPrice ? a.editingValue : formatPrice(a.coapre)"
+                                            (focus)="startEditingPrice(a, $event)"
+                                            (blur)="stopEditingPrice(a, $event)"
+                                            (input)="onPriceTyping($event, a)"
+                                        />
                                     <td>
                                         <button class="delete-btn" >-</button>
-                                        <button class="save-btn" >✔</button>
+                                        <button class="save-btn" (click)="updateArticulo(selectedContrato.concod, a.art.afacod, a.art.asucod, a.art.artcod, a.coapre)">✔</button>
                                     </td>
                                 </tr>
                             </tbody>

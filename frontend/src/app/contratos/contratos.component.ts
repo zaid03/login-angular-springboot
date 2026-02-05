@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { environment } from '../../environments/environment';
+import { CurrencyPipe } from '@angular/common';
 
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
@@ -15,6 +16,7 @@ import autoTable from 'jspdf-autotable';
   selector: 'app-contratos',
   standalone: true,
   imports: [ CommonModule ,FormsModule, SidebarComponent],
+  providers: [CurrencyPipe],
   templateUrl: './contratos.component.html',
   styleUrls: ['./contratos.component.css']
 })
@@ -32,7 +34,7 @@ export class ContratosComponent {
     this.showMenu = false;
   }
   
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router, private currencyPipe: CurrencyPipe) {}
 
   //global variables
   entcod: string | null = null;
@@ -788,17 +790,86 @@ export class ContratosComponent {
   cgeSuccess: string = '';
   activeDetailTab: 'centroGestor' | 'articulos' | null = null;
   showcentroGestor() {
+    this.limpiarMessages();
     this.showCentroGestorGrid = true;
     this.showArticulosGrid = false;
+    this.articulos = [];
   }
 
   articulosError: string = '';
   articulosSuccess: string = '';
   showArticulosGrid = false;
   articulos: any[] = [];
-  showArticulos() {
+  showArticulos(numero: number) {
+    this.limpiarMessages();
     this.showArticulosGrid = true;
     this.showCentroGestorGrid = false;
+    this.centroGestor = [];
+    this.fetchArticulos(numero);
+  }
+
+  isLoadingArticulos: boolean = false;
+  fetchArticulos(numero: number) {
+    this.isLoadingArticulos = true;
+    const concod = numero;
+    this.http.get<any[]>(`${environment.backendUrl}/api/coa/fetch-articulos/${this.entcod}/${this.eje}/${concod}`).subscribe({
+      next: (res) => {
+        this.isLoadingArticulos = false;
+        this.articulos = res;
+      },
+      error: (err) => {
+        this.isLoadingArticulos = false;
+      }
+    })
+  }
+
+  updateArticulo(numero: number, familia: string, subfamilia: string, articulo: string, precio: any) {
+    this.isUpdating = true;
+    this.limpiarMessages();
+
+    const concod = numero;
+    const afacod = familia;
+    const asucod = subfamilia;
+    const artcod = articulo;
+    if (!concod || !afacod || !asucod || !artcod) {return;}
+
+    const payload = {
+      "COAPRE": precio
+    }
+
+    this.http.patch(`${environment.backendUrl}/api/coa/update-articulo/${this.entcod}/${this.eje}/${concod}/${afacod}/${asucod}/${artcod}`, payload).subscribe({
+      next: (res) => {
+        this.isUpdating = false;
+        this.articulosSuccess = 'Artículo actualizado con éxito';
+      },
+      error: (err) => {
+        this.isUpdating = false;
+        this.articulosError = err.error.error ?? err.error ?? 'wtf';
+      }
+    })
+
+  }
+
+  formatPrice(value: number | null): string {
+    return this.currencyPipe.transform(value ?? 0, 'EUR', 'symbol', '1.2-2', 'es-ES') ?? '';
+  }
+
+  startEditingPrice(item: any, event: FocusEvent) {
+    item.editingPrice = true;
+    item.editingValue = item.coapre != null ? item.coapre.toFixed(2) : '';
+    (event.target as HTMLInputElement).value = item.editingValue;
+  }
+
+  stopEditingPrice(item: any, event: FocusEvent) {
+    item.editingPrice = false;
+    (event.target as HTMLInputElement).value = this.formatPrice(item.coapre);
+  }
+
+  onPriceTyping(event: Event, item: any) {
+    const input = event.target as HTMLInputElement;
+    const raw = input.value.replace(/[^0-9.,-]/g, '').replace(',', '.');
+    item.editingValue = raw;
+    item.coapre = raw ? Number(raw) : 0;
   }
 
   //misc
