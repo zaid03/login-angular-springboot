@@ -199,6 +199,102 @@
                             </div>  
                         </div>
                     </div>
+                    <div class="more-detail-container">
+                        <div class="tabs" role="tablist" aria-label="Detalle tabs">
+                            <button
+                                class="tab-btn"
+                                role="tab"
+                                [attr.aria-selected]="activeDetailTab === 'articulos'"
+                                [class.active-tab]="activeDetailTab === 'articulos'"
+                                (click)="showArticulos()"
+                            >
+                                Artículos
+                            </button>
+                            <button
+                                class="tab-btn"
+                                role="tab"
+                                [attr.aria-selected]="activeDetailTab === 'centroGestor'"
+                                [class.active-tab]="activeDetailTab === 'centroGestor'"
+                                (click)="showcentroGestor()"
+                            >
+                                Centros Gestores / D
+                            </button> 
+                        </div>
+                    </div>
+                    <div class="custom-grid-modal" *ngIf="showArticulosGrid">
+                        <button class="add-btn">+</button>
+                        <h1 class="errorBtn">{{articulosError}}</h1>
+                        <h1 class="successBtn">{{articulosSuccess}}</h1>
+                        <div *ngIf="isLoading" class="loading-message">
+                            <div class="spinner"></div>
+                            <span>Cargando</span>
+                        </div>
+                        <table class="articulo-table">
+                            <thead>
+                                <tr>
+                                    <th>Familia</th>
+                                    <th>Subfamilia</th>
+                                    <th>Cód. Artículo</th>
+                                    <th>Artículo</th>
+                                    <th>Precio unitario</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <button class="delete-btn" >-</button>
+                                        <button class="save-btn" >✔</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="custom-grid-modal" *ngIf="showCentroGestorGrid">
+                        <button class="add-btn" >+</button>
+                        <h1 class="errorBtn">{{cgeError}}</h1>
+                        <h1 class="successBtn">{{cgeSuccess}}</h1>
+                        <div *ngIf="isLoading" class="loading-message">
+                            <div class="spinner"></div>
+                            <span>Cargando</span>
+                        </div>
+                        <table class="centroGestor-table">
+                            <thead>
+                                <tr>
+                                    <th>Cód. C. Gestor</th>
+                                    <th>Centro Gestor</th>
+                                    <th>Orgánica</th>
+                                    <th>Programa</th>
+                                    <th>Referencia “D”</th>
+                                    <th>Importe D</th>
+                                    <th>Importe Pedidos</th>
+                                    <th>Disponible</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <button class="delete-btn" >-</button>
+                                        <button class="save-btn" >✔</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

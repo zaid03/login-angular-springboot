@@ -457,6 +457,10 @@ export class ContratosComponent {
   closeDetails() {
     this.limpiarMessages();
     this.selectedContrato = null;
+    this.centroGestor = [];
+    this.articulos = [];
+    this.showCentroGestorGrid = false;
+    this.showArticulosGrid = false;
   }
 
   updateContrato(numero: number, bloque: number, fecha_ini: string, fecha_fin: string, descripción: String) {
@@ -482,6 +486,7 @@ export class ContratosComponent {
     })
   }
 
+  //add grid
   showAddGrid: boolean = false;
   addContratoError: string = '';
   isAdding: boolean = false;
@@ -774,7 +779,26 @@ export class ContratosComponent {
         this.isAdding = false;
       }
     })
+  }
 
+  //sub detail's grids
+  showCentroGestorGrid = false;
+  centroGestor: any[] = [];
+  cgeError: string = '';
+  cgeSuccess: string = '';
+  activeDetailTab: 'centroGestor' | 'articulos' | null = null;
+  showcentroGestor() {
+    this.showCentroGestorGrid = true;
+    this.showArticulosGrid = false;
+  }
+
+  articulosError: string = '';
+  articulosSuccess: string = '';
+  showArticulosGrid = false;
+  articulos: any[] = [];
+  showArticulos() {
+    this.showArticulosGrid = true;
+    this.showCentroGestorGrid = false;
   }
 
   //misc
@@ -785,5 +809,9 @@ export class ContratosComponent {
     this.updateContratoError = '';
     this.addContratoError = '';
     this.error = '';
+    this.articulosError = '';
+    this.articulosSuccess = '';
+    this.cgeError = '';
+    this.cgeSuccess = '';
   }
 }

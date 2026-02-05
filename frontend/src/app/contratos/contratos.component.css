@@ -53,3 +53,10 @@
 .proveedor-grid-modal .title {font-size: 10px; color: #38249b; text-align: center; width: 95%;}
 .container-pag-wrap {display: flex; flex-direction: column; align-items: center;}
 /* proveedores grid in add */
+/* articulo grid */
+.add-btn {margin-top: 10px;}
+.articulo-table,
+.centroGestor-table {width: 98%;}
+.articulo-table tbody td:last-child,
+.centroGestor-table tbody td:last-child {display: flex; justify-content: center; gap: 10px;}
+/* articulo grid */
