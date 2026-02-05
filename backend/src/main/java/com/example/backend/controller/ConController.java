@@ -1,6 +1,8 @@
 package com.example.backend.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,12 +14,18 @@ import org.springframework.web.bind.annotation.*;
 import com.example.backend.dto.ContratoDto;
 import com.example.backend.service.CotContratoProjection;
 import com.example.backend.sqlserver2.repository.CotRepository;
+import com.example.backend.sqlserver2.model.Cot;
+import com.example.backend.sqlserver2.model.Conn;
+import com.example.backend.sqlserver2.model.ConId;
+import com.example.backend.sqlserver2.repository.ConRepository;
 
 @RestController
 @RequestMapping("/api/con")
 public class ConController {
     @Autowired
     private CotRepository cotRepository;
+    @Autowired
+    private ConRepository conRepository;
 
     //selecting all contratos
     @GetMapping("/fetch-contratos/{ent}/{eje}")
@@ -325,6 +333,82 @@ public class ConController {
             }).collect(Collectors.toList());
 
             return ResponseEntity.ok(dto);
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
+        }
+    }
+
+    //update a contrato
+    public record CUpdate(Integer CONBLO, LocalDateTime CONFIN, LocalDateTime CONFFI, String CONDES) {}
+    @PatchMapping("/update-contrato/{ent}/{eje}/{concod}")
+    public ResponseEntity<?> updateContrato(
+        @PathVariable Integer ent,
+        @PathVariable String eje,
+        @PathVariable Integer concod,
+        @RequestBody CUpdate payload
+    ) {
+        try {
+            if(payload == null || payload.CONDES() == null) {
+                return ResponseEntity.badRequest().body("Faltan datos obligatorios.");
+            }
+
+            ConId id = new ConId(ent, eje, concod);
+            Optional<Conn> contrato = conRepository.findById(id);
+            if (contrato.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
+            }
+
+            Conn conUpdate = contrato.get();
+            conUpdate.setCONBLO(payload.CONBLO());
+            conUpdate.setCONFIN(payload.CONFIN());
+            conUpdate.setCONFFI(payload.CONFFI());
+            conUpdate.setCONDES(payload.CONDES());
+            conRepository.save(conUpdate);
+
+            return ResponseEntity.noContent().build();
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
+        }
+    }
+
+    //add a contrato
+    private int nextConcod(Integer ent, String eje) {
+        return conRepository.findFirstByENTAndEJEOrderByCONCODDesc(ent, eje)
+            .map(conn -> (conn.getCONCOD() == null ? 0 : conn.getCONCOD()) + 1)
+            .orElse(1);
+    }
+    public record CAdd(Integer ENT, String EJE, String CONLOT, Integer CONBLO, LocalDateTime CONFIN, LocalDateTime CONFFI, String CONDES, Integer TERCOD) {}
+    @PostMapping("/add-contrato")
+    public ResponseEntity<?> addContrato(
+        @RequestBody CAdd payload
+    ) {
+        try {
+            if(payload == null || payload.ENT() == null || payload.EJE() == null || payload.CONDES() == null || payload.CONLOT() == null || payload.TERCOD() == null) {
+                return ResponseEntity.badRequest().body("Faltan datos obligatorios.");
+            }
+
+            int concod = nextConcod(payload.ENT(), payload.EJE());
+            Conn conAdd = new Conn();
+            conAdd.setENT(payload.ENT());
+            conAdd.setEJE(payload.EJE());
+            conAdd.setCONCOD(concod);
+            conAdd.setCONLOT(payload.CONLOT());
+            conAdd.setCONBLO(payload.CONBLO());
+            conAdd.setCONFIN(payload.CONFIN());
+            conAdd.setCONFFI(payload.CONFFI());
+            conAdd.setCONDES(payload.CONDES());
+            conRepository.save(conAdd);
+
+            Cot cotAdd = new Cot();
+            cotAdd.setENT(payload.ENT());
+            cotAdd.setEJE(payload.EJE());
+            cotAdd.setCONCOD(concod);
+            cotAdd.setTERCOD(payload.TERCOD());
+            cotRepository.save(cotAdd);
+
+            return ResponseEntity.noContent().build();
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Error: " + ex.getMostSpecificCause().getMessage());
