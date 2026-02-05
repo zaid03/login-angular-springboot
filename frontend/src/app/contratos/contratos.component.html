@@ -147,7 +147,7 @@
                         <div class="title-detail">
                             <h3>detalles del contrato</h3>
                         </div>
-                        <button class="save-btn" >✔</button>
+                        <button class="save-btn" (click)="updateContrato(selectedContrato.concod, selectedContrato.conblo, confin.value, conffi.value, desc.value)">✔</button>
                         <button class="close-btn-btn" (click)="closeDetails()">✖</button>
                     </div> 
                     <h1 class="successBtn">{{updateContratoSuccess}}</h1>
@@ -176,6 +176,7 @@
                                     type="checkbox"
                                     class="check"
                                     [checked]="selectedContrato.conblo === 1" 
+                                    (change)="selectedContrato.conblo = $any($event.target).checked ? 1 : 0"
                                 /><span class="bloq">Bloqueado</span>
                             </div>
                         </div>

@@ -435,6 +435,8 @@ export class ContratosComponent {
   limpiarSearch() {
     this.limpiarMessages();
     this.fetchContratos();
+    this.searchOption = 'noBloque'
+    this.searchInput = '';
   }
 
   private isDigitsOnly(value: string): boolean {
@@ -450,13 +452,34 @@ export class ContratosComponent {
   openDetails(contrato: any) {
     this.limpiarMessages();
     this.selectedContrato = contrato;
-    this.selectedContrato.confin = (contrato.confin ?? '').toString().slice(0,10);
-    this.selectedContrato.conffi = (contrato.conffi ?? '').toString().slice(0,10);
   }
 
   closeDetails() {
     this.limpiarMessages();
     this.selectedContrato = null;
+  }
+
+  updateContrato(numero: number, bloque: number, fecha_ini: string, fecha_fin: string, descripción: String) {
+    this.limpiarMessages();
+    this.isUpdating = true;
+
+    const payload = {
+      "CONBLO": bloque,
+      "CONFIN": fecha_ini,
+      "CONFFI": fecha_fin,
+      "CONDES": descripción
+    }
+
+    this.http.patch(`${environment.backendUrl}/api/con/update-contrato/${this.entcod}/${this.eje}/${numero}`, payload).subscribe({
+      next: (res) => {
+        this.isUpdating = false;
+        this.updateContratoSuccess = 'contrato actualizado exitosamente';
+      },
+      error: (err) => {
+        this.isUpdating = false;
+        this.updateContratoError = err.error.error ?? err.error;
+      }
+    })
   }
 
   showAddGrid: boolean = false;
@@ -727,14 +750,30 @@ export class ContratosComponent {
   }
   
   addContrato(economica: any, description: any, fecha_ini: any, fecha_final: any) {
+    this.limpiarMessages();
     this.isAdding = true;
     const payload = {
-      conlot: economica,
-      condes: description,
-      confin: fecha_ini,
-      conffi: fecha_final,
-      conblo: 0
+      "ENT": this.entcod,
+      "EJE": this.eje,
+      "CONLOT": economica,
+      "CONBLO": 0,
+      "CONFIN": fecha_ini,
+      "CONFFI": fecha_final,
+      "CONDES": description,
+      "TERCOD": this.proveedorTercod
     }
+
+    this.http.post(`${environment.backendUrl}/api/con/add-contrato`, payload).subscribe({
+      next: (res) => {
+        this.isAdding = false;
+        this.mainSuccess = 'contrato añadido exitosamente';
+        this.closeAdd();
+      },
+      error: (err) => {
+        this.addContratoError = err.error.error ?? err.error;
+        this.isAdding = false;
+      }
+    })
 
   }
 
