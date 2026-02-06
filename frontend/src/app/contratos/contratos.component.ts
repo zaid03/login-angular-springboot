@@ -915,7 +915,6 @@ export class ContratosComponent {
         this.articulosError = err.error.error ?? err.error ?? 'wtf';
       }
     })
-
   }
 
   formatPrice(value: number | null): string {
@@ -940,6 +939,48 @@ export class ContratosComponent {
     item.coapre = raw ? Number(raw) : 0;
   }
 
+  isDeleting: boolean = false;
+  deleteArticulo(numero: number, familia: string, subfamilia: string, articulo: string) {
+    this.limpiarMessages();
+    this.isDeleting = true;
+
+    const concod = numero;
+    const afacod = familia;
+    const asucod = subfamilia;
+    const artcod = articulo;
+    console.log(concod, afacod, asucod, artcod)
+    if (!concod || !afacod || !asucod || !artcod) {return;}
+
+    console.log(concod, afacod, asucod, artcod)
+    this.http.delete(`${environment.backendUrl}/api/coa/delete-articulo/${this.entcod}/${this.eje}/${concod}/${afacod}/${asucod}/${artcod}`).subscribe({
+      next: (res) => {
+        this.isDeleting = false;
+        this.articulosSuccess = 'Artículo eliminado exitosamente';
+        this.fetchArticulos(concod);
+        this.closeDeleteArticulo();
+      },
+      error: (err) => {
+        this.isDeleting = false;
+        this.detallesMessageErrorDelete = err.error.error ?? err.error ?? 'wtf';
+      }
+    })
+  }
+
+  deleteArticuloGrid: boolean = false;
+  articuloToDelete: any[] = [];
+  detallesMessageErrorDelete: string = '';
+  openDeleteArticulo(contrato: any, articulo:any) {
+    console.log(articulo)
+    this.deleteArticuloGrid = true;
+    this.articuloToDelete = [contrato, articulo];
+    console.log(this.articuloToDelete)
+  }
+
+  closeDeleteArticulo() {
+    this.deleteArticuloGrid = false;
+    this.detallesMessageErrorDelete = '';
+  }
+
   //misc
   limpiarMessages() {
     this.mainError = '';
@@ -952,5 +993,6 @@ export class ContratosComponent {
     this.articulosSuccess = '';
     this.cgeError = '';
     this.cgeSuccess = '';
+    this.detallesMessageErrorDelete = '';
   }
 }

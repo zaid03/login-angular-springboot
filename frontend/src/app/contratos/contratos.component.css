@@ -21,7 +21,8 @@
 .chunk-two p,
 .bloq,
 .add-container p,
-.proveedor-select h1 { font-size: 18px; font-weight: bold; color: #25176b; }
+.proveedor-select h1,
+.delete-info { font-size: 18px; font-weight: bold; color: #25176b; }
 .chunk-one h1,
 .proveedor-select h1 {color: #162a3a; font-size: 20px;}
 .chunk-two textarea,
@@ -63,3 +64,6 @@
 .borderI {border-bottom: none;}
 .currenc {height: 20px; padding: 2px 4px; border-radius: 6px; color: #162a3a; border: 1px solid #bbb; width: 95%; font-weight: bold;}
 /* articulo grid */
+/* delete grid */
+.margin {margin-left: 10px;}
+/* delete grid */

@@ -75,4 +75,28 @@ public class CoaController {
                 .body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
+
+    //delete an article from a contrato
+    @DeleteMapping("/delete-articulo/{ent}/{eje}/{concod}/{afacod}/{asucod}/{artcod}")
+    public ResponseEntity<?> deleteArticulo(
+        @PathVariable Integer ent,
+        @PathVariable String eje,
+        @PathVariable Integer concod,
+        @PathVariable String afacod,
+        @PathVariable String asucod,
+        @PathVariable String artcod
+    ) {
+        try {
+            CoaId id = new CoaId(ent, eje, concod, afacod, asucod, artcod);
+            if (!coaRepository.existsById(id)) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
+            }
+
+            coaRepository.deleteById(id);
+            return ResponseEntity.noContent().build();
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
+        }
+    }
 }

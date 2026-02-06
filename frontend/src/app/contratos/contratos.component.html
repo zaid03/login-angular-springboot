@@ -256,7 +256,7 @@
                                             (input)="onPriceTyping($event, a)"
                                         />
                                     <td>
-                                        <button class="delete-btn" >-</button>
+                                        <button class="delete-btn" (click)="openDeleteArticulo(selectedContrato, a.art)">-</button>
                                         <button class="save-btn" (click)="updateArticulo(selectedContrato.concod, a.art.afacod, a.art.asucod, a.art.artcod, a.coapre)">✔</button>
                                     </td>
                                 </tr>
@@ -460,4 +460,19 @@
             <button class="pag-btn" (click)="nextPagePro()" [disabled]="pagePro + 1 >= totalPagesPro">Siguiente</button>
         </div>
     </div>
+</div>
+
+<div class="modal-backdrop" *ngIf="deleteArticuloGrid" (click)="closeDeleteArticulo()"></div>
+<div class="delete-confirm-modal" *ngIf="deleteArticuloGrid">
+    <h3>¿Seguro que quieres eliminar este articulo?</h3>
+    <div *ngIf="articuloToDelete">
+        <div *ngIf="isDeleting" class="loading-message">
+            <div class="spinner"></div>
+            <span>borrando</span>
+        </div>
+        <p class="delete-info">Familia: {{articuloToDelete[0].concod}}</p>
+    </div>
+    <h1 class="errorBtn">{{detallesMessageErrorDelete}}</h1>
+    <button class="delete-btn" (click)="deleteArticulo(articuloToDelete[0]?.concod, articuloToDelete[1]?.afacod, articuloToDelete[1]?.asucod, articuloToDelete[1]?.artcod)">-</button>
+    <button class="save-btn margin" (click)="closeDeleteArticulo()">✖</button>
 </div>
