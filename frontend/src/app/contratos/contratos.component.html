@@ -222,7 +222,7 @@
                         </div>
                     </div>
                     <div class="custom-grid-modal" *ngIf="showArticulosGrid">
-                        <button class="add-btn" (click)="showArticulosAddGrid()">+</button>
+                        <button class="add-btn" (click)="showArticulosAddGrid(selectedContrato.conlot)">+</button>
                         <h1 class="errorBtn">{{articulosError}}</h1>
                         <h1 class="successBtn">{{articulosSuccess}}</h1>
                         <div *ngIf="isLoadingArticulos" class="loading-message">
@@ -501,8 +501,8 @@
                 [(ngModel)]="searchValue"
             />
             <div class="btns">
-                <button class="save-btn">Buscar</button>
-                <button class="save-btn">Limpiar</button>
+                <button class="save-btn" (click)="searchArticuloAdd()">Buscar</button>
+                <button class="save-btn" (click)="limpiarArticulosAdd()">Limpiar</button>
             </div>
         </div>
         <table class="anadir-proveedores-table">
@@ -510,15 +510,14 @@
                 <th>Familia</th>
                 <th>Subfamilia</th>
                 <th>Artículo</th>
+                <th>Descripción</th>
             </thead>
             <tbody>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td colspan="3" style="text-align:center;">No hay resultados</td>
+                <tr *ngFor="let a of paginatedSearchResults">
+                    <td>{{a.afacod}}</td>
+                    <td>{{a.asucod}}</td>
+                    <td>{{a.artcod}}</td>
+                    <td>{{a.artdes}}</td>
                 </tr>
             </tbody>
         </table>

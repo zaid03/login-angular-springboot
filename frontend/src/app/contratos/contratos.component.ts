@@ -951,7 +951,6 @@ export class ContratosComponent {
     console.log(concod, afacod, asucod, artcod)
     if (!concod || !afacod || !asucod || !artcod) {return;}
 
-    console.log(concod, afacod, asucod, artcod)
     this.http.delete(`${environment.backendUrl}/api/coa/delete-articulo/${this.entcod}/${this.eje}/${concod}/${afacod}/${asucod}/${artcod}`).subscribe({
       next: (res) => {
         this.isDeleting = false;
@@ -973,7 +972,6 @@ export class ContratosComponent {
     console.log(articulo)
     this.deleteArticuloGrid = true;
     this.articuloToDelete = [contrato, articulo];
-    console.log(this.articuloToDelete)
   }
 
   closeDeleteArticulo() {
@@ -988,23 +986,73 @@ export class ContratosComponent {
   isAddingArticulo: boolean = false;
   searchValue: string = '';
   articulosAdd: any[] = [];
-  showArticulosAddGrid() {
+  conlot: number = 0;
+  showArticulosAddGrid(conlot: number) {
     this.articulosAddGrid = true;
+    this.conlot = conlot;
+    this.fetchArticulosAdd(conlot);
   }
 
   closeArticuloAddGrid() {
     this.articulosAddGrid = false;
     this.searchValue = '';
+    this.searchPage = 0;
+    this.articulosAdd = [];
   }
 
-  fetchArticulosAdd() {
+  fetchArticulosAdd(conlot: number) {
     this.limpiarMessages();
     this.isAddingArticulo = true;
+
+    this.http.get<any>(`${environment.backendUrl}/api/art/art-cont/${this.entcod}/${conlot}`).subscribe({
+      next: (res) => {
+        this.articulosAdd = res;
+        this.isAddingArticulo = false;
+      },
+      error: (err) => {
+        this.isAddingArticulo = false;
+        this.articulosAddError = err.error.error ?? err.error;
+      }
+    })
+  }
+
+  searchArticuloAdd() {
+    this.limpiarMessages();
+    if (this.searchValue === '') {return;}
+
+    const isOnlyNumbers = (value: string) => /^\d+$/.test(value);
+
+    this.isAddingArticulo = true;
+    if(isOnlyNumbers(this.searchValue)) {
+      this.http.get<any>(`${environment.backendUrl}/api/art/search-art-cont/${this.entcod}/${this.conlot}/${this.searchValue}`).subscribe({
+        next: (res) => {
+          this.articulosAdd = res;
+          this.isAddingArticulo = false;
+        },
+        error: (err) => {
+          this.isAddingArticulo = false;
+          this.articulosAddError = err.error.error ?? err.error;
+        }
+      })
+    } else {
+      this.http.get<any>(`${environment.backendUrl}/api/art/search-art-cont-des/${this.entcod}/${this.conlot}/${this.searchValue}`).subscribe({
+        next: (res) => {
+          this.articulosAdd = res;
+          this.isAddingArticulo = false;
+        },
+        error: (err) => {
+          this.isAddingArticulo = false;
+          this.articulosAddError = err.error.error ?? err.error;
+        }
+      })
+    }
   }
 
   limpiarArticulosAdd() {
     this.limpiarMessages();
     this.searchValue = '';
+    this.searchPage = 0;
+    this.fetchArticulosAdd(this.conlot);
   }
   searchPage: number = 0;
   searchPageSize: number = 5;
