@@ -163,4 +163,46 @@ public class ArtController {
                 .body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
+
+    //searching in articulos for contratos by nums
+    @GetMapping("/search-art-cont/{ent}/{conlot}/{term}")
+    public ResponseEntity<?> searchArticulosContratosNum(
+        @PathVariable int ent,
+        @PathVariable String conlot,
+        @PathVariable String term
+    ) {
+        try {
+            List<ArtAsuContratoProjection> articulos = artRepository.findDistinctByENTAndAsuASUECOAndAFACODOrENTAndAsuASUECOAndASUCOD(ent, conlot, term, ent, conlot, term);
+            if(articulos.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body("Sin resultado");
+            }
+
+            return ResponseEntity.ok(articulos);
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
+        }
+    }
+
+    //selecting articulos for contratos
+    @GetMapping("/search-art-cont-des/{ent}/{conlot}/{artdes}")
+    public ResponseEntity<?> searchArticulosContratosDes(
+        @PathVariable int ent,
+        @PathVariable String conlot,
+        @PathVariable String artdes
+    ) {
+        try {
+            List<ArtAsuContratoProjection> articulos = artRepository.findDistinctByENTAndAsuASUECOAndARTDESContaining(ent, conlot, artdes);
+            if(articulos.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body("Sin resultado");
+            }
+
+            return ResponseEntity.ok(articulos);
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
+        }
+    }
 }

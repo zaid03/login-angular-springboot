@@ -30,4 +30,10 @@ public interface ArtRepository extends JpaRepository<Art, ArtId> {
 
     //selecting articulos for contratos
     List<ArtAsuContratoProjection> findDistinctByENTAndAsuASUECO(Integer ent, String conlot);
+
+    //searching in articulos for contratos by nums
+    List<ArtAsuContratoProjection> findDistinctByENTAndAsuASUECOAndAFACODOrENTAndAsuASUECOAndASUCOD(Integer ent1, String asueco1, String afacod, Integer ent2, String asueco2, String asucod);
+
+    //searching in articulos for contratos by chars
+    List<ArtAsuContratoProjection> findDistinctByENTAndAsuASUECOAndARTDESContaining(Integer ent, String conlot, String artdes);
 }
