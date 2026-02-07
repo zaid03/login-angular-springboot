@@ -5,12 +5,11 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import com.example.backend.sqlserver2.model.Art;
-
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import com.example.backend.sqlserver2.model.ArtId;
+import com.example.backend.dto.ArtAsuContratoProjection;
 
 @Repository
-public interface ArtRepository extends JpaRepository<Art, String> {
+public interface ArtRepository extends JpaRepository<Art, ArtId> {
 
     //fetch to find articulos
     List<Art> findByENTAndAFACOD(int ent, String afacod);
@@ -28,4 +27,7 @@ public interface ArtRepository extends JpaRepository<Art, String> {
 
     //delete a subfamilia check
     Long countByENTAndASUCOD(Integer ent, String asucod);
+
+    //selecting articulos for contratos
+    List<ArtAsuContratoProjection> findDistinctByENTAndAsuASUECO(Integer ent, String conlot);
 }

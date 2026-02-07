@@ -4,6 +4,8 @@ import com.example.backend.sqlserver2.model.Art;
 import com.example.backend.sqlserver2.repository.ArtRepository;
 import com.example.backend.sqlserver2.repository.AsuRepository;
 import com.example.backend.sqlserver2.repository.AfaRepository;
+import com.example.backend.dto.ArtAsuContratoProjection;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -136,6 +138,26 @@ public class ArtController {
                 ? ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("Sin resultado")
                 : ResponseEntity.noContent().build();
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
+        }
+    }
+
+    //selecting articulos for contratos
+    @GetMapping("/art-cont/{ent}/{conlot}")
+    public ResponseEntity<?> getArticulosContratos(
+        @PathVariable int ent,
+        @PathVariable String conlot
+    ) {
+        try {
+            List<ArtAsuContratoProjection> articulos = artRepository.findDistinctByENTAndAsuASUECO(ent, conlot);
+            if(articulos.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body("Sin resultado");
+            }
+
+            return ResponseEntity.ok(articulos);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Error: " + ex.getMostSpecificCause().getMessage());

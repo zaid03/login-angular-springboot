@@ -52,7 +52,7 @@ public class Conn {
 
     public List<Cot> getCots() { return cots; }
     public void setCots(List<Cot> cots) { this.cots = cots; }
-
+    
     public Integer getENT() {return ENT;}
     public void setENT(Integer ENT) {this.ENT = ENT;}
 

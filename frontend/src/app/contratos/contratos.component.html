@@ -222,7 +222,7 @@
                         </div>
                     </div>
                     <div class="custom-grid-modal" *ngIf="showArticulosGrid">
-                        <button class="add-btn">+</button>
+                        <button class="add-btn" (click)="showArticulosAddGrid()">+</button>
                         <h1 class="errorBtn">{{articulosError}}</h1>
                         <h1 class="successBtn">{{articulosSuccess}}</h1>
                         <div *ngIf="isLoadingArticulos" class="loading-message">
@@ -475,4 +475,57 @@
     <h1 class="errorBtn">{{detallesMessageErrorDelete}}</h1>
     <button class="delete-btn" (click)="deleteArticulo(articuloToDelete[0]?.concod, articuloToDelete[1]?.afacod, articuloToDelete[1]?.asucod, articuloToDelete[1]?.artcod)">-</button>
     <button class="save-btn margin" (click)="closeDeleteArticulo()">✖</button>
+</div>
+
+<div class="modal-backdrop" *ngIf="articulosAddGrid" (click)="closeArticuloAddGrid()"></div>
+<div class="hello-modal" *ngIf="articulosAddGrid">
+    <div class="btns">
+        <div class="title">
+            <h1 class="art-title">Añadir articulo</h1>
+        </div>
+        <button class="close-btn-btn" (click)="closeArticuloAddGrid()">✖</button>
+    </div>
+    <h1 class="successBtn">{{ArticuloAddSuccess}}</h1>
+    <h1 class="errorBtn">{{articulosAddError}}</h1>
+    <div *ngIf="isAddingArticulo" class="loading-message">
+        <div class="spinner"></div>
+        <span>añadiendo</span>
+    </div>
+    <form class="anadir-articulo-form">
+        <div class="search-anadir-input">
+            <input 
+                type="text" 
+                class="search-bar"
+                placeholder="Buscar familia, subfamilia o artículo" 
+                name="search"
+                [(ngModel)]="searchValue"
+            />
+            <div class="btns">
+                <button class="save-btn">Buscar</button>
+                <button class="save-btn">Limpiar</button>
+            </div>
+        </div>
+        <table class="anadir-proveedores-table">
+            <thead>
+                <th>Familia</th>
+                <th>Subfamilia</th>
+                <th>Artículo</th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td colspan="3" style="text-align:center;">No hay resultados</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="pagination-controls" *ngIf="articulosAdd.length > searchPageSize">
+            <button class="pag-btn" (click)="searchPage = searchPage - 1" [disabled]="searchPage === 0">Anterior</button>
+            <span> {{ searchPage + 1 }} de {{ searchTotalPages }}</span>
+            <button class="pag-btn" (click)="searchPage = searchPage + 1" [disabled]="searchPage + 1 >= searchTotalPages">Siguiente</button>
+        </div>
+    </form>
 </div>

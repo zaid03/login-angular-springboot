@@ -981,6 +981,36 @@ export class ContratosComponent {
     this.detallesMessageErrorDelete = '';
   }
 
+  //articulos add grid
+  articulosAddGrid: boolean = false;
+  ArticuloAddSuccess: string = '';
+  articulosAddError: string = '';
+  isAddingArticulo: boolean = false;
+  searchValue: string = '';
+  articulosAdd: any[] = [];
+  showArticulosAddGrid() {
+    this.articulosAddGrid = true;
+  }
+
+  closeArticuloAddGrid() {
+    this.articulosAddGrid = false;
+    this.searchValue = '';
+  }
+
+  fetchArticulosAdd() {
+    this.limpiarMessages();
+    this.isAddingArticulo = true;
+  }
+
+  limpiarArticulosAdd() {
+    this.limpiarMessages();
+    this.searchValue = '';
+  }
+  searchPage: number = 0;
+  searchPageSize: number = 5;
+  get paginatedSearchResults() {const start = this.searchPage * this.searchPageSize; return this.articulosAdd.slice(start, start + this.searchPageSize);}
+  get searchTotalPages() {return Math.ceil(this.articulosAdd.length / this.searchPageSize);}
+
   //misc
   limpiarMessages() {
     this.mainError = '';
@@ -994,5 +1024,7 @@ export class ContratosComponent {
     this.cgeError = '';
     this.cgeSuccess = '';
     this.detallesMessageErrorDelete = '';
+    this.ArticuloAddSuccess = '';
+    this.articulosAddError = '';
   }
 }
