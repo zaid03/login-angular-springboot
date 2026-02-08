@@ -1,5 +1,6 @@
 package com.example.backend.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,7 +12,9 @@ import org.springframework.web.bind.annotation.*;
 
 import com.example.backend.dto.COGAIPOnlyDto;
 import com.example.backend.dto.CogCgeProjection;
+import com.example.backend.dto.CogSaveDto;
 import com.example.backend.sqlserver2.repository.CogRepository;
+import com.example.backend.sqlserver2.model.Cog;
 import com.example.backend.sqlserver2.model.CogId;
 
 @RestController
@@ -66,6 +69,34 @@ public class CogController {
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
             }
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
+        }
+    }
+
+    //saving centro gestores to a contrato
+    @PostMapping("/save-centroGestores")
+    public ResponseEntity<?> saveCentros(
+        @RequestBody List<CogSaveDto> items
+    ) {
+        try {
+            List<Cog> toSave = new ArrayList<>();
+            for (CogSaveDto dto: items) {
+                boolean exists = cogRepository.existsByENTAndEJEAndCONCODAndCGECOD(dto.ent, dto.eje, dto.concod, dto.cgecod);
+                if (!exists) {
+                    Cog c = new Cog();
+                    c.setENT(dto.ent);
+                    c.setEJE(dto.eje);
+                    c.setCONCOD(dto.concod);
+                    c.setCGECOD(dto.cgecod);
+                    c.setCOGIMP(dto.cogimp);
+                    c.setCOGAIP(dto.cogaip);
+                    toSave.add(c);
+                }
+            }
+            cogRepository.saveAll(toSave);
+            return ResponseEntity.noContent().build();
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Error: " + ex.getMostSpecificCause().getMessage());
