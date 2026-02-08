@@ -119,6 +119,11 @@ public class CoaController {
                     c.setAFACOD(dto.afacod);
                     c.setASUCOD(dto.asucod);
                     c.setARTCOD(dto.artcod);
+                    c.setCOAPRE(dto.COAPRE);
+                    c.setCOAPR2(dto.COAPR2);
+                    c.setCOAPR3(dto.COAPR3);
+                    c.setCOAPR4(dto.COAPR4);
+                    c.setCOAPR5(dto.COAPR5);
                     toSave.add(c);
                 }
             }

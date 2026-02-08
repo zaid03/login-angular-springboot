@@ -948,7 +948,6 @@ export class ContratosComponent {
     const afacod = familia;
     const asucod = subfamilia;
     const artcod = articulo;
-    console.log(concod, afacod, asucod, artcod)
     if (!concod || !afacod || !asucod || !artcod) {return;}
 
     this.http.delete(`${environment.backendUrl}/api/coa/delete-articulo/${this.entcod}/${this.eje}/${concod}/${afacod}/${asucod}/${artcod}`).subscribe({
@@ -969,7 +968,6 @@ export class ContratosComponent {
   articuloToDelete: any[] = [];
   detallesMessageErrorDelete: string = '';
   openDeleteArticulo(contrato: any, articulo:any) {
-    console.log(articulo)
     this.deleteArticuloGrid = true;
     this.articuloToDelete = [contrato, articulo];
   }
@@ -1072,8 +1070,6 @@ export class ContratosComponent {
       this.coughtArticulos = [...this.coughtArticulos, articulos];
     }
     
-    this.coughtArticulos.forEach(Obj => { delete Obj.artdes; })
-    console.log(this.coughtArticulos);
   }
 
   isArticulosSelected(a: any): boolean {
@@ -1086,17 +1082,21 @@ export class ContratosComponent {
     this.isAddingArticulo = true;
 
     const concod = this.selectedContrato.concod;
-    console.log(concod)
 
-    this.coughtArticulos.forEach(Obj => { 
-      Obj.ent = this.entcod; 
-      Obj.eje = this.eje;
-      Obj.concod = concod;
-    })
+    const payload = this.coughtArticulos.map(obj => ({
+      ent: this.entcod,
+      eje: this.eje,
+      concod: concod,
+      afacod: obj.afacod,
+      asucod: obj.asucod,
+      artcod: obj.artcod,
+      COAPRE: 0,
+      COAPR2: 0,
+      COAPR3: 0,
+      COAPR4: 0,
+      COAPR5: 0
+    }));
 
-    const payload = this.coughtArticulos;
-
-    console.log(payload)
     this.http.post(`${environment.backendUrl}/api/coa/save-articulos`, payload).subscribe({
       next: (res) => {
         this.closeArticuloAddGrid();

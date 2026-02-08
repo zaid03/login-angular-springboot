@@ -7,4 +7,9 @@ public class CoaSaveDto {
     public String afacod;
     public String asucod;
     public String artcod;
+    public Double COAPRE;
+    public Double COAPR2;
+    public Double COAPR3;
+    public Double COAPR4;
+    public Double COAPR5;
 }
