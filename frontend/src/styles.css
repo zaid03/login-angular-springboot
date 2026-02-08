@@ -226,7 +226,8 @@ app-sidebar { flex-shrink: 0; z-index: 2000; }
 .personas-table-select,
 .ejercicio-table,
 .personasServices-table,
-.contratos-table { background-color: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); width: 100%; table-layout: fixed; border-collapse: collapse; margin-bottom: 24px; overflow: hidden;}
+.contratos-table,
+.centroGetor-table { background-color: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); width: 100%; table-layout: fixed; border-collapse: collapse; margin-bottom: 24px; overflow: hidden;}
 .main-table thead th,
 .facturas-table thead th,
 .albaranes-table thead th,
@@ -250,7 +251,8 @@ app-sidebar { flex-shrink: 0; z-index: 2000; }
 .personas-table-select thead th,
 .ejercicio-table thead th,
 .personasServices-table thead th,
-.contratos-table thead th { border: 1px solid #e6edf3; padding: 8px 12px; text-align: center; background: #f7f7f9; color: #38249b; font-size: 15px; font-weight: 700; }
+.contratos-table thead th,
+.centroGetor-table thead th { border: 1px solid #e6edf3; padding: 8px 12px; text-align: center; background: #f7f7f9; color: #38249b; font-size: 15px; font-weight: 700; }
 .main-table td,
 .facturas-table tbody td,
 .albaranes-table tbody td,
@@ -274,7 +276,8 @@ app-sidebar { flex-shrink: 0; z-index: 2000; }
 .personas-table-select tbody td,
 .ejercicio-table tbody td,
 .personasServices-table tbody td,
-.contratos-table tbody td { border: 1px solid #f0f5f9; padding: 6px 10px; text-align: center; vertical-align: middle; font-size: 15px; color: #222; font-weight: 600; overflow: hidden; text-align: left;}
+.contratos-table tbody td,
+.centroGetor-table tbody td { border: 1px solid #f0f5f9; padding: 6px 10px; text-align: center; vertical-align: middle; font-size: 15px; color: #222; font-weight: 600; overflow: hidden; text-align: left;}
 .facturas-table tbody tr:hover,
 .albaranes-table tbody tr:hover, 
 .main-table tr:hover,
@@ -298,7 +301,8 @@ app-sidebar { flex-shrink: 0; z-index: 2000; }
 .personas-table-select tbody tr:hover,
 .ejercicio-table tbody tr:hover,
 .personasServices-table tbody tr:hover
-.contratos-table tbody tr:hover  {background-color: #f0f7ff;}
+.contratos-table tbody tr:hover,
+.centroGetor-table tbody tr:hover {background-color: #f0f7ff;}
 .ejercicio-table,
 .services-table,
 .coste-table,

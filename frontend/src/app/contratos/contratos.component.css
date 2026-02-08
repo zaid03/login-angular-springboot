@@ -96,3 +96,8 @@
 .left-delete,
 .right-delete {text-align: left; gap: 10px; display: flex; flex-direction: column;}
 /* delete grid for centros */
+/* centro gestor add grid */
+.centroGetor-table thead th:first-child,
+.centroGetor-table thead th:nth-child(3),
+.centroGetor-table thead th:last-child {width: 12%;}
+/* centro gestor add grid */

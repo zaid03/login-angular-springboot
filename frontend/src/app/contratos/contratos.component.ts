@@ -1168,20 +1168,91 @@ export class ContratosComponent {
   }
 
   fetchCentroGestores() {
-
+    this.isLoadingCentroAdd = true;
+    this.http.get<any>(`${environment.backendUrl}/api/cge/fetch-all/${this.entcod}/${this.eje}`).subscribe({
+      next: (res) => {
+        this.isLoadingCentroAdd = false;
+        this.centroGestoresAdd = res;
+        this.searchPageCentro = 0;
+      },
+      error: (err) => {
+        this.isLoadingCentroAdd = false;
+        this.centroErrorMessage = err.error.error ?? err.error;
+      }
+    })
   }
 
   searchCentroGestores() {
-
+    this.isLoadingCentroAdd = true;
+    if (this.searchCentro.length <= 2) {
+      console.log("less than 2 codigo")
+      this.http.get<any>(`${environment.backendUrl}/api/cge/search-centros-codigo/${this.entcod}/${this.eje}/${this.searchCentro}`).subscribe({
+        next: (res) => {
+          this.isLoadingCentroAdd = false;
+          this.centroGestoresAdd = res;
+          this.searchPageCentro = 0;
+        },
+        error: (err) => {
+          this.isLoadingCentroAdd = false;
+          this.centroErrorMessage = err.error.error ?? err.error;
+        }
+      })
+    } else if (this.searchCentro.length > 2 && this.searchCentro.length <= 4) {
+      console.log("between 2 and 4 both")
+      this.http.get<any>(`${environment.backendUrl}/api/cge/search-centros/${this.entcod}/${this.eje}/${this.searchCentro}`).subscribe({
+        next: (res) => {
+          this.isLoadingCentroAdd = false;
+          this.centroGestoresAdd = res;
+          this.searchPageCentro = 0;
+        },
+        error: (err) => {
+          this.isLoadingCentroAdd = false;
+          this.centroErrorMessage = err.error.error ?? err.error;
+        }
+      })
+    } else {
+      console.log("more than 2 desc")
+      this.http.get<any>(`${environment.backendUrl}/api/cge/search-centros-description/${this.entcod}/${this.eje}/${this.searchCentro}`).subscribe({
+        next: (res) => {
+          this.isLoadingCentroAdd = false;
+          this.centroGestoresAdd = res;
+          this.searchPageCentro = 0;
+        },
+        error: (err) => {
+          this.isLoadingCentroAdd = false;
+          this.centroErrorMessage = err.error.error ?? err.error;
+        }
+      })
+    }
   }
 
   limpiarSearchCentroGetores() {
-
+    this.limpiarMessages();
+    this.fetchCentroGestores();
+    this.searchCentro = '';
+    this.coughtCentros = [];
+    this.searchPage = 0;
   }
   searchPageCentro: number = 0;
   searchPageSizeCentro: number = 5;
-  get paginatedSearchResultsCentro() {const start = this.searchPage * this.searchPageSizeCentro; return this.articulosAdd.slice(start, start + this.searchPageSizeCentro);}
-  get searchTotalPagesCentro() {return Math.ceil(this.articulosAdd.length / this.searchPageSizeCentro);}
+  get paginatedSearchResultsCentro() {const start = this.searchPageCentro * this.searchPageSizeCentro; return this.centroGestoresAdd.slice(start, start + this.searchPageSizeCentro);}
+  get searchTotalPagesCentro() {return Math.ceil(this.centroGestoresAdd.length / this.searchPageSizeCentro);}
+
+  coughtCentros: any[] = [];
+  selectCentrosAdd(centro: any) {
+    if (this.coughtCentros.includes(centro)) {
+      const index = this.coughtCentros.indexOf(centro);
+      if(index !== -1) {
+        this.coughtCentros.splice(index, 1);
+      }
+    } else {
+      this.coughtCentros = [...this.coughtCentros, centro];
+    }
+  }
+
+  isCentroSelected(a: any): boolean {
+    return this.coughtCentros.includes(a);
+  }
 
   //misc
   limpiarMessages() {

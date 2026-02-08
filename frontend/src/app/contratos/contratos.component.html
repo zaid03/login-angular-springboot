@@ -578,8 +578,8 @@
         <div class="spinner"></div>
         <span>añadiendo</span>
     </div>
-    <h1 class="successBtn">{{centroErrorMessage}}</h1>
-    <h1 class="errorBtn">{{centroSuccessMessage}}</h1>
+    <h1 class="successBtn">{{centroSuccessMessage}}</h1>
+    <h1 class="errorBtn">{{centroErrorMessage}}</h1>
     <div *ngIf="isLoadingCentroAdd" class="loading-message">
         <div class="spinner"></div>
         <span>Cargando</span>
@@ -594,11 +594,11 @@
                 [(ngModel)]="searchCentro"
             />
             <div class="btns">
-                <button class="save-btn" >Buscar</button>
-                <button class="save-btn" >Limpiar</button>
+                <button class="save-btn" (click)="searchCentroGestores()">Buscar</button>
+                <button class="save-btn" (click)="limpiarSearchCentroGetores()">Limpiar</button>
             </div>
         </div>
-        <table class="anadir-proveedores-table">
+        <table class="centroGetor-table">
             <thead>
                 <th>Código</th>
                 <th>Descripción</th>
@@ -607,21 +607,21 @@
             </thead>
             <tbody>
                 <tr *ngFor="let a of paginatedSearchResultsCentro" 
-                    (click)="selectArticulosAdd(a)"
-                    [class.selected-row]="isArticulosSelected(a)"
+                    (click)="selectCentrosAdd(a)"
+                    [class.selected-row]="isCentroSelected(a)"
                 >
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td>{{a.cgecod}}</td>
+                    <td>{{a.cgedes}}</td>
+                    <td>{{a.cgeorg}}</td>
+                    <td>{{a.cgefun}}</td>
                 </tr>
             </tbody>
         </table>
-        <p class="selected" *ngIf="coughtArticulos.length > 0">{{coughtArticulos.length}} artículos seleccionados</p>
+        <p class="selected" *ngIf="coughtCentros.length > 0">{{coughtCentros.length}} centro gestores seleccionados</p>
         <div class="pagination-controls" *ngIf="centroGestoresAdd.length > searchPageSizeCentro">
             <button class="pag-btn" (click)="searchPageCentro = searchPageCentro - 1" [disabled]="searchPageCentro === 0">Anterior</button>
-            <span> {{ searchPageCentro + 1 }} de {{ searchPageSizeCentro }}</span>
-            <button class="pag-btn" (click)="searchPageCentro = searchPageCentro + 1" [disabled]="searchPageCentro + 1 >= searchPageSizeCentro">Siguiente</button>
+            <span> {{ searchPageCentro + 1 }} de {{ searchTotalPagesCentro }}</span>
+            <button class="pag-btn" (click)="searchPageCentro = searchPageCentro + 1" [disabled]="searchPageCentro + 1 >= searchTotalPagesCentro">Siguiente</button>
         </div>
     </form>
 </div>
