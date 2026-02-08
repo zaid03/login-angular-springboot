@@ -1152,7 +1152,6 @@ export class ContratosComponent {
   addCentroGestor: boolean = false;
   isAddingCentro: boolean = false;
   centroErrorMessage: string = '';
-  centroSuccessMessage: string = '';
   isLoadingCentroAdd: boolean = false;
   searchCentro: string = '';
   centroGestoresAdd: any[] = [];
@@ -1165,6 +1164,7 @@ export class ContratosComponent {
     this.limpiarMessages();
     this.addCentroGestor = false;
     this.centroGestoresAdd = [];
+    this.coughtCentros = [];
   }
 
   fetchCentroGestores() {
@@ -1254,6 +1254,34 @@ export class ContratosComponent {
     return this.coughtCentros.includes(a);
   }
 
+  saveCentroGestores() {
+    this.limpiarMessages();
+    this.isLoadingCentroAdd = true;
+    const concod = this.selectedContrato.concod;
+
+    const payload = this.coughtCentros.map(obj => ({
+      ent: this.entcod,
+      eje: this.eje,
+      concod: concod,
+      cgecod: obj.cgecod,
+      cogimp: 0,
+      cogaip: 0
+    }));
+
+    this.http.post(`${environment.backendUrl}/api/cog/save-centroGestores`, payload).subscribe({
+      next: (res) => {
+        this.closeAddCentro();
+        this.fetchCentroGestor(concod);
+        this.isLoadingCentroAdd = false;
+        this.cgeSuccess = 'artículos añadidos con éxito';
+      },
+      error: (err) => {
+        this.centroErrorMessage = err.error.error ?? err.error;
+        this.isLoadingCentroAdd = false;
+      }
+    })
+  }
+
   //misc
   limpiarMessages() {
     this.mainError = '';
@@ -1271,6 +1299,5 @@ export class ContratosComponent {
     this.articulosAddError = '';
     this.centroDeleteError = '';
     this.centroErrorMessage = '';
-    this.centroSuccessMessage = '';
   }
 }

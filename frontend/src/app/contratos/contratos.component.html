@@ -571,14 +571,13 @@
         <div class="title">
             <h1 class="art-title">Añadir centro Gestor</h1>
         </div>
-        <button class="save-btn" >+</button>
+        <button class="save-btn" (click)="saveCentroGestores()">+</button>
         <button class="close-btn-btn" (click)="closeAddCentro()">✖</button>
     </div>
     <div *ngIf="isAddingCentro" class="loading-message">
         <div class="spinner"></div>
         <span>añadiendo</span>
     </div>
-    <h1 class="successBtn">{{centroSuccessMessage}}</h1>
     <h1 class="errorBtn">{{centroErrorMessage}}</h1>
     <div *ngIf="isLoadingCentroAdd" class="loading-message">
         <div class="spinner"></div>
