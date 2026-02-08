@@ -278,7 +278,10 @@
                         </div>
                     </div>
                     <div class="custom-grid-modal" *ngIf="showCentroGestorGrid">
-                        <button class="add-btn" >+</button>
+                        <div class="action-btns">
+                            <button class="add-btn" >+</button>
+                            <button class="add-btn" >D</button>
+                        </div>
                         <h1 class="errorBtn">{{cgeError}}</h1>
                         <h1 class="successBtn">{{cgeSuccess}}</h1>
                         <div *ngIf="isLoadingCentroGestor" class="loading-message">
@@ -311,7 +314,7 @@
                                     <td>{{getKdisponible(c.COGIMP, c.COGIAP)}}</td>
                                     <td class="borderI">
                                         <button class="delete-btn" >-</button>
-                                        <button class="save-btn" >✔</button>
+                                        <!-- <button class="save-btn" >✔</button> -->
                                     </td>
                                 </tr>
                             </tbody>

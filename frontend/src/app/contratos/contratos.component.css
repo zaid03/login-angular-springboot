@@ -37,6 +37,7 @@
 .currenc:focus { outline: none; border-color: #042b5a; outline: none; background: #fff; }
 .average {width: 150px; max-width: 220px;} 
 .long {width: 600px; max-width: 720px; min-height: 50px;}
+.action-btns{display: flex; gap: 10px;}
 /* details grid */
 /* add grid */
 .title {width: 90%;}
