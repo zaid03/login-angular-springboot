@@ -313,7 +313,7 @@
                                     <td>{{c.cogaip}}</td>
                                     <td>{{getKdisponible(c.COGIMP, c.COGIAP)}}</td>
                                     <td class="borderI">
-                                        <button class="delete-btn" >-</button>
+                                        <button class="delete-btn" (click)="showDeleteCentro(c)">-</button>
                                         <!-- <button class="save-btn" >✔</button> -->
                                     </td>
                                 </tr>
@@ -539,4 +539,28 @@
             <button class="pag-btn" (click)="searchPage = searchPage + 1" [disabled]="searchPage + 1 >= searchTotalPages">Siguiente</button>
         </div>
     </form>
+</div>
+
+<div class="modal-backdrop" *ngIf="centroGestorDelete" (click)="closeDeleteCentro()"></div>
+<div class="delete-confirm-modal" *ngIf="centroGestorDelete">
+    <h3>¿Quiere borrar el centro gestor y su D del contrato?</h3>
+    <div *ngIf="centroToDelete">
+        <div *ngIf="isDeletingCentro" class="loading-message">
+            <div class="spinner"></div>
+            <span>borrando</span>
+        </div>
+        <div class="delete-info-titles">
+            <div class="left-delete">
+                <p class="delete-info">Centro gestor:</p>
+                <p class="delete-info">Descripción:</p>
+            </div>
+            <div class="right-delete">
+                <p class="delete-info delete">{{centroToDelete.cgecod}}</p>
+                <p class="delete-info delete">{{centroToDelete.cge.cgedes}}</p>
+            </div>
+        </div>
+    </div>
+    <h1 class="errorBtn">{{centroDeleteError}}</h1>
+    <button class="delete-btn" (click)="deleteCentroGestor(centroToDelete.cgecod)">-</button>
+    <button class="save-btn margin" (click)="closeDeleteCentro()">✖</button>
 </div>

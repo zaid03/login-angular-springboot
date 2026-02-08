@@ -783,65 +783,7 @@ export class ContratosComponent {
     })
   }
 
-  //sub detail's grids
-  showCentroGestorGrid = false;
-  centroGestor: any[] = [];
-  cgeError: string = '';
-  cgeSuccess: string = '';
-  activeDetailTab: 'centroGestor' | 'articulos' | null = null;
-  showcentroGestor(numero: number) {
-    this.limpiarMessages();
-    this.showCentroGestorGrid = true;
-    this.showArticulosGrid = false;
-    this.articulos = [];
-    this.fetchCentroGestor(numero);
-  }
-
-  isLoadingCentroGestor: boolean = false;
-  fetchCentroGestor(numero: number) {
-    this.isLoadingCentroGestor = true;
-    const concod = numero;
-    this.http.get<any[]>(`${environment.backendUrl}/api/cog/fetch-centros/${this.entcod}/${this.eje}/${concod}`).subscribe({
-      next: (res) => {
-        this.centroGestor = res;
-        this.pageCNT = 0;
-        this.isLoadingCentroGestor = false;
-      },
-      error: (err) => {
-        this.isLoadingCentroGestor = false;
-        this.cgeError = err.error.error ?? err.error;
-      }
-    })
-  }
-  pageCNT = 0;
-  get paginatedCentros(): any[] {
-    if (!this.centroGestor || this.centroGestor.length === 0) return [];
-    const start = this.pageCNT * this.pageSize;
-    return this.centroGestor.slice(start, start + this.pageSize);
-  }
-  get totalPagesCNT(): number {
-    return Math.max(1, Math.ceil((this.centroGestor?.length ?? 0) / this.pageSize));
-  }
-  prevpageCNT(): void {
-    if (this.pageCNT > 0) this.pageCNT--;
-  }
-  nextpageCNT(): void {
-    if (this.pageCNT < this.totalPagesCNT - 1) this.pageCNT++;
-  }
-  goTopageCNT(event: any): void {
-    const inputPage = Number(event.target.value);
-    if (inputPage >= 1 && inputPage <= this.totalPagesCNT) {
-      this.pageCNT = inputPage - 1;
-    }
-  }
-
-  getKdisponible(COGIMP: number | null, COGIAP: number | null) {
-    if (COGIMP == null || COGIAP == null) {
-      return '0';
-    }
-    return COGIMP - COGIAP;
-  }
-
+  //sub detail's articulo's grids
   articulosError: string = '';
   articulosSuccess: string = '';
   showArticulosGrid = false;
@@ -1111,6 +1053,102 @@ export class ContratosComponent {
     })
   }
 
+  //sub detail's centro gestor's grid
+  showCentroGestorGrid = false;
+  centroGestor: any[] = [];
+  cgeError: string = '';
+  cgeSuccess: string = '';
+  activeDetailTab: 'centroGestor' | 'articulos' | null = null;
+  showcentroGestor(numero: number) {
+    this.limpiarMessages();
+    this.showCentroGestorGrid = true;
+    this.showArticulosGrid = false;
+    this.articulos = [];
+    this.fetchCentroGestor(numero);
+  }
+
+  isLoadingCentroGestor: boolean = false;
+  fetchCentroGestor(numero: number) {
+    this.isLoadingCentroGestor = true;
+    const concod = numero;
+    this.http.get<any[]>(`${environment.backendUrl}/api/cog/fetch-centros/${this.entcod}/${this.eje}/${concod}`).subscribe({
+      next: (res) => {
+        this.centroGestor = res;
+        this.pageCNT = 0;
+        this.isLoadingCentroGestor = false;
+      },
+      error: (err) => {
+        this.isLoadingCentroGestor = false;
+        this.cgeError = err.error.error ?? err.error;
+      }
+    })
+  }
+  pageCNT = 0;
+  get paginatedCentros(): any[] {
+    if (!this.centroGestor || this.centroGestor.length === 0) return [];
+    const start = this.pageCNT * this.pageSize;
+    return this.centroGestor.slice(start, start + this.pageSize);
+  }
+  get totalPagesCNT(): number {
+    return Math.max(1, Math.ceil((this.centroGestor?.length ?? 0) / this.pageSize));
+  }
+  prevpageCNT(): void {
+    if (this.pageCNT > 0) this.pageCNT--;
+  }
+  nextpageCNT(): void {
+    if (this.pageCNT < this.totalPagesCNT - 1) this.pageCNT++;
+  }
+  goTopageCNT(event: any): void {
+    const inputPage = Number(event.target.value);
+    if (inputPage >= 1 && inputPage <= this.totalPagesCNT) {
+      this.pageCNT = inputPage - 1;
+    }
+  }
+
+  getKdisponible(COGIMP: number | null, COGIAP: number | null) {
+    if (COGIMP == null || COGIAP == null) {
+      return '0';
+    }
+    return COGIMP - COGIAP;
+  }
+
+  centroGestorDelete: boolean = false;
+  isDeletingCentro: boolean = false;
+  centroToDelete: any = [];
+  centroDeleteError: string = '';
+  showDeleteCentro(centro: any) {
+    this.limpiarMessages();
+    this.centroGestorDelete = true;
+    this.centroToDelete = centro;
+  }
+
+  closeDeleteCentro() {
+    this.limpiarMessages();
+    this.centroGestorDelete = false;
+    this.centroToDelete = [];
+  }
+
+  deleteCentroGestor(cge: string) {
+    this.limpiarMessages();
+    this.isDeletingCentro = true;
+    const concod = this.selectedContrato.concod;
+    const cgecod = cge;
+    if (!concod || !cgecod) {return;}
+
+    this.http.delete(`${environment.backendUrl}/api/cog/delete-centro/${this.entcod}/${this.eje}/${concod}/${cgecod}`).subscribe({
+      next: (res) => {
+        this.isDeletingCentro = false;
+        this.closeDeleteCentro();
+        this.fetchCentroGestor(concod);
+        this.cgeSuccess = 'cge se ha eliminado correctamente';
+      },
+      error: (err) => {
+        this.isDeletingCentro = false;
+        this.centroDeleteError = err.error.error ?? err.error;
+      }
+    })
+  }
+
   //misc
   limpiarMessages() {
     this.mainError = '';
@@ -1126,5 +1164,6 @@ export class ContratosComponent {
     this.detallesMessageErrorDelete = '';
     this.ArticuloAddSuccess = '';
     this.articulosAddError = '';
+    this.centroDeleteError = '';
   }
 }

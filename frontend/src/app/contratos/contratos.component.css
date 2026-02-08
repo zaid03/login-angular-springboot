@@ -27,7 +27,8 @@
 .art-title,
 .selected { font-size: 18px; font-weight: bold; color: #25176b; }
 .chunk-one h1,
-.proveedor-select h1 {color: #162a3a; font-size: 20px;}
+.proveedor-select h1,
+.delete {color: #162a3a; font-size: 20px;}
 .chunk-two textarea,
 .chunk-one textarea,
 .add-container textarea { height: 20px; padding: 2px 4px; border-radius: 6px; font-weight: bold; color: #162a3a;}
@@ -88,3 +89,10 @@
 .selected {text-align: center; margin: 0px;}
 .selected-row {background-color: #cce6ff;}
 /* add articulo grid */
+/* delete grid for centros */
+.delete-info-titles {display: flex; width: 100%;}
+.left-delete {width: 25%;}
+.right-delete {width: 75%;}
+.left-delete,
+.right-delete {text-align: left; gap: 10px; display: flex; flex-direction: column;}
+/* delete grid for centros */
