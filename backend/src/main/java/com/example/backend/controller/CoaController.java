@@ -1,5 +1,6 @@
 package com.example.backend.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.backend.dto.CoaArtProjection;
+import com.example.backend.dto.CoaSaveDto;
 import com.example.backend.sqlserver2.repository.CoaRepository;
 import com.example.backend.sqlserver2.model.Coa;
 import com.example.backend.sqlserver2.model.CoaId;
@@ -93,6 +95,34 @@ public class CoaController {
             }
 
             coaRepository.deleteById(id);
+            return ResponseEntity.noContent().build();
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
+        }
+    }
+
+    //saving articles for a contrato
+    @PostMapping("/save-articulos")
+    public ResponseEntity<?> saveArticulos(
+        @RequestBody List<CoaSaveDto> items
+    ) {
+        try {
+            List<Coa> toSave = new ArrayList<>();
+            for (CoaSaveDto dto : items) {
+                boolean exists = coaRepository.existsByENTAndCONCODAndAFACODAndASUCODAndARTCOD(dto.ent, dto.concod, dto.afacod, dto.asucod, dto.artcod);
+                if (!exists) {
+                    Coa c = new Coa();
+                    c.setENT(dto.ent);
+                    c.setEJE(dto.eje);
+                    c.setCONCOD(dto.concod);
+                    c.setAFACOD(dto.afacod);
+                    c.setASUCOD(dto.asucod);
+                    c.setARTCOD(dto.artcod);
+                    toSave.add(c);
+                }
+            }
+            coaRepository.saveAll(toSave);
             return ResponseEntity.noContent().build();
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
