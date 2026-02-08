@@ -1084,9 +1084,31 @@ export class ContratosComponent {
   saveArticulos() {
     this.limpiarMessages();
     this.isAddingArticulo = true;
-    
+
     const concod = this.selectedContrato.concod;
     console.log(concod)
+
+    this.coughtArticulos.forEach(Obj => { 
+      Obj.ent = this.entcod; 
+      Obj.eje = this.eje;
+      Obj.concod = concod;
+    })
+
+    const payload = this.coughtArticulos;
+
+    console.log(payload)
+    this.http.post(`${environment.backendUrl}/api/coa/save-articulos`, payload).subscribe({
+      next: (res) => {
+        this.closeArticuloAddGrid();
+        this.fetchArticulos(concod);
+        this.isAddingArticulo = false;
+        this.articulosSuccess = 'artículos añadidos con éxito';
+      },
+      error: (err) => {
+        this.articulosAddError = err.error.error ?? err.error;
+        this.isAddingArticulo = false;
+      }
+    })
   }
 
   //misc
