@@ -279,7 +279,7 @@
                     </div>
                     <div class="custom-grid-modal" *ngIf="showCentroGestorGrid">
                         <div class="action-btns">
-                            <button class="add-btn" >+</button>
+                            <button class="add-btn" (click)="showAddCentro()">+</button>
                             <button class="add-btn" >D</button>
                         </div>
                         <h1 class="errorBtn">{{cgeError}}</h1>
@@ -563,4 +563,65 @@
     <h1 class="errorBtn">{{centroDeleteError}}</h1>
     <button class="delete-btn" (click)="deleteCentroGestor(centroToDelete.cgecod)">-</button>
     <button class="save-btn margin" (click)="closeDeleteCentro()">✖</button>
+</div>
+
+<div class="modal-backdrop" *ngIf="addCentroGestor" (click)="closeAddCentro()"></div>
+<div class="hello-modal" *ngIf="addCentroGestor">
+    <div class="btns">
+        <div class="title">
+            <h1 class="art-title">Añadir centro Gestor</h1>
+        </div>
+        <button class="save-btn" >+</button>
+        <button class="close-btn-btn" (click)="closeAddCentro()">✖</button>
+    </div>
+    <div *ngIf="isAddingCentro" class="loading-message">
+        <div class="spinner"></div>
+        <span>añadiendo</span>
+    </div>
+    <h1 class="successBtn">{{centroErrorMessage}}</h1>
+    <h1 class="errorBtn">{{centroSuccessMessage}}</h1>
+    <div *ngIf="isLoadingCentroAdd" class="loading-message">
+        <div class="spinner"></div>
+        <span>Cargando</span>
+    </div>
+    <form class="anadir-articulo-form">
+        <div class="search-anadir-input">
+            <input 
+                type="text" 
+                class="search-bar"
+                placeholder="Buscar centro gestor" 
+                name="search"
+                [(ngModel)]="searchCentro"
+            />
+            <div class="btns">
+                <button class="save-btn" >Buscar</button>
+                <button class="save-btn" >Limpiar</button>
+            </div>
+        </div>
+        <table class="anadir-proveedores-table">
+            <thead>
+                <th>Código</th>
+                <th>Descripción</th>
+                <th>Orgánica</th>
+                <th>Programa</th>
+            </thead>
+            <tbody>
+                <tr *ngFor="let a of paginatedSearchResultsCentro" 
+                    (click)="selectArticulosAdd(a)"
+                    [class.selected-row]="isArticulosSelected(a)"
+                >
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+        <p class="selected" *ngIf="coughtArticulos.length > 0">{{coughtArticulos.length}} artículos seleccionados</p>
+        <div class="pagination-controls" *ngIf="centroGestoresAdd.length > searchPageSizeCentro">
+            <button class="pag-btn" (click)="searchPageCentro = searchPageCentro - 1" [disabled]="searchPageCentro === 0">Anterior</button>
+            <span> {{ searchPageCentro + 1 }} de {{ searchPageSizeCentro }}</span>
+            <button class="pag-btn" (click)="searchPageCentro = searchPageCentro + 1" [disabled]="searchPageCentro + 1 >= searchPageSizeCentro">Siguiente</button>
+        </div>
+    </form>
 </div>

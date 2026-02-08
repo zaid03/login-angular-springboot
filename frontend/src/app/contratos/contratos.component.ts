@@ -1149,6 +1149,40 @@ export class ContratosComponent {
     })
   }
 
+  addCentroGestor: boolean = false;
+  isAddingCentro: boolean = false;
+  centroErrorMessage: string = '';
+  centroSuccessMessage: string = '';
+  isLoadingCentroAdd: boolean = false;
+  searchCentro: string = '';
+  centroGestoresAdd: any[] = [];
+  showAddCentro() {
+    this.addCentroGestor = true;
+    this.fetchCentroGestores();
+  }
+
+  closeAddCentro() {
+    this.limpiarMessages();
+    this.addCentroGestor = false;
+    this.centroGestoresAdd = [];
+  }
+
+  fetchCentroGestores() {
+
+  }
+
+  searchCentroGestores() {
+
+  }
+
+  limpiarSearchCentroGetores() {
+
+  }
+  searchPageCentro: number = 0;
+  searchPageSizeCentro: number = 5;
+  get paginatedSearchResultsCentro() {const start = this.searchPage * this.searchPageSizeCentro; return this.articulosAdd.slice(start, start + this.searchPageSizeCentro);}
+  get searchTotalPagesCentro() {return Math.ceil(this.articulosAdd.length / this.searchPageSizeCentro);}
+
   //misc
   limpiarMessages() {
     this.mainError = '';
@@ -1165,5 +1199,7 @@ export class ContratosComponent {
     this.ArticuloAddSuccess = '';
     this.articulosAddError = '';
     this.centroDeleteError = '';
+    this.centroErrorMessage = '';
+    this.centroSuccessMessage = '';
   }
 }
