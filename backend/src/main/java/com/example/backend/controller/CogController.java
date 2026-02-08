@@ -57,7 +57,7 @@ public class CogController {
             if (centro.isPresent()) {
                 Double cogaip = centro.get().getCOGAIP();
                 if (cogaip != null && cogaip > 0) {
-                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No se puede quitar un centro gestor donde ya hay pedidos’ y no seguimos");
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No se puede quitar un centro gestor donde ya hay pedidos");
                 } else if (cogaip != null && cogaip == 0) {
                     CogId id = new CogId(ent, eje, concod, cgecod);
                     cogRepository.deleteById(id);
