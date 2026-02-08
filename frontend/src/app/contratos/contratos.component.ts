@@ -1282,6 +1282,22 @@ export class ContratosComponent {
     })
   }
 
+
+  //adding D grid
+  checkBeforeAdd(cogaip: number) {
+    this.limpiarMessages();
+    if (cogaip > 0) {
+      this.cgeError = 'No se puede cambiar la D si ya hay pedidos'
+    } else {
+      this.openAddD();
+    }
+  }
+
+
+  openAddD() {
+
+  }
+
   //misc
   limpiarMessages() {
     this.mainError = '';
