@@ -24,7 +24,8 @@
 .add-container p,
 .proveedor-select h1,
 .delete-info,
-.art-title { font-size: 18px; font-weight: bold; color: #25176b; }
+.art-title,
+.selected { font-size: 18px; font-weight: bold; color: #25176b; }
 .chunk-one h1,
 .proveedor-select h1 {color: #162a3a; font-size: 20px;}
 .chunk-two textarea,
@@ -83,4 +84,6 @@
 .anadir-proveedores-table thead th:first-child,
 .anadir-proveedores-table thead th:nth-child(2),
 .anadir-proveedores-table thead th:nth-child(3) {width: 12%;}
+.selected {text-align: center; margin: 0px;}
+.selected-row {background-color: #cce6ff;}
 /* add articulo grid */

@@ -983,7 +983,7 @@ export class ContratosComponent {
   articulosAddGrid: boolean = false;
   ArticuloAddSuccess: string = '';
   articulosAddError: string = '';
-  isAddingArticulo: boolean = false;
+  isLoadingArticulo: boolean = false;
   searchValue: string = '';
   articulosAdd: any[] = [];
   conlot: number = 0;
@@ -998,19 +998,20 @@ export class ContratosComponent {
     this.searchValue = '';
     this.searchPage = 0;
     this.articulosAdd = [];
+    this.coughtArticulos = []
   }
 
   fetchArticulosAdd(conlot: number) {
     this.limpiarMessages();
-    this.isAddingArticulo = true;
+    this.isLoadingArticulo = true;
 
     this.http.get<any>(`${environment.backendUrl}/api/art/art-cont/${this.entcod}/${conlot}`).subscribe({
       next: (res) => {
         this.articulosAdd = res;
-        this.isAddingArticulo = false;
+        this.isLoadingArticulo = false;
       },
       error: (err) => {
-        this.isAddingArticulo = false;
+        this.isLoadingArticulo = false;
         this.articulosAddError = err.error.error ?? err.error;
       }
     })
@@ -1022,15 +1023,15 @@ export class ContratosComponent {
 
     const isOnlyNumbers = (value: string) => /^\d+$/.test(value);
 
-    this.isAddingArticulo = true;
+    this.isLoadingArticulo = true;
     if(isOnlyNumbers(this.searchValue)) {
       this.http.get<any>(`${environment.backendUrl}/api/art/search-art-cont/${this.entcod}/${this.conlot}/${this.searchValue}`).subscribe({
         next: (res) => {
           this.articulosAdd = res;
-          this.isAddingArticulo = false;
+          this.isLoadingArticulo = false;
         },
         error: (err) => {
-          this.isAddingArticulo = false;
+          this.isLoadingArticulo = false;
           this.articulosAddError = err.error.error ?? err.error;
         }
       })
@@ -1038,10 +1039,10 @@ export class ContratosComponent {
       this.http.get<any>(`${environment.backendUrl}/api/art/search-art-cont-des/${this.entcod}/${this.conlot}/${this.searchValue}`).subscribe({
         next: (res) => {
           this.articulosAdd = res;
-          this.isAddingArticulo = false;
+          this.isLoadingArticulo = false;
         },
         error: (err) => {
-          this.isAddingArticulo = false;
+          this.isLoadingArticulo = false;
           this.articulosAddError = err.error.error ?? err.error;
         }
       })
@@ -1053,11 +1054,40 @@ export class ContratosComponent {
     this.searchValue = '';
     this.searchPage = 0;
     this.fetchArticulosAdd(this.conlot);
+    this.coughtArticulos = [];
   }
   searchPage: number = 0;
   searchPageSize: number = 5;
   get paginatedSearchResults() {const start = this.searchPage * this.searchPageSize; return this.articulosAdd.slice(start, start + this.searchPageSize);}
   get searchTotalPages() {return Math.ceil(this.articulosAdd.length / this.searchPageSize);}
+
+  coughtArticulos: any[] = [];
+  selectArticulosAdd(articulos: any) {
+    if (this.coughtArticulos.includes(articulos)) {
+      const index = this.coughtArticulos.indexOf(articulos);
+      if(index !== -1) {
+        this.coughtArticulos.splice(index, 1);
+      }
+    } else {
+      this.coughtArticulos = [...this.coughtArticulos, articulos];
+    }
+    
+    this.coughtArticulos.forEach(Obj => { delete Obj.artdes; })
+    console.log(this.coughtArticulos);
+  }
+
+  isArticulosSelected(a: any): boolean {
+    return this.coughtArticulos.includes(a);
+  }
+
+  isAddingArticulo: boolean = false;
+  saveArticulos() {
+    this.limpiarMessages();
+    this.isAddingArticulo = true;
+    
+    const concod = this.selectedContrato.concod;
+    console.log(concod)
+  }
 
   //misc
   limpiarMessages() {

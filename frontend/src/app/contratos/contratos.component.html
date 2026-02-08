@@ -483,13 +483,18 @@
         <div class="title">
             <h1 class="art-title">Añadir articulo</h1>
         </div>
+        <button class="save-btn" (click)="saveArticulos()">+</button>
         <button class="close-btn-btn" (click)="closeArticuloAddGrid()">✖</button>
     </div>
-    <h1 class="successBtn">{{ArticuloAddSuccess}}</h1>
-    <h1 class="errorBtn">{{articulosAddError}}</h1>
     <div *ngIf="isAddingArticulo" class="loading-message">
         <div class="spinner"></div>
         <span>añadiendo</span>
+    </div>
+    <h1 class="successBtn">{{ArticuloAddSuccess}}</h1>
+    <h1 class="errorBtn">{{articulosAddError}}</h1>
+    <div *ngIf="isLoadingArticulo" class="loading-message">
+        <div class="spinner"></div>
+        <span>Cargando</span>
     </div>
     <form class="anadir-articulo-form">
         <div class="search-anadir-input">
@@ -513,7 +518,10 @@
                 <th>Descripción</th>
             </thead>
             <tbody>
-                <tr *ngFor="let a of paginatedSearchResults">
+                <tr *ngFor="let a of paginatedSearchResults" 
+                    (click)="selectArticulosAdd(a)"
+                    [class.selected-row]="isArticulosSelected(a)"
+                >
                     <td>{{a.afacod}}</td>
                     <td>{{a.asucod}}</td>
                     <td>{{a.artcod}}</td>
@@ -521,6 +529,7 @@
                 </tr>
             </tbody>
         </table>
+        <p class="selected" *ngIf="coughtArticulos.length > 0">{{coughtArticulos.length}} artículos seleccionados</p>
         <div class="pagination-controls" *ngIf="articulosAdd.length > searchPageSize">
             <button class="pag-btn" (click)="searchPage = searchPage - 1" [disabled]="searchPage === 0">Anterior</button>
             <span> {{ searchPage + 1 }} de {{ searchTotalPages }}</span>
