@@ -1,6 +1,7 @@
 package com.example.backend.controller;
 
 import com.example.backend.dto.CentroGestorLogin;
+import com.example.backend.dto.shortCentroContrato;
 import com.example.backend.sqlserver2.model.Cge;
 import com.example.backend.sqlserver2.model.CgeId;
 import com.example.backend.sqlserver2.model.Dep;
@@ -251,6 +252,44 @@ public class CgeController {
                 ent, eje, term,
                 ent, eje, term
             );
+            if (centros.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Sin resultado");
+            }
+            return ResponseEntity.ok(centros);
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Error: " + ex.getMostSpecificCause().getMessage());
+        }
+    }
+
+    //searching centos for contratos
+    @GetMapping("/search-centros-codigo/{ent}/{eje}/{cgecod}")
+    public ResponseEntity<?> searchCentrosCodigo(
+            @PathVariable Integer ent,
+            @PathVariable String eje,
+            @PathVariable String cgecod) {
+        try {
+            List<shortCentroContrato> centros = cgeRepository.findByENTAndEJEAndCGECOD(ent, eje, cgecod);
+            if (centros.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Sin resultado");
+            }
+            return ResponseEntity.ok(centros);
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Error: " + ex.getMostSpecificCause().getMessage());
+        }
+    }
+
+    //searching centos for contratos
+    @GetMapping("/search-centros-description/{ent}/{eje}/{term}")
+    public ResponseEntity<?> searchCentrosDesc(
+            @PathVariable Integer ent,
+            @PathVariable String eje,
+            @PathVariable String term) {
+        try {
+            List<shortCentroContrato> centros = cgeRepository.findByENTAndEJEAndCGEDESContaining(ent, eje, term);
             if (centros.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body("Sin resultado");

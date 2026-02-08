@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import com.example.backend.sqlserver2.model.Cge;
 import com.example.backend.sqlserver2.model.CgeId;
+import com.example.backend.dto.shortCentroContrato;
 
 @Repository
 public interface CgeRepository extends JpaRepository<Cge, CgeId> {
@@ -27,4 +28,10 @@ public interface CgeRepository extends JpaRepository<Cge, CgeId> {
 
     //selecting centro gestor for login
     List<Cge> findByENTAndEJEAndCGECODIn(Integer ent, String eje, List<String> cgecods);
+
+    //searching centos for contratos
+    List<shortCentroContrato> findByENTAndEJEAndCGECOD(Integer ent, String eje, String cgecod);
+
+    //searching centos for contratos
+    List<shortCentroContrato> findByENTAndEJEAndCGEDESContaining(Integer ent, String eje, String cgedes);
 }
