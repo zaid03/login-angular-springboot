@@ -622,3 +622,72 @@
         </div>
     </form>
 </div>
+
+<div class="modal-backdrop" *ngIf="DGridShow" (click)="closeAddD()"></div>
+<div class="D-modal" *ngIf="DGridShow">
+    <div class="btns">
+        <div class="title">
+            <h1 class="art-title">Asignar D</h1>
+        </div>
+        <button class="save-btn">+</button>
+        <button class="delete-btn" (click)="closeAddD()">✖</button>
+    </div>
+    <div *ngIf="isAddingD" class="loading-message">
+        <div class="spinner"></div>
+        <span>añadiendo</span>
+    </div>
+    <h1 class="errorBtn">{{DErrorMessage}}</h1>
+    <div *ngIf="isLoadingD" class="loading-message">
+        <div class="spinner"></div>
+        <span>Cargando</span>
+    </div>
+    <table class="D-table">
+        <thead>
+            <tr>
+                <th>Número</th>
+                <th>Referencia</th>
+                <th>Of. Gestora</th>
+                <th>Fecha</th>
+                <th>Orgánica</th>
+                <th>Programa</th>
+                <th>Económica</th>
+                <th>Importe</th>
+                <th>Saldo</th>
+                <th>Descripción</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr 
+            >
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+            </tr>
+            <tr>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+            </tr>
+        </tbody>
+    </table>
+    <!-- <p class="selected" *ngIf="coughtCentros.length > 0">{{coughtCentros.length}} centro gestores seleccionados</p> -->
+    <div class="pagination-controls" *ngIf="centroGestoresAdd.length > searchPageSizeD">
+        <button class="pag-btn" (click)="searchPageD = searchPageD - 1" [disabled]="searchPageD === 0">Anterior</button>
+        <span> {{ searchPageD + 1 }} de {{ searchTotalPagesD }}</span>
+        <button class="pag-btn" (click)="searchPageD = searchPageD + 1" [disabled]="searchPageD + 1 >= searchTotalPagesD">Siguiente</button>
+    </div>
+</div>

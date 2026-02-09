@@ -1293,10 +1293,28 @@ export class ContratosComponent {
     }
   }
 
-
+  DGridShow: boolean = false;
+  isAddingD: boolean = false;
+  isLoadingD: boolean = false;
+  DErrorMessage: string = '';
+  listaDeD: any[] = [];
   openAddD() {
+    this.limpiarMessages();
+    this.DGridShow = true;
+  }
+
+  closeAddD() {
+    this.DGridShow = false;
+    this.listaDeD = [];
+  }
+
+  fetchD() {
 
   }
+  searchPageD: number = 0;
+  searchPageSizeD: number = 5;
+  get paginatedSearchResultsD() {const start = this.searchPageD * this.searchPageSizeD; return this.centroGestoresAdd.slice(start, start + this.searchPageSizeD);}
+  get searchTotalPagesD() {return Math.ceil(this.centroGestoresAdd.length / this.searchPageSizeD);}
 
   //misc
   limpiarMessages() {
@@ -1315,5 +1333,6 @@ export class ContratosComponent {
     this.articulosAddError = '';
     this.centroDeleteError = '';
     this.centroErrorMessage = '';
+    this.DErrorMessage = '';
   }
 }
