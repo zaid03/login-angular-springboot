@@ -11,7 +11,10 @@ import java.util.Map;
 public class VersionController {
     @GetMapping("/num")
     public Map<String, String> getVersion() {
-        String version = getClass().getPackage().getImplementationVersion();
-        return Map.of("version", version != null ? version : "unknown");
+       String version = getClass().getPackage().getImplementationVersion();
+    if (version != null && version.contains("-")) {
+        version = version.substring(0, version.indexOf('-'));
+    }
+        return Map.of("version", version != null ? version : "desconocida");
     }
 }

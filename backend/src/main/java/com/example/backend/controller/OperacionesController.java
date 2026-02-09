@@ -14,10 +14,15 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.backend.dto.Operaciones;
 import com.example.backend.service.OperacionesService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @RestController
 @RequestMapping("/api/sical")
 @CrossOrigin(origins = "http://localhost:4200")
 public class OperacionesController {
+
+    private static final Logger logger = LoggerFactory.getLogger(OperacionesController.class);
 
     private final OperacionesService operacionesService;
 
@@ -49,6 +54,8 @@ public class OperacionesController {
                     oficina);
             return ResponseEntity.ok(operaciones);
         } catch (Exception ex) {
+            ex.printStackTrace();
+            logger.error("Error in getOperaciones", ex);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                                  .body(Collections.emptyList());
         }
