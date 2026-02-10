@@ -25,10 +25,13 @@
 .proveedor-select h1,
 .delete-info,
 .art-title,
-.selected { font-size: 18px; font-weight: bold; color: #25176b; }
+.selected,
+.info-content p,
+.info-content h1 { font-size: 18px; font-weight: bold; color: #25176b; }
 .chunk-one h1,
 .proveedor-select h1,
-.delete {color: #162a3a; font-size: 20px;}
+.delete,
+.info-content h1 {color: #162a3a; font-size: 20px;}
 .chunk-two textarea,
 .chunk-one textarea,
 .add-container textarea { height: 20px; padding: 2px 4px; border-radius: 6px; font-weight: bold; color: #162a3a;}
@@ -103,4 +106,6 @@
 /* D grid for centro gestor */
 .D-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 16px; box-shadow: 0 8px 32px rgba(44, 62, 80, 0.18), 0 1.5px 6px rgba(44,62,80,0.08); padding: 25px 30px; min-width: 85%; min-height: 120px; max-height: 80vh; z-index: 3000; display: flex; flex-direction: column; align-items: center;}
 .D-modal .title {width: 50%;}
+.info-D {display: flex; width: 100%; gap: 10px; justify-content: center; margin: 10px;}
+.info-content {display: flex; align-items: center; width: 30%; gap: 10px;}
 /* D grid for centro gestor */

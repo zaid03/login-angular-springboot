@@ -285,6 +285,10 @@
                             <div class="spinner"></div>
                             <span>Cargando</span>
                         </div>
+                        <div *ngIf="isAddingD" class="loading-message">
+                            <div class="spinner"></div>
+                            <span>añadiendo</span>
+                        </div>
                         <table class="centroGestor-table">
                             <thead>
                                 <tr>
@@ -311,7 +315,7 @@
                                     <td>{{getKdisponible(c.COGIMP, c.COGIAP)}}</td>
                                     <td class="borderI">
                                         <button class="delete-btn" (click)="showDeleteCentro(c)">-</button>
-                                        <button class="save-btn" (click)="checkBeforeAdd(c.cogaip)">D</button>
+                                        <button class="save-btn" (click)="checkBeforeAdd(c)">D</button>
                                         <!-- <button class="save-btn" >✔</button> -->
                                     </td>
                                 </tr>
@@ -632,14 +636,28 @@
         <button class="save-btn">+</button>
         <button class="delete-btn" (click)="closeAddD()">✖</button>
     </div>
-    <div *ngIf="isAddingD" class="loading-message">
-        <div class="spinner"></div>
-        <span>añadiendo</span>
-    </div>
     <h1 class="errorBtn">{{DErrorMessage}}</h1>
     <div *ngIf="isLoadingD" class="loading-message">
         <div class="spinner"></div>
         <span>Cargando</span>
+    </div>
+    <div class="info-D">
+        <div class="info-content">
+            <p>Oficina gestora RC:</p>
+            <h1>AL</h1>
+        </div>
+        <div class="info-content">
+            <p>Orgánica:</p>
+            <h1>{{organica}}</h1>
+        </div>
+        <div class="info-content">
+            <p>Programa:</p>
+            <h1>{{programa}}</h1>
+        </div>
+        <div class="info-content">
+            <p>Económica:</p>
+            <h1>{{economica}}</h1>
+        </div>
     </div>
     <table class="D-table">
         <thead>
@@ -657,34 +675,11 @@
             </tr>
         </thead>
         <tbody>
-            <tr 
-            >
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-            </tr>
-            <tr>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
+            <tr *ngFor="let d of paginatedSearchResultsD">
+                <!-- later -->
             </tr>
         </tbody>
     </table>
-    <!-- <p class="selected" *ngIf="coughtCentros.length > 0">{{coughtCentros.length}} centro gestores seleccionados</p> -->
     <div class="pagination-controls" *ngIf="centroGestoresAdd.length > searchPageSizeD">
         <button class="pag-btn" (click)="searchPageD = searchPageD - 1" [disabled]="searchPageD === 0">Anterior</button>
         <span> {{ searchPageD + 1 }} de {{ searchTotalPagesD }}</span>

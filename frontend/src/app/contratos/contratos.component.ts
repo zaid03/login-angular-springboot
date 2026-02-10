@@ -1284,12 +1284,25 @@ export class ContratosComponent {
 
 
   //adding D grid
-  checkBeforeAdd(cogaip: number) {
+  cogaip: number = 0;
+  organica: string = '';
+  programa: string = '';
+  economica: string = '';
+  cgecod: string = '';
+  checkBeforeAdd(centro: any) {
     this.limpiarMessages();
-    if (cogaip > 0) {
+    
+    this.cogaip = centro.cogaip;
+    
+    if (this.cogaip > 0) {
       this.cgeError = 'No se puede cambiar la D si ya hay pedidos'
     } else {
+      this.cgecod = centro.cgecod;
+      this.organica = centro.cge.cgeorg;
+      this.programa = centro.cge.cgefun;
+      this.economica = this.selectedContrato.conlot;
       this.openAddD();
+      console.log(this.cogaip, this.organica, this.programa, this.economica)
     }
   }
 
@@ -1301,20 +1314,59 @@ export class ContratosComponent {
   openAddD() {
     this.limpiarMessages();
     this.DGridShow = true;
+    this.fetchD();
   }
 
   closeAddD() {
     this.DGridShow = false;
     this.listaDeD = [];
+    this.cogaip = 0;
+    this.organica = '';
+    this.programa = '';
+    this.economica = '';
+    this.cogimp = 0;
+    this.cogopd = '';
+    this.cgecod = '';
   }
 
+  cogimp: number = 0;
+  cogopd: string = '';
   fetchD() {
+    let codigoOperacion = 230;
+    const oficina = 'AL';
+    this.isLoadingD = true;
 
+    this.http.get<any>(`${environment.backendUrl}/api/sical/operaciones?codigoOperacion=${codigoOperacion}&clorg=${this.organica}&clfun=${this.programa}&cleco=${this.economica}&oficina=${oficina}`).subscribe({
+      next: (res) => {
+        this.isLoadingD = false;
+        this.listaDeD = res;
+      },
+      error: (err) => {
+        this.isLoadingD = false;
+        this.DErrorMessage = err.error.error ?? err.error;
+      }
+    })
   }
   searchPageD: number = 0;
   searchPageSizeD: number = 5;
-  get paginatedSearchResultsD() {const start = this.searchPageD * this.searchPageSizeD; return this.centroGestoresAdd.slice(start, start + this.searchPageSizeD);}
-  get searchTotalPagesD() {return Math.ceil(this.centroGestoresAdd.length / this.searchPageSizeD);}
+  get paginatedSearchResultsD() {const start = this.searchPageD * this.searchPageSizeD; return this.listaDeD.slice(start, start + this.searchPageSizeD);}
+  get searchTotalPagesD() {return Math.ceil(this.listaDeD.length / this.searchPageSizeD);}
+
+
+  updateDContrato(D: any) {
+    this.limpiarMessages();
+    this.isAddingD = true;
+
+    this.cogimp = D.linea;
+    this.cogopd = D.numope;
+    const concod = this.selectedContrato.concod;
+
+    const payload = {
+      
+    }
+
+
+  }
 
   //misc
   limpiarMessages() {

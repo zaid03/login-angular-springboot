@@ -31,7 +31,7 @@ public class OperacionesController {
     }
 
     @GetMapping("/operaciones")
-    public ResponseEntity<List<Operaciones>> getOperaciones(
+    public ResponseEntity<?> getOperaciones(
         @RequestParam(name = "numeroOperDesde", required = false) String numeroOperDesde,
         @RequestParam(name = "numeroOperHasta", required = false) String numeroOperHasta,
         @RequestParam(name = "codigoOperacion", required = false) String codigoOperacion,
@@ -56,8 +56,7 @@ public class OperacionesController {
         } catch (Exception ex) {
             ex.printStackTrace();
             logger.error("Error in getOperaciones", ex);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                 .body(Collections.emptyList());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("error", ex.getMessage()));
         }
     }
 }
