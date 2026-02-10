@@ -1352,7 +1352,6 @@ export class ContratosComponent {
   get paginatedSearchResultsD() {const start = this.searchPageD * this.searchPageSizeD; return this.listaDeD.slice(start, start + this.searchPageSizeD);}
   get searchTotalPagesD() {return Math.ceil(this.listaDeD.length / this.searchPageSizeD);}
 
-
   updateDContrato(D: any) {
     this.limpiarMessages();
     this.isAddingD = true;
@@ -1362,7 +1361,7 @@ export class ContratosComponent {
     const concod = this.selectedContrato.concod;
 
     const payload = {
-      
+
     }
 
 
