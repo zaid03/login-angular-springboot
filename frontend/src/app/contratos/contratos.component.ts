@@ -1185,7 +1185,6 @@ export class ContratosComponent {
   searchCentroGestores() {
     this.isLoadingCentroAdd = true;
     if (this.searchCentro.length <= 2) {
-      console.log("less than 2 codigo")
       this.http.get<any>(`${environment.backendUrl}/api/cge/search-centros-codigo/${this.entcod}/${this.eje}/${this.searchCentro}`).subscribe({
         next: (res) => {
           this.isLoadingCentroAdd = false;
@@ -1198,7 +1197,6 @@ export class ContratosComponent {
         }
       })
     } else if (this.searchCentro.length > 2 && this.searchCentro.length <= 4) {
-      console.log("between 2 and 4 both")
       this.http.get<any>(`${environment.backendUrl}/api/cge/search-centros/${this.entcod}/${this.eje}/${this.searchCentro}`).subscribe({
         next: (res) => {
           this.isLoadingCentroAdd = false;
@@ -1211,7 +1209,6 @@ export class ContratosComponent {
         }
       })
     } else {
-      console.log("more than 2 desc")
       this.http.get<any>(`${environment.backendUrl}/api/cge/search-centros-description/${this.entcod}/${this.eje}/${this.searchCentro}`).subscribe({
         next: (res) => {
           this.isLoadingCentroAdd = false;
@@ -1301,7 +1298,6 @@ export class ContratosComponent {
       this.programa = centro.cge.cgefun;
       this.economica = this.selectedContrato.conlot;
       this.openAddD();
-      console.log(this.cogaip, this.organica, this.programa, this.economica)
     }
   }
 

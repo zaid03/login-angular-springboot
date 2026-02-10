@@ -9,7 +9,7 @@
     <div class="ejercicio-container" [class.blurred]="!sidebar.collapsed">
         <div class="title-menu">
             <div class="title-area">
-                <h2 class="margin-title">Ejercicios</h2>  
+                <h2 class="margin-title">Consulta de ejercicios</h2>  
             </div>
             <div class="search-holder">
                 <div class="search-container">
@@ -35,7 +35,6 @@
                 <div class="menu-panel" *ngIf="showMenu">
                     <button class="download-btn" (click)="excelDownload()">Exportar a Excel</button>
                     <button class="print-btn" (click)="pdfDownload()">Exportar a PDF</button>
-                    <!-- <button class="add-familia-btn" >Añadir</button> -->
                 </div>
             </div>
         </div>

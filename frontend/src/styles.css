@@ -164,7 +164,7 @@ app-sidebar { flex-shrink: 0; z-index: 2000; }
 .proveedores-container.blurred,
 .credito-container.blurred,
 .facturas-container.blurred,
-.contratos-page.blurred { filter: blur(1.2px); pointer-events: none; user-select: none; }
+.contratos-container.blurred { filter: blur(1.2px); pointer-events: none; user-select: none; }
 .facturas-page,
 .proveedores-page,
 .familia-page,
@@ -312,7 +312,13 @@ app-sidebar { flex-shrink: 0; z-index: 2000; }
 .coste-table,
 .personasServices-table,
 .entrega-table,
-.familia-table {table-layout: auto !important;}
+.familia-table,
+.contratos-table,
+.credito-table,
+.facturas-table,
+.main-table,
+.personas-table,
+.centroGestor-table {table-layout: auto !important;}
 /* title, search */
 .title-menu { width: 100%; padding-top: 5px; display: flex; }
 .title-area { width: 18%; display: flex; align-items: center; justify-content: center; }
