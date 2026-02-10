@@ -1282,7 +1282,6 @@ export class ContratosComponent {
     })
   }
 
-
   //adding D grid
   cogaip: number = 0;
   organica: string = '';
@@ -1361,9 +1360,22 @@ export class ContratosComponent {
     const concod = this.selectedContrato.concod;
 
     const payload = {
-
+      "COGIMP": this.cogimp,
+      "COGOPD": this.cogopd
     }
 
+    this.http.patch(`${environment.backendUrl}/cog/update-centro-D/${this.entcod}/${this.eje}/${concod}}/${this.cgecod}`, payload).subscribe({
+      next: (res) => {
+        this.isAddingD = false;
+        this.closeAddD();
+        this.fetchCentroGestor(concod);
+        this.cgeSuccess = 'D añadido con éxito';
+      },
+      error: (err) => {
+        this.isAddingD = false;
+        this.DErrorMessage = err.error.error ?? err.error;
+      }
+    })
 
   }
 

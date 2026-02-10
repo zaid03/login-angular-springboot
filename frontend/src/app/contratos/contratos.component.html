@@ -675,7 +675,10 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let d of paginatedSearchResultsD">
+            <tr 
+                *ngFor="let d of paginatedSearchResultsD"
+                (click)="updateDContrato(d)"
+            >
                 <!-- later -->
             </tr>
         </tbody>
