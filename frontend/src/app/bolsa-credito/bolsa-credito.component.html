@@ -40,19 +40,19 @@
         <div class="centro-info">
             <div class="centro-content widthSmall">
                 <p>C.Gestor</p>
-                <h1>test</h1>
+                <h1>{{cge}}</h1>
             </div>
             <div class="centro-content widthSmall">
                 <p>Orgánica</p>
-                <h1>test</h1>
+                <h1>{{organigrama}}</h1>
             </div>
             <div class="centro-content widthSmall">
                 <p>Programa</p>
-                <h1>test</h1>
+                <h1>{{programa}}</h1>
             </div>
             <div class="centro-content bigWidth">
                 <p>Descripción</p>
-                <h1>UDE-hospital febles campos nigga in paris</h1>
+                <h1>{{description}}</h1>
             </div>
             <div class="centro-content bigWidth">
                 <p>Estado contable</p>
@@ -60,18 +60,24 @@
                     <div class="rad">
                         <input 
                             type="radio"
+                            [checked]="estado === 0"
+                            (click)="$event.preventDefault()"
                         /> 
                         <span class="rad-name">Abierto</span>
                     </div>
                     <div class="rad">
                         <input 
                             type="radio"
+                            [checked]="estado === 2"
+                            (click)="$event.preventDefault()"
                         /> 
                         <span class="rad-name">Cerrado para contabilizar</span>
                     </div>
                     <div class="rad">
                         <input 
                             type="radio"
+                            [checked]="estado === 1"
+                            (click)="$event.preventDefault()"
                         /> 
                         <span class="rad-name">Cerrado</span>
                     </div>

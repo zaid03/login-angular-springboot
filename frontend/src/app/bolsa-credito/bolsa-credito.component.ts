@@ -75,14 +75,36 @@ export class BolsaCreditoComponent {
       return;
     }
 
+    this.fetchCentroGestorInfo();
     this.fetchBolsas();
+    
   }
 
-  //main table functions
+  //main table functions`
+  organigrama: string = '';
+  programa: string = '';
+  description: string = '';
+  estado: number = 0;
+  fetchCentroGestorInfo() {
+
+    this.http.get<any>(`${environment.backendUrl}/api/cge/search-centros-codigo/${this.entcod}/${this.eje}/${this.cge}`).subscribe({
+      next: (res) => {
+        console.log(res)
+        this.organigrama = res[0].cgeorg;
+        this.programa = res[0].cgefun;
+        this.description = res[0].cgedes
+        this.estado = res[0].cgecic;
+      },
+      error: (err) => {
+        console.warn(err.error.error ?? err.error);
+      }
+    })
+  }
+
   fetchBolsas() {
     this.fetchCancel$.next();
 
-    this.http.get<any>(`${environment.backendUrl}/api/gbs/fetchAll/${this.entcod}/${this.eje}`).subscribe({
+    this.http.get<any>(`${environment.backendUrl}/api/gbs/fetch-all/${this.entcod}/${this.eje}/${this.cge}`).subscribe({
       next: (response) => {
         this.creditos = Array.isArray(response) ? [...response] : [];
         this.backupCreditos = [...this.creditos];
@@ -404,6 +426,7 @@ export class BolsaCreditoComponent {
     this.fetchCancel$.next();
     if(this.cgeSearch === '') {this.fetchBolsas(); this.isLoading = false;}
 
+    this.fetchCentroGestorInfo();
     this.http.get<any>(`${environment.backendUrl}/api/gbs/fetch-all/${this.entcod}/${this.eje}/${this.cgeSearch}`).subscribe({
       next: (response) => {
         this.creditos = Array.isArray(response) ? [...response] : [];
