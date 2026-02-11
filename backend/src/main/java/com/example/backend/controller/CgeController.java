@@ -253,13 +253,12 @@ public class CgeController {
                 ent, eje, term
             );
             if (centros.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body("Sin resultado");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
             }
             return ResponseEntity.ok(centros);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Error: " + ex.getMostSpecificCause().getMessage());
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -272,13 +271,11 @@ public class CgeController {
         try {
             List<shortCentroContrato> centros = cgeRepository.findByENTAndEJEAndCGECOD(ent, eje, cgecod);
             if (centros.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body("Sin resultado");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
             }
             return ResponseEntity.ok(centros);
         } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Error: " + ex.getMostSpecificCause().getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 

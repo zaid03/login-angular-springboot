@@ -5,4 +5,5 @@ public interface shortCentroContrato {
     String getCGEDES();
     String getCGEORG();
     String getCGEFUN();
+    Integer getCGECIC();
 }
