@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { SidebarComponent } from '../sidebar/sidebar.component';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -19,6 +21,8 @@ import { environment } from '../../environments/environment';
 })
 
 export class BolsaCreditoComponent {
+  private fetchCancel$ = new Subject<void>();
+
   //3 dots menu
   showMenu = false;
   toggleMenu(event: MouseEvent): void {
@@ -76,6 +80,8 @@ export class BolsaCreditoComponent {
 
   //main table functions
   fetchBolsas() {
+    this.fetchCancel$.next();
+
     this.http.get<any>(`${environment.backendUrl}/api/gbs/fetchAll/${this.entcod}/${this.eje}`).subscribe({
       next: (response) => {
         this.creditos = Array.isArray(response) ? [...response] : [];
@@ -85,9 +91,7 @@ export class BolsaCreditoComponent {
           const org = item?.gbsorg ?? '';
           const fun = item?.gbsfun ?? '';
           const eco = item?.gbseco ?? '';
-          this.http
-            .get<any>(`${environment.backendUrl}/api/sical/partidas?clorg=${org}&clfun=${fun}&cleco=${eco}`)
-            .subscribe({
+          this.http.get<any>(`${environment.backendUrl}/api/sical/partidas?clorg=${org}&clfun=${fun}&cleco=${eco}`).pipe(takeUntil(this.fetchCancel$)).subscribe({
               next: (partidas) => {
                 const partidasArr = Array.isArray(partidas) ? partidas : [];
                 this.creditos[idx].partidas = partidasArr;
@@ -100,8 +104,7 @@ export class BolsaCreditoComponent {
             });
             this.creditos[idx].saldo = 0;
             this.creditos[idx].limporte = 0;
-            this.http.get<any>(`${environment.backendUrl}/api/sical/operaciones?clorg=${org}&clfun=${fun}&cleco=${eco}`)
-            .subscribe({
+            this.http.get<any>(`${environment.backendUrl}/api/sical/operaciones?clorg=${org}&clfun=${fun}&cleco=${eco}`).pipe(takeUntil(this.fetchCancel$)).subscribe({
               next: (operaciones) => {
                 const operacionesArr = Array.isArray(operaciones) ? operaciones : [];
                 this.creditos[idx].operaciones = operacionesArr;
@@ -398,6 +401,7 @@ export class BolsaCreditoComponent {
   cgeSearch: string = '';
   searchBolsas() {
     this.isLoading = true;
+    this.fetchCancel$.next();
     if(this.cgeSearch === '') {this.fetchBolsas(); this.isLoading = false;}
 
     this.http.get<any>(`${environment.backendUrl}/api/gbs/fetch-all/${this.entcod}/${this.eje}/${this.cgeSearch}`).subscribe({
