@@ -86,7 +86,6 @@ export class BolsaCreditoComponent {
   description: string = '';
   estado: number = 0;
   fetchCentroGestorInfo() {
-
     this.http.get<any>(`${environment.backendUrl}/api/cge/search-centros-codigo/${this.entcod}/${this.eje}/${this.cge}`).subscribe({
       next: (res) => {
         console.log(res)
@@ -419,63 +418,13 @@ export class BolsaCreditoComponent {
     }
   }
 
-
   cgeSearch: string = '';
   searchBolsas() {
     this.isLoading = true;
     this.fetchCancel$.next();
-    if(this.cgeSearch === '') {this.fetchBolsas(); this.isLoading = false;}
-
     this.fetchCentroGestorInfo();
-    this.http.get<any>(`${environment.backendUrl}/api/gbs/fetch-all/${this.entcod}/${this.eje}/${this.cgeSearch}`).subscribe({
-      next: (response) => {
-        this.creditos = Array.isArray(response) ? [...response] : [];
-        this.backupCreditos = [...this.creditos];
-        this.defaultCreditos = [...this.creditos];
-        this.creditos.forEach((item, idx) => {
-          const org = item?.gbsorg ?? '';
-          const fun = item?.gbsfun ?? '';
-          const eco = item?.gbseco ?? '';
-          this.http
-            .get<any>(`${environment.backendUrl}/api/sical/partidas?clorg=${org}&clfun=${fun}&cleco=${eco}`)
-            .subscribe({
-              next: (partidas) => {
-                const partidasArr = Array.isArray(partidas) ? partidas : [];
-                this.creditos[idx].partidas = partidasArr;
-                const des = partidasArr[0]?.desc ?? '';
-                this.creditos[idx].partidaDesc = des;
-              },
-              error: () => {
-                this.creditos[idx].partidas = [];
-              },
-            });
-            this.creditos[idx].saldo = 0;
-            this.creditos[idx].limporte = 0;
-            this.http.get<any>(`${environment.backendUrl}/api/sical/operaciones?clorg=${org}&clfun=${fun}&cleco=${eco}`)
-            .subscribe({
-              next: (operaciones) => {
-                const operacionesArr = Array.isArray(operaciones) ? operaciones : [];
-                this.creditos[idx].operaciones = operacionesArr;
-                const firstLinea = operacionesArr[0]?.lineaList?.[0] ?? {};
-                const saldo = this.creditos[idx].saldo = firstLinea?.saldo ?? 0;
-                const limporte = this.creditos[idx].limporte = firstLinea?.limporte ?? 0;
-              },
-              error: () => {
-                this.creditos[idx].operaciones = [];
-              },
-            });
-        });
-        this.sortDirection = 'asc';
-        this.page = 0;
-        this.updatePagination();
-        this.isLoading = false;
-      },
-      error: (err) => {
-        this.tableIsError = true;
-        this.tableMessage = err.error.error ?? err.error;
-        this.isLoading = false;
-      }
-    });
+    this.fetchBolsas();
+    this.isLoading = false;
   }
 
   setInputToUpper(event: Event): void {
@@ -587,13 +536,54 @@ export class BolsaCreditoComponent {
     }
   }
 
-
   isUpdating: boolean = false;
+
+  //adding RC (adding a bolsa)
+  DGridShow: boolean = false;
+  isAddingD: boolean = false;
+  isLoadingD: boolean = false;
+  DErrorMessage: string = '';
+  listaDeD: any[] = [];
+  openAddD() {
+    this.limpiarMessages();
+    this.DGridShow = true;
+    this.fetchD();
+  }
+
+  closeAddD() {
+    this.DGridShow = false;
+    this.listaDeD = [];
+  }
+
+  cogimp: number = 0;
+  cogopd: string = '';
+  fetchD() {
+    let codigoOperacion = 100;
+    const oficina = 'AL';
+    this.isLoadingD = true;
+
+    this.http.get<any>(`${environment.backendUrl}/api/sical/operaciones?codigoOperacion=${codigoOperacion}&clorg=${this.organigrama}&clfun=${this.programa}&oficina=${oficina}`).subscribe({
+      next: (res) => {
+        this.isLoadingD = false;
+        this.listaDeD = res;
+        console.log(this.listaDeD[0].numope)
+      },
+      error: (err) => {
+        this.isLoadingD = false;
+        this.DErrorMessage = err.error.error ?? err.error;
+      }
+    })
+  }
+  searchPageD: number = 0;
+  searchPageSizeD: number = 5;
+  get paginatedSearchResultsD() {const start = this.searchPageD * this.searchPageSizeD; return this.listaDeD.slice(start, start + this.searchPageSizeD);}
+  get searchTotalPagesD() {return Math.ceil(this.listaDeD.length / this.searchPageSizeD);}
 
   //misc
   limpiarMessages () {
     this.tableMessage = '';
     this.guardarMesageSuccess = '';
     this.guardarMesage = '';
+    this.DErrorMessage = '';
   }
 }

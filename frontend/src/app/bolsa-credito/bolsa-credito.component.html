@@ -17,7 +17,7 @@
                             type="text" 
                             class="search-bar"
                             placeholder="Centro gestor" 
-                            [(ngModel)]="cgeSearch"
+                            [(ngModel)]="cge"
                             (input)="setInputToUpper($event)"
                         >
                     </div>
@@ -34,6 +34,7 @@
                 <div class="menu-panel" *ngIf="showMenu">
                     <button class="download-btn" (click)="DownloadPDF()">Exportar a PDF</button>
                     <button class="download-btn" (click)="DownloadCSV()">Exportar a CSV</button>
+                    <button class="download-btn" (click)="openAddD()">Añadir RC</button>
                 </div>
             </div>
         </div>
@@ -345,5 +346,72 @@
                 </div>
             </div>
         </div>
+    </div>
+</div>
+
+<div class="modal-backdrop" *ngIf="DGridShow" (click)="closeAddD()"></div>
+<div class="D-modal" *ngIf="DGridShow">
+    <div class="btns">
+        <div class="title">
+            <h1 class="art-title">Añadir RC</h1>
+        </div>
+        <button class="save-btn">+</button>
+        <button class="delete-btn" (click)="closeAddD()">✖</button>
+    </div>
+    <h1 class="errorBtn">{{DErrorMessage}}</h1>
+    <div *ngIf="isLoadingD" class="loading-message">
+        <div class="spinner"></div>
+        <span>Cargando</span>
+    </div>
+    <div class="info-D">
+        <div class="info-content">
+            <p>Oficina gestora RC:</p>
+            <h1>AL</h1>
+        </div>
+        <div class="info-content">
+            <p>Orgánica:</p>
+            <h1>{{organigrama}}</h1>
+        </div>
+        <div class="info-content">
+            <p>Programa:</p>
+            <h1>{{programa}}</h1>
+        </div>
+    </div>
+    <table class="D-table">
+        <thead>
+            <tr>
+                <th>Número</th>
+                <th>Referencia</th>
+                <th>Of. Gestora</th>
+                <th>Fecha</th>
+                <th>Orgánica</th>
+                <th>Programa</th>
+                <th>Económica</th>
+                <th>Importe</th>
+                <th>Saldo</th>
+                <th>Descripción</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr 
+                *ngFor="let d of paginatedSearchResultsD"
+            >
+                <td>{{d.numope}}</td>
+                <td>{{d.lineaList.referencia}}</td>
+                <td>{{d.oficina}}</td>
+                <td>{{d.fecope}}</td>
+                <td>{{d.lineaList.linorg}}</td>
+                <td>{{d.lineaList.linfun}}</td>
+                <td>{{d.lineaList.lineco}}</td>
+                <td>{{d.lineaList.limporte}}</td>
+                <td>{{d.lineaList.limporte}}</td>
+                <td>{{d.texto}}</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="pagination-controls" *ngIf="listaDeD.length > searchPageSizeD">
+        <button class="pag-btn" (click)="searchPageD = searchPageD - 1" [disabled]="searchPageD === 0">Anterior</button>
+        <span> {{ searchPageD + 1 }} de {{ searchTotalPagesD }}</span>
+        <button class="pag-btn" (click)="searchPageD = searchPageD + 1" [disabled]="searchPageD + 1 >= searchTotalPagesD">Siguiente</button>
     </div>
 </div>
