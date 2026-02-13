@@ -170,4 +170,32 @@ public class GbsController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
+
+    //deleting a bolsa
+    @DeleteMapping("/delete-bolsa/{ent}/{eje}/{cgecod}/{gbsref}")
+    public ResponseEntity<?> deleteBolsa(
+        @PathVariable Integer ent,
+        @PathVariable String eje,
+        @PathVariable String cgecod,
+        @PathVariable String gbsref
+    ) {
+        try {
+            GbsId id = new GbsId(ent, eje, cgecod, gbsref);
+            Optional<Gbs> bolsa = gbsRepository.findById(id);
+            if (bolsa.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
+            } else {
+                Double gbsiut = bolsa.get().getGBSIUT();
+                if (Double.compare(gbsiut, 0.0) != 0) {
+                    return ResponseEntity.status(HttpStatus.CONFLICT).body("No se puede eliminar la aplicación. Está en uso");
+                } else {
+                    gbsRepository.deleteById(id);
+                }
+            }
+
+            return ResponseEntity.noContent().build();
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + ex.getMostSpecificCause().getMessage());
+        }
+    }
 }
