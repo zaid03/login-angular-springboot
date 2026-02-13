@@ -1,6 +1,7 @@
 package com.example.backend.sqlserver2.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -18,4 +19,7 @@ public interface  GbsRepository extends JpaRepository<Gbs, GbsId>{
 
     //for main list of bolsa 
     List<Gbs> findByENTAndEJE(Integer ent, String eje);
+
+    //needed for adding a bolsa
+    Optional<Gbs> findByENTAndEJEAndCGECODAndGBSECO(Integer ENT, String EJE, String CGECOD, String GBSECO);
 }

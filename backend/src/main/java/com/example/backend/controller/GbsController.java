@@ -6,6 +6,7 @@ import com.example.backend.sqlserver2.model.Gbs;
 import com.example.backend.sqlserver2.model.GbsId;
 import com.example.backend.sqlserver2.repository.CgeRepository;
 import com.example.backend.dto.GbsWithCgeDto;
+import com.example.backend.dto.bolsaSaveDto;
 import com.example.backend.sqlserver2.repository.GbsRepository;
 
 import java.time.LocalDateTime;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -127,4 +129,45 @@ public class GbsController {
     //                 .body("Error: " + ex.getMostSpecificCause().getMessage());
     //     }
     // }
+
+    //adding a bolsa
+    @PostMapping("/add-Bolsa")
+    public ResponseEntity<?> addBolsa(
+        @RequestBody List<bolsaSaveDto> items
+    ) {
+        try {
+            List<Gbs> toSave = new ArrayList<>();
+            for (bolsaSaveDto dto: items) {
+                GbsId id = new GbsId(dto.ENT, dto.EJE, dto.CGECOD, dto.GBSREF);
+                boolean exists = gbsRepository.existsById(id);
+                if (!exists) {
+                    Optional<Gbs> check = gbsRepository.findByENTAndEJEAndCGECODAndGBSECO(dto.ENT, dto.EJE, dto.CGECOD, dto.GBSECO);
+                    if (check.isEmpty()) {
+                        Gbs addBolsa = new Gbs();
+                        addBolsa.setENT(dto.ENT);
+                        addBolsa.setEJE(dto.EJE);
+                        addBolsa.setCGECOD(dto.CGECOD);
+                        addBolsa.setGBSREF(dto.GBSREF);
+                        addBolsa.setGBSOPE(dto.GBSOPE);
+                        addBolsa.setGBSORG(dto.GBSORG);
+                        addBolsa.setGBSFUN(dto.GBSFUN);
+                        addBolsa.setGBSECO(dto.GBSECO);
+                        addBolsa.setGBSIMP(dto.GBSIMP);
+                        addBolsa.setGBSIBG(dto.GBSIBG);
+                        addBolsa.setGBSIUS(dto.GBSIUS);
+                        addBolsa.setGBSICO(dto.GBSICO);
+                        addBolsa.setGBSIUT(dto.GBSIUT);
+                        addBolsa.setGBSICT(dto.GBSICT);
+                        addBolsa.setGBS413(dto.GBS413);
+                        toSave.add(addBolsa);
+                    }
+                }
+            }
+        
+            gbsRepository.saveAll(toSave);
+            return ResponseEntity.noContent().build();
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + ex.getMostSpecificCause().getMessage());
+        }
+    }
 }
