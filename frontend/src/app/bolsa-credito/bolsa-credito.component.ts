@@ -634,6 +634,29 @@ export class BolsaCreditoComponent {
     })
   }
 
+  //deleting a bolsa
+  isDeleting: boolean = false;
+  deleteBolsa(gbsref: string) {
+    console.log(gbsref)
+    this.limpiarMessages();
+    if (!gbsref) {return;}
+
+    this.isDeleting = true;
+
+    this.http.delete(`${environment.backendUrl}/api/gbs/delete-bolsa/${this.entcod}/${this.eje}/${this.cge}/${gbsref}`).subscribe({
+      next: (res) => {
+        this.isDeleting = false;
+        this.closeDetails();
+        this.fetchBolsas();
+        this.tablesuccessMessage = 'Bolsa eliminada exitosamente';
+      },
+      error: (err) => {
+        this.isDeleting = false;
+        this.guardarMesage = err.error.error ?? err.error;
+      }
+    })
+  }
+
   //misc
   limpiarMessages () {
     this.tableMessage = '';

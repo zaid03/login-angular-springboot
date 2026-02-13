@@ -221,6 +221,10 @@
                         <div class="spinner"></div>
                         <span>actualizando</span>
                     </div>
+                    <div *ngIf="isDeleting" class="loading-message">
+                        <div class="spinner"></div>
+                        <span>borrando</span>
+                    </div>
                     <div class="detail-container">
                         <div class="chunk-one">
                             <div class="detail-title">
@@ -343,6 +347,9 @@
                                 <h1>{{getkAcPeCo(selectedBolsas.gbsiut, selectedBolsas.gbsict) | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</h1>
                             </div>
                         </div>
+                    </div>
+                    <div class="btns">
+                        <button class="delete-btn" (click)="deleteBolsa(selectedBolsas.gbsref)">-</button>
                     </div>
                 </div>
             </div>
