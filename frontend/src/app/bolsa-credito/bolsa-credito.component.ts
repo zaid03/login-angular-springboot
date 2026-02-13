@@ -597,13 +597,41 @@ export class BolsaCreditoComponent {
   }
 
   isAddingBolsa: boolean = false; 
+  tablesuccessMessage: string = '';
   addingBolsas() {
     this.limpiarMessages();
     this.isAddingBolsa = true;
 
-    const apyload = {
+    const payload = this.caughtD.map(obj => ({
+      "ENT": this.entcod,
+      "EJE": this.eje,
+      "CGECOD": this.cge,
+      "GBSREF": obj.lineaList.referencia,
+      "GBSOPE": obj.numope,
+      "GBSORG": obj.lineaList.linorg,
+      "GBSFUN": obj.lineaList.linfun,
+      "GBSECO": obj.lineaList.lineco,
+      "GBSIMP": 0,
+      "GBSIBG": 0,
+      "GBSIUS": 0,
+      "GBSICO": 0,
+      "GBSIUT": 0,
+      "GBSICT": 0,
+      "GBS413": 0
+    }));
 
-    }
+    this.http.post(`${environment.backendUrl}api/gbs/add-Bolsa`, payload).subscribe({
+      next: (res) => {
+        this.isAddingBolsa = false;
+        this.closeAddD();
+        this.fetchBolsas();
+        this.tablesuccessMessage = 'bolsas añadidas con éxito';
+      },
+      error: (err) => {
+        this.isAddingBolsa = false;
+        this.DErrorMessage = err.error.error ?? err.error;
+      }
+    })
   }
 
   //misc
@@ -612,5 +640,6 @@ export class BolsaCreditoComponent {
     this.guardarMesageSuccess = '';
     this.guardarMesage = '';
     this.DErrorMessage = '';
+    this.tablesuccessMessage = '';
   }
 }
