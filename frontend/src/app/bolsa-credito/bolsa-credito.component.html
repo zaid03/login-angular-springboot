@@ -355,13 +355,17 @@
         <div class="title">
             <h1 class="art-title">Añadir RC</h1>
         </div>
-        <button class="save-btn">+</button>
+        <button class="save-btn" (click)="addingBolsas()">+</button>
         <button class="delete-btn" (click)="closeAddD()">✖</button>
     </div>
     <h1 class="errorBtn">{{DErrorMessage}}</h1>
     <div *ngIf="isLoadingD" class="loading-message">
         <div class="spinner"></div>
         <span>Cargando</span>
+    </div>
+    <div *ngIf="isAddingBolsa" class="loading-message">
+        <div class="spinner"></div>
+        <span>añadiendo</span>
     </div>
     <div class="info-D">
         <div class="info-content">
@@ -395,6 +399,7 @@
         <tbody>
             <tr 
                 *ngFor="let d of paginatedSearchResultsD"
+                (click)="selectDAdd(d)"
             >
                 <td>{{d.numope}}</td>
                 <td>{{d.lineaList.referencia}}</td>
@@ -409,6 +414,7 @@
             </tr>
         </tbody>
     </table>
+    <p class="selected" *ngIf="caughtD.length > 0">{{caughtD.length}} Bolsas seleccionados</p>
     <div class="pagination-controls" *ngIf="listaDeD.length > searchPageSizeD">
         <button class="pag-btn" (click)="searchPageD = searchPageD - 1" [disabled]="searchPageD === 0">Anterior</button>
         <span> {{ searchPageD + 1 }} de {{ searchTotalPagesD }}</span>

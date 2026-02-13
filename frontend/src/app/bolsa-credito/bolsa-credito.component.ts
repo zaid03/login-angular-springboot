@@ -553,6 +553,7 @@ export class BolsaCreditoComponent {
   closeAddD() {
     this.DGridShow = false;
     this.listaDeD = [];
+    this.caughtD = [];
   }
 
   cogimp: number = 0;
@@ -578,6 +579,32 @@ export class BolsaCreditoComponent {
   searchPageSizeD: number = 5;
   get paginatedSearchResultsD() {const start = this.searchPageD * this.searchPageSizeD; return this.listaDeD.slice(start, start + this.searchPageSizeD);}
   get searchTotalPagesD() {return Math.ceil(this.listaDeD.length / this.searchPageSizeD);}
+
+  caughtD: any[] = [];
+  selectDAdd(D: any) {
+    if (this.caughtD.includes(D)) {
+      const index = this.caughtD.indexOf(D);
+      if(index !== -1) {
+        this.caughtD.splice(index, 1);
+      }
+    } else {
+      this.caughtD = [...this.caughtD, D];
+    }
+  }
+
+  isDSelected(a: any): boolean {
+    return this.caughtD.includes(a);
+  }
+
+  isAddingBolsa: boolean = false; 
+  addingBolsas() {
+    this.limpiarMessages();
+    this.isAddingBolsa = true;
+
+    const apyload = {
+
+    }
+  }
 
   //misc
   limpiarMessages () {
