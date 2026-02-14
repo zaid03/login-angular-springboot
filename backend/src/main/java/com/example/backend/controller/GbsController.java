@@ -130,7 +130,41 @@ public class GbsController {
         }
     }
 
+    //Traspasar bolsa de gestión
+    public record trans(Double GBSIMP, Double GBSIBG, Double GBSIUS, Double GBSICO, LocalDateTime GBSFOP) {}
+    @PatchMapping("transpasar-bolsa/{ent}/{eje}/{cgecod}/{gbsref}")
+    public ResponseEntity<?> TranspasarBolsa(
+            @PathVariable Integer ent,
+            @PathVariable String eje,
+            @PathVariable String cgecod,
+            @PathVariable String gbsref,
+            @RequestBody trans payload
+    ) {
+        try {
+            if (payload == null || payload.GBSIMP() == null || payload.GBSIUS() == null || payload.GBSICO() == null || payload.GBSFOP() == null) {
+                return ResponseEntity.badRequest().body("Faltan datos obligatorios.");
+            }
 
+            GbsId id = new GbsId(ent, eje, cgecod, gbsref);
+            Optional<Gbs> bolsa = gbsRepository.findById(id);
+            if (bolsa.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Sin resultado");
+            }
+
+            Gbs bolsaUpdate = bolsa.get();
+            bolsaUpdate.setGBSIMP(payload.GBSIMP());
+            bolsaUpdate.setGBSIBG(payload.GBSIBG());
+            bolsaUpdate.setGBSIUS(payload.GBSIUS());
+            bolsaUpdate.setGBSICO(payload.GBSICO());
+            bolsaUpdate.setGBSFOP(payload.GBSFOP());
+
+            gbsRepository.save(bolsaUpdate);
+            return ResponseEntity.noContent().build();
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + ex.getMostSpecificCause().getMessage());
+        }
+    }
 
     //for main list of bolsa 
     // @GetMapping("fetchAll/{ent}/{eje}")

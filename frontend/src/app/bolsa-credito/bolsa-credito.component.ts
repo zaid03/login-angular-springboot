@@ -677,6 +677,8 @@ export class BolsaCreditoComponent {
       this.guardarMesage = 'No hay disponible suficiente en la Referencia';
     } else {
 
+      this.isUpdating = true;
+      const referncia = this.selectedBolsas.gbsref;
       const today = new Date();
       const payload = {
         "GBSIMP": sum,
@@ -687,6 +689,17 @@ export class BolsaCreditoComponent {
       }
 
       console.log(payload);
+
+      this.http.patch(`${environment.backendUrl}/api/gbs/transpasar-bolsa/${this.entcod}/${this.eje}/${this.cge}/${referncia}`, payload).subscribe({
+        next: (res) => {
+          this.isUpdating = false;
+          this.guardarMesageSuccess = 'Traspaso realizado con éxito';
+        },
+        error: (err) => {
+          this.guardarMesage = err.error.error ?? err.error;
+          this.isUpdating = false;
+        }
+      })
     }
   }
 
