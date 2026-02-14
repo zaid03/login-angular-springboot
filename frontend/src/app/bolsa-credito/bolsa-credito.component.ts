@@ -447,9 +447,20 @@ export class BolsaCreditoComponent {
   selectedBolsas: any = null;
   showDetails(factura: any) {
     this.limpiarMessages();
-    this.guardarisError = false;
     this.guardarisSuccess = false;
-    this.selectedBolsas = factura;
+    this.selectedBolsas = { ...factura };
+    if (this.selectedBolsas.gbsimp !== undefined && this.selectedBolsas.gbsimp !== null) {
+      let num = parseFloat(
+        String(this.selectedBolsas.gbsimp)
+          .replace(/\s/g, '')
+          .replace(/\./g, '')
+          .replace(',', '.')
+          .replace(/[^\d.-]/g, '')
+      );
+      if (!isNaN(num)) {
+        this.selectedBolsas.gbsimp = num.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
+      }
+    }
     const org = factura?.gbsorg ?? '';
     const fun = factura?.gbsfun ?? '';
     const eco = factura?.gbseco ?? '';
@@ -537,6 +548,39 @@ export class BolsaCreditoComponent {
   }
 
   isUpdating: boolean = false;
+  updateBolsa(gbsimp: any, getkAcPeCo:any, gbsref: any) {
+    this.isUpdating = true;
+    this.limpiarMessages();
+
+    let cleanValue = gbsimp.replace(/\./g, '').replace(',', '.').replace(/[^\d.-]/g, '');
+    let parsedValue = parseFloat(cleanValue);
+
+    if ( parsedValue > getkAcPeCo) {
+      this.guardarMesage = 'HA SOBREPASADO EL DISPONIBLE DE LA REFERENCIA';
+      this.isUpdating = false;
+      return;
+    }
+
+    const today = new Date();
+    const payload = {
+      GBSIMP: parsedValue,
+      GBSIUS: 0,
+      GBSICO: 0,
+      GBSFOP: today.toISOString().slice(0, 19)
+    };
+
+    this.http.patch<void>(`${environment.backendUrl}/api/gbs/${this.entcod}/${this.eje}/${this.cge}/${gbsref}`, payload)
+    .subscribe({
+      next: () => {
+        this.guardarMesageSuccess = 'Bolsa actualizada correctamente';
+        this.isUpdating = false;
+      },
+      error: (err) => {
+        this.guardarMesage = err.error.error ?? err.error;
+        this.isUpdating = false;
+      }
+    });
+  }
 
   //adding RC (adding a bolsa)
   DGridShow: boolean = false;
