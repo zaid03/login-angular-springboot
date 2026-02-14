@@ -461,6 +461,18 @@ export class BolsaCreditoComponent {
         this.selectedBolsas.gbsimp = num.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
       }
     }
+    if (this.selectedBolsas.gbsibg !== undefined && this.selectedBolsas.gbsibg !== null) {
+      let num = parseFloat(
+        String(this.selectedBolsas.gbsibg)
+          .replace(/\s/g, '')
+          .replace(/\./g, '')
+          .replace(',', '.')
+          .replace(/[^\d.-]/g, '')
+      );
+      if (!isNaN(num)) {
+        this.selectedBolsas.gbsibg = num.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
+      }
+    }
     const org = factura?.gbsorg ?? '';
     const fun = factura?.gbsfun ?? '';
     const eco = factura?.gbseco ?? '';
@@ -546,40 +558,79 @@ export class BolsaCreditoComponent {
       this.selectedBolsas.gbsimp = num.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
     }
   }
+  formateGbsibg() {
+    if (!this.selectedBolsas || this.selectedBolsas.gbsibg === undefined || this.selectedBolsas.gbsibg === null) return;
+    let value = String(this.selectedBolsas.gbsibg)
+      .replace(/\s/g, '')
+      .replace(/\./g, '')     
+      .replace(',', '.')       
+      .replace(/[^\d.-]/g, '');
+    let num = parseFloat(value);
+    if (!isNaN(num)) {
+      this.selectedBolsas.gbsibg = num.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
+    }
+  }
 
   isUpdating: boolean = false;
-  updateBolsa(gbsimp: any, getkAcPeCo:any, gbsref: any) {
-    this.isUpdating = true;
-    this.limpiarMessages();
+  gbsimpTouched: boolean = false;
+  gbsImp() {
+    this.gbsimpTouched = true;
+  }
+  updateGbsimp(gbsimp: any, getkAcPeCo:any, gbsref: any) {
+    if(this.gbsimpTouched) {
+      this.isUpdating = true;
+      this.limpiarMessages();
 
-    let cleanValue = gbsimp.replace(/\./g, '').replace(',', '.').replace(/[^\d.-]/g, '');
-    let parsedValue = parseFloat(cleanValue);
+      let cleanValue = gbsimp.replace(/\./g, '').replace(',', '.').replace(/[^\d.-]/g, '');
+      let parsedValue = parseFloat(cleanValue);
 
-    if ( parsedValue > getkAcPeCo) {
-      this.guardarMesage = 'HA SOBREPASADO EL DISPONIBLE DE LA REFERENCIA';
-      this.isUpdating = false;
+      if ( parsedValue > getkAcPeCo) {
+        this.guardarMesage = 'HA SOBREPASADO EL DISPONIBLE DE LA REFERENCIA';
+        this.isUpdating = false;
+        return;
+      }
+
+      const today = new Date();
+      const payload = {
+        GBSIMP: parsedValue,
+        GBSIUS: 0,
+        GBSICO: 0,
+        GBSFOP: today.toISOString().slice(0, 19)
+      };
+
+      this.http.patch<void>(`${environment.backendUrl}/api/gbs/${this.entcod}/${this.eje}/${this.cge}/${gbsref}`, payload)
+      .subscribe({
+        next: () => {
+          this.guardarMesageSuccess = 'Bolsa actualizada correctamente';
+          this.isUpdating = false;
+        },
+        error: (err) => {
+          this.guardarMesage = err.error.error ?? err.error;
+          this.isUpdating = false;
+        }
+      });
+    } else {
       return;
     }
+  }
 
-    const today = new Date();
-    const payload = {
-      GBSIMP: parsedValue,
-      GBSIUS: 0,
-      GBSICO: 0,
-      GBSFOP: today.toISOString().slice(0, 19)
-    };
+  gbsibgTouched: boolean = false;
+  gbsIbg() {
+    this.gbsibgTouched = true;
+    console.log(this.gbsibgTouched)
+  }
 
-    this.http.patch<void>(`${environment.backendUrl}/api/gbs/${this.entcod}/${this.eje}/${this.cge}/${gbsref}`, payload)
-    .subscribe({
-      next: () => {
-        this.guardarMesageSuccess = 'Bolsa actualizada correctamente';
-        this.isUpdating = false;
-      },
-      error: (err) => {
-        this.guardarMesage = err.error.error ?? err.error;
-        this.isUpdating = false;
-      }
-    });
+  updateGbsibg(gbsibg: string) {
+    if(this.gbsibgTouched) {
+      this.isUpdating = true;
+      this.limpiarMessages();
+
+      let cleanValue = gbsibg.replace(/\./g, '').replace(',', '.').replace(/[^\d.-]/g, '');
+      let parsedValue = parseFloat(cleanValue);
+      console.log(parsedValue);
+    } else {
+      return;
+    }
   }
 
   //adding RC (adding a bolsa)

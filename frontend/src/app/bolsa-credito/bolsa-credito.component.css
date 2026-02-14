@@ -46,8 +46,10 @@
 .acumolados h1,
 .centro-content h1,
 .info-content h1 {color: #162a3a;}
-.conta-one textarea { height: 20px; padding: 2px 4px; border-radius: 6px; font-weight: bold;}
-.conta-one textarea:focus { outline: none; border-color: #042b5a; outline: none; background: #fff; }
+.conta-one textarea,
+.conta-two textarea { height: 20px; padding: 2px 4px; border-radius: 6px; font-weight: bold;}
+.conta-one textarea:focus,
+.conta-two textarea:focus { outline: none; border-color: #042b5a; outline: none; background: #fff; }
 .smallTextarea{width: 80px; max-width: 100px;} 
 .width {width: 75%;}
 .conta-first,

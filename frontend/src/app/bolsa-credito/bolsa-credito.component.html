@@ -212,7 +212,7 @@
                         <div class="title-detail">
                             <h3>Detalles de Bolsa</h3>
                         </div>
-                        <button class="save-btn" (click)="updateBolsa(gbsimp.value, getkdispon(selectedBolsas.saldo, getkAcPeCo(selectedBolsas.gbsiut, selectedBolsas.gbsict)), selectedBolsas.gbsref)">✔</button>
+                        <button class="save-btn" (click)="updateGbsimp(gbsimp.value, getkdispon(selectedBolsas.saldo, getkAcPeCo(selectedBolsas.gbsiut, selectedBolsas.gbsict)), selectedBolsas.gbsref); updateGbsibg(selectedBolsas.gbsibg)">✔</button>
                         <button class="close-btn-btn" (click)="closeDetails()">✖</button>
                     </div>
                     <h1 class="successBtn">{{ guardarMesageSuccess }}</h1>
@@ -277,6 +277,7 @@
                                         class="smallTextarea" 
                                         [(ngModel)]="selectedBolsas.gbsimp" 
                                         (blur)="formatGbsimp()"
+                                        (click)="gbsImp()"
                                         #gbsimp
                                     ></textarea>
                                 </div>
@@ -285,7 +286,13 @@
                                 </div>
                                 <div class="conta-two">
                                     <p>Importe bolsa gestion</p>
-                                    <h1 class="fix">{{selectedBolsas.gbsibg | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</h1>
+                                    <textarea 
+                                        class="smallTextarea" 
+                                        [(ngModel)]="selectedBolsas.gbsibg" 
+                                        (blur)="formateGbsibg()"
+                                        (click)="gbsIbg()"
+                                        #gbsibg
+                                    ></textarea>
                                 </div>
                                 <div class="conta-sign">
                                     <span class="minus">-</span>
