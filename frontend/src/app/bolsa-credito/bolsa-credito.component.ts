@@ -336,11 +336,14 @@ export class BolsaCreditoComponent {
     if (value === null || value === undefined || value === '') return '';
     const numberValue = typeof value === 'number' ? value : Number(value);
     if (isNaN(numberValue)) return '';
-    return new Intl.NumberFormat('es-ES', {
+    console.log('Value before formatting:', numberValue);
+    const formatted = new Intl.NumberFormat('es-ES', {
       style: 'currency',
       currency: 'EUR',
       minimumFractionDigits: 2
     }).format(numberValue);
+    console.log('Formatted:', formatted);
+    return formatted;
   }
 
   DownloadCSV() {
@@ -450,26 +453,18 @@ export class BolsaCreditoComponent {
     this.guardarisSuccess = false;
     this.selectedBolsas = { ...factura };
     if (this.selectedBolsas.gbsimp !== undefined && this.selectedBolsas.gbsimp !== null) {
-      let num = parseFloat(
-        String(this.selectedBolsas.gbsimp)
-          .replace(/\s/g, '')
-          .replace(/\./g, '')
-          .replace(',', '.')
-          .replace(/[^\d.-]/g, '')
-      );
+      let num = this.parseMoney(this.selectedBolsas.gbsimp);
       if (!isNaN(num)) {
+        console.log('Value before formatting (details):', num);
+        console.log('Formatted (details):', num.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' }));
         this.selectedBolsas.gbsimp = num.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
       }
     }
     if (this.selectedBolsas.gbsibg !== undefined && this.selectedBolsas.gbsibg !== null) {
-      let num = parseFloat(
-        String(this.selectedBolsas.gbsibg)
-          .replace(/\s/g, '')
-          .replace(/\./g, '')
-          .replace(',', '.')
-          .replace(/[^\d.-]/g, '')
-      );
+      let num = this.parseMoney(this.selectedBolsas.gbsibg);
       if (!isNaN(num)) {
+        console.log('Value before formatting (details):', num);
+        console.log('Formatted (details):', num.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' }));
         this.selectedBolsas.gbsibg = num.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
       }
     }
@@ -532,15 +527,11 @@ export class BolsaCreditoComponent {
     const isParenNeg = /^\(.*\)$/.test(s);
     if (isParenNeg) s = s.replace(/[()]/g, '');
     s = s.replace(/\u00A0/g, ' ').replace(/[^\d.,\-]/g, '');
-    const commaCount = (s.match(/,/g) || []).length;
-    const dotCount = (s.match(/\./g) || []).length;
-    if (commaCount > 0 && dotCount > 0) {
+
+    if (s.includes(',')) {
       s = s.replace(/\./g, '').replace(',', '.');
-    } else if (commaCount > 0 && dotCount === 0) {
-      s = s.replace(',', '.');
-    } else {
-      s = s.replace(/\./g, '');
     }
+
     const n = parseFloat(s);
     if (isNaN(n)) return 0;
     return isParenNeg ? -n : n;
@@ -571,6 +562,10 @@ export class BolsaCreditoComponent {
     }
   }
 
+  cleaningCurrency(value: any) {
+    return this.parseMoney(value);
+  }
+
   isUpdating: boolean = false;
   gbsimpTouched: boolean = false;
   gbsImp() {
@@ -581,9 +576,7 @@ export class BolsaCreditoComponent {
       this.isUpdating = true;
       this.limpiarMessages();
 
-      let cleanValue = gbsimp.replace(/\./g, '').replace(',', '.').replace(/[^\d.-]/g, '');
-      let parsedValue = parseFloat(cleanValue);
-
+      const parsedValue = this.cleaningCurrency(gbsimp);
       if ( parsedValue > getkAcPeCo) {
         this.guardarMesage = 'HA SOBREPASADO EL DISPONIBLE DE LA REFERENCIA';
         this.isUpdating = false;
@@ -625,8 +618,7 @@ export class BolsaCreditoComponent {
       this.isUpdating = true;
       this.limpiarMessages();
 
-      let cleanValue = gbsibg.replace(/\./g, '').replace(',', '.').replace(/[^\d.-]/g, '');
-      let parsedValue = parseFloat(cleanValue);
+      const parsedValue = this.cleaningCurrency(gbsibg);
       const referencia = this.selectedBolsas.gbsref;
       console.log(parsedValue);
 
@@ -648,6 +640,57 @@ export class BolsaCreditoComponent {
       return;
     }
   }
+
+  isDeleting: boolean = false;
+  deleteBolsa(gbsref: string) {
+    console.log(gbsref)
+    this.limpiarMessages();
+    if (!gbsref) {return;}
+
+    this.isDeleting = true;
+
+    this.http.delete(`${environment.backendUrl}/api/gbs/delete-bolsa/${this.entcod}/${this.eje}/${this.cge}/${gbsref}`).subscribe({
+      next: (res) => {
+        this.isDeleting = false;
+        this.closeDetails();
+        this.fetchBolsas();
+        this.tablesuccessMessage = 'Bolsa eliminada exitosamente';
+      },
+      error: (err) => {
+        this.isDeleting = false;
+        this.guardarMesage = err.error.error ?? err.error;
+      }
+    })
+  }
+
+  transFond() {
+    this.limpiarMessages();
+    const disponible = this.getkdispon(this.selectedBolsas.saldo, this.getkAcPeCo(this.selectedBolsas.gbsiut, this.selectedBolsas.gbsict));
+    let gbsimp = this.cleaningCurrency(this.selectedBolsas.gbsimp); 
+    let gbsibg = this.cleaningCurrency(this.selectedBolsas.gbsibg);
+    if (disponible === '' || gbsibg === null || gbsimp === null) {return;}
+
+    let sum = gbsimp + gbsibg;
+    console.log(disponible, gbsimp, gbsibg, sum);
+
+    if (sum > Number(disponible)) {
+      this.guardarMesage = 'No hay disponible suficiente en la Referencia';
+    } else {
+
+      const today = new Date();
+      const payload = {
+        "GBSIMP": sum,
+        "GBSIBG": 0,
+        "GBSIUS": 0,
+        "GBSICO": 0,
+        "GBSFOP": today.toISOString().slice(0, 19)
+      }
+
+      console.log(payload);
+    }
+  }
+
+  
 
   //adding RC (adding a bolsa)
   DGridShow: boolean = false;
@@ -741,29 +784,6 @@ export class BolsaCreditoComponent {
       error: (err) => {
         this.isAddingBolsa = false;
         this.DErrorMessage = err.error.error ?? err.error;
-      }
-    })
-  }
-
-  //deleting a bolsa
-  isDeleting: boolean = false;
-  deleteBolsa(gbsref: string) {
-    console.log(gbsref)
-    this.limpiarMessages();
-    if (!gbsref) {return;}
-
-    this.isDeleting = true;
-
-    this.http.delete(`${environment.backendUrl}/api/gbs/delete-bolsa/${this.entcod}/${this.eje}/${this.cge}/${gbsref}`).subscribe({
-      next: (res) => {
-        this.isDeleting = false;
-        this.closeDetails();
-        this.fetchBolsas();
-        this.tablesuccessMessage = 'Bolsa eliminada exitosamente';
-      },
-      error: (err) => {
-        this.isDeleting = false;
-        this.guardarMesage = err.error.error ?? err.error;
       }
     })
   }
