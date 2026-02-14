@@ -628,6 +628,12 @@ export class BolsaCreditoComponent {
       let cleanValue = gbsibg.replace(/\./g, '').replace(',', '.').replace(/[^\d.-]/g, '');
       let parsedValue = parseFloat(cleanValue);
       console.log(parsedValue);
+
+      const payload = {
+        "GBSIBG": parsedValue
+      }
+
+      
     } else {
       return;
     }
