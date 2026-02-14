@@ -627,13 +627,23 @@ export class BolsaCreditoComponent {
 
       let cleanValue = gbsibg.replace(/\./g, '').replace(',', '.').replace(/[^\d.-]/g, '');
       let parsedValue = parseFloat(cleanValue);
+      const referencia = this.selectedBolsas.gbsref;
       console.log(parsedValue);
 
       const payload = {
         "GBSIBG": parsedValue
       }
 
-      
+      this.http.patch(`${environment.backendUrl}/api/gbs/update-gbsibg/${this.entcod}/${this.eje}/${this.cge}/${referencia}`, payload).subscribe({
+        next: (res) => {
+          this.guardarMesageSuccess = 'Bolsa actualizada correctamente';
+          this.isUpdating = false;
+        },
+        error: (err) => {
+          this.guardarMesage = err.error.error ?? err.error;
+          this.isUpdating = false;
+        }
+      })
     } else {
       return;
     }
