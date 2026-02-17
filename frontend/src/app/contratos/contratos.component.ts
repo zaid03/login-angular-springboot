@@ -795,7 +795,6 @@ export class ContratosComponent {
     this.showArticulosGrid = true;
     this.showCentroGestorGrid = false;
     this.centroGestor = [];
-    console.log(numero)
     this.fetchArticulos(numero);
   }
 

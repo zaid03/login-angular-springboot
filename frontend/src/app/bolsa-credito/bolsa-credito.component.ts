@@ -88,7 +88,6 @@ export class BolsaCreditoComponent {
   fetchCentroGestorInfo() {
     this.http.get<any>(`${environment.backendUrl}/api/cge/search-centros-codigo/${this.entcod}/${this.eje}/${this.cge}`).subscribe({
       next: (res) => {
-        console.log(res)
         this.organigrama = res[0].cgeorg;
         this.programa = res[0].cgefun;
         this.description = res[0].cgedes
@@ -336,13 +335,11 @@ export class BolsaCreditoComponent {
     if (value === null || value === undefined || value === '') return '';
     const numberValue = typeof value === 'number' ? value : Number(value);
     if (isNaN(numberValue)) return '';
-    console.log('Value before formatting:', numberValue);
     const formatted = new Intl.NumberFormat('es-ES', {
       style: 'currency',
       currency: 'EUR',
       minimumFractionDigits: 2
     }).format(numberValue);
-    console.log('Formatted:', formatted);
     return formatted;
   }
 
@@ -455,16 +452,12 @@ export class BolsaCreditoComponent {
     if (this.selectedBolsas.gbsimp !== undefined && this.selectedBolsas.gbsimp !== null) {
       let num = this.parseMoney(this.selectedBolsas.gbsimp);
       if (!isNaN(num)) {
-        console.log('Value before formatting (details):', num);
-        console.log('Formatted (details):', num.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' }));
         this.selectedBolsas.gbsimp = num.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
       }
     }
     if (this.selectedBolsas.gbsibg !== undefined && this.selectedBolsas.gbsibg !== null) {
       let num = this.parseMoney(this.selectedBolsas.gbsibg);
       if (!isNaN(num)) {
-        console.log('Value before formatting (details):', num);
-        console.log('Formatted (details):', num.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' }));
         this.selectedBolsas.gbsibg = num.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
       }
     }
@@ -610,7 +603,6 @@ export class BolsaCreditoComponent {
   gbsibgTouched: boolean = false;
   gbsIbg() {
     this.gbsibgTouched = true;
-    console.log(this.gbsibgTouched)
   }
 
   updateGbsibg(gbsibg: string) {
@@ -620,7 +612,6 @@ export class BolsaCreditoComponent {
 
       const parsedValue = this.cleaningCurrency(gbsibg);
       const referencia = this.selectedBolsas.gbsref;
-      console.log(parsedValue);
 
       const payload = {
         "GBSIBG": parsedValue
@@ -643,7 +634,6 @@ export class BolsaCreditoComponent {
 
   isDeleting: boolean = false;
   deleteBolsa(gbsref: string) {
-    console.log(gbsref)
     this.limpiarMessages();
     if (!gbsref) {return;}
 
@@ -671,7 +661,6 @@ export class BolsaCreditoComponent {
     if (disponible === '' || gbsibg === null || gbsimp === null) {return;}
 
     let sum = gbsimp + gbsibg;
-    console.log(disponible, gbsimp, gbsibg, sum);
 
     if (sum > Number(disponible)) {
       this.guardarMesage = 'No hay disponible suficiente en la Referencia';
@@ -687,8 +676,6 @@ export class BolsaCreditoComponent {
         "GBSICO": 0,
         "GBSFOP": today.toISOString().slice(0, 19)
       }
-
-      console.log(payload);
 
       this.http.patch(`${environment.backendUrl}/api/gbs/transpasar-bolsa/${this.entcod}/${this.eje}/${this.cge}/${referncia}`, payload).subscribe({
         next: (res) => {
@@ -732,7 +719,6 @@ export class BolsaCreditoComponent {
       next: (res) => {
         this.isLoadingD = false;
         this.listaDeD = res;
-        console.log(this.listaDeD[0].numope)
       },
       error: (err) => {
         this.isLoadingD = false;
