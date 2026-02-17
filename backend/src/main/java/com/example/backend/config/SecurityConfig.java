@@ -71,10 +71,9 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)  // Important pour JWT
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
             .authorizeHttpRequests(auth -> auth
-                // API publiques
                 .requestMatchers(
                     "/api/login/**",
                     "/api/cas/**",
@@ -82,11 +81,10 @@ public class SecurityConfig {
                     "/api/validate-usucod/**",
                     "/health/**",
                     "/api/sical/**",
-                    "/api/rpc/**"
+                    "/api/rpc/**",
+                    "/api/mat/**"
                 ).permitAll()
-                // API protégées nécessitent authentification
                 .requestMatchers("/api/**").authenticated()
-                // Tout le reste est permis (Angular géré par webSecurityCustomizer)
                 .anyRequest().permitAll()
             )
             .httpBasic(h -> h.disable())

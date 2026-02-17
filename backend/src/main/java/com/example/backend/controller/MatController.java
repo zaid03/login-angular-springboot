@@ -14,6 +14,9 @@ import org.springframework.dao.DataAccessException;
 import java.util.stream.Collectors;
 import java.util.Objects;
 import java.util.function.Function;
+
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/mat")
 public class MatController {
@@ -38,6 +41,17 @@ public class MatController {
             if (uniq.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No resultado");
 
             return ResponseEntity.ok(uniq);
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + ex.getMostSpecificCause().getMessage());
+        }
+    }
+
+    @GetMapping("/test")
+    public ResponseEntity<?> testApi() {
+        try {
+            List<Mat> almacen = matRepository.findAll();
+
+            return ResponseEntity.ok(almacen);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + ex.getMostSpecificCause().getMessage());
         }

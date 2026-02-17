@@ -454,6 +454,8 @@ export class ContratosComponent {
   openDetails(contrato: any) {
     this.limpiarMessages();
     this.selectedContrato = contrato;
+    const concod = this.selectedContrato.concod;
+    this.showArticulos(concod);
   }
 
   closeDetails() {
@@ -793,6 +795,7 @@ export class ContratosComponent {
     this.showArticulosGrid = true;
     this.showCentroGestorGrid = false;
     this.centroGestor = [];
+    console.log(numero)
     this.fetchArticulos(numero);
   }
 

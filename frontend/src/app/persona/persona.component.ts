@@ -350,6 +350,7 @@ export class PersonaComponent {
   showDetails(persona: any) {
     this.limpiarMessages();
     this.selectedPersona = persona;
+    this.showServices(persona);
   }
 
   closeDetails() {

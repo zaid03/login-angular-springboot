@@ -233,7 +233,10 @@
                 (input)="setCgeToUpper($event)"
                 #codigo
             ></textarea>
-            <textarea class="smallText" #organica></textarea>
+            <textarea 
+                (input)="allowOnlyDigits($event)"
+                class="smallText" 
+                #organica></textarea>
             <textarea
                 class="smallText"
                 (input)="allowOnlyDigits($event)"

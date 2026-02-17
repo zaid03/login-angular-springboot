@@ -415,6 +415,7 @@ export class ServiciosComponent {
   option: 'personas' | 'almacen' = 'personas';
   setOption(next: 'personas' | 'almacen'): void {
     this.option = next;
+    this.fetchPersonas(this.selectedService.depcod);
   }
 
   updateServiceSuccessMessage: string = '';
@@ -511,9 +512,11 @@ export class ServiciosComponent {
     this.http.get<any>(`${environment.backendUrl}/api/mag/fetch-almacen-nombre/${this.entcod}/${depcod}`).subscribe({
       next: (res) => {
         this.almacenArray = res;
+        this.isLoading = false;
       },
       error: (err) => {
         this.almacenErro = err.error.error ?? err.error;
+        this.isLoading = false;
       }
     })
 
