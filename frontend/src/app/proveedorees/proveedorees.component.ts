@@ -170,6 +170,7 @@ export class ProveedoreesComponent {
     this.limpiarMessages();
     this.selectedProveedor = proveedor;
     this.error = '';
+    this.showContactPersons(this.selectedProveedor);
   }
 
   closeDetails() {
@@ -570,16 +571,23 @@ export class ProveedoreesComponent {
           this.personasContactoErrorMessage = '';
           this.isLoading = false;
         }
-          this.page = 0;
+          this.pagePersona = 0;
       },
       error: (err) => {
         this.personasContactoErrorMessage = err.error.error ?? err.error;
         this.contactPersons = [];
-        this.page = 0;
+        this.pagePersona = 0;
         this.isLoading = false;
       } 
     });
   }
+  pagePersona = 0;
+  get filteredPersonas() { let filtered = this.contactPersons; return filtered;}
+  get totalPagesPersonas(): number { return Math.ceil(this.contactPersons.length / this.pageSize);}
+  get paginatedPersonas() {const start = this.pagePersona * this.pageSize; return this.contactPersons.slice(start, start + this.pageSize);}
+  nextPagePersona() {if (this.pagePersona + 1 < this.totalPagesPersonas) {this.pagePersona++;}}
+  prevPagePersona() {if (this.pagePersona > 0) {this.pagePersona--;}}
+  goToPagePersona(event: any) { const inputPage = Number(event.target.value); if (inputPage >= 1 && inputPage <= this.totalPagesPersonas) {this.pagePersona = inputPage - 1;}}
 
   personasContactoErrorMessage: string = '';
   personasContactoSuccessMessage: string = '';
@@ -763,7 +771,7 @@ export class ProveedoreesComponent {
           this.anadirErrorMessage = '';
         });
         this.isLoading = false;
-        this.page = 0;
+        this.pageArticulo = 0;
       },
       error: (err) => {
         this.articuloError = err.error.error ?? err.error;
@@ -771,6 +779,13 @@ export class ProveedoreesComponent {
       } 
     });
   }
+  pageArticulo = 0;
+  get filteredArticulo() { let filtered = this.articulos; return filtered;}
+  get totalPagesArticulos(): number { return Math.ceil(this.articulos.length / this.pageSize);}
+  get paginatedArticulos() {const start = this.pageArticulo * this.pageSize; return this.articulos.slice(start, start + this.pageSize);}
+  nextPageArticulos() {if (this.pageArticulo + 1 < this.totalPagesArticulos) {this.pageArticulo++;}}
+  prevPageArticulos() {if (this.pageArticulo > 0) {this.pageArticulo--;}}
+  goToPageArticulos(event: any) { const inputPage = Number(event.target.value); if (inputPage >= 1 && inputPage <= this.totalPagesArticulos) {this.pageArticulo = inputPage - 1;}}
 
   updatearticulos(articulo: any){
     this.limpiarMessages();

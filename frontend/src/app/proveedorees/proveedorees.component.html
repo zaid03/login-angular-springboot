@@ -256,7 +256,6 @@
                                 [attr.aria-selected]="activeDetailTab === 'articulo'"
                                 [class.active-tab]="activeDetailTab === 'articulo'"
                                 (click)="showArticulos(selectedProveedor)"
-                                [disabled]="!selectedProveedor?.teracu || selectedProveedor.teracu != 1"
                             >
                                 Artículos
                             </button> 
@@ -305,6 +304,31 @@
                                 </tr>
                             </tbody>
                         </table>
+                        <div class="pagination-controls">
+                            <button 
+                                class="pag-btn" 
+                                (click)="prevPagePersona()" 
+                                [disabled]="pagePersona === 0">
+                                Anterior
+                            </button>
+                            <span>Página</span>
+                            <input
+                                type="number"
+                                min="1"
+                                [max]="totalPagesPersonas"
+                                [value]="pagePersona + 1"
+                                (change)="goToPagePersona($event)"
+                                class="pagination-input"
+                            />
+                            <span>de {{ totalPagesPersonas }}</span>
+                            <button 
+                                class="pag-btn" 
+                                (click)="nextPagePersona()" 
+                                [disabled]="page + 1 >= totalPagesPersonas"
+                            >
+                                Siguiente
+                            </button>
+                        </div>
                     </div>
                     <div class="custom-grid-modal" *ngIf="showArticulosGrid">
                         <button class="add-btn" (click)="showHello()">+</button>
@@ -324,8 +348,8 @@
                                     <th>Ref Prov</th>
                                     <th>Uds. embalaje</th>
                                     <th>Observaciones</th>
-                                    <th>Acuerdo</th>
-                                    <th>Precio acuerdo</th>
+                                    <th *ngIf="selectedProveedor.teracu == 1">Acuerdo</th>
+                                    <th *ngIf="selectedProveedor.teracu == 1">Precio acuerdo</th>
                                     <th>Acción</th>
                                 </tr>
                             </thead>
@@ -352,14 +376,14 @@
                                     <td>
                                         <input type="text" [(ngModel)]="articulo.aprobs"/>
                                     </td>
-                                    <td>
+                                    <td *ngIf="selectedProveedor.teracu == 1">
                                         <input type="checkbox"
                                             [checked]="articulo.apracu == 1"
                                             (change)="onApracuChange(articulo, $event)"
                                             class="checkbox"
                                         />
                                     </td>
-                                    <td>
+                                    <td *ngIf="selectedProveedor.teracu == 1">
                                         <input type="number" [(ngModel)]="articulo.aprpre"/>
                                     </td>
                                     <td>
@@ -369,6 +393,32 @@
                                 </tr>
                             </tbody>
                         </table>
+                        <div class="pagination-controls">
+                            <button 
+                                class="pag-btn" 
+                                (click)="prevPageArticulos()" 
+                                [disabled]="pageArticulo === 0"
+                            >
+                                Anterior
+                            </button>
+                            <span>Página</span>
+                            <input
+                                type="number"
+                                min="1"
+                                [max]="totalPagesArticulos"
+                                [value]="pageArticulo + 1"
+                                (change)="goToPageArticulos($event)"
+                                class="pagination-input"
+                            />
+                            <span>de {{ totalPagesArticulos }}</span>
+                            <button 
+                                class="pag-btn" 
+                                (click)="nextPage()" 
+                                [disabled]="pageArticulo + 1 >= totalPagesArticulos"
+                            >
+                                Siguiente
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

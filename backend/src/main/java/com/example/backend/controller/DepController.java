@@ -201,13 +201,6 @@ public class DepController {
             nueva.setDEPDCO(payload.depdco());
             nueva.setDEPDEN(payload.depden());
             depRepository.save(nueva);
-
-            // Dpe nuevoDpe = new Dpe();
-            // nuevoDpe.setENT(payload.ent());
-            // nuevoDpe.setEJE(payload.eje());
-            // nuevoDpe.setDEPCOD(payload.depcod());
-            // nuevoDpe.setPERCOD(payload.percod());
-            // dpeRepository.save(nuevoDpe);
             
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (DataAccessException ex) {

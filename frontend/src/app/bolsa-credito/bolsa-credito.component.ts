@@ -703,8 +703,6 @@ export class BolsaCreditoComponent {
     }
   }
 
-  
-
   //adding RC (adding a bolsa)
   DGridShow: boolean = false;
   isAddingD: boolean = false;
