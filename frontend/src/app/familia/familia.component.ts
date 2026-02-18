@@ -346,6 +346,7 @@ export class FamiliaComponent {
     this.limpiarMessages();
     this.subfamilias = [];
     this.selectedFamilias = familia;
+    this.SubfamiliaGrid(this.selectedFamilias.afacod);
   }
 
   closeDetails() {

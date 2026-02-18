@@ -413,6 +413,20 @@
                                                     </tr>
                                                 </tbody>
                                             </table>
+                                            <div class="pagination-controls alignment">
+                                                <button (click)="prevPageAlbaranes()" [disabled]="pageAlbaranes === 0">Anterior</button>
+                                                <span>Página</span>
+                                                <input
+                                                    type="number"
+                                                    min="1"
+                                                    [max]="totalPagesAlbaranes"
+                                                    [value]="pageAlbaranes + 1"
+                                                    (change)="goToPageAlbaranes($event)"
+                                                    class="pagination-input"
+                                                />
+                                                <span>de {{ totalPagesAlbaranes }}</span>
+                                                <button (click)="nextPageAlbaranes()" [disabled]="pageAlbaranes + 1 >= totalPagesAlbaranes">Siguiente</button>
+                                            </div>
                                         </div>
                                     </ng-container>
                                     <ng-container *ngSwitchCase="'aplicaciones'">
@@ -441,9 +455,22 @@
                                                     </tr>
                                                 </tbody>
                                             </table>
+                                            <div class="pagination-controls alignment">
+                                                <button (click)="prevPageAplicaiones()" [disabled]="pageAplicaiones === 0">Anterior</button>
+                                                <span>Página</span>
+                                                <input
+                                                    type="number"
+                                                    min="1"
+                                                    [max]="totalPagesAplicaciones"
+                                                    [value]="pageAplicaiones + 1"
+                                                    (change)="goToPageAplicaciones($event)"
+                                                    class="pagination-input"
+                                                />
+                                                <span>de {{ totalPagesAplicaciones }}</span>
+                                                <button (click)="nextPageAplicaciones()" [disabled]="pageAplicaiones + 1 >= totalPagesAplicaciones">Siguiente</button>
+                                            </div>
                                         </div>
                                     </ng-container>
-
                                     <ng-container *ngSwitchCase="'descuentos'">
                                         <h1 class="successBtn">{{moreInfoMessageSuccess}}</h1>
                                         <h1 class="errorBtn">{{moreInfoMessageError}}</h1>
@@ -478,6 +505,20 @@
                                                     </tr>
                                                 </tbody>
                                             </table>
+                                            <div class="pagination-controls alignment">
+                                                <button (click)="prevPageDescuentos()" [disabled]="pageDescuentos === 0">Anterior</button>
+                                                <span>Página</span>
+                                                <input
+                                                    type="number"
+                                                    min="1"
+                                                    [max]="totalPagesDescuentos"
+                                                    [value]="pageDescuentos + 1"
+                                                    (change)="goToPageDescuentos($event)"
+                                                    class="pagination-input"
+                                                />
+                                                <span>de {{ totalPagesDescuentos }}</span>
+                                                <button (click)="nextPageDescuentos()" [disabled]="pageDescuentos + 1 >= totalPagesDescuentos">Siguiente</button>
+                                            </div>
                                         </div>
                                     </ng-container>
                                 </ng-container>

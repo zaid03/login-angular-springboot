@@ -648,15 +648,18 @@ export class ConsultaFacturaComponent {
             this.moreInfoMessageSuccess = 'No hay albaranes por las medidas de búsqueda';
             this.albaranes = []
             this.isLoading = false;
+            this.pageAlbaranes = 0;
           } else {
             this.albaranes = response;
             this.backipAlbaranes = Array.isArray(response) ? [...response] : [];
             this.isLoading = false;
+            this.pageAlbaranes = 0;
           }
         }, error: (err) => {
           this.moreInfoMessageIsError = true;
           this.moreInfoMessageError = err.error.error ?? err.error;
           this.isLoading = false;
+          this.pageAlbaranes = 0;
         }
       });
     }
@@ -669,15 +672,18 @@ export class ConsultaFacturaComponent {
             this.moreInfoMessageSuccess = 'No hay aplicaciones por las medidas de búsqueda';
             this.apalicaciones = []
             this.isLoading = false;
+            this.pageAplicaiones = 0
           } else {
             this.apalicaciones = response;
             this.backupAplicaciones = Array.isArray(response) ? [...response] : [];
             this.isLoading = false;
+            this.pageAplicaiones = 0
           }
         }, error: (err) => {
           this.moreInfoMessageIsError = true;
           this.moreInfoMessageError = err.error.error ?? err.error;
           this.isLoading = false;
+          this.pageAplicaiones = 0
         }
       });
     }
@@ -690,18 +696,45 @@ export class ConsultaFacturaComponent {
             this.moreInfoMessageSuccess = 'No hay descuentos por las medidas de búsqueda';
             this.descuentos = []
             this.isLoading = false;
+            this.pageDescuentos = 0;
           } else {
             this.descuentos = response;
             this.backupDescuentos = Array.isArray(response) ? [...response] : [];
             this.isLoading = false;
+            this.pageDescuentos = 0;
           }
         }, error: (err) => {
           this.moreInfoMessageIsError = true;
           this.moreInfoMessageError = err.error.error ?? err.error;
           this.isLoading = false;
+          this.pageDescuentos = 0;
         }
       });
     }
+  }
+  pageAlbaranes = 0;
+  get paginatedAlbaranes(): any[] {if (!this.albaranes || this.albaranes.length === 0) return []; const start = this.pageAlbaranes * this.pageSize; return this.albaranes.slice(start, start + this.pageSize);}
+  get totalPagesAlbaranes(): number {return Math.max(1, Math.ceil((this.albaranes?.length ?? 0) / this.pageSize));}
+  prevPageAlbaranes(): void {if (this.pageAlbaranes > 0) this.pageAlbaranes--;}
+  nextPageAlbaranes(): void {if (this.pageAlbaranes < this.totalPagesAlbaranes - 1) this.pageAlbaranes++;}
+  goToPageAlbaranes(event: any): void { const inputPage = Number(event.target.value); 
+    if (inputPage >= 1 && inputPage <= this.totalPagesAlbaranes) {this.pageAlbaranes = inputPage - 1;}
+  }
+  pageAplicaiones = 0;
+  get paginatedApiciones(): any[] {if (!this.apalicaciones || this.apalicaciones.length === 0) return []; const start = this.pageAlbaranes * this.pageSize; return this.apalicaciones.slice(start, start + this.pageSize);}
+  get totalPagesAplicaciones(): number {return Math.max(1, Math.ceil((this.apalicaciones?.length ?? 0) / this.pageSize));}
+  prevPageAplicaiones(): void {if (this.pageAplicaiones > 0) this.pageAplicaiones--;}
+  nextPageAplicaciones(): void {if (this.pageAplicaiones < this.totalPagesAplicaciones - 1) this.pageAplicaiones++;}
+  goToPageAplicaciones(event: any): void { const inputPage = Number(event.target.value); 
+    if (inputPage >= 1 && inputPage <= this.totalPagesAplicaciones) {this.pageAplicaiones = inputPage - 1;}
+  }
+  pageDescuentos = 0;
+  get paginatedDescuentos(): any[] {if (!this.descuentos || this.descuentos.length === 0) return []; const start = this.pageAlbaranes * this.pageSize; return this.descuentos.slice(start, start + this.pageSize);}
+  get totalPagesDescuentos(): number {return Math.max(1, Math.ceil((this.descuentos?.length ?? 0) / this.pageSize));}
+  prevPageDescuentos(): void {if (this.pageDescuentos > 0) this.pageDescuentos--;}
+  nextPageDescuentos(): void {if (this.pageDescuentos < this.totalPagesDescuentos - 1) this.pageDescuentos++;}
+  goToPageDescuentos(event: any): void { const inputPage = Number(event.target.value); 
+    if (inputPage >= 1 && inputPage <= this.totalPagesDescuentos) {this.pageDescuentos = inputPage - 1;}
   }
   
   //misc 

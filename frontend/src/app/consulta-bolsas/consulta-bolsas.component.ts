@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { SidebarComponent } from '../sidebar/sidebar.component';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -18,6 +20,8 @@ import { environment } from '../../environments/environment';
   providers: [CurrencyPipe]
 })
 export class ConsultaBolsasComponent {
+  private fetchCancel$ = new Subject<void>();
+
   //3 dots menu
   showMenu = false;
   toggleMenu(event: MouseEvent): void {
@@ -71,11 +75,32 @@ export class ConsultaBolsasComponent {
     }
 
     this.fetchBolsas();
+    this.fetchCentroGestorInfo();
   }
 
-  //main table functions
+  //main table functions`
+  organigrama: string = '';
+  programa: string = '';
+  description: string = '';
+  estado: number = 0;
+  fetchCentroGestorInfo() {
+    this.http.get<any>(`${environment.backendUrl}/api/cge/search-centros-codigo/${this.entcod}/${this.eje}/${this.cge}`).subscribe({
+      next: (res) => {
+        this.organigrama = res[0].cgeorg;
+        this.programa = res[0].cgefun;
+        this.description = res[0].cgedes
+        this.estado = res[0].cgecic;
+      },
+      error: (err) => {
+        console.warn(err.error.error ?? err.error);
+      }
+    })
+  }
+
   fetchBolsas() {
-    this.http.get<any>(`${environment.backendUrl}/api/gbs/fetchAll/${this.entcod}/${this.eje}`).subscribe({
+    this.fetchCancel$.next();
+
+    this.http.get<any>(`${environment.backendUrl}/api/gbs/fetch-all/${this.entcod}/${this.eje}/${this.cge}`).subscribe({
       next: (response) => {
         this.creditos = Array.isArray(response) ? [...response] : [];
         this.backupCreditos = [...this.creditos];
@@ -84,9 +109,7 @@ export class ConsultaBolsasComponent {
           const org = item?.gbsorg ?? '';
           const fun = item?.gbsfun ?? '';
           const eco = item?.gbseco ?? '';
-          this.http
-            .get<any>(`${environment.backendUrl}/api/sical/partidas?clorg=${org}&clfun=${fun}&cleco=${eco}`)
-            .subscribe({
+          this.http.get<any>(`${environment.backendUrl}/api/sical/partidas?clorg=${org}&clfun=${fun}&cleco=${eco}`).pipe(takeUntil(this.fetchCancel$)).subscribe({
               next: (partidas) => {
                 const partidasArr = Array.isArray(partidas) ? partidas : [];
                 this.creditos[idx].partidas = partidasArr;
@@ -99,8 +122,7 @@ export class ConsultaBolsasComponent {
             });
             this.creditos[idx].saldo = 0;
             this.creditos[idx].limporte = 0;
-            this.http.get<any>(`${environment.backendUrl}/api/sical/operaciones?clorg=${org}&clfun=${fun}&cleco=${eco}`)
-            .subscribe({
+            this.http.get<any>(`${environment.backendUrl}/api/sical/operaciones?clorg=${org}&clfun=${fun}&cleco=${eco}`).pipe(takeUntil(this.fetchCancel$)).subscribe({
               next: (operaciones) => {
                 const operacionesArr = Array.isArray(operaciones) ? operaciones : [];
                 this.creditos[idx].operaciones = operacionesArr;
@@ -177,14 +199,14 @@ export class ConsultaBolsasComponent {
       if (field === 'acpeco') {
         aVal = this.getkAcPeCo(a.gbsiut, a.gbsict);
         bVal = this.getkAcPeCo(b.gbsiut, b.gbsict);
-         return this.sortDirection === 'asc' ? aVal - bVal : bVal - aVal;
-       }
+          return this.sortDirection === 'asc' ? aVal - bVal : bVal - aVal;
+        }
 
       if (field === 'disponible') {
         aVal = this.getkdispon(a.saldo, this.getkAcPeCo(a.gbsiut, a.gbsict));
         bVal = this.getkdispon(b.saldo, this.getkAcPeCo(b.gbsiut, b.gbsict));
         return this.sortDirection === 'asc' ? aVal - bVal : bVal - aVal;
-       }
+        }
 
       aVal = a?.[field] ?? '';
       bVal = b?.[field] ?? '';
@@ -311,11 +333,12 @@ export class ConsultaBolsasComponent {
     if (value === null || value === undefined || value === '') return '';
     const numberValue = typeof value === 'number' ? value : Number(value);
     if (isNaN(numberValue)) return '';
-    return new Intl.NumberFormat('es-ES', {
+    const formatted = new Intl.NumberFormat('es-ES', {
       style: 'currency',
       currency: 'EUR',
       minimumFractionDigits: 2
     }).format(numberValue);
+    return formatted;
   }
 
   DownloadCSV() {
@@ -393,61 +416,13 @@ export class ConsultaBolsasComponent {
     }
   }
 
-
   cgeSearch: string = '';
   searchBolsas() {
     this.isLoading = true;
-    if(this.cgeSearch === '') {this.fetchBolsas(); this.isLoading = false;}
-
-    this.http.get<any>(`${environment.backendUrl}/api/gbs/fetch-all/${this.entcod}/${this.eje}/${this.cgeSearch}`).subscribe({
-      next: (response) => {
-        this.creditos = Array.isArray(response) ? [...response] : [];
-        this.backupCreditos = [...this.creditos];
-        this.defaultCreditos = [...this.creditos];
-        this.creditos.forEach((item, idx) => {
-          const org = item?.gbsorg ?? '';
-          const fun = item?.gbsfun ?? '';
-          const eco = item?.gbseco ?? '';
-          this.http
-            .get<any>(`${environment.backendUrl}/api/sical/partidas?clorg=${org}&clfun=${fun}&cleco=${eco}`)
-            .subscribe({
-              next: (partidas) => {
-                const partidasArr = Array.isArray(partidas) ? partidas : [];
-                this.creditos[idx].partidas = partidasArr;
-                const des = partidasArr[0]?.desc ?? '';
-                this.creditos[idx].partidaDesc = des;
-              },
-              error: () => {
-                this.creditos[idx].partidas = [];
-              },
-            });
-            this.creditos[idx].saldo = 0;
-            this.creditos[idx].limporte = 0;
-            this.http.get<any>(`${environment.backendUrl}/api/sical/operaciones?clorg=${org}&clfun=${fun}&cleco=${eco}`)
-            .subscribe({
-              next: (operaciones) => {
-                const operacionesArr = Array.isArray(operaciones) ? operaciones : [];
-                this.creditos[idx].operaciones = operacionesArr;
-                const firstLinea = operacionesArr[0]?.lineaList?.[0] ?? {};
-                const saldo = this.creditos[idx].saldo = firstLinea?.saldo ?? 0;
-                const limporte = this.creditos[idx].limporte = firstLinea?.limporte ?? 0;
-              },
-              error: () => {
-                this.creditos[idx].operaciones = [];
-              },
-            });
-        });
-        this.sortDirection = 'asc';
-        this.page = 0;
-        this.updatePagination();
-        this.isLoading = false;
-      },
-      error: (err) => {
-        this.tableIsError = true;
-        this.tableMessage = err.error.error ?? err.error;
-        this.isLoading = false;
-      }
-    });
+    this.fetchCancel$.next();
+    this.fetchCentroGestorInfo();
+    this.fetchBolsas();
+    this.isLoading = false;
   }
 
   setInputToUpper(event: Event): void {
@@ -465,7 +440,7 @@ export class ConsultaBolsasComponent {
     this.fetchBolsas();
     this.cgeSearch = '';
   }
-
+  
   //main detail grid functions
   selectedBolsas: any = null;
   showDetails(factura: any) {
@@ -532,18 +507,43 @@ export class ConsultaBolsasComponent {
     const isParenNeg = /^\(.*\)$/.test(s);
     if (isParenNeg) s = s.replace(/[()]/g, '');
     s = s.replace(/\u00A0/g, ' ').replace(/[^\d.,\-]/g, '');
-    const commaCount = (s.match(/,/g) || []).length;
-    const dotCount = (s.match(/\./g) || []).length;
-    if (commaCount > 0 && dotCount > 0) {
+
+    if (s.includes(',')) {
       s = s.replace(/\./g, '').replace(',', '.');
-    } else if (commaCount > 0 && dotCount === 0) {
-      s = s.replace(',', '.');
-    } else {
-      s = s.replace(/\./g, '');
     }
+
     const n = parseFloat(s);
     if (isNaN(n)) return 0;
     return isParenNeg ? -n : n;
+  }
+
+  formatGbsimp() {
+    if (!this.selectedBolsas || this.selectedBolsas.gbsimp === undefined || this.selectedBolsas.gbsimp === null) return;
+    let value = String(this.selectedBolsas.gbsimp)
+      .replace(/\s/g, '')
+      .replace(/\./g, '')     
+      .replace(',', '.')       
+      .replace(/[^\d.-]/g, '');
+    let num = parseFloat(value);
+    if (!isNaN(num)) {
+      this.selectedBolsas.gbsimp = num.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
+    }
+  }
+  formateGbsibg() {
+    if (!this.selectedBolsas || this.selectedBolsas.gbsibg === undefined || this.selectedBolsas.gbsibg === null) return;
+    let value = String(this.selectedBolsas.gbsibg)
+      .replace(/\s/g, '')
+      .replace(/\./g, '')     
+      .replace(',', '.')       
+      .replace(/[^\d.-]/g, '');
+    let num = parseFloat(value);
+    if (!isNaN(num)) {
+      this.selectedBolsas.gbsibg = num.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
+    }
+  }
+
+  cleaningCurrency(value: any) {
+    return this.parseMoney(value);
   }
 
   //misc

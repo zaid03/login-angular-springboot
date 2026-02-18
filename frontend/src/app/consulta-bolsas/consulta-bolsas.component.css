@@ -2,6 +2,16 @@
 .title-area {justify-content: flex-end;}
 .search-container {width: 30%;}
 /* search */
+/* centro gestor info */
+.centro-info {display: flex; width: 100%; margin-top: 5px; justify-content: center; gap: 10px;}
+.centro-content {display: flex; flex-direction: column; justify-content: center;}
+.rad-content {display: flex; align-items: flex-start; gap: 10px;}
+.rad {display: flex; gap: 10px; align-items: center;}
+.centro-content h1 {font-size: 20px !important;}
+.widthSmall {width: 10%;}
+.bigWidth {width: 30%;}
+.rad input[type="radio"] {margin: 0 6px 0 0; accent-color: #25176b; width: 18px; height: 18px; vertical-align: middle; outline: none; box-shadow: none;}
+/* centro gestor info */
 /* main-table */
 .credito-container td:nth-child(8),
 .credito-container td:nth-child(7),
@@ -26,9 +36,16 @@
 .boll,
 .detail-container h1,
 .acumolados h1,
-.acumolados p { font-size: 14px; font-weight: bold; color: #25176b; }
+.acumolados p,
+.centro-content p,
+.centro-content h1,
+.rad-name,
+.info-content p,
+.info-content h1 { font-size: 14px; font-weight: bold; color: #25176b; }
 .detail-container h1,
-.acumolados h1 {color: #162a3a;}
+.acumolados h1,
+.centro-content h1,
+.info-content h1 {color: #162a3a;}
 .conta-one textarea { height: 20px; padding: 2px 4px; border-radius: 6px; font-weight: bold;}
 .conta-one textarea:focus { outline: none; border-color: #042b5a; outline: none; background: #fff; }
 .smallTextarea{width: 80px; max-width: 100px;} 
