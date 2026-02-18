@@ -77,6 +77,7 @@
 /* sub detail grids */
 .detail-grid { display: flex; flex-direction: column; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); padding: 16px; border: 1px solid #e5e7eb; border-radius: 10px; background: #f9fafb; }
 .albaranes-table { width: 100%; }
+.alignment {justify-content: center;}
 /* sub detail grids */
 @media (min-width: 1700px) { .tallTextarea {width: 250px; max-width: 300px;}
 .averageTextarea{ width: 120px; max-width: 190px;} }
