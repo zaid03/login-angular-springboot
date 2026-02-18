@@ -25,47 +25,19 @@
 .chunk-three,
 .chunk-four,
 .chunk-five,
-.chunk-six { width: 30%; display: flex; padding: 2px; }
-.left { width: 25%; display: flex; flex-direction: column; gap: 10px; }
-.right { width: 75%; display: flex; flex-direction: column; gap: 10px;}
+.chunk-six { width: 32%; display: flex; padding: 2px; }
+.left { width: 30%; display: flex; flex-direction: column; gap: 10px; }
+.right { width: 70%; display: flex; flex-direction: column; gap: 10px;}
+.gap {gap: 17px;}
 .special-needs {width: 50%;}
 .on-three,
 .on-two { display: flex; gap: 10px; align-items: center;}
-.chunk-one p,
-.chunk-two p,
-.chunk-three p,
-.chunk-four p,
-.chunk-five p,
-.accountings p,
-.observ p,
-.chunk-six p,
-.chunk-one h1,
-.chunk-two h1,
-.chunk-three h1,
-.chunk-four h1,
-.chunk-five h1 { font-size: 14px; font-weight: bold; color: #25176b; }
 .chunk-six h1,
 .chunk-one h1,
 .chunk-two h1,
 .chunk-three h1,
 .chunk-four h1,
-.chunk-five h1 {color: #162a3a;}
-.chunk-one textarea,
-.chunk-two textarea,
-.chunk-three textarea,
-.chunk-four textarea,
-.chunk-five textarea,
-.accountings textarea,
-.observ textarea,
-.chunk-six textarea { height: 20px; padding: 2px 4px; border-radius: 6px; font-weight: bold; color: #162a3a;}
-.chunk-one textarea:focus,
-.chunk-two textarea:focus,
-.chunk-three textarea:focus,
-.chunk-four textarea:focus,
-.chunk-five textarea:focus,
-.accountings textarea:focus,
-.observ textarea:focus,
-.chunk-six textarea:focus { outline: none; border-color: #042b5a; outline: none; background: #fff; } 
+.chunk-five h1 {font-size: 18px;}
 .special-chunk { width: 33%; }
 .tallTextarea {width: 220px; max-width: 240px;}
 .averageTextarea{ width: 100px; max-width: 160px;}

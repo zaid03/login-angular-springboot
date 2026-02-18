@@ -11,35 +11,27 @@
 /* main-table */
 /* main grid detail */
 .detail-container,
-.acumolados { width: 99%; padding: 1px; display: flex; flex-wrap: wrap;}
-.acumolados { flex-direction: column; align-items: center; margin-top: 5px;}
-.detail-title { justify-content: center; display: flex; gap: 10px; }
+.acumolados {width: 99%; padding: 1px; display: flex; flex-wrap: wrap; gap: 5px;}
+.acumolados {flex-direction: column; align-items: center; margin-top: 5px;}
+.detail-title { justify-content: center; display: flex; gap: 10px;}
 .chunk-one,
-.chunk-two { display: flex; flex-direction: column; padding: 2px;}
-.chunk-one {width: 30%;}
-.chunk-two {width: 60%; }
+.chunk-two { display: flex; flex-direction: column;}
+.chunk-one {width: 35%;}
+.chunk-two {width: 64%; }
 .detail-chunk-container { display: flex; gap: 10px;}
-.detail-chunk-container .left { width: 25%; display: flex; flex-direction: column; gap: 10px; }
+.detail-chunk-container .left { width: 30%; display: flex; flex-direction: column; gap: 10px; }
 .detail-chunk-container .right { display: flex; flex-direction: column; gap: 10px; }
 .on-two { display: flex; gap: 15px; align-items: center;}
 .special { width: 12% !important;}
-.detail-container p,
-.boll,
 .detail-container h1,
-.acumolados h1,
-.acumolados p { font-size: 14px; font-weight: bold; color: #25176b; }
-.detail-container h1,
-.acumolados h1 {color: #162a3a;}
-.conta-one textarea { height: 20px; padding: 2px 4px; border-radius: 6px; font-weight: bold;}
-.conta-one textarea:focus { outline: none; border-color: #042b5a; outline: none; background: #fff; }
+.acumolados h1 {font-size: 18px;}
 .smallTextarea{width: 80px; max-width: 100px;} 
-.width {width: 75%;}
-.conta-first,
+.conta-first,   
 .conta-second { display: flex; margin-top: 1%;}
 .conta-one,
 .conta-two,
 .conta-three,
-.conta-four { width: 18%; display: flex; flex-direction: column; gap: 10px;}
+.conta-four { width: 30%; display: flex; flex-direction: column; gap: 5px;}
 .conta-sign { font-weight: bold; font-size: 22px; width: 8%; display: flex; align-items: flex-end; justify-content: center;}
 .fix {margin-top: 5px;}
 .detail-acumolados-container { width: 80%; display: flex;  justify-content: center; gap: 10px;}

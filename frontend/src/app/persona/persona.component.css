@@ -13,24 +13,11 @@
 .chunk-two {width: 49%; display: flex;}
 .left,
 .right {display: flex; flex-direction: column; }
-.left {width: 20%; gap: 20px;}
-.right {width: 80%; gap: 10px;}
+.left {width: 25%; gap: 20px;}
+.right {width: 75%; gap: 16px;}
 .on-two {display: flex; align-items: center; gap: 10px;}
-.chunk-one,
-.chunk-two p,
-.add-container p,
-.delete-content,
-.count-selected {font-size: 14px; font-weight: bold; color: #25176b;}
-.chunk-one h1,
-.delete-content h1 {color: #162a3a; font-size: 18px;}
-.chunk-one textarea,
-.chunk-two textarea,
-.add-container textarea {height: 20px; padding: 2px 4px; border-radius: 6px; font-weight: bold; color: #162a3a;}
-.chunk-one textarea:focus,
-.chunk-two textarea:focus,
-.add-container textarea:focus {outline: none; border-color: #042b5a; outline: none; background: #fff;}
-.average {width: 190px; max-width: 210px;}
-.long { width: 442px; max-width: 460px;}
+.average {width: 165px; max-width: 180px;}
+.long { width: 400px; max-width: 430px;}
 .height {height: 50px !important;}
 /* detail grid */
 /* services grid in detail */
@@ -44,11 +31,11 @@
 .add-confirm-modal { width: 45%; top: 20%;}
 .title {width: 80%;}
 .add-container {display: flex; width: 99%;}
-.left-add {width: 18%; display: flex; flex-direction: column; gap: 20px; text-align: left;}
-.right-add {width: 82%; gap: 10px; display: flex; flex-direction: column; align-items: flex-start;}
+.left-add {width: 25%; display: flex; flex-direction: column; gap: 20px; text-align: left;}
+.right-add {width: 75%; gap: 10px; display: flex; flex-direction: column; align-items: flex-start;}
 .on-two-add {display: flex; gap: 10px; align-items: center;}
-.average-add {width: 175px; max-width: 205px;}
-.average-add-second {width: 185px; max-width: 215px;}
+.average-add {width: 165px; max-width: 178px;}
+.average-add-second {width: 180px; max-width: 190px;}
 .long-add,
 .special-add-long {width: 430px; max-width: 99%;}
 .special-add-long {height: 50px !important;}

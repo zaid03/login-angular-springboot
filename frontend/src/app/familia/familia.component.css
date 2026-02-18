@@ -17,22 +17,6 @@
 .left { width: 5%; display: flex; flex-direction: column; gap: 10px; justify-content: center; }
 .right { width: 95%; display: flex; flex-direction: column; gap: 10px;}
 .on-two { display: flex; gap: 10px; align-items: center;}
-.chunk p,
-.chunk h1,
-.left-add p { font-size: 14px; font-weight: bold; color: #25176b; }
-.chunk h1 {color: #162a3a; font-size: 18px;}
-.chunk textarea,
-.subfamilia-table textarea,
-.right-add textarea,
-.right-add select,
-.subfamilia-table select { height: 20px; padding: 2px 4px; border-radius: 6px; font-weight: bold; color: #162a3a;}
-.subfamilia-table select,
-.right-add select {height: 25px;}
-.chunk textarea:focus,
-.subfamilia-table textarea:focus,
-.right-add textarea:focus,
-.right-add select:focus,
-.subfamilia-table select:focus { outline: none; border-color: #042b5a; outline: none; background: #fff; } 
 .tallText { width: 450px; max-width: 625px;}
 .subFamilias-add-btn {margin-top: 10px;}
 /* detail grid */

@@ -9,17 +9,8 @@
 .detail-container { display: flex; gap: 5px;}
 .chunk{ width: 50%; display: flex; padding: 2px; gap: 10px;}
 .left { width: 20%; display: flex; flex-direction: column; gap: 20px;}
-.right { width: 80%; display: flex; flex-direction: column; gap: 10px;} 
-.on-two { display: flex; gap: 10px; align-items: center; }
-.chunk p,
-.chunk h1,
-.radio-name,
-.long-text p { font-size: 14px; font-weight: bold; color: #25176b; }
-.chunk h1 {color: #162a3a; font-size: 18px;}
-.chunk textarea,
-.long-text textarea { height: 20px; padding: 2px 4px; border-radius: 6px; font-weight: bold; color: #162a3a;}
-.chunk textarea:focus,
-.long-text textarea:focus { outline: none; border-color: #042b5a; outline: none; background: #fff; } 
+.right { width: 80%; display: flex; flex-direction: column; gap: 15px;} 
+.on-two { display: flex; gap: 10px; align-items: center; } 
 .mediumText { width: 120px; max-width: 200px;}
 .smallText { width: 60px; max-width: 120px;}
 .tallText { width: 220px; max-width: 300px;}
