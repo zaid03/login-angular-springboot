@@ -51,5 +51,14 @@
 .albaranes-table { width: 100%; }
 .alignment {justify-content: center;}
 /* sub detail grids */
+/* D grid for centro gestor */
+.factura-cargar { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 16px; box-shadow: 0 8px 32px rgba(44, 62, 80, 0.18), 0 1.5px 6px rgba(44,62,80,0.08); padding: 25px 30px; min-width: 85%; min-height: 120px; max-height: 80vh; z-index: 3000; display: flex; flex-direction: column; align-items: center;}
+.factura-cargar .title {width: 50%;}
+.info-D {display: flex; width: 100%; gap: 10px; justify-content: center; margin: 10px;}
+.info-content {display: flex; align-items: center; width: 30%; gap: 10px;}
+.art-title {width: 25%; font-size: 23px;}
+.info-content p,
+.info-content h1 {font-size: 18px;}
+/* D grid for centro gestor */
 @media (min-width: 1700px) { .tallTextarea {width: 250px; max-width: 300px;}
 .averageTextarea{ width: 120px; max-width: 190px;} }

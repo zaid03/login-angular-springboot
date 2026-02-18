@@ -755,6 +755,24 @@ export class FacturasComponent {
     if (inputPage >= 1 && inputPage <= this.totalPagesDescuentos) {this.pageDescuentos = inputPage - 1;}
   }
   
+
+  //adding facturas from sicalwin
+  addFacturaGrid: boolean = false;
+  facturasWb: any[] = [];
+  facturasErrorMessage: string = '';
+  isLoadingFactura: boolean = false;
+  isAddingFactura: boolean = false;
+  openFacturaAdd() {
+    this.limpiarMEssages();
+    this.addFacturaGrid = true;
+  }
+
+  closeFacturaAdd() {
+    this.limpiarMEssages();
+    this.facturasWb = [];
+    this.addFacturaGrid = false;
+  }
+
   //misc 
   limpiarMEssages() {
     this.filterFacturaMessage = '';
@@ -764,5 +782,6 @@ export class FacturasComponent {
     this.moreInfoMessageSuccess = '';
     this.moreInfoMessageSuccess = '';
     this.moreInfoMessageError = '';
+    this.facturasErrorMessage = '';
   }
 }

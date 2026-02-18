@@ -84,6 +84,7 @@
                 <div class="menu-panel" *ngIf="showMenu">
                     <button class="download-btn" (click)="DownloadPDF()">Exportar a PDF</button>
                     <button class="download-btn" (click)="DownloadCSV()">Exportar a CSV</button>
+                    <button class="download-btn" (click)="openFacturaAdd()">Cargar facturas</button>
                 </div>
             </div>
         </div>
@@ -555,4 +556,61 @@
             </div>
         </div>
     </div>
+</div>
+
+<div class="modal-backdrop" *ngIf="addFacturaGrid" (click)="closeFacturaAdd()"></div>
+<div class="factura-cargar" *ngIf="addFacturaGrid">
+    <div class="btns">
+        <div class="title">
+            <h1 class="art-title">Cargar facturas</h1>
+        </div>
+        <button class="save-btn">+</button>
+        <button class="delete-btn" (click)="closeFacturaAdd()">✖</button>
+    </div>
+    <h1 class="errorBtn">{{facturasErrorMessage}}</h1>
+    <div *ngIf="isLoadingFactura" class="loading-message">
+        <div class="spinner"></div>
+        <span>Cargando</span>
+    </div>
+    <div *ngIf="isAddingFactura" class="loading-message">
+        <div class="spinner"></div>
+        <span>añadiendo</span>
+    </div>
+    <table class="D-table">
+        <thead>
+            <tr>
+                <th>Tipo</th>
+                <th>Ejercicio</th>
+                <th>Nº R.C.F.</th>
+                <th>Nº factura </th>
+                <th>Importe</th>
+                <th>Fecha Ent. Registro</th>
+                <th>Fecha Factura</th>
+                <th>NIF</th>
+                <th>Descripción</th>
+                <th>Nombre</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr 
+            >
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+            </tr>
+        </tbody>
+    </table>
+    <!-- <p class="selected" *ngIf="caughtD.length > 0">{{caughtD.length}} Bolsas seleccionados</p>
+    <div class="pagination-controls" *ngIf="listaDeD.length > searchPageSizeD">
+        <button class="pag-btn" (click)="searchPageD = searchPageD - 1" [disabled]="searchPageD === 0">Anterior</button>
+        <span> {{ searchPageD + 1 }} de {{ searchTotalPagesD }}</span>
+        <button class="pag-btn" (click)="searchPageD = searchPageD + 1" [disabled]="searchPageD + 1 >= searchTotalPagesD">Siguiente</button>
+    </div> -->
 </div>
