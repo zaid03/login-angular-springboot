@@ -39,10 +39,26 @@ public class FacturaConsultaController {
             String lFactura = getTagValue(doc, "l_factura");
 
             if ("-1".equals(exito)) {
-                if (lFactura == null || lFactura.trim().isEmpty()) {
+                NodeList facturaNodes = doc.getElementsByTagName("factura");
+                java.util.List<java.util.Map<String, String>> facturas = new java.util.ArrayList<>();
+
+                for (int i = 0; i < facturaNodes.getLength(); i++) {
+                    Node facturaNode = facturaNodes.item(i);
+                    java.util.Map<String, String> facturaMap = new java.util.HashMap<>();
+                    NodeList children = facturaNode.getChildNodes();
+                    for (int j = 0; j < children.getLength(); j++) {
+                        Node child = children.item(j);
+                        if (child.getNodeType() == Node.ELEMENT_NODE) {
+                            facturaMap.put(child.getNodeName(), child.getTextContent());
+                        }
+                    }
+                    facturas.add(facturaMap);
+                }
+
+                if (facturas.isEmpty()) {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
                 } else {
-                    return ResponseEntity.ok(lFactura); // or parse and return as JSON
+                    return ResponseEntity.ok(facturas);
                 }
             } else {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(desc != null ? desc : "Error desconocido");
