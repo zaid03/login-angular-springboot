@@ -3,15 +3,12 @@ package com.example.backend.dto;
 import java.time.LocalDateTime;
 
 public class FacturaConsultaRequestDto {
+    private String pwd;
+    private String publicKey;
     private String org;
     private String ent;
     private String eje;
     private String usu;
-    private String pwdSha1Base64;
-    private String fechaUtc;
-    private String nonce;
-    private String tokenSha512;
-    private String tokenSha1;
     private String tipoRegistro;
     private String cge;
     private Integer tipoDocumento;
@@ -25,6 +22,10 @@ public class FacturaConsultaRequestDto {
     private String estado;
     private String webserviceUrl;
 
+    public String getPwd() {return pwd;}
+
+    public String getPublicKey() {return publicKey;}
+
     public String getOrg() {return org;}
 
     public String getEnt() {return ent;}
@@ -32,16 +33,6 @@ public class FacturaConsultaRequestDto {
     public String getEje() {return eje;}
 
     public String getUsu() {return usu;}
-
-    public String getPwdSha1Base64() {return pwdSha1Base64;}
-
-    public String getFechaUtc() {return fechaUtc;}
-
-    public String getNonce() {return nonce;}
-
-    public String getTokenSha512() {return tokenSha512;}
-
-    public String getTokenSha1() {return tokenSha1;}
 
     public String getTipoRegistro() {return tipoRegistro;}
 

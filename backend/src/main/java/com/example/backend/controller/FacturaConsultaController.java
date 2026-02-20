@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.backend.dto.FacturaConsultaRequestDto;
 import com.example.backend.service.FacturaConsultaService;
 
+import org.w3c.dom.*;
+import javax.xml.parsers.*;
+
 @RestController
 @RequestMapping("/api/facturas")
 public class FacturaConsultaController {
@@ -23,12 +26,55 @@ public class FacturaConsultaController {
             String smlInput = facturaConsultaService.buildSmlInput(request);
             String smlResponse = facturaConsultaService.sendSmlRequest(smlInput, request.getWebserviceUrl());
 
-            if(smlResponse.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
+            // Parse the XML response
+            String sml = extractSmlFromSoap(smlResponse);
+            if (sml == null) return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Respuesta SOAP inválida");
+
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.parse(new java.io.ByteArrayInputStream(sml.getBytes()));
+
+            String exito = getTagValue(doc, "exito");
+            String desc = getTagValue(doc, "desc");
+            String lFactura = getTagValue(doc, "l_factura");
+
+            if ("-1".equals(exito)) {
+                if (lFactura == null || lFactura.trim().isEmpty()) {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
+                } else {
+                    return ResponseEntity.ok(lFactura); // or parse and return as JSON
+                }
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(desc != null ? desc : "Error desconocido");
             }
-            return ResponseEntity.ok(smlResponse);
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + ex.getMessage());
         }
+    }
+
+    // Helper to extract SML from SOAP response
+    private String extractSmlFromSoap(String soap) {
+        try {
+            int start = soap.indexOf("<servicioReturn");
+            if (start < 0) return null;
+            start = soap.indexOf(">", start) + 1;
+            int end = soap.indexOf("</servicioReturn>", start);
+            if (end > start) {
+                String sml = soap.substring(start, end)
+                    .replace("&lt;", "<")
+                    .replace("&gt;", ">");
+                return sml;
+            }
+        } catch (Exception ignored) {}
+        return null;
+    }
+
+    // Helper to get tag value
+    private String getTagValue(Document doc, String tag) {
+        NodeList nodes = doc.getElementsByTagName(tag);
+        if (nodes.getLength() > 0 && nodes.item(0).getFirstChild() != null) {
+            return nodes.item(0).getFirstChild().getNodeValue();
+        }
+        return null;
     }
 }
