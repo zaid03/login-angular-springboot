@@ -3,10 +3,14 @@ package com.example.backend.service;
 import com.example.backend.dto.FacturaInsertDto;
 import com.example.backend.sqlserver2.model.Cfg;
 import com.example.backend.sqlserver2.model.Fac;
+import com.example.backend.sqlserver2.model.Fde;
 import com.example.backend.sqlserver2.model.Ter;
+import com.example.backend.sqlserver2.model.Gbs;
 import com.example.backend.sqlserver2.repository.CfgRepository;
 import com.example.backend.sqlserver2.repository.FacRepository;
 import com.example.backend.sqlserver2.repository.TerRepository;
+import com.example.backend.sqlserver2.repository.GbsRepository;
+import com.example.backend.sqlserver2.repository.FdeRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +26,10 @@ public class FacturaInsertService {
     private CfgRepository cfgRepository;
     @Autowired
     private FacRepository facRepository;
+    @Autowired
+    private GbsRepository gbsRepository;
+    @Autowired
+    private FdeRepository fdeRepository;
 
     public List<String> insertFacturas(List<FacturaInsertDto> facturas) {
         List<String> messages = new ArrayList<>();
@@ -66,6 +74,24 @@ public class FacturaInsertService {
             fac.setFACOPG(cfg.getCFGOPG());
             fac.setFACTPG(cfg.getCFGTPG());
             facRepository.save(fac);
+
+            List<Gbs> gbsRows = gbsRepository.findByENTAndEJEAndCGECOD(dto.ENT, dto.EJE, dto.CGECOD);
+            System.out.println("GBS rows found: " + gbsRows.size());
+            for (Gbs gbs : gbsRows) {
+                Fde fde = new Fde();
+                fde.setENT(dto.ENT);
+                fde.setEJE(dto.EJE);
+                fde.setFACNUM(newFacnum);
+                fde.setFDEREF(gbs.getGBSREF());
+                fde.setFDEOPE(gbs.getGBSOPE());
+                fde.setFDEORG(gbs.getGBSORG());
+                fde.setFDEFUN(gbs.getGBSFUN());
+                fde.setFDEECO(gbs.getGBSECO());
+                fde.setFDESUB(gbs.getGBSSUB());
+                fde.setFDEIMP(0.0);
+                fde.setFDEDIF(0.0);
+                fdeRepository.save(fde);
+            }
         }
         return messages;
     }

@@ -7,6 +7,7 @@ public class FdeId implements Serializable {
     private Integer ENT;
     private String EJE;
     private Integer FACNUM;
+    private String FDEREF;
 
     @Override
     public boolean equals(Object o) {
@@ -15,11 +16,12 @@ public class FdeId implements Serializable {
         FdeId fdeId = (FdeId) o;
         return Objects.equals(ENT, fdeId.ENT) &&
                Objects.equals(EJE, fdeId.EJE) &&
-               Objects.equals(FACNUM, fdeId.FACNUM);
+               Objects.equals(FACNUM, fdeId.FACNUM) &&
+               Objects.equals(FACNUM, fdeId.FDEREF);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(ENT, EJE, FACNUM);
+        return Objects.hash(ENT, EJE, FACNUM, FDEREF);
     }
 }

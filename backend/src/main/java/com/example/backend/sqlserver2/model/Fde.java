@@ -22,6 +22,7 @@ public class Fde {
     @Id
     private Integer FACNUM;
 
+    @Id
     private String FDEREF;
 
     private String FDEOPE;
