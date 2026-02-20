@@ -33,6 +33,8 @@ export class FacturasComponent {
   private entcod: number | null = null;
   private eje: number | null = null;
   public centroGestor: string = '';
+  private WSent: string = '';
+  private WSorg: string = '';
   public estadogc: number | null = null;
   public facturaSearchTouched: boolean = false;
   public searchQueryTouched: boolean = false;
@@ -57,6 +59,21 @@ export class FacturasComponent {
     const eje = sessionStorage.getItem('EJERCICIO');
     const cge = sessionStorage.getItem('CENTROGESTOR');
     const estadoCentroGestor = sessionStorage.getItem('ESTADOGC');
+    const entSession = sessionStorage.getItem('WSENT'); 
+    const orgSession = sessionStorage.getItem('WSORG');   
+
+    if (cge){ const parsed = JSON.parse(cge); this.centroGestor = parsed.value; this.initialCentroGestor = this.centroGestor;}
+    if (entidad) {const parsed = JSON.parse(entidad); this.entcod = parsed.ENTCOD;}
+    if (eje) {const parsed = JSON.parse(eje); this.eje = parsed.eje;}
+    if (entSession) {const parsed = JSON.parse(entSession); this.WSent = parsed.WSENT;}
+    if (orgSession) {const parsed = JSON.parse(orgSession); this.WSorg = parsed.WSORG;}
+
+    if (!entidad || this.entcod === null || !eje || this.eje === null) {
+      sessionStorage.clear();
+      alert('Debes iniciar sesión para acceder a esta página.');
+      this.router.navigate(['/login']);
+      return;
+    }
 
     if(estadoCentroGestor){
       const parsed = JSON.parse(estadoCentroGestor);
@@ -70,28 +87,6 @@ export class FacturasComponent {
         this.isEstadoMessage = true;
         this.estadoMessage = 'Centro Gestor CERRADO para CONTABILIZAR';
       }
-    }
-
-    if (cge){
-      const parsed = JSON.parse(cge);
-      this.centroGestor = parsed.value
-      this.initialCentroGestor = this.centroGestor;
-    }
-    
-    if (entidad) {
-      const parsed = JSON.parse(entidad);
-      this.entcod = parsed.ENTCOD;
-    }
-    if (eje) {
-      const parsed = JSON.parse(eje);
-      this.eje = parsed.eje;
-    }
-
-    if (!entidad || this.entcod === null || !eje || this.eje === null) {
-      sessionStorage.clear();
-      alert('Debes iniciar sesión para acceder a esta página.');
-      this.router.navigate(['/login']);
-      return;
     }
 
     this.fetchFacturas();
@@ -739,7 +734,7 @@ export class FacturasComponent {
     if (inputPage >= 1 && inputPage <= this.totalPagesAlbaranes) {this.pageAlbaranes = inputPage - 1;}
   }
   pageAplicaiones = 0;
-  get paginatedApiciones(): any[] {if (!this.apalicaciones || this.apalicaciones.length === 0) return []; const start = this.pageAlbaranes * this.pageSize; return this.apalicaciones.slice(start, start + this.pageSize);}
+  get paginatedApiciones(): any[] {if (!this.apalicaciones || this.apalicaciones.length === 0) return []; const start = this.pageAplicaiones * this.pageSize; return this.apalicaciones.slice(start, start + this.pageSize);}
   get totalPagesAplicaciones(): number {return Math.max(1, Math.ceil((this.apalicaciones?.length ?? 0) / this.pageSize));}
   prevPageAplicaiones(): void {if (this.pageAplicaiones > 0) this.pageAplicaiones--;}
   nextPageAplicaciones(): void {if (this.pageAplicaiones < this.totalPagesAplicaciones - 1) this.pageAplicaiones++;}
@@ -747,7 +742,7 @@ export class FacturasComponent {
     if (inputPage >= 1 && inputPage <= this.totalPagesAplicaciones) {this.pageAplicaiones = inputPage - 1;}
   }
   pageDescuentos = 0;
-  get paginatedDescuentos(): any[] {if (!this.descuentos || this.descuentos.length === 0) return []; const start = this.pageAlbaranes * this.pageSize; return this.descuentos.slice(start, start + this.pageSize);}
+  get paginatedDescuentos(): any[] {if (!this.descuentos || this.descuentos.length === 0) return []; const start = this.pageDescuentos * this.pageSize; return this.descuentos.slice(start, start + this.pageSize);}
   get totalPagesDescuentos(): number {return Math.max(1, Math.ceil((this.descuentos?.length ?? 0) / this.pageSize));}
   prevPageDescuentos(): void {if (this.pageDescuentos > 0) this.pageDescuentos--;}
   nextPageDescuentos(): void {if (this.pageDescuentos < this.totalPagesDescuentos - 1) this.pageDescuentos++;}
@@ -755,7 +750,6 @@ export class FacturasComponent {
     if (inputPage >= 1 && inputPage <= this.totalPagesDescuentos) {this.pageDescuentos = inputPage - 1;}
   }
   
-
   //adding facturas from sicalwin
   addFacturaGrid: boolean = false;
   facturasWb: any[] = [];
@@ -765,6 +759,7 @@ export class FacturasComponent {
   openFacturaAdd() {
     this.limpiarMEssages();
     this.addFacturaGrid = true;
+    this.fetchFacturasWs();
   }
 
   closeFacturaAdd() {
@@ -779,10 +774,40 @@ export class FacturasComponent {
     this.isLoadingFactura = true;
 
     const payload = {
-
+      "org": this.WSorg,
+      "ent": this.WSent,
+      "eje": this.eje,
+      "usu": environment.sicalUsername,
+      "pwd": environment.sicalPassword,
+      "publicKey": environment.sicalPublicKey,
+      "tipoDocumento": 0,
+      "cge": this.centroGestor,
+      "situacionIgual": "08",
+      "estado": "E"
     }
 
-    this.http.post(`${environment.backUpUrl}/`, payload)
+    console.log(payload);
+    this.http.post<any>(`${environment.backendUrl}/api/facturas/consulta`, payload).subscribe({
+      next: (res) => {
+        this.isLoadingFactura = false;
+        this.facturasWb = res;
+        this.pageFacturas = 0;
+      },
+      error: (err) => {
+        console.log(err)
+        this.pageFacturas = 0;
+        this.isLoadingFactura = false;
+        this.facturasErrorMessage = err.error.error ?? err.error;
+      }
+    })
+  }
+  pageFacturas = 0;
+  get paginatedFacturaWs(): any[] {if (!this.facturasWb || this.facturasWb.length === 0) return []; const start = this.pageFacturas * this.pageSize; return this.facturasWb.slice(start, start + this.pageSize);}
+  get totalPagesFacturas(): number {return Math.max(1, Math.ceil((this.facturasWb?.length ?? 0) / this.pageSize));}
+  prevPageFacturas(): void {if (this.pageFacturas > 0) this.pageFacturas--;}
+  nextPageFacturas(): void {if (this.pageFacturas < this.totalPagesFacturas - 1) this.pageFacturas++;}
+  goToPageFacturas(event: any): void { const inputPage = Number(event.target.value); 
+    if (inputPage >= 1 && inputPage <= this.totalPagesFacturas) {this.pageFacturas = inputPage - 1;}
   }
 
   proveedor: string = '';
