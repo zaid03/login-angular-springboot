@@ -136,11 +136,10 @@ public class FacController {
         @RequestBody List<FacturaInsertDto> facturas
     ) {
         try {
-            facturaInsertService.insertFacturas(facturas);
-            return ResponseEntity.ok().build();
+            List<String> messages = facturaInsertService.insertFacturas(facturas);
+            return ResponseEntity.ok(messages);
         } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error: " + ex.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + ex.getMessage());
         }
     }
 }

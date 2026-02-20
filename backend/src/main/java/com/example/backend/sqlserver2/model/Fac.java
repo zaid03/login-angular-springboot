@@ -29,7 +29,6 @@ public class Fac {
     private String EJE;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Integer FACNUM;
 

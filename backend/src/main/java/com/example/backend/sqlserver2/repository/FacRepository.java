@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.example.backend.sqlserver2.model.Fac;
@@ -12,4 +14,10 @@ import com.example.backend.sqlserver2.model.Fac;
 public interface FacRepository extends JpaRepository<Fac, Integer>, JpaSpecificationExecutor<Fac>{
     //for the main list
     List<Fac> findByENTAndEJEAndCGECODOrderByFACFREAsc(Integer ent, String eje, String cgecod);
+
+    //needed for adding a factura
+    @Query("SELECT MAX(f.FACNUM) FROM Fac f WHERE f.ENT = :ent AND f.EJE = :eje")
+    Integer findMaxFACNUMByENTAndEJE(@Param("ent") Integer ent, @Param("eje") String eje);
+
+    boolean existsByFACTDCAndFACANNAndFACFAC(String FACTDC, Integer FACANN, Integer FACFAC);
 }
