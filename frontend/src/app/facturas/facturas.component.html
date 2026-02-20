@@ -567,6 +567,62 @@
         <button class="save-btn">+</button>
         <button class="delete-btn" (click)="closeFacturaAdd()">✖</button>
     </div>
+    <div class="search-option-container">
+        <div class="chunk-one-search">
+            <div class="left-search">
+                <p>Nif Proveedor</p>
+                <p>N° Factura</p>
+            </div>
+            <div class="right-search">
+                <input 
+                    placeholder="Nif Proveedor"
+                    type="text"
+                    [(ngModel)]="proveedor"
+                    class="widthIput"
+                />
+                <input 
+                    placeholder="N° Factura"
+                    type="text"
+                    [(ngModel)]="facturaNumero" 
+                    class="widthIput"
+                />
+            </div>
+        </div>
+        <div class="chunk-one-search">
+            <div class="left-search alignTitleSearch">
+                <p>Fecha entrada RCF</p>
+            </div>
+            <div class="right-search">
+                <input 
+                    type="date"
+                    [(ngModel)]="RcfDesde" 
+                    class="widthIput"
+                />
+                <input 
+                    type="date"
+                    [(ngModel)]="RcfHasta"
+                    class="widthIput"
+                />
+            </div>
+        </div>
+        <div class="chunk-one-search">
+            <div class="left-search alignTitleSearch">
+                <p>Fecha factura</p>
+            </div>
+            <div class="right-search">
+                <input 
+                    type="date"
+                    [(ngModel)]="fechaFacturaDesde" 
+                    class="widthIput"
+                />
+                <input 
+                    type="date"
+                    [(ngModel)]="fechaFacturaHasta" 
+                    class="widthIput"
+                />
+            </div>
+        </div>
+    </div>
     <h1 class="errorBtn">{{facturasErrorMessage}}</h1>
     <div *ngIf="isLoadingFactura" class="loading-message">
         <div class="spinner"></div>

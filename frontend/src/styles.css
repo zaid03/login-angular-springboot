@@ -94,7 +94,8 @@ app-sidebar { flex-shrink: 0; z-index: 2000; }
 .detail-container h1,
 .acumolados h1,
 .acumolados p,
-.centro-info p {font-size: 18px; font-weight: bold; color: #38249b;}
+.centro-info ,
+.left-search p {font-size: 18px; font-weight: bold; color: #38249b;}
 .chunk-one h1,
 .chunk-two h1,
 .chunk-three h1,

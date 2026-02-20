@@ -769,8 +769,45 @@ export class FacturasComponent {
 
   closeFacturaAdd() {
     this.limpiarMEssages();
+    this.emptySearch();
     this.facturasWb = [];
     this.addFacturaGrid = false;
+  }
+
+  fetchFacturasWs() {
+    this.limpiarMEssages();
+    this.isLoadingFactura = true;
+
+    const payload = {
+
+    }
+
+    this.http.post(`${environment.backUpUrl}/`, payload)
+  }
+
+  proveedor: string = '';
+  facturaNumero: string = '';
+  RcfDesde: string = '';
+  RcfHasta: string = '';
+  fechaFacturaDesde: string = '';
+  fechaFacturaHasta: string = '';
+  searchFacturas() {
+    this.limpiarMEssages();
+  }
+
+  clearSearch() {
+    this.limpiarMEssages();
+    this.emptySearch();
+    this.fetchFacturasWs();
+  }
+
+  emptySearch() {
+    this.proveedor = '';
+    this.facturaNumero = '';
+    this.RcfDesde = '';
+    this.RcfHasta = '';
+    this.fechaFacturaDesde = '';
+    this.fechaFacturaHasta = '';
   }
 
   //misc 
