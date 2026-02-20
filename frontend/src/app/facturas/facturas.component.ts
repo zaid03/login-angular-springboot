@@ -819,6 +819,27 @@ export class FacturasComponent {
   fechaFacturaHasta: string = '';
   searchFacturas() {
     this.limpiarMEssages();
+    const params: any = {};
+
+    if (this.proveedor) params.proveedor = this.proveedor;
+    if (this.facturaNumero) params.facturaNumero = this.facturaNumero;
+    if (this.RcfDesde) params.rcfDesde = this.RcfDesde;
+    if (this.RcfHasta) params.rcfHasta = this.RcfHasta;
+    if (this.fechaFacturaDesde) params.fechaFacturaDesde = this.fechaFacturaDesde;
+    if (this.fechaFacturaHasta) params.fechaFacturaHasta = this.fechaFacturaHasta;
+
+    this.isLoading = true;
+    this.http.post<any[]>(`${environment.backendUrl}/api/facturas`, { params }).subscribe({
+      next: (response) => {
+        this.facturas = response;
+        this.updatePagination();
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.filterFacturaMessage = err.error?.error ?? err.error;
+        this.isLoading = false;
+      }
+    });
   }
 
   clearSearch() {
