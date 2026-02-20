@@ -14,11 +14,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.backend.service.FacSpecification;
+import com.example.backend.service.FacturaInsertService;
 import com.example.backend.sqlserver2.model.Fac;
 import com.example.backend.sqlserver2.model.Ter;
 import com.example.backend.sqlserver2.repository.FacRepository;
 import com.example.backend.sqlserver2.repository.TerRepository;
 import com.example.backend.dto.FacWithTerDto;
+import com.example.backend.dto.FacturaInsertDto;
 
 @RestController
 @RequestMapping("/api/fac")
@@ -27,6 +29,8 @@ public class FacController {
     private FacRepository facRepository;
     @Autowired
     private TerRepository terRepository;
+    @Autowired
+    private FacturaInsertService facturaInsertService;
 
     //for the main list
     @GetMapping("/{ent}/{eje}/{cgecod}")
@@ -120,6 +124,20 @@ public class FacController {
             }).collect(Collectors.toList());
             
             return ResponseEntity.ok(result);
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Error: " + ex.getMessage());
+        }
+    }
+
+    //adding a factura
+    @PostMapping("/add-facturas")
+    public ResponseEntity<?> addFacturas(
+        @RequestBody List<FacturaInsertDto> facturas
+    ) {
+        try {
+            facturaInsertService.insertFacturas(facturas);
+            return ResponseEntity.ok().build();
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Error: " + ex.getMessage());

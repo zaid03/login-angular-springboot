@@ -3,7 +3,6 @@ package com.example.backend.sqlserver2.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -19,6 +18,9 @@ public interface CfgRepository extends JpaRepository<Cfg, CfgId> {
     //to fetch all ejes
     List<Cfg> findByENT(@Param("ENT") Integer ENT);
     
-    //to search in eje
+    //to search in eje needed for adding facturas
     List<Cfg> findByENTAndEJE(@Param("ENT") Integer ENT, @Param("EJE") String EJE);
+
+    //needed for adding facturas
+    // Cfg findByENTAndEJE(Integer ent, String eje);
 }

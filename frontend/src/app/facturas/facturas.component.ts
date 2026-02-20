@@ -767,6 +767,7 @@ export class FacturasComponent {
     this.emptySearch();
     this.facturasWb = [];
     this.addFacturaGrid = false;
+    this.caughtFacturas = [];
   }
 
   fetchFacturasWs() {
@@ -833,6 +834,48 @@ export class FacturasComponent {
     this.RcfHasta = '';
     this.fechaFacturaDesde = '';
     this.fechaFacturaHasta = '';
+  }
+
+  caughtFacturas: any[] = [];
+  selectFacturasAdd(F: any) {
+    if (this.caughtFacturas.includes(F)) {
+      const index = this.caughtFacturas.indexOf(F);
+      if(index !== -1) {
+        this.caughtFacturas.splice(index, 1);
+      }
+    } else {
+      this.caughtFacturas = [...this.caughtFacturas, F];
+    }
+  }
+
+  isFacturaSelected(a: any): boolean {
+    return this.caughtFacturas.includes(a);
+  }
+
+  addingFacturas() {
+    this.limpiarMEssages();
+    this.isAddingFactura = true;
+
+    const today = new Date();
+    const payload = this.caughtFacturas.map(Obj => ({
+      "ENT": this.entcod,
+      "EJE": this.eje,
+      "TERCOD": Obj.tercero,
+      "CGECOD": this.centroGestor,
+      "FACIMP": Obj.impFactura,
+      "FACIEC": 0,
+      "FACIDI": 0,
+      "FACTDC": Obj.tipoRegistro,
+      "FACANN": Obj.annoRegistro,
+      "FACFAC": Obj.numRegistro,
+      "FACDOC": Obj.numDocumento,
+      "FACDAT": Obj.fechaDocumento,
+      "FACTXT": Obj.Texto,
+      "FACDTO": 0,
+      "FACFRE": today.toISOString().slice(0, 19)
+    }))
+
+    console.log(payload);
   }
 
   //misc 

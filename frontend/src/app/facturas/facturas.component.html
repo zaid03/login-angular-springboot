@@ -622,6 +622,10 @@
                 />
             </div>
         </div>
+        <div class="search-options-btns">
+            <button class="download-btn" (click)="searchFacturas()">Buscar</button>
+            <button class="download-btn" (click)="clearSearch()">Limpiar</button>
+        </div>
     </div>
     <h1 class="errorBtn">{{facturasErrorMessage}}</h1>
     <div *ngIf="isLoadingFactura" class="loading-message">
@@ -650,6 +654,7 @@
         <tbody>
             <tr 
                 *ngFor="let f of paginatedFacturaWs"
+                (click)="selectFacturasAdd(f)"
             >
                 <td>{{f.tipoRegistro}}</td>
                 <td>{{f.annoRegistro}}</td>
@@ -664,6 +669,7 @@
             </tr>
         </tbody>
     </table>
+    <p class="selected" *ngIf="caughtFacturas.length > 0">{{caughtFacturas.length}} Facturas seleccionados</p>
     <div class="pagination-controls alignment">
         <button (click)="prevPageFacturas()" [disabled]="pageFacturas === 0">Anterior</button>
         <span>Página</span>
@@ -678,5 +684,4 @@
         <span>de {{ totalPagesFacturas }}</span>
         <button (click)="nextPageFacturas()" [disabled]="pageFacturas + 1 >= totalPagesFacturas">Siguiente</button>
     </div>
-    <!-- <p class="selected" *ngIf="caughtD.length > 0">{{caughtD.length}} Bolsas seleccionados</p>-->
 </div>

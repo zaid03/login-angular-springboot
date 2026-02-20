@@ -62,11 +62,12 @@
 .info-content p,
 .info-content h1 {font-size: 18px;}
 .search-option-container {display: flex; width: 100%; gap: 10px; margin: 5px;}
-.chunk-one-search {width: 33%; display: flex;}
+.chunk-one-search {width: 30%; display: flex;}
 .left-search {width: 30%; display: flex; flex-direction: column; gap: 15px;}
 .right-search {width: 70%; display: flex; flex-direction: column; gap: 10px;}
 .alignTitleSearch {justify-content: center;}
 .widthIput {width: 90% !important;}
+.search-options-btns {display: flex; flex-direction: column; width: 6%; gap: 10px; justify-content: center;}
 /* cargar facturas */
 @media (min-width: 1700px) { .tallTextarea {width: 250px; max-width: 300px;}
 .averageTextarea{ width: 120px; max-width: 190px;} }

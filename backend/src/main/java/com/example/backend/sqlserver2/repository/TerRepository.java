@@ -39,4 +39,7 @@ public interface TerRepository extends JpaRepository<Ter, TerId>, JpaSpecificati
 
   //for the main list of facturas
   Optional<Ter> findByENTAndTERCOD(Integer ent, Integer tercod);
+
+  //needed for extracting tercod for adding facturas
+  Ter findByENTAndTERNIF(Integer ent, String ternif);
 }
