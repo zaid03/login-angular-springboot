@@ -852,6 +852,7 @@ export class FacturasComponent {
     return this.caughtFacturas.includes(a);
   }
 
+  facturasSuccessMessage: string = '';
   addingFacturas() {
     this.limpiarMEssages();
     this.isAddingFactura = true;
@@ -860,7 +861,7 @@ export class FacturasComponent {
     const payload = this.caughtFacturas.map(Obj => ({
       "ENT": this.entcod,
       "EJE": this.eje,
-      "TERCOD": Obj.tercero,
+      "tercero": Obj.tercero,
       "CGECOD": this.centroGestor,
       "FACIMP": Obj.impFactura,
       "FACIEC": 0,
@@ -872,10 +873,28 @@ export class FacturasComponent {
       "FACDAT": Obj.fechaDocumento,
       "FACTXT": Obj.Texto,
       "FACDTO": 0,
-      "FACFRE": today.toISOString().slice(0, 19)
+      "FACFRE": today.toISOString()
     }))
 
-    console.log(payload);
+    this.http.post(`${environment.backendUrl}/api/fac/add-facturas`, payload).subscribe({
+      next: (res) => {
+        if (res = []) {
+          this.fetchFacturas();
+          this.isAddingFactura = false;
+          this.caughtFacturas = [];
+          this.closeFacturaAdd();
+          this.estadoMessage = 'facturas agregadas exitosamente';
+        } else {
+          this.isAddingFactura = false;
+          this.caughtFacturas = [];
+          this.facturasSuccessMessage = res;
+        }
+      },
+      error: (err) => {
+        this.isAddingFactura = true;
+        this.facturasErrorMessage = err.error.error ?? err.error
+      }
+    })
   }
 
   //misc 
@@ -888,5 +907,6 @@ export class FacturasComponent {
     this.moreInfoMessageSuccess = '';
     this.moreInfoMessageError = '';
     this.facturasErrorMessage = '';
+    this.facturasSuccessMessage = '';
   }
 }

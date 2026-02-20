@@ -564,7 +564,7 @@
         <div class="title">
             <h1 class="art-title">Cargar facturas</h1>
         </div>
-        <button class="save-btn">+</button>
+        <button class="save-btn" (click)="addingFacturas()">+</button>
         <button class="delete-btn" (click)="closeFacturaAdd()">✖</button>
     </div>
     <div class="search-option-container">
@@ -628,6 +628,7 @@
         </div>
     </div>
     <h1 class="errorBtn">{{facturasErrorMessage}}</h1>
+    <h1 class="sucessBtn">{{facturasSuccessMessage}}</h1>
     <div *ngIf="isLoadingFactura" class="loading-message">
         <div class="spinner"></div>
         <span>Cargando</span>
