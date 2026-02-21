@@ -63,10 +63,19 @@ public class Alb {
         @JoinColumn(name = "FACNUM", referencedColumnName = "FACNUM", insertable = false, updatable = false)
     })
     private Fac fac;
-
     public Fac getFac() { return fac; }
     public void setFac(Fac fac) { this.fac = fac; }
     
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumns({
+        @JoinColumn(name = "ENT", referencedColumnName = "ENT", insertable = false, updatable = false),
+        @JoinColumn(name = "ALBCOM", referencedColumnName = "DEPCOD", insertable = false, updatable = false),
+        @JoinColumn(name = "EJE", referencedColumnName = "EJE", insertable = false, updatable = false)
+    })
+    private Dep dep;
+    public Dep getDep() { return dep; }
+    public void setDep(Dep dep) { this.dep = dep; }
+
     public Integer getENT() { return ENT; }
     public void setENT(Integer ENT) { this.ENT = ENT; }
 

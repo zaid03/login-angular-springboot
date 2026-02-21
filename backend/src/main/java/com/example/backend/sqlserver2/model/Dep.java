@@ -74,7 +74,6 @@ public class Dep {
 
     private String DEPDEN;
 
-    //relationships
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumns({
@@ -88,7 +87,6 @@ public class Dep {
     @OneToMany(mappedBy = "dep", fetch = FetchType.LAZY)
     private List<Dpe> dpes;
 
-    //getters and setters
     public Cge getCge() { return cge; }
     public void setCge(Cge cge) { this.cge = cge; }
 
