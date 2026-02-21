@@ -47,30 +47,30 @@ bootWar {
     archiveFileName = 'scap.war'
 }
 
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.web 
+// publishing {
+//     publications {
+//         mavenJava(MavenPublication) {
+//             from components.web 
 
-            groupId = project.group
-            artifactId = project.name
-            version = project.version
-        }
-    }
+//             groupId = project.group
+//             artifactId = project.name
+//             version = project.version
+//         }
+//     }
 
-    repositories {
-        maven {
-            name = 'nexus'
+//     repositories {
+//         maven {
+//             name = 'nexus'
 
-            def releasesRepoUrl = System.getenv('NEXUS_RELEASES_URL')
-            def snapshotsRepoUrl = System.getenv('NEXUS_SNAPSHOTS_URL')
+//             def releasesRepoUrl = System.getenv('NEXUS_RELEASES_URL')
+//             def snapshotsRepoUrl = System.getenv('NEXUS_SNAPSHOTS_URL')
 
-            url = uri(version.toString().endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl)
+//             url = uri(version.toString().endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl)
 
-            credentials {
-                username = System.getenv('SERVICE_USER') as String
-                password = System.getenv('PASSWORD') as String
-            }
-        }
-    }
-}
+//             credentials {
+//                 username = System.getenv('SERVICE_USER') as String
+//                 password = System.getenv('PASSWORD') as String
+//             }
+//         }
+//     }
+// }
