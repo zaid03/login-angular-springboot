@@ -123,7 +123,7 @@ app-sidebar { flex-shrink: 0; z-index: 2000; }
 .detail-container h1,
 .acumolados h1,
 .centro-info  h1,
-.proveedor-info h1 {color: #162a3a; font-size: 20px;}
+.proveedor-info h1 {color: #162a3a; font-size: 16px;}
 .chunk-one textarea,
 .chunk-two textarea,
 .chunk-three textarea,

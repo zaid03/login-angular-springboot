@@ -3,9 +3,10 @@ plugins {
     id 'org.springframework.boot' version '3.5.0'
     id 'io.spring.dependency-management' version '1.1.7'
     id 'war'
+    id 'maven-publish'
 }
 
-group = 'com.example'
+group = 'es.iass.scap'
 version = '0.0.1-SNAPSHOT'
 
 java {
@@ -44,4 +45,32 @@ tasks.named('test') {
 // Configuration WAR
 bootWar {
     archiveFileName = 'scap.war'
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.web 
+
+            groupId = project.group
+            artifactId = project.name
+            version = project.version
+        }
+    }
+
+    repositories {
+        maven {
+            name = 'nexus'
+
+            def releasesRepoUrl = System.getenv('NEXUS_RELEASES_URL')
+            def snapshotsRepoUrl = System.getenv('NEXUS_SNAPSHOTS_URL')
+
+            url = uri(version.toString().endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl)
+
+            credentials {
+                username = System.getenv('SERVICE_USER') as String
+                password = System.getenv('PASSWORD') as String
+            }
+        }
+    }
 }

@@ -66,7 +66,7 @@ public class AlbController {
         @PathVariable String cgecod
     ) {
         try {
-            List<albFacturaDto> albaranes = albRepository.findByENTAndTERCODAndDep_EJEAndDep_CGECOD(ent, tercod, eje, cgecod);
+            List<albFacturaDto> albaranes = albRepository.findAlbFactura(ent, tercod, 0, eje, cgecod);
             if (albaranes.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
             }
@@ -87,7 +87,7 @@ public class AlbController {
         @PathVariable String cgecod
     ) {
         try {
-            List<albFacturaDto> albaranes = albRepository.findByENTAndTERCODAndALBDATGreaterThanEqualAndDep_EJEAndDep_CGECOD(ent, tercod, albdat, eje, cgecod);
+            List<albFacturaDto> albaranes = albRepository.findAlbFacturaGreaterThanEqual(ent, tercod, 0, albdat, eje, cgecod);
             if (albaranes.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
             }
@@ -107,7 +107,7 @@ public class AlbController {
         @PathVariable String cgecod
     ) {
         try {
-            List<albFacturaDto> albaranes = albRepository.findByENTAndTERCODAndALBDATLessThanEqualAndDep_EJEAndDep_CGECOD(ent, tercod, albdat, eje, cgecod);
+            List<albFacturaDto> albaranes = albRepository.findAlbFacturaLessThanEqual(ent, tercod, 0, albdat, eje, cgecod);
             if (albaranes.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
             }
