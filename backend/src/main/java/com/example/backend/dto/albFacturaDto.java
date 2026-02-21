@@ -10,4 +10,7 @@ public interface albFacturaDto {
     LocalDateTime getALBFRE();
     String getDEPCOD();
     String getALBCOM();
+    String getCONCTP();
+    String getCONCPR();
+    String getCONCCR();
 }

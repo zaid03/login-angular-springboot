@@ -7,6 +7,12 @@ public class AlbId implements Serializable {
     private Integer ENT;
     private Integer ALBNUM;
 
+    public AlbId() {}
+    public AlbId(Integer ENT, Integer ALBNUM) {
+        this.ENT = ENT;
+        this.ALBNUM = ALBNUM;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

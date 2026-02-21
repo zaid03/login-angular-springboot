@@ -19,7 +19,7 @@ public interface AlbRepository extends JpaRepository<Alb, AlbId> {
 
     //fetching albaranes for adding to a factura
     @Query(
-        value = "SELECT T1.ALBREF AS ALBREF, T1.ALBDAT AS ALBDAT, T1.ALBBIM AS ALBBIM, T1.ALBNUM AS ALBNUM, T1.ALBFRE AS ALBFRE, " +
+        value = "SELECT T1.ALBREF AS ALBREF, T1.ALBDAT AS ALBDAT, T1.ALBBIM AS ALBBIM, T1.ALBNUM AS ALBNUM, T1.ALBFRE AS ALBFRE, T1.CONCTP AS CONCTP, T1.CONCPR AS CONCPR, T1.CONCCR AS CONCCR, " +
                 "T2.DEPCOD AS DEPCOD, T1.ALBCOM AS ALBCOM " +
                 "FROM ALB T1 " +
                 "LEFT JOIN DEP T2 ON T1.ENT = T2.ENT AND T1.ALBCOM = T2.DEPCOD " +
@@ -40,7 +40,7 @@ public interface AlbRepository extends JpaRepository<Alb, AlbId> {
 
     //searching in albaranes for adding to a factura
     @Query(
-        value = "SELECT T1.ALBREF AS ALBREF, T1.ALBDAT AS ALBDAT, T1.ALBBIM AS ALBBIM, T1.ALBNUM AS ALBNUM, T1.ALBFRE AS ALBFRE, " +
+        value = "SELECT T1.ALBREF AS ALBREF, T1.ALBDAT AS ALBDAT, T1.ALBBIM AS ALBBIM, T1.ALBNUM AS ALBNUM, T1.ALBFRE AS ALBFRE, T1.CONCTP AS CONCTP, T1.CONCPR AS CONCPR, T1.CONCCR AS CONCCR, " +
                 "T2.DEPCOD AS DEPCOD, T1.ALBCOM AS ALBCOM " +
                 "FROM ALB T1 " +
                 "LEFT JOIN DEP T2 ON T1.ENT = T2.ENT AND T1.ALBCOM = T2.DEPCOD " +
@@ -62,7 +62,7 @@ public interface AlbRepository extends JpaRepository<Alb, AlbId> {
     );
 
     @Query(
-        value = "SELECT T1.ALBREF AS ALBREF, T1.ALBDAT AS ALBDAT, T1.ALBBIM AS ALBBIM, T1.ALBNUM AS ALBNUM, T1.ALBFRE AS ALBFRE, " +
+        value = "SELECT T1.ALBREF AS ALBREF, T1.ALBDAT AS ALBDAT, T1.ALBBIM AS ALBBIM, T1.ALBNUM AS ALBNUM, T1.ALBFRE AS ALBFRE, T1.CONCTP AS CONCTP, T1.CONCPR AS CONCPR, T1.CONCCR AS CONCCR, " +
                 "T2.DEPCOD AS DEPCOD, T1.ALBCOM AS ALBCOM " +
                 "FROM ALB T1 " +
                 "LEFT JOIN DEP T2 ON T1.ENT = T2.ENT AND T1.ALBCOM = T2.DEPCOD " +

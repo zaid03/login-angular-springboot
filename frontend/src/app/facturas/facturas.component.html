@@ -751,15 +751,34 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
-                <td>test</td>
+            <tr 
+                *ngFor="let a of paginatedAlbaranesAdd"
+                (click)="selectAlbaranesAdd(a)"
+                [class.selected-row]="isAlbaranesSelected(a)"
+            >
+                <td>{{a.albref}}</td>
+                <td>{{a.albdat}}</td>
+                <td>{{a.albbim}}</td>
+                <td>{{a.albnum}}</td>
+                <td>{{a.albfre}}</td>
+                <td>{{a.depcod}}</td>
+                <td>{{a.albcom}}</td>
             </tr>
         </tbody>
     </table>
+    <p class="selected" *ngIf="caughtAlbranaes.length > 0">{{caughtAlbranaes.length}} Albaranes seleccionados</p>
+    <div class="pagination-controls alignment">
+        <button (click)="prevPageAlbaranesAdd()" [disabled]="pageAlbaranesAdd === 0">Anterior</button>
+        <span>Página</span>
+        <input
+            type="number"
+            min="1"
+            [max]="totalPagesAlbaranesAdd"
+            [value]="pageAlbaranesAdd + 1"
+            (change)="goToPageAlbaranesAdd($event)"
+            class="pagination-input"
+        />
+        <span>de {{ totalPagesAlbaranesAdd }}</span>
+        <button (click)="nextPageAlbaraneAdd()" [disabled]="pageAlbaranesAdd + 1 >= totalPagesAlbaranesAdd">Siguiente</button>
+    </div>
 </div>

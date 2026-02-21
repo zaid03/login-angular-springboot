@@ -926,6 +926,7 @@ export class FacturasComponent {
   albaranesDesde: string = '';
   albaranesHasta: string = '';
   tercod: number = 0;
+  albaranesAdd: any[] = [];
   openAlbaranesAdd() {
     this.limpiarMEssages();
     this.albaranesAddGrid = true;
@@ -936,14 +937,73 @@ export class FacturasComponent {
   closeAlbaranesAdd() {
     this.albaranesAddGrid = false;
     this.emptySearchAlbaranes();
+    this.albaranesAdd = [];
   }
 
   fetchAlrabanes() {
     this.limpiarMEssages();
+    this.isLoadingAlbaranes = true;
+
+    this.http.get<any>(`${environment.backendUrl}/api/alb/albaranes-factura/${this.entcod}/${this.tercod}/${this.eje}/${this.centroGestor}`).subscribe({
+      next: (res) => {
+        this.isLoadingAlbaranes = false;
+        this.albaranesAdd = res;
+        this.pageAlbaranesAdd = 0;
+      },
+      error: (err) => {
+        this.albaranesError = err.error.error ?? err.error;
+        this.isLoadingAlbaranes = false;
+        this.pageAlbaranesAdd = 0;
+      }
+    })
+  }
+  pageAlbaranesAdd = 0;
+  get paginatedAlbaranesAdd(): any[] {if (!this.albaranesAdd || this.albaranesAdd.length === 0) return []; const start = this.pageAlbaranesAdd * this.pageSize; return this.albaranesAdd.slice(start, start + this.pageSize);}
+  get totalPagesAlbaranesAdd(): number {return Math.max(1, Math.ceil((this.albaranesAdd?.length ?? 0) / this.pageSize));}
+  prevPageAlbaranesAdd(): void {if (this.pageAlbaranesAdd > 0) this.pageAlbaranesAdd--;}
+  nextPageAlbaraneAdd(): void {if (this.pageAlbaranesAdd < this.totalPagesAlbaranesAdd - 1) this.pageAlbaranesAdd++;}
+  goToPageAlbaranesAdd(event: any): void { const inputPage = Number(event.target.value); 
+    if (inputPage >= 1 && inputPage <= this.totalPagesAlbaranesAdd) {this.pageAlbaranesAdd = inputPage - 1;}
   }
 
   searchAlbaranes() {
     this.limpiarMEssages();
+    
+    if (this.albaranesDesde && !this.albaranesHasta) {
+      const backendDate = this.toBackendDate(this.albaranesDesde);
+      this.isLoadingAlbaranes = true;
+      this.http.get<any>(`${environment.backendUrl}/api/alb/search-albaranes-Desde/${this.entcod}/${this.tercod}/${backendDate}/${this.eje}/${this.centroGestor}`).subscribe({
+        next: (res) => {
+          this.isLoadingAlbaranes = false;
+          this.albaranesAdd = res;
+          this.pageAlbaranesAdd = 0;
+        },
+        error: (err) => {
+          this.albaranesError = err.error.error ?? err.error;
+          this.isLoadingAlbaranes = false;
+          this.pageAlbaranesAdd = 0;
+        }
+      })
+    } else if (!this.albaranesDesde && this.albaranesHasta) {      
+      const backendDate = this.toBackendDate(this.albaranesHasta);
+      this.isLoadingAlbaranes = true;
+      this.http.get<any>(`${environment.backendUrl}/api/alb/search-albaranes-Hasta/${this.entcod}/${this.tercod}/${backendDate}/${this.eje}/${this.centroGestor}`).subscribe({
+        next: (res) => {
+          this.isLoadingAlbaranes = false;
+          this.albaranesAdd = res;
+          this.pageAlbaranesAdd = 0;
+        },
+        error: (err) => {
+          this.albaranesError = err.error.error ?? err.error;
+          this.isLoadingAlbaranes = false;
+          this.pageAlbaranesAdd = 0;
+        }
+      })
+    }
+  }
+  toBackendDate(dateStr: string): string {
+    if (!dateStr) return '';
+    return `${dateStr}T00:00:00`;
   }
 
   limpiarSearch() {
@@ -957,6 +1017,22 @@ export class FacturasComponent {
     this.albaranesHasta = '';
   }
 
+  caughtAlbranaes: any[] = [];
+  selectAlbaranesAdd(A: any) {
+    if (this.caughtAlbranaes.includes(A)) {
+      const index = this.caughtAlbranaes.indexOf(A);
+      if(index !== -1) {
+        this.caughtAlbranaes.splice(index, 1);
+      }
+    } else {
+      this.caughtAlbranaes = [...this.caughtAlbranaes, A];
+    }
+  }
+
+  isAlbaranesSelected(a: any): boolean {
+    return this.caughtAlbranaes.includes(a);
+  }
+  
   //misc 
   limpiarMEssages() {
     this.filterFacturaMessage = '';

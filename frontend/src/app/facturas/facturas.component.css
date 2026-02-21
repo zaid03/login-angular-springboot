@@ -83,6 +83,8 @@
 .search-chunk {display: flex; align-items: center; gap: 10px; width: 30%;}
 .widthInputAlbaran {width: 75% !important;}
 .albaran-search-options .albaran-options-btns {width: 10%;}
+.selected-row {background-color: #cce6ff;}
+.selected {text-align: center; margin: 0px;}
 /* add albaranes grid */
 @media (min-width: 1700px) { .tallTextarea {width: 250px; max-width: 300px;}
 .averageTextarea{ width: 120px; max-width: 190px;} }

@@ -9,9 +9,10 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.example.backend.sqlserver2.model.Fac;
+import com.example.backend.sqlserver2.model.FacId;
 
 @Repository
-public interface FacRepository extends JpaRepository<Fac, Integer>, JpaSpecificationExecutor<Fac>{
+public interface FacRepository extends JpaRepository<Fac, FacId>, JpaSpecificationExecutor<Fac>{
     //for the main list
     List<Fac> findByENTAndEJEAndCGECODOrderByFACFREAsc(Integer ent, String eje, String cgecod);
 
