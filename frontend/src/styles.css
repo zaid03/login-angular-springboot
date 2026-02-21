@@ -95,7 +95,10 @@ app-sidebar { flex-shrink: 0; z-index: 2000; }
 .acumolados h1,
 .acumolados p,
 .centro-info ,
-.left-search p {font-size: 18px; font-weight: bold; color: #38249b;}
+.left-search p,
+.proveedor-info p,
+.proveedor-info h1,
+.search-chunk p {font-size: 18px; font-weight: bold; color: #38249b;}
 .chunk-one h1,
 .chunk-two h1,
 .chunk-three h1,
@@ -119,7 +122,8 @@ app-sidebar { flex-shrink: 0; z-index: 2000; }
 .chunk-five h1,
 .detail-container h1,
 .acumolados h1,
-.centro-info  h1 {color: #162a3a; font-size: 20px;}
+.centro-info  h1,
+.proveedor-info h1 {color: #162a3a; font-size: 20px;}
 .chunk-one textarea,
 .chunk-two textarea,
 .chunk-three textarea,

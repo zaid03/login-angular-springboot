@@ -5,7 +5,8 @@
 .more-search-options select,
 .more-search-options input[type="date"],
 .right-search input[type="text"],
-.right-search input[type="date"] { padding: 4px 6px; border-radius: 20px; border: 1px solid #bbb; color: #25176b; font-size: 15px; transition: border 0.2s, box-shadow 0.2s; outline: none; box-shadow: 0 1px 4px rgba(56,36,155,0.04); }
+.right-search input[type="date"],
+.search-chunk input[type="date"] { padding: 4px 6px; border-radius: 20px; border: 1px solid #bbb; color: #25176b; font-size: 15px; transition: border 0.2s, box-shadow 0.2s; outline: none; box-shadow: 0 1px 4px rgba(56,36,155,0.04); }
 .more-search-options select:focus,
 .more-search-options input[type="date"]:focus { outline: none; }
 .successBtn { margin-top: 5px; }
@@ -13,7 +14,7 @@
 /* table style */
 .facturas-table tbody td:nth-child(6),
 .facturas-table tbody td:nth-child(13),
-.albaranes-table tbody td:nth-child(4),
+.detail-grid .albaranes-table tbody td:nth-child(4),
 .app tbody td:nth-child(3),
 .desc tbody td:nth-child(5),
 .desc tbody td:nth-child(7) { text-align: right; }
@@ -51,7 +52,10 @@
 /* sub detail grids */
 .detail-grid { display: flex; flex-direction: column; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); padding: 16px; border: 1px solid #e5e7eb; border-radius: 10px; background: #f9fafb; }
 .albaranes-table { width: 100%; }
+.detail-grid .albaranes-table tbody td:last-child {display: flex; justify-content: center;}
+.detail-grid .albaranes-table thead th:last-child {width: 50px;}
 .alignment {justify-content: center;}
+.albaranes-btns {display: flex; justify-content: center;}
 /* sub detail grids */
 /* cargar facturas */
 .factura-cargar { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 16px; box-shadow: 0 8px 32px rgba(44, 62, 80, 0.18), 0 1.5px 6px rgba(44,62,80,0.08); padding: 25px 30px; min-width: 85%; min-height: 120px; max-height: 80vh; z-index: 3000; display: flex; flex-direction: column; align-items: center;}
@@ -61,13 +65,23 @@
 .art-title {width: 25%; font-size: 23px;}
 .info-content p,
 .info-content h1 {font-size: 18px;}
-.search-option-container {display: flex; width: 100%; gap: 10px; margin: 5px;}
+.search-option-container,
+.albaran-search-options {display: flex; width: 100%; gap: 10px; margin: 5px;}
 .chunk-one-search {width: 30%; display: flex;}
 .left-search {width: 30%; display: flex; flex-direction: column; gap: 15px;}
 .right-search {width: 70%; display: flex; flex-direction: column; gap: 10px;}
 .alignTitleSearch {justify-content: center;}
 .widthIput {width: 90% !important;}
-.search-options-btns {display: flex; flex-direction: column; width: 6%; gap: 10px; justify-content: center;}
+.factura-cargar .search-options-btns,
+.albaran-search-options .albaran-options-btns {display: flex; width: 6%; gap: 10px; justify-content: center;}
+.factura-cargar .search-options-btns {flex-direction: column;}
 /* cargar facturas */
+/* add albaranes grid */
+.albran-add .art-title {width: 28%;}
+.proveedor-info {width: 20%; display: flex; gap: 10px; align-items: center;}
+.search-chunk {display: flex; align-items: center; gap: 10px; width: 30%;}
+.widthInputAlbaran {width: 75% !important;}
+.albaran-search-options .albaran-options-btns {width: 10%;}
+/* add albaranes grid */
 @media (min-width: 1700px) { .tallTextarea {width: 250px; max-width: 300px;}
 .averageTextarea{ width: 120px; max-width: 190px;} }

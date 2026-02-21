@@ -918,6 +918,45 @@ export class FacturasComponent {
     })
   }
 
+  //adding albaranes 
+  albaranesAddGrid: boolean = false;
+  isLoadingAlbaranes: boolean = false;
+  isAddingAlbaranes: boolean = false;
+  albaranesError: string = '';
+  albaranesDesde: string = '';
+  albaranesHasta: string = '';
+  tercod: number = 0;
+  openAlbaranesAdd() {
+    this.limpiarMEssages();
+    this.albaranesAddGrid = true;
+    this.tercod = this.selectedFacturas.tercod;
+    this.fetchAlrabanes();
+  }
+
+  closeAlbaranesAdd() {
+    this.albaranesAddGrid = false;
+    this.emptySearchAlbaranes();
+  }
+
+  fetchAlrabanes() {
+    this.limpiarMEssages();
+  }
+
+  searchAlbaranes() {
+    this.limpiarMEssages();
+  }
+
+  limpiarSearch() {
+    this.limpiarMEssages();
+    this.emptySearchAlbaranes();
+    this.fetchAlrabanes();
+  }
+
+  emptySearchAlbaranes() {
+    this.albaranesDesde = '';
+    this.albaranesHasta = '';
+  }
+
   //misc 
   limpiarMEssages() {
     this.filterFacturaMessage = '';
@@ -929,5 +968,6 @@ export class FacturasComponent {
     this.moreInfoMessageError = '';
     this.facturasErrorMessage = '';
     this.facturasSuccessMessage = '';
+    this.albaranesError = '';
   }
 }

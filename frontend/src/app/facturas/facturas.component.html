@@ -404,6 +404,9 @@
                             <div class="detail-switch-second-content">
                                 <ng-container [ngSwitch]="albaranesOptio">
                                     <ng-container *ngSwitchCase="'albaranes'">
+                                        <div class="albaranes-btns">
+                                            <button class="save-btn" (click)="openAlbaranesAdd()">+</button>
+                                        </div>
                                         <h1 class="successBtn">{{moreInfoMessageSuccess}}</h1>
                                         <h1 class="errorBtn">{{moreInfoMessageError}}</h1>
                                         <div *ngIf="isLoading" class="loading-message">
@@ -421,6 +424,7 @@
                                                         <th>Solicitud</th>
                                                         <th>Índice</th>
                                                         <th>Observaciones</th>
+                                                        <th>acción</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -432,6 +436,9 @@
                                                         <td>{{ a.solnum }}</td>
                                                         <td>{{ a.solsub }}</td>
                                                         <td>{{ a.albobs }}</td>
+                                                        <td>
+                                                            <button class="delete-btn">-</button>
+                                                        </td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -685,4 +692,74 @@
         <span>de {{ totalPagesFacturas }}</span>
         <button (click)="nextPageFacturas()" [disabled]="pageFacturas + 1 >= totalPagesFacturas">Siguiente</button>
     </div>
+</div>
+
+<div class="modal-backdrop" *ngIf="albaranesAddGrid" (click)="closeAlbaranesAdd()"></div>
+<div class="factura-cargar albran-add" *ngIf="albaranesAddGrid">
+    <div class="btns">
+        <div class="title">
+            <h1 class="art-title">añadir albaranes</h1>
+        </div>
+        <button class="save-btn">+</button>
+        <button class="delete-btn" (click)="closeAlbaranesAdd()">✖</button>
+    </div>
+    <div class="albaran-search-options">
+        <div class="proveedor-info">
+            <p>Código proveedor</p>
+            <h1>{{tercod}}</h1>
+        </div>
+        <div class="search-chunk">
+            <p>Desde</p>
+            <input 
+                type="date"
+                [(ngModel)]="albaranesDesde" 
+                class="widthInputAlbaran"
+            />
+        </div>
+        <div class="search-chunk">
+            <p>Hasta</p>
+            <input 
+                type="date"
+                [(ngModel)]="albaranesHasta" 
+                class="widthInputAlbaran"
+            />
+        </div>
+        <div class="albaran-options-btns">
+            <button class="download-btn" (click)="searchAlbaranes()">Buscar</button>
+            <button class="download-btn" (click)="limpiarSearch()">Limpiar</button>
+        </div>
+    </div>
+    <h1 class="errorBtn">{{albaranesError}}</h1>
+    <div *ngIf="isLoadingAlbaranes" class="loading-message">
+        <div class="spinner"></div>
+        <span>Cargando</span>
+    </div>
+    <div *ngIf="isAddingAlbaranes" class="loading-message">
+        <div class="spinner"></div>
+        <span>añadiendo</span>
+    </div>
+    <table class="albaranes-table">
+        <thead>
+            <tr>
+                <th>Referencia proveïdor</th>
+                <th>Fecha</th>
+                <th>Importe</th>
+                <th>Reg. Entrada</th>
+                <th>Fecha registro</th>
+                <th>Centro destino</th>
+                <th>Centro Comprador</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+                <td>test</td>
+            </tr>
+        </tbody>
+    </table>
 </div>
