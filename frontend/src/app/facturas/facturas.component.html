@@ -414,7 +414,7 @@
                                             <span>Cargando</span>
                                         </div>
                                         <div class="detail-card">
-                                            <table class="albaranes-table">
+                                            <table class="albaranes-table width-last">
                                                 <thead>
                                                     <tr>
                                                         <th>Número albarán</th>
@@ -437,7 +437,7 @@
                                                         <td>{{ a.solsub }}</td>
                                                         <td>{{ a.albobs }}</td>
                                                         <td>
-                                                            <button class="delete-btn">-</button>
+                                                            <button class="delete-btn" (click)="showDeleteAlbaran(a)">-</button>
                                                         </td>
                                                     </tr>
                                                 </tbody>
@@ -781,4 +781,19 @@
         <span>de {{ totalPagesAlbaranesAdd }}</span>
         <button (click)="nextPageAlbaraneAdd()" [disabled]="pageAlbaranesAdd + 1 >= totalPagesAlbaranesAdd">Siguiente</button>
     </div>
+</div>
+
+<div class="modal-backdrop" *ngIf="deleteAlbaranGrid" (click)="closeDeleteAlbaran()"></div>
+<div class="delete-confirm-modal" *ngIf="deleteAlbaranGrid">
+    <h3>¿Quiere quitar el albarán de la factura?</h3>
+    <div *ngIf="albaranToDelete">
+        <div *ngIf="isDeletingAlbaranes" class="loading-message">
+            <div class="spinner"></div>
+            <span>borrando</span>
+        </div>
+        <p class="delete-info">Número albarán: {{albaranToDelete[0].albnun}}</p>
+    </div>
+    <h1 class="errorBtn">{{dalbaranesDeleteMessage}}</h1>
+    <button class="delete-btn" >-</button>
+    <button class="save-btn margin" (click)="closeDeleteAlbaran()">✖</button>
 </div>

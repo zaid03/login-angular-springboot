@@ -53,8 +53,8 @@
 /* sub detail grids */
 .detail-grid { display: flex; flex-direction: column; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); padding: 16px; border: 1px solid #e5e7eb; border-radius: 10px; background: #f9fafb; }
 .albaranes-table { width: 100%; }
-.detail-grid .albaranes-table tbody td:last-child {display: flex; justify-content: center;}
-.detail-grid .albaranes-table thead th:last-child {width: 50px;}
+.width-last tbody td:last-child {display: flex; justify-content: center;}
+.width-last thead th:last-child {width: 50px;}
 .alignment {justify-content: center;}
 .albaranes-btns {display: flex; justify-content: center;}
 /* sub detail grids */
@@ -87,5 +87,8 @@
 .selected-row {background-color: #cce6ff;}
 .selected {text-align: center; margin: 0px;}
 /* add albaranes grid */
+/* delete modal */
+.delete-confirm-modal .margin {margin-left: 10px;}
+/* delete modal */
 @media (min-width: 1700px) { .tallTextarea {width: 250px; max-width: 300px;}
 .averageTextarea{ width: 120px; max-width: 190px;} }

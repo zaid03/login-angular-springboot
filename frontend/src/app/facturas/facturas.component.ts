@@ -1068,6 +1068,30 @@ export class FacturasComponent {
     })
   }
   
+
+  //quitar albaranes (delete)
+  deleteAlbaranGrid: boolean = false;
+  dalbaranesDeleteMessage: string = '';
+  isDeletingAlbaranes: boolean = false;
+  albaranToDelete: any[] = [];
+  showDeleteAlbaran(albaran: any) {
+    this.limpiarMEssages()
+    if (!albaran) {return;}
+    this.deleteAlbaranGrid = true;
+    this.albaranToDelete = albaran;
+  }
+
+  closeDeleteAlbaran() {
+    this.limpiarMEssages();
+    this.deleteAlbaranGrid = false;
+    this.albaranToDelete = [];
+  }
+
+  quitarAlbaran() {
+    this.limpiarMEssages();
+    this.isDeletingAlbaranes = true;
+  }
+
   //misc 
   limpiarMEssages() {
     this.filterFacturaMessage = '';
@@ -1080,5 +1104,6 @@ export class FacturasComponent {
     this.facturasErrorMessage = '';
     this.facturasSuccessMessage = '';
     this.albaranesError = '';
+    this.dalbaranesDeleteMessage = '';
   }
 }
