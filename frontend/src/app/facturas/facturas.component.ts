@@ -653,77 +653,33 @@ export class FacturasComponent {
     this.apalicaciones = [];
     this.descuentos = [];
 
-    if ( option === 'albaranes') {
-      this.http.get<any>(`${environment.backendUrl}/api/alb/albaranes/${this.entcod}/${this.eje}/${facnum}`).subscribe({
-        next: (response) => {
-          if (!Array.isArray(response) || response.length === 0) {
-            this.moreInfoMessageIsSuccess = true;
-            this.moreInfoMessageSuccess = 'No hay albaranes por las medidas de búsqueda';
-            this.albaranes = []
-            this.isLoading = false;
-            this.pageAlbaranes = 0;
-          } else {
-            this.albaranes = response;
-            this.backipAlbaranes = Array.isArray(response) ? [...response] : [];
-            this.isLoading = false;
-            this.pageAlbaranes = 0;
-          }
-        }, error: (err) => {
-          this.moreInfoMessageIsError = true;
-          this.moreInfoMessageError = err.error.error ?? err.error;
+    if ( option === 'albaranes') {this.fetchAlbaranesDEtail(facnum);}
+    if ( option === 'aplicaciones') {this.fetchApplicacionesDetails(facnum);}
+    if ( option === 'descuentos') {this.fetchDescuentosDetails(facnum);}
+  }
+
+  fetchAlbaranesDEtail(facnum: number) {
+    this.http.get<any>(`${environment.backendUrl}/api/alb/albaranes/${this.entcod}/${this.eje}/${facnum}`).subscribe({
+      next: (response) => {
+        if (!Array.isArray(response) || response.length === 0) {
+          this.moreInfoMessageIsSuccess = true;
+          this.moreInfoMessageSuccess = 'No hay albaranes por las medidas de búsqueda';
+          this.albaranes = []
+          this.isLoading = false;
+          this.pageAlbaranes = 0;
+        } else {
+          this.albaranes = response;
+          this.backipAlbaranes = Array.isArray(response) ? [...response] : [];
           this.isLoading = false;
           this.pageAlbaranes = 0;
         }
-      });
-    }
-
-    if ( option === 'aplicaciones') {
-      this.http.get<any>(`${environment.backendUrl}/api/fde/${this.entcod}/${this.eje}/${facnum}`).subscribe({
-        next: (response) => {
-          if (!Array.isArray(response) || response.length === 0) {
-            this.moreInfoMessageIsSuccess = true;
-            this.moreInfoMessageSuccess = 'No hay aplicaciones por las medidas de búsqueda';
-            this.apalicaciones = []
-            this.isLoading = false;
-            this.pageAplicaiones = 0
-          } else {
-            this.apalicaciones = response;
-            this.backupAplicaciones = Array.isArray(response) ? [...response] : [];
-            this.isLoading = false;
-            this.pageAplicaiones = 0
-          }
-        }, error: (err) => {
-          this.moreInfoMessageIsError = true;
-          this.moreInfoMessageError = err.error.error ?? err.error;
-          this.isLoading = false;
-          this.pageAplicaiones = 0
-        }
-      });
-    }
-
-    if ( option === 'descuentos') {
-      this.http.get<any>(`${environment.backendUrl}/api/fdt/${this.entcod}/${this.eje}/${facnum}`).subscribe({
-        next: (response) => {
-          if (!Array.isArray(response) || response.length === 0) {
-            this.moreInfoMessageIsSuccess = true;
-            this.moreInfoMessageSuccess = 'No hay descuentos por las medidas de búsqueda';
-            this.descuentos = []
-            this.isLoading = false;
-            this.pageDescuentos = 0;
-          } else {
-            this.descuentos = response;
-            this.backupDescuentos = Array.isArray(response) ? [...response] : [];
-            this.isLoading = false;
-            this.pageDescuentos = 0;
-          }
-        }, error: (err) => {
-          this.moreInfoMessageIsError = true;
-          this.moreInfoMessageError = err.error.error ?? err.error;
-          this.isLoading = false;
-          this.pageDescuentos = 0;
-        }
-      });
-    }
+      }, error: (err) => {
+        this.moreInfoMessageIsError = true;
+        this.moreInfoMessageError = err.error.error ?? err.error;
+        this.isLoading = false;
+        this.pageAlbaranes = 0;
+      }
+    });
   }
   pageAlbaranes = 0;
   get paginatedAlbaranes(): any[] {if (!this.albaranes || this.albaranes.length === 0) return []; const start = this.pageAlbaranes * this.pageSize; return this.albaranes.slice(start, start + this.pageSize);}
@@ -733,6 +689,30 @@ export class FacturasComponent {
   goToPageAlbaranes(event: any): void { const inputPage = Number(event.target.value); 
     if (inputPage >= 1 && inputPage <= this.totalPagesAlbaranes) {this.pageAlbaranes = inputPage - 1;}
   }
+
+  fetchApplicacionesDetails(facnum: number) {
+    this.http.get<any>(`${environment.backendUrl}/api/fde/${this.entcod}/${this.eje}/${facnum}`).subscribe({
+      next: (response) => {
+        if (!Array.isArray(response) || response.length === 0) {
+          this.moreInfoMessageIsSuccess = true;
+          this.moreInfoMessageSuccess = 'No hay aplicaciones por las medidas de búsqueda';
+          this.apalicaciones = []
+          this.isLoading = false;
+          this.pageAplicaiones = 0
+        } else {
+          this.apalicaciones = response;
+          this.backupAplicaciones = Array.isArray(response) ? [...response] : [];
+          this.isLoading = false;
+          this.pageAplicaiones = 0
+        }
+      }, error: (err) => {
+        this.moreInfoMessageIsError = true;
+        this.moreInfoMessageError = err.error.error ?? err.error;
+        this.isLoading = false;
+        this.pageAplicaiones = 0
+      }
+    });
+  }
   pageAplicaiones = 0;
   get paginatedApiciones(): any[] {if (!this.apalicaciones || this.apalicaciones.length === 0) return []; const start = this.pageAplicaiones * this.pageSize; return this.apalicaciones.slice(start, start + this.pageSize);}
   get totalPagesAplicaciones(): number {return Math.max(1, Math.ceil((this.apalicaciones?.length ?? 0) / this.pageSize));}
@@ -740,6 +720,30 @@ export class FacturasComponent {
   nextPageAplicaciones(): void {if (this.pageAplicaiones < this.totalPagesAplicaciones - 1) this.pageAplicaiones++;}
   goToPageAplicaciones(event: any): void { const inputPage = Number(event.target.value); 
     if (inputPage >= 1 && inputPage <= this.totalPagesAplicaciones) {this.pageAplicaiones = inputPage - 1;}
+  }
+
+  fetchDescuentosDetails(facnum: number) {
+    this.http.get<any>(`${environment.backendUrl}/api/fdt/${this.entcod}/${this.eje}/${facnum}`).subscribe({
+      next: (response) => {
+        if (!Array.isArray(response) || response.length === 0) {
+          this.moreInfoMessageIsSuccess = true;
+          this.moreInfoMessageSuccess = 'No hay descuentos por las medidas de búsqueda';
+          this.descuentos = []
+          this.isLoading = false;
+          this.pageDescuentos = 0;
+        } else {
+          this.descuentos = response;
+          this.backupDescuentos = Array.isArray(response) ? [...response] : [];
+          this.isLoading = false;
+          this.pageDescuentos = 0;
+        }
+      }, error: (err) => {
+        this.moreInfoMessageIsError = true;
+        this.moreInfoMessageError = err.error.error ?? err.error;
+        this.isLoading = false;
+        this.pageDescuentos = 0;
+      }
+    });
   }
   pageDescuentos = 0;
   get paginatedDescuentos(): any[] {if (!this.descuentos || this.descuentos.length === 0) return []; const start = this.pageDescuentos * this.pageSize; return this.descuentos.slice(start, start + this.pageSize);}
@@ -1031,6 +1035,37 @@ export class FacturasComponent {
 
   isAlbaranesSelected(a: any): boolean {
     return this.caughtAlbranaes.includes(a);
+  }
+
+  adingAlbaranes() {
+    this.limpiarMEssages();
+    this.isAddingAlbaranes = true;
+    const facnum = this.selectedFacturas.facnum;
+
+    const payload = this.caughtAlbranaes.map(Obj => ({
+      "ENT": this.entcod,
+      "EJE": this.eje,
+      "ALBNUM": Obj.albnum,
+      "CONCTP": Obj.conctp,
+      "CONCPR": Obj.concpr,
+      "CONCCR": Obj.conccr,
+      "ALBBIM": Obj.albbim,
+      "FACNUM": facnum
+    }))
+
+    console.log(payload);
+    this.http.patch(`${environment.backendUrl}/api/alb/add-albaranes`, payload).subscribe({
+      next: (res) => {
+        this.isAddingAlbaranes = false;
+        this.fetchAlbaranesDEtail(facnum);
+        this.closeAlbaranesAdd();
+        this.moreInfoMessageSuccess = 'albaranes añadido correctamente';
+      },
+      error: (err) => {
+        this.isAddingAlbaranes = false;
+        this.albaranesError = err.error.error ?? err.error;
+      }
+    })
   }
   
   //misc 
