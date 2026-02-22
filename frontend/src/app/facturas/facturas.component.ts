@@ -1102,7 +1102,7 @@ export class FacturasComponent {
       "FACIEC": null
     }
 
-    this.http.patch(`${environment.backendUrl}`, payload).subscribe({
+    this.http.patch(`${environment.backendUrl}/api/alb/quitar-albaranes`, payload).subscribe({
       next: (res) => {
         this.isDeletingAlbaranes = false;
         this.closeDeleteAlbaran();
