@@ -1,6 +1,7 @@
 package com.example.backend.controller;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import com.example.backend.service.FacSpecification;
 import com.example.backend.service.FacturaInsertService;
 import com.example.backend.sqlserver2.model.Fac;
+import com.example.backend.sqlserver2.model.FacId;
 import com.example.backend.sqlserver2.model.Ter;
 import com.example.backend.sqlserver2.repository.FacRepository;
 import com.example.backend.sqlserver2.repository.TerRepository;
@@ -138,6 +140,45 @@ public class FacController {
         try {
             List<String> messages = facturaInsertService.insertFacturas(facturas);
             return ResponseEntity.ok(messages);
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + ex.getMessage());
+        }
+    }
+
+    //modifying a factura
+    public record facturaUpdate(String FACOBS, String CONCTP, String CONCPR, String CONCCR, LocalDateTime FACFRE, String FACFPG, String FACOPG, String FACTPG, Integer FACOCT) {}
+    @PatchMapping("/update-factura/{ent}/{eje}/{facnum}")
+    public ResponseEntity<?> updateFactura(
+        @PathVariable Integer ent,
+        @PathVariable String eje,
+        @PathVariable Integer facnum,
+        @RequestBody facturaUpdate payload
+    ) {
+        try {
+            if (payload == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Falta un dato obligatorio");
+            }
+
+            FacId id = new FacId(ent, eje, facnum);
+            Optional<Fac> facOptio = facRepository.findById(id);
+            if (facOptio.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Sin resultado");
+            }
+
+            Fac factura = facOptio.get();
+            factura.setFACOBS(payload.FACOBS());
+            factura.setCONCTP(payload.CONCTP());
+            factura.setCONCPR(payload.CONCPR());
+            factura.setCONCCR(payload.CONCCR());
+            factura.setFACFRE(payload.FACFRE());
+            factura.setFACFPG(payload.FACFPG());
+            factura.setFACOPG(payload.FACOPG());
+            factura.setFACTPG(payload.FACTPG());
+            factura.setFACOCT(payload.FACOCT());
+            facRepository.save(factura);
+
+            return ResponseEntity.noContent().build();
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + ex.getMessage());
         }

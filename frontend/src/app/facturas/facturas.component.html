@@ -216,8 +216,12 @@
                         <div class="title-detail">
                             <h3>Detalles del Factura</h3>
                         </div>
-                        <!-- <button class="guardar-btn">✔</button> -->
+                        <button class="guardar-btn">✔</button>
                         <button class="close-btn-btn" (click)="closeDetails()">✖</button>
+                    </div>
+                    <div *ngIf="isUpdatingFactura" class="loading-message">
+                        <div class="spinner"></div>
+                        <span>actualizando</span>
                     </div>
                     <div class="detail-container">
                         <div class="chunk-one">
@@ -301,26 +305,31 @@
                                     ></textarea>
                                     <p>Tipo de pago</p>
                                     <textarea 
-                                        class="pagoSmallWidth" 
+                                        class="pagoSmallWidth pagoFix" 
                                         [(ngModel)]="selectedFacturas.factpg"
                                     ></textarea>
                                 </div>
                                 <div class="on-two">
                                     <textarea 
-                                        class="pagoSmallWidth" 
+                                        class="pagoSmallWidth " 
                                         [(ngModel)]="selectedFacturas.facopg"
                                     ></textarea>
-                                    <p>ADO</p>
-                                    <h1>{{selectedFacturas.facado || '#'}}</h1>
+                                    <p>Cuenta Tercero</p>
+                                    <textarea 
+                                        class="pagoSmallWidth" 
+                                        [(ngModel)]="selectedFacturas.facoct"
+                                    ></textarea>
                                 </div>
                             </div>
                         </div>
                         <div class="chunk-five">
-                            <div class="left">
+                            <div class="left moreGap">
                                 <p>Des.Fact/ADO:</p>
+                                <p>ADO</p>
                             </div>
                             <div class="right">
                                 <h1>{{selectedFacturas.factxt || '#'}}</h1>
+                                <h1>{{selectedFacturas.facado || '#'}}</h1>
                             </div>
                         </div>
                         <div class="chunk-six">

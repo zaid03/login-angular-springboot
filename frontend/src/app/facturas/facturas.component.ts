@@ -638,7 +638,12 @@ export class FacturasComponent {
     this.fetchFacturas();
   }
 
-  //albaranes grid's detail
+  isUpdatingFactura: boolean = false;
+  updateFactura() {
+    this.limpiarMEssages();
+  }
+
+  //sub detail grid's functions
   detailView: 'Albaranes' | 'Contabilización' = 'Albaranes';
   albaranesOptio: 'albaranes' | 'aplicaciones' | 'descuentos' = 'albaranes';
   albaranes: any[] = [];
@@ -759,174 +764,6 @@ export class FacturasComponent {
   nextPageDescuentos(): void {if (this.pageDescuentos < this.totalPagesDescuentos - 1) this.pageDescuentos++;}
   goToPageDescuentos(event: any): void { const inputPage = Number(event.target.value); 
     if (inputPage >= 1 && inputPage <= this.totalPagesDescuentos) {this.pageDescuentos = inputPage - 1;}
-  }
-  
-  //adding facturas from sicalwin
-  addFacturaGrid: boolean = false;
-  facturasWb: any[] = [];
-  facturasErrorMessage: string = '';
-  isLoadingFactura: boolean = false;
-  isAddingFactura: boolean = false;
-  openFacturaAdd() {
-    this.limpiarMEssages();
-    this.addFacturaGrid = true;
-    this.fetchFacturasWs();
-  }
-
-  closeFacturaAdd() {
-    this.limpiarMEssages();
-    this.emptySearch();
-    this.facturasWb = [];
-    this.addFacturaGrid = false;
-    this.caughtFacturas = [];
-  }
-
-  fetchFacturasWs() {
-    this.limpiarMEssages();
-    this.isLoadingFactura = true;
-
-    const payload = {
-      "org": this.WSorg,
-      "ent": this.WSent,
-      "eje": this.eje,
-      "usu": environment.sicalUsername,
-      "pwd": environment.sicalPassword,
-      "publicKey": environment.sicalPublicKey,
-      "tipoDocumento": 0,
-      "cge": this.centroGestor,
-      "situacionIgual": "08",
-      "estado": "E"
-    }
-
-    console.log(payload);
-    this.http.post<any>(`${environment.backendUrl}/api/facturas/consulta`, payload).subscribe({
-      next: (res) => {
-        this.isLoadingFactura = false;
-        this.facturasWb = res;
-        this.pageFacturas = 0;
-      },
-      error: (err) => {
-        console.log(err)
-        this.pageFacturas = 0;
-        this.isLoadingFactura = false;
-        this.facturasErrorMessage = err.error.error ?? err.error;
-      }
-    })
-  }
-  pageFacturas = 0;
-  get paginatedFacturaWs(): any[] {if (!this.facturasWb || this.facturasWb.length === 0) return []; const start = this.pageFacturas * this.pageSize; return this.facturasWb.slice(start, start + this.pageSize);}
-  get totalPagesFacturas(): number {return Math.max(1, Math.ceil((this.facturasWb?.length ?? 0) / this.pageSize));}
-  prevPageFacturas(): void {if (this.pageFacturas > 0) this.pageFacturas--;}
-  nextPageFacturas(): void {if (this.pageFacturas < this.totalPagesFacturas - 1) this.pageFacturas++;}
-  goToPageFacturas(event: any): void { const inputPage = Number(event.target.value); 
-    if (inputPage >= 1 && inputPage <= this.totalPagesFacturas) {this.pageFacturas = inputPage - 1;}
-  }
-
-  proveedor: string = '';
-  facturaNumero: string = '';
-  RcfDesde: string = '';
-  RcfHasta: string = '';
-  fechaFacturaDesde: string = '';
-  fechaFacturaHasta: string = '';
-  searchFacturas() {
-    this.limpiarMEssages();
-    const params: any = {};
-
-    if (this.proveedor) params.proveedor = this.proveedor;
-    if (this.facturaNumero) params.facturaNumero = this.facturaNumero;
-    if (this.RcfDesde) params.rcfDesde = this.RcfDesde;
-    if (this.RcfHasta) params.rcfHasta = this.RcfHasta;
-    if (this.fechaFacturaDesde) params.fechaFacturaDesde = this.fechaFacturaDesde;
-    if (this.fechaFacturaHasta) params.fechaFacturaHasta = this.fechaFacturaHasta;
-
-    this.isLoading = true;
-    this.http.post<any[]>(`${environment.backendUrl}/api/facturas`, { params }).subscribe({
-      next: (response) => {
-        this.facturas = response;
-        this.updatePagination();
-        this.isLoading = false;
-      },
-      error: (err) => {
-        this.filterFacturaMessage = err.error?.error ?? err.error;
-        this.isLoading = false;
-      }
-    });
-  }
-
-  clearSearch() {
-    this.limpiarMEssages();
-    this.emptySearch();
-    this.fetchFacturasWs();
-  }
-
-  emptySearch() {
-    this.proveedor = '';
-    this.facturaNumero = '';
-    this.RcfDesde = '';
-    this.RcfHasta = '';
-    this.fechaFacturaDesde = '';
-    this.fechaFacturaHasta = '';
-  }
-
-  caughtFacturas: any[] = [];
-  selectFacturasAdd(F: any) {
-    if (this.caughtFacturas.includes(F)) {
-      const index = this.caughtFacturas.indexOf(F);
-      if(index !== -1) {
-        this.caughtFacturas.splice(index, 1);
-      }
-    } else {
-      this.caughtFacturas = [...this.caughtFacturas, F];
-    }
-  }
-
-  isFacturaSelected(a: any): boolean {
-    return this.caughtFacturas.includes(a);
-  }
-
-  facturasSuccessMessage: string = '';
-  addingFacturas() {
-    this.limpiarMEssages();
-    this.isAddingFactura = true;
-
-    const today = new Date();
-    const payload = this.caughtFacturas.map(Obj => ({
-      "ENT": this.entcod,
-      "EJE": this.eje,
-      "tercero": Obj.tercero,
-      "CGECOD": this.centroGestor,
-      "FACIMP": Obj.impFactura,
-      "FACIEC": 0,
-      "FACIDI": 0,
-      "FACTDC": Obj.tipoRegistro,
-      "FACANN": Obj.annoRegistro,
-      "FACFAC": Obj.numRegistro,
-      "FACDOC": Obj.numDocumento,
-      "FACDAT": Obj.fechaDocumento,
-      "FACTXT": Obj.Texto,
-      "FACDTO": 0,
-      "FACFRE": today.toISOString()
-    }))
-
-    this.http.post(`${environment.backendUrl}/api/fac/add-facturas`, payload).subscribe({
-      next: (res) => {
-        if (res = []) {
-          this.fetchFacturas();
-          this.isAddingFactura = false;
-          this.caughtFacturas = [];
-          this.closeFacturaAdd();
-          this.estadoMessage = 'facturas agregadas exitosamente';
-        } else {
-          this.isAddingFactura = false;
-          this.caughtFacturas = [];
-          this.facturasSuccessMessage = res;
-        }
-      },
-      error: (err) => {
-        this.isAddingFactura = true;
-        this.facturasErrorMessage = err.error.error ?? err.error
-      }
-    })
   }
 
   //adding albaranes 
@@ -1119,6 +956,174 @@ export class FacturasComponent {
       error: (err) => {
         this.isDeletingAlbaranes = false;
         this.dalbaranesDeleteMessage = err.error.error ?? err.error;
+      }
+    })
+  }
+  
+  //adding facturas from sicalwin
+  addFacturaGrid: boolean = false;
+  facturasWb: any[] = [];
+  facturasErrorMessage: string = '';
+  isLoadingFactura: boolean = false;
+  isAddingFactura: boolean = false;
+  openFacturaAdd() {
+    this.limpiarMEssages();
+    this.addFacturaGrid = true;
+    this.fetchFacturasWs();
+  }
+
+  closeFacturaAdd() {
+    this.limpiarMEssages();
+    this.emptySearch();
+    this.facturasWb = [];
+    this.addFacturaGrid = false;
+    this.caughtFacturas = [];
+  }
+
+  fetchFacturasWs() {
+    this.limpiarMEssages();
+    this.isLoadingFactura = true;
+
+    const payload = {
+      "org": this.WSorg,
+      "ent": this.WSent,
+      "eje": this.eje,
+      "usu": environment.sicalUsername,
+      "pwd": environment.sicalPassword,
+      "publicKey": environment.sicalPublicKey,
+      "tipoDocumento": 0,
+      "cge": this.centroGestor,
+      "situacionIgual": "08",
+      "estado": "E"
+    }
+
+    console.log(payload);
+    this.http.post<any>(`${environment.backendUrl}/api/facturas/consulta`, payload).subscribe({
+      next: (res) => {
+        this.isLoadingFactura = false;
+        this.facturasWb = res;
+        this.pageFacturas = 0;
+      },
+      error: (err) => {
+        console.log(err)
+        this.pageFacturas = 0;
+        this.isLoadingFactura = false;
+        this.facturasErrorMessage = err.error.error ?? err.error;
+      }
+    })
+  }
+  pageFacturas = 0;
+  get paginatedFacturaWs(): any[] {if (!this.facturasWb || this.facturasWb.length === 0) return []; const start = this.pageFacturas * this.pageSize; return this.facturasWb.slice(start, start + this.pageSize);}
+  get totalPagesFacturas(): number {return Math.max(1, Math.ceil((this.facturasWb?.length ?? 0) / this.pageSize));}
+  prevPageFacturas(): void {if (this.pageFacturas > 0) this.pageFacturas--;}
+  nextPageFacturas(): void {if (this.pageFacturas < this.totalPagesFacturas - 1) this.pageFacturas++;}
+  goToPageFacturas(event: any): void { const inputPage = Number(event.target.value); 
+    if (inputPage >= 1 && inputPage <= this.totalPagesFacturas) {this.pageFacturas = inputPage - 1;}
+  }
+
+  proveedor: string = '';
+  facturaNumero: string = '';
+  RcfDesde: string = '';
+  RcfHasta: string = '';
+  fechaFacturaDesde: string = '';
+  fechaFacturaHasta: string = '';
+  searchFacturas() {
+    this.limpiarMEssages();
+    const params: any = {};
+
+    if (this.proveedor) params.proveedor = this.proveedor;
+    if (this.facturaNumero) params.facturaNumero = this.facturaNumero;
+    if (this.RcfDesde) params.rcfDesde = this.RcfDesde;
+    if (this.RcfHasta) params.rcfHasta = this.RcfHasta;
+    if (this.fechaFacturaDesde) params.fechaFacturaDesde = this.fechaFacturaDesde;
+    if (this.fechaFacturaHasta) params.fechaFacturaHasta = this.fechaFacturaHasta;
+
+    this.isLoading = true;
+    this.http.post<any[]>(`${environment.backendUrl}/api/facturas`, { params }).subscribe({
+      next: (response) => {
+        this.facturas = response;
+        this.updatePagination();
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.filterFacturaMessage = err.error?.error ?? err.error;
+        this.isLoading = false;
+      }
+    });
+  }
+
+  clearSearch() {
+    this.limpiarMEssages();
+    this.emptySearch();
+    this.fetchFacturasWs();
+  }
+
+  emptySearch() {
+    this.proveedor = '';
+    this.facturaNumero = '';
+    this.RcfDesde = '';
+    this.RcfHasta = '';
+    this.fechaFacturaDesde = '';
+    this.fechaFacturaHasta = '';
+  }
+
+  caughtFacturas: any[] = [];
+  selectFacturasAdd(F: any) {
+    if (this.caughtFacturas.includes(F)) {
+      const index = this.caughtFacturas.indexOf(F);
+      if(index !== -1) {
+        this.caughtFacturas.splice(index, 1);
+      }
+    } else {
+      this.caughtFacturas = [...this.caughtFacturas, F];
+    }
+  }
+
+  isFacturaSelected(a: any): boolean {
+    return this.caughtFacturas.includes(a);
+  }
+
+  facturasSuccessMessage: string = '';
+  addingFacturas() {
+    this.limpiarMEssages();
+    this.isAddingFactura = true;
+
+    const today = new Date();
+    const payload = this.caughtFacturas.map(Obj => ({
+      "ENT": this.entcod,
+      "EJE": this.eje,
+      "tercero": Obj.tercero,
+      "CGECOD": this.centroGestor,
+      "FACIMP": Obj.impFactura,
+      "FACIEC": 0,
+      "FACIDI": 0,
+      "FACTDC": Obj.tipoRegistro,
+      "FACANN": Obj.annoRegistro,
+      "FACFAC": Obj.numRegistro,
+      "FACDOC": Obj.numDocumento,
+      "FACDAT": Obj.fechaDocumento,
+      "FACTXT": Obj.Texto,
+      "FACDTO": 0,
+      "FACFRE": today.toISOString()
+    }))
+
+    this.http.post(`${environment.backendUrl}/api/fac/add-facturas`, payload).subscribe({
+      next: (res) => {
+        if (res = []) {
+          this.fetchFacturas();
+          this.isAddingFactura = false;
+          this.caughtFacturas = [];
+          this.closeFacturaAdd();
+          this.estadoMessage = 'facturas agregadas exitosamente';
+        } else {
+          this.isAddingFactura = false;
+          this.caughtFacturas = [];
+          this.facturasSuccessMessage = res;
+        }
+      },
+      error: (err) => {
+        this.isAddingFactura = true;
+        this.facturasErrorMessage = err.error.error ?? err.error
       }
     })
   }
