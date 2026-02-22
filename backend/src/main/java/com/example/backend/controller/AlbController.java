@@ -163,4 +163,38 @@ public class AlbController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
+
+    //quitar albaranes
+    public record quitar(Integer ENT, String EJE, Integer ALBNUM, Integer FACNUM, Double FACIEC) {}
+    @PatchMapping("/quitar-albaranes")
+    public ResponseEntity<?> quitarAlbaranes(
+        @RequestBody quitar payload
+    ) {
+        try {
+            if (payload == null || payload.ENT() == null || payload.ALBNUM == null) {
+                return ResponseEntity.badRequest().body("Faltan datos obligatorios.");
+            }
+
+            AlbId id = new AlbId(payload.ENT(), payload.ALBNUM());
+            Optional<Alb> albaranOpt = albRepository.findById(id);
+            if (albaranOpt.isPresent()) {
+                Alb albaran = albaranOpt.get();
+                albaran.setEJE(payload.EJE());
+                albaran.setFACNUM(0);
+                albRepository.save(albaran);
+            }
+
+            FacId facId = new FacId(payload.ENT(), payload.EJE(), payload.FACNUM());
+            Optional<Fac> facturaOpt = facRepository.findById(facId);
+            if (facturaOpt.isPresent()) {
+                Fac factura = facturaOpt.get();
+                factura.setFACIEC(payload.FACIEC());
+                facRepository.save(factura);
+            }
+
+            return ResponseEntity.noContent().build();
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + ex.getMostSpecificCause().getMessage());
+        }
+    }
 }

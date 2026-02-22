@@ -1090,7 +1090,30 @@ export class FacturasComponent {
 
   quitarAlbaran() {
     this.limpiarMEssages();
+    const albnum = this.albaranToDelete.albnun;
+    const facnum = this.selectedFacturas.facnum;
     this.isDeletingAlbaranes = true;
+
+    const payload = {
+      "ENT": this.entcod,
+      "EJE": null,
+      "ALBNUM": albnum,
+      "FACNUM": facnum,
+      "FACIEC": null
+    }
+
+    this.http.patch(`${environment.backendUrl}`, payload).subscribe({
+      next: (res) => {
+        this.isDeletingAlbaranes = false;
+        this.closeDeleteAlbaran();
+        this.fetchApplicacionesDetails(facnum);
+        this.moreInfoMessageSuccess = 'albaran eliminado exitosamente';
+      },
+      error: (err) => {
+        this.isDeletingAlbaranes = false;
+        this.dalbaranesDeleteMessage = err.error.error ?? err.error;
+      }
+    })
   }
 
   //misc 
