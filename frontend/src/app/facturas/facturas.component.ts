@@ -1073,18 +1073,19 @@ export class FacturasComponent {
   deleteAlbaranGrid: boolean = false;
   dalbaranesDeleteMessage: string = '';
   isDeletingAlbaranes: boolean = false;
-  albaranToDelete: any[] = [];
+  albaranToDelete: any = null;
   showDeleteAlbaran(albaran: any) {
     this.limpiarMEssages()
     if (!albaran) {return;}
-    this.deleteAlbaranGrid = true;
+    
     this.albaranToDelete = albaran;
+    this.deleteAlbaranGrid = true;
   }
 
   closeDeleteAlbaran() {
     this.limpiarMEssages();
     this.deleteAlbaranGrid = false;
-    this.albaranToDelete = [];
+    this.albaranToDelete = null;
   }
 
   quitarAlbaran() {
