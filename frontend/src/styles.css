@@ -161,7 +161,8 @@ app-sidebar { flex-shrink: 0; z-index: 2000; }
 .accountings textarea,
 .observ textarea,
 .chunk-six textarea,
-.conta-one textarea {height: 20px; padding: 2px 4px; border-radius: 6px; min-width: 80px; max-width: 290px; font-weight: bold; color: #162a3a}
+.conta-one textarea,
+.input-style {height: 20px; padding: 2px 4px; border-radius: 6px; min-width: 80px; max-width: 290px; font-weight: bold; color: #162a3a}
 .chunk-one textarea:focus,
 .chunk-two textarea:focus,
 .chunk-three textarea:focus,
@@ -202,7 +203,8 @@ app-sidebar { flex-shrink: 0; z-index: 2000; }
 .accountings textarea:focus,
 .observ textarea:focus,
 .chunk-six textarea:focus,
-.conta-one textarea:focus {outline: none; border: 1px solid #1c5d8c;}
+.conta-one textarea:focus,
+.input-style:focus {outline: none; border: 1px solid #1c5d8c;}
 .right-add select {height: 25px;}
 /* buttons */
 .search-btn,

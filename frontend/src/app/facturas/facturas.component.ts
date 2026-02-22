@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule, JsonPipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 
 import jsPDF from 'jspdf';
@@ -13,6 +14,7 @@ import { environment } from '../../environments/environment';
   selector: 'app-proveedorees',
   standalone: true,
   imports: [ CommonModule ,FormsModule, SidebarComponent],
+  providers: [DatePipe],
   templateUrl: './facturas.component.html',
   styleUrls: ['./facturas.component.css']
 })
@@ -48,7 +50,7 @@ export class FacturasComponent {
   isEstadoMessage: boolean = false;
   public Math = Math;
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router, private datePipe: DatePipe ) {}
 
   private defaultFacturas: any[] = [];
   isLoading: boolean = false;
@@ -464,6 +466,11 @@ export class FacturasComponent {
       return 'Pte. Sin aplicar';
     }
     return '';
+  }
+  get facfreDate(): string {
+    return this.selectedFacturas && this.selectedFacturas.facfre
+      ? this.datePipe.transform(this.selectedFacturas.facfre, 'yyyy-MM-dd') || ''
+      : '';
   }
 
   //search functions
@@ -1106,7 +1113,7 @@ export class FacturasComponent {
       next: (res) => {
         this.isDeletingAlbaranes = false;
         this.closeDeleteAlbaran();
-        this.fetchApplicacionesDetails(facnum);
+        this.fetchAlbaranesDEtail(facnum);
         this.moreInfoMessageSuccess = 'albaran eliminado exitosamente';
       },
       error: (err) => {

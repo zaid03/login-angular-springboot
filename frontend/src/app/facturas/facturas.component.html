@@ -226,7 +226,7 @@
                                 <p>Núm.Factura:</p>
                                 <p>R.C.F:</p>
                             </div>
-                            <div class="right">
+                            <div class="right gap">
                                 <div class="on-two">
                                     <h1>{{selectedFacturas.facnum || '#'}}</h1>
                                     <p>F.Contable</p>
@@ -259,20 +259,33 @@
                                 <div class="on-two">
                                     <h1>{{selectedFacturas.facdat | date:'dd-MM-yyyy'}}</h1>
                                     <p>F.Registro</p>
-                                    <h1>{{selectedFacturas.facfre | date:'dd-MM-yyyy'}}</h1>
+                                    <input
+                                        type="date"
+                                        class="input-style" 
+                                        [value]="facfreDate"
+                                    />
                                 </div>
                             </div>
                         </div>
                         <div class="chunk-three special-chunk">
-                            <div class="left special-needs">
+                            <div class="left special-needs gap">
                                 <p>Tipo de contrato</p>
                                 <p>Criterio de puntuación</p>
                                 <p>Procedimiento de contacto</p>
                             </div>
-                            <div class="right rightFix">
-                                <h1>{{selectedFacturas.conctp || '#'}}</h1>
-                                <h1>{{selectedFacturas.concpr || '#'}}</h1>
-                                <h1>{{selectedFacturas.conccr || '#'}}</h1>
+                            <div class="right gap">
+                                <textarea 
+                                    class="averageSecond" 
+                                    [(ngModel)]="selectedFacturas.conctp"
+                                ></textarea>
+                                <textarea 
+                                    class="averageSecond" 
+                                    [(ngModel)]="selectedFacturas.concpr"
+                                ></textarea>
+                                <textarea 
+                                    class="averageSecond" 
+                                    [(ngModel)]="selectedFacturas.conccr"
+                                ></textarea>
                             </div>
                         </div>
                         <div class="chunk-four">
@@ -282,12 +295,21 @@
                             </div>
                             <div class="right">
                                 <div class="on-two">
-                                    <h1>{{selectedFacturas.facfpg || '#'}}</h1>
+                                    <textarea 
+                                        class="pagoSmallWidth" 
+                                        [(ngModel)]="selectedFacturas.facfpg"
+                                    ></textarea>
                                     <p>Tipo de pago</p>
-                                    <h1>{{selectedFacturas.factpg || '#'}}</h1>
+                                    <textarea 
+                                        class="pagoSmallWidth" 
+                                        [(ngModel)]="selectedFacturas.factpg"
+                                    ></textarea>
                                 </div>
                                 <div class="on-two">
-                                    <h1>{{selectedFacturas.facopg || '#'}}</h1>
+                                    <textarea 
+                                        class="pagoSmallWidth" 
+                                        [(ngModel)]="selectedFacturas.facopg"
+                                    ></textarea>
                                     <p>ADO</p>
                                     <h1>{{selectedFacturas.facado || '#'}}</h1>
                                 </div>
@@ -307,7 +329,7 @@
                                 <p>Apl.diferencias</p>
                                 <p>Descuentos</p>
                             </div>
-                            <div class="right gap">
+                            <div class="right">
                                 <div class="on-two">
                                     <textarea 
                                         class="averageTextarea" 

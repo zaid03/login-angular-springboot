@@ -31,8 +31,7 @@
 .chunk-six { width: 32%; display: flex; padding: 2px; }
 .left { width: 30%; display: flex; flex-direction: column; gap: 10px; }
 .right { width: 70%; display: flex; flex-direction: column; gap: 12px;}
-.rightFix {gap: 15px;}
-.gap {gap: 17px;}
+.gap {gap: 15px !important;}
 .special-needs {width: 50%;}
 .on-three,
 .on-two { display: flex; gap: 10px; align-items: center;}
@@ -45,10 +44,13 @@
 .special-chunk { width: 33%; }
 .tallTextarea {width: 220px; max-width: 240px;}
 .averageTextarea{ width: 100px; max-width: 160px;}
+.averageSecond {width: 160px; max-width: 290px;}
 .smallTextarea{width: 60px; max-width: 100px;}
+.pagoSmallWidth {width: 45px !important; min-width: 10px !important; max-width: 50px;}
 .observ { width: 50%; display: flex; gap: 5px; align-items: center;}
 .observ textarea { width: 90%; max-width: 100%; height: 40px;}
 .gap {gap: 20px;}
+.input-style {border: 1px solid grey; width: 90px;}
 /* main-detail grid */
 /* sub detail grids */
 .detail-grid { display: flex; flex-direction: column; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); padding: 16px; border: 1px solid #e5e7eb; border-radius: 10px; background: #f9fafb; }
@@ -92,3 +94,5 @@
 /* delete modal */
 @media (min-width: 1700px) { .tallTextarea {width: 250px; max-width: 300px;}
 .averageTextarea{ width: 120px; max-width: 190px;} }
+@media (max-width: 1450px) { .display .right h1 {font-size: 14px !important;}
+.averageSecond {width: 160px; max-width: 200px;} }
