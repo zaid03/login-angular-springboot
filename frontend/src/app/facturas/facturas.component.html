@@ -216,13 +216,15 @@
                         <div class="title-detail">
                             <h3>Detalles del Factura</h3>
                         </div>
-                        <button class="guardar-btn">✔</button>
+                        <button class="guardar-btn" (click)="updateFactura()">✔</button>
                         <button class="close-btn-btn" (click)="closeDetails()">✖</button>
                     </div>
                     <div *ngIf="isUpdatingFactura" class="loading-message">
                         <div class="spinner"></div>
                         <span>actualizando</span>
                     </div>
+                    <h1 class="successBtn">{{facturaDetailSuccess}}</h1>
+                    <h1 class="errorBtn">{{facturaDetailError}}</h1>
                     <div class="detail-container">
                         <div class="chunk-one">
                             <div class="left">
@@ -266,7 +268,7 @@
                                     <input
                                         type="date"
                                         class="input-style" 
-                                        [value]="facfreDate"
+                                        [(ngModel)]="selectedFacturas.facfre"
                                     />
                                 </div>
                             </div>

@@ -56,7 +56,6 @@ export class FacturasComponent {
   isLoading: boolean = false;
   ngOnInit(): void{
     this.limpiarMEssages();
-    this.isLoading = true;
     const entidad = sessionStorage.getItem('Entidad');
     const eje = sessionStorage.getItem('EJERCICIO');
     const cge = sessionStorage.getItem('CENTROGESTOR');
@@ -95,6 +94,7 @@ export class FacturasComponent {
   }
 
   fetchFacturas() {
+    this.isLoading = true;
     this.http.get<any>(`${environment.backendUrl}/api/fac/${this.entcod}/${this.eje}/${this.centroGestor}`).subscribe({
       next: (response) => {
         if (!Array.isArray(response) || response.length === 0) {
@@ -428,6 +428,9 @@ export class FacturasComponent {
     this.limpiarMEssages();
     this.selectedFacturas = { ...factura };
     ['facimp', 'faciec', 'facidi'].forEach(field => this.formatFacField(field as any));
+    if (this.selectedFacturas.facfre) {
+      this.selectedFacturas.facfre = this.datePipe.transform(this.selectedFacturas.facfre, 'yyyy-MM-dd');
+    }
     this.detailView = 'Albaranes';
     this.setAlbaranesOptio('albaranes', factura?.facnum);
   }
@@ -466,11 +469,6 @@ export class FacturasComponent {
       return 'Pte. Sin aplicar';
     }
     return '';
-  }
-  get facfreDate(): string {
-    return this.selectedFacturas && this.selectedFacturas.facfre
-      ? this.datePipe.transform(this.selectedFacturas.facfre, 'yyyy-MM-dd') || ''
-      : '';
   }
 
   //search functions
@@ -639,8 +637,38 @@ export class FacturasComponent {
   }
 
   isUpdatingFactura: boolean = false;
+  facturaDetailSuccess: string = '';
+  facturaDetailError: string = '';
   updateFactura() {
     this.limpiarMEssages();
+    this.isUpdatingFactura = true;
+    const backendDate = this.toBackendDate(this.selectedFacturas.facfre);
+    const facnum = this.selectedFacturas.facnum;
+
+    const payload = {
+      "FACOBS": this.selectedFacturas.facobs,
+      "CONCTP": this.selectedFacturas.conctp,
+      "CONCPR": this.selectedFacturas.concpr, 
+      "CONCCR": this.selectedFacturas.conccr, 
+      "FACFRE": backendDate,
+      "FACFPG": this.selectedFacturas.facfpg,
+      "FACOPG": this.selectedFacturas.facopg,
+      "FACTPG": this.selectedFacturas.factpg,
+      "FACOCT": this.selectedFacturas.facoct
+    }
+
+    console.log(payload)
+
+    this.http.patch(`${environment.backendUrl}/api/fac/update-factura/${this.entcod}/${this.eje}/${facnum}`, payload).subscribe({
+      next: (res) => {
+        this.isUpdatingFactura = false;
+        this.facturaDetailSuccess = 'factura actualizada exitosamente';
+      },
+      error: (err) => {
+        this.isUpdatingFactura = false;
+        this.facturaDetailError = err.error.error ?? err.error
+      }
+    })
   }
 
   //sub detail grid's functions
@@ -1133,13 +1161,11 @@ export class FacturasComponent {
     this.filterFacturaMessage = '';
     this.moreInfoMessageSuccess = '';
     this.moreInfoMessageError = '';
-    this.moreInfoMessageError = '';
-    this.moreInfoMessageSuccess = '';
-    this.moreInfoMessageSuccess = '';
-    this.moreInfoMessageError = '';
     this.facturasErrorMessage = '';
     this.facturasSuccessMessage = '';
     this.albaranesError = '';
     this.dalbaranesDeleteMessage = '';
+    this.facturaDetailSuccess = '';
+    this.facturaDetailError = '';
   }
 }
