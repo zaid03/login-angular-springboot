@@ -61,8 +61,10 @@
 .app tbody td:last-child {display: flex; justify-content: center;}
 .width-last thead th:last-child,
 .app thead th:last-child {width: 50px;}
+.wtf {display: flex; gap: 10px;}
+.applicacionesTextarea {width: 85%;}
 .alignment {justify-content: center;}
-.albaranes-btns {display: flex; justify-content: center;}
+.albaranes-btns {display: flex; justify-content: center; align-items: center; justify-content: center;}
 /* sub detail grids */
 /* cargar facturas */
 .factura-cargar { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 16px; box-shadow: 0 8px 32px rgba(44, 62, 80, 0.18), 0 1.5px 6px rgba(44,62,80,0.08); padding: 25px 30px; min-width: 85%; min-height: 120px; max-height: 80vh; z-index: 3000; display: flex; flex-direction: column; align-items: center;}
