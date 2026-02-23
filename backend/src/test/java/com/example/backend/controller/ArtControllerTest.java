@@ -12,7 +12,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.http.MediaType;
@@ -39,9 +39,9 @@ public class ArtControllerTest {
     @Autowired private MockMvc mockMvc;
     @Autowired private ObjectMapper objectMapper;
 
-    @MockBean private ArtRepository artRepository;
-    @MockBean private AfaRepository afaRepository;
-    @MockBean private AsuRepository asuRepository;
+    @MockitoBean private ArtRepository artRepository;
+    @MockitoBean private AfaRepository afaRepository;
+    @MockitoBean private AsuRepository asuRepository;
 
     @Test
     void getByEntAfacodAsucodArtcod_combinesResults() throws Exception {

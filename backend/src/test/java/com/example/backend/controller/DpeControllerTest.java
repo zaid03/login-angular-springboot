@@ -16,7 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.http.MediaType;
@@ -46,19 +46,19 @@ public class DpeControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private DpeRepository dpeRepository;
 
-    @MockBean
+    @MockitoBean
     private PerRepository perRepository;
 
-    @MockBean
+    @MockitoBean
     private DepRepository depRepository;
 
-    @MockBean
+    @MockitoBean
     private DpeService dpeService;
 
-    @MockBean
+    @MockitoBean
     private DpePersonasForService dpePersonasForService;
 
     @Autowired
