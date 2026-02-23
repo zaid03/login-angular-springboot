@@ -244,24 +244,6 @@ export class FacturasComponent {
     }).format(Number(value));
   };
 
-  formatFacField(field: 'facimp' | 'faciec' | 'facidi') {
-    if (!this.selectedFacturas || this.selectedFacturas[field] === undefined || this.selectedFacturas[field] === null) return;
-    let raw = String(this.selectedFacturas[field]).trim();
-
-    raw = raw.replace(/[^\d.,-]/g, '');
-
-    if (raw.indexOf('.') > -1 && raw.indexOf(',') > -1) {
-      raw = raw.replace(/\./g, '').replace(',', '.');
-    } else if (raw.indexOf(',') > -1) {
-      raw = raw.replace(',', '.');
-    }
-
-    let num = parseFloat(raw);
-    if (!isNaN(num)) {
-      this.selectedFacturas[field] = num.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
-    }
-  }
-
   DownloadPDF() {
     this.limpiarMEssages();
 
@@ -427,7 +409,6 @@ export class FacturasComponent {
   showDetails(factura: any) {
     this.limpiarMEssages();
     this.selectedFacturas = { ...factura };
-    ['facimp', 'faciec', 'facidi'].forEach(field => this.formatFacField(field as any));
     if (this.selectedFacturas.facfre) {
       this.selectedFacturas.facfre = this.datePipe.transform(this.selectedFacturas.facfre, 'yyyy-MM-dd');
     }
@@ -939,7 +920,6 @@ export class FacturasComponent {
       }
     })
   }
-  
 
   //quitar albaranes (delete)
   deleteAlbaranGrid: boolean = false;
@@ -988,6 +968,8 @@ export class FacturasComponent {
     })
   }
   
+  //updating applicaciones
+
   //adding facturas from sicalwin
   addFacturaGrid: boolean = false;
   facturasWb: any[] = [];

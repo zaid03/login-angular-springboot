@@ -57,8 +57,10 @@
 /* sub detail grids */
 .detail-grid { display: flex; flex-direction: column; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); padding: 16px; border: 1px solid #e5e7eb; border-radius: 10px; background: #f9fafb; }
 .albaranes-table { width: 100%; }
-.width-last tbody td:last-child {display: flex; justify-content: center;}
-.width-last thead th:last-child {width: 50px;}
+.width-last tbody td:last-child,
+.app tbody td:last-child {display: flex; justify-content: center;}
+.width-last thead th:last-child,
+.app thead th:last-child {width: 50px;}
 .alignment {justify-content: center;}
 .albaranes-btns {display: flex; justify-content: center;}
 /* sub detail grids */

@@ -340,38 +340,18 @@
                                 <p>Apl.diferencias</p>
                                 <p>Descuentos</p>
                             </div>
-                            <div class="right">
+                            <div class="right gap">
                                 <div class="on-two">
-                                    <textarea 
-                                        class="averageTextarea" 
-                                        [(ngModel)]="selectedFacturas.facimp"
-                                        (blur)="formatFacField('facimp')"
-                                    ></textarea>
+                                    <h1>{{selectedFacturas?.facimp ? (selectedFacturas.facimp | currency:'EUR':'symbol':'1.2-2':'es-ES') : '#'}}</h1>
                                     <p>Aplicado</p>
-                                    <textarea 
-                                        class="averageTextarea" 
-                                        [ngModel]="selectedFacturas.faciec"
-                                        (blur)="formatFacField('faciec')"
-                                    ></textarea>
+                                    <h1>{{selectedFacturas?.faciec ? (selectedFacturas.faciec | currency:'EUR':'symbol':'1.2-2':'es-ES') : '#'}}</h1>
                                 </div>
                                 <div class="on-two">
-                                    <textarea 
-                                        class="averageTextarea" 
-                                        [ngModel]="selectedFacturas.facidi"
-                                        (blur)="formatFacField('facidi')"
-                                    ></textarea>
+                                    <h1>{{selectedFacturas?.facidi ? (selectedFacturas.facidi | currency:'EUR':'symbol':'1.2-2':'es-ES') : '#'}}</h1>
                                     <p>Pte.Apli</p>
-                                    <textarea 
-                                        class="averageTextarea" 
-                                        [value]="getPendingApply(selectedFacturas) | currency:'EUR':'symbol':'1.2-2':'es-ES'"
-                                        readonly
-                                    ></textarea>
+                                    <h1>{{getPendingApply(selectedFacturas) ? (getPendingApply(selectedFacturas) | currency:'EUR':'symbol':'1.2-2':'es-ES') : '#'}}</h1>
                                 </div>
-                                <textarea 
-                                    class="averageTextarea" 
-                                    [value]="selectedFacturas.facdto | currency:'EUR':'symbol':'1.2-2':'es-ES'"
-                                    readonly
-                                ></textarea>
+                                <h1>{{selectedFacturas?.facdto ? (selectedFacturas.facdto | currency:'EUR':'symbol':'1.2-2':'es-ES') : '#'}}</h1>
                             </div>
                         </div>
                         <div class="observ">
@@ -506,6 +486,7 @@
                                                         <th>Económica</th>
                                                         <th>Importe</th>
                                                         <th>diferencias </th>
+                                                        <th>acción</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -513,7 +494,16 @@
                                                         <td>{{ a.FDEREF }}</td>
                                                         <td>{{ a.FDEECO }}</td>
                                                         <td>{{ a.FDEIMP | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</td>
-                                                        <td>{{ a.FDEDIF | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</td>
+                                                        <td>
+                                                            <textarea 
+                                                                class="averageTextarea" 
+                                                                [ngModel]="a.FDEDIF"
+                                                            ></textarea>
+                                                            {{ a.FDEDIF | currency:'EUR':'symbol':'1.2-2':'es-ES' }}
+                                                        </td>
+                                                        <td>
+                                                            <button class="save-btn">✔</button>
+                                                        </td>
                                                     </tr>
                                                 </tbody>
                                             </table>
