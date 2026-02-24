@@ -22,6 +22,7 @@ import com.example.backend.sqlserver2.model.Ter;
 import com.example.backend.sqlserver2.repository.FacRepository;
 import com.example.backend.sqlserver2.repository.TerRepository;
 import com.example.backend.dto.FacWithTerDto;
+import com.example.backend.dto.FacWithTerProjection;
 import com.example.backend.dto.FacturaInsertDto;
 
 @RestController
@@ -42,49 +43,20 @@ public class FacController {
         @PathVariable String cgecod
     ) {
         try {
-            List<Fac> facturas = facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(ent, eje, cgecod);
+            List<FacWithTerProjection> facturas = facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(ent, eje, cgecod);
+            if (facturas.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
+            }
             
-            List<FacWithTerDto> result = facturas.stream().map(f -> {
-                Optional<Ter> terOpt = terRepository.findByENTAndTERCOD(f.getENT(), f.getTERCOD());
-                Ter ter = terOpt.orElse(null);
-                
-                return new FacWithTerDto(
-                    f.getENT(), 
-                    f.getEJE(), 
-                    f.getFACNUM(), 
-                    f.getTERCOD(), 
-                    f.getCGECOD(), 
-                    f.getFACOBS(), 
-                    f.getFACIMP(), 
-                    f.getFACIEC(), 
-                    f.getFACIDI(), 
-                    f.getFACTDC(), 
-                    f.getFACANN() != null ? String.valueOf(f.getFACANN()) : null, 
-                    f.getFACFAC() != null ? String.valueOf(f.getFACFAC()) : null, 
-                    f.getFACDOC(), 
-                    f.getFACDAT(), 
-                    f.getFACFCO(), 
-                    f.getFACADO(), 
-                    f.getFACTXT(), 
-                    f.getFACFRE(), 
-                    f.getCONCTP(), 
-                    f.getCONCPR(), 
-                    f.getCONCCR(), 
-                    f.getFACOCT(), 
-                    f.getFACFPG(), 
-                    f.getFACOPG(),
-                    f.getFACTPG(), 
-                    f.getFACDTO(), 
-                    ter != null ? ter.getTERNOM() : null, 
-                    ter != null ? ter.getTERNIF() : null
-                );
-            }).collect(Collectors.toList());
-            
-            return ResponseEntity.ok(result);
+            return ResponseEntity.ok(facturas);
         } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error: " + ex.getMostSpecificCause().getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + ex.getMostSpecificCause().getMessage());
         }
+    }
+
+    @GetMapping("/test/{ent}/{eje}/{facnum}")
+    public Fac test(@PathVariable Integer ent, @PathVariable String eje, @PathVariable Integer facnum) {
+        return facRepository.findById(new FacId(ent, eje, facnum)).orElse(null);
     }
 
     @GetMapping("/search")

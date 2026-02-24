@@ -103,7 +103,7 @@ public class Fac {
     @Column(nullable = true)
     private double FACDTO;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumns({
         @JoinColumn(name = "ENT", referencedColumnName = "ENT", insertable = false, updatable = false),
         @JoinColumn(name = "TERCOD", referencedColumnName = "TERCOD", insertable = false, updatable = false)
