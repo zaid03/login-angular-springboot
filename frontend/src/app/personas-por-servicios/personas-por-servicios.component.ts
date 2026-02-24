@@ -41,6 +41,7 @@ export class PersonasPorServiciosComponent {
   private defaultServices: any[] = [];
   page = 0;
   pageSize = 20;
+  pageLoad = 1;
 
   ngOnInit() {
     const entidad = sessionStorage.getItem('Entidad');
@@ -60,7 +61,7 @@ export class PersonasPorServiciosComponent {
 
   fetchServices() {
     if (this.entcod === null || this.eje === null) return;
-    this.http.get<any>(`${environment.backendUrl}/api/depe/personas-servicios/${this.entcod}/${this.eje}/1`).subscribe({
+    this.http.get<any>(`${environment.backendUrl}/api/depe/personas-servicios/${this.entcod}/${this.eje}/${this.pageLoad}`).subscribe({
       next: (res) => {
         this.services = res;
         this.backupServices = Array.isArray(res) ? [...res] : [];
@@ -73,6 +74,27 @@ export class PersonasPorServiciosComponent {
       }
     });
   };
+
+  private updatePagination(): void {
+    const total = this.totalPages;
+    if (total === 0) {
+      this.page = 0;
+      return;
+    }
+    if (this.page >= total) {
+      this.page = total - 1;
+    }
+  }
+  get paginatedServices(): any[] {if (!this.services || this.services.length === 0) return [];
+    const start = this.page * this.pageSize;
+    return this.services.slice(start, start + this.pageSize);}
+  get totalPages(): number {return Math.max(1, Math.ceil((this.services?.length ?? 0) / this.pageSize));}
+  prevPage() { if (this.pageLoad === 1) return;
+    this.pageLoad--; this.fetchServices(); }
+  nextPage() { this.pageLoad++; this.fetchServices(); }
+
+  goToPage(event: any): void { const inputPage = Number(event.target.value);
+    this.pageLoad = inputPage; this.fetchServices(); }
 
   toggleSort(field: 'percod' | 'cgedes' | 'depint' | 'cgecod' | 'depdes' | 'depalm' | 'depcom' | 'depcod' | 'pernom'): void {
     if (this.sortField !== field) {
@@ -154,38 +176,6 @@ export class PersonasPorServiciosComponent {
     document.removeEventListener('mouseup', this.stopResize);
     this.resizingColIndex = null;
   };
-
-  private updatePagination(): void {
-    const total = this.totalPages;
-    if (total === 0) {
-      this.page = 0;
-      return;
-    }
-    if (this.page >= total) {
-      this.page = total - 1;
-    }
-  }
-
-  get paginatedServices(): any[] {
-    if (!this.services || this.services.length === 0) return [];
-    const start = this.page * this.pageSize;
-    return this.services.slice(start, start + this.pageSize);
-  }
-  get totalPages(): number {
-    return Math.max(1, Math.ceil((this.services?.length ?? 0) / this.pageSize));
-  }
-  prevPage(): void {
-    if (this.page > 0) this.page--;
-  }
-  nextPage(): void {
-    if (this.page < this.totalPages - 1) this.page++;
-  }
-  goToPage(event: any): void {
-    const inputPage = Number(event.target.value);
-    if (inputPage >= 1 && inputPage <= this.totalPages) {
-      this.page = inputPage - 1;
-    }
-  }
 
   campo: 'depalm' | 'depcom' | 'depint' | null = null;
   checkIfChecked(campo: number) {

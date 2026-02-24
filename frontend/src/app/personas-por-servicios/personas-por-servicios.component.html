@@ -147,18 +147,16 @@
                 </tbody>
             </table>
             <div class="pagination-controls">
-                <button (click)="prevPage()" [disabled]="page === 0">Anterior</button>
-                <span>Página</span>
+                <button (click)="prevPage()">Anterior</button>
+                <span>Página {{pageLoad}}</span>
                 <input
                 type="number"
                 min="1"
-                [max]="totalPages"
-                [value]="page + 1"
+                [value]="pageLoad"
                 (change)="goToPage($event)"
                 class="pagination-input"
                 />
-                <span>de {{ totalPages }}</span>
-                <button (click)="nextPage()" [disabled]="page + 1 >= totalPages">Siguiente</button>
+                <button (click)="nextPage()">Siguiente</button>
             </div>
         </div>
     </div>
