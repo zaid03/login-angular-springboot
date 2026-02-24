@@ -6,9 +6,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.IdClass;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @Entity
 @IdClass(CgeId.class)
 @Table(name = "CGE", schema = "dbo")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Cge {
 
     @Id

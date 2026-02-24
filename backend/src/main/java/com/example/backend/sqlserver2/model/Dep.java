@@ -74,8 +74,7 @@ public class Dep {
 
     private String DEPDEN;
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumns({
         @JoinColumn(name = "ENT", referencedColumnName = "ENT", insertable = false, updatable = false),
         @JoinColumn(name = "EJE", referencedColumnName = "EJE", insertable = false, updatable = false),
