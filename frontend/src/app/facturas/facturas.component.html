@@ -494,12 +494,12 @@
                                                         <td>{{ a.FDEREF }}</td>
                                                         <td>{{ a.FDEECO }}</td>
                                                         <td>{{ a.FDEIMP | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</td>
-                                                        <td class="wtf">
+                                                        <td>
                                                             <textarea 
                                                                 class="applicacionesTextarea" 
-                                                                [ngModel]="a.FDEDIF"
+                                                                [(ngModel)]="a.FDEDIF"
+                                                                (blur)="formatapplicaciones(a)"
                                                             ></textarea>
-                                                            <span>€</span>
                                                         </td>
                                                         <td>
                                                             <button class="save-btn">✔</button>

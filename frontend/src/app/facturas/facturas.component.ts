@@ -452,6 +452,19 @@ export class FacturasComponent {
     return '';
   }
 
+  formatapplicaciones(a: any) {
+    if (!a || a.FDEDIF === undefined || a.FDEDIF === null) return;
+    let value = String(a.FDEDIF)
+      .replace(/\s/g, '')
+      .replace(/\./g, '')     
+      .replace(',', '.')       
+      .replace(/[^\d.-]/g, '');
+    let num = parseFloat(value);
+    if (!isNaN(num)) {
+      a.FDEDIF = num.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
+    }
+  }
+
   //search functions
   fechaTipo: 'registro' | 'factura' | 'contable' | 'Fecha' | '' = '';
   estadoTipo: 'contabilizadas' | 'no-contabilizadas' | 'aplicadas' | 'sin-aplicadas' | '' = 'no-contabilizadas';
@@ -657,7 +670,7 @@ export class FacturasComponent {
   albaranesOptio: 'albaranes' | 'aplicaciones' | 'descuentos' = 'albaranes';
   albaranes: any[] = [];
   backipAlbaranes: any[] = [];
-  apalicaciones: any[] = [];
+  apalicaciones: any = null;
   backupAplicaciones: any[] = [];
   descuentos: any[] = [];
   backupDescuentos: any[] = [];
@@ -675,7 +688,9 @@ export class FacturasComponent {
     this.descuentos = [];
 
     if ( option === 'albaranes') {this.fetchAlbaranesDEtail(facnum);}
-    if ( option === 'aplicaciones') {this.fetchApplicacionesDetails(facnum);}
+    if ( option === 'aplicaciones') {
+      this.fetchApplicacionesDetails(facnum);
+    }
     if ( option === 'descuentos') {this.fetchDescuentosDetails(facnum);}
   }
 
@@ -721,8 +736,23 @@ export class FacturasComponent {
           this.isLoading = false;
           this.pageAplicaiones = 0
         } else {
-          this.apalicaciones = response;
-          this.backupAplicaciones = Array.isArray(response) ? [...response] : [];
+
+          this.apalicaciones = response.map((item: any) => {
+          if (item.FDEDIF !== undefined && item.FDEDIF !== null && item.FDEDIF !== '') {
+            let num = parseFloat(
+              String(item.FDEDIF)
+                .replace(/\s/g, '')
+                .replace(/\./g, '')
+                .replace(',', '.')
+                .replace(/[^\d.-]/g, '')
+            );
+              if (!isNaN(num)) {
+                item.FDEDIF = num.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
+              }
+            }
+            return item;
+          });
+          this.backupAplicaciones = Array.isArray(response) ? [...this.apalicaciones] : [];
           this.isLoading = false;
           this.pageAplicaiones = 0
         }

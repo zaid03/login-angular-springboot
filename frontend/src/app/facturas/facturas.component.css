@@ -61,7 +61,6 @@
 .app tbody td:last-child {display: flex; justify-content: center;}
 .width-last thead th:last-child,
 .app thead th:last-child {width: 50px;}
-.wtf {display: flex; gap: 10px;}
 .applicacionesTextarea {width: 85%;}
 .alignment {justify-content: center;}
 .albaranes-btns {display: flex; justify-content: center; align-items: center; justify-content: center;}
