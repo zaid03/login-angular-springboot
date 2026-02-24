@@ -2,9 +2,14 @@ package com.example.backend.controller;
 
 import java.util.List;
 
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,11 +19,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.data.domain.Pageable;
-
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import jakarta.servlet.http.HttpServletResponse;
 
 import com.example.backend.dto.DepCodDesDto;
 import com.example.backend.dto.PersonaDto;
@@ -31,9 +31,12 @@ import com.example.backend.sqlserver2.model.Dep;
 import com.example.backend.sqlserver2.model.Dpe;
 import com.example.backend.sqlserver2.model.DpeId;
 import com.example.backend.sqlserver2.model.Per;
+import com.example.backend.sqlserver2.repository.DepRepository;
 import com.example.backend.sqlserver2.repository.DpeRepository;
 import com.example.backend.sqlserver2.repository.PerRepository;
-import com.example.backend.sqlserver2.repository.DepRepository;
+
+import jakarta.servlet.http.HttpServletResponse;
+import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 
 @RestController
 @RequestMapping("/api/depe")
@@ -254,7 +257,6 @@ public class DpeController {
                 return;
             }
 
-            // Set response headers
             response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             response.setHeader("Content-Disposition", "attachment; filename=personas_por_servicios.xlsx");
 
@@ -272,23 +274,96 @@ public class DpeController {
                 for (personasPorServiciosProjection p : personas) {
                     Row row = sheet.createRow(rowIdx);
                     row.createCell(0).setCellValue(rowIdx);
-                    row.createCell(1).setCellValue(ent != null ? ent.toString() : "");
-                    row.createCell(2).setCellValue(eje != null ? eje.toString() : "");
-                    row.createCell(3).setCellValue(p.getPERCOD() != null ? p.getPERCOD() : "");
-                    row.createCell(4).setCellValue(p.getPer() != null && p.getPer().getPERNOM() != null ? p.getPer().getPERNOM() : "");
-                    row.createCell(5).setCellValue(p.getDEPCOD() != null ? p.getDEPCOD() : "");
-                    row.createCell(6).setCellValue(p.getDep() != null && p.getDep().getDEPDES() != null ? p.getDep().getDEPDES() : "");
-                    row.createCell(7).setCellValue(p.getDep() != null && p.getDep().getDEPALM() != null && p.getDep().getDEPALM() == 1 ? "Sí" : "No");
-                    row.createCell(8).setCellValue(p.getDep() != null && p.getDep().getDEPCOM() != null && p.getDep().getDEPCOM() == 1 ? "Sí" : "No");
-                    row.createCell(9).setCellValue(p.getDep() != null && p.getDep().getDEPINT() != null && p.getDep().getDEPINT() == 1 ? "Sí" : "No");
-                    row.createCell(10).setCellValue(p.getDep() != null && p.getDep().getCge() != null && p.getDep().getCge().getCGECOD() != null ? p.getDep().getCge().getCGECOD() : "");
-                    row.createCell(11).setCellValue(p.getDep() != null && p.getDep().getCge() != null && p.getDep().getCge().getCGEDES() != null ? p.getDep().getCge().getCGEDES() : "");
+                    row.createCell(1).setCellValue(p.getPERCOD() != null ? p.getPERCOD() : "");
+                    row.createCell(2).setCellValue(p.getPer() != null && p.getPer().getPERNOM() != null ? p.getPer().getPERNOM() : "");
+                    row.createCell(3).setCellValue(p.getDEPCOD() != null ? p.getDEPCOD() : "");
+                    row.createCell(4).setCellValue(p.getDep() != null && p.getDep().getDEPDES() != null ? p.getDep().getDEPDES() : "");
+                    row.createCell(5).setCellValue(
+                        p.getDep() != null && p.getDep().getDEPALM() != null && p.getDep().getDEPALM() == 1 ? "Sí" : "No"
+                    );
+                    row.createCell(6).setCellValue(
+                        p.getDep() != null && p.getDep().getDEPCOM() != null && p.getDep().getDEPCOM() == 1 ? "Sí" : "No"
+                    );
+                    row.createCell(7).setCellValue(
+                        p.getDep() != null && p.getDep().getDEPINT() != null && p.getDep().getDEPINT() == 1 ? "Sí" : "No"
+                    );
+                    row.createCell(8).setCellValue(
+                        p.getDep() != null && p.getDep().getCge() != null && p.getDep().getCge().getCGECOD() != null ? p.getDep().getCge().getCGECOD() : ""
+                    );
+                    row.createCell(9).setCellValue(
+                        p.getDep() != null && p.getDep().getCge() != null && p.getDep().getCge().getCGEDES() != null ? p.getDep().getCge().getCGEDES() : ""
+                    );
                     rowIdx++;
                 }
                 for (int i = 0; i < columns.length; i++) {
                     sheet.autoSizeColumn(i);
                 }
                 workbook.write(response.getOutputStream());
+            }
+        } catch (Exception ex) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    //downloading as pdf
+    @GetMapping("/personas-servicios/pdf/{ent}/{eje}")
+    public void exportPersonasServiciosPdf(
+        @PathVariable Integer ent,
+        @PathVariable String eje,
+        HttpServletResponse response
+    ) {
+        try {
+            List<personasPorServiciosProjection> personas = dpeRepository.findByENTAndEJE(ent, eje);
+            if (personas.isEmpty()) {
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                return;
+            }
+
+            StringBuilder htmlRows = new StringBuilder();
+            int idx = 1;
+            for (personasPorServiciosProjection p : personas) {
+                htmlRows.append("<tr>")
+                    .append("<td>").append(idx).append("</td>")
+                    .append("<td>").append(ent != null ? ent : "").append("</td>")
+                    .append("<td>").append(eje != null ? eje : "").append("</td>")
+                    .append("<td>").append(p.getPERCOD() != null ? p.getPERCOD() : "").append("</td>")
+                    .append("<td>").append(p.getPer() != null && p.getPer().getPERNOM() != null ? p.getPer().getPERNOM() : "").append("</td>")
+                    .append("<td>").append(p.getDEPCOD() != null ? p.getDEPCOD() : "").append("</td>")
+                    .append("<td>").append(p.getDep() != null && p.getDep().getDEPDES() != null ? p.getDep().getDEPDES() : "").append("</td>")
+                    .append("<td>").append(p.getDep() != null && p.getDep().getDEPALM() != null && p.getDep().getDEPALM() == 1 ? "Sí" : "No").append("</td>")
+                    .append("<td>").append(p.getDep() != null && p.getDep().getDEPCOM() != null && p.getDep().getDEPCOM() == 1 ? "Sí" : "No").append("</td>")
+                    .append("<td>").append(p.getDep() != null && p.getDep().getDEPINT() != null && p.getDep().getDEPINT() == 1 ? "Sí" : "No").append("</td>")
+                    .append("<td>").append(p.getDep() != null && p.getDep().getCge() != null && p.getDep().getCge().getCGECOD() != null ? p.getDep().getCge().getCGECOD() : "").append("</td>")
+                    .append("<td>").append(p.getDep() != null && p.getDep().getCge() != null && p.getDep().getCge().getCGEDES() != null ? p.getDep().getCge().getCGEDES() : "").append("</td>")
+                    .append("</tr>");
+                idx++;
+            }
+
+            String html = "<html><head><style>"
+                + "body { font-family: 'Poppins', sans-serif; padding: 24px; }"
+                + "h1 { text-align: center; margin-bottom: 16px; }"
+                + "table { width: 100%; border-collapse: collapse; }"
+                + "th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }"
+                + "th { background: #f3f4f6; }"
+                + "th:last-child, td:last-child { width: 180px; }"
+                + "</style></head><body>"
+                + "<h1>listas de servicios</h1>"
+                + "<table><thead><tr>"
+                + "<th>#</th><th>Entidad</th><th>eje</th><th>Cód_Persona</th><th>Nombre</th><th>Cód_Servicio</th>"
+                + "<th>Servicio</th><th>Almacén_OR_Farmacia</th><th>Comprador</th><th>Contable</th>"
+                + "<th>Cód_Centro_Gestor</th><th>Nombre_Centro_Gestor</th>"
+                + "</tr></thead><tbody>"
+                + htmlRows
+                + "</tbody></table></body></html>";
+
+            response.setContentType("application/pdf");
+            response.setHeader("Content-Disposition", "attachment; filename=personas_por_servicios.pdf");
+
+            try (var os = response.getOutputStream()) {
+                PdfRendererBuilder builder = new PdfRendererBuilder();
+                builder.withHtmlContent(html, null);
+                builder.toStream(os);
+                builder.run();
             }
         } catch (Exception ex) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
