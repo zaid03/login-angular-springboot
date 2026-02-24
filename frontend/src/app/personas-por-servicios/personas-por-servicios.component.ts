@@ -60,7 +60,7 @@ export class PersonasPorServiciosComponent {
 
   fetchServices() {
     if (this.entcod === null || this.eje === null) return;
-    this.http.get<any>(`${environment.backendUrl}/api/depe/fetch-services-personas/${this.entcod}/${this.eje}`).subscribe({
+    this.http.get<any>(`${environment.backendUrl}/api/depe/personas-servicios/${this.entcod}/${this.eje}/1`).subscribe({
       next: (res) => {
         this.services = res;
         this.backupServices = Array.isArray(res) ? [...res] : [];
