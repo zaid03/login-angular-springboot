@@ -9,6 +9,14 @@ public class FdeId implements Serializable {
     private Integer FACNUM;
     private String FDEREF;
 
+    public FdeId() {}
+    public FdeId(Integer ENT, String EJE, Integer FACNUM, String FDEREF) {
+        this.ENT = ENT;
+        this.EJE = EJE;
+        this.FACNUM = FACNUM;
+        this.FDEREF = FDEREF;
+    }
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

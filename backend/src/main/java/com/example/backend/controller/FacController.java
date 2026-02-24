@@ -54,11 +54,6 @@ public class FacController {
         }
     }
 
-    @GetMapping("/test/{ent}/{eje}/{facnum}")
-    public Fac test(@PathVariable Integer ent, @PathVariable String eje, @PathVariable Integer facnum) {
-        return facRepository.findById(new FacId(ent, eje, facnum)).orElse(null);
-    }
-
     @GetMapping("/search")
     public ResponseEntity<?> searchFacturas(
         @RequestParam Integer ent,
