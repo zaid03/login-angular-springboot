@@ -59,10 +59,14 @@ export class PersonasPorServiciosComponent {
     this.fetchServices();
   }
 
+  //global functions
+  isLoading: boolean = false;
   fetchServices() {
     if (this.entcod === null || this.eje === null) return;
+    this.isLoading = true;
     this.http.get<any>(`${environment.backendUrl}/api/depe/personas-servicios/${this.entcod}/${this.eje}/${this.pageLoad}`).subscribe({
       next: (res) => {
+        this.isLoading = false;
         this.services = res;
         this.backupServices = Array.isArray(res) ? [...res] : [];
         this.defaultServices = [...this.backupServices];
@@ -70,7 +74,8 @@ export class PersonasPorServiciosComponent {
         this.updatePagination();
       },
       error: (err) => {
-        this.personasServicesError = err?.error?.error || 'Error desconocido';
+        this.isLoading = false;
+        this.personasServicesError = err.error.error ?? err.error;
       }
     });
   };
@@ -124,23 +129,45 @@ export class PersonasPorServiciosComponent {
     const field = this.sortField;
     const collator = new Intl.Collator('es', { numeric: true, sensitivity: 'base' });
 
-    const sorted = [...this.services].sort((a, b) => {
-      const extract = (item: any, prop: string) =>
-        (item?.[prop] ?? item?.[prop.toUpperCase()] ?? '').toString();
-
-      if (field === 'depcod') {
-        const aVal = extract(a, 'depcod');
-        const bVal = extract(b, 'depcod');
-        return this.sortDirection === 'asc'
-          ? collator.compare(aVal, bVal)
-          : collator.compare(bVal, aVal);
+    const getValue = (item: any, field: string) => {
+      switch (field) {
+        case 'percod':
+          return item.percod ?? '';
+        case 'pernom':
+          return item.per?.pernom ?? '';
+        case 'depcod':
+          return item.depcod ?? '';
+        case 'depdes':
+          return item.dep?.depdes ?? '';
+        case 'depalm':
+          return item.dep?.depalm ?? '';
+        case 'depcom':
+          return item.dep?.depcom ?? '';
+        case 'depint':
+          return item.dep?.depint ?? '';
+        case 'cgecod':
+          return item.dep?.cge?.cgecod ?? '';
+        case 'cgedes':
+          return item.dep?.cge?.cgedes ?? '';
+        default:
+          return item[field] ?? '';
       }
+    };
 
-      const aVal = extract(a, field);
-      const bVal = extract(b, field);
+    const sorted = [...this.services].sort((a, b) => {
+      const aVal = getValue(a, field);
+      const bVal = getValue(b, field);
+
+      if (['percod', 'depcod', 'depalm', 'depcom', 'depint', 'cgecod'].includes(field)) {
+        const aNum = Number(aVal);
+        const bNum = Number(bVal);
+        if (!isNaN(aNum) && !isNaN(bNum)) {
+          return this.sortDirection === 'asc' ? aNum - bNum : bNum - aNum;
+        }
+      }
       return this.sortDirection === 'asc'
-        ? collator.compare(aVal, bVal)
-        : collator.compare(bVal, aVal);
+        ? collator.compare(aVal.toString(), bVal.toString())
+        : collator.compare(bVal.toString(), aVal.toString());
     });
 
     this.services = sorted;

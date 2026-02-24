@@ -27,4 +27,7 @@ public interface DpeRepository extends JpaRepository<Dpe, DpeId> {
 
     //selecting personas por servicios
     List<personasPorServiciosProjection> findByENTAndEJE(Integer ENT, String EJE, Pageable pageable);
+
+    //downloading as excel
+    List<personasPorServiciosProjection> findByENTAndEJE(Integer ENT, String EJE);
 }

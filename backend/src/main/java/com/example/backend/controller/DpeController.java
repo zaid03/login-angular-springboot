@@ -16,6 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.data.domain.Pageable;
 
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import jakarta.servlet.http.HttpServletResponse;
+
 import com.example.backend.dto.DepCodDesDto;
 import com.example.backend.dto.PersonaDto;
 import com.example.backend.dto.PersonaServiceRequest;
@@ -233,6 +237,61 @@ public class DpeController {
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Error: " + ex.getMessage());
+        }
+    }
+
+    //downloading as excel
+    @GetMapping("/personas-servicios/excel/{ent}/{eje}")
+    public void exportPersonasServiciosExcel(
+        @PathVariable Integer ent,
+        @PathVariable String eje,
+        HttpServletResponse response
+    ) {
+        try {
+            List<personasPorServiciosProjection> personas = dpeRepository.findByENTAndEJE(ent, eje);
+            if (personas.isEmpty()) {
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                return;
+            }
+
+            // Set response headers
+            response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            response.setHeader("Content-Disposition", "attachment; filename=personas_por_servicios.xlsx");
+
+            try (Workbook workbook = new XSSFWorkbook()) {
+                Sheet sheet = workbook.createSheet("Personas por Servicios");
+                String[] columns = {
+                    "#", "Entidad", "EJE", "Cód Persona", "Nombre", "Cód Servicio", "Servicio",
+                    "Almacén/Farmacia", "Comprador", "Contable", "Cód Centro Gestor", "Nombre Centro Gestor"
+                };
+                Row header = sheet.createRow(0);
+                for (int i = 0; i < columns.length; i++) {
+                    header.createCell(i).setCellValue(columns[i]);
+                }
+                int rowIdx = 1;
+                for (personasPorServiciosProjection p : personas) {
+                    Row row = sheet.createRow(rowIdx);
+                    row.createCell(0).setCellValue(rowIdx);
+                    row.createCell(1).setCellValue(ent != null ? ent.toString() : "");
+                    row.createCell(2).setCellValue(eje != null ? eje.toString() : "");
+                    row.createCell(3).setCellValue(p.getPERCOD() != null ? p.getPERCOD() : "");
+                    row.createCell(4).setCellValue(p.getPer() != null && p.getPer().getPERNOM() != null ? p.getPer().getPERNOM() : "");
+                    row.createCell(5).setCellValue(p.getDEPCOD() != null ? p.getDEPCOD() : "");
+                    row.createCell(6).setCellValue(p.getDep() != null && p.getDep().getDEPDES() != null ? p.getDep().getDEPDES() : "");
+                    row.createCell(7).setCellValue(p.getDep() != null && p.getDep().getDEPALM() != null && p.getDep().getDEPALM() == 1 ? "Sí" : "No");
+                    row.createCell(8).setCellValue(p.getDep() != null && p.getDep().getDEPCOM() != null && p.getDep().getDEPCOM() == 1 ? "Sí" : "No");
+                    row.createCell(9).setCellValue(p.getDep() != null && p.getDep().getDEPINT() != null && p.getDep().getDEPINT() == 1 ? "Sí" : "No");
+                    row.createCell(10).setCellValue(p.getDep() != null && p.getDep().getCge() != null && p.getDep().getCge().getCGECOD() != null ? p.getDep().getCge().getCGECOD() : "");
+                    row.createCell(11).setCellValue(p.getDep() != null && p.getDep().getCge() != null && p.getDep().getCge().getCGEDES() != null ? p.getDep().getCge().getCGEDES() : "");
+                    rowIdx++;
+                }
+                for (int i = 0; i < columns.length; i++) {
+                    sheet.autoSizeColumn(i);
+                }
+                workbook.write(response.getOutputStream());
+            }
+        } catch (Exception ex) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 }

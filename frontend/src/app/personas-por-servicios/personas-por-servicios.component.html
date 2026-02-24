@@ -43,7 +43,7 @@
                     </div>
                     <div class="btns Widthy">
                         <button class="search-btn">Buscar</button>
-                        <button class="Limpiar-btn">Limpiar</button>
+                        <button class="save-btn">Limpiar</button>
                     </div>
                 </div>
             </div>
@@ -61,6 +61,10 @@
         <div class="personasServices-list">
             <h1 class="successBtn">{{ personasServicesSuccess }}</h1>
             <h1 class="errorBtn">{{ personasServicesError }}</h1>
+            <div *ngIf="isLoading" class="loading-message">
+                <div class="spinner"></div>
+                <span>Cargando</span>
+            </div>
             <table class="personasServices-table">
                 <thead>
                     <tr>
