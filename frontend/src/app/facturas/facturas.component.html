@@ -179,8 +179,8 @@
                     <tr *ngFor="let p of paginatedFacturas">
                         <td (click)="showDetails(p)" style="cursor: pointer;">{{ p.facnum }}</td>
                         <td>{{ p.tercod }}</td>
-                        <td>{{ p.ternom }}</td>
-                        <td>{{ p.ternif }}</td>
+                        <td>{{ p.ter_TERNOM }}</td>
+                        <td>{{ p.ter_TERNIF }}</td>
                         <td>{{ p.facfre | date:'dd-MM-yyyy'}}</td>
                         <td>{{ p.facimp | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</td>
                         <td>{{ p.facdoc }}</td>
@@ -478,6 +478,10 @@
                                             <div class="spinner"></div>
                                             <span>Cargando</span>
                                         </div>
+                                        <div *ngIf="isUpdatingApplicaciones" class="loading-message">
+                                            <div class="spinner"></div>
+                                            <span>actualizando</span>
+                                        </div>
                                         <div class="detail-card">
                                             <table class="albaranes-table app">
                                                 <thead>
@@ -502,7 +506,7 @@
                                                             ></textarea>
                                                         </td>
                                                         <td>
-                                                            <button class="save-btn">✔</button>
+                                                            <button class="save-btn" (click)="updateApplicaciones(a)">✔</button>
                                                         </td>
                                                     </tr>
                                                 </tbody>

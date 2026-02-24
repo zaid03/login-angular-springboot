@@ -455,10 +455,14 @@ export class FacturasComponent {
   formatapplicaciones(a: any) {
     if (!a || a.FDEDIF === undefined || a.FDEDIF === null) return;
     let value = String(a.FDEDIF)
-      .replace(/\s/g, '')
-      .replace(/\./g, '')     
-      .replace(',', '.')       
-      .replace(/[^\d.-]/g, '');
+      .replace(/[^\d,.-]/g, '')
+      .replace(/\s/g, '');     
+
+    if (value.indexOf('.') > -1 && value.indexOf(',') > -1) {
+      value = value.replace(/\./g, ''); 
+    }
+    value = value.replace(',', '.');
+
     let num = parseFloat(value);
     if (!isNaN(num)) {
       a.FDEDIF = num.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
@@ -670,7 +674,7 @@ export class FacturasComponent {
   albaranesOptio: 'albaranes' | 'aplicaciones' | 'descuentos' = 'albaranes';
   albaranes: any[] = [];
   backipAlbaranes: any[] = [];
-  apalicaciones: any = null;
+  apalicaciones: any[] = [];
   backupAplicaciones: any[] = [];
   descuentos: any[] = [];
   backupDescuentos: any[] = [];
@@ -738,14 +742,17 @@ export class FacturasComponent {
         } else {
 
           this.apalicaciones = response.map((item: any) => {
-          if (item.FDEDIF !== undefined && item.FDEDIF !== null && item.FDEDIF !== '') {
-            let num = parseFloat(
-              String(item.FDEDIF)
-                .replace(/\s/g, '')
-                .replace(/\./g, '')
-                .replace(',', '.')
-                .replace(/[^\d.-]/g, '')
-            );
+            if (item.FDEDIF !== undefined && item.FDEDIF !== null && item.FDEDIF !== '') {
+              let value = String(item.FDEDIF)
+                .replace(/[^\d,.-]/g, '') 
+                .replace(/\s/g, '');      
+
+              if (value.indexOf(',') > -1) {
+                value = value.replace(/\./g, '');
+              }
+              value = value.replace(',', '.');
+
+              let num = parseFloat(value);
               if (!isNaN(num)) {
                 item.FDEDIF = num.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
               }
@@ -999,6 +1006,47 @@ export class FacturasComponent {
   }
   
   //updating applicaciones
+  isUpdatingApplicaciones: boolean = false;
+  updateApplicaciones(a: any) {
+    this.limpiarMEssages();
+    const numero = this.selectedFacturas.facnum;
+    const referencia = a.FDEREF;
+
+    const payload = {
+      "FDEDIF": this.parseCurrency(a.FDEDIF),
+      "FACIDI": this.totalFDEDIF
+    }
+
+    this.isUpdatingApplicaciones = true;
+    this.http.patch(`${environment.backendUrl}/api/fde/update-diferencias/${this.entcod}/${this.eje}/${numero}/${referencia}`, payload).subscribe({
+      next: (res) => {
+        this.isUpdatingApplicaciones = false;
+        this.moreInfoMessageSuccess = 'aplicación actualizada exitosamente';
+        this.selectedFacturas.facidi = this.totalFDEDIF;
+      },
+      error: (err) => {
+        this.isUpdatingApplicaciones = false;
+        this.moreInfoMessageError = err.error.error ?? err.error;
+      }
+    })
+  }
+
+  get totalFDEDIF(): number {
+    return this.apalicaciones
+    .map(a => this.parseCurrency(a.FDEDIF))
+    .reduce((sum, val) => sum + val, 0);
+  }
+
+  private parseCurrency(value: any): number {
+    if (value === undefined || value === null || value === '') return 0;
+    const cleaned = String(value)
+      .replace(/\s/g, '')
+      .replace(/\./g, '')
+      .replace(',', '.')
+      .replace(/[^\d.-]/g, '');
+    const num = parseFloat(cleaned);
+    return isNaN(num) ? 0 : num;
+  }
 
   //adding facturas from sicalwin
   addFacturaGrid: boolean = false;
