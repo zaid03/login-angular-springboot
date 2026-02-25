@@ -215,124 +215,40 @@ export class PersonasPorServiciosComponent {
   }
 
   excelDownload() {
-    const rows = this.backupServices.length ? this.backupServices : this.services;
-    if (!rows || rows.length === 0) {
-      this.personasServicesError = 'No hay datos para exportar.';
-      return;
-    }
-  
-    const exportRows = rows.map((row, index) => ({
-      '#': index + 1,
-      Entidad: row.ent ?? '',
-      EJE: row.eje ?? '',
-      Cód_Persona: row.percod ?? '',
-      Nombre: row.pernom ?? '',
-      Cód_Servicio: row.depcod ?? '',
-      Servicio: row.depdes ?? '',
-      Almacén_OR_Farmacia: this.checkIfChecked(row.depalm) ?? '',
-      Comprador: this.checkIfChecked(row.depcom) ?? '',
-      Contable: this.checkIfChecked(row.depint) ?? '',
-      Cód_Centro_Gestor: row.cgecod ?? '',
-      Nombre_Centro_Gestor: row.cgedes ?? ''
-    }));
-  
-    const worksheet = XLSX.utils.aoa_to_sheet([]);
-    XLSX.utils.sheet_add_aoa(worksheet, [['listas de personas por servicios']], { origin: 'A1' });
-    worksheet['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 3 } }];
-    XLSX.utils.sheet_add_aoa(worksheet, [['#', 'Entidad', 'EJE', 'Cód Persona', 'Nombre', 'Cód Servicio', 'Servicio', 'Almacén/Farmacia', 'Comprador', 'Contable', 'Cód Centro Gestor', 'Nombre Centro Gestor']], { origin: 'A2' });
-    XLSX.utils.sheet_add_json(worksheet, exportRows, { origin: 'A3', skipHeader: true });
-
-    worksheet['!cols'] = [
-      { wch: 6 },
-      { wch: 10 },
-      { wch: 12 },
-      { wch: 20 },
-      { wch: 40 },
-      { wch: 20 },
-      { wch: 40 },
-      { wch: 15 },
-      { wch: 15 },
-      { wch: 15 },
-      { wch: 15 },
-      { wch: 40 }
-    ];
-  
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'personas por servicios');
-    const buffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-    saveAs(
-      new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }),
-      'personas_por_servicios.xlsx'
-    );
+    this.http.get(`${environment.backendUrl}/api/depe/personas-servicios/excel/${this.entcod}/${this.eje}`, { responseType: 'blob' }).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'personas_por_servicios.pdf';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => {
+        this.personasServicesError = err.error.error ?? err.error;
+      }
+    });
   }
 
   toPrint() {
-    const rows = this.backupServices.length ? this.backupServices : this.services;
-    if (!rows?.length) {
-      this.personasServicesError = 'No hay datos para imprimir.';
-      return;
-    }
-
-    const htmlRows = rows.map((row, index) => `
-      <tr>
-        <td>${index + 1}</td>
-        <td>${row.ent ?? ''}</td>
-        <td>${row.eje ?? ''}</td>
-        <td>${row.percod ?? ''}</td>
-        <td>${row.pernom ?? ''}</td>
-        <td>${row.depcod ?? ''}</td>
-        <td>${row.depdes ?? ''}</td>
-        <td>${this.checkIfChecked(row.depalm) ?? ''}</td>
-        <td>${this.checkIfChecked(row.depcom) ?? ''}</td>
-        <td>${this.checkIfChecked(row.depint) ?? ''}</td>
-        <td>${row.cgecod ?? ''}</td>
-        <td>${row.cgedes ?? ''}</td>
-      </tr>
-    `).join('');
-
-    const printWindow = window.open('', '_blank', 'width=900,height=700');
-    if (!printWindow) return;
-
-    printWindow.document.write(`
-      <html>
-        <head>
-          <title>listas de personas por servicios</title>
-          <style>
-            body { font-family: 'Poppins', sans-serif; padding: 24px; }
-            h1 { text-align: center; margin-bottom: 16px; }
-            table { width: 100%; border-collapse: collapse; }
-            th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
-            th { background: #f3f4f6; }
-            th:last-child, td:last-child { width: 180px; }
-          </style>
-        </head>
-        <body>
-          <h1>listas de servicios</h1>
-          <table>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Entidad</th>
-                <th>eje</th>
-                <th>Cód_Persona</th>
-                <th>Nombre</th>
-                <th>Cód_Servicio</th>
-                <th>Servicio</th>
-                <th>Almacén_OR_Farmacia</th>
-                <th>Comprador</th>
-                <th>Contable</th>
-                <th>Cód_Centro_Gestor</th>
-                <th>Nombre_Centro_Gestor</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${htmlRows}
-            </tbody>
-          </table>
-        </body>
-      </html>
-    `);
-    printWindow.document.close();
-    printWindow.print();
+    this.http.get(`${environment.backendUrl}/api/depe/personas-servicios/pdf/${this.entcod}/${this.eje}`,{ responseType: 'blob' }).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'personas_por_servicios.pdf';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => {
+        this.personasServicesError = err.error.error ?? err.error;
+      }
+    });
   }
+
+  
 }
