@@ -34,9 +34,9 @@ import com.example.backend.sqlserver2.model.Per;
 import com.example.backend.sqlserver2.repository.DepRepository;
 import com.example.backend.sqlserver2.repository.DpeRepository;
 import com.example.backend.sqlserver2.repository.PerRepository;
+import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 
 import jakarta.servlet.http.HttpServletResponse;
-import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 
 @RestController
 @RequestMapping("/api/depe")
@@ -263,7 +263,7 @@ public class DpeController {
             try (Workbook workbook = new XSSFWorkbook()) {
                 Sheet sheet = workbook.createSheet("Personas por Servicios");
                 String[] columns = {
-                    "#", "Entidad", "EJE", "Cód Persona", "Nombre", "Cód Servicio", "Servicio",
+                    "#", "Cód Persona", "Nombre", "Cód Servicio", "Servicio",
                     "Almacén/Farmacia", "Comprador", "Contable", "Cód Centro Gestor", "Nombre Centro Gestor"
                 };
                 Row header = sheet.createRow(0);
@@ -324,12 +324,10 @@ public class DpeController {
             for (personasPorServiciosProjection p : personas) {
                 htmlRows.append("<tr>")
                     .append("<td>").append(idx).append("</td>")
-                    .append("<td>").append(ent != null ? ent : "").append("</td>")
-                    .append("<td>").append(eje != null ? eje : "").append("</td>")
-                    .append("<td>").append(p.getPERCOD() != null ? p.getPERCOD() : "").append("</td>")
+                    .append("<td class='servicio-col'>").append(p.getPERCOD() != null ? p.getPERCOD() : "").append("</td>")
                     .append("<td>").append(p.getPer() != null && p.getPer().getPERNOM() != null ? p.getPer().getPERNOM() : "").append("</td>")
                     .append("<td>").append(p.getDEPCOD() != null ? p.getDEPCOD() : "").append("</td>")
-                    .append("<td>").append(p.getDep() != null && p.getDep().getDEPDES() != null ? p.getDep().getDEPDES() : "").append("</td>")
+                    .append("<td class='servicio-col'>").append(p.getDep() != null && p.getDep().getDEPDES() != null ? p.getDep().getDEPDES() : "").append("</td>")
                     .append("<td>").append(p.getDep() != null && p.getDep().getDEPALM() != null && p.getDep().getDEPALM() == 1 ? "Sí" : "No").append("</td>")
                     .append("<td>").append(p.getDep() != null && p.getDep().getDEPCOM() != null && p.getDep().getDEPCOM() == 1 ? "Sí" : "No").append("</td>")
                     .append("<td>").append(p.getDep() != null && p.getDep().getDEPINT() != null && p.getDep().getDEPINT() == 1 ? "Sí" : "No").append("</td>")
@@ -340,6 +338,8 @@ public class DpeController {
             }
 
             String html = "<html><head><style>"
+                + "@page { size: A4 landscape; margin: 1px; }"
+                + ".servicio-col { width: 10px !important;}"
                 + "body { font-family: 'Poppins', sans-serif; padding: 24px; }"
                 + "h1 { text-align: center; margin-bottom: 16px; }"
                 + "table { width: 100%; border-collapse: collapse; }"
@@ -349,9 +349,9 @@ public class DpeController {
                 + "</style></head><body>"
                 + "<h1>listas de servicios</h1>"
                 + "<table><thead><tr>"
-                + "<th>#</th><th>Entidad</th><th>eje</th><th>Cód_Persona</th><th>Nombre</th><th>Cód_Servicio</th>"
-                + "<th>Servicio</th><th>Almacén_OR_Farmacia</th><th>Comprador</th><th>Contable</th>"
-                + "<th>Cód_Centro_Gestor</th><th>Nombre_Centro_Gestor</th>"
+                + "<th>#</th><th class='servicio-col'>C.Persona</th><th>Nombre</th><th>C.Servicio</th>"
+                + "<th class='servicio-col'>Servicio</th><th>Alma</th><th>Com</th><th>Con</th>"
+                + "<th>C.C.Gestor</th><th>N.Gestor</th>"
                 + "</tr></thead><tbody>"
                 + htmlRows
                 + "</tbody></table></body></html>";
