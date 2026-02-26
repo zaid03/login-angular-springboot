@@ -61,8 +61,11 @@ export class PersonasPorServiciosComponent {
 
   //global functions
   isLoading: boolean = false;
+  isNotSearch: boolean = false;
   fetchServices() {
     if (this.entcod === null || this.eje === null) return;
+    this.inSearch = false;
+    this.isNotSearch = true;
     this.isLoading = true;
     this.http.get<any>(`${environment.backendUrl}/api/depe/personas-servicios/${this.entcod}/${this.eje}/${this.pageLoad}`).subscribe({
       next: (res) => {
@@ -91,7 +94,7 @@ export class PersonasPorServiciosComponent {
     }
   }
   get paginatedServices(): any[] {if (!this.services || this.services.length === 0) return [];
-    const start = this.page * this.pageSize;
+    const start = this.pageSearch * this.pageSize;
     return this.services.slice(start, start + this.pageSize);}
   get totalPages(): number {return Math.max(1, Math.ceil((this.services?.length ?? 0) / this.pageSize));}
   prevPage() { if (this.pageLoad === 1) return;
@@ -249,4 +252,84 @@ export class PersonasPorServiciosComponent {
       }
     });
   }
+
+  servicio: string = '';
+  persona: string = '';
+  centroGestor: string = '';
+  perfilServicio: 'almacen' | 'comprador' | 'contabilidad' | 'peticionario' | 'todos'  = 'todos';
+  inSearch: boolean = false;
+  search() {
+    this.limpiarMessages();
+    this.isNotSearch = false;
+
+    if (this.perfilServicio === 'todos' && this.servicio === '' && this.persona === '' && this.centroGestor === '') {
+      this.fetchServices();
+      return;
+    } else {
+      this.isLoading = true;
+      let params = `ent=${this.entcod}&eje=${this.eje}`;
+  
+      if (this.servicio && this.servicio.trim() !== '') {
+        params += `&servicio=${this.servicio}`;
+      }
+      if (this.persona && this.persona.trim() !== '') {
+        params += `&persona=${this.persona}`;
+      }
+      if (this.centroGestor && this.centroGestor.trim() !== '') {
+        params += `&cgecod=${this.centroGestor}`;
+      }
+      if (this.perfilServicio && this.perfilServicio !== 'todos') {
+        params += `&perfil=${this.perfilServicio}`;
+      }
+
+      this.http.get<any>(`${environment.backendUrl}/api/depe/personas-servicios/search?${params}`).subscribe({
+        next: (res) => {
+          this.services = [];
+          this.services = res;
+          this.pageSearch = 0;
+          this.updatePagination();
+          this.isLoading = false;
+          this.inSearch = true;
+        },
+        error: (err) => {
+          this.personasServicesError = err.error.error ?? err.error;
+          this.isLoading = false;
+        }
+      });
+    }
+  }
+  pageSearch = 0;
+  get totalPageSearchs(): number {
+    return Math.max(1, Math.ceil((this.services?.length ?? 0) / this.pageSize));
+  }
+  prevPageSearch(): void {
+    if (this.pageSearch > 0) this.pageSearch--;
+  }
+  nextPageSearch(): void {
+    if (this.pageSearch < this.totalPages - 1) this.pageSearch++;
+  }
+  goToPageSearch(event: any): void {
+    const inputPage = Number(event.target.value);
+    if (inputPage >= 1 && inputPage <= this.totalPages) {
+      this.pageSearch = inputPage - 1;
+    }
+  }
+
+  limpiarSearch() {
+    this.limpiarMessages();
+    this.servicio = '';
+    this.persona = '';
+    this.centroGestor = '';
+    this.perfilServicio = 'todos';
+    this.inSearch = false;
+    this.pageLoad = 1;
+    this.fetchServices();
+  }
+
+  //misc
+  limpiarMessages() {
+    this.personasServicesSuccess = '';
+    this.personasServicesError = '';
+  }
+
 }

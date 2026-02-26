@@ -19,21 +19,24 @@
                             type="text" 
                             class="search-bar"
                             placeholder="servicios" 
+                            [(ngModel)]="servicio"
                         >
                         <label>Persona</label>
                         <input 
                             type="text" 
                             class="search-bar"
                             placeholder="servicios" 
+                            [(ngModel)]="persona"
                         >
                         <label>Centro gestor</label>
                         <input 
                             type="text" 
                             class="search-bar"
                             placeholder="centro gestor"
+                            [(ngModel)]="centroGestor"
                         >
                         <label for="">Perfil de servicio</label>
-                        <select>
+                        <select [(ngModel)]="perfilServicio">
                             <option value="almacen">Almacén / Farmacia</option>
                             <option value="comprador">Comprador</option>
                             <option value="contabilidad">Contabilidad</option>
@@ -42,8 +45,8 @@
                         </select>
                     </div>
                     <div class="btns Widthy">
-                        <button class="search-btn">Buscar</button>
-                        <button class="save-btn">Limpiar</button>
+                        <button class="search-btn" (click)="search()">Buscar</button>
+                        <button class="save-btn" (click)="limpiarSearch()">Limpiar</button>
                     </div>
                 </div>
             </div>
@@ -150,9 +153,9 @@
                     </tr>
                 </tbody>
             </table>
-            <div class="pagination-controls">
+            <div class="pagination-controls" *ngIf="isNotSearch">
                 <button (click)="prevPage()">Anterior</button>
-                <span>Página {{pageLoad}}</span>
+                <span>Página</span>
                 <input
                 type="number"
                 min="1"
@@ -161,6 +164,20 @@
                 class="pagination-input"
                 />
                 <button (click)="nextPage()">Siguiente</button>
+            </div>
+            <div class="pagination-controls" *ngIf="inSearch">
+                <button (click)="prevPageSearch()" [disabled]="pageSearch === 0">Anterior</button>
+                <span>Página</span>
+                <input
+                type="number"
+                min="1"
+                [max]="totalPages"
+                [value]="pageSearch + 1"
+                (change)="goToPageSearch($event)"
+                class="pagination-input"
+                />
+                <span>de {{ totalPages }}</span>
+                <button (click)="nextPageSearch()" [disabled]="pageSearch + 1 >= totalPages">Siguiente</button>
             </div>
         </div>
     </div>
