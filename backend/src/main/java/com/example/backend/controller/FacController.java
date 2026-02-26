@@ -162,11 +162,12 @@ public class FacController {
         @RequestParam(defaultValue = "registro") String fechaType,
         @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime desde,
         @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime hasta,
-        @RequestParam(required = false) Integer facann
+        @RequestParam(required = false) Integer facann,
+        @RequestParam(required = false) String search 
     ) {
         try {
             Specification<Fac> spec = FacContabilizacionSpecification.searchContabilizacion(
-                ent, eje, cgecod, fechaType, desde, hasta, facann
+                ent, eje, cgecod, fechaType, desde, hasta, facann, search
             );
 
             List<Fac> facturas = facRepository.findAll(spec);
@@ -175,7 +176,7 @@ public class FacController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
             }
 
-            return ResponseEntity.ok(facturas);  // Return entities directly - JPA already fetched Ter via JOIN
+            return ResponseEntity.ok(facturas);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Error: " + ex.getMostSpecificCause().getMessage());
