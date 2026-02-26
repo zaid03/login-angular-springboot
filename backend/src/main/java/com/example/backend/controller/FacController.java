@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.example.backend.service.FacContabilizacionSpecification;
 import com.example.backend.service.FacSpecification;
 import com.example.backend.service.FacturaInsertService;
 import com.example.backend.sqlserver2.model.Fac;
@@ -54,6 +55,7 @@ public class FacController {
         }
     }
 
+    //search in gestion de factura
     @GetMapping("/search")
     public ResponseEntity<?> searchFacturas(
         @RequestParam Integer ent,
@@ -148,6 +150,35 @@ public class FacController {
             return ResponseEntity.noContent().build();
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + ex.getMessage());
+        }
+    }
+
+    //search in contabilizacion
+    @GetMapping("/contabilizacion/search")
+    public ResponseEntity<?> searchContabilizacion(
+        @RequestParam Integer ent,
+        @RequestParam String eje,
+        @RequestParam String cgecod,
+        @RequestParam(defaultValue = "registro") String fechaType,
+        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime desde,
+        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime hasta,
+        @RequestParam(required = false) Integer facann
+    ) {
+        try {
+            Specification<Fac> spec = FacContabilizacionSpecification.searchContabilizacion(
+                ent, eje, cgecod, fechaType, desde, hasta, facann
+            );
+
+            List<Fac> facturas = facRepository.findAll(spec);
+
+            if (facturas.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
+            }
+
+            return ResponseEntity.ok(facturas);  // Return entities directly - JPA already fetched Ter via JOIN
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 }

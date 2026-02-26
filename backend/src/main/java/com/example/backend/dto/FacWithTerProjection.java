@@ -2,8 +2,6 @@ package com.example.backend.dto;
 
 import java.time.LocalDateTime;
 
-import com.example.backend.service.CotContratoProjection.TerInfo;
-
 public interface FacWithTerProjection {
     Integer getENT();
     String getEJE();
