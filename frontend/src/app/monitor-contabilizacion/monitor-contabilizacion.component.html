@@ -18,13 +18,17 @@
                             type="text" 
                             class="search-bar" 
                             placeholder="factura" 
-                            name="search"
+                            [(ngModel)]="facturaSearch"
                         >
                         <input 
                             type="text" 
                             name="factura" 
                             class="search-bar smallWidth"
                             placeholder="Eje"
+                            [(ngModel)]="ejerSearch"
+                            maxlength="4"
+                            inputmode="numeric"
+                            pattern="[0-9]*"
                         />
                         <input 
                             type="text" 
@@ -33,7 +37,7 @@
                             disabled
                         />
                         <div class="more-search-options">
-                            <select >
+                            <select [(ngModel)]="fechasType">
                                 <option value="registro">Registro</option>
                                 <option value="factura">Factura</option>
                             </select>
@@ -42,18 +46,20 @@
                                 type="date" 
                                 name="desde" 
                                 class="fecha-dato" 
+                                [(ngModel)]="desde"
                             >   
                             Hasta
                             <input 
                                 type="date" 
                                 name="hasta" 
                                 class="fecha-dato" 
+                                [(ngModel)]="hasta"
                             > 
                         </div>
                     </div>
                     <div class="btns">
-                        <button type="button" class="search-button">Buscar</button>
-                        <button type="button" class="search-btn">Limpiar</button>
+                        <button type="button" class="search-button" (click)="search()">Buscar</button>
+                        <button type="button" class="search-btn" (click)="limpiarSearch()">Limpiar</button>
                     </div>
                 </div>
             </div>
@@ -62,8 +68,8 @@
                 <div class="dot"></div>
                 <div class="dot"></div>
                 <div class="menu-panel" *ngIf="showMenu">
-                    <button class="download-btn" >Exportar a PDF</button>
-                    <button class="download-btn" >Exportar a CSV</button>
+                    <button class="download-btn" (click)="DownloadPDF()">Exportar a PDF</button>
+                    <button class="download-btn" (click)="DownloadCSV()">Exportar a CSV</button>
                 </div>
             </div>
         </div>
@@ -149,7 +155,39 @@
                         </th>
                     </tr>
                 </thead>
+                <tbody>
+                    <tr *ngFor="let f of paginatedFacturas">
+                        <td>{{f.facnum}}</td>
+                        <td>{{f.tercod}}</td>
+                        <td>{{f.ter.ternom}}</td>
+                        <td>{{f.ter.ternif}}</td>
+                        <td>{{f.facfre | date:'dd-MM-yyyy'}}</td>
+                        <td>{{f.facimp | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</td>
+                        <td>{{f.facdto}}</td>
+                        <td>{{f.facdoc}}</td>
+                        <td>{{f.facann}}</td>
+                        <td>{{f.facfac}}</td>
+                        <td>{{f.facdat | date:'dd-MM-yyyy'}}</td>
+                        <td>{{f.factxt}}</td>
+                        <td>{{f.facado}}</td>
+                        <td>{{f.facfco | date:'dd-MM-yyyy'}}</td>
+                    </tr>
+                </tbody>
             </table>
+            <div class="pagination-controls">
+                <button (click)="prevPage()" [disabled]="page === 0">Anterior</button>
+                <span>Página</span>
+                <input
+                type="number"
+                min="1"
+                [max]="totalPages"
+                [value]="page + 1"
+                (change)="goToPage($event)"
+                class="pagination-input"
+                />
+                <span>de {{ totalPages }}</span>
+                <button (click)="nextPage()" [disabled]="page + 1 >= totalPages">Siguiente</button>
+            </div>
         </div>
     </div>
 </div>
