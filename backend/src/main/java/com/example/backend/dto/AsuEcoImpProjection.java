@@ -1,6 +1,6 @@
 package com.example.backend.dto;
 
 public interface AsuEcoImpProjection {
-    Double getASUECO();
+    String getASUECO();
     Double getIMP();
 }

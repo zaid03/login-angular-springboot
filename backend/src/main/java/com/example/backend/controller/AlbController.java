@@ -204,16 +204,19 @@ public class AlbController {
 
             if (resultOpt.isPresent()) {
                 AsuEcoImpProjection result = resultOpt.get();
-                Optional<Fde> applicacionOptio = fdeRepository.findByENTAndEJEAndFDEECO(
+                Optional<Fde> applicacionOptio = fdeRepository.findByENTAndEJEAndFACNUMAndFDEECO(
                     payload.ENT(), 
                     payload.EJE(), 
+                    payload.FACNUM(),
                     result.getASUECO()
                 );
 
-                Fde appliacion = applicacionOptio.get();
-                Double newFDEIMP = appliacion.getFDEIMP() - result.getIMP();
-                appliacion.setFDEIMP(newFDEIMP);
-                fdeRepository.save(appliacion);
+                if (applicacionOptio.isPresent()) {
+                    Fde applicacion = applicacionOptio.get();
+                    Double newFDEIMP = applicacion.getFDEIMP() - result.getIMP();
+                    applicacion.setFDEIMP(newFDEIMP);
+                    fdeRepository.save(applicacion);
+                }
             }
 
             return ResponseEntity.noContent().build();

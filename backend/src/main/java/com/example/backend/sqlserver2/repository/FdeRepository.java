@@ -15,5 +15,5 @@ public interface FdeRepository extends JpaRepository<Fde, FdeId> {
     List<Fde> findByENTAndEJEAndFACNUM(Integer ent, String eje, Integer facnum);
 
     //needed for quitar albaranes
-    Optional<Fde> findByENTAndEJEAndFDEECO(Integer ent, String eje, Double fdeeco);
+    Optional<Fde> findByENTAndEJEAndFACNUMAndFDEECO(Integer ent, String eje, Integer facnum, String fdeeco);
 }
