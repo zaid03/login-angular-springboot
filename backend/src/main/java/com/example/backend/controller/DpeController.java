@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.backend.dto.DepCodDesDto;
@@ -367,6 +368,148 @@ public class DpeController {
             }
         } catch (Exception ex) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    //search in personas de servicio
+    @GetMapping("/personas-servicios/search")
+    public ResponseEntity<?> searchPersonasServicios(
+        @RequestParam Integer ent,
+        @RequestParam String eje,
+        @RequestParam(required = false) String servicio,
+        @RequestParam(required = false) String persona,
+        @RequestParam(required = false) String cgecod,
+        @RequestParam(required = false) String perfil
+    ) {
+        try {
+            List<personasPorServiciosProjection> result = null;
+
+            Integer perfilValue = null;
+            String perfilType = null;
+            if (perfil != null && !perfil.isEmpty()) {
+                switch (perfil.toLowerCase()) {
+                    case "almacen": perfilType = "depalm"; perfilValue = 1; break;
+                    case "comprador": perfilType = "depcom"; perfilValue = 1; break;
+                    case "contabilidad": perfilType = "depint"; perfilValue = 1; break;
+                    case "peticionario": perfilType = "peticionario"; break;
+                    case "todos": default: break;
+                }
+            }
+
+            boolean hasServicio = servicio != null && !servicio.isEmpty();
+            boolean hasPersona = persona != null && !persona.isEmpty();
+            boolean hasCgecod = cgecod != null && !cgecod.isEmpty();
+            boolean hasPerfil = perfilType != null && !"todos".equals(perfil);
+
+            if (hasServicio && hasPersona && hasCgecod && hasPerfil && !"peticionario".equals(perfilType)) {
+                if ("depalm".equals(perfilType)) {
+                    result = dpeRepository.findByENTAndEJEAndDep_DEPDESContainingAndPer_PERNOMContainingAndDep_Cge_CGECODAndDep_DEPALM(ent, eje, servicio, persona, cgecod, perfilValue);
+                } else if ("depcom".equals(perfilType)) {
+                    result = dpeRepository.findByENTAndEJEAndDep_DEPDESContainingAndPer_PERNOMContainingAndDep_Cge_CGECODAndDep_DEPCOM(ent, eje, servicio, persona, cgecod, perfilValue);
+                } else if ("depint".equals(perfilType)) {
+                    result = dpeRepository.findByENTAndEJEAndDep_DEPDESContainingAndPer_PERNOMContainingAndDep_Cge_CGECODAndDep_DEPINT(ent, eje, servicio, persona, cgecod, perfilValue);
+                }
+            }
+            else if (hasServicio && hasPersona && hasCgecod) {
+                result = dpeRepository.findByENTAndEJEAndDep_DEPDESContainingAndPer_PERNOMContainingAndDep_Cge_CGECOD(ent, eje, servicio, persona, cgecod);
+            }
+            else if (hasServicio && hasPersona && hasPerfil && !"peticionario".equals(perfilType)) {
+                if ("depalm".equals(perfilType)) {
+                    result = dpeRepository.findByENTAndEJEAndDep_DEPDESContainingAndPer_PERNOMContainingAndDep_DEPALM(ent, eje, servicio, persona, perfilValue);
+                } else if ("depcom".equals(perfilType)) {
+                    result = dpeRepository.findByENTAndEJEAndDep_DEPDESContainingAndPer_PERNOMContainingAndDep_DEPCOM(ent, eje, servicio, persona, perfilValue);
+                } else if ("depint".equals(perfilType)) {
+                    result = dpeRepository.findByENTAndEJEAndDep_DEPDESContainingAndPer_PERNOMContainingAndDep_DEPINT(ent, eje, servicio, persona, perfilValue);
+                }
+            }
+            else if (hasServicio && hasCgecod && hasPerfil && !"peticionario".equals(perfilType)) {
+                if ("depalm".equals(perfilType)) {
+                    result = dpeRepository.findByENTAndEJEAndDep_DEPDESContainingAndDep_Cge_CGECODAndDep_DEPALM(ent, eje, servicio, cgecod, perfilValue);
+                } else if ("depcom".equals(perfilType)) {
+                    result = dpeRepository.findByENTAndEJEAndDep_DEPDESContainingAndDep_Cge_CGECODAndDep_DEPCOM(ent, eje, servicio, cgecod, perfilValue);
+                } else if ("depint".equals(perfilType)) {
+                    result = dpeRepository.findByENTAndEJEAndDep_DEPDESContainingAndDep_Cge_CGECODAndDep_DEPINT(ent, eje, servicio, cgecod, perfilValue);
+                }
+            }
+            else if (hasPersona && hasCgecod && hasPerfil && !"peticionario".equals(perfilType)) {
+                if ("depalm".equals(perfilType)) {
+                    result = dpeRepository.findByENTAndEJEAndPer_PERNOMContainingAndDep_Cge_CGECODAndDep_DEPALM(ent, eje, persona, cgecod, perfilValue);
+                } else if ("depcom".equals(perfilType)) {
+                    result = dpeRepository.findByENTAndEJEAndPer_PERNOMContainingAndDep_Cge_CGECODAndDep_DEPCOM(ent, eje, persona, cgecod, perfilValue);
+                } else if ("depint".equals(perfilType)) {
+                    result = dpeRepository.findByENTAndEJEAndPer_PERNOMContainingAndDep_Cge_CGECODAndDep_DEPINT(ent, eje, persona, cgecod, perfilValue);
+                }
+            }
+            else if (hasServicio && hasPersona) {
+                result = dpeRepository.findByENTAndEJEAndDep_DEPDESContainingAndPer_PERNOMContaining(ent, eje, servicio, persona);
+            }
+            else if (hasServicio && hasCgecod) {
+                result = dpeRepository.findByENTAndEJEAndDep_DEPDESContainingAndDep_Cge_CGECOD(ent, eje, servicio, cgecod);
+            }
+            else if (hasServicio && hasPerfil && !"peticionario".equals(perfilType)) {
+                if ("depalm".equals(perfilType)) {
+                    result = dpeRepository.findByENTAndEJEAndDep_DEPDESContainingAndDep_DEPALM(ent, eje, servicio, perfilValue);
+                } else if ("depcom".equals(perfilType)) {
+                    result = dpeRepository.findByENTAndEJEAndDep_DEPDESContainingAndDep_DEPCOM(ent, eje, servicio, perfilValue);
+                } else if ("depint".equals(perfilType)) {
+                    result = dpeRepository.findByENTAndEJEAndDep_DEPDESContainingAndDep_DEPINT(ent, eje, servicio, perfilValue);
+                }
+            }
+            else if (hasPersona && hasCgecod) {
+                result = dpeRepository.findByENTAndEJEAndPer_PERNOMContainingAndDep_Cge_CGECOD(ent, eje, persona, cgecod);
+            }
+            else if (hasPersona && hasPerfil && !"peticionario".equals(perfilType)) {
+                if ("depalm".equals(perfilType)) {
+                    result = dpeRepository.findByENTAndEJEAndPer_PERNOMContainingAndDep_DEPALM(ent, eje, persona, perfilValue);
+                } else if ("depcom".equals(perfilType)) {
+                    result = dpeRepository.findByENTAndEJEAndPer_PERNOMContainingAndDep_DEPCOM(ent, eje, persona, perfilValue);
+                } else if ("depint".equals(perfilType)) {
+                    result = dpeRepository.findByENTAndEJEAndPer_PERNOMContainingAndDep_DEPINT(ent, eje, persona, perfilValue);
+                }
+            }
+            else if (hasCgecod && hasPerfil && !"peticionario".equals(perfilType)) {
+                if ("depalm".equals(perfilType)) {
+                    result = dpeRepository.findByENTAndEJEAndDep_Cge_CGECODAndDep_DEPALM(ent, eje, cgecod, perfilValue);
+                } else if ("depcom".equals(perfilType)) {
+                    result = dpeRepository.findByENTAndEJEAndDep_Cge_CGECODAndDep_DEPCOM(ent, eje, cgecod, perfilValue);
+                } else if ("depint".equals(perfilType)) {
+                    result = dpeRepository.findByENTAndEJEAndDep_Cge_CGECODAndDep_DEPINT(ent, eje, cgecod, perfilValue);
+                }
+            }
+            else if (hasServicio) {
+                result = dpeRepository.findByENTAndEJEAndDep_DEPDESContaining(ent, eje, servicio);
+                if (result == null || result.isEmpty()) {
+                    result = dpeRepository.findByENTAndEJEAndDEPCODContaining(ent, eje, servicio);
+                }
+            }
+            else if (hasPersona) {
+                result = dpeRepository.findByENTAndEJEAndPer_PERNOMContaining(ent, eje, persona);
+                if (result == null || result.isEmpty()) {
+                    result = dpeRepository.findProjectionByENTAndEJEAndPERCOD(ent, eje, persona);
+                }
+            }
+            else if (hasCgecod) {
+                result = dpeRepository.findByENTAndEJEAndDep_Cge_CGECOD(ent, eje, cgecod);
+            }
+            else if (hasPerfil) {
+                if ("peticionario".equals(perfilType)) {
+                    result = dpeRepository.findByENTAndEJEAndDep_DEPALMAndDep_DEPCOMAndDep_DEPINT(ent, eje, 0, 0, 0);
+                } else if ("depalm".equals(perfilType)) {
+                    result = dpeRepository.findByENTAndEJEAndDep_DEPALM(ent, eje, perfilValue);
+                } else if ("depcom".equals(perfilType)) {
+                    result = dpeRepository.findByENTAndEJEAndDep_DEPCOM(ent, eje, perfilValue);
+                } else if ("depint".equals(perfilType)) {
+                    result = dpeRepository.findByENTAndEJEAndDep_DEPINT(ent, eje, perfilValue);
+                }
+            }
+
+            if (result == null || result.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
+            }
+            return ResponseEntity.ok(result);
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
         }
     }
 }
