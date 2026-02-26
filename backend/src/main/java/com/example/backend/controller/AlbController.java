@@ -134,7 +134,7 @@ public class AlbController {
     }
 
     //adding an albaranes and updating required fields in other models
-    public record Albaranes(Integer ENT, String EJE,Integer ALBNUM, String CONCTP, String CONCPR, String CONCCR, Double ALBBIM, Integer FACNUM) {}
+    public record Albaranes(Integer ENT, String EJE, Integer ALBNUM, String CONCTP, String CONCPR, String CONCCR, Double ALBBIM, Integer FACNUM) {}
     @PatchMapping("/add-albaranes")
     public ResponseEntity<?> addingAlbaranes(
         @RequestBody List<Albaranes> payload
@@ -163,6 +163,25 @@ public class AlbController {
                     factura.setCONCCR(albData.CONCCR());
                     factura.setFACIEC(albData.ALBBIM());
                     facRepository.save(factura);
+                }
+
+                Optional<AsuEcoImpProjection> resultOpt = adeRepository.findSumByEntAndAlbnum(albData.ENT() , albData.ALBNUM());
+
+                if (resultOpt.isPresent()) {
+                    AsuEcoImpProjection result = resultOpt.get();
+                    Optional<Fde> applicacionOptio = fdeRepository.findByENTAndEJEAndFACNUMAndFDEECO(
+                        albData.ENT(), 
+                        albData.EJE(), 
+                        albData.FACNUM(),
+                        result.getASUECO()
+                    );
+
+                    if (applicacionOptio.isPresent()) {
+                        Fde applicacion = applicacionOptio.get();
+                        Double newFDEIMP = result.getIMP();
+                        applicacion.setFDEIMP(newFDEIMP);
+                        fdeRepository.save(applicacion);
+                    }
                 }
             }
 
