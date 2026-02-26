@@ -2,6 +2,7 @@ package com.example.backend.controller;
 
 import com.example.backend.dto.AlbResumeDto;
 import com.example.backend.dto.albFacturaDto;
+import com.example.backend.dto.AsuEcoImpProjection;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -13,7 +14,10 @@ import com.example.backend.sqlserver2.model.AlbId;
 import com.example.backend.sqlserver2.repository.AlbRepository;
 import com.example.backend.sqlserver2.model.Fac;
 import com.example.backend.sqlserver2.model.FacId;
+import com.example.backend.sqlserver2.model.Fde;
 import com.example.backend.sqlserver2.repository.FacRepository;
+import com.example.backend.sqlserver2.repository.AdeRepository;
+import com.example.backend.sqlserver2.repository.FdeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +33,10 @@ public class AlbController {
     private AlbRepository albRepository;
     @Autowired
     private FacRepository facRepository;
+    @Autowired
+    private AdeRepository adeRepository;
+    @Autowired
+    private FdeRepository fdeRepository;
 
     //fetch albaranes for facturas
     @GetMapping("/albaranes/{ent}/{eje}/{facnum}")
@@ -171,7 +179,7 @@ public class AlbController {
         @RequestBody quitar payload
     ) {
         try {
-            if (payload == null || payload.ENT() == null || payload.ALBNUM == null) {
+            if (payload == null || payload.ENT() == null || payload.ALBNUM() == null) {
                 return ResponseEntity.badRequest().body("Faltan datos obligatorios.");
             }
 
@@ -190,6 +198,22 @@ public class AlbController {
                 Fac factura = facturaOpt.get();
                 factura.setFACIEC(payload.FACIEC());
                 facRepository.save(factura);
+            }
+
+            Optional<AsuEcoImpProjection> resultOpt = adeRepository.findSumByEntAndAlbnum(payload.ENT() , payload.ALBNUM());
+
+            if (resultOpt.isPresent()) {
+                AsuEcoImpProjection result = resultOpt.get();
+                Optional<Fde> applicacionOptio = fdeRepository.findByENTAndEJEAndFDEECO(
+                    payload.ENT(), 
+                    payload.EJE(), 
+                    result.getASUECO()
+                );
+
+                Fde appliacion = applicacionOptio.get();
+                Double newFDEIMP = appliacion.getFDEIMP() - result.getIMP();
+                appliacion.setFDEIMP(newFDEIMP);
+                fdeRepository.save(appliacion);
             }
 
             return ResponseEntity.noContent().build();
