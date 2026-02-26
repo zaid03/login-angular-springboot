@@ -140,6 +140,7 @@ export class DashboardComponent implements OnInit {
         this.router.navigate(['/facturas']);
         break;
       case 'contabilizacion':
+        this.router.navigate(['/contabilizacion']);
         break;
       case 'Fcontabilizadas':
         break;
