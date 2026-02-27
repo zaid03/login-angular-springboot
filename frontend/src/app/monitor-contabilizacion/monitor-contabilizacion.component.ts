@@ -418,8 +418,171 @@ export class MonitorContabilizacionComponent {
     this.fetchFacturas();
   }
 
+  //detail grid functions
+  selectedFacturas: any = null;
+  detallesMessage: String = '';
+  detailView: 'Albaranes' | 'Contabilización' = 'Albaranes';
+  albaranesOptio: 'albaranes' | 'aplicaciones' | 'descuentos' = 'albaranes';
+  albaranes: any[] = [];
+  apalicaciones: any[] = [];
+  descuentos: any[] = [];
+  moreInfoMessageSuccess: string = '';
+  moreInfoMessageIsSuccess: boolean = false;
+  moreInfoMessageError: string = '';
+  isUpdatingFactura: boolean = false;
+  facturaDetailError: string = '';
+  facturaDetailSuccess: string = '';
+  showDetails(factura: any) {
+    this.limpiarMEssages();
+    this.selectedFacturas = { ...factura };
+    if (this.selectedFacturas.facfre) {
+      this.selectedFacturas.facfre = this.datePipe.transform(this.selectedFacturas.facfre, 'yyyy-MM-dd');
+    }
+    this.detailView = 'Albaranes';
+    this.setAlbaranesOptio('albaranes', factura?.facnum);
+  }
+
+  closeDetails() {
+    this.selectedFacturas = null;
+    this.limpiarMEssages();
+  }
+
+  public getPendingApply(f: any): number {
+    if (!f) return 0;
+    const toNum = (v: any) => (v === null || v === undefined || v === '' ? 0 : Number(v) || 0);
+    let pending = toNum(f.facimp) - (toNum(f.faciec) + toNum(f.facidi));
+    return Math.round(pending * 100) / 100;
+  }
+
+  setAlbaranesOptio(option: 'albaranes' | 'aplicaciones' | 'descuentos', facnum: number): void {
+    this.albaranesOptio = option;
+    this.limpiarMEssages();
+    this.isLoading = true;
+    this.albaranes = [];
+    this.apalicaciones = [];
+    this.descuentos = [];
+
+    if ( option === 'albaranes') {this.fetchAlbaranesDEtail(facnum);}
+    if ( option === 'aplicaciones') {
+      this.fetchApplicacionesDetails(facnum);
+    }
+    if ( option === 'descuentos') {this.fetchDescuentosDetails(facnum);}
+  }
+
+  fetchAlbaranesDEtail(facnum: number) {
+    this.http.get<any>(`${environment.backendUrl}/api/alb/albaranes/${this.entcod}/${this.eje}/${facnum}`).subscribe({
+      next: (response) => {
+        if (!Array.isArray(response) || response.length === 0) {
+          this.moreInfoMessageIsSuccess = true;
+          this.moreInfoMessageSuccess = 'No hay albaranes por las medidas de búsqueda';
+          this.albaranes = []
+          this.isLoading = false;
+          this.pageAlbaranes = 0;
+        } else {
+          this.albaranes = response;
+          this.isLoading = false;
+          this.pageAlbaranes = 0;
+        }
+      }, error: (err) => {
+        this.moreInfoMessageError = err.error.error ?? err.error;
+        this.isLoading = false;
+        this.pageAlbaranes = 0;
+      }
+    });
+  }
+  pageAlbaranes = 0;
+  get paginatedAlbaranes(): any[] {if (!this.albaranes || this.albaranes.length === 0) return []; const start = this.pageAlbaranes * this.pageSize; return this.albaranes.slice(start, start + this.pageSize);}
+  get totalPagesAlbaranes(): number {return Math.max(1, Math.ceil((this.albaranes?.length ?? 0) / this.pageSize));}
+  prevPageAlbaranes(): void {if (this.pageAlbaranes > 0) this.pageAlbaranes--;}
+  nextPageAlbaranes(): void {if (this.pageAlbaranes < this.totalPagesAlbaranes - 1) this.pageAlbaranes++;}
+  goToPageAlbaranes(event: any): void { const inputPage = Number(event.target.value); 
+    if (inputPage >= 1 && inputPage <= this.totalPagesAlbaranes) {this.pageAlbaranes = inputPage - 1;}
+  }
+
+  fetchApplicacionesDetails(facnum: number) {
+    this.http.get<any>(`${environment.backendUrl}/api/fde/${this.entcod}/${this.eje}/${facnum}`).subscribe({
+      next: (response) => {
+        if (!Array.isArray(response) || response.length === 0) {
+          this.moreInfoMessageIsSuccess = true;
+          this.moreInfoMessageSuccess = 'No hay aplicaciones por las medidas de búsqueda';
+          this.apalicaciones = []
+          this.isLoading = false;
+          this.pageAplicaiones = 0
+        } else {
+
+          this.apalicaciones = response.map((item: any) => {
+            if (item.FDEDIF !== undefined && item.FDEDIF !== null && item.FDEDIF !== '') {
+              let value = String(item.FDEDIF)
+                .replace(/[^\d,.-]/g, '') 
+                .replace(/\s/g, '');      
+
+              if (value.indexOf(',') > -1) {
+                value = value.replace(/\./g, '');
+              }
+              value = value.replace(',', '.');
+
+              let num = parseFloat(value);
+              if (!isNaN(num)) {
+                item.FDEDIF = num.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
+              }
+            }
+            return item;
+          });
+          this.isLoading = false;
+          this.pageAplicaiones = 0
+        }
+      }, error: (err) => {
+        this.moreInfoMessageError = err.error.error ?? err.error;
+        this.isLoading = false;
+        this.pageAplicaiones = 0
+      }
+    });
+  }
+  pageAplicaiones = 0;
+  get paginatedApiciones(): any[] {if (!this.apalicaciones || this.apalicaciones.length === 0) return []; const start = this.pageAplicaiones * this.pageSize; return this.apalicaciones.slice(start, start + this.pageSize);}
+  get totalPagesAplicaciones(): number {return Math.max(1, Math.ceil((this.apalicaciones?.length ?? 0) / this.pageSize));}
+  prevPageAplicaiones(): void {if (this.pageAplicaiones > 0) this.pageAplicaiones--;}
+  nextPageAplicaciones(): void {if (this.pageAplicaiones < this.totalPagesAplicaciones - 1) this.pageAplicaiones++;}
+  goToPageAplicaciones(event: any): void { const inputPage = Number(event.target.value); 
+    if (inputPage >= 1 && inputPage <= this.totalPagesAplicaciones) {this.pageAplicaiones = inputPage - 1;}
+  }
+
+  fetchDescuentosDetails(facnum: number) {
+    this.http.get<any>(`${environment.backendUrl}/api/fdt/${this.entcod}/${this.eje}/${facnum}`).subscribe({
+      next: (response) => {
+        if (!Array.isArray(response) || response.length === 0) {
+          this.moreInfoMessageIsSuccess = true;
+          this.moreInfoMessageSuccess = 'No hay descuentos por las medidas de búsqueda';
+          this.descuentos = []
+          this.isLoading = false;
+          this.pageDescuentos = 0;
+        } else {
+          this.descuentos = response;
+          this.isLoading = false;
+          this.pageDescuentos = 0;
+        }
+      }, error: (err) => {
+        this.moreInfoMessageError = err.error.error ?? err.error;
+        this.isLoading = false;
+        this.pageDescuentos = 0;
+      }
+    });
+  }
+  pageDescuentos = 0;
+  get paginatedDescuentos(): any[] {if (!this.descuentos || this.descuentos.length === 0) return []; const start = this.pageDescuentos * this.pageSize; return this.descuentos.slice(start, start + this.pageSize);}
+  get totalPagesDescuentos(): number {return Math.max(1, Math.ceil((this.descuentos?.length ?? 0) / this.pageSize));}
+  prevPageDescuentos(): void {if (this.pageDescuentos > 0) this.pageDescuentos--;}
+  nextPageDescuentos(): void {if (this.pageDescuentos < this.totalPagesDescuentos - 1) this.pageDescuentos++;}
+  goToPageDescuentos(event: any): void { const inputPage = Number(event.target.value); 
+    if (inputPage >= 1 && inputPage <= this.totalPagesDescuentos) {this.pageDescuentos = inputPage - 1;}
+  }
+
   //misc 
   limpiarMEssages() {
     this.filterFacturaMessage = '';
+    this.moreInfoMessageSuccess = '';
+    this.moreInfoMessageError = '';
+    this.facturaDetailSuccess = '';
+    this.facturaDetailError = '';
   }
 }
