@@ -22,4 +22,7 @@ public interface  GbsRepository extends JpaRepository<Gbs, GbsId>{
 
     //needed for adding a bolsa
     Optional<Gbs> findByENTAndEJEAndCGECODAndGBSECO(Integer ENT, String EJE, String CGECOD, String GBSECO);
+
+    //needed for contabilizar a factura
+    Optional<Gbs> findByENTAndEJEAndCGECODAndGBSORGAndGBSFUNAndGBSECO(Integer ENT, String EJE, String CGECOD, String GBSORG, String GBSFUN, String GBSECO);
 }

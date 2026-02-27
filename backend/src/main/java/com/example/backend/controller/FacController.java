@@ -2,6 +2,7 @@ package com.example.backend.controller;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -17,11 +18,15 @@ import org.springframework.web.bind.annotation.*;
 import com.example.backend.service.FacContabilizacionSpecification;
 import com.example.backend.service.FacSpecification;
 import com.example.backend.service.FacturaInsertService;
+import com.example.backend.sqlserver2.model.Fde;
+import com.example.backend.sqlserver2.model.Gbs;
 import com.example.backend.sqlserver2.model.Fac;
 import com.example.backend.sqlserver2.model.FacId;
 import com.example.backend.sqlserver2.model.Ter;
 import com.example.backend.sqlserver2.repository.FacRepository;
 import com.example.backend.sqlserver2.repository.TerRepository;
+import com.example.backend.sqlserver2.repository.FdeRepository;
+import com.example.backend.sqlserver2.repository.GbsRepository;
 import com.example.backend.dto.FacWithTerDto;
 import com.example.backend.dto.FacWithTerProjection;
 import com.example.backend.dto.FacturaInsertDto;
@@ -35,6 +40,10 @@ public class FacController {
     private TerRepository terRepository;
     @Autowired
     private FacturaInsertService facturaInsertService;
+    @Autowired
+    private FdeRepository fdeRepository;
+    @Autowired
+    private GbsRepository gbsRepository;
 
     //for the main list
     @GetMapping("/{ent}/{eje}/{cgecod}")
@@ -177,6 +186,70 @@ public class FacController {
             }
 
             return ResponseEntity.ok(facturas);
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Error: " + ex.getMostSpecificCause().getMessage());
+        }
+    }
+
+    //contabilizar a factura
+    public record contabilizar(Integer ENT, String EJE, Integer FACNUM, String FACADO, LocalDateTime FACFCO, String CGECOD, Boolean ESCONTRATO) {}
+    @PatchMapping("/contabilizar-facturas")
+    public ResponseEntity<?> contabilizarFactura(
+        @RequestBody contabilizar payload
+    ) {
+        try {
+            if (payload == null || payload.ENT() == null || payload.EJE() == null || payload.FACNUM() == null || payload.FACADO() == null || payload.FACFCO() == null || payload.CGECOD() == null || payload.ESCONTRATO() == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Falta un dato obligatorio");
+            }
+
+            FacId id = new FacId(payload.ENT(), payload.EJE(), payload.FACNUM());
+            Optional<Fac> facturaOptio = facRepository.findById(id);
+
+            if (facturaOptio.isPresent()) {
+                Fac factura = facturaOptio.get();
+                factura.setFACADO(payload.FACADO());
+                factura.setFACFCO(payload.FACFCO());
+                facRepository.save(factura);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Factura no encontrada"); 
+            }
+
+            if (!payload.ESCONTRATO()) {
+                List<Fde> applicacionesList = fdeRepository.findByENTAndEJEAndFACNUM(payload.ENT(), payload.EJE(), payload.FACNUM());
+
+                List<String> errores = new ArrayList<>(); 
+
+                Double newGbsius;
+                Double newGbsiut;
+                Double fdeimp;
+                Double fdedif;
+                for (Fde fde : applicacionesList) {
+                    Optional<Gbs> bolsaOptio = gbsRepository.findByENTAndEJEAndCGECODAndGBSORGAndGBSFUNAndGBSECO(payload.ENT(), payload.EJE(), payload.CGECOD(), fde.getFDEORG(), fde.getFDEFUN(), fde.getFDEECO());
+
+                    if (bolsaOptio.isPresent()) {
+                        Gbs bolsa = bolsaOptio.get();
+
+                        fdeimp = fde.getFDEIMP() != null ? fde.getFDEIMP() : 0.0;
+                        fdedif = fde.getFDEDIF() != null ? fde.getFDEDIF() : 0.0;
+
+                        newGbsius = bolsa.getGBSIUS() + fdeimp + fdedif;
+                        newGbsiut = bolsa.getGBSIUT() + fdeimp + fdedif;
+
+                        bolsa.setGBSIUS(newGbsius);
+                        bolsa.setGBSIUT(newGbsiut);
+                        gbsRepository.save(bolsa);
+                    } else {
+                        errores.add(fde.getFDEORG() + "/" + fde.getFDEFUN() + "/" + fde.getFDEECO());
+                    }
+                }
+
+                if (!errores.isEmpty()) {
+                    return ResponseEntity.badRequest().body("No existe bolsa para: " + String.join(", ", errores));
+                }
+            }
+
+            return ResponseEntity.noContent().build();
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Error: " + ex.getMostSpecificCause().getMessage());
