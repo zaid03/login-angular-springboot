@@ -97,6 +97,13 @@
         <p class="selected" *ngIf="caughtFacturas.length > 0">{{caughtFacturas.length}} Facturas seleccionados</p>
         <h1 class="successBtn">{{filterfacturaSuccess}}</h1>
         <h1 class="errorBtn">{{filterFacturaMessage}}</h1>
+        <div *ngIf="contabilizarResults.length > 0" class="results-container">
+            <div *ngFor="let result of contabilizarResults" 
+                [class.successBtn]="result.success" 
+                [class.errorBtn]="!result.success">
+                <span>Factura {{ result.facnum }}: {{ result.message }}</span>
+            </div>
+        </div>
         <div class="facturas-list">
             <div *ngIf="isContabilizando" class="loading-message">
                 <div class="spinner"></div>

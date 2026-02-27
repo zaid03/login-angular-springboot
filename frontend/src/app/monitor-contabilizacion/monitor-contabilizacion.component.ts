@@ -638,16 +638,17 @@ export class MonitorContabilizacionComponent {
       this.filterFacturaMessage = `${fallidas} factura(s) con errores`;
     }
 
-    // Remove successful from selection
     const successFacnums = this.contabilizarResults.filter(r => r.success).map(r => r.facnum);
     this.caughtFacturas = this.caughtFacturas.filter(f => !successFacnums.includes(f.facnum));
+
+    this.fetchFacturas();
   }
 
   filterfacturaSuccess: string = '';
   newFacado: string = '';
   isContabilizando: boolean = false;
   contabilizarFacturaAsync(factura: any): Promise<void> {
-    return new Promise((resolve) => {
+    return new Promise(async (resolve) => {
       const payload = {
         pwd: ".",
         publicKey: "llave1",
@@ -662,16 +663,26 @@ export class MonitorContabilizacionComponent {
       };
 
       this.http.post<any>(`${environment.backendUrl}/api/contabilizacion/generar`, payload).subscribe({
-        next: (response) => {
+        next: async (response) => {
           if (response.exito) {
             this.newFacado = response.opesical;
-            this.contabilizarResults.push({
-              facnum: factura.facnum,
-              success: true,
-              message: `OP: ${this.newFacado}`
-            });
             
-            // TODO:  additional logic 
+            try {
+              // Update FAC and GBS in database
+              await this.updateFactura(factura.facnum, this.newFacado, this.fechaContable);
+              
+              this.contabilizarResults.push({
+                facnum: factura.facnum,
+                success: true,
+                message: `OP: ${this.newFacado}`
+              });
+            } catch (err: any) {
+              this.contabilizarResults.push({
+                facnum: factura.facnum,
+                success: false,
+                message: `Sicalwin OK pero error al guardar: ${err}`
+              });
+            }
 
           } else {
             this.contabilizarResults.push({
@@ -694,8 +705,27 @@ export class MonitorContabilizacionComponent {
     });
   }
 
-  updateFactura() {
-    
+  updateFactura(facnum: number, facado: any, facfco: string) {
+    return new Promise<void>((resolve, reject) => {
+      const payload = {
+        "ENT": this.entcod,
+        "EJE": this.eje,
+        "FACNUM": facnum,
+        "FACADO": facado,
+        "FACFCO": facfco,
+        "CGECOD": this.centroGestor,
+        "ESCONTRATO": this.ESCONTRATO
+      };
+
+      this.http.patch<any>(`${environment.backendUrl}/api/facturas/contabilizar-facturas`, payload).subscribe({
+        next: () => {
+          resolve();
+        },
+        error: (err) => {
+          reject(err.error || err.message || 'Error al actualizar factura');
+        }
+      });
+    });
   }
   
 
