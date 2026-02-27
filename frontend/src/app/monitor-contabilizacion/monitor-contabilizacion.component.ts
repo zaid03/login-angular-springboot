@@ -577,6 +577,42 @@ export class MonitorContabilizacionComponent {
     if (inputPage >= 1 && inputPage <= this.totalPagesDescuentos) {this.pageDescuentos = inputPage - 1;}
   }
 
+  //contabilizar functions
+  fechaContable: string = '';
+  ESCONTRATO: boolean = false;
+  contabilizar() {
+    this.limpiarMEssages();
+
+    if (this.fechaContable === '') {
+      this.filterFacturaMessage = 'Falta fecha contable';
+      return;
+    } else {
+      let year = this.fechaContable.split('-')[0];
+      if (Number(year) != Number(this.eje)) {
+        this.filterFacturaMessage = 'La fecha contable debe pertenecer al ejercicio contable';
+        return;
+      } else {
+        console.log("u may proccess")
+      }
+    }
+  }
+
+  caughtFacturas: any[] =[];
+  selectFacturas(f: any) {
+    if (this.caughtFacturas.includes(f)) {
+      const index = this.caughtFacturas.indexOf(f);
+      if(index !== -1) {
+        this.caughtFacturas.splice(index, 1);
+      }
+    } else {
+      this.caughtFacturas = [...this.caughtFacturas, f];
+    }
+  }
+
+  isFacturaSelected(a: any) {
+    return this.caughtFacturas.includes(a);
+  }
+
   //misc 
   limpiarMEssages() {
     this.filterFacturaMessage = '';

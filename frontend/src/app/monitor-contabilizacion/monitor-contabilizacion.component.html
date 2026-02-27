@@ -74,6 +74,27 @@
             </div>
         </div>
         <h1 class="successBtn">{{estadoMessage}}</h1>
+        <div class="contabilizar-container">
+            <div class="cont-date">
+                Fecha contable
+                <input 
+                    type="date"
+                    name="hasta" 
+                    class="fecha-dato"
+                    [(ngModel)]="fechaContable"
+                />
+            </div>
+            <div class="cont-btn">
+                <button 
+                    class="save-btn"
+                    (click)="contabilizar()"
+                    [disabled]="estadogc === null || estadogc > 0"
+                >
+                    Contabilizar
+                </button>
+            </div>
+        </div>
+        <p class="selected" *ngIf="caughtFacturas.length > 0">{{caughtFacturas.length}} Facturas seleccionados</p>
         <h1 class="errorBtn">{{filterFacturaMessage}}</h1>
         <div class="facturas-list">
             <div *ngIf="isLoading" class="loading-message">
@@ -156,7 +177,11 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let f of paginatedFacturas">
+                    <tr 
+                        *ngFor="let f of paginatedFacturas"
+                        (click)="selectFacturas(f)"
+                        [class.selected-row]="isFacturaSelected(f)"
+                    >
                         <td (click)="showDetails(f)" style="cursor: pointer;">{{f.facnum}}</td>
                         <td>{{f.tercod}}</td>
                         <td>{{f.ter.ternom}}</td>

@@ -8,7 +8,8 @@
 .more-search-options input[type="date"],
 .right-search input[type="text"],
 .right-search input[type="date"],
-.search-chunk input[type="date"] { padding: 4px 6px; border-radius: 20px; border: 1px solid #bbb; color: #25176b; font-size: 15px; transition: border 0.2s, box-shadow 0.2s; outline: none; box-shadow: 0 1px 4px rgba(56,36,155,0.04); }
+.search-chunk input[type="date"],
+.cont-date input[type="date"] { padding: 4px 6px; border-radius: 20px; border: 1px solid #bbb; color: #25176b; font-size: 15px; transition: border 0.2s, box-shadow 0.2s; outline: none; box-shadow: 0 1px 4px rgba(56,36,155,0.04); }
 .more-search-options select:focus,
 .more-search-options input[type="date"]:focus { outline: none; }
 .successBtn { margin-top: 5px; }
@@ -58,3 +59,9 @@
 .alignment {justify-content: center;}
 .albaranes-btns {display: flex; justify-content: center; align-items: center; justify-content: center;}
 /* sub detail grids */
+/* contabilizar-container */
+.contabilizar-container {width: 100%; display: flex; justify-content: center; gap: 10px;}
+.cont-date {display: flex;  align-items: center; gap: 10px;}
+.cont-btn {display: flex; flex-direction: column; justify-content: center;}
+.selected-row {background-color: #cce6ff;}
+/* contabilizar-container */
