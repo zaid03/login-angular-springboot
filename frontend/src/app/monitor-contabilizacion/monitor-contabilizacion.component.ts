@@ -578,25 +578,6 @@ export class MonitorContabilizacionComponent {
   }
 
   //contabilizar functions
-  fechaContable: string = '';
-  ESCONTRATO: boolean = false;
-  contabilizar() {
-    this.limpiarMEssages();
-
-    if (this.fechaContable === '') {
-      this.filterFacturaMessage = 'Falta fecha contable';
-      return;
-    } else {
-      let year = this.fechaContable.split('-')[0];
-      if (Number(year) != Number(this.eje)) {
-        this.filterFacturaMessage = 'La fecha contable debe pertenecer al ejercicio contable';
-        return;
-      } else {
-        console.log("u may proccess")
-      }
-    }
-  }
-
   caughtFacturas: any[] =[];
   selectFacturas(f: any) {
     if (this.caughtFacturas.includes(f)) {
@@ -613,9 +594,115 @@ export class MonitorContabilizacionComponent {
     return this.caughtFacturas.includes(a);
   }
 
+  fechaContable: string = '';
+  ESCONTRATO: boolean = false;
+  contabilizarResults: { facnum: number; success: boolean; message: string }[] = [];
+  async contabilizar() {
+    this.limpiarMEssages();
+
+    if (this.fechaContable === '') {
+      this.filterFacturaMessage = 'Falta fecha contable';
+      return;
+    } else {
+      let year = this.fechaContable.split('-')[0];
+      if (Number(year) != Number(this.eje)) {
+        this.filterFacturaMessage = 'La fecha contable debe pertenecer al ejercicio contable';
+        return;
+      }
+    }
+
+    if (this.caughtFacturas.length === 0) {
+      this.filterFacturaMessage = 'Debe seleccionar al menos una factura';
+      return;
+    }
+
+    this.isContabilizando = true;
+
+    // Process each factura one by one
+    for (const factura of this.caughtFacturas) {
+      await this.contabilizarFacturaAsync(factura);
+    }
+
+    this.isContabilizando = false;
+
+    // Summary message
+    const exitosas = this.contabilizarResults.filter(r => r.success).length;
+    const fallidas = this.contabilizarResults.filter(r => !r.success).length;
+    
+    if (exitosas > 0 && fallidas === 0) {
+      this.filterfacturaSuccess = `${exitosas} factura(s) contabilizada(s) correctamente`;
+    } else if (exitosas > 0 && fallidas > 0) {
+      this.filterfacturaSuccess = `${exitosas} factura(s) contabilizada(s)`;
+      this.filterFacturaMessage = `${fallidas} factura(s) con errores`;
+    } else if (fallidas > 0) {
+      this.filterFacturaMessage = `${fallidas} factura(s) con errores`;
+    }
+
+    // Remove successful from selection
+    const successFacnums = this.contabilizarResults.filter(r => r.success).map(r => r.facnum);
+    this.caughtFacturas = this.caughtFacturas.filter(f => !successFacnums.includes(f.facnum));
+  }
+
+  filterfacturaSuccess: string = '';
+  newFacado: string = '';
+  isContabilizando: boolean = false;
+  contabilizarFacturaAsync(factura: any): Promise<void> {
+    return new Promise((resolve) => {
+      const payload = {
+        pwd: ".",
+        publicKey: "llave1",
+        org: this.WSorg,
+        ent: this.WSent,
+        eje: String(this.eje),
+        usu: "SICALWIN",
+        facnum: factura.facnum,
+        cgecod: this.centroGestor,
+        fechaContable: this.fechaContable,
+        esContrato: this.ESCONTRATO
+      };
+
+      this.http.post<any>(`${environment.backendUrl}/api/contabilizacion/generar`, payload).subscribe({
+        next: (response) => {
+          if (response.exito) {
+            this.newFacado = response.opesical;
+            this.contabilizarResults.push({
+              facnum: factura.facnum,
+              success: true,
+              message: `OP: ${this.newFacado}`
+            });
+            
+            // TODO:  additional logic 
+
+          } else {
+            this.contabilizarResults.push({
+              facnum: factura.facnum,
+              success: false,
+              message: response.mensaje || 'Error desconocido'
+            });
+          }
+          resolve();
+        },
+        error: (err) => {
+          this.contabilizarResults.push({
+            facnum: factura.facnum,
+            success: false,
+            message: err.error?.mensaje || err.error?.error || err.message || 'Error de conexión'
+          });
+          resolve();
+        }
+      });
+    });
+  }
+
+  updateFactura() {
+    
+  }
+  
+
   //misc 
   limpiarMEssages() {
     this.filterFacturaMessage = '';
+    this.filterfacturaSuccess = '';
     this.moreInfoMessageSuccess = '';
     this.moreInfoMessageError = '';
     this.facturaDetailSuccess = '';

@@ -95,8 +95,13 @@
             </div>
         </div>
         <p class="selected" *ngIf="caughtFacturas.length > 0">{{caughtFacturas.length}} Facturas seleccionados</p>
+        <h1 class="successBtn">{{filterfacturaSuccess}}</h1>
         <h1 class="errorBtn">{{filterFacturaMessage}}</h1>
         <div class="facturas-list">
+            <div *ngIf="isContabilizando" class="loading-message">
+                <div class="spinner"></div>
+                <span>Contabilizando</span>
+            </div>
             <div *ngIf="isLoading" class="loading-message">
                 <div class="spinner"></div>
                 <span>Cargando</span>
