@@ -599,6 +599,7 @@ export class MonitorContabilizacionComponent {
   contabilizarResults: { facnum: number; success: boolean; message: string }[] = [];
   async contabilizar() {
     this.limpiarMEssages();
+    this.contabilizarResults = [];
 
     if (this.fechaContable === '') {
       this.filterFacturaMessage = 'Falta fecha contable';
