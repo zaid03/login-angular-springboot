@@ -10,6 +10,6 @@ import com.example.backend.sqlserver2.model.FdtId;
 
 @Repository
 public interface FdtRepository extends JpaRepository<Fdt, FdtId> {
-    //fetch descuentos of a factura
+    //fetch descuentos of a factura and contabilizar a factura
     List<Fdt> findByENTAndEJEAndFACNUM(Integer ent, String eje, Integer facnum);
 }

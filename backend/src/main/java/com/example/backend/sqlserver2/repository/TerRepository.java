@@ -37,7 +37,7 @@ public interface TerRepository extends JpaRepository<Ter, TerId>, JpaSpecificati
   @Query(value = "SELECT ISNULL(MAX(TERCOD),0) + 1 FROM dbo.TER WITH (UPDLOCK, HOLDLOCK) WHERE ENT = :ent", nativeQuery = true)
   Integer findNextTercodForEnt(@Param("ent") int ent);
 
-  //for the main list of facturas
+  //for the main list of facturas and contabilizar a factura
   Optional<Ter> findByENTAndTERCOD(Integer ent, Integer tercod);
 
   //needed for extracting tercod for adding facturas

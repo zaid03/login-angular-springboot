@@ -11,7 +11,7 @@ import com.example.backend.sqlserver2.model.FdeId;
 
 @Repository
 public interface FdeRepository extends JpaRepository<Fde, FdeId> {
-    //fetching applicaciones for a factura
+    //fetching applicaciones for a factura and contabilizar a factura
     List<Fde> findByENTAndEJEAndFACNUM(Integer ent, String eje, Integer facnum);
 
     //needed for quitar albaranes
