@@ -52,7 +52,7 @@
 .version {display: flex; gap: 10px; justify-content: flex-end; }
 /* dashboard */
 /* services grid */
-.add-confirm-modal {width: 80%;}
+.add-confirm-modal {width: 80%; top: 8% !important;}
 .title {width: 97%;}
 .user-services-table thead th:first-child,
 .user-services-table thead th:last-child,
