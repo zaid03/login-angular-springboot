@@ -24,6 +24,7 @@
 /* detail grid */
 /* delete grid */
 .cge-delete-confirm-btn { margin-right: 10px; }
+.marginBtns {margin-top: 10px;}
 /* delete grid */
 /* add grid */
 .add-confirm-modal { top: 15%; width: 40%;}

@@ -376,11 +376,28 @@ export class CgeComponent {
   showDetails(centroGestor: any) {
     this.limpiarMessages();
     this.selectedCentroGestor = centroGestor;
+    this.isUpdate = false;
   }
 
   closeDetails() {
     this.selectedCentroGestor = null;
     this.limpiarMessages();
+  }
+
+  closeDetailsSure() {if (this.isUpdate) {return;} 
+    else {this.closeDetails();}
+  }
+
+  isUpdate: boolean = false;
+  backupData: any = [];
+  allowUpdate() {
+    this.isUpdate = true;
+    this.backupData = this.selectedCentroGestor ? { ...this.selectedCentroGestor } : {};
+  }
+
+  stopUpdate() {
+    this.isUpdate = false;
+    this.selectedCentroGestor = { ...this.backupData };
   }
 
   isUpdating: boolean = false;

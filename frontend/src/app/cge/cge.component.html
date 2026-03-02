@@ -103,15 +103,15 @@
                 <span>de {{ totalPages }}</span>
                 <button (click)="nextPage()" [disabled]="page + 1 >= totalPages">Siguiente</button>
             </div>
-            <div class="modal-backdrop" *ngIf="selectedCentroGestor" (click)="closeDetails()"></div>
+            <div class="modal-backdrop" *ngIf="selectedCentroGestor" (click)="closeDetailsSure()"></div>
             <div class="display">
                 <div class="modal" *ngIf="selectedCentroGestor">
                     <div class="btns">
                         <div class="title-detail">
                             <h3>Detalles de centro gestor</h3>
                         </div>
-                        <button class="guardar-btn" (click)="updateCentroGestor(selectedCentroGestor.cgecod ,cgedes.value ,cgeorg.value ,cgefun.value, cgedat.value)">✔</button>
-                        <button class="close-btn-btn" (click)="closeDetails()">✖</button>
+                        <button class="guardar-btn" [disabled]="!isUpdate" (click)="updateCentroGestor(selectedCentroGestor.cgecod ,cgedes.value ,cgeorg.value ,cgefun.value, cgedat.value)">✔</button>
+                        <button class="close-btn-btn" [disabled]="isUpdate" (click)="closeDetails()">✖</button>
                     </div>   
                     <h1 class="successBtn">{{ centroGestorSuccessMessage }}</h1>
                     <h1 class="errorBtn">{{ centroGestorErrorMessage }}</h1>
@@ -133,6 +133,7 @@
                                     <textarea
                                         class="mediumText" 
                                         [(ngModel)]="selectedCentroGestor.cgeorg"
+                                        [disabled]="!isUpdate"
                                         #cgeorg
                                     ></textarea>
                                 </div>
@@ -141,12 +142,14 @@
                                         class="smallText" 
                                         [(ngModel)]="selectedCentroGestor.cgefun"
                                         (input)="allowOnlyDigits($event)"
+                                        [disabled]="!isUpdate"
                                         #cgefun
                                     ></textarea>
                                     <p>Descripción</p>
                                     <textarea 
                                         class="tallText" 
                                         [(ngModel)]="selectedCentroGestor.cgedes" 
+                                        [disabled]="!isUpdate"
                                         #cgedes
                                     ></textarea>
                                 </div>
@@ -156,6 +159,7 @@
                                         name="cont-option" 
                                         [checked]="isCgecic(0)"
                                         (change)="setCgecic(0)"
+                                        [disabled]="!isUpdate"
                                     >
                                     <span class="radio-name">Abierto</span>
                                     <input 
@@ -163,11 +167,13 @@
                                         name="cont-option" 
                                         [checked]="isCgecic(2)"
                                         (change)="setCgecic(2)"
+                                        [disabled]="!isUpdate"
                                     >
                                     <span class="radio-name">Cerrado Para Contabilizar</span>
                                     <input 
                                         type="radio" 
                                         name="cont-option" 
+                                        [disabled]="!isUpdate"
                                         [checked]="isCgecic(1)"
                                         (change)="setCgecic(1)"
                                     >
@@ -179,12 +185,15 @@
                             <p>Dirección para pedido</p>
                             <textarea 
                                 [(ngModel)]="selectedCentroGestor.cgedat"
+                                [disabled]="!isUpdate"
                                 #cgedat
                             ></textarea>
                         </div>
                     </div>
-                    <div class="btns">
-                        <button class="cge-delete-btn" (click)="openDeleteConfirm(selectedCentroGestor.cgecod)">-</button>
+                    <div class="btns marginBtns">
+                        <button class="delete-btn" *ngIf="isUpdate" (click)="stopUpdate()">Cancelar</button>
+                        <button class="save-btn" [disabled]="isUpdate" (click)="allowUpdate()">update</button>
+                        <button class="cge-delete-btn" [disabled]="isUpdate" (click)="openDeleteConfirm(selectedCentroGestor.cgecod)">Borrar</button>
                     </div> 
                 </div>
             </div>
