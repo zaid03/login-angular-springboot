@@ -62,7 +62,7 @@ export class SidebarComponent implements OnInit {
       return true;
     }
 
-    return !this.allowedMnucods.includes(code);
+    return this.allowedMnucods.includes(code);
   }
 
   navigateTo(code: string): void {
