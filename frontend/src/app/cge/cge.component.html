@@ -98,7 +98,6 @@
                     [value]="page + 1"
                     (change)="goToPage($event)"
                     class="pagination-input"
-                    class="pagination-input"
                 />
                 <span>de {{ totalPages }}</span>
                 <button (click)="nextPage()" [disabled]="page + 1 >= totalPages">Siguiente</button>
@@ -110,8 +109,12 @@
                         <div class="title-detail">
                             <h3>Detalles de centro gestor</h3>
                         </div>
-                        <button class="guardar-btn" [disabled]="!isUpdate" (click)="isUpdateAllowed(selectedCentroGestor.cgecod ,cgedes.value ,cgeorg.value ,cgefun.value, cgedat.value)">✔</button>
-                        <button class="close-btn-btn" [disabled]="isUpdate" (click)="closeDetails()">✖</button>
+                        <button 
+                            class="delete-btn" 
+                            [disabled]="isUpdate" 
+                            [ngClass]="{ 'disabled-btn': isUpdate }" 
+                            (click)="closeDetails()"
+                        >✖</button>
                     </div>   
                     <h1 class="successBtn">{{ centroGestorSuccessMessage }}</h1>
                     <h1 class="errorBtn">{{ centroGestorErrorMessage }}</h1>
@@ -198,9 +201,29 @@
                         </div>
                     </div>
                     <div class="btns marginBtns">
-                        <button class="delete-btn" *ngIf="isUpdate" (click)="stopUpdate()">Cancelar</button>
-                        <button class="save-btn" [disabled]="isUpdate" (click)="allowUpdate()">Modificar</button>
-                        <button class="cge-delete-btn" [disabled]="isUpdate" (click)="openDeleteConfirm(selectedCentroGestor.cgecod)">Borrar</button>
+                        <button 
+                            class="delete-btn" 
+                            *ngIf="isUpdate" 
+                            (click)="cancelar()"
+                        >Cancelar</button>
+                        <button 
+                            class="save-btn"
+                            [disabled]="isUpdate" 
+                            *ngIf="!isUpdate" 
+                            (click)="modificar()"
+                        >Modificar</button>
+                        <button 
+                            class="guardar-btn" 
+                            [disabled]="!isUpdate" 
+                            *ngIf="isUpdate" 
+                            (click)="isUpdateAllowed(selectedCentroGestor.cgecod ,cgedes.value ,cgeorg.value ,cgefun.value, cgedat.value)"
+                        >Guardar</button>
+                        <button 
+                            class="delete-btn" 
+                            [disabled]="isUpdate" 
+                            [ngClass]="{ 'disabled-btn': isUpdate }" 
+                            (click)="openDeleteConfirm(selectedCentroGestor.cgecod)"
+                        >Borrar</button>
                     </div> 
                 </div>
             </div>

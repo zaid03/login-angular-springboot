@@ -392,14 +392,15 @@ export class CgeComponent {
 
   isUpdate: boolean = false;
   backupData: any = [];
-  allowUpdate() {
+  modificar() {
     this.isUpdate = true;
     this.backupData = this.selectedCentroGestor ? { ...this.selectedCentroGestor } : {};
   }
 
-  stopUpdate() {
+  cancelar() {
     this.isUpdate = false;
-    this.selectedCentroGestor = { ...this.backupData };
+    this.tempCentroGestor = { ...this.backupData };
+    console.log(this.selectedCentroGestor)
   }
 
   updateSuccess() {
@@ -409,7 +410,6 @@ export class CgeComponent {
   allowToUpdate: boolean = false;
   isUpdateAllowed(cge: string, des: string, org: string, fun: string, dat: string) {
     if (this.allowToUpdate) {
-      console.log(this.allowToUpdate)
       this.updateCentroGestor(cge, des, org, fun, dat);
     } else {
       return;
