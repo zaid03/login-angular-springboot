@@ -153,9 +153,6 @@ export class DashboardComponent implements OnInit {
       case 'credito-Cge':
         this.router.navigate(['credito-Cge']);
         break;
-      case 'familia':
-        this.router.navigate(['/familia'])
-        break;
       default:
         break;
     }
