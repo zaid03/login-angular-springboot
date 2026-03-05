@@ -88,8 +88,12 @@
                         <div class="title-detail">
                             <h3>Detalles del centro de coste</h3>
                         </div>
-                        <button class="guardar-btn" (click)="updateEntrega(selectedCoste.ccocod, description.value)">✔</button>
-                        <button class="close-btn-btn" (click)="closeDetails()">✖</button>
+                        <button 
+                            class="delete-btn" 
+                            [disabled]="isUpdate" 
+                            [ngClass]="{ 'disabled-btn': isUpdate }" 
+                            (click)="closeDetails()"
+                        >✖</button>
                     </div>
                     <h1 class="errorBtn">{{detallesMessageError}}</h1>
                     <h1 class="successBtn">{{detallesMessageSuccess}}</h1>
@@ -104,19 +108,43 @@
                             </div>
                             <div class="right">
                                 <div class="on-two">
-                                    <h1>{{selectedCoste.ccocod || '#'}}</h1>
+                                    <h1>{{tempCoste.ccocod || '#'}}</h1>
                                     <p>Descripción*</p>
                                     <textarea 
                                         class="tallText" 
-                                        [(ngModel)]="selectedCoste.ccodes"
+                                        [(ngModel)]="tempCoste.ccodes"
+                                        [disabled]="!isUpdate"
+                                        (input)="allowToUpdate = true"
                                         #description
                                     ></textarea>
                                 </div>
                             </div>
                         </div>
-                        <div class="btns">
-                            <button class="delete-btn" (click)="openDeleteConfirm(selectedCoste)">-</button>
-                        </div>
+                    </div>
+                    <div class="btns">
+                        <button 
+                            class="delete-btn" 
+                            *ngIf="isUpdate" 
+                            (click)="cancelar()"
+                        >Cancelar</button>
+                        <button 
+                            class="save-btn"
+                            [disabled]="isUpdate" 
+                            *ngIf="!isUpdate" 
+                            (click)="modificar()"
+                        >Modificar</button>
+                        <button 
+                            class="save-btn" 
+                            [disabled]="!isUpdate" 
+                            *ngIf="isUpdate" 
+                            (click)="isUpdateAllowed(selectedCoste.ccocod, description.value)"
+                        >Guardar</button>
+                        <button 
+                            class="delete-btn" 
+                            [disabled]="isUpdate" 
+                            [ngClass]="{ 'disabled-btn': isUpdate }" 
+                            (click)="openDeleteConfirm(selectedCoste)"
+                        >Borrar</button>
                     </div>
                 </div>
             </div>

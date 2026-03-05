@@ -400,7 +400,6 @@ export class CgeComponent {
   cancelar() {
     this.isUpdate = false;
     this.tempCentroGestor = { ...this.backupData };
-    console.log(this.selectedCentroGestor)
   }
 
   updateSuccess() {

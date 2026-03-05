@@ -319,6 +319,7 @@ export class CosteComponent {
 
   showDetails(coste: any) {
     this.selectedCoste = coste;
+    this.tempCoste = { ...coste };
   }
 
   closeDetails() {
@@ -332,11 +333,39 @@ export class CosteComponent {
     this.selectedCoste.ccocod = textarea.value;
   }
 
+  tempCoste: any = {};
+  isUpdate: boolean = false;
+  backupData: any = [];
+  modificar() {
+    this.isUpdate = true;
+    this.backupData = this.selectedCoste ? { ...this.selectedCoste } : {};
+  }
+
+  cancelar() {
+    this.isUpdate = false;
+    this.tempCoste = { ...this.backupData };
+  }
+
+  updateSuccess() {
+    this.isUpdate = false;
+  }
+
+  allowToUpdate: boolean = false;
+  isUpdateAllowed(ccocod: string, ccodes: string) {
+    console.log(this.allowToUpdate)
+    if (this.allowToUpdate) {
+      this.updateEntrega(ccocod, ccodes);
+    } else {
+      return;
+    }
+  }
+
   isUpdating: boolean = false;
   updateEntrega(ccocod: string, ccodes: string) {
     this.emptyAllMessages();
     this.isUpdating = true;
 
+    Object.assign(this.selectedCoste, this.tempCoste);
     if (!ccodes) {
       this.detallesMessageError = 'descripción requerida'
       this.isUpdating = false;
@@ -348,6 +377,7 @@ export class CosteComponent {
 
     this.http.patch(`${environment.backendUrl}/api/cco/update-centro/${this.entcod}/${this.eje}/${ccocod}`, payload).subscribe({
       next: (res) => {
+        this.updateSuccess();
         this.detallesMessageSuccess = 'Lugares de entrega actualizada exitosamente'
         this.isUpdating = false;
       },
