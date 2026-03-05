@@ -379,24 +379,28 @@ export class ServiciosComponent {
   showDetails(services: any) {
     this.limpiarMessages();
     this.selectedService = services;
-    this.option = 'personas';
+    this.tempServicio = services;
+    
     this.detailFlags = {
       depalm: services?.depalm === 1,
       depcom: services?.depcom === 1,
       depint: services?.depint === 1
     };
+
     const cgecod = this.selectedService.cgecod;
     this.http.get(`${environment.backendUrl}/api/cge/fetch-description-services/${this.entcod}/${this.eje}/${cgecod}`, { responseType: 'text' }
     ).subscribe({
       next: (res) => {
         const description = res;
         this.selectedService = {... this.selectedService, cgedes: description};
+        this.tempServicio = {... this.tempServicio, cgedes: description};
       },
       error: (err) => {
         this.servicesDetailError = err.error.error ?? err.error;
       }
     })
 
+    this.option = 'personas';
     this.fetchPersonas(services.depcod);
   }
 
@@ -406,6 +410,7 @@ export class ServiciosComponent {
 
   closeDetails() {
     this.selectedService = null;
+    this.tempServicio = null;
     this.limpiarMessages();
     this.personas = [];
     this.almacenArray = [];
@@ -418,12 +423,40 @@ export class ServiciosComponent {
     this.fetchPersonas(this.selectedService.depcod);
   }
 
+  tempServicio: any = {};
+  isUpdate: boolean = false;
+  backupData: any = [];
+  modificar() {
+    this.isUpdate = true;
+    this.backupData = this.selectedService ? { ...this.selectedService } : {};
+  }
+
+  cancelar() {
+    this.isUpdate = false;
+    this.tempServicio = { ...this.backupData };
+  }
+
+  updateSuccess() {
+    this.isUpdate = false;
+  }
+
+  allowToUpdate: boolean = false;
+  isUpdateAllowed(cod:string, des: string) {
+    if (this.allowToUpdate) {
+      this.updateService(cod, des);
+    } else {
+      return;
+    }
+  }
+
   updateServiceSuccessMessage: string = '';
   updateServiceErrorMessage: string = ''
   isUpdating: boolean = false;
   updateService(cod:string, des: string) {
     this.isUpdating = true;
     this.limpiarMessages();
+
+    Object.assign(this.selectedService, this.tempServicio);
 
     if (cod === '' || des === '') {
       this.updateServiceErrorMessage = 'Todos los campos son obligatorios.'
@@ -439,6 +472,7 @@ export class ServiciosComponent {
 
     this.http.patch(`${environment.backendUrl}/api/dep/update-service/${this.entcod}/${this.eje}/${cod}`, payload).subscribe({
       next: (res) => {
+        this.updateSuccess()
         this.updateServiceSuccessMessage = 'servicio actualizado exitosamente'
         this.fetchServices();
         this.isUpdating = false;

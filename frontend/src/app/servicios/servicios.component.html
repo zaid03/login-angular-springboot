@@ -157,8 +157,12 @@
                         <div class="title-detail">
                             <h3>Detalles de Servicio</h3>
                         </div>
-                        <button class="save-btn" (click)="updateService(selectedService.depcod, des.value); updateServiceSecond(selectedService.depcod, d1c.value, d1d.value, d2c.value, d2d.value, d3c.value, d3d.value, dco.value, den.value)">✔</button>
-                        <button class="close-btn-btn" (click)="closeDetails()">✖</button>
+                        <button 
+                            class="delete-btn" 
+                            [disabled]="isUpdate" 
+	                        [ngClass]="{ 'disabled-btn': isUpdate }" 
+                            (click)="closeDetails()"
+                        >✖</button>
                     </div>  
                     <h1 class="successBtn">{{ updateServiceSuccessMessage }}</h1>
                     <h1 class="errorBtn">{{ updateServiceErrorMessage }}</h1>
@@ -175,18 +179,20 @@
                             </div>
                             <div class="right">
                                 <div class="on-two">
-                                    <h1>{{selectedService.depcod || '#'}}</h1>
+                                    <h1>{{tempServicio.depcod || '#'}}</h1>
                                     <p>Centro de coste</p>  
-                                    <h1>{{selectedService.ccocod || '#'}}</h1>
+                                    <h1>{{tempServicio.ccocod || '#'}}</h1>
                                 </div>
                                 <textarea 
                                     class="long" 
-                                    [(ngModel)]="selectedService.depdes"
+                                    [(ngModel)]="tempServicio.depdes"
+                                    [disabled]="!isUpdate"
+                                    (input)="allowToUpdate = true"
                                     #des
                                 ></textarea>
                                 <div class="on-two">
-                                    <h1>{{selectedService.cgecod || '#'}}</h1>
-                                    <h1>{{selectedService.cgedes || '#'}}</h1>
+                                    <h1>{{tempServicio.cgecod || '#'}}</h1>
+                                    <h1>{{tempServicio.cgedes || '#'}}</h1>
                                 </div>
                             </div>
                         </div>
@@ -200,11 +206,15 @@
                                 <div class="on-two">
                                     <textarea 
                                         class="short"
-                                        [(ngModel)]="selectedService.depd1C"
+                                        [(ngModel)]="tempServicio.depd1C"
+                                        [disabled]="!isUpdate"
+                                        (input)="allowToUpdate = true"
                                         #d1c
                                     ></textarea>
                                     <textarea 
-                                        [(ngModel)]="selectedService.depd1D" 
+                                        [(ngModel)]="tempServicio.depd1D" 
+                                        [disabled]="!isUpdate"
+                                        (input)="allowToUpdate = true"
                                         class="long"
                                         #d1d
                                     ></textarea>
@@ -212,11 +222,15 @@
                                 <div class="on-two">
                                     <textarea 
                                         class="short"
-                                        [(ngModel)]="selectedService.depd2C"
+                                        [(ngModel)]="tempServicio.depd2C"
+                                        [disabled]="!isUpdate"
+                                        (input)="allowToUpdate = true"
                                         #d2c
                                     ></textarea>
                                     <textarea 
-                                        [(ngModel)]="selectedService.depd2D" 
+                                        [(ngModel)]="tempServicio.depd2D" 
+                                        [disabled]="!isUpdate"
+                                        (input)="allowToUpdate = true"
                                         class="long"
                                         #d2d
                                     ></textarea>
@@ -224,11 +238,15 @@
                                 <div class="on-two">
                                     <textarea 
                                         class="short"
-                                        [(ngModel)]="selectedService.depd3C"
+                                        [(ngModel)]="tempServicio.depd3C"
+                                        [disabled]="!isUpdate"
+                                        (input)="allowToUpdate = true"
                                         #d3c
                                     ></textarea>
                                     <textarea 
-                                        [(ngModel)]="selectedService.depd3D" 
+                                        [(ngModel)]="tempServicio.depd3D" 
+                                        [disabled]="!isUpdate"
+                                        (input)="allowToUpdate = true"
                                         class="long"
                                         #d3d
                                     ></textarea>
@@ -240,16 +258,22 @@
                                 type="checkbox"
                                 [ngModel]="detailFlags.depalm"
                                 (ngModelChange)="toggleDetailFlag('depalm', $event)"
+                                [disabled]="!isUpdate"
+                                (input)="allowToUpdate = true"
                             > <span class="name">Almacenar</span> <br>
                             <input
                                 type="checkbox"
                                 [ngModel]="detailFlags.depcom"
                                 (ngModelChange)="toggleDetailFlag('depcom', $event)"
+                                [disabled]="!isUpdate"
+                                (input)="allowToUpdate = true"
                             > <span class="name">Comprar</span> <br>
                             <input
                                 type="checkbox"
                                 [ngModel]="detailFlags.depint"
                                 (ngModelChange)="toggleDetailFlag('depint', $event)"
+                                [disabled]="!isUpdate"
+                                (input)="allowToUpdate = true"
                             > <span class="name">Contabilizar</span>
                         </div>
                     </div>
@@ -258,7 +282,9 @@
                             <p>Datos de contacto</p>
                             <textarea 
                                 class="heighty long"
-                                [(ngModel)]="selectedService.depdco"
+                                [(ngModel)]="tempServicio.depdco"
+                                [disabled]="!isUpdate"
+                                (input)="allowToUpdate = true"
                                 #dco
                             ></textarea>
                         </div>
@@ -266,13 +292,36 @@
                             <p>Datos de entrega</p>
                             <textarea 
                                 class="heighty long"
-                                [(ngModel)]="selectedService.depden"
+                                [(ngModel)]="tempServicio.depden"
+                                [disabled]="!isUpdate"
+                                (input)="allowToUpdate = true"
                                 #den
                             ></textarea>
                         </div>
                     </div>
-                    <div class="btns">
-                        <button class="delete-btn">-</button>
+                    <div class="btns space">
+                        <button 
+                            class="delete-btn" 
+                            *ngIf="isUpdate" 
+                            (click)="cancelar()"
+                        >Cancelar</button>
+                        <button 
+                            class="save-btn"
+                            [disabled]="isUpdate" 
+                            *ngIf="!isUpdate" 
+                            (click)="modificar()"
+                        >Modificar</button>
+                        <button 
+                            class="save-btn" 
+                            [disabled]="!isUpdate" 
+	                        *ngIf="isUpdate" 
+                            (click)="isUpdateAllowed(selectedService.depcod, des.value); updateServiceSecond(selectedService.depcod, d1c.value, d1d.value, d2c.value, d2d.value, d3c.value, d3d.value, dco.value, den.value)"
+                        >Guardar</button>
+                        <button 
+                            class="delete-btn"
+                            [disabled]="isUpdate" 
+	                        [ngClass]="{ 'disabled-btn': isUpdate }" 
+                        >Borrar</button>
                     </div>
                     <div class="more-detail-container">
                         <div class="tabs" role="tablist" aria-label="Detalle tabs">

@@ -43,6 +43,7 @@
 .chunk-three input[type="checkbox"],
 .checkboxes input[type="checkbox"] { margin: 0; accent-color: #25176b; width: 14px; height: 18px; vertical-align: middle; outline: none; box-shadow: none; }
 .name {margin-left: 5px; font-size: 16px;}
+.space {margin-top: 10px;}
 /* detail grid */
 /* detail grid's grids */
 .heighty { height: 50px !important;}
@@ -71,7 +72,7 @@
 /* add grid */
 /* add new service grid */
 .custom-grid-modal .add-btn {margin: 5px;}
-.delete-btn { margin-left: 10px;}
+.custom-grid-modal .delete-btn { margin-left: 10px;}
 .delete-confirm-modal { display: flex; flex-direction: column; align-items: center; gap: 2px;}
 .persona-details {width: 90%; display: flex; justify-content: center; gap: 10px;}
 .delete-confirm-modal .btns {justify-content: center;}
