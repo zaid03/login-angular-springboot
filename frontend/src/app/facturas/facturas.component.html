@@ -209,15 +209,19 @@
                 <span>de {{ totalPages }}</span>
                 <button (click)="nextPage()" [disabled]="page + 1 >= totalPages">Siguiente</button>
             </div>
-            <div class="modal-backdrop" *ngIf="selectedFacturas" (click)="closeDetails()"></div>
+            <div class="modal-backdrop" *ngIf="selectedFacturas" (click)="closeDetailsSure()"></div>
             <div class="display" >
                 <div class="modal" *ngIf="selectedFacturas">
                     <div class="btns">
                         <div class="title-detail">
                             <h3>Detalles del Factura</h3>
                         </div>
-                        <button class="guardar-btn" (click)="updateFactura()">✔</button>
-                        <button class="close-btn-btn" (click)="closeDetails()">✖</button>
+                        <button 
+                            class="delete-btn" 
+                            [disabled]="isUpdate" 
+	                        [ngClass]="{ 'disabled-btn': isUpdate }" 
+                            (click)="closeDetails()"
+                        >✖</button>
                     </div>
                     <div *ngIf="isUpdatingFactura" class="loading-message">
                         <div class="spinner"></div>
@@ -268,7 +272,9 @@
                                     <input
                                         type="date"
                                         class="input-style" 
-                                        [(ngModel)]="selectedFacturas.facfre"
+                                        [(ngModel)]="tempFactura.facfre"
+                                        [disabled]="!isUpdate"
+                                        (input)="allowToUpdate = true"
                                     />
                                 </div>
                             </div>
@@ -282,15 +288,21 @@
                             <div class="right gap">
                                 <textarea 
                                     class="averageSecond" 
-                                    [(ngModel)]="selectedFacturas.conctp"
+                                    [(ngModel)]="tempFactura.conctp"
+                                    [disabled]="!isUpdate"
+                                    (input)="allowToUpdate = true"
                                 ></textarea>
                                 <textarea 
                                     class="averageSecond" 
-                                    [(ngModel)]="selectedFacturas.concpr"
+                                    [(ngModel)]="tempFactura.concpr"
+                                    [disabled]="!isUpdate"
+                                    (input)="allowToUpdate = true"
                                 ></textarea>
                                 <textarea 
                                     class="averageSecond" 
-                                    [(ngModel)]="selectedFacturas.conccr"
+                                    [(ngModel)]="tempFactura.conccr"
+                                    [disabled]="!isUpdate"
+                                    (input)="allowToUpdate = true"
                                 ></textarea>
                             </div>
                         </div>
@@ -303,23 +315,31 @@
                                 <div class="on-two">
                                     <textarea 
                                         class="pagoSmallWidth" 
-                                        [(ngModel)]="selectedFacturas.facfpg"
+                                        [(ngModel)]="tempFactura.facfpg"
+                                        [disabled]="!isUpdate"
+                                        (input)="allowToUpdate = true"
                                     ></textarea>
                                     <p>Tipo de pago</p>
                                     <textarea 
                                         class="pagoSmallWidth pagoFix" 
-                                        [(ngModel)]="selectedFacturas.factpg"
+                                        [(ngModel)]="tempFactura.factpg"
+                                        [disabled]="!isUpdate"
+                                        (input)="allowToUpdate = true"
                                     ></textarea>
                                 </div>
                                 <div class="on-two">
                                     <textarea 
                                         class="pagoSmallWidth " 
-                                        [(ngModel)]="selectedFacturas.facopg"
+                                        [(ngModel)]="tempFactura.facopg"
+                                        [disabled]="!isUpdate"
+                                        (input)="allowToUpdate = true"
                                     ></textarea>
                                     <p>Cuenta Tercero</p>
                                     <textarea 
                                         class="pagoSmallWidth" 
-                                        [(ngModel)]="selectedFacturas.facoct"
+                                        [(ngModel)]="tempFactura.facoct"
+                                        [disabled]="!isUpdate"
+                                        (input)="allowToUpdate = true"
                                     ></textarea>
                                 </div>
                             </div>
@@ -356,8 +376,31 @@
                         </div>
                         <div class="observ">
                             <p>Observaciones:</p>
-                            <textarea [(ngModel)]="selectedFacturas.facobs"></textarea>
+                            <textarea 
+                                [(ngModel)]="tempFactura.facobs"
+                                [disabled]="!isUpdate"
+                                (input)="allowToUpdate = true"
+                            ></textarea>
                         </div>
+                    </div>
+                    <div class="btns">
+                        <button 
+                            class="delete-btn" 
+                            *ngIf="isUpdate" 
+                            (click)="cancelar()"
+                        >Cancelar</button>
+                        <button 
+                            class="save-btn"
+                            [disabled]="isUpdate" 
+                            *ngIf="!isUpdate" 
+                            (click)="modificar()"
+                        >Modificar</button>
+                        <button 
+                            class="guardar-btn" 
+                            [disabled]="!isUpdate" 
+	                        *ngIf="isUpdate"
+                            (click)="isUpdateAllowed()"
+                        >Guardar</button>
                     </div>
                     <div class="more-detail-container">
                         <div class="tabs" role="tablist" aria-label="Detalle tabs">

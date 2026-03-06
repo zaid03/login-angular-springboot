@@ -205,15 +205,19 @@
                 <span>de {{ totalPages }}</span>
                 <button (click)="nextPage()" [disabled]="page + 1 >= totalPages">Siguiente</button>
             </div>
-            <div class="modal-backdrop" *ngIf="selectedBolsas" (click)="closeDetails()"></div>
+            <div class="modal-backdrop" *ngIf="selectedBolsas" (click)="closeDetailsSure()"></div>
             <div class="display" >
                 <div class="modal" *ngIf="selectedBolsas">
                     <div class="btns">
                         <div class="title-detail">
                             <h3>Detalles de Bolsa</h3>
                         </div>
-                        <button class="save-btn" (click)="updateGbsimp(gbsimp.value, getkdispon(selectedBolsas.saldo, getkAcPeCo(selectedBolsas.gbsiut, selectedBolsas.gbsict)), selectedBolsas.gbsref); updateGbsibg(selectedBolsas.gbsibg)">✔</button>
-                        <button class="close-btn-btn" (click)="closeDetails()">✖</button>
+                        <button 
+                            class="delete-btn" 
+                            [disabled]="isUpdate" 
+	                        [ngClass]="{ 'disabled-btn': isUpdate }" 
+                            (click)="closeDetails()"
+                        >✖</button>
                     </div>
                     <h1 class="successBtn">{{ guardarMesageSuccess }}</h1>
                     <h1 class="errorBtn">{{ guardarMesage }}</h1>
@@ -275,7 +279,9 @@
                                     <p>Importe bolsa</p>
                                     <textarea 
                                         class="smallTextarea" 
-                                        [(ngModel)]="selectedBolsas.gbsimp" 
+                                        [(ngModel)]="tempBolsa.gbsimp" 
+                                        [disabled]="!isUpdate"
+                                        (input)="allowToUpdate = true"
                                         (blur)="formatGbsimp()"
                                         (click)="gbsImp()"
                                         #gbsimp
@@ -288,7 +294,9 @@
                                     <p>Importe bolsa gestion</p>
                                     <textarea 
                                         class="smallTextarea" 
-                                        [(ngModel)]="selectedBolsas.gbsibg" 
+                                        [(ngModel)]="tempBolsa.gbsibg" 
+                                        [disabled]="!isUpdate"
+                                        (input)="allowToUpdate = true"
                                         (blur)="formateGbsibg()"
                                         (click)="gbsIbg()"
                                         #gbsibg
@@ -357,8 +365,35 @@
                         </div>
                     </div>
                     <div class="btns">
-                        <button class="save-btn" (click)="transFond()">➔</button>
-                        <button class="delete-btn" (click)="deleteBolsa(selectedBolsas.gbsref)">-</button>
+                        <button 
+                            class="delete-btn" 
+                            *ngIf="isUpdate" 
+                            (click)="cancelar()"
+                        >Cancelar</button>
+                        <button 
+                            class="save-btn"
+                            [disabled]="isUpdate" 
+                            *ngIf="!isUpdate" 
+                            (click)="modificar()"
+                        >Modificar</button>
+                        <button 
+                            class="save-btn"
+                            [disabled]="!isUpdate" 
+	                        *ngIf="isUpdate"
+                            (click)="isUpdateAllowed(gbsimp.value, getkdispon(selectedBolsas.saldo, getkAcPeCo(selectedBolsas.gbsiut, selectedBolsas.gbsict)), selectedBolsas.gbsref, tempBolsa.gbsibg)"
+                        >Guardar</button>
+                        <button 
+                            class="save-btn" 
+                            [disabled]="isUpdate" 
+	                        [ngClass]="{ 'disabled-btn': isUpdate }" 
+                            (click)="transFond()"
+                        >➔</button>
+                        <button 
+                            class="delete-btn" 
+                            [disabled]="isUpdate" 
+	                        [ngClass]="{ 'disabled-btn': isUpdate }" 
+                            (click)="deleteBolsa(selectedBolsas.gbsref)"
+                        >Borrar</button>
                     </div>
                 </div>
             </div>
