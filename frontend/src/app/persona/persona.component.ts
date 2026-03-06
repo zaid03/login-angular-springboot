@@ -386,7 +386,6 @@ export class PersonaComponent {
 
   allowToUpdate: boolean = false;
   isUpdateAllowed(pernom: string, percoe: string, pertel: string, pertmo: string, percar: string, perobs: string) {
-    console.log(this.allowToUpdate)
     if (this.allowToUpdate) {
       this.updatePersona(pernom, percoe, pertel, pertmo, percar, perobs);
     } else {

@@ -695,8 +695,6 @@ export class FacturasComponent {
       "FACOCT": this.tempFactura.facoct
     }
 
-    console.log(payload)
-
     this.http.patch(`${environment.backendUrl}/api/fac/update-factura/${this.entcod}/${this.eje}/${facnum}`, payload).subscribe({
       next: (res) => {
         this.updateSuccess();
@@ -984,7 +982,6 @@ export class FacturasComponent {
       "FACNUM": facnum
     }))
 
-    console.log(payload);
     this.http.patch(`${environment.backendUrl}/api/alb/add-albaranes`, payload).subscribe({
       next: (res) => {
         this.isAddingAlbaranes = false;
@@ -1126,7 +1123,6 @@ export class FacturasComponent {
       "estado": "E"
     }
 
-    console.log(payload);
     this.http.post<any>(`${environment.backendUrl}/api/facturas/consulta`, payload).subscribe({
       next: (res) => {
         this.isLoadingFactura = false;
@@ -1134,7 +1130,6 @@ export class FacturasComponent {
         this.pageFacturas = 0;
       },
       error: (err) => {
-        console.log(err)
         this.pageFacturas = 0;
         this.isLoadingFactura = false;
         this.facturasErrorMessage = err.error.error ?? err.error;

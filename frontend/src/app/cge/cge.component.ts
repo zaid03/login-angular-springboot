@@ -437,7 +437,6 @@ export class CgeComponent {
     this.http.patch<any>(`${environment.backendUrl}/api/cge/update-cge/${this.entcod}/${this.eje}/${cge}`, payload).subscribe({
       next: (res) => {
         this.updateSuccess();
-        console.log("here")
         this.centroGestorSuccessMessage = 'Centro gestor actualizado con éxito';
         this.isUpdating = false;
       }, 

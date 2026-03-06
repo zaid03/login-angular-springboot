@@ -357,7 +357,6 @@ export class CosteComponent {
 
   allowToUpdate: boolean = false;
   isUpdateAllowed(ccocod: string, ccodes: string) {
-    console.log(this.allowToUpdate)
     if (this.allowToUpdate) {
       this.updateEntrega(ccocod, ccodes);
     } else {

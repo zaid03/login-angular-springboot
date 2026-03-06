@@ -523,7 +523,6 @@ export class CreditoComponent {
 
   allowToUpdate: boolean = false;
   isUpdateAllowed(gbsimp: any, getkAcPeCo:any, gbsref: any) {
-    console.log(this.allowToUpdate)
     if (this.allowToUpdate) {
       this.updateBolsa(gbsimp, getkAcPeCo, gbsref);
     } else {

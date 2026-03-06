@@ -609,17 +609,14 @@ export class BolsaCreditoComponent {
       this.isUpdating = true;
       Object.assign(this.selectedBolsas, this.tempBolsa);
 
-      console.log(gbsimp)
       const parsedValue = this.cleaningCurrency(gbsimp);
       if ( parsedValue > getkAcPeCo) {
         this.guardarMesage = 'HA SOBREPASADO EL DISPONIBLE DE LA REFERENCIA';
-        console.log(this.guardarMesage)
         this.isUpdating = false;
         return;
       }
 
     
-      console.log("here")
       const today = new Date();
       const payload = {
         GBSIMP: parsedValue,
@@ -628,7 +625,6 @@ export class BolsaCreditoComponent {
         GBSFOP: today.toISOString().slice(0, 19)
       };
 
-      console.log(payload)
       this.http.patch<void>(`${environment.backendUrl}/api/gbs/${this.entcod}/${this.eje}/${this.cge}/${gbsref}`, payload)
       .subscribe({
         next: () => {
@@ -659,13 +655,10 @@ export class BolsaCreditoComponent {
       const parsedValue = this.cleaningCurrency(gbsibg);
       const referencia = this.selectedBolsas.gbsref;
 
-      console.log(gbsibg)
-      console.log(parsedValue)
       const payload = {
         "GBSIBG": parsedValue
       }
 
-      console.log(payload)
       this.http.patch(`${environment.backendUrl}/api/gbs/update-gbsibg/${this.entcod}/${this.eje}/${this.cge}/${referencia}`, payload).subscribe({
         next: (res) => {
           this.updateSuccess();
