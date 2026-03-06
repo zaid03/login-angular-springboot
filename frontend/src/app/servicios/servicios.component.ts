@@ -417,6 +417,10 @@ export class ServiciosComponent {
     this.almacenDatosArray = [];
   }
 
+  closeDetailsSure() {if (this.isUpdate) {return;} 
+    else {this.closeDetails();}
+  }
+  
   option: 'personas' | 'almacen' = 'personas';
   setOption(next: 'personas' | 'almacen'): void {
     this.option = next;
@@ -438,6 +442,7 @@ export class ServiciosComponent {
 
   updateSuccess() {
     this.isUpdate = false;
+    this.allowToUpdate = false;
   }
 
   allowToUpdate: boolean = false;

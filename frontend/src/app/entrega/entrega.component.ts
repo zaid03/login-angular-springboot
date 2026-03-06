@@ -295,6 +295,7 @@ export class EntregaComponent {
 
   showDetails(entrega: any) {
     this.selectedEntregas = entrega;
+    this.tempEntrega = entrega;
   }
 
   closeDetails() {
@@ -302,10 +303,43 @@ export class EntregaComponent {
     this.emptyAllMessages();
   }
 
+  closeDetailsSure() {if (this.isUpdate) {return;} 
+    else {this.closeDetails();}
+  }
+
+  tempEntrega: any = {};
+  isUpdate: boolean = false;
+  backupData: any = [];
+  modificar() {
+    this.isUpdate = true;
+    this.backupData = this.selectedEntregas ? { ...this.selectedEntregas } : {};
+  }
+
+  cancelar() {
+    this.isUpdate = false;
+    this.tempEntrega = { ...this.backupData };
+  }
+
+  updateSuccess() {
+    this.isUpdate = false;
+    this.allowToUpdate = false;
+  }
+
+  allowToUpdate: boolean = false;
+  isUpdateAllowed(lencod: number, lendes: string, lentxt: string) {
+    if (this.allowToUpdate) {
+      this.updateEntrega(lencod, lendes, lentxt);
+    } else {
+      return;
+    }
+  }
+
   isUpdating: boolean = false;
   updateEntrega(lencod: number, lendes: string, lentxt: string) {
     this.emptyAllMessages();
     this.isUpdating = true;
+
+    Object.assign(this.selectedEntregas, this.tempEntrega);
 
     if (!lencod || !lendes) {
       this.detallesMessageError = 'Descripción requirido'
@@ -318,6 +352,7 @@ export class EntregaComponent {
 
     this.http.patch(`${environment.backendUrl}/api/Len/update-lugar/${lencod}`, payload).subscribe({
       next: (res) => {
+        this.updateSuccess();
         this.detallesMessageSuccess = 'Lugares de entrega actualizada exitosamente';
         this.isUpdating = false;
       },

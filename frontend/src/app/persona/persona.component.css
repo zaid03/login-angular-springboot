@@ -14,7 +14,7 @@
 .left,
 .right {display: flex; flex-direction: column; }
 .left {width: 25%; gap: 20px;}
-.right {width: 75%; gap: 16px;}
+.right {width: 75%; gap: 20px;}
 .on-two {display: flex; align-items: center; gap: 10px;}
 .average {width: 165px; max-width: 180px;}
 .long { width: 400px; max-width: 430px;}

@@ -150,7 +150,7 @@
                 <span>de {{ totalPages }}</span>
                 <button (click)="nextPage()" [disabled]="page + 1 >= totalPages">Siguiente</button>
             </div>
-            <div class="modal-backdrop" *ngIf="selectedService" (click)="closeDetails()"></div>
+            <div class="modal-backdrop" *ngIf="selectedService" (click)="closeDetailsSure()"></div>
             <div class="display" >
                 <div class="modal" *ngIf="selectedService">
                     <div class="btns">

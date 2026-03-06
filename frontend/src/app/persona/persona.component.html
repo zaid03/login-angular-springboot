@@ -103,26 +103,36 @@
                 <button (click)="prevPage()" [disabled]="page === 0">Anterior</button>
                 <span>Página</span>
                 <input
-                type="number"
-                min="1"
-                [max]="totalPages"
-                [value]="page + 1"
-                (change)="goToPage($event)"
-                class="pagination-input"
+                    type="number"
+                    min="1"
+                    [max]="totalPages"
+                    [value]="page + 1"
+                    (change)="goToPage($event)"
+                    class="pagination-input"
                 />
                 <span>de {{ totalPages }}</span>
                 <button (click)="nextPage()" [disabled]="page + 1 >= totalPages">Siguiente</button>
             </div>
-            <div class="modal-backdrop" *ngIf="selectedPersona" (click)="closeDetails()"></div>
+            <div class="modal-backdrop" *ngIf="selectedPersona" (click)="closeDetailsSure()"></div>
             <div class="display">
                 <div class="modal" *ngIf="selectedPersona">
                     <div class="btns">
                         <div class="title-detail">
                             <h3>Detalles de Persona</h3>
                         </div>
-                        <button class="save-btn" (click)="showCopiar(selectedPersona.percod)">✂️</button>
-                        <button class="save-btn" (click)="updatePersona(pernom.value, percoe.value, pertel.value, pertmo.value, percar.value, perobs.value)">✔</button>
-                        <button class="close-btn-btn" (click)="closeDetails()">✖</button>
+                        <button 
+                            class="save-btn" 
+                            [disabled]="isUpdate" 
+                            [ngClass]="{ 'disabled-btn': isUpdate }" 
+                            (click)="showCopiar(selectedPersona.percod)"
+                        >✂️</button>
+                        
+                        <button 
+                            class="delete-btn" 
+                            [disabled]="isUpdate" 
+                            [ngClass]="{ 'disabled-btn': isUpdate }" 
+                            (click)="closeDetails()"
+                        >✖</button>
                     </div> 
                     <h1 class="successBtn">{{detailMessageSuccess}}</h1>
                     <h1 class="errorBtn">{{detailMessageError}}</h1>
@@ -139,9 +149,21 @@
                                     <p>Correo Electrónico</p>
                                 </div>
                                 <div class="right">
-                                    <h1>{{selectedPersona.percod || '#'}}</h1>
-                                    <textarea class="long" [(ngModel)]="selectedPersona.pernom" #pernom></textarea>    
-                                    <textarea class="long" [(ngModel)]="selectedPersona.percoe" #percoe></textarea>
+                                    <h1>{{tempPersonas.percod || '#'}}</h1>
+                                    <textarea 
+                                        class="long" 
+                                        [(ngModel)]="tempPersonas.pernom" 
+                                        [disabled]="!isUpdate"
+                                        (input)="allowToUpdate = true"
+                                        #pernom
+                                    ></textarea>    
+                                    <textarea 
+                                        class="long" 
+                                        [(ngModel)]="tempPersonas.percoe" 
+                                        [disabled]="!isUpdate"
+                                        (input)="allowToUpdate = true"
+                                        #percoe
+                                    ></textarea>
                                 </div>
                             </div>
                             <div class="chunk-two">
@@ -152,16 +174,59 @@
                                 </div>
                                 <div class="right">
                                     <div class="on-two">
-                                        <textarea class="average" [(ngModel)]="selectedPersona.pertel" #pertel></textarea>
+                                        <textarea 
+                                            class="average" 
+                                            [(ngModel)]="tempPersonas.pertel"
+                                            [disabled]="!isUpdate"
+                                            (input)="allowToUpdate = true"
+                                            #pertel
+                                        ></textarea>
                                         <p>Móvil</p>
-                                        <textarea class="average" [(ngModel)]="selectedPersona.pertmo" #pertmo></textarea>
+                                        <textarea 
+                                            class="average" 
+                                            [(ngModel)]="tempPersonas.pertmo" 
+                                            [disabled]="!isUpdate"
+                                            (input)="allowToUpdate = true"
+                                            #pertmo
+                                        ></textarea>
                                     </div>
-                                    <textarea class="long" [(ngModel)]="selectedPersona.percar" #percar></textarea>
-                                    <textarea class="long height" [(ngModel)]="selectedPersona.perobs" #perobs></textarea>
+                                    <textarea 
+                                        class="long" 
+                                        [(ngModel)]="tempPersonas.percar"
+                                        [disabled]="!isUpdate"
+                                        (input)="allowToUpdate = true"
+                                        #percar
+                                    ></textarea>
+                                    <textarea 
+                                        class="long height" 
+                                        [(ngModel)]="tempPersonas.perobs"
+                                        [disabled]="!isUpdate"
+                                        (input)="allowToUpdate = true"
+                                        #perobs
+                                    ></textarea>
                                 </div>
                             </div>
                         </div>
                     </div> 
+                    <div class="btns space">
+                        <button 
+                            class="delete-btn" 
+                            *ngIf="isUpdate" 
+                            (click)="cancelar()"
+                        >Cancelar</button>
+                        <button 
+                            class="save-btn"
+                            [disabled]="isUpdate" 
+                            *ngIf="!isUpdate" 
+                            (click)="modificar()"
+                        >Modificar</button>
+                        <button 
+                            class="save-btn" 
+                            (click)="isUpdateAllowed(pernom.value, percoe.value, pertel.value, pertmo.value, percar.value, perobs.value)"
+                            [disabled]="!isUpdate" 
+	                        *ngIf="isUpdate" 
+                        >Gurdar</button>
+                    </div>
                     <div class="more-detail-container">
                         <div class="tabs" role="tablist" aria-label="Detalle tabs">
                             <button

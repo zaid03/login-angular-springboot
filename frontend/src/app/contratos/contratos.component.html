@@ -142,15 +142,19 @@
                 <span>de {{ totalPages }}</span>
                 <button (click)="nextPage()" [disabled]="page + 1 >= totalPages">Siguiente</button>
             </div>
-            <div class="modal-backdrop" *ngIf="selectedContrato" (click)="closeDetails()"></div>
+            <div class="modal-backdrop" *ngIf="selectedContrato" (click)="closeDetailsSure()"></div>
             <div class="display">
                 <div class="modal" *ngIf="selectedContrato">
                     <div class="btns">
                         <div class="title-detail">
                             <h3>detalles del contrato</h3>
                         </div>
-                        <button class="save-btn" (click)="updateContrato(selectedContrato.concod, selectedContrato.conblo, confin.value, conffi.value, desc.value)">✔</button>
-                        <button class="close-btn-btn" (click)="closeDetails()">✖</button>
+                        <button 
+                            class="delete-btn" 
+                            [disabled]="isUpdate" 
+	                        [ngClass]="{ 'disabled-btn': isUpdate }" 
+                            (click)="closeDetails()"
+                        >✖</button>
                     </div> 
                     <h1 class="successBtn">{{updateContratoSuccess}}</h1>
                     <h1 class="errorBtn">{{updateContratoError}}</h1>
@@ -162,23 +166,25 @@
                         <div class="chunk-one">
                             <div class="content">
                                 <p>Número</p>
-                                <h1>{{selectedContrato.concod || '#'}}</h1>
+                                <h1>{{tempContrato.concod || '#'}}</h1>
                             </div>
                             <div class="content">
                                 <p>Económica</p>
-                                <h1>{{selectedContrato.conlot || '#'}}</h1>
+                                <h1>{{tempContrato.conlot || '#'}}</h1>
                             </div>
                             <div class="content">
                                 <p>Proveedor</p>
-                                <h1>{{selectedContrato.tercod || '#'}}</h1>
-                                <h1>{{selectedContrato.ternom || '#'}}</h1>
+                                <h1>{{tempContrato.tercod || '#'}}</h1>
+                                <h1>{{tempContrato.ternom || '#'}}</h1>
                             </div>
                             <div class="content">
                                 <input 
                                     type="checkbox"
                                     class="check"
-                                    [checked]="selectedContrato.conblo === 1" 
-                                    (change)="selectedContrato.conblo = $any($event.target).checked ? 1 : 0"
+                                    [checked]="tempContrato.conblo === 1" 
+                                    (change)="tempContrato.conblo = $any($event.target).checked ? 1 : 0"
+                                    [disabled]="!isUpdate"
+                                    (input)="allowToUpdate = true"
                                 /><span class="bloq">Bloqueado</span>
                             </div>
                         </div>
@@ -189,17 +195,52 @@
                                     <p>Fecha fin</p>
                                 </div>
                                 <div class="left-right">
-                                    <textarea class="average" [(ngModel)]="selectedContrato.confin" #confin></textarea>
-                                    <textarea class="average" [(ngModel)]="selectedContrato.conffi" #conffi></textarea>
+                                    <textarea 
+                                        class="average" 
+                                        [(ngModel)]="tempContrato.confin" 
+                                        [disabled]="!isUpdate"
+                                        (input)="allowToUpdate = true"
+                                        #confin></textarea>
+                                    <textarea 
+                                        class="average" 
+                                        [(ngModel)]="tempContrato.conffi" 
+                                        [disabled]="!isUpdate"
+                                        (input)="allowToUpdate = true"
+                                        #conffi
+                                    ></textarea>
                                 </div>
                             </div>
                             <div class="right">
                                 <div class="content">
                                     <p>Descripción</p>
-                                    <textarea class="long" [(ngModel)]="selectedContrato.condes" #desc></textarea>
+                                    <textarea 
+                                        class="long" 
+                                        [(ngModel)]="tempContrato.condes" 
+                                        [disabled]="!isUpdate"
+                                        (input)="allowToUpdate = true"
+                                        #desc></textarea>
                                 </div>
                             </div>  
                         </div>
+                    </div>
+                    <div class="btns">
+                        <button 
+                            class="delete-btn" 
+                            *ngIf="isUpdate" 
+                            (click)="cancelar()"
+                        >Cancelar</button>
+                        <button 
+                            class="save-btn"
+                            [disabled]="isUpdate" 
+                            *ngIf="!isUpdate" 
+                            (click)="modificar()"
+                        >Modificar</button>
+                        <button 
+                            class="save-btn" 
+                            (click)="isUpdateAllowed(selectedContrato.concod, tempContrato.conblo, confin.value, conffi.value, desc.value)"
+                            [disabled]="!isUpdate" 
+	                        *ngIf="isUpdate" 
+                        >Guardar</button>
                     </div>
                     <div class="more-detail-container">
                         <div class="tabs" role="tablist" aria-label="Detalle tabs">

@@ -404,6 +404,7 @@ export class CgeComponent {
 
   updateSuccess() {
     this.isUpdate = false;
+    this.allowToUpdate = false;
   }
 
   allowToUpdate: boolean = false;

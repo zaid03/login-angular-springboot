@@ -327,6 +327,10 @@ export class CosteComponent {
     this.emptyAllMessages();
   }
 
+  closeDetailsSure() {if (this.isUpdate) {return;} 
+    else {this.closeDetails();}
+  }
+
   filterDigits(event: Event) {
     const textarea = event.target as HTMLTextAreaElement;
     textarea.value = textarea.value.replace(/\D/g, '').slice(0, 4);
@@ -348,6 +352,7 @@ export class CosteComponent {
 
   updateSuccess() {
     this.isUpdate = false;
+    this.allowToUpdate = false;
   }
 
   allowToUpdate: boolean = false;

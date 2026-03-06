@@ -23,11 +23,9 @@
 .chunk-three,
 .chunk-four { width: 32%; display: flex; padding: 2px; }
 .left { width: 25%; display: flex; flex-direction: column; gap: 14px; }
-.right { width: 75%; display: flex; flex-direction: column; gap: 10px;}
+.right { width: 75%; display: flex; flex-direction: column; gap: 15px;}
 .on-three,
 .on-two { display: flex; gap: 10px; }
-.margiin { margin-top: 10px; }
-.margin { margin-bottom: 5px; }
 .smallArea { width: 80px; }
 .largeArea { width: 250px; }
 .observ { width: 50%; gap: 10px; }

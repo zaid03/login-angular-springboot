@@ -81,15 +81,19 @@
                 <span>de {{ totalPages }}</span>
                 <button (click)="nextPage()" [disabled]="page + 1 >= totalPages">Siguiente</button>
             </div>
-            <div class="modal-backdrop" *ngIf="selectedEntregas" (click)="closeDetails()"></div>
+            <div class="modal-backdrop" *ngIf="selectedEntregas" (click)="closeDetailsSure()"></div>
             <div class="display">
                 <div class="modal" *ngIf="selectedEntregas">
                     <div class="btns">
                         <div class="title-detail">
                             <h3>Detalles del lugar de entrega</h3>
                         </div>
-                        <button class="guardar-btn" (click)="updateEntrega(selectedEntregas.lencod, description.value, text.value)">✔</button>
-                        <button class="close-btn-btn" (click)="closeDetails()">✖</button>
+                        <button 
+                            class="delete-btn" 
+                            [disabled]="isUpdate" 
+	                        [ngClass]="{ 'disabled-btn': isUpdate }" 
+                            (click)="closeDetails()"
+                        >✖</button>
                     </div>
                     <h1 class="errorBtn">{{detallesMessageError}}</h1>
                     <h1 class="successBtn">{{detallesMessageSuccess}}</h1>
@@ -104,11 +108,13 @@
                             </div>
                             <div class="right">
                                 <div class="on-two">
-                                    <h1>{{selectedEntregas.lencod || '#'}}</h1>
+                                    <h1>{{tempEntrega.lencod || '#'}}</h1>
                                     <p>Descripción*</p>
                                     <textarea 
                                         class="tallText" 
-                                        [(ngModel)]="selectedEntregas.lendes"
+                                        [(ngModel)]="tempEntrega.lendes"
+                                        [disabled]="!isUpdate"
+                                        (input)="allowToUpdate = true"
                                         #description
                                     ></textarea>
                                 </div>
@@ -121,14 +127,38 @@
                             <div class="right">
                                 <textarea 
                                     class="specialText" 
-                                    [(ngModel)]="selectedEntregas.lentxt"
+                                    [(ngModel)]="tempEntrega.lentxt"
+                                    [disabled]="!isUpdate"
+                                    (input)="allowToUpdate = true"
                                     #text
                                 ></textarea>
                             </div>
                         </div>
                     </div>
                     <div class="btns">
-                        <button class="delete-btn" (click)="openDeleteConfirm(selectedEntregas)">-</button>
+                        <button 
+                            class="delete-btn" 
+                            *ngIf="isUpdate" 
+                            (click)="cancelar()"
+                        >Cancelar</button>
+                        <button 
+                            class="save-btn"
+                            [disabled]="isUpdate" 
+                            *ngIf="!isUpdate" 
+                            (click)="modificar()"
+                        >Modificar</button>
+                        <button 
+                            class="save-btn" 
+                            [disabled]="!isUpdate" 
+	                        *ngIf="isUpdate" 
+                            (click)="isUpdateAllowed(selectedEntregas.lencod, description.value, text.value)"
+                        >Guardar</button>
+                        <button 
+                            class="delete-btn" 
+                            [disabled]="isUpdate" 
+                            [ngClass]="{ 'disabled-btn': isUpdate }" 
+                            (click)="openDeleteConfirm(selectedEntregas)"
+                        >Borrar</button>
                     </div>
                 </div>
             </div>
