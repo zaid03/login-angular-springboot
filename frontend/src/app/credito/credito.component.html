@@ -152,8 +152,12 @@
                         <div class="title-detail">
                             <h3>Detalles de Bolsa</h3>
                         </div>
-                        <button class="save-btn" (click)="updateBolsa(gbsimp.value, getkdispon(selectedBolsas.saldo, getkAcPeCo(selectedBolsas.gbsiut, selectedBolsas.gbsict)), selectedBolsas.gbsref)">✔</button>
-                        <button class="close-btn-btn" (click)="closeDetails()">✖</button>
+                        <button 
+                            class="delete-btn" 
+                            [disabled]="isUpdate" 
+	                        [ngClass]="{ 'disabled-btn': isUpdate }" 
+                            (click)="closeDetails()"
+                        >✖</button>
                     </div>
                     <h1 class="successBtn">{{ guardarMesageSuccess }}</h1>
                     <h1 class="errorBtn">{{ guardarMesage }}</h1>
@@ -211,8 +215,10 @@
                                     <p>Importe bolsa</p>
                                     <textarea 
                                         class="smallTextarea" 
-                                        [(ngModel)]="selectedBolsas.gbsimp" 
+                                        [(ngModel)]="tempBolsa.gbsimp" 
                                         (blur)="formatGbsimp()"
+                                        [disabled]="!isUpdate"
+                                        (input)="allowToUpdate = true"
                                         #gbsimp
                                     ></textarea>
                                 </div>
@@ -284,6 +290,25 @@
                                 <h1>{{getkAcPeCo(selectedBolsas.gbsiut, selectedBolsas.gbsict) | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</h1>
                             </div>
                         </div>
+                    </div>
+                    <div class="btns">
+                        <button 
+                            class="delete-btn" 
+                            *ngIf="isUpdate" 
+                            (click)="cancelar()"
+                        >Cancelar</button>
+                        <button 
+                            class="save-btn"
+                            [disabled]="isUpdate" 
+                            *ngIf="!isUpdate" 
+                            (click)="modificar()"
+                        >Modificar</button>
+                        <button 
+                            class="save-btn" 
+                            [disabled]="!isUpdate" 
+	                        *ngIf="isUpdate"
+                            (click)="isUpdateAllowed(gbsimp.value, getkdispon(selectedBolsas.saldo, getkAcPeCo(selectedBolsas.gbsiut, selectedBolsas.gbsict)), selectedBolsas.gbsref)"
+                        >Guardar</button>
                     </div>
                 </div>
             </div>
