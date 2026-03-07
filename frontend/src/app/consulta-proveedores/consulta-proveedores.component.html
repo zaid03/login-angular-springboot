@@ -1,5 +1,5 @@
 
-<div class="proveedores-page">
+<div class="main-page">
     <app-sidebar #sidebar></app-sidebar>
     <div 
     class="sidebar-backdrop" 
@@ -7,7 +7,7 @@
     (click)="sidebar.collapsed = true"
     >
     </div>
-    <div class="proveedores-container" [class.blurred]="!sidebar.collapsed">
+    <div class="main-container" [class.blurred]="!sidebar.collapsed">
         <div class="title-menu">
             <div class="title-area">
                 <h2 class="margin-title">Consulta de proveedores</h2>  
@@ -24,8 +24,8 @@
                             </label>
                         </div>
                         <div class="search-btns">
-                            <button type="button" class="search-button-proveedores" (click)="search()">Buscar</button>
-                            <button type="button" class="search-button-proveedores" (click)="clearSearch()">Limpiar</button>
+                            <button type="button" class="purple-btn" (click)="search()">Buscar</button>
+                            <button type="button" class="purple-btn" (click)="clearSearch()">Limpiar</button>
                         </div>
                     </form>
                 </div> 
@@ -40,13 +40,13 @@
                 </div>
             </div>
         </div>
-        <div class="proveedores-list">
+        <div class="main-list">
             <h1 class="errorBtn">{{error}}</h1>
             <div *ngIf="isLoading" class="loading-message">
                 <div class="spinner"></div>
                 <span>Cargando</span>
             </div>
-            <table class="main-table">
+            <table class="main-table align">
                 <thead>
                     <tr>
                         <th class="sortable resizable" (click)="toggleSort('tercod')">
@@ -155,7 +155,7 @@
                         <div class="title-detail">
                             <h3>Detalles del Proveedor</h3>
                         </div>
-                        <button class="close-btn-btn" (click)="closeDetails()">✖</button>
+                        <button class="red-btn" (click)="closeDetails()">✖</button>
                     </div>
                     <h1 class="errorBtn">{{ messageError }}</h1>
                     <div class="detail-container">
@@ -261,7 +261,7 @@
                             <div class="spinner"></div>
                             <span>Cargando</span>
                         </div>
-                        <table class="personas-contacto-table">
+                        <table class="main-table pct">
                             <thead>
                                 <tr>
                                     <th>Nombre</th>
@@ -323,7 +323,7 @@
                             <div class="spinner"></div>
                             <span>Cargando</span>
                         </div>
-                        <table class="articulo-table">
+                        <table class="main-table art">
                             <thead>
                                 <tr>
                                     <th>Familia</th>

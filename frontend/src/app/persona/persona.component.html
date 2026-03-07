@@ -1,4 +1,4 @@
-<div class="persona-page">
+<div class="main-page">
     <div 
         class="sidebar-backdrop" 
         *ngIf="!sidebar.collapsed" 
@@ -6,7 +6,7 @@
     >
     </div>
     <app-sidebar #sidebar></app-sidebar>
-    <div class="persona-container" [class.blurred]="!sidebar.collapsed">
+    <div class="main-container" [class.blurred]="!sidebar.collapsed">
         <div class="title-menu">
             <div class="title-area">
                 <h2 class="margin-title">Personas</h2>  
@@ -22,8 +22,8 @@
                         >
                     </div>
                     <div class="btns">
-                        <button class="search-btn" (click)="search()">Buscar</button>
-                        <button class="search-btn" (click)="limpiarSearch()">Limpiar</button>
+                        <button class="purple-btn" (click)="search()">Buscar</button>
+                        <button class="purple-btn" (click)="limpiarSearch()">Limpiar</button>
                     </div>
                 </div>
             </div>
@@ -32,20 +32,20 @@
                 <div class="dot"></div>
                 <div class="dot"></div>
                 <div class="menu-panel" *ngIf="showMenu">
-                    <button class="download-btn" (click)="excelDownload()">Exportar a Excel</button>
-                    <button class="print-btn" (click)="exportPdf()">Exportar a PDF</button>
-                    <button class="add-familia-btn" (click)="showAdd()">Añadir</button>
+                    <button class="purple-btn" (click)="excelDownload()">Exportar a Excel</button>
+                    <button class="purple-btn" (click)="exportPdf()">Exportar a PDF</button>
+                    <button class="purple-btn" (click)="showAdd()">Añadir</button>
                 </div>
             </div>
         </div>
-        <div class="personas-list">
+        <div class="main-list">
             <h1 class="successBtn">{{personasMessageSuccess}}</h1>
             <h1 class="errorBtn">{{personasMessageError}}</h1>
             <div *ngIf="isLoading" class="loading-message">
                 <div class="spinner"></div>
                 <span>Cargando</span>
             </div>
-            <table class="personas-table">
+            <table class="main-table">
                 <thead>
                     <tr>
                         <th class="sortable resizable" (click)="toggleSort('percod')">
@@ -121,14 +121,14 @@
                             <h3>Detalles de Persona</h3>
                         </div>
                         <button 
-                            class="save-btn" 
+                            class="purple-btn" 
                             [disabled]="isUpdate" 
                             [ngClass]="{ 'disabled-btn': isUpdate }" 
                             (click)="showCopiar(selectedPersona.percod)"
                         >✂️</button>
                         
                         <button 
-                            class="delete-btn" 
+                            class="red-btn" 
                             [disabled]="isUpdate" 
                             [ngClass]="{ 'disabled-btn': isUpdate }" 
                             (click)="closeDetails()"
@@ -210,18 +210,18 @@
                     </div> 
                     <div class="btns space">
                         <button 
-                            class="delete-btn" 
+                            class="red-btn" 
                             *ngIf="isUpdate" 
                             (click)="cancelar()"
                         >Cancelar</button>
                         <button 
-                            class="save-btn"
+                            class="purple-btn"
                             [disabled]="isUpdate" 
                             *ngIf="!isUpdate" 
                             (click)="modificar()"
                         >Modificar</button>
                         <button 
-                            class="save-btn" 
+                            class="purple-btn" 
                             (click)="isUpdateAllowed(pernom.value, percoe.value, pertel.value, pertmo.value, percar.value, perobs.value)"
                             [disabled]="!isUpdate" 
 	                        *ngIf="isUpdate" 
@@ -241,14 +241,14 @@
                         </div>
                     </div>
                     <div class="custom-grid-modal" *ngIf="showSerivcesGrid">
-                        <button type="button" class="add-btn margin" (click)="showAddService()">+</button>
+                        <button type="button" class="purple-btn margin" (click)="showAddService()">+</button>
                         <h1 class="errorBtn">{{serviceErrorMessage}}</h1>
                         <h1 class="successBtn">{{serviceSuccessMessage}}</h1>
                         <div *ngIf="isLoading" class="loading-message">
                             <div class="spinner"></div>
                             <span>Cargando</span>
                         </div>
-                        <table class="servicesPersona-table">
+                        <table class="main-table">
                             <thead>
                                 <tr>
                                     <th>Nombre</th>
@@ -260,7 +260,7 @@
                                 <tr *ngFor="let s of paginatedServices">
                                     <td>{{s.depcod}}</td>
                                     <td>{{s.depdes}}</td>
-                                    <td><button class="delete-btn" (click)="showDelete(s)">-</button></td>
+                                    <td><button class="red-btn" (click)="showDelete(s)">-</button></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -291,8 +291,8 @@
         <div class="title">
             <h3>Añadir un Persona</h3>
         </div>
-        <button class="add-btn" (click)="addPersona(code.value, name.value, email.value, phone.value, movil.value, trans.value, obs.value)">+</button>
-        <button class="cancel-btn" (click)="closeAddConfirm()">✖</button>
+        <button class="purple-btn" (click)="addPersona(code.value, name.value, email.value, phone.value, movil.value, trans.value, obs.value)">+</button>
+        <button class="red-btn" (click)="closeAddConfirm()">✖</button>
     </div>
     <h1 class="errorBtn">{{PersonaErrorMessage}}</h1>
     <div *ngIf="isAdding" class="loading-message">
@@ -337,8 +337,8 @@
         <span>borrando</span>
     </div>
     <h1 class="errorBtn">{{ErrorDelete}}</h1>
-    <button class="delete-btn" (click)="deleteService(serviceToDelete.depcod)">-</button>
-    <button class="save-btn" (click)="closeDelete()">✖</button>
+    <button class="red-btn" (click)="deleteService(serviceToDelete.depcod)">-</button>
+    <button class="purple-btn" (click)="closeDelete()">✖</button>
 </div>
 
 <div class="modal-backdrop" *ngIf="addService" (click)="closeAddService()"></div>
@@ -350,8 +350,8 @@
         <div class="count-selected">
             <p>seleccionado {{count}} líneas</p>
         </div>
-        <button class="save-btn" (click)="addServicePersona(linesSelected)">+</button>
-        <button class="delete-btn" (click)="closeAddService()">✖</button>
+        <button class="purple-btn" (click)="addServicePersona(linesSelected)">+</button>
+        <button class="red-btn" (click)="closeAddService()">✖</button>
     </div>
     <div class="title-menu">
         <div class="search-holder">
@@ -383,14 +383,14 @@
                     </select>
                 </div>
                 <div class="btns">
-                    <button class="search-btn" (click)="searchServices()">Buscar</button>
-                    <button class="search-btn" (click)="clearSearch()">Limpiar</button>
+                    <button class="purple-btn" (click)="searchServices()">Buscar</button>
+                    <button class="purple-btn" (click)="clearSearch()">Limpiar</button>
                 </div>
             </div>
         </div>
     </div>
     <h1 class="errorBtn">{{servicesAddError}}</h1>
-    <table class="services-table">
+    <table class="main-table">
         <thead>
             <tr>
                 <th>Código</th>
@@ -462,8 +462,8 @@
         <p class="sure-msg">{{gridMessag}}</p>        
     </div>
     <div class="btns alignment">
-        <button class="save-btn" (click)="showCopiarPersonas()">+</button>
-        <button class="delete-btn" (click)="closeCopiar()">✖</button>
+        <button class="purple-btn" (click)="showCopiarPersonas()">+</button>
+        <button class="red-btn" (click)="closeCopiar()">✖</button>
     </div>
 </div>
 
@@ -473,7 +473,7 @@
         <div class="title">
             <h3>Seleccione una persona</h3>
         </div>
-        <button class="delete-btn" (click)="closeShowCopiarPersonas()">✖</button>
+        <button class="red-btn" (click)="closeShowCopiarPersonas()">✖</button>
     </div>
     <div class="search-holder">
         <div class="search-container">
@@ -486,13 +486,13 @@
                 >
             </div>
             <div class="btns">
-                <button class="search-btn" (click)="searchCopy()">Buscar</button>
-                <button class="Limpiar-btn" (click)="limpiarSearcCopy()">Limpiar</button>
+                <button class="purple-btn" (click)="searchCopy()">Buscar</button>
+                <button class="purple-btn" (click)="limpiarSearcCopy()">Limpiar</button>
             </div>
         </div>
     </div>
     <h1 class="errorBtn">{{errorCopy}}</h1>
-    <table class="personas-table">
+    <table class="main-table">
         <thead>
             <tr>
                 <th>Código</th>
@@ -536,7 +536,7 @@
         <span>añadiendo</span>
     </div>
     <div class="btns alignment">
-        <button class="save-btn" [disabled]="isAvailable" [class.disabled]="isAvailable" (click)="copyPerfil()">+</button>
-        <button class="delete-btn" (click)="closecontinueAdCheckGrid()">✖</button>
+        <button class="purple-btn" [disabled]="isAvailable" [class.disabled]="isAvailable" (click)="copyPerfil()">+</button>
+        <button class="red-btn" (click)="closecontinueAdCheckGrid()">✖</button>
     </div>
 </div>
