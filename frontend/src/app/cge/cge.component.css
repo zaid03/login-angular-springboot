@@ -1,9 +1,9 @@
 /* search */
 .search-container {gap: 20px;}
 /* search */
-.centroGestor-list { width: 90%; }
+.main-list { width: 90%; }
 /* main table */
-.centroGestor-table thead th:nth-child(2) { width: 30%; }
+.main-table thead th:nth-child(2) { width: 30%; }
 /* main table */
 /* detail grid */
 .detail-container { display: flex; gap: 5px;}
@@ -23,7 +23,7 @@
 .long-text textarea { width: 80%; max-width: 95%; height: 80px;}
 /* detail grid */
 /* delete grid */
-.cge-delete-confirm-btn { margin-right: 10px; }
+.delete-confirm-modal .red-btn { margin-right: 10px; }
 .marginBtns {margin-top: 10px;}
 /* delete grid */
 /* add grid */

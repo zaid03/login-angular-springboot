@@ -155,7 +155,7 @@ export class ServiciosComponent {
 
   onResizeMove = (event: MouseEvent) => {
     if (this.resizingColIndex === null) return;
-    const table = document.querySelector('.services-table') as HTMLTableElement;
+    const table = document.querySelector('.main-table') as HTMLTableElement;
     if (!table) return;
     const th = table.querySelectorAll('th')[this.resizingColIndex] as HTMLElement;
     if (!th) return;

@@ -12,7 +12,7 @@
             <p>{{ perfil }}</p>
           </div>
         </div>
-        <button class="deconn" (click)="logout()">Desconectarse</button>
+        <button class="purple-btn deconn" (click)="logout()">Desconectarse</button>
       </div>
 
       <div class="drop-down-menu">
@@ -152,7 +152,7 @@
             <p>{{eje}}</p>
             <div class="on-wo">
               <p>{{cge}}</p>
-              <button class="cge-btn" (click)="goToCge()">Cambiar Centro Gestor</button>
+              <button class="purple-btn" (click)="goToCge()">Cambiar Centro Gestor</button>
             </div>
           </div>
         </div>
@@ -174,7 +174,7 @@
               (click)="$event.preventDefault()"
             ><span class="color-text"> Contable</span><br>
           </div>
-          <div class="services-btn" (click)="launchAddCentroGestor()">Ver Servicios de la Persona</div>
+          <div class="purple-btn services-fix" (click)="launchAddCentroGestor()">Ver Servicios de la Persona</div>
         </div>
       </div>
     <p class="status">{{centroGestorStatus}}</p>

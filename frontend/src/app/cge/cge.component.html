@@ -1,4 +1,4 @@
-<div class="centroGestor-page">
+<div class="main-page">
     <div 
         class="sidebar-backdrop" 
         *ngIf="!sidebar.collapsed" 
@@ -6,7 +6,7 @@
     >
     </div>
     <app-sidebar #sidebar></app-sidebar>
-    <div class="centroGestor-container" [class.blurred]="!sidebar.collapsed">
+    <div class="main-container" [class.blurred]="!sidebar.collapsed">
         <div class="title-menu">
             <div class="title-area">
                 <h2 class="margin-title">Centros gestores</h2>  
@@ -25,8 +25,8 @@
                         >
                     </div>
                     <div class="btns">
-                        <button class="search-btn" (click)="searchCentroGestor()">Buscar</button>
-                        <button class="search-btn" (click)="limpiarSearch()">Limpiar</button>
+                        <button class="purple-btn" (click)="searchCentroGestor()">Buscar</button>
+                        <button class="purple-btn" (click)="limpiarSearch()">Limpiar</button>
                     </div>
                 </div>
             </div>
@@ -35,20 +35,20 @@
                 <div class="dot"></div>
                 <div class="dot"></div>
                 <div class="menu-panel" *ngIf="showMenu">
-                    <button class="download-btn" (click)="excelDownload()">Exportar a Excel</button>
-                    <button class="print-btn" (click)="pdfDownload()">Exportar a PDF</button>
-                    <button class="add-centroGestor-btn" (click)="launchAddCentroGestor()">Añadir</button>
+                    <button class="purple-btn" (click)="excelDownload()">Exportar a Excel</button>
+                    <button class="purple-btn" (click)="pdfDownload()">Exportar a PDF</button>
+                    <button class="purple-btn" (click)="launchAddCentroGestor()">Añadir</button>
                 </div>
             </div>
         </div>
         <h1 class="errorBtn">{{ SearchDownMessageError }}</h1>
-        <div class="centroGestor-list">
+        <div class="main-list">
             <h1 class="successBtn">{{ successAddCentroGestor }}</h1>
             <div *ngIf="isLoading" class="loading-message">
                 <div class="spinner"></div>
                 <span>Cargando</span>
             </div>
-            <table class="centroGestor-table">
+            <table class="main-table">
                 <thead>
                     <tr>
                         <th class="sortable resizable" (click)="toggleSort('cgecod')">
@@ -110,7 +110,7 @@
                             <h3>Detalles de centro gestor</h3>
                         </div>
                         <button 
-                            class="delete-btn" 
+                            class="red-btn" 
                             [disabled]="isUpdate" 
                             [ngClass]="{ 'disabled-btn': isUpdate }" 
                             (click)="closeDetails()"
@@ -202,24 +202,24 @@
                     </div>
                     <div class="btns marginBtns">
                         <button 
-                            class="delete-btn" 
+                            class="red-btn" 
                             *ngIf="isUpdate" 
                             (click)="cancelar()"
                         >Cancelar</button>
                         <button 
-                            class="save-btn"
+                            class="purple-btn"
                             [disabled]="isUpdate" 
                             *ngIf="!isUpdate" 
                             (click)="modificar()"
                         >Modificar</button>
                         <button 
-                            class="guardar-btn" 
+                            class="purple-btn" 
                             [disabled]="!isUpdate" 
                             *ngIf="isUpdate" 
                             (click)="isUpdateAllowed(selectedCentroGestor.cgecod ,cgedes.value ,cgeorg.value ,cgefun.value, cgedat.value)"
                         >Guardar</button>
                         <button 
-                            class="delete-btn" 
+                            class="red-btn" 
                             [disabled]="isUpdate" 
                             [ngClass]="{ 'disabled-btn': isUpdate }" 
                             (click)="openDeleteConfirm(selectedCentroGestor.cgecod)"
@@ -239,8 +239,8 @@
         <div class="spinner"></div>
         <span>borrando</span>
     </div>
-    <button class="cge-delete-confirm-btn" (click)="confirmDelete()">-</button>
-    <button class="cge-cancel-confirm-btn" (click)="closeDeleteConfirm()">✖</button>
+    <button class="red-btn" (click)="confirmDelete()">-</button>
+    <button class="purple-btn" (click)="closeDeleteConfirm()">✖</button>
 </div>
 
 <div class="modal-backdrop" *ngIf="showAddConfirm" (click)="closeAddConfirm()"></div>
@@ -249,8 +249,8 @@
         <div class="title">
             <h3>Añadir un Centro Gestor</h3>
         </div>
-        <button class="centroGestor-add-btn" (click)="AddCentroGestor(codigo.value, organica.value, programa.value, description.value, direction.value)">+</button>
-        <button class="centroGestor-delete-confirm-btn" (click)="closeAddConfirm()">✖</button>
+        <button class="purple-btn" (click)="AddCentroGestor(codigo.value, organica.value, programa.value, description.value, direction.value)">+</button>
+        <button class="red-btn" (click)="closeAddConfirm()">✖</button>
     </div>
     <h1 class="errorBtn">{{ centroGestorAddError }}</h1>
     <div *ngIf="isAdding" class="loading-message">

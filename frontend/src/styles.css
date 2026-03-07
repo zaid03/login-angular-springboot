@@ -224,7 +224,6 @@ app-sidebar { flex-shrink: 0; z-index: 2000; }
 .subFamilias-add-btn,
 .download-btn,
 .search-button,
-.add-centroGestor-btn,
 .styled-table button,
 .cancel-btn,
 .next-btn,
@@ -256,7 +255,9 @@ app-sidebar { flex-shrink: 0; z-index: 2000; }
 .deconnect-btn,
 .close-btn-btn,
 .cge-cancel-confirm-btn,
-.proveedor  { background-color: #38249b; color: #fff; border: none; padding: 4px 8px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; transition: background-color 0.2s; font-weight: 700; outline: none; }
+.proveedor,
+.purple-btn,
+.red-btn  { background-color: #38249b; color: #fff; border: none; padding: 4px 8px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; transition: background-color 0.2s; font-weight: 700; outline: none; } /* to keep */
 .search-btn:hover,
 .download-btn:hover,
 .print-btn:hover,
@@ -288,7 +289,8 @@ app-sidebar { flex-shrink: 0; z-index: 2000; }
 .login-button:hover,
 .save-btn:hover,
 .deconnect-btn:hover,
-.proveedor:hover { background-color: #25176b; color: #e6edf3; }
+.proveedor:hover,
+.purple-btn:hover { background-color: #25176b; color: #e6edf3; } /* to keep */
 .familia-delete-btn,
 .articulos-delete-confirm-btn,
 .sub-delete-btn,
@@ -303,7 +305,8 @@ app-sidebar { flex-shrink: 0; z-index: 2000; }
 .Limpiar-btn,
 .delete-btn,
 .close-btn-btn,
-.cge-cancel-confirm-btn { background-color: rgb(221, 66, 66); }
+.cge-cancel-confirm-btn,
+.red-btn { background-color: rgb(221, 66, 66); } /* to keep */
 .familia-delete-btn:hover,
 .articulos-delete-confirm-btn:hover,
 .sub-delete-btn:hover,
@@ -318,7 +321,9 @@ app-sidebar { flex-shrink: 0; z-index: 2000; }
 .Limpiar-btn:hover,
 .delete-btn:hover,
 .close-btn-btn:hover,
-.cge-cancel-confirm-btn:hover { background-color: rgb(117, 28, 28); }
+.cge-cancel-confirm-btn:hover,
+.red-btn:hover { background-color: rgb(117, 28, 28); } /* to keep */
+/* pagination */
 .pagination-controls { display: flex; align-items: center; gap: 12px; margin: 10px 0 20px 0; font-family: inherit; }
 .pagination-controls button:disabled,
 .pagination-controls button:disabled:hover { background-color: #ccc; cursor: not-allowed; color: #e5e7eb; }
@@ -327,6 +332,7 @@ app-sidebar { flex-shrink: 0; z-index: 2000; }
 .disabled-btn,
 .disabled-btn:hover {background-color: #ccc; cursor: not-allowed !important; color: #e5e7eb !important;}
 .space {margin-top: 10px;}
+/* pagination */
 /* modal */
 .modal-backdrop { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(44, 62, 80, 0.35); z-index: 1000; backdrop-filter: blur(1px); -webkit-backdrop-filter: blur(1px); }
 .display { position: fixed; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1100; pointer-events: none; }
@@ -346,55 +352,51 @@ app-sidebar { flex-shrink: 0; z-index: 2000; }
 .delete-confirm-modal h3 { font-size: 1.3rem; font-weight: 700; color: rgb(117, 28, 28); margin-bottom: 18px; letter-spacing: 0.5px; }
 /* page-container and list */
 .familia-container.blurred,
-.centroGestor-container.blurred,
 .entrega-container.blurred,
 .entrega-container.blurred,
 .services-container.blurred,
 .persona-container.blurred,
-.ejercicio-container.blurred,
 .personasServices-page.blurred,
 .proveedores-container.blurred,
 .credito-container.blurred,
 .facturas-container.blurred,
-.contratos-container.blurred { filter: blur(1.2px); pointer-events: none; user-select: none; }
+.contratos-container.blurred,
+.main-container.blurred { filter: blur(1.2px); pointer-events: none; user-select: none; } /*  to keep */
 .facturas-page,
 .proveedores-page,
 .familia-page,
-.centroGestor-page,
 .credito-page,
 .entrega-page,
 .coste-page,
 .services-page,
 .persona-page,
-.ejercicio-page,
 .personasServices-page,
-.contratos-page { display: flex; min-height: 100vh; background: #f0f0f0; }
+.contratos-page,
+.main-page { display: flex; min-height: 100vh; background: #f0f0f0; } /*  to keep */
 .proveedores-container,
 .facturas-container,
 .familia-container,
-.centroGestor-container,
 .credito-container,
 .entrega-container,
 .services-container,
 .persona-container,
-.ejercicio-container,
 .personasServices-container,
-.contratos-container { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; background: #f0f0f0; padding: 0 0 40px 0; min-height: 100vh; z-index: 1; }
+.contratos-container,
+.main-container { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; background: #f0f0f0; padding: 0 0 40px 0; min-height: 100vh; z-index: 1; } /*  to keep */
 .proveedores-list,
 .facturas-list,
 .credito-list,
 .entrega-list,
 .coste-list,
 .familia-list,
-.centroGestor-list,
 .services-list,
 .personas-list,
 .almacen-list,
 .detail-services,
 .persona-list,
-.ejercicio-list,
 .personasServices-list,
-.contratos-list { width: 98%; max-width: 98%; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+.contratos-list,
+.main-list { width: 98%; max-width: 98%; display: flex; flex-direction: column; justify-content: center; align-items: center; } /*  to keep */
 .main-table,
 .facturas-table,
 .albaranes-table,
@@ -408,7 +410,6 @@ app-sidebar { flex-shrink: 0; z-index: 2000; }
 .styled-table,
 .familia-table,
 .subfamilia-table,
-.centroGestor-table,
 .services-table,
 .personas-table,
 .almacen-table,
@@ -416,11 +417,11 @@ app-sidebar { flex-shrink: 0; z-index: 2000; }
 .services-table,
 .servicesPersona-table,
 .personas-table-select,
-.ejercicio-table,
 .personasServices-table,
 .contratos-table,
 .centroGetor-table,
-.D-table { background-color: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); width: 100%; table-layout: fixed; border-collapse: collapse; margin-bottom: 24px; overflow: hidden;}
+.D-table,
+.main-table { background-color: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); width: 100%; table-layout: fixed; border-collapse: collapse; margin-bottom: 24px; overflow: hidden;} /*  to keep */
 .main-table thead th,
 .facturas-table thead th,
 .albaranes-table thead th,
@@ -434,7 +435,6 @@ app-sidebar { flex-shrink: 0; z-index: 2000; }
 .styled-table th,
 .familia-table thead th,
 .subfamilia-table thead th,
-.centroGestor-table thead th,
 .services-table thead th,
 .personas-table thead th,
 .almacen-table thead th,
@@ -442,11 +442,11 @@ app-sidebar { flex-shrink: 0; z-index: 2000; }
 .services-table thead th,
 .servicesPersona-table thead th,
 .personas-table-select thead th,
-.ejercicio-table thead th,
 .personasServices-table thead th,
 .contratos-table thead th,
 .centroGetor-table thead th,
-.D-table thead th { border: 1px solid #e6edf3; padding: 8px 12px; text-align: center; background: #f7f7f9; color: #38249b; font-size: 15px; font-weight: 700; }
+.D-table thead th,
+.main-table thead th { border: 1px solid #e6edf3; padding: 8px 12px; text-align: center; background: #f7f7f9; color: #38249b; font-size: 15px; font-weight: 700; } /*  to keep */
 .main-table td,
 .facturas-table tbody td,
 .albaranes-table tbody td,
@@ -460,7 +460,6 @@ app-sidebar { flex-shrink: 0; z-index: 2000; }
 .styled-table td,
 .familia-table tbody td,
 .subfamilia-table tbody td,
-.centroGestor-table tbody td,
 .services-table tbody td,
 .personas-table tbody td,
 .almacen-table tbody td,
@@ -468,11 +467,11 @@ app-sidebar { flex-shrink: 0; z-index: 2000; }
 .services-table tbody td,
 .servicesPersona-table tbody td,
 .personas-table-select tbody td,
-.ejercicio-table tbody td,
 .personasServices-table tbody td,
 .contratos-table tbody td,
 .centroGetor-table tbody td,
-.D-table tbody td { border: 1px solid #f0f5f9; padding: 6px 10px; text-align: center; vertical-align: middle; font-size: 15px; color: #222; font-weight: 600; overflow: hidden; text-align: left;}
+.D-table tbody td,
+.main-table tbody td { border: 1px solid #f0f5f9; padding: 6px 10px; text-align: center; vertical-align: middle; font-size: 15px; color: #222; font-weight: 600; overflow: hidden; text-align: left;} /*  to keep */
 .facturas-table tbody tr:hover,
 .albaranes-table tbody tr:hover, 
 .main-table tr:hover,
@@ -486,7 +485,6 @@ app-sidebar { flex-shrink: 0; z-index: 2000; }
 .styled-table tr:hover,
 .familia-table tbody tr:hover,
 .subfamilia-table tbody tr:hover,
-.centroGestor-table tbody tr:hover,
 .services-table tbody tr:hover,
 .personas-table tbody tr:hover,
 .almacen-table tbody tr:hover,
@@ -494,12 +492,11 @@ app-sidebar { flex-shrink: 0; z-index: 2000; }
 .services-table tbody tr:hover,
 .servicesPersona-table tbody tr:hover,
 .personas-table-select tbody tr:hover,
-.ejercicio-table tbody tr:hover,
 .personasServices-table tbody tr:hover
 .contratos-table tbody tr:hover,
 .centroGetor-table tbody tr:hover,
-.D-table tbody tr:hover {background-color: #f0f7ff;}
-.ejercicio-table,
+.D-table tbody tr:hover,
+.main-tablet body tr:hover {background-color: #f0f7ff;} /*  to keep */
 .services-table,
 .coste-table,
 .personasServices-table,
@@ -510,7 +507,7 @@ app-sidebar { flex-shrink: 0; z-index: 2000; }
 .facturas-table,
 .main-table,
 .personas-table,
-.centroGestor-table {table-layout: auto !important;}
+.main-table {table-layout: auto !important;} /*  to keep */
 /* title, search */
 .title-menu { width: 100%; padding-top: 5px; display: flex; }
 .title-area { width: 18%; display: flex; align-items: center; justify-content: center; }
