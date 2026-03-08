@@ -1,4 +1,4 @@
-<div class="contratos-page">
+<div class="main-page">
     
     <div 
     class="sidebar-backdrop" 
@@ -7,7 +7,7 @@
     >
     </div>
     <app-sidebar #sidebar></app-sidebar>
-    <div class="contratos-container" [class.blurred]="!sidebar.collapsed">
+    <div class="main-container" [class.blurred]="!sidebar.collapsed">
         
         <div class="title-menu">
             <div class="title-area">
@@ -46,8 +46,8 @@
                             </label>
                         </div>
                         <div class="search-btns">
-                            <button type="button" class="search-button-proveedores" (click)="search()">Buscar</button>
-                            <button type="button" class="search-button-proveedores" (click)="limpiarSearch()">Limpiar</button>
+                            <button type="button" class="purple-btn" (click)="search()">Buscar</button>
+                            <button type="button" class="purple-btn" (click)="limpiarSearch()">Limpiar</button>
                         </div>
                     </form>
                 </div> 
@@ -63,14 +63,14 @@
                 </div>
             </div>
         </div>
-        <div class="contratos-list">
+        <div class="main-list">
             <h1 class="errorBtn">{{mainError}}</h1>
             <h1 class="successBtn">{{mainSuccess}}</h1>
             <div *ngIf="isLoading" class="loading-message">
                 <div class="spinner"></div>
                 <span>Cargando</span>
             </div>
-            <table class="contratos-table">
+            <table class="main-table">
                 <thead>
                     <tr>
                         <th class="sortable resizable" (click)="toggleSort('concod')">
@@ -150,7 +150,7 @@
                             <h3>detalles del contrato</h3>
                         </div>
                         <button 
-                            class="delete-btn" 
+                            class="red-btn" 
                             [disabled]="isUpdate" 
 	                        [ngClass]="{ 'disabled-btn': isUpdate }" 
                             (click)="closeDetails()"
@@ -225,18 +225,18 @@
                     </div>
                     <div class="btns">
                         <button 
-                            class="delete-btn" 
+                            class="red-btn" 
                             *ngIf="isUpdate" 
                             (click)="cancelar()"
                         >Cancelar</button>
                         <button 
-                            class="save-btn"
+                            class="purple-btn"
                             [disabled]="isUpdate" 
                             *ngIf="!isUpdate" 
                             (click)="modificar()"
                         >Modificar</button>
                         <button 
-                            class="save-btn" 
+                            class="purple-btn" 
                             (click)="isUpdateAllowed(selectedContrato.concod, tempContrato.conblo, confin.value, conffi.value, desc.value)"
                             [disabled]="!isUpdate" 
 	                        *ngIf="isUpdate" 
@@ -265,14 +265,14 @@
                         </div>
                     </div>
                     <div class="custom-grid-modal" *ngIf="showArticulosGrid">
-                        <button class="add-btn" (click)="showArticulosAddGrid(selectedContrato.conlot)">+</button>
+                        <button class="purple-btn space" (click)="showArticulosAddGrid(selectedContrato.conlot)">+</button>
                         <h1 class="errorBtn">{{articulosError}}</h1>
                         <h1 class="successBtn">{{articulosSuccess}}</h1>
                         <div *ngIf="isLoadingArticulos" class="loading-message">
                             <div class="spinner"></div>
                             <span>Cargando</span>
                         </div>
-                        <table class="articulo-table">
+                        <table class="main-table art">
                             <thead>
                                 <tr>
                                     <th>Familia</th>
@@ -299,8 +299,8 @@
                                             (input)="onPriceTyping($event, a)"
                                         />
                                     <td>
-                                        <button class="delete-btn" (click)="openDeleteArticulo(selectedContrato, a.art)">-</button>
-                                        <button class="save-btn" (click)="updateArticulo(selectedContrato.concod, a.art.afacod, a.art.asucod, a.art.artcod, a.coapre)">✔</button>
+                                        <button class="red-btn" (click)="openDeleteArticulo(selectedContrato, a.art)">-</button>
+                                        <button class="purple-btn" (click)="updateArticulo(selectedContrato.concod, a.art.afacod, a.art.asucod, a.art.artcod, a.coapre)">✔</button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -321,7 +321,7 @@
                         </div>
                     </div>
                     <div class="custom-grid-modal" *ngIf="showCentroGestorGrid">
-                        <button class="add-btn" (click)="showAddCentro()">+</button>
+                        <button class="purple-btn space" (click)="showAddCentro()">+</button>
                         <h1 class="errorBtn">{{cgeError}}</h1>
                         <h1 class="successBtn">{{cgeSuccess}}</h1>
                         <div *ngIf="isLoadingCentroGestor" class="loading-message">
@@ -332,7 +332,7 @@
                             <div class="spinner"></div>
                             <span>añadiendo</span>
                         </div>
-                        <table class="centroGestor-table">
+                        <table class="main-table cg">
                             <thead>
                                 <tr>
                                     <th>Cód. C. Gestor</th>
@@ -357,9 +357,8 @@
                                     <td>{{c.cogaip}}</td>
                                     <td>{{getKdisponible(c.COGIMP, c.COGIAP)}}</td>
                                     <td class="borderI">
-                                        <button class="delete-btn" (click)="showDeleteCentro(c)">-</button>
-                                        <button class="save-btn" (click)="checkBeforeAdd(c)">D</button>
-                                        <!-- <button class="save-btn" >✔</button> -->
+                                        <button class="red-btn" (click)="showDeleteCentro(c)">-</button>
+                                        <button class="purple-btn" (click)="checkBeforeAdd(c)">D</button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -391,8 +390,8 @@
         <div class="title">
             <h3>Añadir un contrato</h3>
         </div>
-        <button class="add-btn" (click)="addContrato(economica.value, description.value, fechaIni.value, fechaFin.value)">+</button>
-        <button class="close-btn-btn" (click)="closeAdd()">✖</button>
+        <button class="purple-btn" (click)="addContrato(economica.value, description.value, fechaIni.value, fechaFin.value)">+</button>
+        <button class="red-btn" (click)="closeAdd()">✖</button>
     </div>
     <h1 class="errorBtn">{{addContratoError}}</h1>
     <div *ngIf="isAdding" class="loading-message">
@@ -421,7 +420,7 @@
     </div>
     <div class="proveedor-select">
         <h1 *ngIf="proveedorTernom">El proveedor {{proveedorTernom}} ha sido seleccionado</h1>
-        <button class="proveedor" (click)="openProveedores()">⧉</button>
+        <button class="purple-btn" (click)="openProveedores()">⧉</button>
     </div>
 </div>
 
@@ -431,7 +430,7 @@
         <div class="title">
             <h1>seleccione un proveedor</h1>
         </div>
-        <button class="close-btn-btn" (click)="closeProveedores()">✖</button>
+        <button class="red-btn" (click)="closeProveedores()">✖</button>
     </div>
     <div class="search-holder">
         <div class="search-container">
@@ -445,8 +444,8 @@
                     </label>
                 </div>
                 <div class="search-btns">
-                    <button type="button" class="search-button-proveedores" (click)="searchProveedor()">Buscar</button>
-                    <button type="button" class="search-button-proveedores" (click)="clearSearch()">Limpiar</button>
+                    <button type="button" class="purple-btn" (click)="searchProveedor()">Buscar</button>
+                    <button type="button" class="purple-btn" (click)="clearSearch()">Limpiar</button>
                 </div>
             </form>
         </div> 
@@ -521,18 +520,18 @@
         <p class="delete-info">Familia: {{articuloToDelete[0].concod}}</p>
     </div>
     <h1 class="errorBtn">{{detallesMessageErrorDelete}}</h1>
-    <button class="delete-btn" (click)="deleteArticulo(articuloToDelete[0]?.concod, articuloToDelete[1]?.afacod, articuloToDelete[1]?.asucod, articuloToDelete[1]?.artcod)">-</button>
-    <button class="save-btn margin" (click)="closeDeleteArticulo()">✖</button>
+    <button class="red-btn" (click)="deleteArticulo(articuloToDelete[0]?.concod, articuloToDelete[1]?.afacod, articuloToDelete[1]?.asucod, articuloToDelete[1]?.artcod)">-</button>
+    <button class="purple-btn margin" (click)="closeDeleteArticulo()">✖</button>
 </div>
 
 <div class="modal-backdrop" *ngIf="articulosAddGrid" (click)="closeArticuloAddGrid()"></div>
 <div class="hello-modal" *ngIf="articulosAddGrid">
     <div class="btns">
         <div class="title">
-            <h1 class="art-title">Añadir articulo</h1>
+            <h1 class="art-title width">Añadir articulo</h1>
         </div>
-        <button class="save-btn" (click)="saveArticulos()">+</button>
-        <button class="close-btn-btn" (click)="closeArticuloAddGrid()">✖</button>
+        <button class="purple-btn" (click)="saveArticulos()">+</button>
+        <button class="red-btn" (click)="closeArticuloAddGrid()">✖</button>
     </div>
     <div *ngIf="isAddingArticulo" class="loading-message">
         <div class="spinner"></div>
@@ -554,11 +553,11 @@
                 [(ngModel)]="searchValue"
             />
             <div class="btns">
-                <button class="save-btn" (click)="searchArticuloAdd()">Buscar</button>
-                <button class="save-btn" (click)="limpiarArticulosAdd()">Limpiar</button>
+                <button class="purple-btn" (click)="searchArticuloAdd()">Buscar</button>
+                <button class="purple-btn" (click)="limpiarArticulosAdd()">Limpiar</button>
             </div>
         </div>
-        <table class="anadir-proveedores-table">
+        <table class="main-table apt">
             <thead>
                 <th>Familia</th>
                 <th>Subfamilia</th>
@@ -606,18 +605,18 @@
         </div>
     </div>
     <h1 class="errorBtn">{{centroDeleteError}}</h1>
-    <button class="delete-btn" (click)="deleteCentroGestor(centroToDelete.cgecod)">-</button>
-    <button class="save-btn margin" (click)="closeDeleteCentro()">✖</button>
+    <button class="red-btn" (click)="deleteCentroGestor(centroToDelete.cgecod)">-</button>
+    <button class="purple-btn margin" (click)="closeDeleteCentro()">✖</button>
 </div>
 
 <div class="modal-backdrop" *ngIf="addCentroGestor" (click)="closeAddCentro()"></div>
 <div class="hello-modal" *ngIf="addCentroGestor">
     <div class="btns">
         <div class="title">
-            <h1 class="art-title">Añadir centro Gestor</h1>
+            <h1 class="art-title widthSecond">Añadir centro Gestor</h1>
         </div>
-        <button class="save-btn" (click)="saveCentroGestores()">+</button>
-        <button class="close-btn-btn" (click)="closeAddCentro()">✖</button>
+        <button class="red-btn" (click)="saveCentroGestores()">+</button>
+        <button class="purple-btn" (click)="closeAddCentro()">✖</button>
     </div>
     <div *ngIf="isAddingCentro" class="loading-message">
         <div class="spinner"></div>
@@ -638,11 +637,11 @@
                 [(ngModel)]="searchCentro"
             />
             <div class="btns">
-                <button class="save-btn" (click)="searchCentroGestores()">Buscar</button>
-                <button class="save-btn" (click)="limpiarSearchCentroGetores()">Limpiar</button>
+                <button class="purple-btn" (click)="searchCentroGestores()">Buscar</button>
+                <button class="purple-btn" (click)="limpiarSearchCentroGetores()">Limpiar</button>
             </div>
         </div>
-        <table class="centroGetor-table">
+        <table class="main-table cgS">
             <thead>
                 <th>Código</th>
                 <th>Descripción</th>
@@ -674,10 +673,10 @@
 <div class="D-modal" *ngIf="DGridShow">
     <div class="btns">
         <div class="title">
-            <h1 class="art-title">Asignar D</h1>
+            <h1 class="art-title widthThird">Asignar D</h1>
         </div>
-        <button class="save-btn">+</button>
-        <button class="delete-btn" (click)="closeAddD()">✖</button>
+        <button class="purple-btn">+</button>
+        <button class="purple-btn" (click)="closeAddD()">✖</button>
     </div>
     <h1 class="errorBtn">{{DErrorMessage}}</h1>
     <div *ngIf="isLoadingD" class="loading-message">
@@ -702,7 +701,7 @@
             <h1>{{economica}}</h1>
         </div>
     </div>
-    <table class="D-table">
+    <table class="main-table">
         <thead>
             <tr>
                 <th>Número</th>
