@@ -1,11 +1,11 @@
-<div class="credito-page">
+<div class="main-page">
     <div 
         class="sidebar-backdrop" 
         *ngIf="!sidebar.collapsed" 
         (click)="sidebar.collapsed = true">
     </div>
     <app-sidebar #sidebar></app-sidebar>
-    <div class="credito-container" [class.blurred]="!sidebar.collapsed">
+    <div class="main-container" [class.blurred]="!sidebar.collapsed">
         <div class="title-menu">
             <div class="title-area">
                 <h2 class="margin-title">Gestión bolsa de crédito</h2>  
@@ -22,8 +22,8 @@
                         >
                     </div>
                     <div class="btns">
-                        <button class="search-btn" (click)="searchBolsas()">Buscar</button>
-                        <button class="search-btn" (click)="limpiarSearch()">Limpiar</button>
+                        <button class="purple-btn" (click)="searchBolsas()">Buscar</button>
+                        <button class="purple-btn" (click)="limpiarSearch()">Limpiar</button>
                     </div>
                 </div>
             </div>
@@ -32,9 +32,9 @@
                 <div class="dot"></div>
                 <div class="dot"></div>
                 <div class="menu-panel" *ngIf="showMenu">
-                    <button class="download-btn" (click)="DownloadPDF()">Exportar a PDF</button>
-                    <button class="download-btn" (click)="DownloadCSV()">Exportar a CSV</button>
-                    <button class="download-btn" (click)="openAddD()">Añadir RC</button>
+                    <button class="purple-btn" (click)="DownloadPDF()">Exportar a PDF</button>
+                    <button class="purple-btn" (click)="DownloadCSV()">Exportar a CSV</button>
+                    <button class="purple-btn" (click)="openAddD()">Añadir RC</button>
                 </div>
             </div>
         </div>
@@ -85,14 +85,14 @@
                 </div>
             </div>
         </div>
-        <div class="credito-list">
+        <div class="main-list">
             <h1 class="errorBtn">{{tableMessage}}</h1>
             <h1 class="successBtn">{{tablesuccessMessage}}</h1>
             <div *ngIf="isLoading" class="loading-message">
                 <div class="spinner"></div>
                 <span>Cargando</span>
             </div>
-            <table class="credito-table">
+            <table class="main-table">
                 <thead>
                     <tr>
                         <th 
@@ -213,7 +213,7 @@
                             <h3>Detalles de Bolsa</h3>
                         </div>
                         <button 
-                            class="delete-btn" 
+                            class="red-btn" 
                             [disabled]="isUpdate" 
 	                        [ngClass]="{ 'disabled-btn': isUpdate }" 
                             (click)="closeDetails()"
@@ -366,30 +366,30 @@
                     </div>
                     <div class="btns">
                         <button 
-                            class="delete-btn" 
+                            class="red-btn" 
                             *ngIf="isUpdate" 
                             (click)="cancelar()"
                         >Cancelar</button>
                         <button 
-                            class="save-btn"
+                            class="purple-btn"
                             [disabled]="isUpdate" 
                             *ngIf="!isUpdate" 
                             (click)="modificar()"
                         >Modificar</button>
                         <button 
-                            class="save-btn"
+                            class="purple-btn"
                             [disabled]="!isUpdate" 
 	                        *ngIf="isUpdate"
                             (click)="isUpdateAllowed(gbsimp.value, getkdispon(selectedBolsas.saldo, getkAcPeCo(selectedBolsas.gbsiut, selectedBolsas.gbsict)), selectedBolsas.gbsref, tempBolsa.gbsibg)"
                         >Guardar</button>
                         <button 
-                            class="save-btn" 
+                            class="purple-btn" 
                             [disabled]="isUpdate" 
 	                        [ngClass]="{ 'disabled-btn': isUpdate }" 
                             (click)="transFond()"
                         >➔</button>
                         <button 
-                            class="delete-btn" 
+                            class="red-btn" 
                             [disabled]="isUpdate" 
 	                        [ngClass]="{ 'disabled-btn': isUpdate }" 
                             (click)="deleteBolsa(selectedBolsas.gbsref)"
@@ -407,8 +407,8 @@
         <div class="title">
             <h1 class="art-title">Añadir RC</h1>
         </div>
-        <button class="save-btn" (click)="addingBolsas()">+</button>
-        <button class="delete-btn" (click)="closeAddD()">✖</button>
+        <button class="purple-btn" (click)="addingBolsas()">+</button>
+        <button class="red-btn" (click)="closeAddD()">✖</button>
     </div>
     <h1 class="errorBtn">{{DErrorMessage}}</h1>
     <div *ngIf="isLoadingD" class="loading-message">
@@ -433,7 +433,7 @@
             <h1>{{programa}}</h1>
         </div>
     </div>
-    <table class="D-table">
+    <table class="main-table">
         <thead>
             <tr>
                 <th>Número</th>

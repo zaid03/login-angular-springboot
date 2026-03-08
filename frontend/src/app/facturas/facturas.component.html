@@ -1,4 +1,4 @@
-<div class="facturas-page">
+<div class="main-page">
     <div 
         class="sidebar-backdrop" 
         *ngIf="!sidebar.collapsed" 
@@ -6,7 +6,7 @@
     >
     </div>
     <app-sidebar #sidebar></app-sidebar>
-    <div class="facturas-container" [class.blurred]="!sidebar.collapsed">
+    <div class="main-container" [class.blurred]="!sidebar.collapsed">
         <div class="title-menu">
             <div class="title-area">
                 <h2 class="margin-title">Gestión de facturas</h2>  
@@ -72,8 +72,8 @@
                         </div>
                     </div>
                     <div class="btns">
-                        <button type="button" class="search-button" (click)="filterFacturas()">Buscar</button>
-                        <button type="button" class="search-btn" (click)="forgetAll()">Limpiar</button>
+                        <button type="button" class="purple-btn" (click)="filterFacturas()">Buscar</button>
+                        <button type="button" class="purple-btn" (click)="forgetAll()">Limpiar</button>
                     </div>
                 </div>
             </div>
@@ -82,20 +82,20 @@
                 <div class="dot"></div>
                 <div class="dot"></div>
                 <div class="menu-panel" *ngIf="showMenu">
-                    <button class="download-btn" (click)="DownloadPDF()">Exportar a PDF</button>
-                    <button class="download-btn" (click)="DownloadCSV()">Exportar a CSV</button>
-                    <button class="download-btn" (click)="openFacturaAdd()">Cargar facturas</button>
+                    <button class="purple-btn" (click)="DownloadPDF()">Exportar a PDF</button>
+                    <button class="purple-btn" (click)="DownloadCSV()">Exportar a CSV</button>
+                    <button class="purple-btn" (click)="openFacturaAdd()">Cargar facturas</button>
                 </div>
             </div>
         </div>
         <h1 class="successBtn">{{ estadoMessage }}</h1>
         <h1 class="errorBtn">{{ filterFacturaMessage }}</h1>
-        <div class="facturas-list">
+        <div class="main-list">
             <div *ngIf="isLoading" class="loading-message">
                 <div class="spinner"></div>
                 <span>Cargando</span>
             </div>
-            <table class="facturas-table">
+            <table class="main-table ft">
                 <thead>
                     <tr>
                         <th class="sortable resizable" (click)="toggleSort('facnum')">
@@ -217,7 +217,7 @@
                             <h3>Detalles del Factura</h3>
                         </div>
                         <button 
-                            class="delete-btn" 
+                            class="red-btn" 
                             [disabled]="isUpdate" 
 	                        [ngClass]="{ 'disabled-btn': isUpdate }" 
                             (click)="closeDetails()"
@@ -385,18 +385,18 @@
                     </div>
                     <div class="btns">
                         <button 
-                            class="delete-btn" 
+                            class="red-btn" 
                             *ngIf="isUpdate" 
                             (click)="cancelar()"
                         >Cancelar</button>
                         <button 
-                            class="save-btn"
+                            class="purple-btn"
                             [disabled]="isUpdate" 
                             *ngIf="!isUpdate" 
                             (click)="modificar()"
                         >Modificar</button>
                         <button 
-                            class="guardar-btn" 
+                            class="purple-btn" 
                             [disabled]="!isUpdate" 
 	                        *ngIf="isUpdate"
                             (click)="isUpdateAllowed()"
@@ -461,7 +461,7 @@
                                 <ng-container [ngSwitch]="albaranesOptio">
                                     <ng-container *ngSwitchCase="'albaranes'">
                                         <div class="albaranes-btns">
-                                            <button class="save-btn" (click)="openAlbaranesAdd()">+</button>
+                                            <button class="purple-btn" (click)="openAlbaranesAdd()">+</button>
                                         </div>
                                         <h1 class="successBtn">{{moreInfoMessageSuccess}}</h1>
                                         <h1 class="errorBtn">{{moreInfoMessageError}}</h1>
@@ -470,7 +470,7 @@
                                             <span>Cargando</span>
                                         </div>
                                         <div class="detail-card">
-                                            <table class="albaranes-table width-last">
+                                            <table class="main-table abl width-last">
                                                 <thead>
                                                     <tr>
                                                         <th>Número albarán</th>
@@ -493,7 +493,7 @@
                                                         <td>{{ a.solsub }}</td>
                                                         <td>{{ a.albobs }}</td>
                                                         <td>
-                                                            <button class="delete-btn" (click)="showDeleteAlbaran(a)">-</button>
+                                                            <button class="red-btn" (click)="showDeleteAlbaran(a)">-</button>
                                                         </td>
                                                     </tr>
                                                 </tbody>
@@ -526,7 +526,7 @@
                                             <span>actualizando</span>
                                         </div>
                                         <div class="detail-card">
-                                            <table class="albaranes-table app">
+                                            <table class="main-table app">
                                                 <thead>
                                                     <tr>
                                                         <th><strong>Referencia</strong></th>
@@ -549,7 +549,7 @@
                                                             ></textarea>
                                                         </td>
                                                         <td>
-                                                            <button class="save-btn" (click)="updateApplicaciones(a)">✔</button>
+                                                            <button class="purple-btn" (click)="updateApplicaciones(a)">✔</button>
                                                         </td>
                                                     </tr>
                                                 </tbody>
@@ -578,7 +578,7 @@
                                             <span>Cargando</span>
                                         </div>
                                         <div class="detail-card">
-                                            <table class="albaranes-table desc">
+                                            <table class="main-table desc">
                                                 <thead>
                                                     <tr>
                                                         <th>Área</th>
@@ -641,8 +641,8 @@
         <div class="title">
             <h1 class="art-title">Cargar facturas</h1>
         </div>
-        <button class="save-btn" (click)="addingFacturas()">+</button>
-        <button class="delete-btn" (click)="closeFacturaAdd()">✖</button>
+        <button class="purple-btn" (click)="addingFacturas()">+</button>
+        <button class="red-btn" (click)="closeFacturaAdd()">✖</button>
     </div>
     <div class="search-option-container">
         <div class="chunk-one-search">
@@ -700,8 +700,8 @@
             </div>
         </div>
         <div class="search-options-btns">
-            <button class="download-btn" (click)="searchFacturas()">Buscar</button>
-            <button class="download-btn" (click)="clearSearch()">Limpiar</button>
+            <button class="purple-btn" (click)="searchFacturas()">Buscar</button>
+            <button class="purple-btn" (click)="clearSearch()">Limpiar</button>
         </div>
     </div>
     <h1 class="errorBtn">{{facturasErrorMessage}}</h1>
@@ -714,7 +714,7 @@
         <div class="spinner"></div>
         <span>añadiendo</span>
     </div>
-    <table class="D-table">
+    <table class="main-table">
         <thead>
             <tr>
                 <th>Tipo</th>
@@ -770,8 +770,8 @@
         <div class="title">
             <h1 class="art-title">añadir albaranes</h1>
         </div>
-        <button class="save-btn" (click)="adingAlbaranes()">+</button>
-        <button class="delete-btn" (click)="closeAlbaranesAdd()">✖</button>
+        <button class="purple-btn" (click)="adingAlbaranes()">+</button>
+        <button class="red-btn" (click)="closeAlbaranesAdd()">✖</button>
     </div>
     <div class="albaran-search-options">
         <div class="proveedor-info">
@@ -795,8 +795,8 @@
             />
         </div>
         <div class="albaran-options-btns">
-            <button class="download-btn" (click)="searchAlbaranes()">Buscar</button>
-            <button class="download-btn" (click)="limpiarSearch()">Limpiar</button>
+            <button class="purple-btn" (click)="searchAlbaranes()">Buscar</button>
+            <button class="purple-btn" (click)="limpiarSearch()">Limpiar</button>
         </div>
     </div>
     <h1 class="errorBtn">{{albaranesError}}</h1>
@@ -808,7 +808,7 @@
         <div class="spinner"></div>
         <span>añadiendo</span>
     </div>
-    <table class="albaranes-table">
+    <table class="main-table">
         <thead>
             <tr>
                 <th>Referencia proveïdor</th>
@@ -864,6 +864,6 @@
         <p class="delete-info">Número albarán: {{albaranToDelete.albnun}}</p>
     </div>
     <h1 class="errorBtn">{{dalbaranesDeleteMessage}}</h1>
-    <button class="delete-btn" (click)="quitarAlbaran()">-</button>
-    <button class="save-btn margin" (click)="closeDeleteAlbaran()">✖</button>
+    <button class="red-btn" (click)="quitarAlbaran()">-</button>
+    <button class="purple-btn margin" (click)="closeDeleteAlbaran()">✖</button>
 </div>

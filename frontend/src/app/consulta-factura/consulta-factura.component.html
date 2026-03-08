@@ -1,4 +1,4 @@
-<div class="facturas-page">
+<div class="main-page">
     <div 
         class="sidebar-backdrop" 
         *ngIf="!sidebar.collapsed" 
@@ -6,7 +6,7 @@
     >
     </div>
     <app-sidebar #sidebar></app-sidebar>
-    <div class="facturas-container" [class.blurred]="!sidebar.collapsed">
+    <div class="main-container" [class.blurred]="!sidebar.collapsed">
         <div class="title-menu">
             <div class="title-area">
                 <h2 class="margin-title">Consulta de facturas</h2>  
@@ -72,8 +72,8 @@
                         </div>
                     </div>
                     <div class="btns">
-                        <button type="button" class="search-button" (click)="filterFacturas()">Buscar</button>
-                        <button type="button" class="search-button" (click)="forgetAll()">Limpiar</button>
+                        <button type="button" class="purple-btn" (click)="filterFacturas()">Buscar</button>
+                        <button type="button" class="purple-btn" (click)="forgetAll()">Limpiar</button>
                     </div>
                 </div>
             </div>
@@ -82,19 +82,19 @@
                 <div class="dot"></div>
                 <div class="dot"></div>
                 <div class="menu-panel" *ngIf="showMenu">
-                    <button class="download-btn" (click)="DownloadPDF()">Exportar a PDF</button>
-                    <button class="download-btn" (click)="DownloadCSV()">Exportar a CSV</button>
+                    <button class="purple-btn" (click)="DownloadPDF()">Exportar a PDF</button>
+                    <button class="purple-btn" (click)="DownloadCSV()">Exportar a CSV</button>
                 </div>
             </div>
         </div>
         <h1 class="successBtn">{{ estadoMessage }}</h1>
         <h1 class="errorBtn">{{ filterFacturaMessage }}</h1>
-        <div class="facturas-list">
+        <div class="main-list">
             <div *ngIf="isLoading" class="loading-message">
                 <div class="spinner"></div>
                 <span>Cargando</span>
             </div>
-            <table class="facturas-table">
+            <table class="main-table ft">
                 <thead>
                     <tr>
                         <th class="sortable resizable" (click)="toggleSort('facnum')">
@@ -215,7 +215,7 @@
                         <div class="title-detail">
                             <h3>Detalles del Factura</h3>
                         </div>
-                        <button class="close-btn-btn" (click)="closeDetails()">✖</button>
+                        <button class="red-btn" (click)="closeDetails()">✖</button>
                     </div>
                     <div class="detail-container">
                         <div class="chunk-one">
@@ -389,7 +389,7 @@
                                             <span>Cargando</span>
                                         </div>
                                         <div class="detail-card">
-                                            <table class="albaranes-table">
+                                            <table class="main-table alb">
                                                 <thead>
                                                     <tr>
                                                         <th>Número albarán</th>
@@ -437,7 +437,7 @@
                                             <span>Cargando</span>
                                         </div>
                                         <div class="detail-card">
-                                            <table class="albaranes-table app">
+                                            <table class="main-table app">
                                                 <thead>
                                                     <tr>
                                                         <th><strong>Referencia</strong></th>
@@ -479,7 +479,7 @@
                                             <span>Cargando</span>
                                         </div>
                                         <div class="detail-card">
-                                            <table class="albaranes-table desc">
+                                            <table class="main-table desc">
                                                 <thead>
                                                     <tr>
                                                         <th>Área</th>
