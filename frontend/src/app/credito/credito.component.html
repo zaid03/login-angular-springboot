@@ -145,7 +145,7 @@
                 <span>de {{ totalPages }}</span>
                 <button (click)="nextPage()" [disabled]="page + 1 >= totalPages">Siguiente</button>
             </div>
-            <div class="modal-backdrop" *ngIf="selectedBolsas" (click)="closeDetails()"></div>
+            <div class="modal-backdrop" *ngIf="selectedBolsas" (click)="closeDetailsSure()"></div>
             <div class="display" >
                 <div class="modal" *ngIf="selectedBolsas">
                     <div class="btns">
