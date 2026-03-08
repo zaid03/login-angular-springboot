@@ -171,43 +171,43 @@
                     <div class="detail-container">
                         <div class="chunk-one">
                             <div class="left">
-                                <p>Nombre</p>
-                                <p>Alias</p>
-                                <p>Dirección</p>
+                                <p class="p-style">Nombre</p>
+                                <p class="p-style">Alias</p>
+                                <p class="p-style">Dirección</p>
                             </div>
                             <div class="right">
-                                <h1>{{tempProveedor.ternom || '#'}}</h1>
-                                <h1>{{tempProveedor.terali || '#'}}</h1>
-                                <h1>{{tempProveedor.terdom || '#'}}</h1>
+                                <h1 class="h1-style">{{tempProveedor.ternom || '#'}}</h1>
+                                <h1 class="h1-style">{{tempProveedor.terali || '#'}}</h1>
+                                <h1 class="h1-style">{{tempProveedor.terdom || '#'}}</h1>
                             </div>
                         </div>
                         <div class="chunk-two">
                             <div class="left">
-                                <p>Código</p>
-                                <p>Provincia</p>
-                                <p>C.P</p>
+                                <p class="p-style">Código</p>
+                                <p class="p-style">Provincia</p>
+                                <p class="p-style">C.P</p>
                             </div>
                             <div class="right">
                                 <div class="on-three">
-                                    <h1>{{tempProveedor.tercod || '#'}}</h1>
-                                    <p>NIF</p>
-                                    <h1>{{tempProveedor.ternif || '#'}}</h1>
+                                    <h1 class="h1-style">{{tempProveedor.tercod || '#'}}</h1>
+                                    <p class="p-style">NIF</p>
+                                    <h1 class="h1-style">{{tempProveedor.ternif || '#'}}</h1>
                                 </div>
                                 <div class="on-two">
-                                    <h1>{{tempProveedor.procod || '#'}}</h1>
-                                    <h1>{{tempProveedor.terpob || '#'}}</h1>
+                                    <h1 class="h1-style">{{tempProveedor.procod || '#'}}</h1>
+                                    <h1 class="h1-style">{{tempProveedor.terpob || '#'}}</h1>
                                 </div>
-                                <h1>{{tempProveedor.tercpo || '#'}}</h1>
+                                <h1 class="h1-style">{{tempProveedor.tercpo || '#'}}</h1>
                             </div>
                         </div>
                         <div class="chunk-three">
                             <div class="left">
-                                <p>C.contable</p>
-                                <p>Bloqueado</p>
-                                <p>Teléfono</p>
+                                <p class="p-style">C.contable</p>
+                                <p class="p-style">Bloqueado</p>
+                                <p class="p-style">Teléfono</p>
                             </div>
                             <div class="right">
-                                <h1>{{tempProveedor.terayt || '#'}}</h1>
+                                <h1 class="h1-style">{{tempProveedor.terayt || '#'}}</h1>
                                 <div class="bloq">
                                     <input type="checkbox"
                                         [checked]="tempProveedor.terblo == 1"
@@ -217,24 +217,24 @@
                                         class="checkbox" 
                                     />
                                 </div>
-                                <h1>{{tempProveedor.tertel || '#'}}</h1>
+                                <h1 class="h1-style">{{tempProveedor.tertel || '#'}}</h1>
                             </div>
                         </div>
                         <div class="chunk-four">
                             <div class="left">
-                                <p>Fax</p>
-                                <p>Web</p>
-                                <p>Correo electrónico</p>
+                                <p class="p-style">Fax</p>
+                                <p class="p-style">Web</p>
+                                <p class="p-style">Correo electrónico</p>
                             </div>
                             <div class="right">
-                                <h1>{{tempProveedor.terfax || '#'}}</h1>
+                                <h1 class="h1-style">{{tempProveedor.terfax || '#'}}</h1>
                                 <textarea 
                                     class="largeArea" 
                                     [(ngModel)]="tempProveedor.terweb"
                                     [disabled]="!isUpdate"
                                     (input)="allowToUpdate = true"
                                 ></textarea>
-                                <h1>{{tempProveedor.tercoe || '#'}}</h1>
+                                <h1 class="h1-style">{{tempProveedor.tercoe || '#'}}</h1>
                             </div>
                         </div>
                         <div class="acuerdo">
@@ -248,7 +248,7 @@
                                 Tiene acuerdo marco
                         </div>
                         <div class="observ">
-                            <p>Observaciones:</p>
+                            <p class="p-style">Observaciones:</p>
                             <textarea 
                                 [(ngModel)]="tempProveedor.terobs"
                                 [disabled]="!isUpdate"
@@ -483,8 +483,8 @@
     <h3>¿Seguro que quieres eliminar este Persona?</h3>
     <div *ngIf="personaToDelete">
         <div class="detailPersonnaDelete">
-            <h1 class="titleDelete">Nombre:</h1>
-            <h1 class="titleDelete">{{personaToDelete.tpenom}}</h1>
+            <h1 class="h1-style titleDelete">Nombre:</h1>
+            <h1 class="h1-style titleDelete">{{personaToDelete.tpenom}}</h1>
         </div>
     </div>
     <div *ngIf="isDeleting" class="loading-message">
@@ -511,11 +511,11 @@
     </div>
     <div class="personas-add-container">
         <div class="left-persona">
-            <p>Nombre*</p>
-            <p>Télefono</p>
-            <p>Movil</p>
-            <p>Correo electrónico</p>
-            <p>Observaciones</p>
+            <p class="p-style">Nombre*</p>
+            <p class="p-style">Télefono</p>
+            <p class="p-style">Movil</p>
+            <p class="p-style">Correo electrónico</p>
+            <p class="p-style">Observaciones</p>
         </div>
         <div class="right-persona">
             <textarea #nombreadd></textarea>

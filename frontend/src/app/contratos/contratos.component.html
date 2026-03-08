@@ -165,17 +165,17 @@
                     <div class="detail-container">
                         <div class="chunk-one">
                             <div class="content">
-                                <p>Número</p>
-                                <h1>{{tempContrato.concod || '#'}}</h1>
+                                <p class="p-style">Número</p>
+                                <h1 class="h1-style">{{tempContrato.concod || '#'}}</h1>
                             </div>
                             <div class="content">
-                                <p>Económica</p>
-                                <h1>{{tempContrato.conlot || '#'}}</h1>
+                                <p class="p-style">Económica</p>
+                                <h1 class="h1-style">{{tempContrato.conlot || '#'}}</h1>
                             </div>
                             <div class="content">
-                                <p>Proveedor</p>
-                                <h1>{{tempContrato.tercod || '#'}}</h1>
-                                <h1>{{tempContrato.ternom || '#'}}</h1>
+                                <p class="p-style">Proveedor</p>
+                                <h1 class="h1-style">{{tempContrato.tercod || '#'}}</h1>
+                                <h1 class="h1-style">{{tempContrato.ternom || '#'}}</h1>
                             </div>
                             <div class="content">
                                 <input 
@@ -191,8 +191,8 @@
                         <div class="chunk-two">
                             <div class="left">
                                 <div class="left-left">
-                                    <p>Fecha inicio</p>
-                                    <p>Fecha fin</p>
+                                    <p class="p-style">Fecha inicio</p>
+                                    <p class="p-style">Fecha fin</p>
                                 </div>
                                 <div class="left-right">
                                     <textarea 
@@ -212,7 +212,7 @@
                             </div>
                             <div class="right">
                                 <div class="content">
-                                    <p>Descripción</p>
+                                    <p class="p-style">Descripción</p>
                                     <textarea 
                                         class="long" 
                                         [(ngModel)]="tempContrato.condes" 
@@ -401,25 +401,25 @@
     <div class="add-container">
         <div class="container-wrap">
             <div class="left-add">
-                <p>Fecha inicio</p>
-                <p>Económica*</p>
+                <p class="p-style">Fecha inicio</p>
+                <p class="p-style">Económica*</p>
             </div>
             <div class="right-add">
                 <div class="on-two">
                     <textarea class="long-add" #fechaIni></textarea>
-                    <p class="patch">Fecha fin</p>
+                    <p class="p-style patch">Fecha fin</p>
                     <textarea class="long-add" #fechaFin></textarea>
                 </div>
                 <div class="on-two">
                     <textarea class="long-add" #economica></textarea>
-                    <p>Descripción*</p>
+                    <p class="p-style">Descripción*</p>
                     <textarea class="long-add height" #description></textarea>
                 </div>  
             </div>
         </div>
-    </div>
+    </div>  
     <div class="proveedor-select">
-        <h1 *ngIf="proveedorTernom">El proveedor {{proveedorTernom}} ha sido seleccionado</h1>
+        <h1 class="p-style" *ngIf="proveedorTernom">El proveedor {{proveedorTernom}} ha sido seleccionado</h1>
         <button class="purple-btn" (click)="openProveedores()">⧉</button>
     </div>
 </div>
@@ -455,42 +455,44 @@
         <div class="spinner"></div>
         <span>Cargando</span>
     </div>
-    <table class="main-table">
-        <thead>
-            <tr>
-                <th>Código</th>
-                <th>Nombre</th>
-                <th>NIF</th>
-                <th>Alias</th>
-                <th>Teléfono</th>
-                <th>Domicilio</th>
-                <th>Código Postal</th>
-                <th>Municipio</th>
-                <th>Código contable</th>
-                <th>Fax</th>
-                <th>Web</th>
-                <th>Correo electrónico</th>
-                <th>Observaciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let p of paginatedProveedores" [class.grey-row]="p.terblo == 1">
-                <td style="cursor: pointer;" (click)="selectProveedor(p)">{{ p.tercod }}</td>
-                <td>{{ p.ternom }}</td>
-                <td>{{ p.ternif }}</td>
-                <td>{{ p.terali }}</td>
-                <td>{{ p.tertel }}</td>
-                <td>{{ p.terdom }}</td>
-                <td>{{ p.tercpo }}</td>
-                <td>{{ p.terpob }}</td>
-                <td>{{ p.terayt }}</td>
-                <td>{{ p.terfax }}</td>
-                <td>{{ p.terweb }}</td>
-                <td>{{ p.tercoe }}</td>
-                <td>{{ p.terobs }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="main-table">
+        <table class="">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Nombre</th>
+                    <th>NIF</th>
+                    <th>Alias</th>
+                    <th>Teléfono</th>
+                    <th>Domicilio</th>
+                    <th>Código Postal</th>
+                    <th>Municipio</th>
+                    <th>Código contable</th>
+                    <th>Fax</th>
+                    <th>Web</th>
+                    <th>Correo electrónico</th>
+                    <th>Observaciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let p of paginatedProveedores" [class.grey-row]="p.terblo == 1">
+                    <td style="cursor: pointer;" (click)="selectProveedor(p)">{{ p.tercod }}</td>
+                    <td>{{ p.ternom }}</td>
+                    <td>{{ p.ternif }}</td>
+                    <td>{{ p.terali }}</td>
+                    <td>{{ p.tertel }}</td>
+                    <td>{{ p.terdom }}</td>
+                    <td>{{ p.tercpo }}</td>
+                    <td>{{ p.terpob }}</td>
+                    <td>{{ p.terayt }}</td>
+                    <td>{{ p.terfax }}</td>
+                    <td>{{ p.terweb }}</td>
+                    <td>{{ p.tercoe }}</td>
+                    <td>{{ p.terobs }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
     <div class="container-pag-wrap">
         <div class="pagination-controls">
             <button class="pag-btn" (click)="prevPagePro()" [disabled]="pagePro === 0">Anterior</button>
@@ -517,7 +519,7 @@
             <div class="spinner"></div>
             <span>borrando</span>
         </div>
-        <p class="delete-info">Familia: {{articuloToDelete[0].concod}}</p>
+        <p class="p-style delete-info">Familia: {{articuloToDelete[0].concod}}</p>
     </div>
     <h1 class="errorBtn">{{detallesMessageErrorDelete}}</h1>
     <button class="red-btn" (click)="deleteArticulo(articuloToDelete[0]?.concod, articuloToDelete[1]?.afacod, articuloToDelete[1]?.asucod, articuloToDelete[1]?.artcod)">-</button>
@@ -576,7 +578,7 @@
                 </tr>
             </tbody>
         </table>
-        <p class="selected" *ngIf="coughtArticulos.length > 0">{{coughtArticulos.length}} artículos seleccionados</p>
+        <p class="p-style" *ngIf="coughtArticulos.length > 0">{{coughtArticulos.length}} artículos seleccionados</p>
         <div class="pagination-controls" *ngIf="articulosAdd.length > searchPageSize">
             <button class="pag-btn" (click)="searchPage = searchPage - 1" [disabled]="searchPage === 0">Anterior</button>
             <span> {{ searchPage + 1 }} de {{ searchTotalPages }}</span>
@@ -595,12 +597,12 @@
         </div>
         <div class="delete-info-titles">
             <div class="left-delete">
-                <p class="delete-info">Centro gestor:</p>
-                <p class="delete-info">Descripción:</p>
+                <p class="p-style">Centro gestor:</p>
+                <p class="p-style">Descripción:</p>
             </div>
             <div class="right-delete">
-                <p class="delete-info delete">{{centroToDelete.cgecod}}</p>
-                <p class="delete-info delete">{{centroToDelete.cge.cgedes}}</p>
+                <p class="h1-style delete">{{centroToDelete.cgecod}}</p>
+                <p class="h1-style delete">{{centroToDelete.cge.cgedes}}</p>
             </div>
         </div>
     </div>
@@ -660,7 +662,7 @@
                 </tr>
             </tbody>
         </table>
-        <p class="selected" *ngIf="coughtCentros.length > 0">{{coughtCentros.length}} centro gestores seleccionados</p>
+        <p class="p-style fix" *ngIf="coughtCentros.length > 0">{{coughtCentros.length}} centro gestores seleccionados</p>
         <div class="pagination-controls" *ngIf="centroGestoresAdd.length > searchPageSizeCentro">
             <button class="pag-btn" (click)="searchPageCentro = searchPageCentro - 1" [disabled]="searchPageCentro === 0">Anterior</button>
             <span> {{ searchPageCentro + 1 }} de {{ searchTotalPagesCentro }}</span>
@@ -685,20 +687,20 @@
     </div>
     <div class="info-D">
         <div class="info-content">
-            <p>Oficina gestora RC:</p>
-            <h1>AL</h1>
+            <p class="p-style">Oficina gestora RC:</p>
+            <h1 class="h1-style">AL</h1>
         </div>
         <div class="info-content">
-            <p>Orgánica:</p>
-            <h1>{{organica}}</h1>
+            <p class="p-style">Orgánica:</p>
+            <h1 class="h1-style">{{organica}}</h1>
         </div>
         <div class="info-content">
-            <p>Programa:</p>
-            <h1>{{programa}}</h1>
+            <p class="p-style">Programa:</p>
+            <h1 class="h1-style">{{programa}}</h1>
         </div>
         <div class="info-content">
-            <p>Económica:</p>
-            <h1>{{economica}}</h1>
+            <p class="p-style">Económica:</p>
+            <h1 class="h1-style">{{economica}}</h1>
         </div>
     </div>
     <table class="main-table">

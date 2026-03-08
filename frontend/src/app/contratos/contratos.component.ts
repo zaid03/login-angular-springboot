@@ -537,6 +537,7 @@ export class ContratosComponent {
 
   closeAdd() {
     this.showAddGrid = false;
+    this.proveedores = [];
   }
 
   showProveedorGrid: boolean = false;
