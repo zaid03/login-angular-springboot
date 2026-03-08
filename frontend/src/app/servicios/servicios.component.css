@@ -7,7 +7,7 @@
 /* search */
 /* main table */
 .main-list,
-.almacen-table { width: 90%; }
+.aT { width: 90%; }
 .align th:first-child,
 .align th:nth-child(3)  { width: 80px; }
 .align th:nth-child(4),
@@ -20,7 +20,7 @@
 .custom-grid-modal .persona thead th:last-child { width: 80px;}
 .persona tbody td:last-child {display: flex; justify-content: center;}
 .custom-grid-modal .persona thead th:first-child {width: 220px;}
-.almacen-table thead th:first-child {width: 150px;}
+.aT thead th:first-child {width: 150px;}
 /* main table */
 /* detail grid */
 .detail-container { display: flex; flex-wrap: wrap;}
@@ -82,7 +82,7 @@
 .proveedor-grid-modal .search-container {width: 100%;}
 .proveedor-grid-modal .search-holder {width: 100%;}
 .all-add-content {display: flex; flex-direction: column; align-items: center;}
-.proveedor-grid-modal .personas-table-select thead th:first-child {width: 190px;}
+.proveedor-grid-modal .pts thead th:first-child {width: 190px;}
 .proveedor-grid-modal .title {width: 60%;}
 .selected-row {background-color: rgba(28, 93, 140, 0.2);}
 /* add personas for a service */

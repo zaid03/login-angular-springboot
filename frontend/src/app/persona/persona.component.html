@@ -144,21 +144,21 @@
                         <div class="above">
                             <div class="chunk-one">
                                 <div class="left">
-                                    <p>Código</p>
-                                    <p>Nombre</p>
-                                    <p>Correo Electrónico</p>
+                                    <p class="p-style">Código</p>
+                                    <p class="p-style">Nombre</p>
+                                    <p class="p-style">Correo Electrónico</p>
                                 </div>
                                 <div class="right">
-                                    <h1>{{tempPersonas.percod || '#'}}</h1>
+                                    <h1 class="h1-style">{{tempPersonas.percod || '#'}}</h1>
                                     <textarea 
-                                        class="long" 
+                                        class="textArea-style long" 
                                         [(ngModel)]="tempPersonas.pernom" 
                                         [disabled]="!isUpdate"
                                         (input)="allowToUpdate = true"
                                         #pernom
                                     ></textarea>    
                                     <textarea 
-                                        class="long" 
+                                        class="textArea-style long" 
                                         [(ngModel)]="tempPersonas.percoe" 
                                         [disabled]="!isUpdate"
                                         (input)="allowToUpdate = true"
@@ -168,22 +168,22 @@
                             </div>
                             <div class="chunk-two">
                                 <div class="left">
-                                    <p>Teléfono</p>
-                                    <p>Cargo</p>
-                                    <p>Observaciones</p>
+                                    <p class="p-style">Teléfono</p>
+                                    <p class="p-style">Cargo</p>
+                                    <p class="p-style">Observaciones</p>
                                 </div>
                                 <div class="right">
                                     <div class="on-two">
                                         <textarea 
-                                            class="average" 
+                                            class="textArea-style average" 
                                             [(ngModel)]="tempPersonas.pertel"
                                             [disabled]="!isUpdate"
                                             (input)="allowToUpdate = true"
                                             #pertel
                                         ></textarea>
-                                        <p>Móvil</p>
+                                        <p class="p-style">Móvil</p>
                                         <textarea 
-                                            class="average" 
+                                            class="textArea-style average" 
                                             [(ngModel)]="tempPersonas.pertmo" 
                                             [disabled]="!isUpdate"
                                             (input)="allowToUpdate = true"
@@ -191,14 +191,14 @@
                                         ></textarea>
                                     </div>
                                     <textarea 
-                                        class="long" 
+                                        class="textArea-style long" 
                                         [(ngModel)]="tempPersonas.percar"
                                         [disabled]="!isUpdate"
                                         (input)="allowToUpdate = true"
                                         #percar
                                     ></textarea>
                                     <textarea 
-                                        class="long height" 
+                                        class="textArea-style long height" 
                                         [(ngModel)]="tempPersonas.perobs"
                                         [disabled]="!isUpdate"
                                         (input)="allowToUpdate = true"
@@ -301,26 +301,26 @@
     </div>
     <div class="add-container">
         <div class="left-add">
-            <p>Código*</p>
-            <p>Correo Electrónico</p>
-            <p>Teléfono</p>
-            <p>Cargo</p>
-            <p>Observaciones</p>
+            <p class="p-style">Código*</p>
+            <p class="p-style">Correo Electrónico</p>
+            <p class="p-style">Teléfono</p>
+            <p class="p-style">Cargo</p>
+            <p class="p-style">Observaciones</p>
         </div>
         <div class="right-add">
             <div class="on-two-add">
-                <textarea (input)="forceUppercase($event)" class="average-add" #code></textarea>
-                <p>Nombre*</p>
-                <textarea class="average-add" #name></textarea>
+                <textarea (input)="forceUppercase($event)" class="textArea-style average-add" #code></textarea>
+                <p class="p-style">Nombre*</p>
+                <textarea class="textArea-style average-add" #name></textarea>
             </div>
-            <textarea class="long-add" #email></textarea>
+            <textarea class="textArea-style long-add" #email></textarea>
             <div class="on-two-add">
-                <textarea class="average-add-second" #phone></textarea>
-                <p>Móvil</p>
-                <textarea class="average-add-second" #movil></textarea>
+                <textarea class="textArea-style average-add-second" #phone></textarea>
+                <p class="p-style">Móvil</p>
+                <textarea class="textArea-style average-add-second" #movil></textarea>
             </div>
-            <textarea class="long-add" #trans></textarea>
-            <textarea class="special-add-long" #obs></textarea>
+            <textarea class="textArea-style long-add" #trans></textarea>
+            <textarea class="textArea-style special-add-long" #obs></textarea>
         </div>
     </div>
 </div>
@@ -329,8 +329,8 @@
 <div class="delete-confirm-modal" *ngIf="showDeleteGrid">
     <h3>¿Seguro que quieres eliminar este servicio?</h3>
     <div class="delete-content" *ngIf="serviceToDelete">
-        <p>Código:</p>
-        <h1>{{serviceToDelete.depcod}}</h1>
+        <p class="p-style">Código:</p>
+        <h1 class="h1-style">{{serviceToDelete.depcod}}</h1>
     </div>
     <div *ngIf="isDeleting" class="loading-message">
         <div class="spinner"></div>
@@ -348,7 +348,7 @@
             <h3>Añadir un Servicio</h3>
         </div>
         <div class="count-selected">
-            <p>seleccionado {{count}} líneas</p>
+            <p class="p-style">seleccionado {{count}} líneas</p>
         </div>
         <button class="purple-btn" (click)="addServicePersona(linesSelected)">+</button>
         <button class="red-btn" (click)="closeAddService()">✖</button>

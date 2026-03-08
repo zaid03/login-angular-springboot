@@ -104,14 +104,14 @@
                     <div class="detail-container">
                         <div class="chunk">
                             <div class="left center">
-                                <p>código</p>
+                                <p class="p-style">código</p>
                             </div>
                             <div class="right">
                                 <div class="on-two">
-                                    <h1>{{tempEntrega.lencod || '#'}}</h1>
-                                    <p>Descripción*</p>
+                                    <h1 class="h1-style">{{tempEntrega.lencod || '#'}}</h1>
+                                    <p class="p-style">Descripción*</p>
                                     <textarea 
-                                        class="tallText" 
+                                        class="textArea-style tallText" 
                                         [(ngModel)]="tempEntrega.lendes"
                                         [disabled]="!isUpdate"
                                         (input)="allowToUpdate = true"
@@ -122,11 +122,11 @@
                         </div>
                         <div class="chunk">
                             <div class="left">
-                                <p>Texto</p>
+                                <p class="p-style">Texto</p>
                             </div>
                             <div class="right">
                                 <textarea 
-                                    class="specialText" 
+                                    class="textArea-style specialText" 
                                     [(ngModel)]="tempEntrega.lentxt"
                                     [disabled]="!isUpdate"
                                     (input)="allowToUpdate = true"
@@ -185,7 +185,7 @@
 <div class="entrega-modal" *ngIf="showAddGrid">
     <div class="btns">
         <div class="title">
-            <h1>Añadir un lugare de entrega</h1>
+            <h3 class="specific">Añadir un lugare de entrega</h3>
         </div>
         <button class="purple-btn" (click)="addEntrega(desc.value, texto.value)">✔</button>
         <button class="red-btn" (click)="hideAdd()">✖</button>
@@ -197,12 +197,12 @@
     </div>
     <div class="add-container">
         <div class="left-add">
-            <p>Descripción*</p>
-            <p>Texto</p>
+            <p class="p-style">Descripción*</p>
+            <p class="p-style">Texto</p>
         </div>
         <div class="right-add">
-            <textarea class="averageText" #desc></textarea>
-            <textarea class="averageText height" #texto></textarea>
+            <textarea class="textArea-style averageText" #desc></textarea>
+            <textarea class="textArea-style averageText height" #texto></textarea>
         </div>
     </div>
 </div>

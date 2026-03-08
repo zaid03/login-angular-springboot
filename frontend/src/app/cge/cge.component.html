@@ -125,16 +125,16 @@
                     <div class="detail-container">
                         <div class="chunk">
                             <div class="left">
-                                <p>Código</p>
-                                <p>Programa</p>
-                                <p>Estado contable</p>
+                                <p class="p-style">Código</p>
+                                <p class="p-style">Programa</p>
+                                <p class="p-style">Estado contable</p>
                             </div>
                             <div class="right">
                                 <div class="on-two">
-                                    <h1>{{tempCentroGestor.cgecod || '#'}}</h1>
-                                    <p>Orgánica</p>
+                                    <h1 class="h1-style">{{tempCentroGestor.cgecod || '#'}}</h1>
+                                    <p class="p-style">Orgánica</p>
                                     <textarea
-                                        class="mediumText" 
+                                        class="mediumText textArea-style" 
                                         [(ngModel)]="tempCentroGestor.cgeorg"
                                         [disabled]="!isUpdate"
                                         (input)="allowToUpdate = true"
@@ -143,16 +143,16 @@
                                 </div>
                                 <div class="on-two">
                                     <textarea 
-                                        class="smallText" 
+                                        class="smallText textArea-style" 
                                         [(ngModel)]="tempCentroGestor.cgefun"
                                         (input)="allowOnlyDigits($event)"
                                         [disabled]="!isUpdate"
                                         (input)="allowToUpdate = true"
                                         #cgefun
                                     ></textarea>
-                                    <p>Descripción</p>
+                                    <p class="p-style">Descripción</p>
                                     <textarea 
-                                        class="tallText" 
+                                        class="textArea-style tallText" 
                                         [(ngModel)]="tempCentroGestor.cgedes" 
                                         [disabled]="!isUpdate"
                                         (input)="allowToUpdate = true"
@@ -191,8 +191,9 @@
                             </div>
                         </div>
                         <div class="long-text">
-                            <p>Dirección para pedido</p>
+                            <p class="p-style">Dirección para pedido</p>
                             <textarea 
+                                class="textArea-style"
                                 [(ngModel)]="tempCentroGestor.cgedat"
                                 [disabled]="!isUpdate"
                                 (input)="allowToUpdate = true"
@@ -259,30 +260,30 @@
     </div>
     <div class="chunk more-chunk">
         <div class="left width">
-            <p>Código*</p>
-            <p>Orgánica</p>
-            <p>Programa</p>
-            <p>Descripción*</p>
-            <p>Dirección para pedido</p>
-            <p>Estado contable</p>
+            <p class="p-style">Código*</p>
+            <p class="p-style">Orgánica</p>
+            <p class="p-style">Programa</p>
+            <p class="p-style">Descripción*</p>
+            <p class="p-style">Dirección para pedido</p>
+            <p class="p-style">Estado contable</p>
         </div>
         <div class="right more">
             <textarea
-                class="smallText"
+                class="textArea-style smallText"
                 (input)="setCgeToUpper($event)"
                 #codigo
             ></textarea>
             <textarea 
                 (input)="allowOnlyDigits($event)"
-                class="smallText" 
+                class="textArea-style smallText" 
                 #organica></textarea>
             <textarea
-                class="smallText"
+                class="textArea-style smallText"
                 (input)="allowOnlyDigits($event)"
                 #programa
             ></textarea>
-            <textarea #description class="tallText"></textarea>
-            <textarea #direction class="tallText"></textarea>
+            <textarea #description class="textArea-style tallText"></textarea>
+            <textarea #direction class="textArea-style tallText"></textarea>
             <div class="estado-inputs">
                 <input 
                     type="radio" 
@@ -309,4 +310,3 @@
         </div>
     </div>
 </div>
-

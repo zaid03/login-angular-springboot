@@ -1,7 +1,4 @@
 /* search */
-/* .title-area { width: 30%; }
-.search-holder { justify-content: flex-start; width: 69%; }
-.search-container { margin-left: 15%; gap: 10px; } */
 .search-container {gap: 20px;}
 /* search */
 /* main-list and table */
@@ -27,7 +24,8 @@
 .right-add { display: flex; flex-direction: column; gap: 10px;}
 .averageText {width: 220px; max-width: 350px;}
 .height {height: 100px !important;}
-.title {width: 55%;}
+.title {width: 70%;}
+.specific {font-size: 22px; width: 99%;}
 /* add grid */
 @media (max-width: 1299px), (min-width: 1350px) {
     .modal {top: 30%;}
