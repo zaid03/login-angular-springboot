@@ -83,6 +83,7 @@
 .factura-cargar .search-options-btns,
 .albaran-search-options .albaran-options-btns {display: flex; width: 6%; gap: 10px; justify-content: center;}
 .factura-cargar .search-options-btns {flex-direction: column;}
+.center {text-align: center;}
 /* cargar facturas */
 /* add albaranes grid */
 .albran-add .art-title {width: 28%;}
