@@ -297,6 +297,7 @@ public class ContabilizacionService {
                                 case "organica" -> dto.setOrganica(decodeIfBase64(value));
                                 case "funcional" -> dto.setFuncional(decodeIfBase64(value));
                                 case "economica" -> dto.setEconomica(decodeIfBase64(value));
+                                default -> {}
                             }
                         }
                     }
@@ -361,19 +362,28 @@ public class ContabilizacionService {
     }
 
     private String extractSmlFromSoap(String soap) {
-        try {
-            int start = soap.indexOf("<servicioReturn");
-            if (start < 0) return null;
-            start = soap.indexOf(">", start) + 1;
-            int end = soap.indexOf("</servicioReturn>", start);
-            if (end > start) {
-                String sml = soap.substring(start, end)
-                    .replace("&lt;", "<")
-                    .replace("&gt;", ">");
-                return sml;
-            }
-        } catch (Exception ignored) {}
-        return null;
+        if (soap == null || soap.isBlank()) {
+            return null;
+        }
+
+        int start = soap.indexOf("<servicioReturn");
+        if (start < 0) {
+            return null;
+        }
+
+        int openTagEnd = soap.indexOf(">", start);
+        if (openTagEnd < 0) {
+            return null;
+        }
+
+        int end = soap.indexOf("</servicioReturn>", openTagEnd + 1);
+        if (end <= openTagEnd) {
+            return null;
+        }
+
+        return soap.substring(openTagEnd + 1, end)
+            .replace("&lt;", "<")
+            .replace("&gt;", ">");
     }
 
     private String getTagValue(org.w3c.dom.Document doc, String tag) {
