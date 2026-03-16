@@ -77,6 +77,10 @@ export class PersonasPorServiciosComponent {
         this.defaultServices = [...this.backupServices];
         this.page = 0;
         this.updatePagination();
+
+        if (this.sortField) {
+          this.applySort();
+        }
       },
       error: (err) => {
         this.isLoading = false;
@@ -345,7 +349,6 @@ export class PersonasPorServiciosComponent {
 
       this.http.get<any>(`${environment.backendUrl}/api/depe/personas-servicios/search?${params}`).subscribe({
         next: (res) => {
-          this.services = [];
           this.services = res;
           this.pageSearch = 0;
           this.updatePagination();
@@ -353,6 +356,7 @@ export class PersonasPorServiciosComponent {
           this.inSearch = true;
         },
         error: (err) => {
+          this.services = [];
           this.personasServicesError = err.error.error ?? err.error;
           this.isLoading = false;
         }

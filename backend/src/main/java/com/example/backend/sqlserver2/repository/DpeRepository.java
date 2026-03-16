@@ -120,5 +120,4 @@ public interface DpeRepository extends JpaRepository<Dpe, DpeId> {
     List<personasPorServiciosProjection> findByENTAndEJEAndDep_DEPDESContainingAndPer_PERNOMContainingAndDep_Cge_CGECODAndDep_DEPALM(Integer ent, String eje, String depdes, String pernom, String cgecod, Integer depalm);
     List<personasPorServiciosProjection> findByENTAndEJEAndDep_DEPDESContainingAndPer_PERNOMContainingAndDep_Cge_CGECODAndDep_DEPCOM(Integer ent, String eje, String depdes, String pernom, String cgecod, Integer depcom);
     List<personasPorServiciosProjection> findByENTAndEJEAndDep_DEPDESContainingAndPer_PERNOMContainingAndDep_Cge_CGECODAndDep_DEPINT(Integer ent, String eje, String depdes, String pernom, String cgecod, Integer depint);
-
 }

@@ -250,123 +250,116 @@ public class DpeController {
         try {
             List<personasPorServiciosProjection> result = null;
 
-            Integer perfilValue = null;
             String perfilType = null;
             if (perfil != null && !perfil.isEmpty()) {
                 switch (perfil.toLowerCase()) {
-                    case "almacen": perfilType = "depalm"; perfilValue = 1; break;
-                    case "comprador": perfilType = "depcom"; perfilValue = 1; break;
-                    case "contabilidad": perfilType = "depint"; perfilValue = 1; break;
+                    case "almacen": perfilType = "depalm"; break;
+                    case "comprador": perfilType = "depcom"; break;
+                    case "contabilidad": perfilType = "depint"; break;
                     case "peticionario": perfilType = "peticionario"; break;
-                    case "todos": default: break;
                 }
             }
 
             boolean hasServicio = servicio != null && !servicio.isEmpty();
             boolean hasPersona = persona != null && !persona.isEmpty();
             boolean hasCgecod = cgecod != null && !cgecod.isEmpty();
-            boolean hasPerfil = perfilType != null && !"todos".equals(perfil);
+            boolean hasPerfil = perfilType != null;
 
-            if (hasServicio && hasPersona && hasCgecod && hasPerfil && !"peticionario".equals(perfilType)) {
-                if ("depalm".equals(perfilType)) {
-                    result = dpeRepository.findByENTAndEJEAndDep_DEPDESContainingAndPer_PERNOMContainingAndDep_Cge_CGECODAndDep_DEPALM(ent, eje, servicio, persona, cgecod, perfilValue);
-                } else if ("depcom".equals(perfilType)) {
-                    result = dpeRepository.findByENTAndEJEAndDep_DEPDESContainingAndPer_PERNOMContainingAndDep_Cge_CGECODAndDep_DEPCOM(ent, eje, servicio, persona, cgecod, perfilValue);
-                } else if ("depint".equals(perfilType)) {
-                    result = dpeRepository.findByENTAndEJEAndDep_DEPDESContainingAndPer_PERNOMContainingAndDep_Cge_CGECODAndDep_DEPINT(ent, eje, servicio, persona, cgecod, perfilValue);
-                }
+            // 4 FILTERS
+            if (hasServicio && hasPersona && hasCgecod && hasPerfil) {
+                List<personasPorServiciosProjection> data = dpeRepository.findByENTAndEJE(ent, eje);
+                data = filterByServicio(data, servicio);
+                data = filterByPersona(data, persona);
+                data = filterByServicio(data, servicio); // Keep CGE filtering
+                List<personasPorServiciosProjection> cgFiltered = data.stream()
+                    .filter(p -> p.getDep().getCge().getCGECOD().equals(cgecod))
+                    .toList();
+                result = filterByPerfil(cgFiltered, perfilType);
             }
+            // 3 FILTERS
             else if (hasServicio && hasPersona && hasCgecod) {
-                result = dpeRepository.findByENTAndEJEAndDep_DEPDESContainingAndPer_PERNOMContainingAndDep_Cge_CGECOD(ent, eje, servicio, persona, cgecod);
+                List<personasPorServiciosProjection> data = dpeRepository.findByENTAndEJE(ent, eje);
+                data = filterByServicio(data, servicio);
+                data = filterByPersona(data, persona);
+                result = data.stream()
+                    .filter(p -> p.getDep().getCge().getCGECOD().equals(cgecod))
+                    .toList();
             }
-            else if (hasServicio && hasPersona && hasPerfil && !"peticionario".equals(perfilType)) {
-                if ("depalm".equals(perfilType)) {
-                    result = dpeRepository.findByENTAndEJEAndDep_DEPDESContainingAndPer_PERNOMContainingAndDep_DEPALM(ent, eje, servicio, persona, perfilValue);
-                } else if ("depcom".equals(perfilType)) {
-                    result = dpeRepository.findByENTAndEJEAndDep_DEPDESContainingAndPer_PERNOMContainingAndDep_DEPCOM(ent, eje, servicio, persona, perfilValue);
-                } else if ("depint".equals(perfilType)) {
-                    result = dpeRepository.findByENTAndEJEAndDep_DEPDESContainingAndPer_PERNOMContainingAndDep_DEPINT(ent, eje, servicio, persona, perfilValue);
+            else if (hasServicio && hasPersona && hasPerfil) {
+                List<personasPorServiciosProjection> data = dpeRepository.findByENTAndEJE(ent, eje);
+                data = filterByServicio(data, servicio);
+                data = filterByPersona(data, persona);
+                result = filterByPerfil(data, perfilType);
+            }
+            else if (hasServicio && hasCgecod && hasPerfil) {
+                List<personasPorServiciosProjection> data = dpeRepository.findByENTAndEJEAndDep_Cge_CGECOD(ent, eje, cgecod);
+                data = filterByServicio(data, servicio);
+                result = filterByPerfil(data, perfilType);
+            }
+            else if (hasPersona && hasCgecod && hasPerfil) {
+                List<personasPorServiciosProjection> data;
+                if (persona.length() <= 20) {
+                    data = dpeRepository.findByENTAndEJEAndPERCODAndDep_Cge_CGECOD(ent, eje, persona, cgecod);
+                } else {
+                    data = dpeRepository.findByENTAndEJEAndPer_PERNOMContainingAndDep_Cge_CGECOD(ent, eje, persona, cgecod);
                 }
+                result = filterByPerfil(data, perfilType);
             }
-            else if (hasServicio && hasCgecod && hasPerfil && !"peticionario".equals(perfilType)) {
-                if ("depalm".equals(perfilType)) {
-                    result = dpeRepository.findByENTAndEJEAndDep_DEPDESContainingAndDep_Cge_CGECODAndDep_DEPALM(ent, eje, servicio, cgecod, perfilValue);
-                } else if ("depcom".equals(perfilType)) {
-                    result = dpeRepository.findByENTAndEJEAndDep_DEPDESContainingAndDep_Cge_CGECODAndDep_DEPCOM(ent, eje, servicio, cgecod, perfilValue);
-                } else if ("depint".equals(perfilType)) {
-                    result = dpeRepository.findByENTAndEJEAndDep_DEPDESContainingAndDep_Cge_CGECODAndDep_DEPINT(ent, eje, servicio, cgecod, perfilValue);
-                }
-            }
-            else if (hasPersona && hasCgecod && hasPerfil && !"peticionario".equals(perfilType)) {
-                if ("depalm".equals(perfilType)) {
-                    result = dpeRepository.findByENTAndEJEAndPer_PERNOMContainingAndDep_Cge_CGECODAndDep_DEPALM(ent, eje, persona, cgecod, perfilValue);
-                } else if ("depcom".equals(perfilType)) {
-                    result = dpeRepository.findByENTAndEJEAndPer_PERNOMContainingAndDep_Cge_CGECODAndDep_DEPCOM(ent, eje, persona, cgecod, perfilValue);
-                } else if ("depint".equals(perfilType)) {
-                    result = dpeRepository.findByENTAndEJEAndPer_PERNOMContainingAndDep_Cge_CGECODAndDep_DEPINT(ent, eje, persona, cgecod, perfilValue);
-                }
-            }
+            // 2 FILTERS
             else if (hasServicio && hasPersona) {
-                result = dpeRepository.findByENTAndEJEAndDep_DEPDESContainingAndPer_PERNOMContaining(ent, eje, servicio, persona);
+                List<personasPorServiciosProjection> data = dpeRepository.findByENTAndEJE(ent, eje);
+                data = filterByServicio(data, servicio);
+                result = filterByPersona(data, persona);
             }
             else if (hasServicio && hasCgecod) {
-                result = dpeRepository.findByENTAndEJEAndDep_DEPDESContainingAndDep_Cge_CGECOD(ent, eje, servicio, cgecod);
-            }
-            else if (hasServicio && hasPerfil && !"peticionario".equals(perfilType)) {
-                if ("depalm".equals(perfilType)) {
-                    result = dpeRepository.findByENTAndEJEAndDep_DEPDESContainingAndDep_DEPALM(ent, eje, servicio, perfilValue);
-                } else if ("depcom".equals(perfilType)) {
-                    result = dpeRepository.findByENTAndEJEAndDep_DEPDESContainingAndDep_DEPCOM(ent, eje, servicio, perfilValue);
-                } else if ("depint".equals(perfilType)) {
-                    result = dpeRepository.findByENTAndEJEAndDep_DEPDESContainingAndDep_DEPINT(ent, eje, servicio, perfilValue);
-                }
+                List<personasPorServiciosProjection> data = dpeRepository.findByENTAndEJEAndDep_Cge_CGECOD(ent, eje, cgecod);
+                result = filterByServicio(data, servicio);
             }
             else if (hasPersona && hasCgecod) {
-                result = dpeRepository.findByENTAndEJEAndPer_PERNOMContainingAndDep_Cge_CGECOD(ent, eje, persona, cgecod);
-            }
-            else if (hasPersona && hasPerfil && !"peticionario".equals(perfilType)) {
-                if ("depalm".equals(perfilType)) {
-                    result = dpeRepository.findByENTAndEJEAndPer_PERNOMContainingAndDep_DEPALM(ent, eje, persona, perfilValue);
-                } else if ("depcom".equals(perfilType)) {
-                    result = dpeRepository.findByENTAndEJEAndPer_PERNOMContainingAndDep_DEPCOM(ent, eje, persona, perfilValue);
-                } else if ("depint".equals(perfilType)) {
-                    result = dpeRepository.findByENTAndEJEAndPer_PERNOMContainingAndDep_DEPINT(ent, eje, persona, perfilValue);
+                if (persona.length() <= 20) {
+                    result = dpeRepository.findByENTAndEJEAndPERCODAndDep_Cge_CGECOD(ent, eje, persona, cgecod);
+                } else {
+                    result = dpeRepository.findByENTAndEJEAndPer_PERNOMContainingAndDep_Cge_CGECOD(ent, eje, persona, cgecod);
                 }
             }
-            else if (hasCgecod && hasPerfil && !"peticionario".equals(perfilType)) {
-                if ("depalm".equals(perfilType)) {
-                    result = dpeRepository.findByENTAndEJEAndDep_Cge_CGECODAndDep_DEPALM(ent, eje, cgecod, perfilValue);
-                } else if ("depcom".equals(perfilType)) {
-                    result = dpeRepository.findByENTAndEJEAndDep_Cge_CGECODAndDep_DEPCOM(ent, eje, cgecod, perfilValue);
-                } else if ("depint".equals(perfilType)) {
-                    result = dpeRepository.findByENTAndEJEAndDep_Cge_CGECODAndDep_DEPINT(ent, eje, cgecod, perfilValue);
-                }
+            else if (hasServicio && hasPerfil) {
+                List<personasPorServiciosProjection> data = dpeRepository.findByENTAndEJE(ent, eje);
+                data = filterByServicio(data, servicio);
+                result = filterByPerfil(data, perfilType);
             }
+            else if (hasPersona && hasPerfil) {
+                List<personasPorServiciosProjection> data;
+                if (persona.length() <= 20) {
+                    data = dpeRepository.findProjectionByENTAndEJEAndPERCOD(ent, eje, persona);
+                } else {
+                    data = dpeRepository.findByENTAndEJEAndPer_PERNOMContaining(ent, eje, persona);
+                }
+                result = filterByPerfil(data, perfilType);
+            }
+            else if (hasCgecod && hasPerfil) {
+                List<personasPorServiciosProjection> data = dpeRepository.findByENTAndEJEAndDep_Cge_CGECOD(ent, eje, cgecod);
+                result = filterByPerfil(data, perfilType);
+            }
+            // 1 FILTER
             else if (hasServicio) {
-                result = dpeRepository.findByENTAndEJEAndDep_DEPDESContaining(ent, eje, servicio);
-                if (result == null || result.isEmpty()) {
-                    result = dpeRepository.findByENTAndEJEAndDEPCODContaining(ent, eje, servicio);
-                }
+                List<personasPorServiciosProjection> data = dpeRepository.findByENTAndEJE(ent, eje);
+                result = filterByServicio(data, servicio);
             }
             else if (hasPersona) {
-                result = dpeRepository.findByENTAndEJEAndPer_PERNOMContaining(ent, eje, persona);
-                if (result == null || result.isEmpty()) {
+                if (persona.length() <= 20) {
+                    // Search by PERCOD (exact)
                     result = dpeRepository.findProjectionByENTAndEJEAndPERCOD(ent, eje, persona);
+                } else {
+                    // Search by PERNOM (LIKE)
+                    result = dpeRepository.findByENTAndEJEAndPer_PERNOMContaining(ent, eje, persona);
                 }
             }
             else if (hasCgecod) {
                 result = dpeRepository.findByENTAndEJEAndDep_Cge_CGECOD(ent, eje, cgecod);
             }
             else if (hasPerfil) {
-                if ("peticionario".equals(perfilType)) {
-                    result = dpeRepository.findByENTAndEJEAndDep_DEPALMAndDep_DEPCOMAndDep_DEPINT(ent, eje, 0, 0, 0);
-                } else if ("depalm".equals(perfilType)) {
-                    result = dpeRepository.findByENTAndEJEAndDep_DEPALM(ent, eje, perfilValue);
-                } else if ("depcom".equals(perfilType)) {
-                    result = dpeRepository.findByENTAndEJEAndDep_DEPCOM(ent, eje, perfilValue);
-                } else if ("depint".equals(perfilType)) {
-                    result = dpeRepository.findByENTAndEJEAndDep_DEPINT(ent, eje, perfilValue);
-                }
+                List<personasPorServiciosProjection> data = dpeRepository.findByENTAndEJE(ent, eje);
+                result = filterByPerfil(data, perfilType);
             }
 
             if (result == null || result.isEmpty()) {
@@ -376,6 +369,43 @@ public class DpeController {
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Error: " + ex.getMostSpecificCause().getMessage());
+        }
+    }
+
+    private List<personasPorServiciosProjection> filterByPerfil(List<personasPorServiciosProjection> data, String perfilType) {
+        if (data == null || data.isEmpty()) return data;
+        
+        if ("peticionario".equals(perfilType)) {
+            return data.stream()
+                .filter(p -> p.getDep().getDEPALM() == 0 && p.getDep().getDEPCOM() == 0 && p.getDep().getDEPINT() == 0)
+                .toList();
+        } else if ("depalm".equals(perfilType)) {
+            return data.stream().filter(p -> p.getDep().getDEPALM() == 1).toList();
+        } else if ("depcom".equals(perfilType)) {
+            return data.stream().filter(p -> p.getDep().getDEPCOM() == 1).toList();
+        } else if ("depint".equals(perfilType)) {
+            return data.stream().filter(p -> p.getDep().getDEPINT() == 1).toList();
+        }
+        return data;
+    }
+
+    private List<personasPorServiciosProjection> filterByPersona(List<personasPorServiciosProjection> data, String persona) {
+        if (data == null || data.isEmpty()) return data;
+        
+        if (persona.length() <= 20) {
+            return data.stream().filter(p -> persona.equals(p.getPERCOD())).toList();
+        } else {
+            return data.stream().filter(p -> p.getPer().getPERNOM().contains(persona)).toList();
+        }
+    }
+
+    private List<personasPorServiciosProjection> filterByServicio(List<personasPorServiciosProjection> data, String servicio) {
+        if (data == null || data.isEmpty()) return data;
+        
+        if (servicio.length() <= 6) {
+            return data.stream().filter(p -> p.getDEPCOD().contains(servicio)).toList();
+        } else {
+            return data.stream().filter(p -> p.getDep().getDEPDES().contains(servicio)).toList();
         }
     }
 }
