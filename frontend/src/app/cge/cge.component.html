@@ -79,7 +79,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let c of centroGestores">
+                    <tr *ngFor="let c of paginatedCentroGestor">
                         <td (click)="showDetails(c)" style="cursor: pointer;">{{ c.cgecod }}</td>
                         <td>{{ c.cgedes }}</td>
                         <td>{{ c.cgeorg }}</td>

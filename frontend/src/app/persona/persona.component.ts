@@ -191,14 +191,13 @@ export class PersonaComponent {
 
   excelDownload() {
     this.limpiarMessages(); 
-    const rows = this.backuppersonas.length ? this.backuppersonas : this.personas;
+    const rows = this.paginatedPersonas;
     if (!rows || rows.length === 0) {
       this.personasMessageError = 'No hay datos para exportar.';
       return;
     }
   
     const exportRows = rows.map((row, index) => ({
-      '#': index + 1,
       Código: row.percod ?? '',
       Nombre: row.pernom ?? '',
       Correo_Electrónico: row.percoe ?? '',
@@ -210,11 +209,10 @@ export class PersonaComponent {
     const worksheet = XLSX.utils.aoa_to_sheet([]);
     XLSX.utils.sheet_add_aoa(worksheet, [['listas de Personas']], { origin: 'A1' });
     worksheet['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 3 } }];
-    XLSX.utils.sheet_add_aoa(worksheet, [['#', 'Código', 'Nombre', 'Correo_Electrónico', 'Teléfono', 'Cargo', 'Observaciones']], { origin: 'A2' });
+    XLSX.utils.sheet_add_aoa(worksheet, [['Código', 'Nombre', 'Correo_Electrónico', 'Teléfono', 'Cargo', 'Observaciones']], { origin: 'A2' });
     XLSX.utils.sheet_add_json(worksheet, exportRows, { origin: 'A3', skipHeader: true });
 
     worksheet['!cols'] = [
-      { wch: 15 },
       { wch: 30 },
       { wch: 40 },
       { wch: 35 },
@@ -234,14 +232,13 @@ export class PersonaComponent {
 
   exportPdf() {
     this.limpiarMessages();
-    const source = this.backuppersonas.length ? this.backuppersonas : this.personas;
+    const source = this.paginatedPersonas;
     if (!source?.length) {
       this.personasMessageError = 'No hay datos para exportar.';
       return;
     }
 
     const rows = source.map((row: any, index: number) => ({
-      index: index + 1,
       percod: row.percod ?? '',
       pernom: row.pernom ?? '',
       percoe: row.percoe ?? '',
@@ -257,7 +254,6 @@ export class PersonaComponent {
     doc.text('Listado de Personas', 40, 40);
 
     const columns = [
-      { header: '#', dataKey: 'index' },
       { header: 'Código', dataKey: 'percod' },
       { header: 'Nombre', dataKey: 'pernom' },
       { header: 'Correo electrónico', dataKey: 'percoe' },

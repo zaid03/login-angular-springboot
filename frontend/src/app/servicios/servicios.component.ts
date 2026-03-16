@@ -213,16 +213,13 @@ export class ServiciosComponent {
 
   excelDownload() {
     this.limpiarMessages();
-    const rows = this.backupServices.length ? this.backupServices : this.services;
+    const rows = this.paginatedServices;
     if (!rows || rows.length === 0) {
       this.servicessMessageError = 'No hay datos para exportar.';
       return;
     }
   
     const exportRows = rows.map((row, index) => ({
-      '#': index + 1,
-      Entidad: row.ent ?? '',
-      EJE: row.eje ?? '',
       Servicio: row.depcod ?? '',
       Descripción: row.depdes ?? '',
       centro_gestor: row.cgecod ?? '',
@@ -235,13 +232,10 @@ export class ServiciosComponent {
     const worksheet = XLSX.utils.aoa_to_sheet([]);
     XLSX.utils.sheet_add_aoa(worksheet, [['listas de servicios']], { origin: 'A1' });
     worksheet['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 3 } }];
-    XLSX.utils.sheet_add_aoa(worksheet, [['#', 'Entidad', 'EJE', 'Servicio', 'Descripción', 'Cód. C.G.', 'Centro de Coste', 'Almacén', 'Comprador/Farmacia', 'Contabilidad']], { origin: 'A2' });
+    XLSX.utils.sheet_add_aoa(worksheet, [['Servicio', 'Descripción', 'Cód. C.G.', 'Centro de Coste', 'Almacén', 'Comprador/Farmacia', 'Contabilidad']], { origin: 'A2' });
     XLSX.utils.sheet_add_json(worksheet, exportRows, { origin: 'A3', skipHeader: true });
 
     worksheet['!cols'] = [
-      { wch: 6 },
-      { wch: 12 },
-      { wch: 12 },
       { wch: 15 },
       { wch: 45 },
       { wch: 12 },
@@ -262,16 +256,13 @@ export class ServiciosComponent {
 
   exportPdf() {
     this.limpiarMessages();
-    const source = this.backupServices.length ? this.backupServices : this.services;
+    const source = this.paginatedServices;
     if (!source?.length) {
       this.servicessMessageError = 'No hay datos para exportar.';
       return;
     }
 
     const rows = source.map((row: any, index: number) => ({
-      index: index + 1,
-      ent: row.ent ?? '',
-      eje: row.eje ?? '',
       depcod: row.depcod ?? '',
       depdes: row.depdes ?? '',
       cgecod: row.cgecod ?? '',
@@ -287,9 +278,6 @@ export class ServiciosComponent {
     doc.text('Listado de servicios', 40, 40);
 
     const columns = [
-      { header: '#', dataKey: 'index' },
-      { header: 'Entidad', dataKey: 'ent' },
-      { header: 'Ejercicio', dataKey: 'eje' },
       { header: 'Servicio', dataKey: 'depcod' },
       { header: 'Descripción', dataKey: 'depdes' },
       { header: 'Cód. C.G.', dataKey: 'cgecod' },
