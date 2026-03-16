@@ -86,3 +86,25 @@
 .proveedor-grid-modal .title {width: 60%;}
 .selected-row {background-color: rgba(28, 93, 140, 0.2);}
 /* add personas for a service */
+/* media querries */
+@media screen and (min-width: 1450px) and (max-width: 1600px) {
+    .search-form {width: 68%;}
+    .Widthy {width: 10%; }
+}
+@media screen and (min-width: 1601px) and (max-width: 1800px) {
+    .search-form {width: 60%;}
+    .Widthy {width: 10%;}
+}
+@media screen and (min-width: 1801px) and (max-width: 1900px) {
+    .search-form {width: 53%;}
+    .Widthy {width: 10%;}
+}
+@media screen and (min-width: 1901px) and (max-width: 2099px) {
+    .search-form {width: 50%;}
+    .Widthy {width: 10%;}
+}
+@media screen and (min-width: 2100px) {
+    .search-form {width: 47%;}
+    .Widthy {width: 8%;}
+}
+/* media querries */
