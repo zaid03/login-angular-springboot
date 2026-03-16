@@ -265,7 +265,6 @@ public class DpeController {
             boolean hasCgecod = cgecod != null && !cgecod.isEmpty();
             boolean hasPerfil = perfilType != null;
 
-            // 4 FILTERS
             if (hasServicio && hasPersona && hasCgecod && hasPerfil) {
                 List<personasPorServiciosProjection> data = dpeRepository.findByENTAndEJE(ent, eje);
                 data = filterByServicio(data, servicio);
@@ -276,7 +275,6 @@ public class DpeController {
                     .toList();
                 result = filterByPerfil(cgFiltered, perfilType);
             }
-            // 3 FILTERS
             else if (hasServicio && hasPersona && hasCgecod) {
                 List<personasPorServiciosProjection> data = dpeRepository.findByENTAndEJE(ent, eje);
                 data = filterByServicio(data, servicio);
@@ -305,7 +303,6 @@ public class DpeController {
                 }
                 result = filterByPerfil(data, perfilType);
             }
-            // 2 FILTERS
             else if (hasServicio && hasPersona) {
                 List<personasPorServiciosProjection> data = dpeRepository.findByENTAndEJE(ent, eje);
                 data = filterByServicio(data, servicio);
@@ -340,17 +337,14 @@ public class DpeController {
                 List<personasPorServiciosProjection> data = dpeRepository.findByENTAndEJEAndDep_Cge_CGECOD(ent, eje, cgecod);
                 result = filterByPerfil(data, perfilType);
             }
-            // 1 FILTER
             else if (hasServicio) {
                 List<personasPorServiciosProjection> data = dpeRepository.findByENTAndEJE(ent, eje);
                 result = filterByServicio(data, servicio);
             }
             else if (hasPersona) {
                 if (persona.length() <= 20) {
-                    // Search by PERCOD (exact)
                     result = dpeRepository.findProjectionByENTAndEJEAndPERCOD(ent, eje, persona);
                 } else {
-                    // Search by PERNOM (LIKE)
                     result = dpeRepository.findByENTAndEJEAndPer_PERNOMContaining(ent, eje, persona);
                 }
             }

@@ -396,5 +396,4 @@ export class PersonasPorServiciosComponent {
     this.personasServicesSuccess = '';
     this.personasServicesError = '';
   }
-
 }
