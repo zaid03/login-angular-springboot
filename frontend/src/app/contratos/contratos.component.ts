@@ -836,6 +836,7 @@ export class ContratosComponent {
   }
 
   isLoadingArticulos: boolean = false;
+  articuloError: string = '';
   fetchArticulos(numero: number) {
     this.isLoadingArticulos = true;
     const concod = numero;
@@ -847,6 +848,7 @@ export class ContratosComponent {
       },
       error: (err) => {
         this.isLoadingArticulos = false;
+        this.articuloError = err.error.error ?? err.error;
       }
     })
   }
@@ -1324,13 +1326,14 @@ export class ContratosComponent {
   programa: string = '';
   economica: string = '';
   cgecod: string = '';
+  DError: string = '';
   checkBeforeAdd(centro: any) {
     this.limpiarMessages();
     
     this.cogaip = centro.cogaip;
     
     if (this.cogaip > 0) {
-      this.cgeError = 'No se puede cambiar la D si ya hay pedidos'
+      this.DError = 'No se puede cambiar la D si ya hay pedidos'
     } else {
       this.cgecod = centro.cgecod;
       this.organica = centro.cge.cgeorg;
@@ -1432,5 +1435,7 @@ export class ContratosComponent {
     this.centroDeleteError = '';
     this.centroErrorMessage = '';
     this.DErrorMessage = '';
+    this.articuloError = '';
+    this.DError = '';
   }
 }

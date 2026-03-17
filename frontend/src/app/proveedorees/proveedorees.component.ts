@@ -586,6 +586,7 @@ export class ProveedoreesComponent {
   showContactPersonsGrid = false;
   contactPersons: any = null;
   activeDetailTab: 'contact' | 'articulo' | null = null;
+  personaError: string = '';
   showContactPersons(proveedore: any){
     this.limpiarMessages();
     this.showContactPersonsGrid = true;
@@ -597,20 +598,13 @@ export class ProveedoreesComponent {
     this.isLoading = true;
     this.http.get<any[]>(`${environment.backendUrl}/api/more/by-tpe/${this.entcod}/${tercod}`)
       .subscribe({ next: (response) => {
-        const respArray = Array.isArray(response) ? response : (response ? [response] : []);
-        if (respArray.length === 0) { 
-          this.contactPersons = null;           
-          this.personasContactoErrorMessage = 'No se encontraron personas de contacto.';
-          this.isLoading = false;
-        } else {
-          this.contactPersons = respArray;
-          this.personasContactoErrorMessage = '';
-          this.isLoading = false;
-        }
-          this.pagePersona = 0;
+        this.contactPersons = response;
+        this.personaError = '';
+        this.isLoading = false;
+        this.pagePersona = 0;
       },
       error: (err) => {
-        this.personasContactoErrorMessage = err.error.error ?? err.error;
+        this.personaError = err.error.error ?? err.error;
         this.contactPersons = [];
         this.pagePersona = 0;
         this.isLoading = false;
@@ -688,12 +682,10 @@ export class ProveedoreesComponent {
       { responseType: 'text' }
     ).subscribe({
       next: (res) => {
-        this.personasContactoErrorMessage = '';
         this.personasContactoSuccessMessage = 'Persona de contacto actualizada correctamente';
         this.isUpdating = false;
       },
       error: (err) => {
-        this.personasContactoSuccessMessage = '';
         this.personasContactoErrorMessage = err.error.error ?? err.error;
         this.isUpdating = false;
       }
@@ -785,6 +777,7 @@ export class ProveedoreesComponent {
   showArticulosGrid = false;
   articulos: any = null;
   articuloError: string = '';
+  articulosShowError: string = '';
   showArticulos(proveedore: any){
     this.limpiarMessages();
     this.showArticulosGrid = true;
@@ -810,7 +803,7 @@ export class ProveedoreesComponent {
         this.pageArticulo = 0;
       },
       error: (err) => {
-        this.articuloError = err.error.error ?? err.error;
+        this.articulosShowError = err.error.error ?? err.error;
         this.isLoading = false;
       } 
     });
@@ -1327,5 +1320,7 @@ export class ProveedoreesComponent {
     this.anadirErrorMessage = '';
     this.guardarMessageProveedor = '';
     this.anadirProveedorErrorMessage = '';
+    this.articulosShowError = '';
+    this.personaError = '';
   }
 }

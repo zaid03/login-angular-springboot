@@ -61,7 +61,6 @@
 .art input[type="text"]:focus { border-color: #38249b; outline: none; background: #f0f7ff; }
 .checkbox { outline: none; }
 .art h2{ text-align: left; font-size: 15px; color: #333; margin: 0; padding: 0; }
-.space { margin-top: 10px; }
 .save-btn-articulos {margin-top: 10px;}
 .pct .red-btn,
 .art .red-btn { margin-right: 10px;}
@@ -70,7 +69,6 @@
 .delete-confirm-modal div { margin-bottom: 18px; }
 .delete-confirm-modal p { font-weight: bold; margin: 6px 0; font-size: 1.05rem; color: #333; }
 .delete-confirm-modal strong { color: #2c3e50; font-weight: 600; font-weight: bold; }
-.delete-confirm-modal .red-btn {margin-right: 10px;}
 /* delete-modal */
 /* add articulo modal */
 .hello-modal,

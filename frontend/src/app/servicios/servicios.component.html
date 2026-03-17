@@ -302,6 +302,8 @@
                     <div class="btns space">
                         <button 
                             class="purple-btn" 
+                            [disabled]="isUpdate" 
+                            [ngClass]="{ 'disabled-btn': isUpdate }"
                             (click)="showAddPersonas()"
                         >Añadir personas</button>
                         <button 

@@ -229,7 +229,7 @@
                             <div class="right">
                                 <h1 class="h1-style">{{tempProveedor.terfax || '#'}}</h1>
                                 <textarea 
-                                    class="largeArea" 
+                                    class="textArea-style largeArea" 
                                     [(ngModel)]="tempProveedor.terweb"
                                     [disabled]="!isUpdate"
                                     (input)="allowToUpdate = true"
@@ -250,6 +250,7 @@
                         <div class="observ">
                             <p class="p-style">Observaciones:</p>
                             <textarea 
+                                class="textArea-style"
                                 [(ngModel)]="tempProveedor.terobs"
                                 [disabled]="!isUpdate"
                                 (input)="allowToUpdate = true"
@@ -257,6 +258,18 @@
                         </div>
                     </div>
                     <div class="btns">
+                        <button 
+                            class="purple-btn" 
+                            [disabled]="isUpdate" 
+                            [ngClass]="{ 'disabled-btn': isUpdate }" 
+                            (click)="showHello()"
+                        >Añadir articulo</button>
+                        <button 
+                            class="purple-btn" 
+                            [disabled]="isUpdate" 
+                            [ngClass]="{ 'disabled-btn': isUpdate }" 
+                            (click)="showPersonas()"
+                        >Añadir persona</button>
                         <button 
                             class="red-btn" 
                             *ngIf="isUpdate" 
@@ -298,7 +311,6 @@
                         </div>
                     </div>
                     <div class="custom-grid-modal" *ngIf="showContactPersonsGrid">
-                        <button class="purple-btn space" (click)="showPersonas()">+</button>
                         <h1 class="errorBtn">{{ personasContactoErrorMessage }}</h1>
                         <h1 class="successBtn">{{ personasContactoSuccessMessage }}</h1>
                         <div *ngIf="isLoading" class="loading-message">
@@ -340,6 +352,7 @@
                                 </tr>
                             </tbody>
                         </table>
+                        <h1 class="errorBtn">{{personaError}}</h1>
                         <div class="pagination-controls">
                             <button 
                                 class="pag-btn" 
@@ -367,7 +380,6 @@
                         </div>
                     </div>
                     <div class="custom-grid-modal" *ngIf="showArticulosGrid">
-                        <button class="purple-btn space" (click)="showHello()">+</button>
                         <h1 class="errorBtn">{{ articuloError }}</h1>
                         <h1 class="successBtn">{{ articuloSuccessMessage }}</h1>
                         <div *ngIf="isLoading" class="loading-message">
@@ -429,6 +441,7 @@
                                 </tr>
                             </tbody>
                         </table>
+                        <h1 class="errorBtn">{{articulosShowError}}</h1>
                         <div class="pagination-controls">
                             <button 
                                 class="pag-btn" 
@@ -464,35 +477,39 @@
 
 <div class="modal-backdrop" *ngIf="showDeleteConfirm" (click)="closeDeleteConfirm()"></div>
 <div class="delete-confirm-modal" *ngIf="showDeleteConfirm">
+    <div class="btns">
+        <button class="purple-btn" (click)="closeDeleteConfirm()">✖</button>
+    </div>
     <h3>¿Seguro que quieres eliminar este artículo?</h3>
+    <div *ngIf="isDeleting" class="loading-message">
+        <div class="spinner"></div>
+        <span>borrando</span>
+    </div>
     <div *ngIf="articuloToDelete">
         <p><strong>Familia:</strong> {{ articuloToDelete.afacod }}</p>
         <p><strong>Subfamilia:</strong> {{ articuloToDelete.asucod }}</p>
         <p><strong>Artículo:</strong> {{ articuloToDelete.artcod }}</p>
     </div>
-    <div *ngIf="isDeleting" class="loading-message">
-        <div class="spinner"></div>
-        <span>borrando</span>
-    </div>
     <button class="red-btn" (click)="confirmDelete()">-</button>
-    <button class="purple-btn" (click)="closeDeleteConfirm()">✖</button>
 </div>
 
 <div class="modal-backdrop" *ngIf="showDeletePersona" (click)="closeDeleteConfirm()"></div>
 <div class="delete-confirm-modal" *ngIf="showDeletePersona">
+    <div class="btns">
+        <button class="purple-btn" (click)="closeDeletePersonas()">✖</button>
+    </div>
     <h3>¿Seguro que quieres eliminar este Persona?</h3>
+    <div *ngIf="isDeleting" class="loading-message">
+        <div class="spinner"></div>
+        <span>borrando</span>
+    </div>
     <div *ngIf="personaToDelete">
         <div class="detailPersonnaDelete">
             <h1 class="h1-style titleDelete">Nombre:</h1>
             <h1 class="h1-style titleDelete">{{personaToDelete.tpenom}}</h1>
         </div>
     </div>
-    <div *ngIf="isDeleting" class="loading-message">
-        <div class="spinner"></div>
-        <span>borrando</span>
-    </div>
     <button class="red-btn" (click)="confirmDeletePersona()">-</button>
-    <button class="purple-btn" (click)="closeDeletePersonas()">✖</button>
 </div>
 
 <div class="modal-backdrop" *ngIf="showPersonasGrid" (click)="hidePersonas()"></div>
@@ -518,11 +535,11 @@
             <p class="p-style">Observaciones</p>
         </div>
         <div class="right-persona">
-            <textarea #nombreadd></textarea>
-            <textarea #telefonoadd></textarea>
-            <textarea #moviladd></textarea>
-            <textarea #correoadd></textarea>
-            <textarea #observacionesadd></textarea>
+            <textarea class="textArea-style" #nombreadd></textarea>
+            <textarea class="textArea-style" #telefonoadd></textarea>
+            <textarea class="textArea-style" #moviladd></textarea>
+            <textarea class="textArea-style" #correoadd></textarea>
+            <textarea class="textArea-style" #observacionesadd></textarea>
         </div>
     </div>
 </div>

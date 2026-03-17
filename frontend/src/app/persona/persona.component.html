@@ -205,6 +205,8 @@
                         <button 
                             type="button" 
                             class="purple-btn" 
+                            [disabled]="isUpdate" 
+                            [ngClass]="{ 'disabled-btn': isUpdate }"
                             (click)="showAddService()"
                         >Añadir servicios</button>
                         <button 
