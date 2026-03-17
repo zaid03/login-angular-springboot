@@ -409,7 +409,6 @@
                                 <ng-container [ngSwitch]="albaranesOptio">
                                     <ng-container *ngSwitchCase="'albaranes'">
                                         <h1 class="successBtn">{{moreInfoMessageSuccess}}</h1>
-                                        <h1 class="errorBtn">{{moreInfoMessageError}}</h1>
                                         <div class="detail-card">
                                             <table class="main-table alb width-last">
                                                 <thead>
@@ -435,6 +434,7 @@
                                                     </tr>
                                                 </tbody>
                                             </table>
+                                            <h1 class="errorBtn">{{moreInfoMessageError}}</h1>
                                             <div class="pagination-controls alignment">
                                                 <button (click)="prevPageAlbaranes()" [disabled]="pageAlbaranes === 0">Anterior</button>
                                                 <span>Página</span>
@@ -453,7 +453,6 @@
                                     </ng-container>
                                     <ng-container *ngSwitchCase="'aplicaciones'">
                                         <h1 class="successBtn">{{moreInfoMessageSuccess}}</h1>
-                                        <h1 class="errorBtn">{{moreInfoMessageError}}</h1>
                                         <div *ngIf="isLoading" class="loading-message">
                                             <div class="spinner"></div>
                                             <span>Cargando</span>
@@ -479,6 +478,7 @@
                                                     </tr>
                                                 </tbody>
                                             </table>
+                                            <h1 class="errorBtn">{{moreInfoMessageError}}</h1>
                                             <div class="pagination-controls alignment">
                                                 <button (click)="prevPageAplicaiones()" [disabled]="pageAplicaiones === 0">Anterior</button>
                                                 <span>Página</span>
@@ -497,7 +497,6 @@
                                     </ng-container>
                                     <ng-container    *ngSwitchCase="'descuentos'">
                                         <h1 class="successBtn">{{moreInfoMessageSuccess}}</h1>
-                                        <h1 class="errorBtn">{{moreInfoMessageError}}</h1>
                                         <div *ngIf="isLoading" class="loading-message">
                                             <div class="spinner"></div>
                                             <span>Cargando</span>
@@ -529,6 +528,7 @@
                                                     </tr>
                                                 </tbody>
                                             </table>
+                                            <h1 class="errorBtn">{{moreInfoMessageError}}</h1>
                                             <div class="pagination-controls alignment">
                                                 <button (click)="prevPageDescuentos()" [disabled]="pageDescuentos === 0">Anterior</button>
                                                 <span>Página</span>

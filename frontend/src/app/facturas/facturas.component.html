@@ -386,6 +386,12 @@
                     </div>
                     <div class="btns">
                         <button 
+                            class="purple-btn" 
+                            [disabled]="isUpdate" 
+	                        [ngClass]="{ 'disabled-btn': isUpdate }"
+                            (click)="openAlbaranesAdd()"
+                        >Añadir albaran</button>
+                        <button 
                             class="red-btn" 
                             *ngIf="isUpdate" 
                             (click)="cancelar()"
@@ -461,9 +467,6 @@
                             <div class="detail-switch-second-content">
                                 <ng-container [ngSwitch]="albaranesOptio">
                                     <ng-container *ngSwitchCase="'albaranes'">
-                                        <div class="albaranes-btns">
-                                            <button class="purple-btn" (click)="openAlbaranesAdd()">+</button>
-                                        </div>
                                         <h1 class="successBtn">{{moreInfoMessageSuccess}}</h1>
                                         <h1 class="errorBtn">{{moreInfoMessageError}}</h1>
                                         <div *ngIf="isLoading" class="loading-message">
@@ -499,6 +502,7 @@
                                                     </tr>
                                                 </tbody>
                                             </table>
+                                            <h1 class="errorBtn">{{albaranError}}</h1>
                                             <div class="pagination-controls alignment">
                                                 <button (click)="prevPageAlbaranes()" [disabled]="pageAlbaranes === 0">Anterior</button>
                                                 <span>Página</span>
@@ -555,6 +559,7 @@
                                                     </tr>
                                                 </tbody>
                                             </table>
+                                            <h1 class="errorBtn">{{descuentosError}}</h1>
                                             <div class="pagination-controls alignment">
                                                 <button (click)="prevPageAplicaiones()" [disabled]="pageAplicaiones === 0">Anterior</button>
                                                 <span>Página</span>
@@ -573,7 +578,6 @@
                                     </ng-container>
                                     <ng-container    *ngSwitchCase="'descuentos'">
                                         <h1 class="successBtn">{{moreInfoMessageSuccess}}</h1>
-                                        <h1 class="errorBtn">{{moreInfoMessageError}}</h1>
                                         <div *ngIf="isLoading" class="loading-message">
                                             <div class="spinner"></div>
                                             <span>Cargando</span>
@@ -605,6 +609,7 @@
                                                     </tr>
                                                 </tbody>
                                             </table>
+                                            <h1 class="errorBtn">{{descuentosError}}</h1>
                                             <div class="pagination-controls alignment">
                                                 <button (click)="prevPageDescuentos()" [disabled]="pageDescuentos === 0">Anterior</button>
                                                 <span>Página</span>

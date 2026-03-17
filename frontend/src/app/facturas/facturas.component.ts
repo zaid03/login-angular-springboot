@@ -737,24 +737,16 @@ export class FacturasComponent {
     if ( option === 'descuentos') {this.fetchDescuentosDetails(facnum);}
   }
 
+  albaranError: string = '';
   fetchAlbaranesDEtail(facnum: number) {
     this.http.get<any>(`${environment.backendUrl}/api/alb/albaranes/${this.entcod}/${this.eje}/${facnum}`).subscribe({
       next: (response) => {
-        if (!Array.isArray(response) || response.length === 0) {
-          this.moreInfoMessageIsSuccess = true;
-          this.moreInfoMessageSuccess = 'No hay albaranes por las medidas de búsqueda';
-          this.albaranes = []
-          this.isLoading = false;
-          this.pageAlbaranes = 0;
-        } else {
-          this.albaranes = response;
-          this.backipAlbaranes = Array.isArray(response) ? [...response] : [];
-          this.isLoading = false;
-          this.pageAlbaranes = 0;
-        }
+        this.albaranes = response;
+        this.backipAlbaranes = Array.isArray(response) ? [...response] : [];
+        this.isLoading = false;
+        this.pageAlbaranes = 0;
       }, error: (err) => {
-        this.moreInfoMessageIsError = true;
-        this.moreInfoMessageError = err.error.error ?? err.error;
+        this.albaranError = err.error.error ?? err.error;
         this.isLoading = false;
         this.pageAlbaranes = 0;
       }
@@ -770,43 +762,35 @@ export class FacturasComponent {
   }
 
   fetchApplicacionesDetails(facnum: number) {
+    this.limpiarMEssages();
     this.http.get<any>(`${environment.backendUrl}/api/fde/${this.entcod}/${this.eje}/${facnum}`).subscribe({
       next: (response) => {
-        if (!Array.isArray(response) || response.length === 0) {
-          this.moreInfoMessageIsSuccess = true;
-          this.moreInfoMessageSuccess = 'No hay aplicaciones por las medidas de búsqueda';
-          this.apalicaciones = []
-          this.isLoading = false;
-          this.pageAplicaiones = 0
-        } else {
+        this.apalicaciones = response.map((item: any) => {
+        if (item.FDEDIF !== undefined && item.FDEDIF !== null && item.FDEDIF !== '') {
+          let value = String(item.FDEDIF)
+            .replace(/[^\d,.-]/g, '') 
+            .replace(/\s/g, '');      
 
-          this.apalicaciones = response.map((item: any) => {
-            if (item.FDEDIF !== undefined && item.FDEDIF !== null && item.FDEDIF !== '') {
-              let value = String(item.FDEDIF)
-                .replace(/[^\d,.-]/g, '') 
-                .replace(/\s/g, '');      
+          if (value.indexOf(',') > -1) {
+            value = value.replace(/\./g, '');
+          }
+          value = value.replace(',', '.');
 
-              if (value.indexOf(',') > -1) {
-                value = value.replace(/\./g, '');
-              }
-              value = value.replace(',', '.');
-
-              let num = parseFloat(value);
-              if (!isNaN(num)) {
-                item.FDEDIF = num.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
-              }
-            }
-            return item;
-          });
-          this.backupAplicaciones = Array.isArray(response) ? [...this.apalicaciones] : [];
-          this.isLoading = false;
-          this.pageAplicaiones = 0
+          let num = parseFloat(value);
+          if (!isNaN(num)) {
+            item.FDEDIF = num.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
+          }
         }
-      }, error: (err) => {
-        this.moreInfoMessageIsError = true;
-        this.moreInfoMessageError = err.error.error ?? err.error;
+        return item;
+      });
+      this.backupAplicaciones = Array.isArray(response) ? [...this.apalicaciones] : [];
+      this.isLoading = false;
+      this.pageAplicaiones = 0;
+      }, 
+      error: (err) => {
         this.isLoading = false;
-        this.pageAplicaiones = 0
+        this.pageAplicaiones = 0;
+        this.moreInfoMessageError = err.error.error ?? err.error;
       }
     });
   }
@@ -819,24 +803,16 @@ export class FacturasComponent {
     if (inputPage >= 1 && inputPage <= this.totalPagesAplicaciones) {this.pageAplicaiones = inputPage - 1;}
   }
 
+  descuentosError: string = '';
   fetchDescuentosDetails(facnum: number) {
     this.http.get<any>(`${environment.backendUrl}/api/fdt/${this.entcod}/${this.eje}/${facnum}`).subscribe({
       next: (response) => {
-        if (!Array.isArray(response) || response.length === 0) {
-          this.moreInfoMessageIsSuccess = true;
-          this.moreInfoMessageSuccess = 'No hay descuentos por las medidas de búsqueda';
-          this.descuentos = []
-          this.isLoading = false;
-          this.pageDescuentos = 0;
-        } else {
-          this.descuentos = response;
-          this.backupDescuentos = Array.isArray(response) ? [...response] : [];
-          this.isLoading = false;
-          this.pageDescuentos = 0;
-        }
+        this.descuentos = response;
+        this.backupDescuentos = Array.isArray(response) ? [...response] : [];
+        this.isLoading = false;
+        this.pageDescuentos = 0;
       }, error: (err) => {
-        this.moreInfoMessageIsError = true;
-        this.moreInfoMessageError = err.error.error ?? err.error;
+        this.descuentosError = err.error.error ?? err.error;
         this.isLoading = false;
         this.pageDescuentos = 0;
       }
@@ -1263,5 +1239,7 @@ export class FacturasComponent {
     this.dalbaranesDeleteMessage = '';
     this.facturaDetailSuccess = '';
     this.facturaDetailError = '';
+    this.albaranError = '';
+    this.descuentosError = '';
   }
 }
