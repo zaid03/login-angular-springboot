@@ -354,7 +354,6 @@ export class PersonaComponent {
     this.selectedPersona = null
     this.personServicesOrigin = [];
     this.backupServices = [];
-    this.activeDetailTab = null;
     this.showSerivcesGrid = false;
   }
 
@@ -421,7 +420,6 @@ export class PersonaComponent {
   }
 
   //services grid functions
-  activeDetailTab: 'services' | null = null;
   showSerivcesGrid = false;
   personServicesOrigin: any = [];
   backupServices: any = [];
@@ -430,7 +428,6 @@ export class PersonaComponent {
   showServices(persona: any) {
     this.limpiarMessages();
     this.showSerivcesGrid = true;
-    this.activeDetailTab = 'services';
     const percod = persona.percod;
     this.fetchServices(percod);
   }
