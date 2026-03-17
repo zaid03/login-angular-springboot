@@ -376,6 +376,13 @@ export class ServiciosComponent {
     };
 
     const cgecod = this.selectedService.cgecod;
+    this.fetchServiceDescription(cgecod);
+
+    this.option = 'personas';
+    this.fetchPersonas(services.depcod);
+  }
+
+  fetchServiceDescription(cgecod: string) {
     this.http.get(`${environment.backendUrl}/api/cge/fetch-description-services/${this.entcod}/${this.eje}/${cgecod}`, { responseType: 'text' }
     ).subscribe({
       next: (res) => {
@@ -387,9 +394,17 @@ export class ServiciosComponent {
         this.servicesDetailError = err.error.error ?? err.error;
       }
     })
+  }
 
-    this.option = 'personas';
-    this.fetchPersonas(services.depcod);
+  isAccesible: boolean = false;
+  isAlmacenAccesible(depalm: number) {
+    if (depalm != 1) {
+      this.isAccesible = this.isAccesible;
+    } else if (depalm = 1) {
+      this.isAccesible = !this.isAccesible;
+    }
+
+    return this.isAccesible;
   }
 
   toggleDetailFlag(field: 'depalm' | 'depcom' | 'depint', value: boolean): void {
@@ -502,31 +517,18 @@ export class ServiciosComponent {
     })
   }
 
-  get paginatedPersonas(): any[] {
-    const start = this.personasPage * this.personasPageSize;
+  get paginatedPersonas(): any[] {const start = this.personasPage * this.personasPageSize;
     return this.personas.slice(start, start + this.personasPageSize);
   }
-
-  get personasTotalPages(): number {
-    return Math.max(1, Math.ceil(this.personas.length / this.personasPageSize));
-  }
-
-  personasPrevPage(): void {
-    if (this.personasPage > 0) this.personasPage--;
-  }
-
-  personasNextPage(): void {
-    if (this.personasPage < this.personasTotalPages - 1) this.personasPage++;
-  }
-
-  personasGoToPage(event: any): void {
-    const inputPage = Number(event.target.value);
-    if (inputPage >= 1 && inputPage <= this.personasTotalPages) {
-      this.personasPage = inputPage - 1;
-    }
+  get personasTotalPages(): number {return Math.max(1, Math.ceil(this.personas.length / this.personasPageSize));}
+  personasPrevPage(): void {if (this.personasPage > 0) this.personasPage--;}
+  personasNextPage(): void {if (this.personasPage < this.personasTotalPages - 1) this.personasPage++;}
+  personasGoToPage(event: any): void {const inputPage = Number(event.target.value);
+    if (inputPage >= 1 && inputPage <= this.personasTotalPages) {this.personasPage = inputPage - 1;}
   }
 
   almacenErro: string = '';
+  almacenSecondError: string = '';
   almacenArray: any = null;
   almacenDatosArray: any[] = [];
   almacenDatos(depcod: string) {
@@ -551,12 +553,23 @@ export class ServiciosComponent {
       next: (res) => {
         this.almacenDatosArray = res;
         this.isLoading = false;
+        this.almacenPage = 0;
       },
       error: (err) => {
-        this.almacenErro = err.error.error ?? err.error;
+        this.almacenSecondError = err.error.error ?? err.error;
         this.isLoading = false;
       }
     })
+  }
+  almacenPage = 0;
+  get paginatedAlmacen(): any[] {const start = this.almacenPage * this.personasPageSize;
+    return this.almacenDatosArray.slice(start, start + this.personasPageSize);
+  }
+  get almacenTotalPages(): number {return Math.max(1, Math.ceil(this.almacenDatosArray.length / this.personasPageSize));}
+  almacenPrevPage(): void {if (this.almacenPage > 0) this.almacenPage--;}
+  almacenNextPage(): void {if (this.almacenPage < this.almacenTotalPages - 1) this.almacenPage++;}
+  almacenGoToPage(event: any): void {const inputPage = Number(event.target.value);
+    if (inputPage >= 1 && inputPage <= this.almacenTotalPages) {this.almacenPage = inputPage - 1;}
   }
 
   updateServiceSecondError: string = '';
@@ -854,5 +867,6 @@ export class ServiciosComponent {
     this.addServiceErrorMessage = '';
     this.personasSuccess = '';
     this.deleErr = '';
+    this.almacenSecondError = '';
   }
 }

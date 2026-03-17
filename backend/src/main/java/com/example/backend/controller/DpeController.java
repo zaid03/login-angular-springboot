@@ -70,6 +70,10 @@ public class DpeController {
             List<PersonaDto> result = personas.stream()
                 .map(p -> new PersonaDto(p.getPERCOD(), p.getPERNOM()))
                 .toList();
+
+            if (result.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
+            }
             return ResponseEntity.ok(result);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + ex.getMostSpecificCause().getMessage());

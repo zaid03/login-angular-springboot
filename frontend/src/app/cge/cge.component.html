@@ -234,6 +234,9 @@
 
 <div class="modal-backdrop" *ngIf="showDeleteConfirm" (click)="closeDeleteConfirm()"></div>
 <div class="delete-confirm-modal" *ngIf="showDeleteConfirm">
+    <div class="btns">
+        <button class="purple-btn" (click)="closeDeleteConfirm()">✖</button>
+    </div>
     <h3>¿Seguro que quieres eliminar este Centro gestor?</h3>
     <h1 class="errorBtn">{{deleErr}}</h1>
     <div *ngIf="isDeleting" class="loading-message">
@@ -241,7 +244,6 @@
         <span>borrando</span>
     </div>
     <button class="red-btn" (click)="confirmDelete()">-</button>
-    <button class="purple-btn" (click)="closeDeleteConfirm()">✖</button>
 </div>
 
 <div class="modal-backdrop" *ngIf="showAddConfirm" (click)="closeAddConfirm()"></div>
