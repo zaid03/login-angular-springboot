@@ -270,17 +270,16 @@ public class DpeController {
             boolean hasPerfil = perfilType != null;
 
             if (hasServicio && hasPersona && hasCgecod && hasPerfil) {
-                List<personasPorServiciosProjection> data = dpeRepository.findByENTAndEJE(ent, eje);
+                List<personasPorServiciosProjection> data = nullSafeList(dpeRepository.findByENTAndEJE(ent, eje));
                 data = filterByServicio(data, servicio);
                 data = filterByPersona(data, persona);
-                data = filterByServicio(data, servicio); // Keep CGE filtering
                 List<personasPorServiciosProjection> cgFiltered = data.stream()
                     .filter(p -> p.getDep().getCge().getCGECOD().equals(cgecod))
                     .toList();
                 result = filterByPerfil(cgFiltered, perfilType);
             }
             else if (hasServicio && hasPersona && hasCgecod) {
-                List<personasPorServiciosProjection> data = dpeRepository.findByENTAndEJE(ent, eje);
+                List<personasPorServiciosProjection> data = nullSafeList(dpeRepository.findByENTAndEJE(ent, eje));
                 data = filterByServicio(data, servicio);
                 data = filterByPersona(data, persona);
                 result = data.stream()
@@ -288,75 +287,75 @@ public class DpeController {
                     .toList();
             }
             else if (hasServicio && hasPersona && hasPerfil) {
-                List<personasPorServiciosProjection> data = dpeRepository.findByENTAndEJE(ent, eje);
+                List<personasPorServiciosProjection> data = nullSafeList(dpeRepository.findByENTAndEJE(ent, eje));
                 data = filterByServicio(data, servicio);
                 data = filterByPersona(data, persona);
                 result = filterByPerfil(data, perfilType);
             }
             else if (hasServicio && hasCgecod && hasPerfil) {
-                List<personasPorServiciosProjection> data = dpeRepository.findByENTAndEJEAndDep_Cge_CGECOD(ent, eje, cgecod);
+                List<personasPorServiciosProjection> data = nullSafeList(dpeRepository.findByENTAndEJEAndDep_Cge_CGECOD(ent, eje, cgecod));
                 data = filterByServicio(data, servicio);
                 result = filterByPerfil(data, perfilType);
             }
             else if (hasPersona && hasCgecod && hasPerfil) {
                 List<personasPorServiciosProjection> data;
                 if (persona.length() <= 20) {
-                    data = dpeRepository.findByENTAndEJEAndPERCODAndDep_Cge_CGECOD(ent, eje, persona, cgecod);
+                    data = nullSafeList(dpeRepository.findByENTAndEJEAndPERCODAndDep_Cge_CGECOD(ent, eje, persona, cgecod));
                 } else {
-                    data = dpeRepository.findByENTAndEJEAndPer_PERNOMContainingAndDep_Cge_CGECOD(ent, eje, persona, cgecod);
+                    data = nullSafeList(dpeRepository.findByENTAndEJEAndPer_PERNOMContainingAndDep_Cge_CGECOD(ent, eje, persona, cgecod));
                 }
                 result = filterByPerfil(data, perfilType);
             }
             else if (hasServicio && hasPersona) {
-                List<personasPorServiciosProjection> data = dpeRepository.findByENTAndEJE(ent, eje);
+                List<personasPorServiciosProjection> data = nullSafeList(dpeRepository.findByENTAndEJE(ent, eje));
                 data = filterByServicio(data, servicio);
                 result = filterByPersona(data, persona);
             }
             else if (hasServicio && hasCgecod) {
-                List<personasPorServiciosProjection> data = dpeRepository.findByENTAndEJEAndDep_Cge_CGECOD(ent, eje, cgecod);
+                List<personasPorServiciosProjection> data = nullSafeList(dpeRepository.findByENTAndEJEAndDep_Cge_CGECOD(ent, eje, cgecod));
                 result = filterByServicio(data, servicio);
             }
             else if (hasPersona && hasCgecod) {
                 if (persona.length() <= 20) {
-                    result = dpeRepository.findByENTAndEJEAndPERCODAndDep_Cge_CGECOD(ent, eje, persona, cgecod);
+                    result = nullSafeList(dpeRepository.findByENTAndEJEAndPERCODAndDep_Cge_CGECOD(ent, eje, persona, cgecod));
                 } else {
-                    result = dpeRepository.findByENTAndEJEAndPer_PERNOMContainingAndDep_Cge_CGECOD(ent, eje, persona, cgecod);
+                    result = nullSafeList(dpeRepository.findByENTAndEJEAndPer_PERNOMContainingAndDep_Cge_CGECOD(ent, eje, persona, cgecod));
                 }
             }
             else if (hasServicio && hasPerfil) {
-                List<personasPorServiciosProjection> data = dpeRepository.findByENTAndEJE(ent, eje);
+                List<personasPorServiciosProjection> data = nullSafeList(dpeRepository.findByENTAndEJE(ent, eje));
                 data = filterByServicio(data, servicio);
                 result = filterByPerfil(data, perfilType);
             }
             else if (hasPersona && hasPerfil) {
                 List<personasPorServiciosProjection> data;
                 if (persona.length() <= 20) {
-                    data = dpeRepository.findProjectionByENTAndEJEAndPERCOD(ent, eje, persona);
+                    data = nullSafeList(dpeRepository.findProjectionByENTAndEJEAndPERCOD(ent, eje, persona));
                 } else {
-                    data = dpeRepository.findByENTAndEJEAndPer_PERNOMContaining(ent, eje, persona);
+                    data = nullSafeList(dpeRepository.findByENTAndEJEAndPer_PERNOMContaining(ent, eje, persona));
                 }
                 result = filterByPerfil(data, perfilType);
             }
             else if (hasCgecod && hasPerfil) {
-                List<personasPorServiciosProjection> data = dpeRepository.findByENTAndEJEAndDep_Cge_CGECOD(ent, eje, cgecod);
+                List<personasPorServiciosProjection> data = nullSafeList(dpeRepository.findByENTAndEJEAndDep_Cge_CGECOD(ent, eje, cgecod));
                 result = filterByPerfil(data, perfilType);
             }
             else if (hasServicio) {
-                List<personasPorServiciosProjection> data = dpeRepository.findByENTAndEJE(ent, eje);
+                List<personasPorServiciosProjection> data = nullSafeList(dpeRepository.findByENTAndEJE(ent, eje));
                 result = filterByServicio(data, servicio);
             }
             else if (hasPersona) {
                 if (persona.length() <= 20) {
-                    result = dpeRepository.findProjectionByENTAndEJEAndPERCOD(ent, eje, persona);
+                    result = nullSafeList(dpeRepository.findProjectionByENTAndEJEAndPERCOD(ent, eje, persona));
                 } else {
-                    result = dpeRepository.findByENTAndEJEAndPer_PERNOMContaining(ent, eje, persona);
+                    result = nullSafeList(dpeRepository.findByENTAndEJEAndPer_PERNOMContaining(ent, eje, persona));
                 }
             }
             else if (hasCgecod) {
-                result = dpeRepository.findByENTAndEJEAndDep_Cge_CGECOD(ent, eje, cgecod);
+                result = nullSafeList(dpeRepository.findByENTAndEJEAndDep_Cge_CGECOD(ent, eje, cgecod));
             }
             else if (hasPerfil) {
-                List<personasPorServiciosProjection> data = dpeRepository.findByENTAndEJE(ent, eje);
+                List<personasPorServiciosProjection> data = nullSafeList(dpeRepository.findByENTAndEJE(ent, eje));
                 result = filterByPerfil(data, perfilType);
             }
 
@@ -405,5 +404,9 @@ public class DpeController {
         } else {
             return data.stream().filter(p -> p.getDep().getDEPDES().contains(servicio)).toList();
         }
+    }
+
+    private List<personasPorServiciosProjection> nullSafeList(List<personasPorServiciosProjection> data) {
+        return data == null ? List.of() : data;
     }
 }
