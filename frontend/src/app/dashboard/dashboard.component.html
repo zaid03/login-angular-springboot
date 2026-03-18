@@ -187,11 +187,11 @@
     <div class="title">
       <h3>Servicios asociados del usario</h3>
     </div>
-    <button class="delete-btn" (click)="closeShowServices()">✖</button>
+    <button class="red-btn" (click)="closeShowServices()">✖</button>
   </div>
   <h1 class="errorBtn">{{servicesError}}</h1>
-  <div class="detail-services">
-    <table class="user-services-table">
+  <div class="main-list">
+    <table class="main-table ust">
       <thead>
         <tr>
           <th>Código</th>
@@ -211,7 +211,7 @@
             <input 
               type="checkbox"
               [checked]="p.depcom === 1"
-              class="locked-radio"
+              class="checkbox"
               (click)="$event.preventDefault()"
             >
           </td>
@@ -219,7 +219,7 @@
             <input 
               type="checkbox"
               [checked]="p.depalm === 1"
-              class="locked-radio"
+              class="checkbox"
               (click)="$event.preventDefault()"
             >
           </td>
@@ -227,7 +227,7 @@
             <input 
               type="checkbox"
               [checked]="p.depint === 1"
-              class="locked-radio"
+              class="checkbox"
               (click)="$event.preventDefault()"
             >
           </td>
