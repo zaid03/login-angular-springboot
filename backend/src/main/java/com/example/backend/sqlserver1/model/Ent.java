@@ -14,6 +14,9 @@ public class Ent {
     @Column(name = "ENTNIF", nullable = false)
     private String ENTNIF;
 
+    /**
+     * This constructor is used by the ORM framework when loading entities from the database.
+     */
     public Ent() {}
 
     public int getENTCOD() {return ENTCOD;}

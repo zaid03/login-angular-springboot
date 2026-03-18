@@ -22,6 +22,9 @@ public class Pua {
     @Column(name = "PERCOD", nullable = false)
     private String PERCOD;
 
+    /**
+     * This constructor is used by the ORM framework when loading entities from the database.
+     */
     public Pua() {}
 
     public String getUSUCOD() {return USUCOD;}

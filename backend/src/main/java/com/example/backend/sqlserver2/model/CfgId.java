@@ -7,6 +7,9 @@ public class CfgId implements Serializable {
     private Integer ENT;
     private String EJE;
 
+    /**
+     * This constructor is used by the ORM framework when loading entities from the database.
+    */
     public CfgId() {}
 
     public Integer getENT() {return ENT;}
