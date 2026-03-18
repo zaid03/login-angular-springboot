@@ -53,7 +53,7 @@
 .version {display: flex; gap: 10px; justify-content: flex-end; }
 /* dashboard */
 /* services grid */
-.add-confirm-modal {width: 80%; top: 8% !important;}
+.add-confirm-modal {width: 80%; top: 20% !important;}
 .title {width: 97%;}
 .ust thead th:first-child,
 .ust thead th:last-child,

@@ -299,16 +299,35 @@ public class ContabilizacionService {
                             String value = child.getTextContent();
                             
                             switch (name) {
-                                case "opeext" -> dto.setOpeext(value);
-                                case "opesical" -> dto.setOpesical(value);
-                                case "nap" -> dto.setNap(value);
-                                case "referencia" -> dto.setReferencia(value);
-                                case "importe" -> dto.setImporte(value);
-                                case "ejercicio" -> dto.setEjercicio(value);
-                                case "organica" -> dto.setOrganica(decodeIfBase64(value));
-                                case "funcional" -> dto.setFuncional(decodeIfBase64(value));
-                                case "economica" -> dto.setEconomica(decodeIfBase64(value));
-                                default -> {}
+                                case "opeext":
+                                    dto.setOpeext(value);
+                                    break;
+                                case "opesical":
+                                    dto.setOpesical(value);
+                                    break;
+                                case "nap":
+                                    dto.setNap(value);
+                                    break;
+                                case "referencia":
+                                    dto.setReferencia(value);
+                                    break;
+                                case "importe":
+                                    dto.setImporte(value);
+                                    break;
+                                case "ejercicio":
+                                    dto.setEjercicio(value);
+                                    break;
+                                case "organica":
+                                    dto.setOrganica(decodeIfBase64(value));
+                                    break;
+                                case "funcional":
+                                    dto.setFuncional(decodeIfBase64(value));
+                                    break;
+                                case "economica":
+                                    dto.setEconomica(decodeIfBase64(value));
+                                    break;
+                                default:
+                                    break;
                             }
                         }
                     }
@@ -321,9 +340,9 @@ public class ContabilizacionService {
                 
                 org.w3c.dom.NodeList errorNodes = doc.getElementsByTagName("error");
                 StringBuilder errors = new StringBuilder();
-                for (int i = 0; i < errorNodes.getLength(); i++) {
-                    if (i > 0) errors.append("; ");
-                    errors.append(errorNodes.item(i).getTextContent());
+                for (int j = 0; j < errorNodes.getLength(); j++) {
+                    if (j > 0) errors.append("; ");
+                    errors.append(errorNodes.item(j).getTextContent());
                 }
                 
                 String mensaje = "";

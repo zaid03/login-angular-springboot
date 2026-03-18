@@ -206,7 +206,7 @@ public class TerController {
         }
     }
 
-    //for the option todos
+    //for the option alls
     // filtering by tercod
     @GetMapping("/by-ent/{ent}/tercod/{tercod}")
     public ResponseEntity<?> getByENTAndTERCOD(

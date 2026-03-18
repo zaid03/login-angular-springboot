@@ -23,7 +23,7 @@ public interface TerRepository extends JpaRepository<Ter, TerId>, JpaSpecificati
   //for the list filtered by TERNIF
   List<Ter> findByENTAndTERNIFContainingAndTERBLO(Integer ent, String ternif, Integer terblo);
 
-  //for the option todos
+  //for the option alls
   // filtering by tercod
   List<Ter> findAllByENTAndTERCOD(Integer ent, Integer tercod);
 

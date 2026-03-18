@@ -51,12 +51,25 @@ public class GbsController {
             }
             Cge cge = cgeOpt.get();
 
-            List<GbsWithCgeDto> result = gbsList.stream().map(g -> new GbsWithCgeDto(
-                cge.getCGECOD(), cge.getCGEDES(), cge.getCGECIC() != null ? String.valueOf(cge.getCGECIC()) : null,
-                g.getGBSREF(), g.getGBSOPE(), g.getGBSORG(), g.getGBSFUN(), g.getGBSECO(),
-                g.getGBSFOP(), g.getGBSIMP(), g.getGBSIBG(), g.getGBSIUS(), g.getGBSICO(),
-                g.getGBSIUT(), g.getGBSICT(), g.getGBS413()
-            )).collect(Collectors.toList());
+            List<GbsWithCgeDto> result = gbsList.stream().map(g -> new GbsWithCgeDto.Builder()
+                .cgecod(cge.getCGECOD())
+                .cgedes(cge.getCGEDES())
+                .cgecic(cge.getCGECIC() != null ? String.valueOf(cge.getCGECIC()) : null)
+                .gbsref(g.getGBSREF())
+                .gbsope(g.getGBSOPE())
+                .gbsorg(g.getGBSORG())
+                .gbsfun(g.getGBSFUN())
+                .gbseco(g.getGBSECO())
+                .gbsfop(g.getGBSFOP())
+                .gbsimp(g.getGBSIMP())
+                .gbsibg(g.getGBSIBG())
+                .gbsius(g.getGBSIUS())
+                .gbsico(g.getGBSICO())
+                .gbsiut(g.getGBSIUT())
+                .gbsict(g.getGBSICT())
+                .gbs413(g.getGBS413())
+                .build()
+            ).collect(Collectors.toList());
 
             return ResponseEntity.ok(result);
         } catch (DataAccessException ex) {

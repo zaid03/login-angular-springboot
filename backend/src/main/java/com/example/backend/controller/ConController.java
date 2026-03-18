@@ -30,6 +30,19 @@ public class ConController {
     private static final String SIN_RESULTADO = "Sin resultado";
     private static final String Error = "Error :";
 
+    private ContratoDto buildContratoDto(CotContratoProjection.ConnInfo c, CotContratoProjection.TerInfo t) {
+        return new ContratoDto.Builder()
+            .concod(c.getCONCOD())
+            .conlot(c.getCONLOT())
+            .condes(c.getCONDES())
+            .confin(c.getCONFIN())
+            .conffi(c.getCONFFI())
+            .conblo(c.getCONBLO())
+            .tercod(t.getTERCOD())
+            .ternom(t.getTERNOM())
+            .build();
+    }
+
     //selecting all contratos
     @GetMapping("/fetch-contratos/{ent}/{eje}")
     public ResponseEntity<?> fetchContratos(
@@ -42,20 +55,9 @@ public class ConController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
             }
 
-            List<ContratoDto> dto = rows.stream().map(p -> {
-                CotContratoProjection.ConnInfo c = p.getConn();
-                CotContratoProjection.TerInfo t = p.getTer();
-                return new ContratoDto(
-                    c.getCONCOD(),
-                    c.getCONLOT(),
-                    c.getCONDES(),
-                    c.getCONFIN(),
-                    c.getCONFFI(),
-                    c.getCONBLO(),
-                    t.getTERCOD(),
-                    t.getTERNOM()
-                );
-            }).collect(Collectors.toList());
+            List<ContratoDto> dto = rows.stream()
+                .map(p -> buildContratoDto(p.getConn(), p.getTer()))
+                .collect(Collectors.toList());
 
             return ResponseEntity.ok(dto);
         } catch (DataAccessException ex) {
@@ -77,20 +79,9 @@ public class ConController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
             }
 
-            List<ContratoDto> dto = rows.stream().map(p -> {
-                CotContratoProjection.ConnInfo c = p.getConn();
-                CotContratoProjection.TerInfo t = p.getTer();
-                return new ContratoDto(
-                    c.getCONCOD(),
-                    c.getCONLOT(),
-                    c.getCONDES(),
-                    c.getCONFIN(),
-                    c.getCONFFI(),
-                    c.getCONBLO(),
-                    t.getTERCOD(),
-                    t.getTERNOM()
-                );
-            }).collect(Collectors.toList());
+            List<ContratoDto> dto = rows.stream()
+                .map(p -> buildContratoDto(p.getConn(), p.getTer()))
+                .collect(Collectors.toList());
 
             return ResponseEntity.ok(dto);
         } catch (DataAccessException ex) {
@@ -112,20 +103,9 @@ public class ConController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
             }
 
-            List<ContratoDto> dto = rows.stream().map(p -> {
-                CotContratoProjection.ConnInfo c = p.getConn();
-                CotContratoProjection.TerInfo t = p.getTer();
-                return new ContratoDto(
-                    c.getCONCOD(),
-                    c.getCONLOT(),
-                    c.getCONDES(),
-                    c.getCONFIN(),
-                    c.getCONFFI(),
-                    c.getCONBLO(),
-                    t.getTERCOD(),
-                    t.getTERNOM()
-                );
-            }).collect(Collectors.toList());
+            List<ContratoDto> dto = rows.stream()
+                .map(p -> buildContratoDto(p.getConn(), p.getTer()))
+                .collect(Collectors.toList());
 
             return ResponseEntity.ok(dto);
         } catch (DataAccessException ex) {
@@ -147,20 +127,9 @@ public class ConController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
             }
 
-            List<ContratoDto> dto = rows.stream().map(p -> {
-                CotContratoProjection.ConnInfo c = p.getConn();
-                CotContratoProjection.TerInfo t = p.getTer();
-                return new ContratoDto(
-                    c.getCONCOD(),
-                    c.getCONLOT(),
-                    c.getCONDES(),
-                    c.getCONFIN(),
-                    c.getCONFFI(),
-                    c.getCONBLO(),
-                    t.getTERCOD(),
-                    t.getTERNOM()
-                );
-            }).collect(Collectors.toList());
+            List<ContratoDto> dto = rows.stream()
+                .map(p -> buildContratoDto(p.getConn(), p.getTer()))
+                .collect(Collectors.toList());
 
             return ResponseEntity.ok(dto);
         } catch (DataAccessException ex) {
@@ -182,20 +151,9 @@ public class ConController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
             }
 
-            List<ContratoDto> dto = rows.stream().map(p -> {
-                CotContratoProjection.ConnInfo c = p.getConn();
-                CotContratoProjection.TerInfo t = p.getTer();
-                return new ContratoDto(
-                    c.getCONCOD(),
-                    c.getCONLOT(),
-                    c.getCONDES(),
-                    c.getCONFIN(),
-                    c.getCONFFI(),
-                    c.getCONBLO(),
-                    t.getTERCOD(),
-                    t.getTERNOM()
-                );
-            }).collect(Collectors.toList());
+            List<ContratoDto> dto = rows.stream()
+                .map(p -> buildContratoDto(p.getConn(), p.getTer()))
+                .collect(Collectors.toList());
 
             return ResponseEntity.ok(dto);
         } catch (DataAccessException ex) {
@@ -217,20 +175,9 @@ public class ConController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
             }
 
-            List<ContratoDto> dto = rows.stream().map(p -> {
-                CotContratoProjection.ConnInfo c = p.getConn();
-                CotContratoProjection.TerInfo t = p.getTer();
-                return new ContratoDto(
-                    c.getCONCOD(),
-                    c.getCONLOT(),
-                    c.getCONDES(),
-                    c.getCONFIN(),
-                    c.getCONFFI(),
-                    c.getCONBLO(),
-                    t.getTERCOD(),
-                    t.getTERNOM()
-                );
-            }).collect(Collectors.toList());
+            List<ContratoDto> dto = rows.stream()
+                .map(p -> buildContratoDto(p.getConn(), p.getTer()))
+                .collect(Collectors.toList());
 
             return ResponseEntity.ok(dto);
         } catch (DataAccessException ex) {
@@ -252,20 +199,9 @@ public class ConController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
             }
 
-            List<ContratoDto> dto = rows.stream().map(p -> {
-                CotContratoProjection.ConnInfo c = p.getConn();
-                CotContratoProjection.TerInfo t = p.getTer();
-                return new ContratoDto(
-                    c.getCONCOD(),
-                    c.getCONLOT(),
-                    c.getCONDES(),
-                    c.getCONFIN(),
-                    c.getCONFFI(),
-                    c.getCONBLO(),
-                    t.getTERCOD(),
-                    t.getTERNOM()
-                );
-            }).collect(Collectors.toList());
+            List<ContratoDto> dto = rows.stream()
+                .map(p -> buildContratoDto(p.getConn(), p.getTer()))
+                .collect(Collectors.toList());
 
             return ResponseEntity.ok(dto);
         } catch (DataAccessException ex) {
@@ -286,20 +222,9 @@ public class ConController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
             }
 
-            List<ContratoDto> dto = rows.stream().map(p -> {
-                CotContratoProjection.ConnInfo c = p.getConn();
-                CotContratoProjection.TerInfo t = p.getTer();
-                return new ContratoDto(
-                    c.getCONCOD(),
-                    c.getCONLOT(),
-                    c.getCONDES(),
-                    c.getCONFIN(),
-                    c.getCONFFI(),
-                    c.getCONBLO(),
-                    t.getTERCOD(),
-                    t.getTERNOM()
-                );
-            }).collect(Collectors.toList());
+            List<ContratoDto> dto = rows.stream()
+                .map(p -> buildContratoDto(p.getConn(), p.getTer()))
+                .collect(Collectors.toList());
 
             return ResponseEntity.ok(dto);
         } catch (DataAccessException ex) {
@@ -320,20 +245,9 @@ public class ConController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
             }
 
-            List<ContratoDto> dto = rows.stream().map(p -> {
-                CotContratoProjection.ConnInfo c = p.getConn();
-                CotContratoProjection.TerInfo t = p.getTer();
-                return new ContratoDto(
-                    c.getCONCOD(),
-                    c.getCONLOT(),
-                    c.getCONDES(),
-                    c.getCONFIN(),
-                    c.getCONFFI(),
-                    c.getCONBLO(),
-                    t.getTERCOD(),
-                    t.getTERNOM()
-                );
-            }).collect(Collectors.toList());
+            List<ContratoDto> dto = rows.stream()
+                .map(p -> buildContratoDto(p.getConn(), p.getTer()))
+                .collect(Collectors.toList());
 
             return ResponseEntity.ok(dto);
         } catch (DataAccessException ex) {

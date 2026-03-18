@@ -92,18 +92,36 @@ public class FacController {
             
             List<FacWithTerDto> result = facturas.stream().map(f -> {
                 Ter ter = f.getTer();
-                return new FacWithTerDto(
-                    f.getENT(), f.getEJE(), f.getFACNUM(), f.getTERCOD(), f.getCGECOD(),
-                    f.getFACOBS(), f.getFACIMP(), f.getFACIEC(), f.getFACIDI(), f.getFACTDC(),
-                    f.getFACANN() != null ? String.valueOf(f.getFACANN()) : null,
-                    f.getFACFAC() != null ? String.valueOf(f.getFACFAC()) : null,
-                    f.getFACDOC(), f.getFACDAT(), f.getFACFCO(), f.getFACADO(),
-                    f.getFACTXT(), f.getFACFRE(), f.getCONCTP(), f.getCONCPR(),
-                    f.getCONCCR(), f.getFACOCT(), f.getFACFPG(), f.getFACOPG(),
-                    f.getFACTPG(), f.getFACDTO(),
-                    ter != null ? ter.getTERNOM() : null,
-                    ter != null ? ter.getTERNIF() : null
-                );
+                return new FacWithTerDto.Builder()
+                    .ent(f.getENT())
+                    .eje(f.getEJE())
+                    .facnum(f.getFACNUM())
+                    .tercod(f.getTERCOD())
+                    .cgecod(f.getCGECOD())
+                    .facobs(f.getFACOBS())
+                    .facimp(f.getFACIMP())
+                    .faciec(f.getFACIEC())
+                    .facidi(f.getFACIDI())
+                    .factdc(f.getFACTDC())
+                    .facann(f.getFACANN() != null ? String.valueOf(f.getFACANN()) : null)
+                    .facfac(f.getFACFAC() != null ? String.valueOf(f.getFACFAC()) : null)
+                    .facdoc(f.getFACDOC())
+                    .facdat(f.getFACDAT())
+                    .facfco(f.getFACFCO())
+                    .facado(f.getFACADO())
+                    .factxt(f.getFACTXT())
+                    .facfre(f.getFACFRE())
+                    .conctp(f.getCONCTP())
+                    .concpr(f.getCONCPR())
+                    .conccr(f.getCONCCR())
+                    .facoct(f.getFACOCT())
+                    .facfpg(f.getFACFPG())
+                    .facopg(f.getFACOPG())
+                    .factpg(f.getFACTPG())
+                    .facdto(f.getFACDTO())
+                    .ternom(ter != null ? ter.getTERNOM() : null)
+                    .ternif(ter != null ? ter.getTERNIF() : null)
+                    .build();
             }).collect(Collectors.toList());
             
             return ResponseEntity.ok(result);

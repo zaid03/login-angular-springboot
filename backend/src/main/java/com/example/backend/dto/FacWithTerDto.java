@@ -32,40 +32,99 @@ public class FacWithTerDto {
     private String ternom;
     private String ternif;
 
-    public FacWithTerDto(Integer ent, String eje, Integer facnum, Integer tercod, String cgecod, 
-                         String facobs, Double facimp, Double faciec, Double facidi, String factdc, 
-                         String facann, String facfac, String facdoc, LocalDateTime facdat, 
-                         LocalDateTime facfco, String facado, String factxt, LocalDateTime facfre, 
-                         String conctp, String concpr, String conccr, Integer facoct, String facfpg, 
-                         String facopg, String factpg, Double facdto, String ternom, String ternif) {
-        this.ent = ent;
-        this.eje = eje;
-        this.facnum = facnum;
-        this.tercod = tercod;
-        this.cgecod = cgecod;
-        this.facobs = facobs;
-        this.facimp = facimp;
-        this.faciec = faciec;
-        this.facidi = facidi;
-        this.factdc = factdc;
-        this.facann = facann;
-        this.facfac = facfac;
-        this.facdoc = facdoc;
-        this.facdat = facdat;
-        this.facfco = facfco;
-        this.facado = facado;
-        this.factxt = factxt;
-        this.facfre = facfre;
-        this.conctp = conctp;
-        this.concpr = concpr;
-        this.conccr = conccr;
-        this.facoct = facoct;
-        this.facfpg = facfpg;
-        this.facopg = facopg;
-        this.factpg = factpg;
-        this.facdto = facdto;
-        this.ternom = ternom;
-        this.ternif = ternif;
+    private FacWithTerDto(Builder builder) {
+        this.ent = builder.ent;
+        this.eje = builder.eje;
+        this.facnum = builder.facnum;
+        this.tercod = builder.tercod;
+        this.cgecod = builder.cgecod;
+        this.facobs = builder.facobs;
+        this.facimp = builder.facimp;
+        this.faciec = builder.faciec;
+        this.facidi = builder.facidi;
+        this.factdc = builder.factdc;
+        this.facann = builder.facann;
+        this.facfac = builder.facfac;
+        this.facdoc = builder.facdoc;
+        this.facdat = builder.facdat;
+        this.facfco = builder.facfco;
+        this.facado = builder.facado;
+        this.factxt = builder.factxt;
+        this.facfre = builder.facfre;
+        this.conctp = builder.conctp;
+        this.concpr = builder.concpr;
+        this.conccr = builder.conccr;
+        this.facoct = builder.facoct;
+        this.facfpg = builder.facfpg;
+        this.facopg = builder.facopg;
+        this.factpg = builder.factpg;
+        this.facdto = builder.facdto;
+        this.ternom = builder.ternom;
+        this.ternif = builder.ternif;
+    }
+
+    public static class Builder {
+        private Integer ent;
+        private String eje;
+        private Integer facnum;
+        private Integer tercod;
+        private String cgecod;
+        private String facobs;
+        private Double facimp;
+        private Double faciec;
+        private Double facidi;
+        private String factdc;
+        private String facann;
+        private String facfac;
+        private String facdoc;
+        private LocalDateTime facdat;
+        private LocalDateTime facfco;
+        private String facado;
+        private String factxt;
+        private LocalDateTime facfre;
+        private String conctp;
+        private String concpr;
+        private String conccr;
+        private Integer facoct;
+        private String facfpg;
+        private String facopg;
+        private String factpg;
+        private Double facdto;
+        private String ternom;
+        private String ternif;
+
+        public Builder ent(Integer ent) { this.ent = ent; return this; }
+        public Builder eje(String eje) { this.eje = eje; return this; }
+        public Builder facnum(Integer facnum) { this.facnum = facnum; return this; }
+        public Builder tercod(Integer tercod) { this.tercod = tercod; return this; }
+        public Builder cgecod(String cgecod) { this.cgecod = cgecod; return this; }
+        public Builder facobs(String facobs) { this.facobs = facobs; return this; }
+        public Builder facimp(Double facimp) { this.facimp = facimp; return this; }
+        public Builder faciec(Double faciec) { this.faciec = faciec; return this; }
+        public Builder facidi(Double facidi) { this.facidi = facidi; return this; }
+        public Builder factdc(String factdc) { this.factdc = factdc; return this; }
+        public Builder facann(String facann) { this.facann = facann; return this; }
+        public Builder facfac(String facfac) { this.facfac = facfac; return this; }
+        public Builder facdoc(String facdoc) { this.facdoc = facdoc; return this; }
+        public Builder facdat(LocalDateTime facdat) { this.facdat = facdat; return this; }
+        public Builder facfco(LocalDateTime facfco) { this.facfco = facfco; return this; }
+        public Builder facado(String facado) { this.facado = facado; return this; }
+        public Builder factxt(String factxt) { this.factxt = factxt; return this; }
+        public Builder facfre(LocalDateTime facfre) { this.facfre = facfre; return this; }
+        public Builder conctp(String conctp) { this.conctp = conctp; return this; }
+        public Builder concpr(String concpr) { this.concpr = concpr; return this; }
+        public Builder conccr(String conccr) { this.conccr = conccr; return this; }
+        public Builder facoct(Integer facoct) { this.facoct = facoct; return this; }
+        public Builder facfpg(String facfpg) { this.facfpg = facfpg; return this; }
+        public Builder facopg(String facopg) { this.facopg = facopg; return this; }
+        public Builder factpg(String factpg) { this.factpg = factpg; return this; }
+        public Builder facdto(Double facdto) { this.facdto = facdto; return this; }
+        public Builder ternom(String ternom) { this.ternom = ternom; return this; }
+        public Builder ternif(String ternif) { this.ternif = ternif; return this; }
+
+        public FacWithTerDto build() {
+            return new FacWithTerDto(this);
+        }
     }
 
     // Getters
