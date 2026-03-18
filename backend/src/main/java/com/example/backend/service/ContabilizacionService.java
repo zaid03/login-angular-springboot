@@ -45,64 +45,78 @@ public class ContabilizacionService {
     private TerRepository terRepository;
 
     public String buildSmlInput(ContabilizacionRequestDto req, Fac fac, List<Fde> fdeList, List<Fdt> fdtList, String terAyt) throws Exception {
-        String org = req.getOrg();
-        String ent = req.getEnt();
-        String eje = req.getEje();
-        String usu = req.getUsu();
-        String pwd = req.getPwd();
-        String publicKey = req.getPublicKey();
-
-        CryptoSical.SecurityFields sec = CryptoSical.calculateSecurityFields(publicKey);
-
-        String fecha = sec.created;
-        String nonce = sec.nonce;
-        String token = sec.token;
-        String tokenSha1 = CryptoSical.encodeSha1Base64(sec.origin);
-        String pwdSha1Base64 = CryptoSical.encodeSha1Base64(pwd);
-
+        CryptoSical.SecurityFields sec = CryptoSical.calculateSecurityFields(req.getPublicKey());
         String fechaContable = formatFechaContable(req.getFechaContable());
-
-        String codope = "200";
-
-        String numope = fac.getEJE() + "-" + fac.getFACNUM();
-
+        
         StringBuilder sb = new StringBuilder();
         sb.append("<e>");
+        appendOperationHeader(sb);
+        appendSecuritySection(sb, req, sec);
+        appendParametersSection(sb, req, fac, fdeList, fdtList, terAyt, fechaContable);
+        sb.append("</e>");
+        
+        return sb.toString();
+    }
+
+    private void appendOperationHeader(StringBuilder sb) {
         sb.append("<ope>");
         sb.append("<apl>SNP</apl>");
         sb.append("<tobj>GenOpeGasto</tobj>");
         sb.append("<cmd>CRE</cmd>");
         sb.append("<ver>2.0</ver>");
         sb.append("</ope>");
+    }
 
+    private void appendSecuritySection(StringBuilder sb, ContabilizacionRequestDto req, CryptoSical.SecurityFields sec) throws Exception {
+        String pwdSha1Base64 = CryptoSical.encodeSha1Base64(req.getPwd());
+        String tokenSha1 = CryptoSical.encodeSha1Base64(sec.origin);
+        
         sb.append("<sec>");
         sb.append("<cli>SAGE-AYTOS</cli>");
-        sb.append("<org>").append(org).append("</org>");
-        sb.append("<ent>").append(ent).append("</ent>");
-        sb.append("<eje>").append(eje).append("</eje>");
-        sb.append("<usu>").append(usu).append("</usu>");
+        sb.append("<org>").append(req.getOrg()).append("</org>");
+        sb.append("<ent>").append(req.getEnt()).append("</ent>");
+        sb.append("<eje>").append(req.getEje()).append("</eje>");
+        sb.append("<usu>").append(req.getUsu()).append("</usu>");
         sb.append("<pwd>").append(pwdSha1Base64).append("</pwd>");
-        sb.append("<fecha>").append(fecha).append("</fecha>");
-        sb.append("<nonce>").append(nonce).append("</nonce>");
-        sb.append("<token>").append(token).append("</token>");
+        sb.append("<fecha>").append(sec.created).append("</fecha>");
+        sb.append("<nonce>").append(sec.nonce).append("</nonce>");
+        sb.append("<token>").append(sec.token).append("</token>");
         sb.append("<tokenSha1>").append(tokenSha1).append("</tokenSha1>");
         sb.append("</sec>");
+    }
 
+    private void appendParametersSection(StringBuilder sb, ContabilizacionRequestDto req, Fac fac, List<Fde> fdeList, List<Fdt> fdtList, String terAyt, String fechaContable) throws Exception {
         sb.append("<par>");
         sb.append("<gensinalmacenar>0</gensinalmacenar>");
-
         sb.append("<l_operacion>");
         sb.append("<operacion>");
+        
+        appendOperacionFields(sb, req, fac, terAyt, fechaContable);
+        appendIvaSection(sb);
+        appendContratoFields(sb, fac);
+        
+        sb.append("<l_factura>");
+        sb.append("</l_factura>");
+        appendFdeLines(sb, req.getEje(), fdeList);
+        appendFdtLines(sb, req.getEje(), fdtList);
+        
+        sb.append("</operacion>");
+        sb.append("</l_operacion>");
+        sb.append("</par>");
+    }
+
+    private void appendOperacionFields(StringBuilder sb, ContabilizacionRequestDto req, Fac fac, String terAyt, String fechaContable) {
+        String numope = fac.getEJE() + "-" + fac.getFACNUM();
+        
         sb.append("<prevdef>").append(CryptoSical.encodeBase64("P")).append("</prevdef>");
-        sb.append("<numope>").append(numope).append("</numope>");  
-        sb.append("<codope>").append(CryptoSical.encodeBase64(codope)).append("</codope>");
+        sb.append("<numope>").append(numope).append("</numope>");
+        sb.append("<codope>").append(CryptoSical.encodeBase64("200")).append("</codope>");
         sb.append("<signo>0</signo>");
         sb.append("<areGes>").append(CryptoSical.encodeBase64(fac.getCGECOD())).append("</areGes>");
-
+        
         if (terAyt != null && !terAyt.isEmpty()) {
             sb.append("<nif>").append(CryptoSical.encodeBase64(terAyt)).append("</nif>");
         }
-        
         if (fac.getFACOPG() != null) {
             sb.append("<ort>").append(CryptoSical.encodeBase64(fac.getFACOPG())).append("</ort>");
         }
@@ -112,15 +126,12 @@ public class ContabilizacionService {
         if (fac.getFACDAT() != null) {
             sb.append("<fdoc>").append(formatDate(fac.getFACDAT())).append("</fdoc>");
         }
-        
         if (fac.getFACOCT() != null) {
             sb.append("<obp>").append(CryptoSical.encodeBase64(String.valueOf(fac.getFACOCT()))).append("</obp>");
         }
-
         if (fac.getFACFPG() != null && !fac.getFACFPG().isEmpty() && fac.getFACFPG().length() >= 8) {
             sb.append("<fpago>").append(formatDateString(fac.getFACFPG())).append("</fpago>");
         }
-        
         if (fac.getFACTPG() != null) {
             sb.append("<tpago>").append(CryptoSical.encodeBase64(fac.getFACTPG())).append("</tpago>");
         }
@@ -131,8 +142,10 @@ public class ContabilizacionService {
             sb.append("<text>").append(CryptoSical.encodeBase64(fac.getFACTXT())).append("</text>");
         }
         
-        sb.append("<usuope>").append(CryptoSical.encodeBase64(usu)).append("</usuope>");
-        
+        sb.append("<usuope>").append(CryptoSical.encodeBase64(req.getUsu())).append("</usuope>");
+    }
+
+    private void appendIvaSection(StringBuilder sb) {
         sb.append("<ivabex>0</ivabex>");
         sb.append("<ivabse1>0</ivabse1>");
         sb.append("<ivabse2>0</ivabse2>");
@@ -143,26 +156,29 @@ public class ContabilizacionService {
         sb.append("<piva1>0</piva1>");
         sb.append("<piva2>0</piva2>");
         sb.append("<piva3>0</piva3>");
-        
-        String tipContrato = (fac.getCONCTP() != null && !fac.getCONCTP().isEmpty()) ? fac.getCONCTP() : "Suministro";
-        String proContrato = (fac.getCONCPR() != null && !fac.getCONCPR().isEmpty()) ? fac.getCONCPR() : "AdDirec";
-        String criContrato = (fac.getCONCCR() != null && !fac.getCONCCR().isEmpty()) ? fac.getCONCCR() : "SinC";
+    }
+
+    private void appendContratoFields(StringBuilder sb, Fac fac) {
+        String tipContrato = getContratoValue(fac.getCONCTP(), "Suministro");
+        String proContrato = getContratoValue(fac.getCONCPR(), "AdDirec");
+        String criContrato = getContratoValue(fac.getCONCCR(), "SinC");
         
         sb.append("<tipContrato>").append(CryptoSical.encodeBase64(tipContrato)).append("</tipContrato>");
         sb.append("<proContrato>").append(CryptoSical.encodeBase64(proContrato)).append("</proContrato>");
         sb.append("<criContrato>").append(CryptoSical.encodeBase64(criContrato)).append("</criContrato>");
+    }
 
-        sb.append("<l_factura>");
-        sb.append("</l_factura>");
+    private String getContratoValue(String value, String defaultValue) {
+        return (value != null && !value.isEmpty()) ? value : defaultValue;
+    }
 
+    private void appendFdeLines(StringBuilder sb, String eje, List<Fde> fdeList) {
         sb.append("<l_linea>");
         for (Fde fde : fdeList) {
             Double imp = (fde.getFDEIMP() != null ? fde.getFDEIMP() : 0.0) + 
                          (fde.getFDEDIF() != null ? fde.getFDEDIF() : 0.0);
             
-            if (imp <= 0) {
-                continue;
-            }
+            if (imp <= 0) continue;
             
             sb.append("<linea>");
             sb.append("<lineje>").append(eje).append("</lineje>");
@@ -182,7 +198,9 @@ public class ContabilizacionService {
             sb.append("</linea>");
         }
         sb.append("</l_linea>");
+    }
 
+    private void appendFdtLines(StringBuilder sb, String eje, List<Fdt> fdtList) {
         sb.append("<l_dto>");
         for (Fdt fdt : fdtList) {
             sb.append("<dto>");
@@ -214,13 +232,6 @@ public class ContabilizacionService {
             sb.append("</dto>");
         }
         sb.append("</l_dto>");
-
-        sb.append("</operacion>");
-        sb.append("</l_operacion>");
-        sb.append("</par>");
-        sb.append("</e>");
-
-        return sb.toString();
     }
 
     public String sendSmlRequest(String smlInput, String url) {
