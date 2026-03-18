@@ -45,6 +45,9 @@ public class FacController {
     @Autowired
     private GbsRepository gbsRepository;
 
+    private static final String SIN_RESULTADO = "Sin resultado";
+    private static final String Error = "Error :";
+
     //for the main list
     @GetMapping("/{ent}/{eje}/{cgecod}")
     public ResponseEntity<?> getFacturas(
@@ -55,12 +58,12 @@ public class FacController {
         try {
             List<FacWithTerProjection> facturas = facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(ent, eje, cgecod);
             if (facturas.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
             }
             
             return ResponseEntity.ok(facturas);
         } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + ex.getMostSpecificCause().getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Error + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -106,7 +109,7 @@ public class FacController {
             return ResponseEntity.ok(result);
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error: " + ex.getMessage());
+                .body(Error + ex.getMessage());
         }
     }
 
@@ -119,7 +122,7 @@ public class FacController {
             List<String> messages = facturaInsertService.insertFacturas(facturas);
             return ResponseEntity.ok(messages);
         } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + ex.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Error + ex.getMessage());
         }
     }
 
@@ -141,7 +144,7 @@ public class FacController {
             Optional<Fac> facOptio = facRepository.findById(id);
             if (facOptio.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Sin resultado");
+                    .body(SIN_RESULTADO);
             }
 
             Fac factura = facOptio.get();
@@ -158,7 +161,7 @@ public class FacController {
 
             return ResponseEntity.noContent().build();
         } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + ex.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Error + ex.getMessage());
         }
     }
 
@@ -182,77 +185,110 @@ public class FacController {
             List<Fac> facturas = facRepository.findAll(spec);
 
             if (facturas.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
             }
 
             return ResponseEntity.ok(facturas);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error: " + ex.getMostSpecificCause().getMessage());
+                .body(Error + ex.getMostSpecificCause().getMessage());
         }
     }
 
     //contabilizar a factura
-    public record contabilizar(Integer ENT, String EJE, Integer FACNUM, String FACADO, LocalDateTime FACFCO, String CGECOD, Boolean ESCONTRATO) {}
+    public record Contabilizar(Integer ENT, String EJE, Integer FACNUM, String FACADO, LocalDateTime FACFCO, String CGECOD, Boolean ESCONTRATO) {}
+
     @PatchMapping("/contabilizar-facturas")
     public ResponseEntity<?> contabilizarFactura(
-        @RequestBody contabilizar payload
+        @RequestBody Contabilizar payload
     ) {
         try {
-            if (payload == null || payload.ENT() == null || payload.EJE() == null || payload.FACNUM() == null || payload.FACADO() == null || payload.FACFCO() == null || payload.CGECOD() == null || payload.ESCONTRATO() == null) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Falta un dato obligatorio");
-            }
-
-            FacId id = new FacId(payload.ENT(), payload.EJE(), payload.FACNUM());
-            Optional<Fac> facturaOptio = facRepository.findById(id);
-
-            if (facturaOptio.isPresent()) {
-                Fac factura = facturaOptio.get();
-                factura.setFACADO(payload.FACADO());
-                factura.setFACFCO(payload.FACFCO());
-                facRepository.save(factura);
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Factura no encontrada"); 
-            }
-
+            ResponseEntity<?> validation = validateContabilizarPayload(payload);
+            if (validation != null) return validation;
+            
+            ResponseEntity<?> facturaResult = updateFacturaRecord(payload);
+            if (facturaResult != null) return facturaResult;
+            
             if (!payload.ESCONTRATO()) {
-                List<Fde> applicacionesList = fdeRepository.findByENTAndEJEAndFACNUM(payload.ENT(), payload.EJE(), payload.FACNUM());
-
-                List<String> errores = new ArrayList<>(); 
-
-                Double newGbsius;
-                Double newGbsiut;
-                Double fdeimp;
-                Double fdedif;
-                for (Fde fde : applicacionesList) {
-                    Optional<Gbs> bolsaOptio = gbsRepository.findByENTAndEJEAndCGECODAndGBSORGAndGBSFUNAndGBSECO(payload.ENT(), payload.EJE(), payload.CGECOD(), fde.getFDEORG(), fde.getFDEFUN(), fde.getFDEECO());
-
-                    if (bolsaOptio.isPresent()) {
-                        Gbs bolsa = bolsaOptio.get();
-
-                        fdeimp = fde.getFDEIMP() != null ? fde.getFDEIMP() : 0.0;
-                        fdedif = fde.getFDEDIF() != null ? fde.getFDEDIF() : 0.0;
-
-                        newGbsius = bolsa.getGBSIUS() + fdeimp + fdedif;
-                        newGbsiut = bolsa.getGBSIUT() + fdeimp + fdedif;
-
-                        bolsa.setGBSIUS(newGbsius);
-                        bolsa.setGBSIUT(newGbsiut);
-                        gbsRepository.save(bolsa);
-                    } else {
-                        errores.add(fde.getFDEORG() + "/" + fde.getFDEFUN() + "/" + fde.getFDEECO());
-                    }
-                }
-
-                if (!errores.isEmpty()) {
-                    return ResponseEntity.badRequest().body("No existe bolsa para: " + String.join(", ", errores));
-                }
+                ResponseEntity<?> bolsaResult = procesarBolsas(payload);
+                if (bolsaResult != null) return bolsaResult;
             }
-
+            
             return ResponseEntity.noContent().build();
+            
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error: " + ex.getMostSpecificCause().getMessage());
+                .body(Error + ex.getMostSpecificCause().getMessage());
         }
+    }
+
+    private ResponseEntity<?> validateContabilizarPayload(Contabilizar payload) {
+        if (payload == null || payload.ENT() == null || payload.EJE() == null || 
+            payload.FACNUM() == null || payload.FACADO() == null || payload.FACFCO() == null || 
+            payload.CGECOD() == null || payload.ESCONTRATO() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Falta un dato obligatorio");
+        }
+        return null;
+    }
+
+    private ResponseEntity<?> updateFacturaRecord(Contabilizar payload) {
+        FacId id = new FacId(payload.ENT(), payload.EJE(), payload.FACNUM());
+        Optional<Fac> facturaOptio = facRepository.findById(id);
+        
+        if (facturaOptio.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Factura no encontrada");
+        }
+        
+        Fac factura = facturaOptio.get();
+        factura.setFACADO(payload.FACADO());
+        factura.setFACFCO(payload.FACFCO());
+        facRepository.save(factura);
+        
+        return null;
+    }
+
+    private ResponseEntity<?> procesarBolsas(Contabilizar payload) {
+        List<Fde> applicacionesList = fdeRepository.findByENTAndEJEAndFACNUM(
+            payload.ENT(), payload.EJE(), payload.FACNUM()
+        );
+
+        List<String> errores = new ArrayList<>();
+        
+        for (Fde fde : applicacionesList) {
+            ResponseEntity<?> result = procesarFdeYBolsa(payload, fde, errores);
+            if (result != null) return result;
+        }
+        
+        if (!errores.isEmpty()) {
+            return ResponseEntity.badRequest()
+                .body("No existe bolsa para: " + String.join(", ", errores));
+        }
+        
+        return null;
+    }
+
+    private ResponseEntity<?> procesarFdeYBolsa(Contabilizar payload, Fde fde, List<String> errores) {
+        Optional<Gbs> bolsaOptio = gbsRepository.findByENTAndEJEAndCGECODAndGBSORGAndGBSFUNAndGBSECO(
+            payload.ENT(), payload.EJE(), payload.CGECOD(), 
+            fde.getFDEORG(), fde.getFDEFUN(), fde.getFDEECO()
+        );
+        
+        if (bolsaOptio.isEmpty()) {
+            errores.add(fde.getFDEORG() + "/" + fde.getFDEFUN() + "/" + fde.getFDEECO());
+            return null;
+        }
+        
+        Gbs bolsa = bolsaOptio.get();
+        Double fdeimp = fde.getFDEIMP() != null ? fde.getFDEIMP() : 0.0;
+        Double fdedif = fde.getFDEDIF() != null ? fde.getFDEDIF() : 0.0;
+        
+        Double newGbsius = bolsa.getGBSIUS() + fdeimp + fdedif;
+        Double newGbsiut = bolsa.getGBSIUT() + fdeimp + fdedif;
+        
+        bolsa.setGBSIUS(newGbsius);
+        bolsa.setGBSIUT(newGbsiut);
+        gbsRepository.save(bolsa);
+        
+        return null;
     }
 }

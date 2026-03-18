@@ -30,6 +30,10 @@ public class GbsController {
     @Autowired
     private CgeRepository cgeRepository;
 
+    private static final String SIN_RESULTADO = "Sin resultado";
+    private static final String Error = "Error :";
+    private static final String Faltan = "Faltan datos obligatorios";
+
     //for the main list of bolsa por cge
     @GetMapping("fetch-all/{ent}/{eje}/{cgecod}")
     public ResponseEntity<?> getBolsas(
@@ -43,7 +47,7 @@ public class GbsController {
             Optional<Cge> cgeOpt = cgeRepository.findById(new CgeId(ent, eje, cgecod));
             if (cgeOpt.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Sin resultado");
+                    .body(SIN_RESULTADO);
             }
             Cge cge = cgeOpt.get();
 
@@ -57,7 +61,7 @@ public class GbsController {
             return ResponseEntity.ok(result);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error: " + ex.getMostSpecificCause().getMessage());
+                .body(Error + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -73,14 +77,14 @@ public class GbsController {
     ) {
         try {
             if (payload == null || payload.GBSIMP() == null || payload.GBSIUS() == null || payload.GBSICO() == null || payload.GBSFOP() == null) {
-                return ResponseEntity.badRequest().body("Faltan datos obligatorios.");
+                return ResponseEntity.badRequest().body(Faltan);
             }
 
             GbsId id = new GbsId(ent, eje, cgecod, gbsref);
             Optional<Gbs> bolsa = gbsRepository.findById(id);
             if (bolsa.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Sin resultado");
+                    .body(SIN_RESULTADO);
             }
 
             Gbs bolsaUpdate = bolsa.get();
@@ -93,7 +97,7 @@ public class GbsController {
             return ResponseEntity.noContent().build();
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error: " + ex.getMostSpecificCause().getMessage());
+                .body(Error + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -109,14 +113,14 @@ public class GbsController {
     ) {
         try {
             if (payload == null || payload.GBSIBG() == null) {
-                return ResponseEntity.badRequest().body("Faltan datos obligatorios.");
+                return ResponseEntity.badRequest().body(Faltan);
             }
 
             GbsId id = new GbsId(ent, eje, cgecod, gbsref);
             Optional<Gbs> bolsa = gbsRepository.findById(id);
             if (bolsa.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Sin resultado");
+                    .body(SIN_RESULTADO);
             }
 
             Gbs bolsaUpdate = bolsa.get();
@@ -126,7 +130,7 @@ public class GbsController {
             return ResponseEntity.noContent().build();
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error: " + ex.getMostSpecificCause().getMessage());
+                .body(Error + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -142,14 +146,14 @@ public class GbsController {
     ) {
         try {
             if (payload == null || payload.GBSIMP() == null || payload.GBSIUS() == null || payload.GBSICO() == null || payload.GBSFOP() == null) {
-                return ResponseEntity.badRequest().body("Faltan datos obligatorios.");
+                return ResponseEntity.badRequest().body(Faltan);
             }
 
             GbsId id = new GbsId(ent, eje, cgecod, gbsref);
             Optional<Gbs> bolsa = gbsRepository.findById(id);
             if (bolsa.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Sin resultado");
+                    .body(SIN_RESULTADO);
             }
 
             Gbs bolsaUpdate = bolsa.get();
@@ -162,7 +166,7 @@ public class GbsController {
             gbsRepository.save(bolsaUpdate);
             return ResponseEntity.noContent().build();
         } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + ex.getMostSpecificCause().getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Error + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -203,7 +207,7 @@ public class GbsController {
             gbsRepository.saveAll(toSave);
             return ResponseEntity.noContent().build();
         } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + ex.getMostSpecificCause().getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Error + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -219,7 +223,7 @@ public class GbsController {
             GbsId id = new GbsId(ent, eje, cgecod, gbsref);
             Optional<Gbs> bolsa = gbsRepository.findById(id);
             if (bolsa.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
             } else {
                 Double gbsiut = bolsa.get().getGBSIUT();
                 if (Double.compare(gbsiut, 0.0) != 0) {
@@ -231,7 +235,7 @@ public class GbsController {
 
             return ResponseEntity.noContent().build();
         } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + ex.getMostSpecificCause().getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Error + ex.getMostSpecificCause().getMessage());
         }
     }
 }

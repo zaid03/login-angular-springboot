@@ -37,9 +37,16 @@ import com.example.backend.sqlserver2.repository.PerRepository;
 public class DpeController {
     @Autowired
     private DpeRepository dpeRepository;
+
     @Autowired
     private PerRepository perRepository;
-    @Autowired DepRepository depRepository;
+
+    @Autowired 
+    private DepRepository depRepository;
+
+    private static final String SIN_RESULTADO = "Sin resultado";
+    private static final String Error = "Error :";
+    private static final String Peticionario = "peticionario";
 
     //for adding personas to services and vice versa
     private final DpeService dpeService;
@@ -72,11 +79,11 @@ public class DpeController {
                 .toList();
 
             if (result.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
             }
             return ResponseEntity.ok(result);
         } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + ex.getMostSpecificCause().getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Error + ex.getMostSpecificCause().getMessage());
         }
     } 
 
@@ -92,13 +99,13 @@ public class DpeController {
             DpeId id = new DpeId(ent, eje, depcod, percod);
             if(!dpeRepository.existsById(id)) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("Sin resultado");
+                .body(SIN_RESULTADO);
             }
 
             dpeRepository.deleteById(id);
             return ResponseEntity.noContent().build();
         } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + ex.getMostSpecificCause().getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Error + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -113,7 +120,7 @@ public class DpeController {
             List<Dpe> dpes = dpeRepository.findByENTAndEJEAndPERCOD(ent, eje, percod);
             if (dpes.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Sin resultado");
+                    .body(SIN_RESULTADO);
             }
 
             List<String> depcods = dpes.stream()
@@ -129,7 +136,7 @@ public class DpeController {
 
             return ResponseEntity.ok(result);
         } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + ex.getMostSpecificCause().getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Error + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -145,13 +152,13 @@ public class DpeController {
             DpeId id = new DpeId(ent, eje, depcod, percod);
             if(!dpeRepository.existsById(id)) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("Sin resultado");
+                .body(SIN_RESULTADO);
             }
 
             dpeRepository.deleteById(id);
             return ResponseEntity.noContent().build();
         } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + ex.getMostSpecificCause().getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Error + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -170,7 +177,7 @@ public class DpeController {
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error: " + ex.getMessage());
+                .body(Error + ex.getMessage());
         }
     }
 
@@ -185,13 +192,13 @@ public class DpeController {
             List<Dpe> existing = dpeRepository.findByENTAndEJEAndPERCOD(ent, eje, percod);
             if (existing.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Sin resultado");
+                    .body(SIN_RESULTADO);
             }
 
             int deletedd = dpeRepository.deleteByENTAndEJEAndPERCOD(ent, eje, percod);
             if (deletedd == 0) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Sin resultado");
+                    .body(SIN_RESULTADO);
             }
             return ResponseEntity.noContent().build();
         } catch (DataAccessException ex) {
@@ -214,7 +221,7 @@ public class DpeController {
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error: " + ex.getMessage());
+                .body(Error + ex.getMessage());
         }
     }
 
@@ -231,13 +238,13 @@ public class DpeController {
             List<personasPorServiciosProjection> personas = dpeRepository.findByENTAndEJE(ent, eje, pageable);
 
             if (personas.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
             }
 
             return ResponseEntity.ok(personas);
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error: " + ex.getMessage());
+                .body(Error + ex.getMessage());
         }
     }
 
@@ -252,127 +259,86 @@ public class DpeController {
         @RequestParam(required = false) String perfil
     ) {
         try {
-            List<personasPorServiciosProjection> result = null;
+            String perfilType = mapPerfilType(perfil);
+            
+            List<personasPorServiciosProjection> result = getInitialData(ent, eje, servicio, persona, cgecod);
+            result = applyFilters(result, servicio, persona, cgecod, perfilType);
 
-            String perfilType = null;
-            if (perfil != null && !perfil.isEmpty()) {
-                switch (perfil.toLowerCase()) {
-                    case "almacen": perfilType = "depalm"; break;
-                    case "comprador": perfilType = "depcom"; break;
-                    case "contabilidad": perfilType = "depint"; break;
-                    case "peticionario": perfilType = "peticionario"; break;
-                }
-            }
-
-            boolean hasServicio = servicio != null && !servicio.isEmpty();
-            boolean hasPersona = persona != null && !persona.isEmpty();
-            boolean hasCgecod = cgecod != null && !cgecod.isEmpty();
-            boolean hasPerfil = perfilType != null;
-
-            if (hasServicio && hasPersona && hasCgecod && hasPerfil) {
-                List<personasPorServiciosProjection> data = nullSafeList(dpeRepository.findByENTAndEJE(ent, eje));
-                data = filterByServicio(data, servicio);
-                data = filterByPersona(data, persona);
-                List<personasPorServiciosProjection> cgFiltered = data.stream()
-                    .filter(p -> p.getDep().getCge().getCGECOD().equals(cgecod))
-                    .toList();
-                result = filterByPerfil(cgFiltered, perfilType);
-            }
-            else if (hasServicio && hasPersona && hasCgecod) {
-                List<personasPorServiciosProjection> data = nullSafeList(dpeRepository.findByENTAndEJE(ent, eje));
-                data = filterByServicio(data, servicio);
-                data = filterByPersona(data, persona);
-                result = data.stream()
-                    .filter(p -> p.getDep().getCge().getCGECOD().equals(cgecod))
-                    .toList();
-            }
-            else if (hasServicio && hasPersona && hasPerfil) {
-                List<personasPorServiciosProjection> data = nullSafeList(dpeRepository.findByENTAndEJE(ent, eje));
-                data = filterByServicio(data, servicio);
-                data = filterByPersona(data, persona);
-                result = filterByPerfil(data, perfilType);
-            }
-            else if (hasServicio && hasCgecod && hasPerfil) {
-                List<personasPorServiciosProjection> data = nullSafeList(dpeRepository.findByENTAndEJEAndDep_Cge_CGECOD(ent, eje, cgecod));
-                data = filterByServicio(data, servicio);
-                result = filterByPerfil(data, perfilType);
-            }
-            else if (hasPersona && hasCgecod && hasPerfil) {
-                List<personasPorServiciosProjection> data;
-                if (persona.length() <= 20) {
-                    data = nullSafeList(dpeRepository.findByENTAndEJEAndPERCODAndDep_Cge_CGECOD(ent, eje, persona, cgecod));
-                } else {
-                    data = nullSafeList(dpeRepository.findByENTAndEJEAndPer_PERNOMContainingAndDep_Cge_CGECOD(ent, eje, persona, cgecod));
-                }
-                result = filterByPerfil(data, perfilType);
-            }
-            else if (hasServicio && hasPersona) {
-                List<personasPorServiciosProjection> data = nullSafeList(dpeRepository.findByENTAndEJE(ent, eje));
-                data = filterByServicio(data, servicio);
-                result = filterByPersona(data, persona);
-            }
-            else if (hasServicio && hasCgecod) {
-                List<personasPorServiciosProjection> data = nullSafeList(dpeRepository.findByENTAndEJEAndDep_Cge_CGECOD(ent, eje, cgecod));
-                result = filterByServicio(data, servicio);
-            }
-            else if (hasPersona && hasCgecod) {
-                if (persona.length() <= 20) {
-                    result = nullSafeList(dpeRepository.findByENTAndEJEAndPERCODAndDep_Cge_CGECOD(ent, eje, persona, cgecod));
-                } else {
-                    result = nullSafeList(dpeRepository.findByENTAndEJEAndPer_PERNOMContainingAndDep_Cge_CGECOD(ent, eje, persona, cgecod));
-                }
-            }
-            else if (hasServicio && hasPerfil) {
-                List<personasPorServiciosProjection> data = nullSafeList(dpeRepository.findByENTAndEJE(ent, eje));
-                data = filterByServicio(data, servicio);
-                result = filterByPerfil(data, perfilType);
-            }
-            else if (hasPersona && hasPerfil) {
-                List<personasPorServiciosProjection> data;
-                if (persona.length() <= 20) {
-                    data = nullSafeList(dpeRepository.findProjectionByENTAndEJEAndPERCOD(ent, eje, persona));
-                } else {
-                    data = nullSafeList(dpeRepository.findByENTAndEJEAndPer_PERNOMContaining(ent, eje, persona));
-                }
-                result = filterByPerfil(data, perfilType);
-            }
-            else if (hasCgecod && hasPerfil) {
-                List<personasPorServiciosProjection> data = nullSafeList(dpeRepository.findByENTAndEJEAndDep_Cge_CGECOD(ent, eje, cgecod));
-                result = filterByPerfil(data, perfilType);
-            }
-            else if (hasServicio) {
-                List<personasPorServiciosProjection> data = nullSafeList(dpeRepository.findByENTAndEJE(ent, eje));
-                result = filterByServicio(data, servicio);
-            }
-            else if (hasPersona) {
-                if (persona.length() <= 20) {
-                    result = nullSafeList(dpeRepository.findProjectionByENTAndEJEAndPERCOD(ent, eje, persona));
-                } else {
-                    result = nullSafeList(dpeRepository.findByENTAndEJEAndPer_PERNOMContaining(ent, eje, persona));
-                }
-            }
-            else if (hasCgecod) {
-                result = nullSafeList(dpeRepository.findByENTAndEJEAndDep_Cge_CGECOD(ent, eje, cgecod));
-            }
-            else if (hasPerfil) {
-                List<personasPorServiciosProjection> data = nullSafeList(dpeRepository.findByENTAndEJE(ent, eje));
-                result = filterByPerfil(data, perfilType);
-            }
-
-            if (result == null || result.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
+            if (result.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
             }
             return ResponseEntity.ok(result);
+            
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error: " + ex.getMostSpecificCause().getMessage());
+                .body(Error + ex.getMostSpecificCause().getMessage());
         }
+    }
+
+    private String mapPerfilType(String perfil) {
+        if (perfil == null || perfil.isEmpty()) {
+            return null;
+        }
+        return switch (perfil.toLowerCase()) {
+            case "almacen" -> "depalm";
+            case "comprador" -> "depcom";
+            case "contabilidad" -> "depint";
+            case Peticionario -> Peticionario;
+            default -> null;
+        };
+    }
+
+    private record FilterFlags(boolean hasServicio, boolean hasPersona, boolean hasCgecod, boolean hasPerfil) {}
+    private FilterFlags buildFilterFlags(String servicio, String persona, String cgecod, String perfil) {
+        return new FilterFlags(
+            servicio != null && !servicio.isEmpty(),
+            persona != null && !persona.isEmpty(),
+            cgecod != null && !cgecod.isEmpty(),
+            perfil != null
+        );
+    }
+
+    private List<personasPorServiciosProjection> getInitialData(Integer ent, String eje, String servicio, String persona, String cgecod) {
+        if (cgecod != null && !cgecod.isEmpty()) {
+            return nullSafeList(dpeRepository.findByENTAndEJEAndDep_Cge_CGECOD(ent, eje, cgecod));
+        }
+        if (persona != null && !persona.isEmpty() && persona.length() <= 20) {
+            return nullSafeList(dpeRepository.findProjectionByENTAndEJEAndPERCOD(ent, eje, persona));
+        }
+        if (persona != null && !persona.isEmpty()) {
+            return nullSafeList(dpeRepository.findByENTAndEJEAndPer_PERNOMContaining(ent, eje, persona));
+        }
+        return nullSafeList(dpeRepository.findByENTAndEJE(ent, eje));
+    }
+
+    private List<personasPorServiciosProjection> applyFilters(
+        List<personasPorServiciosProjection> data, 
+        String servicio, 
+        String persona, 
+        String cgecod,
+        String perfilType
+    ) {
+        if (servicio != null && !servicio.isEmpty()) {
+            data = filterByServicio(data, servicio);
+        }
+        if (persona != null && !persona.isEmpty()) {
+            data = filterByPersona(data, persona);
+        }
+        if (cgecod != null && !cgecod.isEmpty()) {
+            data = data.stream()
+                .filter(p -> p.getDep().getCge().getCGECOD().equals(cgecod))
+                .toList();
+        }
+        if (perfilType != null) {
+            data = filterByPerfil(data, perfilType);
+        }
+        return data;
     }
 
     private List<personasPorServiciosProjection> filterByPerfil(List<personasPorServiciosProjection> data, String perfilType) {
         if (data == null || data.isEmpty()) return data;
         
-        if ("peticionario".equals(perfilType)) {
+        if (Peticionario.equals(perfilType)) {
             return data.stream()
                 .filter(p -> p.getDep().getDEPALM() == 0 && p.getDep().getDEPCOM() == 0 && p.getDep().getDEPINT() == 0)
                 .toList();

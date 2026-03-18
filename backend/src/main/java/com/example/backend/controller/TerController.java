@@ -24,6 +24,9 @@ public class TerController {
     @Autowired
     private TerRepository terRepository;
 
+    private static final String SIN_RESULTADO = "Sin resultado";
+    private static final String Error = "Error :";
+
     // Get all Ter records for a specific ENT
     @GetMapping("/by-ent/{ent}")
     public ResponseEntity<?> getByEnt(
@@ -33,12 +36,12 @@ public class TerController {
             List<Ter> proveedorees = terRepository.findByENT(ent);
             if(proveedorees.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Sin resultado");
+                    .body(SIN_RESULTADO);
             }
             return ResponseEntity.ok(proveedorees);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error: " + ex.getMostSpecificCause().getMessage());
+                .body(Error + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -52,12 +55,12 @@ public class TerController {
             List<Ter> proveedorees = terRepository.findByENTAndTERCODAndTERBLO(ent, tercod, 1);
             if(proveedorees.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Sin resultado");
+                    .body(SIN_RESULTADO);
             }
             return ResponseEntity.ok(proveedorees);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error: " + ex.getMostSpecificCause().getMessage());
+                .body(Error + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -71,12 +74,12 @@ public class TerController {
             List<Ter> proveedorees = terRepository.findByENTAndTERCODAndTERBLO(ent, tercod, 0);
             if(proveedorees.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Sin resultado");
+                    .body(SIN_RESULTADO);
             }
             return ResponseEntity.ok(proveedorees);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error: " + ex.getMostSpecificCause().getMessage());
+                .body(Error + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -90,12 +93,12 @@ public class TerController {
             List<Ter> proveedorees = terRepository.findByENTAndTERNIFContainingAndTERBLO(ent, ternif, 1);
             if(proveedorees.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Sin resultado");
+                    .body(SIN_RESULTADO);
             }
             return ResponseEntity.ok(proveedorees);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error: " + ex.getMostSpecificCause().getMessage());
+                .body(Error + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -109,12 +112,12 @@ public class TerController {
             List<Ter> proveedorees = terRepository.findByENTAndTERNIFContainingAndTERBLO(ent, ternif, 0);
             if(proveedorees.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Sin resultado");
+                    .body(SIN_RESULTADO);
             }
             return ResponseEntity.ok(proveedorees);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error: " + ex.getMostSpecificCause().getMessage());
+                .body(Error + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -129,13 +132,13 @@ public class TerController {
             List<Ter> results = terRepository.findAll(spec);
             if (results.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Sin resultado");
+                    .body(SIN_RESULTADO);
             }
             
             return ResponseEntity.ok(results);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error: " + ex.getMostSpecificCause().getMessage());
+                .body(Error + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -151,13 +154,13 @@ public class TerController {
             
             if (results.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Sin resultado");
+                    .body(SIN_RESULTADO);
             }
             
             return ResponseEntity.ok(results);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error: " + ex.getMostSpecificCause().getMessage());
+                .body(Error + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -173,12 +176,12 @@ public class TerController {
             
             if (results.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Sin resultado");
+                    .body(SIN_RESULTADO);
             }
             return ResponseEntity.ok(results);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error: " + ex.getMostSpecificCause().getMessage());
+                .body(Error + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -194,12 +197,12 @@ public class TerController {
             
             if (results.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Sin resultado");
+                    .body(SIN_RESULTADO);
             }   
             return ResponseEntity.ok(results);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error: " + ex.getMostSpecificCause().getMessage());
+                .body(Error + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -214,12 +217,12 @@ public class TerController {
             List<Ter> proveedorees = terRepository.findAllByENTAndTERCOD(ent, tercod);
             if(proveedorees.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Sin resultado");
+                    .body(SIN_RESULTADO);
             }
             return ResponseEntity.ok(proveedorees);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error: " + ex.getMostSpecificCause().getMessage());
+                .body(Error + ex.getMostSpecificCause().getMessage());
         }
     }
     
@@ -233,12 +236,12 @@ public class TerController {
             List<Ter> proveedorees = terRepository.findByENTAndTERNIFContaining(ent, ternif);
             if(proveedorees.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Sin resultado");
+                    .body(SIN_RESULTADO);
             }
             return ResponseEntity.ok(proveedorees);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error: " + ex.getMostSpecificCause().getMessage());
+                .body(Error + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -254,12 +257,12 @@ public class TerController {
             
             if (results.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Sin resultado");
+                    .body(SIN_RESULTADO);
             }
             return ResponseEntity.ok(results);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error: " + ex.getMostSpecificCause().getMessage());
+                .body(Error + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -272,7 +275,7 @@ public class TerController {
             List<Ter> proveedores = terRepository.findByENTAndTERBLO(ent, 1);
 
             if (proveedores.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
             }
             return ResponseEntity.ok(proveedores);
         } catch (DataAccessException ex) {
@@ -289,7 +292,7 @@ public class TerController {
             List<Ter> proveedores = terRepository.findByENTAndTERBLO(ent, 0);
 
             if (proveedores.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
             }
             return ResponseEntity.ok(proveedores);
         } catch (DataAccessException ex) {
@@ -309,7 +312,7 @@ public class TerController {
             TerId id = new TerId(ent, tercod);
             Optional<Ter> proveedor = terRepository.findById(id);
             if (proveedor.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");  
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);  
             }
 
             Ter updateProveedor = proveedor.get();
@@ -322,7 +325,7 @@ public class TerController {
             return ResponseEntity.noContent().build();
 
         } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + ex.getMostSpecificCause().getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Error + ex.getMostSpecificCause().getMessage());
         }
     }
 
