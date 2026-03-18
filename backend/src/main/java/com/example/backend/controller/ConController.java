@@ -27,6 +27,9 @@ public class ConController {
     @Autowired
     private ConRepository conRepository;
 
+    private static final String SIN_RESULTADO = "Sin resultado";
+    private static final String Error = "Error :";
+
     //selecting all contratos
     @GetMapping("/fetch-contratos/{ent}/{eje}")
     public ResponseEntity<?> fetchContratos(
@@ -36,7 +39,7 @@ public class ConController {
         try {
             List<CotContratoProjection> rows = cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJE(3, ent, eje);
             if (rows == null || rows.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
             }
 
             List<ContratoDto> dto = rows.stream().map(p -> {
@@ -57,7 +60,7 @@ public class ConController {
             return ResponseEntity.ok(dto);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error: " + ex.getMostSpecificCause().getMessage());
+                .body(Error + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -71,7 +74,7 @@ public class ConController {
         try {
             List<CotContratoProjection> rows = cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCODAndConnCONBLO(3, ent, eje, concod, 0);
             if (rows == null || rows.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
             }
 
             List<ContratoDto> dto = rows.stream().map(p -> {
@@ -92,7 +95,7 @@ public class ConController {
             return ResponseEntity.ok(dto);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error: " + ex.getMostSpecificCause().getMessage());
+                .body(Error + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -106,7 +109,7 @@ public class ConController {
         try {
             List<CotContratoProjection> rows = cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCODAndConnCONBLONot(3, ent, eje, concod, 0);
             if (rows == null || rows.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
             }
 
             List<ContratoDto> dto = rows.stream().map(p -> {
@@ -127,11 +130,11 @@ public class ConController {
             return ResponseEntity.ok(dto);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error: " + ex.getMostSpecificCause().getMessage());
+                .body(Error + ex.getMostSpecificCause().getMessage());
         }
     }
 
-    //search by concod todos
+    //search by concod all
     @GetMapping("/searchByCodigoTodos/{ent}/{eje}/{concod}")
     public ResponseEntity<?> searchContratosCodigoTodos(
         @PathVariable Integer ent,
@@ -141,7 +144,7 @@ public class ConController {
         try {
             List<CotContratoProjection> rows = cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCOD(3, ent, eje, concod);
             if (rows == null || rows.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
             }
 
             List<ContratoDto> dto = rows.stream().map(p -> {
@@ -162,7 +165,7 @@ public class ConController {
             return ResponseEntity.ok(dto);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error: " + ex.getMostSpecificCause().getMessage());
+                .body(Error + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -176,7 +179,7 @@ public class ConController {
         try {
             List<CotContratoProjection> rows = cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDESContainingAndConnCONBLO(3, ent, eje, condes, 0);
             if (rows == null || rows.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
             }
 
             List<ContratoDto> dto = rows.stream().map(p -> {
@@ -197,7 +200,7 @@ public class ConController {
             return ResponseEntity.ok(dto);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error: " + ex.getMostSpecificCause().getMessage());
+                .body(Error + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -211,7 +214,7 @@ public class ConController {
         try {
             List<CotContratoProjection> rows = cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDESContainingAndConnCONBLONot(3, ent, eje, condes, 0);
             if (rows == null || rows.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
             }
 
             List<ContratoDto> dto = rows.stream().map(p -> {
@@ -232,11 +235,11 @@ public class ConController {
             return ResponseEntity.ok(dto);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error: " + ex.getMostSpecificCause().getMessage());
+                .body(Error + ex.getMostSpecificCause().getMessage());
         }
     }
 
-    //search by condes todos
+    //search by condes all
     @GetMapping("/searchByDescTodos/{ent}/{eje}/{condes}")
     public ResponseEntity<?> searchContratosDescTodos(
         @PathVariable Integer ent,
@@ -246,7 +249,7 @@ public class ConController {
         try {
             List<CotContratoProjection> rows = cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDESContaining(3, ent, eje, condes);
             if (rows == null || rows.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
             }
 
             List<ContratoDto> dto = rows.stream().map(p -> {
@@ -267,7 +270,7 @@ public class ConController {
             return ResponseEntity.ok(dto);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error: " + ex.getMostSpecificCause().getMessage());
+                .body(Error + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -280,7 +283,7 @@ public class ConController {
         try {
             List<CotContratoProjection> rows = cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONBLO(3, ent, eje, 0);
             if (rows == null || rows.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
             }
 
             List<ContratoDto> dto = rows.stream().map(p -> {
@@ -301,7 +304,7 @@ public class ConController {
             return ResponseEntity.ok(dto);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error: " + ex.getMostSpecificCause().getMessage());
+                .body(Error + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -314,7 +317,7 @@ public class ConController {
         try {
             List<CotContratoProjection> rows = cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONBLONot(3, ent, eje, 0);
             if (rows == null || rows.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
             }
 
             List<ContratoDto> dto = rows.stream().map(p -> {
@@ -335,7 +338,7 @@ public class ConController {
             return ResponseEntity.ok(dto);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error: " + ex.getMostSpecificCause().getMessage());
+                .body(Error + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -356,7 +359,7 @@ public class ConController {
             ConId id = new ConId(ent, eje, concod);
             Optional<Conn> contrato = conRepository.findById(id);
             if (contrato.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
             }
 
             Conn conUpdate = contrato.get();
@@ -369,7 +372,7 @@ public class ConController {
             return ResponseEntity.noContent().build();
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error: " + ex.getMostSpecificCause().getMessage());
+                .body(Error + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -411,7 +414,7 @@ public class ConController {
             return ResponseEntity.noContent().build();
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error: " + ex.getMostSpecificCause().getMessage());
+                .body(Error + ex.getMostSpecificCause().getMessage());
         }
     }
 }
