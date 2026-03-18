@@ -44,7 +44,7 @@ public class RpcSoapControllerTest {
     void shouldCallRpcWithPayloadAndReturn200() throws Exception {
         RpcResult fake = mock(RpcResult.class);
         when(rpcSoapService.callRpc(eq("http://e"), eq("op"), eq("ns"), eq("action"), eq("payload"),
-                eq("rpc"), eq("encoded"), eq("http://schemas.xmlsoap.org/soap/encoding/"), isNull()))
+                isNull()))
             .thenReturn(fake);
 
         Map<String, Object> request = Map.of(
@@ -63,15 +63,14 @@ public class RpcSoapControllerTest {
             .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
 
         verify(rpcSoapService).callRpc(eq("http://e"), eq("op"), eq("ns"), eq("action"),
-            eq("payload"), eq("rpc"), eq("encoded"),
-            eq("http://schemas.xmlsoap.org/soap/encoding/"), isNull());
+            eq("payload"), isNull());
     }
 
     @Test
     void shouldConvertParamsMapToStringMapAndPassToService() throws Exception {
         RpcResult fake = mock(RpcResult.class);
         when(rpcSoapService.callRpc(anyString(), anyString(), anyString(), anyString(),
-                any(), anyString(), anyString(), anyString(), isNull()))
+                any(), isNull()))
              .thenThrow(new RuntimeException("rpc failure"));
 
         Map<String, Object> paramsMap = Map.of("p1", "one", "p2", 2);
@@ -89,8 +88,7 @@ public class RpcSoapControllerTest {
 
         ArgumentCaptor<Map> captor = ArgumentCaptor.forClass(Map.class);
         verify(rpcSoapService).callRpc(eq("e"), eq("op"), eq("ns"), eq(""),
-            isNull(), eq("rpc"), eq("encoded"),
-            eq("http://schemas.xmlsoap.org/soap/encoding/"), captor.capture());
+            isNull(), captor.capture());
 
         Map<String, String> passed = captor.getValue();
         assertThat(passed.get("p1"), equalTo("one"));
@@ -100,7 +98,7 @@ public class RpcSoapControllerTest {
     @Test
     void shouldReturn500WhenServiceThrows() throws Exception {
         when(rpcSoapService.callRpc(anyString(), anyString(), anyString(), anyString(),
-                any(), anyString(), anyString(), anyString(), isNull()))
+                any(), isNull()))
             .thenThrow(new RuntimeException("rpc failure"));
 
         Map<String, Object> request = Map.of("endpoint", "e", "operation", "op", "namespace", "ns");
@@ -114,7 +112,6 @@ public class RpcSoapControllerTest {
             .andExpect(jsonPath("$.error", containsString("rpc failure")));
 
         verify(rpcSoapService).callRpc(eq("e"), eq("op"), eq("ns"), eq(""),
-            isNull(), eq("rpc"), eq("encoded"),
-            eq("http://schemas.xmlsoap.org/soap/encoding/"), isNull());
+            isNull(), isNull());
     }
 }

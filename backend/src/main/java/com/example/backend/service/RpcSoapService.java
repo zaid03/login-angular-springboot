@@ -18,9 +18,6 @@ public class RpcSoapService {
             String namespace,
             String soapAction,
             String payload,
-            String style,
-            String use,
-            String encodingStyle,
             Map<String, String> paramsMap 
     ) {
         RpcResult result = new RpcResult();

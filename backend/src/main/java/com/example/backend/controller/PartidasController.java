@@ -36,9 +36,10 @@ public class PartidasController {
         @RequestParam(required = false) String usucenges
     ) {
         try {
-            List<Partida> partidas = partidasService.getPartidas(
+            PartidasService.SearchCriteria criteria = new PartidasService.SearchCriteria(
                 cenges, alias, clorg, clfun, cleco, clcte, clpam, usucenges
             );
+            List<Partida> partidas = partidasService.getPartidas(criteria);
             return ResponseEntity.ok(partidas);
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
