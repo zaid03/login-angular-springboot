@@ -17,32 +17,50 @@ public class FacContabilizacionSpecification {
     private static final String TERNOM = "TERNOM";
     private static final String FACDOC = "FACDOC";
 
-    public static Specification<Fac> searchContabilizacion(
-        Integer ent,
-        String eje,
-        String cgecod,
-        String fechaType,          
-        LocalDateTime desde,
-        LocalDateTime hasta,
-        Integer facann,
-        String search
-    ) {
+    private FacContabilizacionSpecification() {
+        // Hide implicit public constructor
+    }
+
+    public static class SearchCriteria {
+        public final Integer ent;
+        public final String eje;
+        public final String cgecod;
+        public final String fechaType;
+        public final LocalDateTime desde;
+        public final LocalDateTime hasta;
+        public final Integer facann;
+        public final String search;
+
+        public SearchCriteria(Integer ent, String eje, String cgecod, String fechaType,
+                LocalDateTime desde, LocalDateTime hasta, Integer facann, String search) {
+            this.ent = ent;
+            this.eje = eje;
+            this.cgecod = cgecod;
+            this.fechaType = fechaType;
+            this.desde = desde;
+            this.hasta = hasta;
+            this.facann = facann;
+            this.search = search;
+        }
+    }
+
+    public static Specification<Fac> searchContabilizacion(SearchCriteria criteria) {
         return (root, query, cb) -> {
             if (query.getResultType() == Fac.class) {
                 root.fetch("ter", JoinType.LEFT);
             }
 
             Predicate predicate = cb.conjunction();
-            predicate = applyBasicFilters(predicate, root, cb, ent, eje, cgecod);
+            predicate = applyBasicFilters(predicate, root, cb, criteria.ent, criteria.eje, criteria.cgecod);
             predicate = applyAmountFilter(predicate, root, cb);
-            predicate = applyDateFilters(predicate, root, cb, fechaType, desde, hasta);
+            predicate = applyDateFilters(predicate, root, cb, criteria.fechaType, criteria.desde, criteria.hasta);
             
-            if (facann != null) {
-                predicate = cb.and(predicate, cb.equal(root.get("FACANN"), facann));
+            if (criteria.facann != null) {
+                predicate = cb.and(predicate, cb.equal(root.get("FACANN"), criteria.facann));
             }
 
-            if (search != null && !search.trim().isEmpty()) {
-                Predicate searchPredicate = buildSearchPredicate(root, cb, search.trim());
+            if (criteria.search != null && !criteria.search.trim().isEmpty()) {
+                Predicate searchPredicate = buildSearchPredicate(root, cb, criteria.search.trim());
                 predicate = cb.and(predicate, searchPredicate);
             }
 

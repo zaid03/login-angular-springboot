@@ -44,16 +44,30 @@ public class PartidasService {
     @Value("${sical.eje}")
     private String eje;
 
-    public List<Partida> getPartidas(
-        String cenges,
-        String alias,
-        String clorg,
-        String clfun,
-        String cleco,
-        String clcte,
-        String clpam,
-        String usucenges
-    ) throws Exception {
+    public static class SearchCriteria {
+        public final String cenges;
+        public final String alias;
+        public final String clorg;
+        public final String clfun;
+        public final String cleco;
+        public final String clcte;
+        public final String clpam;
+        public final String usucenges;
+
+        public SearchCriteria(String cenges, String alias, String clorg, String clfun,
+                String cleco, String clcte, String clpam, String usucenges) {
+            this.cenges = cenges;
+            this.alias = alias;
+            this.clorg = clorg;
+            this.clfun = clfun;
+            this.cleco = cleco;
+            this.clcte = clcte;
+            this.clpam = clpam;
+            this.usucenges = usucenges;
+        }
+    }
+
+    public List<Partida> getPartidas(SearchCriteria criteria) throws Exception {
       CryptoSical.SecurityFields sec = CryptoSical.calculateSecurityFields(publicKey);
 
       String fecha = sec.created;
@@ -77,14 +91,14 @@ public class PartidasService {
             "<tokenSha1>" + tokenSha1 + "</tokenSha1>" +
           "</sec>" +
           "<par>" +
-            (cenges   != null ? "<cenges>"   + CryptoSical.encodeBase64(cenges)   + "</cenges>"   : "") +
-            (alias    != null ? "<alias>"    + CryptoSical.encodeBase64(alias)    + "</alias>"    : "") +
-            (clorg    != null ? "<clorg>"    + CryptoSical.encodeBase64(clorg)    + "</clorg>"    : "") +
-            (clfun    != null ? "<clfun>"    + CryptoSical.encodeBase64(clfun)    + "</clfun>"    : "") +
-            (cleco    != null ? "<cleco>"    + CryptoSical.encodeBase64(cleco)    + "</cleco>"    : "") +
-           (clcte    != null ? "<clcte>"    + CryptoSical.encodeBase64(clcte)    + "</clcte>"    : "") +
-            (clpam    != null ? "<clpam>"    + CryptoSical.encodeBase64(clpam)    + "</clpam>"    : "") +
-            (usucenges!= null ? "<usucenges>"+ CryptoSical.encodeBase64(usucenges) + "</usucenges>" : "") +
+            (criteria.cenges   != null ? "<cenges>"   + CryptoSical.encodeBase64(criteria.cenges)   + "</cenges>"   : "") +
+            (criteria.alias    != null ? "<alias>"    + CryptoSical.encodeBase64(criteria.alias)    + "</alias>"    : "") +
+            (criteria.clorg    != null ? "<clorg>"    + CryptoSical.encodeBase64(criteria.clorg)    + "</clorg>"    : "") +
+            (criteria.clfun    != null ? "<clfun>"    + CryptoSical.encodeBase64(criteria.clfun)    + "</clfun>"    : "") +
+            (criteria.cleco    != null ? "<cleco>"    + CryptoSical.encodeBase64(criteria.cleco)    + "</cleco>"    : "") +
+           (criteria.clcte    != null ? "<clcte>"    + CryptoSical.encodeBase64(criteria.clcte)    + "</clcte>"    : "") +
+            (criteria.clpam    != null ? "<clpam>"    + CryptoSical.encodeBase64(criteria.clpam)    + "</clpam>"    : "") +
+            (criteria.usucenges!= null ? "<usucenges>"+ CryptoSical.encodeBase64(criteria.usucenges) + "</usucenges>" : "") +
           "</par>" +
         "</e>";
 

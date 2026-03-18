@@ -23,6 +23,7 @@ import com.example.backend.dto.Operaciones.Dto;
 import com.example.backend.dto.Operaciones.Iva;
 import com.example.backend.dto.Operaciones.Linea;
 import com.example.backend.dto.Operaciones.Relacion;
+import com.example.backend.exception.SmlProcessingException;
 import com.example.sical.CryptoSical;
 
 @Service
@@ -49,16 +50,33 @@ public class OperacionesService {
     @Value("${sical.eje}")
     private String eje;
 
-    public List<Operaciones> getOperaciones(
-        String numeroOperDesde,
-        String numeroOperHasta,
-        String codigoOperacion,
-        String organica,
-        String funcional,
-        String economica,
-        String expediente,
-        String grupoApunte,
-        String oficina) throws Exception {
+    public static class SearchCriteria {
+        public final String numeroOperDesde;
+        public final String numeroOperHasta;
+        public final String codigoOperacion;
+        public final String organica;
+        public final String funcional;
+        public final String economica;
+        public final String expediente;
+        public final String grupoApunte;
+        public final String oficina;
+
+        public SearchCriteria(String numeroOperDesde, String numeroOperHasta, String codigoOperacion,
+                String organica, String funcional, String economica, String expediente,
+                String grupoApunte, String oficina) {
+            this.numeroOperDesde = numeroOperDesde;
+            this.numeroOperHasta = numeroOperHasta;
+            this.codigoOperacion = codigoOperacion;
+            this.organica = organica;
+            this.funcional = funcional;
+            this.economica = economica;
+            this.expediente = expediente;
+            this.grupoApunte = grupoApunte;
+            this.oficina = oficina;
+        }
+    }
+
+    public List<Operaciones> getOperaciones(SearchCriteria criteria) throws Exception {
 
         CryptoSical.SecurityFields sec = CryptoSical.calculateSecurityFields(publicKey);
         String fecha = sec.created;
@@ -68,15 +86,15 @@ public class OperacionesService {
 
         String filtroXml =
             "<filtro>" +
-            (numeroOperDesde != null ? "<numeroOperDesde>" + numeroOperDesde + "</numeroOperDesde>" : "") +
-            (numeroOperHasta != null ? "<numeroOperHasta>" + numeroOperHasta + "</numeroOperHasta>" : "") +
-            (codigoOperacion != null ? "<codigoOperacion>" + CryptoSical.encodeBase64(codigoOperacion) + "</codigoOperacion>" : "") +
-            (organica != null ? "<organica>" + CryptoSical.encodeBase64(organica) + "</organica>" : "") +
-            (funcional != null ? "<funcional>" + CryptoSical.encodeBase64(funcional) + "</funcional>" : "") +
-            (economica != null ? "<economica>" + CryptoSical.encodeBase64(economica) + "</economica>" : "") +
-            (expediente != null ? "<expediente>" + CryptoSical.encodeBase64(expediente) + "</expediente>" : "") +
-            (grupoApunte != null ? "<grupoApunte>" + CryptoSical.encodeBase64(grupoApunte) + "</grupoApunte>" : "") +
-            (oficina != null ? "<oficina>" + CryptoSical.encodeBase64(oficina) + "</oficina>" : "") +
+            (criteria.numeroOperDesde != null ? "<numeroOperDesde>" + criteria.numeroOperDesde + "</numeroOperDesde>" : "") +
+            (criteria.numeroOperHasta != null ? "<numeroOperHasta>" + criteria.numeroOperHasta + "</numeroOperHasta>" : "") +
+            (criteria.codigoOperacion != null ? "<codigoOperacion>" + CryptoSical.encodeBase64(criteria.codigoOperacion) + "</codigoOperacion>" : "") +
+            (criteria.organica != null ? "<organica>" + CryptoSical.encodeBase64(criteria.organica) + "</organica>" : "") +
+            (criteria.funcional != null ? "<funcional>" + CryptoSical.encodeBase64(criteria.funcional) + "</funcional>" : "") +
+            (criteria.economica != null ? "<economica>" + CryptoSical.encodeBase64(criteria.economica) + "</economica>" : "") +
+            (criteria.expediente != null ? "<expediente>" + CryptoSical.encodeBase64(criteria.expediente) + "</expediente>" : "") +
+            (criteria.grupoApunte != null ? "<grupoApunte>" + CryptoSical.encodeBase64(criteria.grupoApunte) + "</grupoApunte>" : "") +
+            (criteria.oficina != null ? "<oficina>" + CryptoSical.encodeBase64(criteria.oficina) + "</oficina>" : "") +
             "</filtro>";
 
         String xml =
@@ -188,7 +206,7 @@ public class OperacionesService {
         return builder.parse(new ByteArrayInputStream(sml.getBytes(StandardCharsets.UTF_8)));
     }
     
-    private void validateAndThrowIfError(Document doc) throws Exception {
+    private void validateAndThrowIfError(Document doc) throws SmlProcessingException {
         NodeList exitoNodes = doc.getElementsByTagName("exito");
         if (exitoNodes.getLength() == 0) {
             return;
@@ -204,7 +222,7 @@ public class OperacionesService {
         if (descNodes.getLength() > 0) {
             desc = descNodes.item(0).getTextContent();
         }
-        throw new Exception("SICAL error: " + desc);
+        throw new SmlProcessingException("SICAL error: " + desc);
     }
     
     private Operaciones createOperacionFromElement(Element opEl) {

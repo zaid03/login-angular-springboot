@@ -37,7 +37,7 @@ public class OperacionesController {
         @RequestParam(name = "grupoApunte", required = false) String grupoApunte,
         @RequestParam(name = "oficina", required = false) String oficina) {
         try {
-            List<Operaciones> operaciones = operacionesService.getOperaciones(
+            OperacionesService.SearchCriteria criteria = new OperacionesService.SearchCriteria(
                     numeroOperDesde,
                     numeroOperHasta,
                     codigoOperacion,
@@ -47,6 +47,7 @@ public class OperacionesController {
                     expediente,
                     grupoApunte,
                     oficina);
+            List<Operaciones> operaciones = operacionesService.getOperaciones(criteria);
             return ResponseEntity.ok(operaciones);
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("error", ex.getMessage()));

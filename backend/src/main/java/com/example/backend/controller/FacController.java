@@ -83,10 +83,11 @@ public class FacController {
         @RequestParam(defaultValue = "OTROS") String searchType
     ) {
         try {
-            Specification<Fac> spec = FacSpecification.searchFacturas(
+            FacSpecification.SearchCriteria criteria = new FacSpecification.SearchCriteria(
                 ent, eje, cgecod, estado, dateType, fromDate, toDate,
                 facannMode, facann, search, searchType
             );
+            Specification<Fac> spec = FacSpecification.searchFacturas(criteria);
             
             List<Fac> facturas = facRepository.findAll(spec);
             
@@ -196,9 +197,10 @@ public class FacController {
         @RequestParam(required = false) String search 
     ) {
         try {
-            Specification<Fac> spec = FacContabilizacionSpecification.searchContabilizacion(
+            FacContabilizacionSpecification.SearchCriteria criteria = new FacContabilizacionSpecification.SearchCriteria(
                 ent, eje, cgecod, fechaType, desde, hasta, facann, search
             );
+            Specification<Fac> spec = FacContabilizacionSpecification.searchContabilizacion(criteria);
 
             List<Fac> facturas = facRepository.findAll(spec);
 

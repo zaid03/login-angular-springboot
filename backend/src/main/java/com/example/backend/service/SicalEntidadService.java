@@ -1,6 +1,7 @@
 package com.example.backend.service;
 
 import com.example.backend.dto.Entidad;
+import com.example.backend.exception.SmlProcessingException;
 import com.example.sical.CryptoSical;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
@@ -79,7 +80,7 @@ public class SicalEntidadService {
         String responseXml = restTemplate.postForObject(wsUrl, request, String.class);
         
         if (responseXml == null) {
-            throw new RuntimeException("Empty response from SICAL");
+            throw new SmlProcessingException("Empty response from SICAL");
         }
 
         // Extract inner servicioReturn content (escaped SML) and unescape it
@@ -154,7 +155,7 @@ public class SicalEntidadService {
 
         NodeList descNodes = doc.getElementsByTagName("desc");
         String desc = (descNodes.getLength() > 0) ? descNodes.item(0).getTextContent() : "error";
-        throw new RuntimeException("SICAL error: " + desc);
+        throw new SmlProcessingException("SICAL error: " + desc);
     }
 
     private List<Entidad> parseDetalleList(NodeList detalleNodes) {

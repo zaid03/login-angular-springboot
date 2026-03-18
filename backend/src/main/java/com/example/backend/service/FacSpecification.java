@@ -32,23 +32,53 @@ public class FacSpecification {
     // SQL function constants
     private static final String ROUND = "ROUND";
     private static final Integer ROUND_SCALE = 2;
+
+    private FacSpecification() {
+        // Hide implicit public constructor
+    }
+
+    public static class SearchCriteria {
+        public final Integer ent;
+        public final String eje;
+        public final String cgecod;
+        public final String estado;
+        public final String dateType;
+        public final LocalDate fromDate;
+        public final LocalDate toDate;
+        public final String facannMode;
+        public final String facann;
+        public final String search;
+        public final String searchType;
+
+        public SearchCriteria(Integer ent, String eje, String cgecod, String estado,
+                String dateType, LocalDate fromDate, LocalDate toDate,
+                String facannMode, String facann, String search, String searchType) {
+            this.ent = ent;
+            this.eje = eje;
+            this.cgecod = cgecod;
+            this.estado = estado;
+            this.dateType = dateType;
+            this.fromDate = fromDate;
+            this.toDate = toDate;
+            this.facannMode = facannMode;
+            this.facann = facann;
+            this.search = search;
+            this.searchType = searchType;
+        }
+    }
     
-    public static Specification<Fac> searchFacturas(
-        Integer ent, String eje, String cgecod, String estado, 
-        String dateType, LocalDate fromDate, LocalDate toDate,
-        String facannMode, String facann, String search, String searchType
-    ) {
+    public static Specification<Fac> searchFacturas(SearchCriteria criteria) {
         return (root, query, cb) -> {
             Join<Fac, Ter> terJoin = root.join("ter", JoinType.INNER);
             
             Predicate predicate = cb.conjunction();
-            predicate = applyBasicFilters(predicate, root, cb, ent, eje, cgecod);
-            predicate = applyDateFilters(predicate, root, cb, dateType, fromDate, toDate);
-            predicate = applyEstadoFilter(predicate, root, cb, estado);
-            predicate = applyFacannFilter(predicate, root, cb, facannMode, facann);
+            predicate = applyBasicFilters(predicate, root, cb, criteria.ent, criteria.eje, criteria.cgecod);
+            predicate = applyDateFilters(predicate, root, cb, criteria.dateType, criteria.fromDate, criteria.toDate);
+            predicate = applyEstadoFilter(predicate, root, cb, criteria.estado);
+            predicate = applyFacannFilter(predicate, root, cb, criteria.facannMode, criteria.facann);
             
-            if (search != null && !search.isEmpty()) {
-                Predicate searchPredicate = buildSearchPredicate(terJoin, root, cb, search, searchType);
+            if (criteria.search != null && !criteria.search.isEmpty()) {
+                Predicate searchPredicate = buildSearchPredicate(terJoin, root, cb, criteria.search, criteria.searchType);
                 predicate = cb.and(predicate, searchPredicate);
             }
             
