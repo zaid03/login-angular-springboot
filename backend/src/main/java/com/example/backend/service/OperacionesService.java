@@ -125,24 +125,58 @@ public class OperacionesService {
 
     private List<Operaciones> parseOperaciones(String xml) throws Exception {
         List<Operaciones> result = new ArrayList<>();
-
-        String inner = null;
-        int start = xml != null ? xml.indexOf("<servicioReturn") : -1;
-        if (start >= 0) {
-            int gt = xml.indexOf(">", start);
-            int end = xml.indexOf("</servicioReturn>", gt);
-            if (gt >= 0 && end >= 0) {
-                inner = xml.substring(gt + 1, end);
-            }
+        
+        String innerXml = extractInnerXmlContent(xml);
+        String sml = unescapeXmlEntities(innerXml);
+        
+        if (sml == null) {
+            sml = "";
         }
-        if (inner == null) inner = xml == null ? "" : xml;
-
-        String sml = inner
-                .replace("&lt;", "<")
-                .replace("&gt;", ">")
-                .replace("&quot;", "\"")
-                .replace("&apos;", "'");
-
+        if (sml.isEmpty()) {
+            return result;
+        }
+        
+        Document doc = parseXmlDocument(sml);
+        validateAndThrowIfError(doc);
+        
+        NodeList operNodes = doc.getElementsByTagName("operacion");
+        for (int i = 0; i < operNodes.getLength(); i++) {
+            Element opEl = (Element) operNodes.item(i);
+            Operaciones op = createOperacionFromElement(opEl);
+            result.add(op);
+        }
+        
+        return result;
+    }
+    
+    private String extractInnerXmlContent(String xml) {
+        if (xml == null) {
+            return "";
+        }
+        
+        int start = xml.indexOf("<servicioReturn");
+        if (start < 0) {
+            return xml;
+        }
+        
+        int gt = xml.indexOf(">", start);
+        int end = xml.indexOf("</servicioReturn>", gt);
+        
+        if (gt >= 0 && end >= 0) {
+            return xml.substring(gt + 1, end);
+        }
+        
+        return xml;
+    }
+    
+    private String unescapeXmlEntities(String xml) {
+        return xml.replace("&lt;", "<")
+                  .replace("&gt;", ">")
+                  .replace("&quot;", "\"")
+                  .replace("&apos;", "'");
+    }
+    
+    private Document parseXmlDocument(String sml) throws Exception {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(false);
         factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
@@ -151,71 +185,75 @@ public class OperacionesService {
         factory.setAttribute(javax.xml.XMLConstants.ACCESS_EXTERNAL_DTD, "");
         factory.setAttribute(javax.xml.XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
         DocumentBuilder builder = factory.newDocumentBuilder();
-        Document doc = builder.parse(new ByteArrayInputStream(sml.getBytes(StandardCharsets.UTF_8)));
-
+        return builder.parse(new ByteArrayInputStream(sml.getBytes(StandardCharsets.UTF_8)));
+    }
+    
+    private void validateAndThrowIfError(Document doc) throws Exception {
         NodeList exitoNodes = doc.getElementsByTagName("exito");
-        if (exitoNodes.getLength() > 0) {
-            String exito = exitoNodes.item(0).getTextContent();
-            if (!"-1".equals(exito) && !"1".equals(exito)) {
-                String desc = "";
-                NodeList descNodes = doc.getElementsByTagName("desc");
-                if (descNodes.getLength() > 0) desc = descNodes.item(0).getTextContent();
-                throw new Exception("SICAL error: " + desc);
-            }
+        if (exitoNodes.getLength() == 0) {
+            return;
         }
-
-        NodeList operNodes = doc.getElementsByTagName("operacion");
-        for (int i = 0; i < operNodes.getLength(); i++) {
-            Element opEl = (Element) operNodes.item(i);
-            Operaciones op = new Operaciones();
-
-            op.setNumope(toLong(getTagValue(opEl, "numope")));
-            op.setCodope(decodeOrNull(getTagValue(opEl, "codope")));
-            op.setSigno(decodeOrNull(getTagValue(opEl, "signo")));
-            op.setFase(decodeOrNull(getTagValue(opEl, "fase")));
-            op.setArea(decodeOrNull(getTagValue(opEl, "area")));
-            op.setAgrupacion(decodeOrNull(getTagValue(opEl, "agrupacion")));
-            op.setNifter(decodeOrNull(getTagValue(opEl, "nifter")));
-            op.setNifend(decodeOrNull(getTagValue(opEl, "nifend")));
-            op.setCuenta(decodeOrNull(getTagValue(opEl, "cuenta")));
-            op.setFechaentrada(getTagValue(opEl, "fechaentrada"));
-            op.setFecope(getTagValue(opEl, "fecope"));
-            op.setGapuntes(decodeOrNull(getTagValue(opEl, "gapuntes")));
-            op.setDocumento(decodeOrNull(getTagValue(opEl, "documento")));
-            op.setFechadocu(getTagValue(opEl, "fechadocu"));
-            op.setOrdinal(decodeOrNull(getTagValue(opEl, "ordinal")));
-            op.setFechapago(getTagValue(opEl, "fechapago"));
-            op.setTipopago(decodeOrNull(getTagValue(opEl, "tipopago")));
-            op.setTipoexp(decodeOrNull(getTagValue(opEl, "tipoexp")));
-            op.setNexp(decodeOrNull(getTagValue(opEl, "nexp")));
-            op.setFechaexp(getTagValue(opEl, "fechaexp"));
-            op.setAreages(decodeOrNull(getTagValue(opEl, "areages")));
-            op.setOficina(decodeOrNull(getTagValue(opEl, "oficina")));
-            op.setImporte(toDouble(getTagValue(opEl, "importe")));
-            op.setImpiva(toDouble(getTagValue(opEl, "impiva")));
-            op.setImpdto(toDouble(getTagValue(opEl, "impdto")));
-            op.setTexto(decodeOrNull(getTagValue(opEl, "texto")));
-            op.setNumcaja(toLong(getTagValue(opEl, "numcaja")));
-            op.setAnoprestamo(toInteger(getTagValue(opEl, "anoprestamo")));
-            op.setTipoprestamo(decodeOrNull(getTagValue(opEl, "tipoprestamo")));
-            op.setNumprestamo(decodeOrNull(getTagValue(opEl, "numprestamo")));
-            op.setTerite(toLong(getTagValue(opEl, "terite")));
-            op.setEndite(toLong(getTagValue(opEl, "endite")));
-            op.setNumOpePrev(toLong(getTagValue(opEl, "NumOpePrev")));
-            op.setTipContrato(decodeOrNull(getTagValue(opEl, "tipContrato")));
-            op.setProContrato(decodeOrNull(getTagValue(opEl, "proContrato")));
-            op.setCriContrato(decodeOrNull(getTagValue(opEl, "criContrato")));
-            op.setNExpElec(decodeOrNull(getTagValue(opEl, "nExpElec")));
-
-            op.setDtoList(parseDtoList(opEl));
-            op.setIvaList(parseIvaList(opEl));
-            op.setRelacionList(parseRelacionList(opEl));
-            op.setLineaList(parseLineaList(opEl));
-
-            result.add(op);
+        
+        String exito = exitoNodes.item(0).getTextContent();
+        if ("-1".equals(exito) || "1".equals(exito)) {
+            return;
         }
-
-        return result;
+        
+        String desc = "";
+        NodeList descNodes = doc.getElementsByTagName("desc");
+        if (descNodes.getLength() > 0) {
+            desc = descNodes.item(0).getTextContent();
+        }
+        throw new Exception("SICAL error: " + desc);
+    }
+    
+    private Operaciones createOperacionFromElement(Element opEl) {
+        Operaciones op = new Operaciones();
+        
+        op.setNumope(toLong(getTagValue(opEl, "numope")));
+        op.setCodope(decodeOrNull(getTagValue(opEl, "codope")));
+        op.setSigno(decodeOrNull(getTagValue(opEl, "signo")));
+        op.setFase(decodeOrNull(getTagValue(opEl, "fase")));
+        op.setArea(decodeOrNull(getTagValue(opEl, "area")));
+        op.setAgrupacion(decodeOrNull(getTagValue(opEl, "agrupacion")));
+        op.setNifter(decodeOrNull(getTagValue(opEl, "nifter")));
+        op.setNifend(decodeOrNull(getTagValue(opEl, "nifend")));
+        op.setCuenta(decodeOrNull(getTagValue(opEl, "cuenta")));
+        op.setFechaentrada(getTagValue(opEl, "fechaentrada"));
+        op.setFecope(getTagValue(opEl, "fecope"));
+        op.setGapuntes(decodeOrNull(getTagValue(opEl, "gapuntes")));
+        op.setDocumento(decodeOrNull(getTagValue(opEl, "documento")));
+        op.setFechadocu(getTagValue(opEl, "fechadocu"));
+        op.setOrdinal(decodeOrNull(getTagValue(opEl, "ordinal")));
+        op.setFechapago(getTagValue(opEl, "fechapago"));
+        op.setTipopago(decodeOrNull(getTagValue(opEl, "tipopago")));
+        op.setTipoexp(decodeOrNull(getTagValue(opEl, "tipoexp")));
+        op.setNexp(decodeOrNull(getTagValue(opEl, "nexp")));
+        op.setFechaexp(getTagValue(opEl, "fechaexp"));
+        op.setAreages(decodeOrNull(getTagValue(opEl, "areages")));
+        op.setOficina(decodeOrNull(getTagValue(opEl, "oficina")));
+        op.setImporte(toDouble(getTagValue(opEl, "importe")));
+        op.setImpiva(toDouble(getTagValue(opEl, "impiva")));
+        op.setImpdto(toDouble(getTagValue(opEl, "impdto")));
+        op.setTexto(decodeOrNull(getTagValue(opEl, "texto")));
+        op.setNumcaja(toLong(getTagValue(opEl, "numcaja")));
+        op.setAnoprestamo(toInteger(getTagValue(opEl, "anoprestamo")));
+        op.setTipoprestamo(decodeOrNull(getTagValue(opEl, "tipoprestamo")));
+        op.setNumprestamo(decodeOrNull(getTagValue(opEl, "numprestamo")));
+        op.setTerite(toLong(getTagValue(opEl, "terite")));
+        op.setEndite(toLong(getTagValue(opEl, "endite")));
+        op.setNumOpePrev(toLong(getTagValue(opEl, "NumOpePrev")));
+        op.setTipContrato(decodeOrNull(getTagValue(opEl, "tipContrato")));
+        op.setProContrato(decodeOrNull(getTagValue(opEl, "proContrato")));
+        op.setCriContrato(decodeOrNull(getTagValue(opEl, "criContrato")));
+        op.setNExpElec(decodeOrNull(getTagValue(opEl, "nExpElec")));
+        
+        op.setDtoList(parseDtoList(opEl));
+        op.setIvaList(parseIvaList(opEl));
+        op.setRelacionList(parseRelacionList(opEl));
+        op.setLineaList(parseLineaList(opEl));
+        
+        return op;
     }
     private List<Dto> parseDtoList(Element opEl) {
         List<Dto> list = new ArrayList<>();

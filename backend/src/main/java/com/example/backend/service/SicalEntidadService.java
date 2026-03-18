@@ -113,8 +113,24 @@ public class SicalEntidadService {
 
     private List<Entidad> parseEntidades(String sml) throws Exception {
         List<Entidad> result = new ArrayList<>();
-        if (sml == null || sml.isEmpty()) return result;
+        if (sml == null || sml.isEmpty()) {
+            return result;
+        }
 
+        Document doc = parseXmlDocument(sml);
+        validateExito(doc);
+        
+        NodeList detalleNodes = doc.getElementsByTagName("detalle");
+        return parseDetalleList(detalleNodes);
+    }
+
+    private Document parseXmlDocument(String sml) throws Exception {
+        DocumentBuilderFactory dbf = configureDocumentBuilderFactory();
+        DocumentBuilder db = dbf.newDocumentBuilder();
+        return db.parse(new java.io.ByteArrayInputStream(sml.getBytes(StandardCharsets.UTF_8)));
+    }
+
+    private DocumentBuilderFactory configureDocumentBuilderFactory() throws Exception {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setNamespaceAware(false);
         dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
@@ -122,37 +138,56 @@ public class SicalEntidadService {
         dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
         dbf.setAttribute(javax.xml.XMLConstants.ACCESS_EXTERNAL_DTD, "");
         dbf.setAttribute(javax.xml.XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
-        DocumentBuilder db = dbf.newDocumentBuilder();
-        Document doc = db.parse(new java.io.ByteArrayInputStream(sml.getBytes(StandardCharsets.UTF_8)));
+        return dbf;
+    }
 
-        // Check for success
+    private void validateExito(Document doc) throws Exception {
         NodeList exitoNodes = doc.getElementsByTagName("exito");
-        if (exitoNodes != null && exitoNodes.getLength() > 0) {
-            String exito = exitoNodes.item(0).getTextContent();
-            if (!"-1".equals(exito)) {
-                // error case, return empty list or throw
-                NodeList descNodes = doc.getElementsByTagName("desc");
-                String desc = (descNodes.getLength() > 0) ? descNodes.item(0).getTextContent() : "error";
-                throw new RuntimeException("SICAL error: " + desc);
-            }
+        if (exitoNodes == null || exitoNodes.getLength() == 0) {
+            return;
         }
 
-        // detalle nodes under <operacion> / <l_operacion>
-        NodeList detalleNodes = doc.getElementsByTagName("detalle");
+        String exito = exitoNodes.item(0).getTextContent();
+        if ("-1".equals(exito)) {
+            return;
+        }
+
+        NodeList descNodes = doc.getElementsByTagName("desc");
+        String desc = (descNodes.getLength() > 0) ? descNodes.item(0).getTextContent() : "error";
+        throw new RuntimeException("SICAL error: " + desc);
+    }
+
+    private List<Entidad> parseDetalleList(NodeList detalleNodes) {
+        List<Entidad> result = new ArrayList<>();
+        
         for (int i = 0; i < detalleNodes.getLength(); i++) {
             String detalle = detalleNodes.item(i).getTextContent();
-            if (detalle == null || detalle.isEmpty()) continue;
-            // detalle contains values separated by "@" : ENT_COD@ENT_NOM (Base64 encoded)
-            String[] parts = detalle.split("@", 2);
-            String codigo = parts.length > 0 ? decodeBase64Safe(parts[0]) : "";
-            String nombre = parts.length > 1 ? decodeBase64Safe(parts[1]) : "";
-            Entidad ent = new Entidad();
-            ent.setCodigo(codigo);
-            ent.setNombre(nombre);
-            result.add(ent);
+            if (detalle == null || detalle.isEmpty()) {
+                continue;
+            }
+            
+            Entidad ent = parseEntidadFromDetalle(detalle);
+            if (ent != null) {
+                result.add(ent);
+            }
         }
-
+        
         return result;
+    }
+
+    private Entidad parseEntidadFromDetalle(String detalle) {
+        String[] parts = detalle.split("@", 2);
+        String codigo = parts.length > 0 ? decodeBase64Safe(parts[0]) : "";
+        String nombre = parts.length > 1 ? decodeBase64Safe(parts[1]) : "";
+        
+        if (codigo.isEmpty()) {
+            return null;
+        }
+        
+        Entidad ent = new Entidad();
+        ent.setCodigo(codigo);
+        ent.setNombre(nombre);
+        return ent;
     }
 
     private String decodeBase64Safe(String b64) {
