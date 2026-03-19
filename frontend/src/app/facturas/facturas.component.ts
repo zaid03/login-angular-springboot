@@ -419,8 +419,9 @@ export class FacturasComponent {
       this.tempFactura.facfre = this.datePipe.transform(this.tempFactura.facfre, 'yyyy-MM-dd');
     }
 
-    this.detailView = 'Albaranes';
-    this.setAlbaranesOptio('albaranes', factura?.facnum);
+    this.openAlbarnaes();
+    // this.detailView = 'Albaranes';
+    // this.setAlbaranesOptio('albaranes', factura?.facnum);
   }
 
   closeDetails() {
@@ -721,6 +722,11 @@ export class FacturasComponent {
   moreInfoMessageIsSuccess: boolean = false;
   moreInfoMessageError: string = '';
   moreInfoMessageIsError: boolean = false;
+  AlbaranesGrid: boolean = false;
+  openAlbarnaes() {
+    this.detailView = 'Albaranes';
+    this.albaranesOptio = 'albaranes';
+  }
 
   setAlbaranesOptio(option: 'albaranes' | 'aplicaciones' | 'descuentos', facnum: number): void {
     this.albaranesOptio = option;
@@ -731,9 +737,7 @@ export class FacturasComponent {
     this.descuentos = [];
 
     if ( option === 'albaranes') {this.fetchAlbaranesDEtail(facnum);}
-    if ( option === 'aplicaciones') {
-      this.fetchApplicacionesDetails(facnum);
-    }
+    if ( option === 'aplicaciones') {this.fetchApplicacionesDetails(facnum);}
     if ( option === 'descuentos') {this.fetchDescuentosDetails(facnum);}
   }
 
@@ -746,6 +750,7 @@ export class FacturasComponent {
         this.isLoading = false;
         this.pageAlbaranes = 0;
       }, error: (err) => {
+        this.albaranes = [];
         this.albaranError = err.error.error ?? err.error;
         this.isLoading = false;
         this.pageAlbaranes = 0;
@@ -788,6 +793,7 @@ export class FacturasComponent {
       this.pageAplicaiones = 0;
       }, 
       error: (err) => {
+        this.apalicaciones = [];
         this.isLoading = false;
         this.pageAplicaiones = 0;
         this.moreInfoMessageError = err.error.error ?? err.error;
@@ -812,6 +818,7 @@ export class FacturasComponent {
         this.isLoading = false;
         this.pageDescuentos = 0;
       }, error: (err) => {
+        this.descuentos = [];
         this.descuentosError = err.error.error ?? err.error;
         this.isLoading = false;
         this.pageDescuentos = 0;

@@ -275,8 +275,7 @@ public class FacController {
         List<String> errores = new ArrayList<>();
         
         for (Fde fde : applicacionesList) {
-            ResponseEntity<?> result = procesarFdeYBolsa(payload, fde, errores);
-            if (result != null) return result;
+            procesarFdeYBolsa(payload, fde, errores);
         }
         
         if (!errores.isEmpty()) {
@@ -287,7 +286,7 @@ public class FacController {
         return null;
     }
 
-    private ResponseEntity<?> procesarFdeYBolsa(Contabilizar payload, Fde fde, List<String> errores) {
+    private void procesarFdeYBolsa(Contabilizar payload, Fde fde, List<String> errores) {
         Optional<Gbs> bolsaOptio = gbsRepository.findByENTAndEJEAndCGECODAndGBSORGAndGBSFUNAndGBSECO(
             payload.ENT(), payload.EJE(), payload.CGECOD(), 
             fde.getFDEORG(), fde.getFDEFUN(), fde.getFDEECO()
@@ -295,7 +294,7 @@ public class FacController {
         
         if (bolsaOptio.isEmpty()) {
             errores.add(fde.getFDEORG() + "/" + fde.getFDEFUN() + "/" + fde.getFDEECO());
-            return null;
+            return;
         }
         
         Gbs bolsa = bolsaOptio.get();
@@ -308,7 +307,5 @@ public class FacController {
         bolsa.setGBSIUS(newGbsius);
         bolsa.setGBSIUT(newGbsiut);
         gbsRepository.save(bolsa);
-        
-        return null;
     }
 }
