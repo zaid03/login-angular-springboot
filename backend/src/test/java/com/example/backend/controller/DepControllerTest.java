@@ -85,7 +85,7 @@ public class DepControllerTest {
         mockMvc.perform(get("/api/dep/fetch-services/1/E1"))
             .andDo(print())
             .andExpect(status().isInternalServerError())
-            .andExpect(content().string(containsString("Error:")));
+            .andExpect(content().string(containsString("Error :")));
     }
 
     @Test

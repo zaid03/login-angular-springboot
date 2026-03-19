@@ -128,7 +128,7 @@ public class CgeControllerTest {
         mockMvc.perform(get("/api/cge/1/E1/U1"))
             .andDo(print())
             .andExpect(status().isInternalServerError())
-            .andExpect(content().string(containsString("Error:")));
+            .andExpect(content().string(containsString("Error :")));
     }
 
     @Test
@@ -161,7 +161,7 @@ public class CgeControllerTest {
         mockMvc.perform(get("/api/cge/fetch-all/1/E1"))
             .andDo(print())
             .andExpect(status().isInternalServerError())
-            .andExpect(content().string(containsString("Error:")));
+            .andExpect(content().string(containsString("Error :")));
     }
 
     @Test
@@ -231,7 +231,7 @@ public class CgeControllerTest {
                 .content(objectMapper.writeValueAsString(payload)))
             .andDo(print())
             .andExpect(status().isBadRequest())
-            .andExpect(content().string(containsString("Error:")));
+            .andExpect(content().string(containsString("Error :")));
     }
 
     @Test
@@ -282,7 +282,7 @@ public class CgeControllerTest {
                 .content(objectMapper.writeValueAsString(payload)))
             .andDo(print())
             .andExpect(status().isBadRequest())
-            .andExpect(content().string(containsString("Error:")));
+            .andExpect(content().string(containsString("Error :")));
     }
 
     @Test
@@ -360,7 +360,7 @@ public class CgeControllerTest {
         mockMvc.perform(get("/api/cge/fetch-description-services/1/E1/G1"))
             .andDo(print())
             .andExpect(status().isBadRequest())
-            .andExpect(content().string(containsString("Error:")));
+            .andExpect(content().string(containsString("Error :")));
     }
 
     @Test
@@ -396,6 +396,6 @@ public class CgeControllerTest {
         mockMvc.perform(get("/api/cge/search-centros/1/E1/term"))
             .andDo(print())
             .andExpect(status().isBadRequest())
-            .andExpect(content().string(containsString("Error:")));
+            .andExpect(content().string(containsString("Error :")));
     }
 }

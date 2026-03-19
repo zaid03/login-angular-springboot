@@ -79,6 +79,6 @@ public class AlbControllerTest {
         mockMvc.perform(get("/api/alb/albaranes/1/E1/100"))
             .andDo(print())
             .andExpect(status().isBadRequest())
-            .andExpect(content().string(org.hamcrest.Matchers.containsString("Error:")));
+            .andExpect(content().string(org.hamcrest.Matchers.containsString("Error :")));
     }
 }

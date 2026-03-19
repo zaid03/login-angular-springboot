@@ -90,7 +90,7 @@ public class DpeControllerTest {
         mockMvc.perform(get("/api/depe/fetch-service-personas/1/E1/D1"))
             .andDo(print())
             .andExpect(status().isInternalServerError())
-            .andExpect(content().string(containsString("Error:")));
+            .andExpect(content().string(containsString("Error :")));
     }
 
     @Test

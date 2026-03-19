@@ -160,7 +160,7 @@ public class FacControllerTest {
                 .accept(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isBadRequest())
-            .andExpect(content().string(containsString("Error:")));
+            .andExpect(content().string(containsString("Error :")));
     }
 
     @Test
@@ -217,6 +217,6 @@ public class FacControllerTest {
                 .accept(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isBadRequest())
-            .andExpect(content().string(containsString("Error:")));
+            .andExpect(content().string(containsString("Error :")));
     }
 }

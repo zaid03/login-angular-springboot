@@ -66,7 +66,7 @@ public class ArtControllerTest {
         mockMvc.perform(get("/api/art/by-ent/1/AF/ASU/ART"))
             .andDo(print())
             .andExpect(status().isBadRequest())
-            .andExpect(content().string(containsString("Error:")));
+            .andExpect(content().string(containsString("Error :")));
     }
 
     @Test

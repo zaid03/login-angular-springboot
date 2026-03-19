@@ -73,7 +73,7 @@ public class PerControllerTest {
                 .accept(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isInternalServerError())
-            .andExpect(content().string(org.hamcrest.Matchers.containsString("Error:")));
+            .andExpect(content().string(org.hamcrest.Matchers.containsString("Error :")));
     }
 
     @Test

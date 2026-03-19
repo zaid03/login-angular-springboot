@@ -77,7 +77,7 @@ public class LenControllerTest {
                 .accept(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isInternalServerError())
-            .andExpect(content().string(containsString("Error:")));
+            .andExpect(content().string(containsString("Error :")));
     }
 
     @Test
@@ -114,7 +114,7 @@ public class LenControllerTest {
                 .content(objectMapper.writeValueAsString(payload)))
             .andDo(print())
             .andExpect(status().isInternalServerError())
-            .andExpect(content().string(containsString("Error:")));
+            .andExpect(content().string(containsString("Error :")));
     }
 
     @Test
@@ -175,7 +175,7 @@ public class LenControllerTest {
                 .content(objectMapper.writeValueAsString(payload)))
             .andDo(print())
             .andExpect(status().isBadRequest())
-            .andExpect(content().string(containsString("Error:")));
+            .andExpect(content().string(containsString("Error :")));
     }
 
     @Test
@@ -206,7 +206,7 @@ public class LenControllerTest {
         mockMvc.perform(delete("/api/Len/delete-lugar/5"))
             .andDo(print())
             .andExpect(status().isBadRequest())
-            .andExpect(content().string(containsString("Error:")));
+            .andExpect(content().string(containsString("Error :")));
     }
 
     @Test
@@ -239,7 +239,7 @@ public class LenControllerTest {
         mockMvc.perform(get("/api/Len/filter-lencod/9"))
             .andDo(print())
             .andExpect(status().isBadRequest())
-            .andExpect(content().string(containsString("Error:")));
+            .andExpect(content().string(containsString("Error :")));
     }
 
     @Test
@@ -272,6 +272,6 @@ public class LenControllerTest {
         mockMvc.perform(get("/api/Len/filter-lendes/Z"))
             .andDo(print())
             .andExpect(status().isBadRequest())
-            .andExpect(content().string(containsString("Error:")));
+            .andExpect(content().string(containsString("Error :")));
     }
 }

@@ -65,7 +65,7 @@ public class AsuControllerTest {
         mockMvc.perform(get("/api/asu/by-ent/1/A1/B1"))
             .andDo(print())
             .andExpect(status().isBadRequest())
-            .andExpect(content().string(containsString("Error:")));
+            .andExpect(content().string(containsString("Error :")));
     }
 
     @Test
@@ -167,7 +167,7 @@ public class AsuControllerTest {
                 .content(objectMapper.writeValueAsString(payload)))
             .andDo(print())
             .andExpect(status().isBadRequest())
-            .andExpect(content().string(containsString("Error:")));
+            .andExpect(content().string(containsString("Error :")));
     }
 
     @Test

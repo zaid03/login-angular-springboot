@@ -72,7 +72,7 @@ public class CcoControllerTest {
         mockMvc.perform(get("/api/cco/filter-by/1/E1/X"))
             .andDo(print())
             .andExpect(status().isBadRequest())
-            .andExpect(content().string(containsString("Error:")));
+            .andExpect(content().string(containsString("Error :")));
     }
 
     @Test
@@ -214,6 +214,6 @@ public class CcoControllerTest {
         mockMvc.perform(get("/api/cco/fetch-all/1/E1"))
             .andDo(print())
             .andExpect(status().isBadRequest())
-            .andExpect(content().string(containsString("Error:")));
+            .andExpect(content().string(containsString("Error :")));
     }
 }
