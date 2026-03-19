@@ -413,8 +413,7 @@ export class ConsultaFacturaComponent {
   showDetails(factura: any) {
     this.limpiarMEssages();
     this.selectedFacturas = factura;
-    this.detailView = 'Albaranes';
-    this.setAlbaranesOptio('albaranes', factura?.facnum);
+    this.openAlbarnaes();
   }
 
   closeDetails() {
@@ -631,6 +630,25 @@ export class ConsultaFacturaComponent {
   moreInfoMessageIsSuccess: boolean = false;
   moreInfoMessageError: string = '';
   moreInfoMessageIsError: boolean = false;
+  AlbaranesGrid: boolean = false;
+  ContabilizacionGrid: boolean = false;
+  albaranesGrid: boolean = false;
+  aplicacionesGrid: boolean = false;
+  descuentosGrid: boolean = false;
+  openAlbarnaes() {
+    this.limpiarMEssages();
+    this.AlbaranesGrid = true;
+    this.ContabilizacionGrid = false;
+    this.detailView = 'Albaranes';
+    this.setAlbaranesOptio('albaranes', this.selectedFacturas.facnum);
+  }
+
+  openContabilizacion() {
+    this.limpiarMEssages();
+    this.AlbaranesGrid = false;
+    this.ContabilizacionGrid = true;
+    this.detailView = 'Contabilización';
+  }
 
   setAlbaranesOptio(option: 'albaranes' | 'aplicaciones' | 'descuentos', facnum: number): void {
     this.albaranesOptio = option;
@@ -656,6 +674,7 @@ export class ConsultaFacturaComponent {
             this.pageAlbaranes = 0;
           }
         }, error: (err) => {
+          this.albaranes = [];
           this.moreInfoMessageIsError = true;
           this.moreInfoMessageError = err.error.error ?? err.error;
           this.isLoading = false;
@@ -680,6 +699,7 @@ export class ConsultaFacturaComponent {
             this.pageAplicaiones = 0
           }
         }, error: (err) => {
+          this.apalicaciones = [];
           this.moreInfoMessageIsError = true;
           this.moreInfoMessageError = err.error.error ?? err.error;
           this.isLoading = false;
@@ -704,6 +724,7 @@ export class ConsultaFacturaComponent {
             this.pageDescuentos = 0;
           }
         }, error: (err) => {
+          this.descuentos = [];
           this.moreInfoMessageIsError = true;
           this.moreInfoMessageError = err.error.error ?? err.error;
           this.isLoading = false;

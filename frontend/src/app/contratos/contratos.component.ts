@@ -568,6 +568,7 @@ export class ContratosComponent {
         this.updatePaginationPro();
       },
       error: (err) => {
+        this.proveedores = [];
         this.error = err.error.error ?? err.error;
         this.isLoading = false;
       }

@@ -89,3 +89,9 @@
 .info-D {display: flex; width: 100%; gap: 10px; justify-content: center; margin: 10px;}
 .info-content {display: flex; align-items: center; width: 30%; gap: 10px;}
 /* D grid for centro gestor */
+/* add contrato grid */
+.proveedor-grid-modal .search-holder {width: 99%;}
+.proveedor-grid-modal .main-list {width: 100% !important;}
+.proveedor-grid-modal .main-table th,
+.proveedor-grid-modal .main-table td {word-break: break-word;}
+/* add contrato grid */

@@ -236,7 +236,7 @@
                             [disabled]="isUpdate" 
 	                        [ngClass]="{ 'disabled-btn': isUpdate }" 
                             (click)="showAddCentro()"
-                        >Añadir D</button>
+                        >Añadir D/ centro Gestor</button>
                         <button 
                             class="red-btn" 
                             *ngIf="isUpdate" 
@@ -433,7 +433,7 @@
     </div>  
     <div class="proveedor-select">
         <h1 class="p-style" *ngIf="proveedorTernom">El proveedor {{proveedorTernom}} ha sido seleccionado</h1>
-        <button class="purple-btn" (click)="openProveedores()">⧉</button>
+        <button class="purple-btn" (click)="openProveedores()">Seleccione un proveedor</button>
     </div>
 </div>
 
@@ -441,7 +441,7 @@
 <div class="proveedor-grid-modal" *ngIf="showProveedorGrid">
     <div class="btns">
         <div class="title">
-            <h1>seleccione un proveedor</h1>
+            <h1>Seleccione un proveedor</h1>
         </div>
         <button class="red-btn" (click)="closeProveedores()">✖</button>
     </div>
@@ -468,8 +468,8 @@
         <div class="spinner"></div>
         <span>Cargando</span>
     </div>
-    <div class="main-table">
-        <table class="">
+    <div class="main-list">
+        <table  class="main-table">
             <thead>
                 <tr>
                     <th>Código</th>
@@ -480,9 +480,9 @@
                     <th>Domicilio</th>
                     <th>Código Postal</th>
                     <th>Municipio</th>
-                    <th>Código contable</th>
+                    <!-- <th>Código contable</th>
                     <th>Fax</th>
-                    <th>Web</th>
+                    <th>Web</th> -->
                     <th>Correo electrónico</th>
                     <th>Observaciones</th>
                 </tr>
@@ -497,15 +497,16 @@
                     <td>{{ p.terdom }}</td>
                     <td>{{ p.tercpo }}</td>
                     <td>{{ p.terpob }}</td>
-                    <td>{{ p.terayt }}</td>
+                    <!-- <td>{{ p.terayt }}</td>
                     <td>{{ p.terfax }}</td>
-                    <td>{{ p.terweb }}</td>
+                    <td>{{ p.terweb }}</td> -->
                     <td>{{ p.tercoe }}</td>
                     <td>{{ p.terobs }}</td>
                 </tr>
             </tbody>
         </table>
     </div>
+    
     <div class="container-pag-wrap">
         <div class="pagination-controls">
             <button class="pag-btn" (click)="prevPagePro()" [disabled]="pagePro === 0">Anterior</button>

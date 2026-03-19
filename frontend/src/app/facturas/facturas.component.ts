@@ -420,8 +420,6 @@ export class FacturasComponent {
     }
 
     this.openAlbarnaes();
-    // this.detailView = 'Albaranes';
-    // this.setAlbaranesOptio('albaranes', factura?.facnum);
   }
 
   closeDetails() {
@@ -723,9 +721,23 @@ export class FacturasComponent {
   moreInfoMessageError: string = '';
   moreInfoMessageIsError: boolean = false;
   AlbaranesGrid: boolean = false;
+  ContabilizacionGrid: boolean = false;
+  albaranesGrid: boolean = false;
+  aplicacionesGrid: boolean = false;
+  descuentosGrid: boolean = false;
   openAlbarnaes() {
+    this.limpiarMEssages();
+    this.AlbaranesGrid = true;
+    this.ContabilizacionGrid = false;
     this.detailView = 'Albaranes';
-    this.albaranesOptio = 'albaranes';
+    this.setAlbaranesOptio('albaranes', this.selectedFacturas.facnum);
+  }
+
+  openContabilizacion() {
+    this.limpiarMEssages();
+    this.AlbaranesGrid = false;
+    this.ContabilizacionGrid = true;
+    this.detailView = 'Contabilización';
   }
 
   setAlbaranesOptio(option: 'albaranes' | 'aplicaciones' | 'descuentos', facnum: number): void {
@@ -867,6 +879,7 @@ export class FacturasComponent {
         this.pageAlbaranesAdd = 0;
       },
       error: (err) => {
+        this.albaranesAdd = [];
         this.albaranesError = err.error.error ?? err.error;
         this.isLoadingAlbaranes = false;
         this.pageAlbaranesAdd = 0;
@@ -895,6 +908,7 @@ export class FacturasComponent {
           this.pageAlbaranesAdd = 0;
         },
         error: (err) => {
+          this.albaranesAdd = [];
           this.albaranesError = err.error.error ?? err.error;
           this.isLoadingAlbaranes = false;
           this.pageAlbaranesAdd = 0;
@@ -910,6 +924,7 @@ export class FacturasComponent {
           this.pageAlbaranesAdd = 0;
         },
         error: (err) => {
+          this.albaranesAdd = [];
           this.albaranesError = err.error.error ?? err.error;
           this.isLoadingAlbaranes = false;
           this.pageAlbaranesAdd = 0;
@@ -971,6 +986,7 @@ export class FacturasComponent {
         this.fetchAlbaranesDEtail(facnum);
         this.closeAlbaranesAdd();
         this.moreInfoMessageSuccess = 'albaranes añadido correctamente';
+        this.openAlbarnaes();
       },
       error: (err) => {
         this.isAddingAlbaranes = false;
@@ -1113,6 +1129,7 @@ export class FacturasComponent {
         this.pageFacturas = 0;
       },
       error: (err) => {
+        this.facturasWb = [];
         this.pageFacturas = 0;
         this.isLoadingFactura = false;
         this.facturasErrorMessage = err.error.error ?? err.error;
@@ -1153,6 +1170,7 @@ export class FacturasComponent {
         this.isLoading = false;
       },
       error: (err) => {
+        this.facturasWb = [];
         this.filterFacturaMessage = err.error?.error ?? err.error;
         this.isLoading = false;
       }
