@@ -847,8 +847,8 @@ export class ServiciosComponent {
     this.http.post(`${environment.backendUrl}/api/depe/add-services-persona`, payload).subscribe({
       next: (res) => {
         this.personasSuccess = 'Las personas han sido agregadas exitosamente';
-        this.fetchPersonas(this.selectedService.depcod);
         this.closeAddPersonas();
+        this.option = 'personas';
       },
       error: (err) => {
         this.errorCopy = err.error.error ?? err.error;

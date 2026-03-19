@@ -213,6 +213,7 @@
                             class="purple-btn" 
                             [disabled]="isUpdate" 
                             [ngClass]="{ 'disabled-btn': isUpdate }" 
+                            [ngClass]="{ 'disabled-btn': personServicesOrigin.length == 0}"
                             (click)="showCopiar(selectedPersona.percod)"
                         >Copiar servicios</button>
                         <button 
@@ -465,8 +466,8 @@
         <p class="sure-msg">{{gridMessag}}</p>        
     </div>
     <div class="btns alignment">
-        <button class="purple-btn" (click)="showCopiarPersonas()">+</button>
-        <button class="red-btn" (click)="closeCopiar()">✖</button>
+        <button class="purple-btn" (click)="showCopiarPersonas()">Si</button>
+        <button class="red-btn" (click)="closeCopiar()">No</button>
     </div>
 </div>
 
@@ -539,7 +540,7 @@
         <span>añadiendo</span>
     </div>
     <div class="btns alignment">
-        <button class="purple-btn" [disabled]="isAvailable" [class.disabled]="isAvailable" (click)="copyPerfil()">+</button>
-        <button class="red-btn" (click)="closecontinueAdCheckGrid()">✖</button>
+        <button class="purple-btn" [disabled]="isAvailable" [class.disabled]="isAvailable" (click)="copyPerfil()">Si</button>
+        <button class="red-btn" (click)="closecontinueAdCheckGrid()">No</button>
     </div>
 </div>

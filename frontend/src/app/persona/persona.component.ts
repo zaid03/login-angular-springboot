@@ -709,22 +709,8 @@ export class PersonaComponent {
   personServices: any = [];
   showCopiar(percod: string) {
     this.limpiarMessages();
-    this.http.get<any>(`${environment.backendUrl}/api/depe/fetch-persona-service/${this.entcod}/${this.eje}/${percod}`).subscribe({
-      next: (res) => {
-        this.personServices = res;
-        if (!this.personServices || this.personServices.length === 0) {
-          this.compiarPersona = false;
-          this.detailMessageError = 'Esta persona no tiene servicios';
-          return;
-        }
-        this.gridMessag = 'La persona activa tiene servicios asignados. Se borrarán para añadir los de la persona seleccionada. ¿Quiere seguir?';
-        this.compiarPersona = true;
-      },
-      error: (err) => {
-        this.detailMessageError = err.error.error ?? err.error;
-        this.compiarPersona = false;
-      }
-    });
+    this.gridMessag = 'La persona activa tiene servicios asignados. Se borrarán para añadir los de la persona seleccionada. ¿Quiere seguir?';
+    this.compiarPersona = true;
   }
 
   closeCopiar() {
