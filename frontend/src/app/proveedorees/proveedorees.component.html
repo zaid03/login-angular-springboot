@@ -34,8 +34,8 @@
                 <div class="dot"></div>
                 <div class="dot"></div>
                 <div class="menu-panel" *ngIf="showMenu">
+                    <button type="button" (click)="downloadExcel()">Exportar a Excel</button>
                     <button type="button" (click)="DownloadPDF()">Exportar a PDF</button>
-                    <button type="button" (click)="DownloadCSV()">Exportar a CSV</button>
                     <button type="button" (click)="openProveedorModal()">Añadir proveedor</button>
                 </div>
             </div>
@@ -486,9 +486,9 @@
         <span>borrando</span>
     </div>
     <div *ngIf="articuloToDelete">
-        <p><strong>Familia:</strong> {{ articuloToDelete.afacod }}</p>
-        <p><strong>Subfamilia:</strong> {{ articuloToDelete.asucod }}</p>
-        <p><strong>Artículo:</strong> {{ articuloToDelete.artcod }}</p>
+        <p class="p-style">Familia: {{ articuloToDelete.afacod }}</p>
+        <p class="p-style">Subfamilia: {{ articuloToDelete.asucod }}</p>
+        <p class="p-style">Artículo: {{ articuloToDelete.artcod }}</p>
     </div>
     <button class="red-btn" (click)="confirmDelete()">-</button>
 </div>
@@ -505,8 +505,8 @@
     </div>
     <div *ngIf="personaToDelete">
         <div class="detailPersonnaDelete">
-            <h1 class="h1-style titleDelete">Nombre:</h1>
-            <h1 class="h1-style titleDelete">{{personaToDelete.tpenom}}</h1>
+            <h1 class="p-style titleDelete">Nombre:</h1>
+            <h1 class="p-style titleDelete">{{personaToDelete.tpenom}}</h1>
         </div>
     </div>
     <button class="red-btn" (click)="confirmDeletePersona()">-</button>
@@ -607,54 +607,67 @@
         <div class="title">
             <h1>Añadir proveedor</h1>
         </div>
-        <button class="purple-btn" (click)="saveProveedorees()" [disabled]="isSaving || selectedProveediresFromResults.length === 0">
-            <span *ngIf="!isSaving">✔</span>
-            <span *ngIf="isSaving">Guardando...</span>
+        <span class="p-style">Seleccionados: {{ selectedProveediresFromResults.length }}</span>
+        <button 
+            class="purple-btn" 
+            (click)="saveProveedorees()" 
+            [ngClass]="{ 'disabled-btn': selectedProveediresFromResults.length === 0 }"
+        >✔
         </button>
         <button class="red-btn" (click)="closeProveedorModal()">×</button>
     </div>
     <h1 class="successBtn">{{ guardarMessageProveedor }}</h1>
+    <div *ngIf="isSaving" class="loading-message">
+        <div class="spinner"></div>
+        <span>añadiendo</span>
+    </div>
     <div class="content-container-for-proveedor">
-        <form class="proveedor-anadir-form">
-            <div class="search-anadir">
+        <div class="search-options-prov">
+            <div class="search">
                 <input 
-                type="text" 
-                class="search-bar"
-                placeholder="Buscar NIF, NOM o APELL" 
-                name="search"
-                [(ngModel)]="searchProveedor"
-                (keyup.enter)="onProveedorSearch()"
-                (input)="onProveedorSearchChange()"
+                    type="text" 
+                    class="search-bar"
+                    placeholder="Buscar NIF, NOM o APELL" 
+                    name="search"
+                    [(ngModel)]="searchProveedor"
+                    (input)="onProveedorSearchChange()"
                 />
+                <input 
+                    type="radio" 
+                    class="checkbox" 
+                    name="searchAdd"
+                    [(ngModel)]="searchAdd"
+                    [value]="'nif'" 
+                /> NIF
+                <input 
+                    type="radio" 
+                    class="checkbox" 
+                    name="searchAdd"
+                    [(ngModel)]="searchAdd" 
+                    [value]="'nom'" 
+                /> NOM
+                <input 
+                    type="radio" 
+                    class="checkbox"
+                    name="searchAdd"
+                    [(ngModel)]="searchAdd" 
+                    [value]="'apell'" 
+                /> APELL    
+            </div>
+            <div class="search-btns-prov">
+                <button 
+                    class="purple-btn"
+                    (click)="onProveedorSearch()"
+                >Buscar
+                </button>
+                <button 
+                    class="purple-btn" 
+                    (click)="clearSelectedProveedores()" 
+                >Limpiar
+                </button>   
+            </div>
+        </div>
 
-                <input 
-                type="radio" 
-                class="checkbox" 
-                name="searchAdd"
-                [(ngModel)]="searchAdd"
-                [value]="'nif'" 
-                />
-                NIF
-
-                <input 
-                type="radio" 
-                class="checkbox" 
-                name="searchAdd"
-                [(ngModel)]="searchAdd" 
-                [value]="'nom'" 
-                />
-                NOM
-
-                <input 
-                type="radio" 
-                class="checkbox"
-                name="searchAdd"
-                [(ngModel)]="searchAdd" 
-                [value]="'apell'" 
-                />
-                APELL
-            </div>   
-        </form>
         <h1 class="errorBtn">{{ anadirProveedorErrorMessage }}</h1>
         <table class="pat main-table">
             <thead>
@@ -686,16 +699,21 @@
                 </tr>
             </tbody>
         </table>
-        <div class="pagination-controls" *ngIf="proveedoresSearchResults.length > proveedoresSearchPageSize">
-            <button class="pag-btn" (click)="proveedoresSearchPrev()" [disabled]="proveedoresSearchPage === 0">Anterior</button>
+        <div 
+            class="pagination-controls" 
+            *ngIf="proveedoresSearchResults.length > proveedoresSearchPageSize"
+        >
+            <button 
+                class="pag-btn" 
+                (click)="proveedoresSearchPrev()" 
+                [disabled]="proveedoresSearchPage === 0"
+            >Anterior</button>
             <span> {{ proveedoresSearchPage + 1 }} de {{ proveedoresSearchTotalPages }}</span>
-            <button class="pag-btn" (click)="proveedoresSearchNext()" [disabled]="proveedoresSearchPage + 1 >= proveedoresSearchTotalPages">Siguiente</button>
-        </div>
-    </div>
-    <div class="modal-actions">
-        <div class="selection-summary" style="display:flex;gap:8px;align-items:center;">
-            <span>Seleccionados: {{ selectedProveediresFromResults.length }}</span>
-            <button class="red-btn" (click)="clearSelectedProveedores()" [disabled]="selectedProveediresFromResults.length === 0">Limpiar</button>
+            <button 
+                class="pag-btn" 
+                (click)="proveedoresSearchNext()"  
+                [disabled]="proveedoresSearchPage + 1 >= proveedoresSearchTotalPages"
+            >Siguiente</button>
         </div>
     </div>
 </div>
