@@ -14,9 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.dao.DataAccessException;
 
-import java.util.stream.Collectors;
-import java.util.Objects;
-import java.util.function.Function;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -30,30 +27,6 @@ public class MatController {
     private MagRepository magRepository;
     @Autowired
     private MtaRepository mtaRepository;
-
-    //selecting almacen for servicios
-    @GetMapping("/fetch-almacen/{ent}/{depcod}")
-    public ResponseEntity<?> fetchAlmacen(
-        @PathVariable Integer ent,
-        @PathVariable String depcod
-    ) {
-        try {
-            var mats = matRepository.findByENT(ent);
-            var uniq = mats.stream()
-                .filter(m -> m.getMag() != null && depcod.equals(m.getMag().getDEPCOD()))
-                .map(Mat::getMta)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toMap(Mta::getMTACOD, Function.identity(), (a, b) -> a))
-                .values().stream().toList();
-
-            if (uniq.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No resultado");
-
-            return ResponseEntity.ok(uniq);
-        } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + ex.getMostSpecificCause().getMessage());
-        }
-    }
-
 
     //selecting almacen for services
     public record AlmacenCompleteDto(
@@ -99,8 +72,7 @@ public class MatController {
                 .map(mta -> new MtaDto(mta.getMTACOD(), mta.getMTADES())) 
                 .toList();
 
-            AlmacenCompleteDto response = new AlmacenCompleteDto(magDto, matDtos, mtaDtos);
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(mtaDtos);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + ex.getMostSpecificCause().getMessage());
         }

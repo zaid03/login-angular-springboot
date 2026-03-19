@@ -538,26 +538,26 @@ export class ServiciosComponent {
     this.isLoading = true;
     if (!depcod) {
       this.almacenErro = 'codigo extraviato';
+      return;
     }
 
     this.http.get<any>(`${environment.backendUrl}/api/mag/fetch-almacen-nombre/${this.entcod}/${depcod}`).subscribe({
       next: (res) => {
         this.almacenArray = res;
-        this.isLoading = false;
       },
       error: (err) => {
         this.almacenErro = err.error.error ?? err.error;
-        this.isLoading = false;
       }
     })
 
-    this.http.get<any>(`${environment.backendUrl}/api/mat/fetch-almacen/${this.entcod}/${depcod}`).subscribe({
+    this.http.get<any>(`${environment.backendUrl}/api/mat/fetch-almacenajes/${this.entcod}/${depcod}`).subscribe({
       next: (res) => {
         this.almacenDatosArray = res;
         this.isLoading = false;
         this.almacenPage = 0;
       },
       error: (err) => {
+        this.almacenDatosArray = [];
         this.almacenSecondError = err.error.error ?? err.error;
         this.isLoading = false;
       }

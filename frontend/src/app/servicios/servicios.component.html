@@ -344,7 +344,7 @@
                                 role="tab"
                                 [attr.aria-selected]="option === 'almacen'"
                                 [class.active-tab]="option === 'almacen'"
-                                (click)="[setOption('almacen'), almacenDatos(selectedService.depcod)]"
+                                (click)="[setOption('almacen'), almacenDatos(tempServicio.depcod)]"
                                 [disabled]="detailFlags.depalm !== true"
                             > Almacen
                             </button>
@@ -414,8 +414,8 @@
                                     </thead>
                                     <tbody>
                                         <tr *ngFor="let a of paginatedAlmacen">
-                                            <td>{{ a.mtacod}}</td>
-                                            <td>{{ a.mtades }}</td>
+                                            <td>{{a.mtacod}}</td>
+                                            <td>{{a.mtades}}</td>
                                         </tr>
                                     </tbody>
                                 </table>
