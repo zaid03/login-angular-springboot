@@ -8,6 +8,8 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { environment } from '../../environments/environment';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-consulta-proveedores',
@@ -486,17 +488,15 @@ export class ConsultaProveedoresComponent {
     doc.save('proveedores.pdf');
   }
 
-  DownloadCSV() {
+  downloadExcel() {
     this.limpiarMessages();
-
-    const source = this.backupProveedores.length ? this.backupProveedores : this.proveedores;
-    if (!source?.length) {
+    const rows = this.paginatedProveedores;
+    if (!rows || rows.length === 0) {
       this.error = 'No hay datos para exportar.';
       return;
     }
-
-    const rows = source.map((row: any, index: number) => ({
-      index: index + 1,
+  
+    const exportRows = rows.map(row => ({
       tercod: row.tercod ?? '',
       ternom: row.ternom ?? '',
       ternif: row.ternif ?? '',
@@ -511,41 +511,36 @@ export class ConsultaProveedoresComponent {
       tercoe: row.tercoe ?? '',
       terobs: row.terobs ?? ''
     }));
+  
+    const worksheet = XLSX.utils.aoa_to_sheet([]);
+    XLSX.utils.sheet_add_aoa(worksheet, [['Listado de proveedores']], { origin: 'A1' });
+    worksheet['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 3 } }];
+    XLSX.utils.sheet_add_aoa(worksheet, [['Código', 'Nombre', 'NIF', 'Alias', 'Teléfono', 'Domicilio', 'Código Postal', 'Municipio', 'Código contable', 'Fax', 'Web', 'Correo electrónico', 'Observaciones']], { origin: 'A2' });
+    XLSX.utils.sheet_add_json(worksheet, exportRows, { origin: 'A3', skipHeader: true });
 
-    const columns = [
-      { header: '#', key: 'index' },
-      { header: 'Código', key: 'tercod' },
-      { header: 'Nombre', key: 'ternom' },
-      { header: 'NIF', key: 'ternif' },
-      { header: 'Alias', key: 'terali' },
-      { header: 'Teléfono', key: 'tertel' },
-      { header: 'Domicilio', key: 'terdom' },
-      { header: 'Código Postal', key: 'tercpo' },
-      { header: 'Municipio', key: 'terpob' },
-      { header: 'Código contable', key: 'terayt' },
-      { header: 'Fax', key: 'terfax' },
-      { header: 'Web', key: 'terweb' },
-      { header: 'Correo electrónico', key: 'tercoe' },
-      { header: 'Observaciones', key: 'terobs' }
+    worksheet['!cols'] = [
+      { wch: 8 },
+      { wch: 40 },
+      { wch: 20 },
+      { wch: 40 },
+      { wch: 20 },
+      { wch: 40 },
+      { wch: 20 },
+      { wch: 40 },
+      { wch: 10 },
+      { wch: 20 },
+      { wch: 30 },
+      { wch: 30 },
+      { wch: 40 }
     ];
-
-    const csvRows = [
-      columns.map(col => `"${col.header}"`).join(';'),
-      ...rows.map(row =>
-        columns
-          .map(col => `"${row[col.key as keyof typeof row] ?? ''}"`)
-          .join(';')
-      )
-    ];
-
-    const csvContent = csvRows.join('\r\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'proveedores.csv';
-    link.click();
-    URL.revokeObjectURL(url);
+  
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Proveedores');
+    const buffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    saveAs(
+      new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }),
+      'Provedores.xlsx'
+    );
   }
 
   messageError: string = '';

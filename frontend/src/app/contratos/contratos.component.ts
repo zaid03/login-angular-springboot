@@ -466,6 +466,7 @@ export class ContratosComponent {
     this.articulos = [];
     this.showCentroGestorGrid = false;
     this.showArticulosGrid = false;
+    this.activeDetailTab = null;
   }
 
   closeDetailsSure() {if (this.isUpdate) {return;} 
@@ -830,6 +831,7 @@ export class ContratosComponent {
   showArticulos(numero: number) {
     this.limpiarMessages();
     this.showArticulosGrid = true;
+    this.activeDetailTab = 'articulos';
     this.showCentroGestorGrid = false;
     this.centroGestor = [];
     this.fetchArticulos(numero);
@@ -1012,6 +1014,7 @@ export class ContratosComponent {
           this.isLoadingArticulo = false;
         },
         error: (err) => {
+          this.articulosAdd = [];
           this.isLoadingArticulo = false;
           this.articulosAddError = err.error.error ?? err.error;
         }
@@ -1023,6 +1026,7 @@ export class ContratosComponent {
           this.isLoadingArticulo = false;
         },
         error: (err) => {
+          this.articulosAdd = [];
           this.isLoadingArticulo = false;
           this.articulosAddError = err.error.error ?? err.error;
         }
@@ -1086,6 +1090,7 @@ export class ContratosComponent {
         this.fetchArticulos(concod);
         this.isAddingArticulo = false;
         this.articulosSuccess = 'artículos añadidos con éxito';
+        this.showArticulos(concod);
       },
       error: (err) => {
         this.articulosAddError = err.error.error ?? err.error;
@@ -1104,6 +1109,7 @@ export class ContratosComponent {
     this.limpiarMessages();
     this.showCentroGestorGrid = true;
     this.showArticulosGrid = false;
+    this.activeDetailTab = 'centroGestor';
     this.articulos = [];
     this.fetchCentroGestor(numero);
   }
@@ -1119,6 +1125,8 @@ export class ContratosComponent {
         this.isLoadingCentroGestor = false;
       },
       error: (err) => {
+        this.centroGestor = [];
+        this.pageCNT = 0;
         this.isLoadingCentroGestor = false;
         this.cgeError = err.error.error ?? err.error;
       }
@@ -1217,6 +1225,7 @@ export class ContratosComponent {
         this.searchPageCentro = 0;
       },
       error: (err) => {
+        this.centroGestoresAdd = [];
         this.isLoadingCentroAdd = false;
         this.centroErrorMessage = err.error.error ?? err.error;
       }
@@ -1233,6 +1242,7 @@ export class ContratosComponent {
           this.searchPageCentro = 0;
         },
         error: (err) => {
+          this.centroGestoresAdd = [];
           this.isLoadingCentroAdd = false;
           this.centroErrorMessage = err.error.error ?? err.error;
         }
@@ -1245,6 +1255,7 @@ export class ContratosComponent {
           this.searchPageCentro = 0;
         },
         error: (err) => {
+          this.centroGestoresAdd = [];
           this.isLoadingCentroAdd = false;
           this.centroErrorMessage = err.error.error ?? err.error;
         }
@@ -1257,6 +1268,7 @@ export class ContratosComponent {
           this.searchPageCentro = 0;
         },
         error: (err) => {
+          this.centroGestoresAdd = [];
           this.isLoadingCentroAdd = false;
           this.centroErrorMessage = err.error.error ?? err.error;
         }
@@ -1312,6 +1324,7 @@ export class ContratosComponent {
         this.fetchCentroGestor(concod);
         this.isLoadingCentroAdd = false;
         this.cgeSuccess = 'artículos añadidos con éxito';
+        this.showcentroGestor(concod);
       },
       error: (err) => {
         this.centroErrorMessage = err.error.error ?? err.error;

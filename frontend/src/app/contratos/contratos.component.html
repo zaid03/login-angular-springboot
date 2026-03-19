@@ -147,7 +147,7 @@
                 <div class="modal" *ngIf="selectedContrato">
                     <div class="btns">
                         <div class="title-detail">
-                            <h3>detalles del contrato</h3>
+                            <h3>Detalles del contrato</h3>
                         </div>
                         <button 
                             class="red-btn" 
@@ -538,7 +538,7 @@
         <p class="p-style delete-info">Familia: {{articuloToDelete[0].concod}}</p>
     </div>
     <h1 class="errorBtn">{{detallesMessageErrorDelete}}</h1>
-    <button class="red-btn" (click)="deleteArticulo(articuloToDelete[0]?.concod, articuloToDelete[1]?.afacod, articuloToDelete[1]?.asucod, articuloToDelete[1]?.artcod)">-</button>
+    <button class="red-btn" (click)="deleteArticulo(articuloToDelete[0]?.concod, articuloToDelete[1]?.afacod, articuloToDelete[1]?.asucod, articuloToDelete[1]?.artcod)">Borrar</button>
 </div>
 
 <div class="modal-backdrop" *ngIf="articulosAddGrid" (click)="closeArticuloAddGrid()"></div>
@@ -593,7 +593,7 @@
                 </tr>
             </tbody>
         </table>
-        <p class="p-style" *ngIf="coughtArticulos.length > 0">{{coughtArticulos.length}} artículos seleccionados</p>
+        <p class="p-style selected" *ngIf="coughtArticulos.length > 0">{{coughtArticulos.length}} artículos seleccionados</p>
         <div class="pagination-controls" *ngIf="articulosAdd.length > searchPageSize">
             <button class="pag-btn" (click)="searchPage = searchPage - 1" [disabled]="searchPage === 0">Anterior</button>
             <span> {{ searchPage + 1 }} de {{ searchTotalPages }}</span>
@@ -625,7 +625,7 @@
         </div>
     </div>
     <h1 class="errorBtn">{{centroDeleteError}}</h1>
-    <button class="red-btn" (click)="deleteCentroGestor(centroToDelete.cgecod)">-</button>
+    <button class="red-btn" (click)="deleteCentroGestor(centroToDelete.cgecod)">Borrar</button>
 </div>
 
 <div class="modal-backdrop" *ngIf="addCentroGestor" (click)="closeAddCentro()"></div>
@@ -634,8 +634,8 @@
         <div class="title">
             <h1 class="art-title widthSecond">Añadir centro Gestor</h1>
         </div>
-        <button class="red-btn" (click)="saveCentroGestores()">+</button>
-        <button class="purple-btn" (click)="closeAddCentro()">✖</button>
+        <button class="purple-btn" (click)="saveCentroGestores()">+</button>
+        <button class="red-btn" (click)="closeAddCentro()">✖</button>
     </div>
     <div *ngIf="isAddingCentro" class="loading-message">
         <div class="spinner"></div>
@@ -695,7 +695,7 @@
             <h1 class="art-title widthThird">Asignar D</h1>
         </div>
         <button class="purple-btn">+</button>
-        <button class="purple-btn" (click)="closeAddD()">✖</button>
+        <button class="red-btn" (click)="closeAddD()">✖</button>
     </div>
     <h1 class="errorBtn">{{DErrorMessage}}</h1>
     <div *ngIf="isLoadingD" class="loading-message">
