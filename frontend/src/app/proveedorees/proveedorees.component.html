@@ -645,14 +645,14 @@
                     name="searchAdd"
                     [(ngModel)]="searchAdd" 
                     [value]="'nom'" 
-                /> NOM
+                /> Nombre
                 <input 
                     type="radio" 
                     class="checkbox"
                     name="searchAdd"
                     [(ngModel)]="searchAdd" 
                     [value]="'apell'" 
-                /> APELL    
+                /> Apellido
             </div>
             <div class="search-btns-prov">
                 <button 
@@ -667,7 +667,10 @@
                 </button>   
             </div>
         </div>
-
+        <div *ngIf="isSearching" class="loading-message">
+            <div class="spinner"></div>
+            <span>Cargando</span>
+        </div>
         <h1 class="errorBtn">{{ anadirProveedorErrorMessage }}</h1>
         <table class="pat main-table">
             <thead>
