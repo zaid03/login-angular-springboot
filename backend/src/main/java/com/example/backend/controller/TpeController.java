@@ -20,7 +20,7 @@ public class TpeController {
     private TpeRepository tpeRepository;
 
     private static final String SIN_RESULTADO = "Sin resultado";
-    private static final String Error = "Error :";
+    private static final String ERROR = "Error :";
 
     // Custom query to find Tpe by ENT and TERCOD
     @GetMapping("/by-tpe/{ent}/{tercod}")
@@ -74,7 +74,7 @@ public class TpeController {
             return ResponseEntity.noContent().build();
         } catch(DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(Error + ex.getMostSpecificCause().getMessage());
+                .body(ERROR + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -135,7 +135,7 @@ public class TpeController {
             return ResponseEntity.ok("La persona ha sido eliminada con éxito");
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(Error + ex.getMostSpecificCause().getMessage());
+                .body(ERROR + ex.getMostSpecificCause().getMessage());
         }
     }
 }

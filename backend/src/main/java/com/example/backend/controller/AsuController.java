@@ -28,7 +28,7 @@ public class AsuController {
     private AsuRepository asuRepository;
 
     private static final String SIN_RESULTADO = "Sin resultado";
-    private static final String Error = "Error :";
+    private static final String ERROR = "Error :";
 
     // Method to find Asu records by ENT and AFACOD
     @GetMapping("/by-ent/{ent}/{afacod}/{asucod}")
@@ -49,7 +49,7 @@ public class AsuController {
             return ResponseEntity.ok(combined);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(Error + ex.getMostSpecificCause().getMessage());
+                .body(ERROR + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -69,7 +69,7 @@ public class AsuController {
             return ResponseEntity.ok(subfamilias);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(Error + ex.getMostSpecificCause().getMessage());
+                .body(ERROR + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -89,7 +89,7 @@ public class AsuController {
             return ResponseEntity.ok(subfamilias);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(Error + ex.getMostSpecificCause().getMessage());
+                .body(ERROR + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -109,7 +109,7 @@ public class AsuController {
             return ResponseEntity.ok(subfamilias);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(Error + ex.getMostSpecificCause().getMessage());
+                .body(ERROR + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -144,7 +144,7 @@ public class AsuController {
             return ResponseEntity.noContent().build();
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(Error + ex.getMostSpecificCause().getMessage());
+                .body(ERROR + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -177,7 +177,7 @@ public class AsuController {
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(Error + ex.getMostSpecificCause().getMessage());
+                .body(ERROR + ex.getMostSpecificCause().getMessage());
         }
     }
 }

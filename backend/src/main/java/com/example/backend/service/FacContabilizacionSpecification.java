@@ -105,7 +105,7 @@ public class FacContabilizacionSpecification {
 
     private static Predicate buildSearchPredicate(Root<Fac> root, CriteriaBuilder cb, String trimmed) {
         boolean onlyDigits = trimmed.matches("^\\d+$");
-        boolean hasLetters = trimmed.matches(".*[a-zA-Z].*");
+        boolean hasLetters = trimmed.chars().anyMatch(Character::isLetter);
         int length = trimmed.length();
 
         if (onlyDigits && length <= 5) {

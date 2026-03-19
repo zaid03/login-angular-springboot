@@ -45,7 +45,7 @@ public class DpeController {
     private DepRepository depRepository;
 
     private static final String SIN_RESULTADO = "Sin resultado";
-    private static final String Error = "Error :";
+    private static final String ERROR = "Error :";
     private static final String Peticionario = "peticionario";
 
     //for adding personas to services and vice versa
@@ -83,7 +83,7 @@ public class DpeController {
             }
             return ResponseEntity.ok(result);
         } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Error + ex.getMostSpecificCause().getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ERROR + ex.getMostSpecificCause().getMessage());
         }
     } 
 
@@ -105,7 +105,7 @@ public class DpeController {
             dpeRepository.deleteById(id);
             return ResponseEntity.noContent().build();
         } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Error + ex.getMostSpecificCause().getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ERROR + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -136,7 +136,7 @@ public class DpeController {
 
             return ResponseEntity.ok(result);
         } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Error + ex.getMostSpecificCause().getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ERROR + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -158,7 +158,7 @@ public class DpeController {
             dpeRepository.deleteById(id);
             return ResponseEntity.noContent().build();
         } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Error + ex.getMostSpecificCause().getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ERROR + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -177,7 +177,7 @@ public class DpeController {
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(Error + ex.getMessage());
+                .body(ERROR + ex.getMessage());
         }
     }
 
@@ -221,7 +221,7 @@ public class DpeController {
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(Error + ex.getMessage());
+                .body(ERROR + ex.getMessage());
         }
     }
 
@@ -237,14 +237,14 @@ public class DpeController {
             Pageable pageable = PageRequest.of(page, size);
             List<personasPorServiciosProjection> personas = dpeRepository.findByENTAndEJE(ent, eje, pageable);
 
-            if (personas.isEmpty()) {
+            if (personas == null || personas.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
             }
 
             return ResponseEntity.ok(personas);
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(Error + ex.getMessage());
+                .body(ERROR + ex.getMessage());
         }
     }
 
@@ -264,14 +264,14 @@ public class DpeController {
             List<personasPorServiciosProjection> result = getInitialData(ent, eje, servicio, persona, cgecod);
             result = applyFilters(result, servicio, persona, cgecod, perfilType);
 
-            if (result.isEmpty()) {
+            if (result == null || result.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
             }
             return ResponseEntity.ok(result);
             
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(Error + ex.getMostSpecificCause().getMessage());
+                .body(ERROR + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -324,7 +324,7 @@ public class DpeController {
         if (persona != null && !persona.isEmpty()) {
             data = filterByPersona(data, persona);
         }
-        if (cgecod != null && !cgecod.isEmpty()) {
+        if (data != null && cgecod != null && !cgecod.isEmpty()) {
             data = data.stream()
                 .filter(p -> p.getDep().getCge().getCGECOD().equals(cgecod))
                 .toList();

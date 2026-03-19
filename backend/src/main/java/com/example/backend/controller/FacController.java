@@ -46,7 +46,7 @@ public class FacController {
     private GbsRepository gbsRepository;
 
     private static final String SIN_RESULTADO = "Sin resultado";
-    private static final String Error = "Error :";
+    private static final String ERROR = "Error :";
 
     //for the main list
     @GetMapping("/{ent}/{eje}/{cgecod}")
@@ -63,7 +63,7 @@ public class FacController {
             
             return ResponseEntity.ok(facturas);
         } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Error + ex.getMostSpecificCause().getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ERROR + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -128,7 +128,7 @@ public class FacController {
             return ResponseEntity.ok(result);
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(Error + ex.getMessage());
+                .body(ERROR + ex.getMessage());
         }
     }
 
@@ -141,7 +141,7 @@ public class FacController {
             List<String> messages = facturaInsertService.insertFacturas(facturas);
             return ResponseEntity.ok(messages);
         } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Error + ex.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ERROR + ex.getMessage());
         }
     }
 
@@ -180,7 +180,7 @@ public class FacController {
 
             return ResponseEntity.noContent().build();
         } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Error + ex.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ERROR + ex.getMessage());
         }
     }
 
@@ -211,7 +211,7 @@ public class FacController {
             return ResponseEntity.ok(facturas);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(Error + ex.getMostSpecificCause().getMessage());
+                .body(ERROR + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -238,7 +238,7 @@ public class FacController {
             
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(Error + ex.getMostSpecificCause().getMessage());
+                .body(ERROR + ex.getMostSpecificCause().getMessage());
         }
     }
 

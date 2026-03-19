@@ -36,7 +36,7 @@ public class CgeController {
     private DpeRepository dpeRepository;
 
     private static final String SIN_RESULTADO = "Sin resultado";
-    private static final String Error = "Error :";
+    private static final String ERROR = "Error :";
 
     //selecting centro gestor for login
     @GetMapping("/{ent}/{eje}/{percod}")
@@ -87,7 +87,7 @@ public class CgeController {
 
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(Error + ex.getMessage());
+                .body(ERROR + ex.getMessage());
         }
     }
 
@@ -120,7 +120,7 @@ public class CgeController {
             }
             return ResponseEntity.ok(centros);
         } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Error + ex.getMostSpecificCause().getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ERROR + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -160,7 +160,7 @@ public class CgeController {
 
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(Error + ex.getMostSpecificCause().getMessage());
+                .body(ERROR + ex.getMostSpecificCause().getMessage());
         }
     }
     //add centro gestor
@@ -194,7 +194,7 @@ public class CgeController {
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch(DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(Error + ex.getMostSpecificCause().getMessage());
+                .body(ERROR + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -227,7 +227,7 @@ public class CgeController {
             return ResponseEntity.noContent().build();
         } catch(DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(Error + ex.getMostSpecificCause().getMessage());
+                .body(ERROR + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -246,7 +246,7 @@ public class CgeController {
             return ResponseEntity.ok(description.get());
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Error + ex.getMostSpecificCause().getMessage());
+                    .body(ERROR + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -268,7 +268,7 @@ public class CgeController {
             return ResponseEntity.ok(centros);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(Error + ex.getMostSpecificCause().getMessage());
+                .body(ERROR + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -285,7 +285,7 @@ public class CgeController {
             }
             return ResponseEntity.ok(centros);
         } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Error + ex.getMostSpecificCause().getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ERROR + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -304,7 +304,7 @@ public class CgeController {
             return ResponseEntity.ok(centros);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Error + ex.getMostSpecificCause().getMessage());
+                    .body(ERROR + ex.getMostSpecificCause().getMessage());
         }
     }
 }

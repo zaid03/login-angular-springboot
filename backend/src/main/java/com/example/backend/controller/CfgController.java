@@ -19,7 +19,7 @@ public class CfgController {
     private CfgRepository cfgRepository;
 
     private static final String SIN_RESULTADO = "Sin resultado";
-    private static final String Error = "Error :";
+    private static final String ERROR = "Error :";
 
     //method to ejercicio in Cfg table by entidad and CFGEST
     @GetMapping("/by-ent/{ent}")
@@ -55,7 +55,7 @@ public class CfgController {
             return ResponseEntity.ok(Eje);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(Error + ex.getMostSpecificCause().getMessage());
+                .body(ERROR + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -74,7 +74,7 @@ public class CfgController {
             return ResponseEntity.ok(Eje);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(Error + ex.getMostSpecificCause().getMessage());
+                .body(ERROR + ex.getMostSpecificCause().getMessage());
         }
     }
 }

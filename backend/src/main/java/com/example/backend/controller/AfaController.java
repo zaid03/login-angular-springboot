@@ -21,7 +21,7 @@ public class AfaController {
     private AfaRepository afaRepository;
 
     private static final String SIN_RESULTADO = "Sin resultado";
-    private static final String Error = "Error :";
+    private static final String ERROR = "Error :";
 
     @GetMapping("/by-ent/{ent}/{afacod}")
     public ResponseEntity<?> getByEntAndAfacod(
@@ -37,7 +37,7 @@ public class AfaController {
             return ResponseEntity.ok(familias);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(Error + ex.getMostSpecificCause().getMessage());
+                .body(ERROR + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -56,7 +56,7 @@ public class AfaController {
             return ResponseEntity.ok(familias);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(Error + ex.getMostSpecificCause().getMessage());
+                .body(ERROR + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -75,7 +75,7 @@ public class AfaController {
             return ResponseEntity.ok(familias);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(Error + ex.getMostSpecificCause().getMessage());
+                .body(ERROR + ex.getMostSpecificCause().getMessage());
         }
     }
 
