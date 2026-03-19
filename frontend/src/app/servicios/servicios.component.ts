@@ -511,6 +511,8 @@ export class ServiciosComponent {
         this.isLoading = false;
       },
       error: (err) => {
+        this.personasPage=0;
+        this.personas = [];
         this.personasError = err.error.error ?? err.error;
         this.isLoading = false;
       }

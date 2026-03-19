@@ -231,7 +231,7 @@
                             (click)="isUpdateAllowed(pernom.value, percoe.value, pertel.value, pertmo.value, percar.value, perobs.value)"
                             [disabled]="!isUpdate" 
 	                        *ngIf="isUpdate" 
-                        >Gurdar</button>
+                        >Guardar</button>
                     </div>
                     <div class="more-detail-container">
                         <div class="tabs" role="tablist" aria-label="Detalle tabs">
@@ -341,7 +341,7 @@
         <h1 class="h1-style">{{serviceToDelete.depcod}}</h1>
     </div>
     <h1 class="errorBtn">{{ErrorDelete}}</h1>
-    <button class="red-btn" (click)="deleteService(serviceToDelete.depcod)">-</button>
+    <button class="red-btn" (click)="deleteService(serviceToDelete.depcod)">Confirmar</button>
 </div>
 
 <div class="modal-backdrop" *ngIf="addService" (click)="closeAddService()"></div>

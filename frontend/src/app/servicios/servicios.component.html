@@ -402,9 +402,8 @@
                             </div>
                             <div class="almacen-title">
                                 <p class="p-style">Nombre</p>
-                                <h1 class="h1-style">{{almacenArray?.magnom}}</h1>  
+                                <h1 class="h1-style">{{ almacenErro === 'No resultado' ? '-' : almacenArray?.magnom }}</h1>
                             </div>
-                            <h1 class="errorBtn">{{almacenErro}}</h1>
                             <div class="main-list">
                                 <table class="main-table aT">
                                     <thead>
@@ -558,7 +557,7 @@
         <p class="p-style">Código:</p>
         <p class="p-style">{{personaTodelete.percod}}</p>
     </div>
-    <button class="red-btn" (click)="confirmDelete(personaTodelete.percod)">-</button>
+    <button class="red-btn" (click)="confirmDelete(personaTodelete.percod)">Confirmar</button>
 </div>
 
 <div class="modal-backdrop" *ngIf="addPersonas" (click)="closeAddPersonas()"></div>

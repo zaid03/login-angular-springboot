@@ -443,6 +443,9 @@ export class PersonaComponent {
         this.isLoading = false;
       },
       error: (err) => {
+        this.personServicesOrigin = [];     
+        this.backupServices = [];          
+        this.pageServices = 0;              
         this.serviceErrorMessage = err.error.error ?? err.error;
         this.isLoading = false;
       }
