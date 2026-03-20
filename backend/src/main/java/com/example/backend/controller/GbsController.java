@@ -32,7 +32,7 @@ public class GbsController {
 
     private static final String SIN_RESULTADO = "Sin resultado";
     private static final String ERROR = "Error :";
-    private static final String Faltan = "Faltan datos obligatorios";
+    private static final String FALTAN = "Faltan datos obligatorios";
 
     //for the main list of bolsa por cge
     @GetMapping("fetch-all/{ent}/{eje}/{cgecod}")
@@ -90,7 +90,7 @@ public class GbsController {
     ) {
         try {
             if (payload == null || payload.GBSIMP() == null || payload.GBSIUS() == null || payload.GBSICO() == null || payload.GBSFOP() == null) {
-                return ResponseEntity.badRequest().body(Faltan);
+                return ResponseEntity.badRequest().body(FALTAN);
             }
 
             GbsId id = new GbsId(ent, eje, cgecod, gbsref);
@@ -126,7 +126,7 @@ public class GbsController {
     ) {
         try {
             if (payload == null || payload.GBSIBG() == null) {
-                return ResponseEntity.badRequest().body(Faltan);
+                return ResponseEntity.badRequest().body(FALTAN);
             }
 
             GbsId id = new GbsId(ent, eje, cgecod, gbsref);
@@ -159,7 +159,7 @@ public class GbsController {
     ) {
         try {
             if (payload == null || payload.GBSIMP() == null || payload.GBSIUS() == null || payload.GBSICO() == null || payload.GBSFOP() == null) {
-                return ResponseEntity.badRequest().body(Faltan);
+                return ResponseEntity.badRequest().body(FALTAN);
             }
 
             GbsId id = new GbsId(ent, eje, cgecod, gbsref);

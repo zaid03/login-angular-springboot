@@ -7,7 +7,6 @@ import org.springframework.data.jpa.domain.Specification;
 import com.example.backend.sqlserver2.model.Fac;
 import com.example.backend.sqlserver2.model.Ter;
 
-import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.*;
 
 public class FacSpecification {
@@ -177,7 +176,7 @@ public class FacSpecification {
         String searchUpper = search.toUpperCase();
         
         return switch (searchType) {
-            case "TERCOD" -> searchByTercod(root, cb, search);
+            case TERCOD -> searchByTercod(root, cb, search);
             case "NIF" -> cb.like(
                 cb.upper(cb.coalesce(terJoin.get(TERNIF), "")),
                 "%" + searchUpper + "%"

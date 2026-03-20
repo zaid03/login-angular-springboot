@@ -203,35 +203,36 @@ public class ContabilizacionService {
     private void appendFdtLines(StringBuilder sb, String eje, List<Fdt> fdtList) {
         sb.append("<l_dto>");
         for (Fdt fdt : fdtList) {
-            sb.append("<dto>");
-            if (fdt.getFDTARE() != null) {
-                sb.append("<areaD>").append(fdt.getFDTARE()).append("</areaD>");
-            }
-            sb.append("<ejeD>").append(eje).append("</ejeD>");
-            if (fdt.getFDTORG() != null) {
-                sb.append("<orgD>").append(CryptoSical.encodeBase64(fdt.getFDTORG())).append("</orgD>");
-            }
-            if (fdt.getFDTFUN() != null) {
-                sb.append("<funD>").append(CryptoSical.encodeBase64(fdt.getFDTFUN())).append("</funD>");
-            }
-            if (fdt.getFDTECO() != null) {
-                sb.append("<ecoD>").append(CryptoSical.encodeBase64(fdt.getFDTECO())).append("</ecoD>");
-            }
-            if (fdt.getFDTDTO() != null) {
-                sb.append("<impD>").append(fdt.getFDTDTO()).append("</impD>");
-            }
-            if (fdt.getFDTBSE() != null) {
-                sb.append("<baseRet>").append(fdt.getFDTBSE()).append("</baseRet>");
-            }
-            if (fdt.getFDTPRE() != null) {
-                sb.append("<porcRet>").append(fdt.getFDTPRE()).append("</porcRet>");
-            }
-            if (fdt.getFDTTXT() != null) {
-                sb.append("<textoD>").append(CryptoSical.encodeBase64(fdt.getFDTTXT())).append("</textoD>");
-            }
-            sb.append("</dto>");
+            appendDtoElement(sb, fdt, eje);
         }
         sb.append("</l_dto>");
+    }
+
+    private void appendDtoElement(StringBuilder sb, Fdt fdt, String eje) {
+        sb.append("<dto>");
+        appendOptionalField(sb, "areaD", fdt.getFDTARE(), false);
+        sb.append("<ejeD>").append(eje).append("</ejeD>");
+        appendOptionalField(sb, "orgD", fdt.getFDTORG(), true);
+        appendOptionalField(sb, "funD", fdt.getFDTFUN(), true);
+        appendOptionalField(sb, "ecoD", fdt.getFDTECO(), true);
+        appendOptionalNumberField(sb, "impD", fdt.getFDTDTO());
+        appendOptionalNumberField(sb, "baseRet", fdt.getFDTBSE());
+        appendOptionalNumberField(sb, "porcRet", fdt.getFDTPRE());
+        appendOptionalField(sb, "textoD", fdt.getFDTTXT(), true);
+        sb.append("</dto>");
+    }
+
+    private void appendOptionalField(StringBuilder sb, String tag, String value, boolean encode) {
+        if (value != null) {
+            String encodedValue = encode ? CryptoSical.encodeBase64(value) : value;
+            sb.append("<").append(tag).append(">").append(encodedValue).append("</").append(tag).append(">");
+        }
+    }
+
+    private void appendOptionalNumberField(StringBuilder sb, String tag, Double value) {
+        if (value != null) {
+            sb.append("<").append(tag).append(">").append(value).append("</").append(tag).append(">");
+        }
     }
 
     public String sendSmlRequest(String smlInput, String url) {
@@ -266,103 +267,101 @@ public class ContabilizacionService {
         
         try {
             String sml = extractSmlFromSoap(soapResponse);
-            
             if (sml == null) {
                 dto.setExito(false);
                 dto.setMensaje("Respuesta SOAP inválida");
                 return dto;
             }
 
-            javax.xml.parsers.DocumentBuilderFactory dbFactory = javax.xml.parsers.DocumentBuilderFactory.newInstance();
-            dbFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-            dbFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
-            dbFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-            dbFactory.setAttribute(javax.xml.XMLConstants.ACCESS_EXTERNAL_DTD, "");
-            dbFactory.setAttribute(javax.xml.XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
-            javax.xml.parsers.DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            org.w3c.dom.Document doc = dBuilder.parse(new java.io.ByteArrayInputStream(sml.getBytes()));
-
-            String exito = getTagValue(doc, "exito");            
+            org.w3c.dom.Document doc = parseXmlDocument(sml);
+            String exito = getTagValue(doc, "exito");
             
-            if ("-1".equals(exito)) {
-                dto.setExito(true);
-                
-                org.w3c.dom.NodeList opNodes = doc.getElementsByTagName("operacion");
-                if (opNodes.getLength() > 0) {
-                    org.w3c.dom.Node opNode = opNodes.item(0);
-                    org.w3c.dom.NodeList children = opNode.getChildNodes();
-                    
-                    for (int i = 0; i < children.getLength(); i++) {
-                        org.w3c.dom.Node child = children.item(i);
-                        if (child.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
-                            String name = child.getNodeName();
-                            String value = child.getTextContent();
-                            
-                            switch (name) {
-                                case "opeext":
-                                    dto.setOpeext(value);
-                                    break;
-                                case "opesical":
-                                    dto.setOpesical(value);
-                                    break;
-                                case "nap":
-                                    dto.setNap(value);
-                                    break;
-                                case "referencia":
-                                    dto.setReferencia(value);
-                                    break;
-                                case "importe":
-                                    dto.setImporte(value);
-                                    break;
-                                case "ejercicio":
-                                    dto.setEjercicio(value);
-                                    break;
-                                case "organica":
-                                    dto.setOrganica(decodeIfBase64(value));
-                                    break;
-                                case "funcional":
-                                    dto.setFuncional(decodeIfBase64(value));
-                                    break;
-                                case "economica":
-                                    dto.setEconomica(decodeIfBase64(value));
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
-                    }
-                }
-                dto.setMensaje("Operación generada correctamente");
-            } else {
-                dto.setExito(false);
-                String desc = getTagValue(doc, "desc");
-                String codigo = getTagValue(doc, "codigo");
-                
-                org.w3c.dom.NodeList errorNodes = doc.getElementsByTagName("error");
-                StringBuilder errors = new StringBuilder();
-                for (int j = 0; j < errorNodes.getLength(); j++) {
-                    if (j > 0) errors.append("; ");
-                    errors.append(errorNodes.item(j).getTextContent());
-                }
-                
-                String mensaje = "";
-                if (codigo != null && !codigo.isEmpty()) {
-                    mensaje += "Código: " + codigo + ". ";
-                }
-                if (desc != null && !desc.isEmpty()) {
-                    mensaje += desc;
-                }
-                if (errors.length() > 0) {
-                    mensaje += " Errores: " + errors.toString();
-                }
-                dto.setMensaje(mensaje.isEmpty() ? "Error desconocido del servicio" : mensaje);
-            }
+            return "-1".equals(exito) ? parseSuccessResponse(doc, dto) : parseFailureResponse(doc, dto);
         } catch (Exception e) {
             dto.setExito(false);
             dto.setMensaje("Error al procesar respuesta: " + e.getMessage());
         }
         
         return dto;
+    }
+
+    private org.w3c.dom.Document parseXmlDocument(String sml) throws Exception {
+        javax.xml.parsers.DocumentBuilderFactory dbFactory = javax.xml.parsers.DocumentBuilderFactory.newInstance();
+        dbFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+        dbFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+        dbFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+        dbFactory.setAttribute(javax.xml.XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        dbFactory.setAttribute(javax.xml.XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+        javax.xml.parsers.DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+        return dBuilder.parse(new java.io.ByteArrayInputStream(sml.getBytes()));
+    }
+
+    private ContabilizacionResponseDto parseSuccessResponse(org.w3c.dom.Document doc, ContabilizacionResponseDto dto) {
+        dto.setExito(true);
+        org.w3c.dom.NodeList opNodes = doc.getElementsByTagName("operacion");
+        if (opNodes.getLength() > 0) {
+            parseOperacionNode(opNodes.item(0), dto);
+        }
+        dto.setMensaje("Operación generada correctamente");
+        return dto;
+    }
+
+    private void parseOperacionNode(org.w3c.dom.Node opNode, ContabilizacionResponseDto dto) {
+        org.w3c.dom.NodeList children = opNode.getChildNodes();
+        for (int i = 0; i < children.getLength(); i++) {
+            org.w3c.dom.Node child = children.item(i);
+            if (child.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
+                mapOperacionField(child.getNodeName(), child.getTextContent(), dto);
+            }
+        }
+    }
+
+    private void mapOperacionField(String name, String value, ContabilizacionResponseDto dto) {
+        switch (name) {
+            case "opeext" -> dto.setOpeext(value);
+            case "opesical" -> dto.setOpesical(value);
+            case "nap" -> dto.setNap(value);
+            case "referencia" -> dto.setReferencia(value);
+            case "importe" -> dto.setImporte(value);
+            case "ejercicio" -> dto.setEjercicio(value);
+            case "organica" -> dto.setOrganica(decodeIfBase64(value));
+            case "funcional" -> dto.setFuncional(decodeIfBase64(value));
+            case "economica" -> dto.setEconomica(decodeIfBase64(value));
+            default -> {}
+        }
+    }
+
+    private ContabilizacionResponseDto parseFailureResponse(org.w3c.dom.Document doc, ContabilizacionResponseDto dto) {
+        dto.setExito(false);
+        String desc = getTagValue(doc, "desc");
+        String codigo = getTagValue(doc, "codigo");
+        String errors = buildErrorString(doc);
+        dto.setMensaje(buildErrorMessage(codigo, desc, errors));
+        return dto;
+    }
+
+    private String buildErrorString(org.w3c.dom.Document doc) {
+        org.w3c.dom.NodeList errorNodes = doc.getElementsByTagName("error");
+        StringBuilder errors = new StringBuilder();
+        for (int i = 0; i < errorNodes.getLength(); i++) {
+            if (i > 0) errors.append("; ");
+            errors.append(errorNodes.item(i).getTextContent());
+        }
+        return errors.toString();
+    }
+
+    private String buildErrorMessage(String codigo, String desc, String errors) {
+        StringBuilder mensaje = new StringBuilder();
+        if (codigo != null && !codigo.isEmpty()) {
+            mensaje.append("Código: ").append(codigo).append(". ");
+        }
+        if (desc != null && !desc.isEmpty()) {
+            mensaje.append(desc);
+        }
+        if (!errors.isEmpty()) {
+            mensaje.append(" Errores: ").append(errors);
+        }
+        return mensaje.toString().isEmpty() ? "Error desconocido del servicio" : mensaje.toString();
     }
 
     private String formatFechaContable(String fecha) {

@@ -20,9 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.backend.dto.DepWithCgeView;
 import com.example.backend.sqlserver2.model.Dep;
 import com.example.backend.sqlserver2.model.DepId;
-import com.example.backend.sqlserver2.model.Dpe;
 import com.example.backend.sqlserver2.repository.DepRepository;
-import com.example.backend.sqlserver2.repository.DpeRepository;
 import com.example.backend.sqlserver2.repository.CcoRepository;
 
 @RestController
@@ -31,13 +29,11 @@ public class DepController {
     @Autowired
     private DepRepository depRepository;
     @Autowired
-    private DpeRepository dpeRepository;
-    @Autowired
     private CcoRepository ccoRepository;
 
     private static final String SIN_RESULTADO = "Sin resultado";
     private static final String ERROR = "Error :";
-    private static final String Faltan = "Faltan datos obligatorios";
+    private static final String FALTAN = "Faltan datos obligatorios";
 
     //fetching all services
     @GetMapping("/fetch-services/{ent}/{eje}")
@@ -90,9 +86,9 @@ public class DepController {
     ) {
         try {
             if (payload == null || payload.depdes() == null || payload.depalm() == null || payload.depcom() == null || payload.depint() == null) {
-                return ResponseEntity.badRequest().body(Faltan);
+                return ResponseEntity.badRequest().body(FALTAN);
             }
-
+ 
             DepId id = new DepId(ent, eje, depcod);
             Optional<Dep> service = depRepository.findById(id);
 
@@ -137,7 +133,7 @@ public class DepController {
                 payload.depd2c() == null || payload.depd2d() == null ||
                 payload.depd3c() == null || payload.depd3d() == null ||
                 payload.depdco() == null || payload.depden() == null) {
-                return ResponseEntity.badRequest().body(Faltan);
+                return ResponseEntity.badRequest().body(FALTAN);
             }
 
             DepId id = new DepId(ent, eje, depcod);
@@ -175,7 +171,7 @@ public class DepController {
     ) {
         try {
             if (payload == null || payload.ent() == null || payload.eje() == null || payload.depcod() == null || payload.depdes() == null || payload.depalm() == null || payload.depcom() == null || payload.depint() == null || payload.ccocod() == null || payload.cgecod() == null || payload.percod() == null) {
-                return ResponseEntity.badRequest().body(Faltan);
+                return ResponseEntity.badRequest().body(FALTAN);
             }
             if(!depRepository.findByENTAndEJEAndDEPCOD(payload.ent(), payload.eje(), payload.depcod()).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.CONFLICT)
