@@ -31,16 +31,70 @@ public class FacContabilizacionSpecification {
         public final Integer facann;
         public final String search;
 
-        public SearchCriteria(Integer ent, String eje, String cgecod, String fechaType,
-                LocalDateTime desde, LocalDateTime hasta, Integer facann, String search) {
-            this.ent = ent;
-            this.eje = eje;
-            this.cgecod = cgecod;
-            this.fechaType = fechaType;
-            this.desde = desde;
-            this.hasta = hasta;
-            this.facann = facann;
-            this.search = search;
+        private SearchCriteria(Builder builder) {
+            this.ent = builder.ent;
+            this.eje = builder.eje;
+            this.cgecod = builder.cgecod;
+            this.fechaType = builder.fechaType;
+            this.desde = builder.desde;
+            this.hasta = builder.hasta;
+            this.facann = builder.facann;
+            this.search = builder.search;
+        }
+
+        public static class Builder {
+            private Integer ent;
+            private String eje;
+            private String cgecod;
+            private String fechaType;
+            private LocalDateTime desde;
+            private LocalDateTime hasta;
+            private Integer facann;
+            private String search;
+
+            public Builder ent(Integer ent) {
+                this.ent = ent;
+                return this;
+            }
+
+            public Builder eje(String eje) {
+                this.eje = eje;
+                return this;
+            }
+
+            public Builder cgecod(String cgecod) {
+                this.cgecod = cgecod;
+                return this;
+            }
+
+            public Builder fechaType(String fechaType) {
+                this.fechaType = fechaType;
+                return this;
+            }
+
+            public Builder desde(LocalDateTime desde) {
+                this.desde = desde;
+                return this;
+            }
+
+            public Builder hasta(LocalDateTime hasta) {
+                this.hasta = hasta;
+                return this;
+            }
+
+            public Builder facann(Integer facann) {
+                this.facann = facann;
+                return this;
+            }
+
+            public Builder search(String search) {
+                this.search = search;
+                return this;
+            }
+
+            public SearchCriteria build() {
+                return new SearchCriteria(this);
+            }
         }
     }
 

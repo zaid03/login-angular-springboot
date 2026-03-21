@@ -2,6 +2,7 @@ package com.example.backend.controller;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import com.example.backend.exception.XmlParsingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,24 +41,34 @@ public class FacturaConsultaController {
 
             return handleResponse(exito, desc, doc);
             
+        } catch (XmlParsingException ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("XML parsing error: " + ex.getMessage());
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + ex.getMessage());
         }
     }
 
-    private DocumentBuilder initializeDocumentBuilder() throws Exception {
-        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-        dbFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-        dbFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
-        dbFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-        dbFactory.setAttribute(javax.xml.XMLConstants.ACCESS_EXTERNAL_DTD, "");
-        dbFactory.setAttribute(javax.xml.XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
-        return dbFactory.newDocumentBuilder();
+    private DocumentBuilder initializeDocumentBuilder() throws XmlParsingException {
+        try {
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            dbFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            dbFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            dbFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            dbFactory.setAttribute(javax.xml.XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            dbFactory.setAttribute(javax.xml.XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+            return dbFactory.newDocumentBuilder();
+        } catch (javax.xml.parsers.ParserConfigurationException ex) {
+            throw new XmlParsingException("Failed to initialize XML document builder with security configuration", ex);
+        }
     }
 
-    private Document parseXmlResponse(String sml) throws Exception {
-        DocumentBuilder dBuilder = initializeDocumentBuilder();
-        return dBuilder.parse(new java.io.ByteArrayInputStream(sml.getBytes()));
+    private Document parseXmlResponse(String sml) throws XmlParsingException {
+        try {
+            DocumentBuilder dBuilder = initializeDocumentBuilder();
+            return dBuilder.parse(new java.io.ByteArrayInputStream(sml.getBytes()));
+        } catch (org.xml.sax.SAXException | java.io.IOException ex) {
+            throw new XmlParsingException("Failed to parse XML response", ex);
+        }
     }
 
     private ResponseEntity<?> handleResponse(String exito, String desc, Document doc) {

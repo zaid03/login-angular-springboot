@@ -15,6 +15,8 @@ import org.springframework.web.client.RestTemplate;
 
 import com.example.backend.dto.ContabilizacionRequestDto;
 import com.example.backend.dto.ContabilizacionResponseDto;
+import com.example.backend.exception.XmlParsingException;
+import com.example.backend.exception.SmlBuildingException;
 import com.example.backend.sqlserver2.model.Fac;
 import com.example.backend.sqlserver2.model.FacId;
 import com.example.backend.sqlserver2.model.Fde;
@@ -44,18 +46,24 @@ public class ContabilizacionService {
     @Autowired
     private TerRepository terRepository;
 
-    public String buildSmlInput(ContabilizacionRequestDto req, Fac fac, List<Fde> fdeList, List<Fdt> fdtList, String terAyt) throws Exception {
-        CryptoSical.SecurityFields sec = CryptoSical.calculateSecurityFields(req.getPublicKey());
-        String fechaContable = formatFechaContable(req.getFechaContable());
-        
-        StringBuilder sb = new StringBuilder();
-        sb.append("<e>");
-        appendOperationHeader(sb);
-        appendSecuritySection(sb, req, sec);
-        appendParametersSection(sb, req, fac, fdeList, fdtList, terAyt, fechaContable);
-        sb.append("</e>");
-        
-        return sb.toString();
+    public String buildSmlInput(ContabilizacionRequestDto req, Fac fac, List<Fde> fdeList, List<Fdt> fdtList, String terAyt) throws SmlBuildingException {
+        try {
+            CryptoSical.SecurityFields sec = CryptoSical.calculateSecurityFields(req.getPublicKey());
+            String fechaContable = formatFechaContable(req.getFechaContable());
+            
+            StringBuilder sb = new StringBuilder();
+            sb.append("<e>");
+            appendOperationHeader(sb);
+            appendSecuritySection(sb, req, sec);
+            appendParametersSection(sb, req, fac, fdeList, fdtList, terAyt, fechaContable);
+            sb.append("</e>");
+            
+            return sb.toString();
+        } catch (SmlBuildingException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw new SmlBuildingException("Error building SML input: " + ex.getMessage(), ex);
+        }
     }
 
     private void appendOperationHeader(StringBuilder sb) {
@@ -67,25 +75,29 @@ public class ContabilizacionService {
         sb.append("</ope>");
     }
 
-    private void appendSecuritySection(StringBuilder sb, ContabilizacionRequestDto req, CryptoSical.SecurityFields sec) throws Exception {
-        String pwdSha1Base64 = CryptoSical.encodeSha1Base64(req.getPwd());
-        String tokenSha1 = CryptoSical.encodeSha1Base64(sec.origin);
-        
-        sb.append("<sec>");
-        sb.append("<cli>SAGE-AYTOS</cli>");
-        sb.append("<org>").append(req.getOrg()).append("</org>");
-        sb.append("<ent>").append(req.getEnt()).append("</ent>");
-        sb.append("<eje>").append(req.getEje()).append("</eje>");
-        sb.append("<usu>").append(req.getUsu()).append("</usu>");
-        sb.append("<pwd>").append(pwdSha1Base64).append("</pwd>");
-        sb.append("<fecha>").append(sec.created).append("</fecha>");
-        sb.append("<nonce>").append(sec.nonce).append("</nonce>");
-        sb.append("<token>").append(sec.token).append("</token>");
-        sb.append("<tokenSha1>").append(tokenSha1).append("</tokenSha1>");
-        sb.append("</sec>");
+    private void appendSecuritySection(StringBuilder sb, ContabilizacionRequestDto req, CryptoSical.SecurityFields sec) throws SmlBuildingException {
+        try {
+            String pwdSha1Base64 = CryptoSical.encodeSha1Base64(req.getPwd());
+            String tokenSha1 = CryptoSical.encodeSha1Base64(sec.origin);
+            
+            sb.append("<sec>");
+            sb.append("<cli>SAGE-AYTOS</cli>");
+            sb.append("<org>").append(req.getOrg()).append("</org>");
+            sb.append("<ent>").append(req.getEnt()).append("</ent>");
+            sb.append("<eje>").append(req.getEje()).append("</eje>");
+            sb.append("<usu>").append(req.getUsu()).append("</usu>");
+            sb.append("<pwd>").append(pwdSha1Base64).append("</pwd>");
+            sb.append("<fecha>").append(sec.created).append("</fecha>");
+            sb.append("<nonce>").append(sec.nonce).append("</nonce>");
+            sb.append("<token>").append(sec.token).append("</token>");
+            sb.append("<tokenSha1>").append(tokenSha1).append("</tokenSha1>");
+            sb.append("</sec>");
+        } catch (Exception ex) {
+            throw new SmlBuildingException("Error building security section: " + ex.getMessage(), ex);
+        }
     }
 
-    private void appendParametersSection(StringBuilder sb, ContabilizacionRequestDto req, Fac fac, List<Fde> fdeList, List<Fdt> fdtList, String terAyt, String fechaContable) throws Exception {
+    private void appendParametersSection(StringBuilder sb, ContabilizacionRequestDto req, Fac fac, List<Fde> fdeList, List<Fdt> fdtList, String terAyt, String fechaContable) throws SmlBuildingException {
         sb.append("<par>");
         sb.append("<gensinalmacenar>0</gensinalmacenar>");
         sb.append("<l_operacion>");
@@ -277,6 +289,9 @@ public class ContabilizacionService {
             String exito = getTagValue(doc, "exito");
             
             return "-1".equals(exito) ? parseSuccessResponse(doc, dto) : parseFailureResponse(doc, dto);
+        } catch (com.example.backend.exception.XmlParsingException ex) {
+            dto.setExito(false);
+            dto.setMensaje("XML parsing error: " + ex.getMessage());
         } catch (Exception e) {
             dto.setExito(false);
             dto.setMensaje("Error al procesar respuesta: " + e.getMessage());
@@ -285,15 +300,19 @@ public class ContabilizacionService {
         return dto;
     }
 
-    private org.w3c.dom.Document parseXmlDocument(String sml) throws Exception {
-        javax.xml.parsers.DocumentBuilderFactory dbFactory = javax.xml.parsers.DocumentBuilderFactory.newInstance();
-        dbFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-        dbFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
-        dbFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-        dbFactory.setAttribute(javax.xml.XMLConstants.ACCESS_EXTERNAL_DTD, "");
-        dbFactory.setAttribute(javax.xml.XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
-        javax.xml.parsers.DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-        return dBuilder.parse(new java.io.ByteArrayInputStream(sml.getBytes()));
+    private org.w3c.dom.Document parseXmlDocument(String sml) throws com.example.backend.exception.XmlParsingException {
+        try {
+            javax.xml.parsers.DocumentBuilderFactory dbFactory = javax.xml.parsers.DocumentBuilderFactory.newInstance();
+            dbFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            dbFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            dbFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            dbFactory.setAttribute(javax.xml.XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            dbFactory.setAttribute(javax.xml.XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+            javax.xml.parsers.DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            return dBuilder.parse(new java.io.ByteArrayInputStream(sml.getBytes()));
+        } catch (javax.xml.parsers.ParserConfigurationException | org.xml.sax.SAXException | java.io.IOException ex) {
+            throw new com.example.backend.exception.XmlParsingException("Failed to parse XML document", ex);
+        }
     }
 
     private ContabilizacionResponseDto parseSuccessResponse(org.w3c.dom.Document doc, ContabilizacionResponseDto dto) {

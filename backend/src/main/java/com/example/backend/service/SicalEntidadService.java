@@ -36,8 +36,9 @@ public class SicalEntidadService {
     @Value("${sical.public.key}")
     private String publicKey;
 
-    public List<Entidad> getEntidades() throws Exception {
-        CryptoSical.SecurityFields sec = CryptoSical.calculateSecurityFields(publicKey);
+    public List<Entidad> getEntidades() throws SmlProcessingException {
+        try {
+            CryptoSical.SecurityFields sec = CryptoSical.calculateSecurityFields(publicKey);
 
         // Build SML with required encodings: alphanumeric -> Base64, password -> SHA1+Base64
         StringBuilder sb = new StringBuilder();
@@ -98,8 +99,12 @@ public class SicalEntidadService {
             String sml = unescapeXml(inner);
             return parseEntidades(sml);
         } else {
-            // fallback: try to parse the whole response (unlikely to work if escaped)
             return parseEntidades(responseXml);
+        }
+        } catch (SmlProcessingException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw new SmlProcessingException("Error retrieving entidades: " + ex.getMessage(), ex);
         }
     }
 
@@ -112,37 +117,55 @@ public class SicalEntidadService {
                 .replace("&apos;", "'");
     }
 
-    private List<Entidad> parseEntidades(String sml) throws Exception {
-        List<Entidad> result = new ArrayList<>();
-        if (sml == null || sml.isEmpty()) {
-            return result;
+    private List<Entidad> parseEntidades(String sml) throws SmlProcessingException {
+        try {
+            List<Entidad> result = new ArrayList<>();
+            if (sml == null || sml.isEmpty()) {
+                return result;
+            }
+
+            Document doc = parseXmlDocument(sml);
+            validateExito(doc);
+            
+            NodeList detalleNodes = doc.getElementsByTagName("detalle");
+            return parseDetalleList(detalleNodes);
+        } catch (SmlProcessingException ex) {
+            throw ex;
+        } catch (com.example.backend.exception.XmlParsingException ex) {
+            throw new SmlProcessingException("Error parsing entidades response: " + ex.getMessage(), ex);
+        } catch (Exception ex) {
+            throw new SmlProcessingException("Error processing entidades response: " + ex.getMessage(), ex);
         }
-
-        Document doc = parseXmlDocument(sml);
-        validateExito(doc);
-        
-        NodeList detalleNodes = doc.getElementsByTagName("detalle");
-        return parseDetalleList(detalleNodes);
     }
 
-    private Document parseXmlDocument(String sml) throws Exception {
-        DocumentBuilderFactory dbf = configureDocumentBuilderFactory();
-        DocumentBuilder db = dbf.newDocumentBuilder();
-        return db.parse(new java.io.ByteArrayInputStream(sml.getBytes(StandardCharsets.UTF_8)));
+    private Document parseXmlDocument(String sml) throws com.example.backend.exception.XmlParsingException {
+        try {
+            DocumentBuilderFactory dbf = configureDocumentBuilderFactory();
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            return db.parse(new java.io.ByteArrayInputStream(sml.getBytes(StandardCharsets.UTF_8)));
+        } catch (com.example.backend.exception.XmlParsingException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw new com.example.backend.exception.XmlParsingException("Failed to parse XML document", ex);
+        }
     }
 
-    private DocumentBuilderFactory configureDocumentBuilderFactory() throws Exception {
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        dbf.setNamespaceAware(false);
-        dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-        dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
-        dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-        dbf.setAttribute(javax.xml.XMLConstants.ACCESS_EXTERNAL_DTD, "");
-        dbf.setAttribute(javax.xml.XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
-        return dbf;
+    private DocumentBuilderFactory configureDocumentBuilderFactory() throws com.example.backend.exception.XmlParsingException {
+        try {
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            dbf.setNamespaceAware(false);
+            dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            dbf.setAttribute(javax.xml.XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            dbf.setAttribute(javax.xml.XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+            return dbf;
+        } catch (Exception ex) {
+            throw new com.example.backend.exception.XmlParsingException("Failed to configure document builder factory", ex);
+        }
     }
 
-    private void validateExito(Document doc) throws Exception {
+    private void validateExito(Document doc) throws SmlProcessingException {
         NodeList exitoNodes = doc.getElementsByTagName("exito");
         if (exitoNodes == null || exitoNodes.getLength() == 0) {
             return;

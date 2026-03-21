@@ -18,6 +18,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import com.example.backend.dto.Tercero;
+import com.example.backend.exception.XmlParsingException;
 import com.example.sical.CryptoSical;
 
 import java.util.regex.Pattern;
@@ -48,8 +49,9 @@ public class SicalService {
     @Value("${sical.eje}")
     private String eje;
 
-    public List<Tercero> getTerceros(String nif, String nom, String apell) throws Exception {
-      CryptoSical.SecurityFields sec = CryptoSical.calculateSecurityFields(publicKey);
+    public List<Tercero> getTerceros(String nif, String nom, String apell) throws XmlParsingException {
+      try {
+            CryptoSical.SecurityFields sec = CryptoSical.calculateSecurityFields(publicKey);
 
       String fecha = sec.created;
       String nonce = sec.nonce;
@@ -109,18 +111,29 @@ public class SicalService {
       String responseXml = restTemplate.postForObject(wsUrl, request, String.class);
 
       return parseTerceros(responseXml);
+      } catch (XmlParsingException ex) {
+            throw ex;
+      } catch (Exception ex) {
+            throw new XmlParsingException("Error retrieving terceros: " + ex.getMessage(), ex);
+      }
   }
 
-    private List<Tercero> parseTerceros(String xml) throws Exception {
+    private List<Tercero> parseTerceros(String xml) throws XmlParsingException {
         List<Tercero> result = new ArrayList<>();
         
-        String sml = extractAndUnescapeXmlContent(xml);
-        Document doc = parseXmlDocument(sml);
-        NodeList tercerosNodes = doc.getElementsByTagName("tercero");
+        try {
+            String sml = extractAndUnescapeXmlContent(xml);
+            Document doc = parseXmlDocument(sml);
+            NodeList tercerosNodes = doc.getElementsByTagName("tercero");
 
-        for (int i = 0; i < tercerosNodes.getLength(); i++) {
-            Tercero t = parseTerceroFromElement((Element) tercerosNodes.item(i));
-            result.add(t);
+            for (int i = 0; i < tercerosNodes.getLength(); i++) {
+                Tercero t = parseTerceroFromElement((Element) tercerosNodes.item(i));
+                result.add(t);
+            }
+        } catch (XmlParsingException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw new XmlParsingException("Error parsing terceros from XML response", ex);
         }
 
         return result;
@@ -156,17 +169,21 @@ public class SicalService {
             .replace("&apos;", "'");
     }
 
-    private Document parseXmlDocument(String sml) throws Exception {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setNamespaceAware(false);
-        factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-        factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
-        factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-        factory.setAttribute(javax.xml.XMLConstants.ACCESS_EXTERNAL_DTD, "");
-        factory.setAttribute(javax.xml.XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
-        
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        return builder.parse(new ByteArrayInputStream(sml.getBytes(StandardCharsets.UTF_8)));
+    private Document parseXmlDocument(String sml) throws com.example.backend.exception.XmlParsingException {
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setNamespaceAware(false);
+            factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            factory.setAttribute(javax.xml.XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            factory.setAttribute(javax.xml.XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+            
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            return builder.parse(new ByteArrayInputStream(sml.getBytes(StandardCharsets.UTF_8)));
+        } catch (javax.xml.parsers.ParserConfigurationException | org.xml.sax.SAXException | java.io.IOException ex) {
+            throw new com.example.backend.exception.XmlParsingException("Failed to parse XML document", ex);
+        }
     }
 
     private Tercero parseTerceroFromElement(Element e) {

@@ -46,7 +46,7 @@ public class DpeController {
 
     private static final String SIN_RESULTADO = "Sin resultado";
     private static final String ERROR = "Error :";
-    private static final String Peticionario = "peticionario";
+    private static final String PETICIONARIO = "peticionario";
 
     //for adding personas to services and vice versa
     private final DpeService dpeService;
@@ -261,7 +261,7 @@ public class DpeController {
         try {
             String perfilType = mapPerfilType(perfil);
             
-            List<personasPorServiciosProjection> result = getInitialData(ent, eje, servicio, persona, cgecod);
+            List<personasPorServiciosProjection> result = getInitialData(ent, eje, persona, cgecod);
             result = applyFilters(result, servicio, persona, cgecod, perfilType);
 
             if (result == null || result.isEmpty()) {
@@ -283,22 +283,12 @@ public class DpeController {
             case "almacen" -> "depalm";
             case "comprador" -> "depcom";
             case "contabilidad" -> "depint";
-            case Peticionario -> Peticionario;
+            case PETICIONARIO -> PETICIONARIO;
             default -> null;
         };
     }
 
-    private record FilterFlags(boolean hasServicio, boolean hasPersona, boolean hasCgecod, boolean hasPerfil) {}
-    private FilterFlags buildFilterFlags(String servicio, String persona, String cgecod, String perfil) {
-        return new FilterFlags(
-            servicio != null && !servicio.isEmpty(),
-            persona != null && !persona.isEmpty(),
-            cgecod != null && !cgecod.isEmpty(),
-            perfil != null
-        );
-    }
-
-    private List<personasPorServiciosProjection> getInitialData(Integer ent, String eje, String servicio, String persona, String cgecod) {
+    private List<personasPorServiciosProjection> getInitialData(Integer ent, String eje, String persona, String cgecod) {
         if (cgecod != null && !cgecod.isEmpty()) {
             return nullSafeList(dpeRepository.findByENTAndEJEAndDep_Cge_CGECOD(ent, eje, cgecod));
         }
@@ -338,7 +328,7 @@ public class DpeController {
     private List<personasPorServiciosProjection> filterByPerfil(List<personasPorServiciosProjection> data, String perfilType) {
         if (data == null || data.isEmpty()) return data;
         
-        if (Peticionario.equals(perfilType)) {
+        if (PETICIONARIO.equals(perfilType)) {
             return data.stream()
                 .filter(p -> p.getDep().getDEPALM() == 0 && p.getDep().getDEPCOM() == 0 && p.getDep().getDEPINT() == 0)
                 .toList();

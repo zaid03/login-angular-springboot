@@ -83,10 +83,19 @@ public class FacController {
         @RequestParam(defaultValue = "OTROS") String searchType
     ) {
         try {
-            FacSpecification.SearchCriteria criteria = new FacSpecification.SearchCriteria(
-                ent, eje, cgecod, estado, dateType, fromDate, toDate,
-                facannMode, facann, search, searchType
-            );
+            FacSpecification.SearchCriteria criteria = new FacSpecification.SearchCriteria.Builder()
+                .ent(ent)
+                .eje(eje)
+                .cgecod(cgecod)
+                .estado(estado)
+                .dateType(dateType)
+                .fromDate(fromDate)
+                .toDate(toDate)
+                .facannMode(facannMode)
+                .facann(facann)
+                .search(search)
+                .searchType(searchType)
+                .build();
             Specification<Fac> spec = FacSpecification.searchFacturas(criteria);
             
             List<Fac> facturas = facRepository.findAll(spec);
@@ -197,9 +206,16 @@ public class FacController {
         @RequestParam(required = false) String search 
     ) {
         try {
-            FacContabilizacionSpecification.SearchCriteria criteria = new FacContabilizacionSpecification.SearchCriteria(
-                ent, eje, cgecod, fechaType, desde, hasta, facann, search
-            );
+            FacContabilizacionSpecification.SearchCriteria criteria = new FacContabilizacionSpecification.SearchCriteria.Builder()
+                .ent(ent)
+                .eje(eje)
+                .cgecod(cgecod)
+                .fechaType(fechaType)
+                .desde(desde)
+                .hasta(hasta)
+                .facann(facann)
+                .search(search)
+                .build();
             Specification<Fac> spec = FacContabilizacionSpecification.searchContabilizacion(criteria);
 
             List<Fac> facturas = facRepository.findAll(spec);

@@ -49,20 +49,91 @@ public class FacSpecification {
         public final String search;
         public final String searchType;
 
-        public SearchCriteria(Integer ent, String eje, String cgecod, String estado,
-                String dateType, LocalDate fromDate, LocalDate toDate,
-                String facannMode, String facann, String search, String searchType) {
-            this.ent = ent;
-            this.eje = eje;
-            this.cgecod = cgecod;
-            this.estado = estado;
-            this.dateType = dateType;
-            this.fromDate = fromDate;
-            this.toDate = toDate;
-            this.facannMode = facannMode;
-            this.facann = facann;
-            this.search = search;
-            this.searchType = searchType;
+        private SearchCriteria(Builder builder) {
+            this.ent = builder.ent;
+            this.eje = builder.eje;
+            this.cgecod = builder.cgecod;
+            this.estado = builder.estado;
+            this.dateType = builder.dateType;
+            this.fromDate = builder.fromDate;
+            this.toDate = builder.toDate;
+            this.facannMode = builder.facannMode;
+            this.facann = builder.facann;
+            this.search = builder.search;
+            this.searchType = builder.searchType;
+        }
+
+        public static class Builder {
+            private Integer ent;
+            private String eje;
+            private String cgecod;
+            private String estado;
+            private String dateType;
+            private LocalDate fromDate;
+            private LocalDate toDate;
+            private String facannMode;
+            private String facann;
+            private String search;
+            private String searchType;
+
+            public Builder ent(Integer ent) {
+                this.ent = ent;
+                return this;
+            }
+
+            public Builder eje(String eje) {
+                this.eje = eje;
+                return this;
+            }
+
+            public Builder cgecod(String cgecod) {
+                this.cgecod = cgecod;
+                return this;
+            }
+
+            public Builder estado(String estado) {
+                this.estado = estado;
+                return this;
+            }
+
+            public Builder dateType(String dateType) {
+                this.dateType = dateType;
+                return this;
+            }
+
+            public Builder fromDate(LocalDate fromDate) {
+                this.fromDate = fromDate;
+                return this;
+            }
+
+            public Builder toDate(LocalDate toDate) {
+                this.toDate = toDate;
+                return this;
+            }
+
+            public Builder facannMode(String facannMode) {
+                this.facannMode = facannMode;
+                return this;
+            }
+
+            public Builder facann(String facann) {
+                this.facann = facann;
+                return this;
+            }
+
+            public Builder search(String search) {
+                this.search = search;
+                return this;
+            }
+
+            public Builder searchType(String searchType) {
+                this.searchType = searchType;
+                return this;
+            }
+
+            public SearchCriteria build() {
+                return new SearchCriteria(this);
+            }
         }
     }
     

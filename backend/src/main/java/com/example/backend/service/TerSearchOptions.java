@@ -20,7 +20,10 @@ public class TerSearchOptions {
     private static final int SEARCH_ALL = 1;      // TERNIF, TERNOM, TERALI
     private static final int SEARCH_NOM_ALI = 2;  // TERNOM, TERALI
 
-    //for the list filtered by TERNIF and TERNOM and TERALI bloqueado
+    private TerSearchOptions() {
+        // Utility class - cannot be instantiated
+    }
+
     public static Specification<Ter> searchFiltered(Integer ent, String term) {
         return (root, query, cb) -> buildPredicate(root, cb, ent, term, SEARCH_ALL, true);
     }

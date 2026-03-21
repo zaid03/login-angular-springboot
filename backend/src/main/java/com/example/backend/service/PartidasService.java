@@ -18,6 +18,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.example.backend.exception.XmlParsingException;
+
 import com.example.backend.dto.Partida;
 import com.example.sical.CryptoSical;
 
@@ -150,8 +152,10 @@ public class PartidasService {
                 Partida p = createPartidaFromElement(e);
                 result.add(p);
             }
-        } catch (Exception ex) {
+        } catch (XmlParsingException ex) {
             throw new SicalParseException("XML parsing error: " + ex.getMessage(), ex);
+        } catch (Exception ex) {
+            throw new SicalParseException("Error processing response: " + ex.getMessage(), ex);
         }
         
         return result;
@@ -184,16 +188,20 @@ public class PartidasService {
                   .replace("&apos;", "'");
     }
     
-    private Document parseXmlDocument(String sml) throws Exception {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setNamespaceAware(false);
-        factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-        factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
-        factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-        factory.setAttribute(javax.xml.XMLConstants.ACCESS_EXTERNAL_DTD, "");
-        factory.setAttribute(javax.xml.XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        return builder.parse(new ByteArrayInputStream(sml.getBytes(StandardCharsets.UTF_8)));
+    private Document parseXmlDocument(String sml) throws com.example.backend.exception.XmlParsingException {
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setNamespaceAware(false);
+            factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            factory.setAttribute(javax.xml.XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            factory.setAttribute(javax.xml.XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            return builder.parse(new ByteArrayInputStream(sml.getBytes(StandardCharsets.UTF_8)));
+        } catch (javax.xml.parsers.ParserConfigurationException | org.xml.sax.SAXException | java.io.IOException ex) {
+            throw new com.example.backend.exception.XmlParsingException("Failed to parse XML document", ex);
+        }
     }
     
     private void validateAndThrowIfError(Document doc) throws SicalParseException {

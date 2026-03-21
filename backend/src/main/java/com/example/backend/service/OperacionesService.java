@@ -18,6 +18,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.example.backend.exception.XmlParsingException;
+
 import com.example.backend.dto.Operaciones;
 import com.example.backend.dto.Operaciones.Dto;
 import com.example.backend.dto.Operaciones.Iva;
@@ -61,87 +63,151 @@ public class OperacionesService {
         public final String grupoApunte;
         public final String oficina;
 
-        public SearchCriteria(String numeroOperDesde, String numeroOperHasta, String codigoOperacion,
-                String organica, String funcional, String economica, String expediente,
-                String grupoApunte, String oficina) {
-            this.numeroOperDesde = numeroOperDesde;
-            this.numeroOperHasta = numeroOperHasta;
-            this.codigoOperacion = codigoOperacion;
-            this.organica = organica;
-            this.funcional = funcional;
-            this.economica = economica;
-            this.expediente = expediente;
-            this.grupoApunte = grupoApunte;
-            this.oficina = oficina;
+        private SearchCriteria(Builder builder) {
+            this.numeroOperDesde = builder.numeroOperDesde;
+            this.numeroOperHasta = builder.numeroOperHasta;
+            this.codigoOperacion = builder.codigoOperacion;
+            this.organica = builder.organica;
+            this.funcional = builder.funcional;
+            this.economica = builder.economica;
+            this.expediente = builder.expediente;
+            this.grupoApunte = builder.grupoApunte;
+            this.oficina = builder.oficina;
+        }
+
+        public static class Builder {
+            private String numeroOperDesde;
+            private String numeroOperHasta;
+            private String codigoOperacion;
+            private String organica;
+            private String funcional;
+            private String economica;
+            private String expediente;
+            private String grupoApunte;
+            private String oficina;
+
+            public Builder numeroOperDesde(String numeroOperDesde) {
+                this.numeroOperDesde = numeroOperDesde;
+                return this;
+            }
+
+            public Builder numeroOperHasta(String numeroOperHasta) {
+                this.numeroOperHasta = numeroOperHasta;
+                return this;
+            }
+
+            public Builder codigoOperacion(String codigoOperacion) {
+                this.codigoOperacion = codigoOperacion;
+                return this;
+            }
+
+            public Builder organica(String organica) {
+                this.organica = organica;
+                return this;
+            }
+
+            public Builder funcional(String funcional) {
+                this.funcional = funcional;
+                return this;
+            }
+
+            public Builder economica(String economica) {
+                this.economica = economica;
+                return this;
+            }
+
+            public Builder expediente(String expediente) {
+                this.expediente = expediente;
+                return this;
+            }
+
+            public Builder grupoApunte(String grupoApunte) {
+                this.grupoApunte = grupoApunte;
+                return this;
+            }
+
+            public Builder oficina(String oficina) {
+                this.oficina = oficina;
+                return this;
+            }
+
+            public SearchCriteria build() {
+                return new SearchCriteria(this);
+            }
         }
     }
 
-    public List<Operaciones> getOperaciones(SearchCriteria criteria) throws Exception {
+    public List<Operaciones> getOperaciones(SearchCriteria criteria) throws SmlProcessingException {
+        try {
+            CryptoSical.SecurityFields sec = CryptoSical.calculateSecurityFields(publicKey);
+            String fecha = sec.created;
+            String nonce = sec.nonce;
+            String token = sec.token;
+            String tokenSha1 = CryptoSical.encodeSha1Base64(sec.origin);
 
-        CryptoSical.SecurityFields sec = CryptoSical.calculateSecurityFields(publicKey);
-        String fecha = sec.created;
-        String nonce = sec.nonce;
-        String token = sec.token;
-        String tokenSha1 = CryptoSical.encodeSha1Base64(sec.origin);
+            String filtroXml =
+                "<filtro>" +
+                (criteria.numeroOperDesde != null ? "<numeroOperDesde>" + criteria.numeroOperDesde + "</numeroOperDesde>" : "") +
+                (criteria.numeroOperHasta != null ? "<numeroOperHasta>" + criteria.numeroOperHasta + "</numeroOperHasta>" : "") +
+                (criteria.codigoOperacion != null ? "<codigoOperacion>" + CryptoSical.encodeBase64(criteria.codigoOperacion) + "</codigoOperacion>" : "") +
+                (criteria.organica != null ? "<organica>" + CryptoSical.encodeBase64(criteria.organica) + "</organica>" : "") +
+                (criteria.funcional != null ? "<funcional>" + CryptoSical.encodeBase64(criteria.funcional) + "</funcional>" : "") +
+                (criteria.economica != null ? "<economica>" + CryptoSical.encodeBase64(criteria.economica) + "</economica>" : "") +
+                (criteria.expediente != null ? "<expediente>" + CryptoSical.encodeBase64(criteria.expediente) + "</expediente>" : "") +
+                (criteria.grupoApunte != null ? "<grupoApunte>" + CryptoSical.encodeBase64(criteria.grupoApunte) + "</grupoApunte>" : "") +
+                (criteria.oficina != null ? "<oficina>" + CryptoSical.encodeBase64(criteria.oficina) + "</oficina>" : "") +
+                "</filtro>";
 
-        String filtroXml =
-            "<filtro>" +
-            (criteria.numeroOperDesde != null ? "<numeroOperDesde>" + criteria.numeroOperDesde + "</numeroOperDesde>" : "") +
-            (criteria.numeroOperHasta != null ? "<numeroOperHasta>" + criteria.numeroOperHasta + "</numeroOperHasta>" : "") +
-            (criteria.codigoOperacion != null ? "<codigoOperacion>" + CryptoSical.encodeBase64(criteria.codigoOperacion) + "</codigoOperacion>" : "") +
-            (criteria.organica != null ? "<organica>" + CryptoSical.encodeBase64(criteria.organica) + "</organica>" : "") +
-            (criteria.funcional != null ? "<funcional>" + CryptoSical.encodeBase64(criteria.funcional) + "</funcional>" : "") +
-            (criteria.economica != null ? "<economica>" + CryptoSical.encodeBase64(criteria.economica) + "</economica>" : "") +
-            (criteria.expediente != null ? "<expediente>" + CryptoSical.encodeBase64(criteria.expediente) + "</expediente>" : "") +
-            (criteria.grupoApunte != null ? "<grupoApunte>" + CryptoSical.encodeBase64(criteria.grupoApunte) + "</grupoApunte>" : "") +
-            (criteria.oficina != null ? "<oficina>" + CryptoSical.encodeBase64(criteria.oficina) + "</oficina>" : "") +
-            "</filtro>";
+            String xml =
+                "<e>" +
+                "<ope><apl>SNP</apl><tobj>ConOpeGastos</tobj><cmd>LST</cmd><ver>2.0</ver></ope>" +
+                "<sec>" +
+                "<cli>SAGE-AYTOS</cli>" +
+                "<org>" + orgCode + "</org>" +
+                "<ent>" + entidad + "</ent>" +
+                "<eje>" + eje + "</eje>" +
+                "<usu>" + username + "</usu>" +
+                "<pwd>" + CryptoSical.encodeSha1Base64(password) + "</pwd>" +
+                "<fecha>" + fecha + "</fecha>" +
+                "<nonce>" + nonce + "</nonce>" +
+                "<token>" + token + "</token>" +
+                "<tokenSha1>" + tokenSha1 + "</tokenSha1>" +
+                "</sec>" +
+                "<par>" +
+                "<desdetalle>S</desdetalle>" +
+                filtroXml +
+                "</par>" +
+                "</e>";
 
-        String xml =
-            "<e>" +
-            "<ope><apl>SNP</apl><tobj>ConOpeGastos</tobj><cmd>LST</cmd><ver>2.0</ver></ope>" +
-            "<sec>" +
-            "<cli>SAGE-AYTOS</cli>" +
-            "<org>" + orgCode + "</org>" +
-            "<ent>" + entidad + "</ent>" +
-            "<eje>" + eje + "</eje>" +
-            "<usu>" + username + "</usu>" +
-            "<pwd>" + CryptoSical.encodeSha1Base64(password) + "</pwd>" +
-            "<fecha>" + fecha + "</fecha>" +
-            "<nonce>" + nonce + "</nonce>" +
-            "<token>" + token + "</token>" +
-            "<tokenSha1>" + tokenSha1 + "</tokenSha1>" +
-            "</sec>" +
-            "<par>" +
-            "<desdetalle>S</desdetalle>" +
-            filtroXml +
-            "</par>" +
-            "</e>";
+            String soapEnvelope =
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:impl=\"http://desa-sical-ws:8080/services/Ci\">" +
+                "<soapenv:Header/>" +
+                "<soapenv:Body>" +
+                "<impl:servicio>" +
+                "<impl:in0><![CDATA[" + xml + "]]></impl:in0>" +
+                "</impl:servicio>" +
+                "</soapenv:Body>" +
+                "</soapenv:Envelope>";
 
-        String soapEnvelope =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-            "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:impl=\"http://desa-sical-ws:8080/services/Ci\">" +
-            "<soapenv:Header/>" +
-            "<soapenv:Body>" +
-            "<impl:servicio>" +
-            "<impl:in0><![CDATA[" + xml + "]]></impl:in0>" +
-            "</impl:servicio>" +
-            "</soapenv:Body>" +
-            "</soapenv:Envelope>";
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_TYPE, "text/xml");
+            headers.add(HttpHeaders.ACCEPT, "text/xml");
+            headers.add("SOAPAction", "");
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_TYPE, "text/xml");
-        headers.add(HttpHeaders.ACCEPT, "text/xml");
-        headers.add("SOAPAction", "");
+            RestTemplate restTemplate = new RestTemplate();
+            String endpoint = (wsUrl != null && wsUrl.contains("?")) ? wsUrl.substring(0, wsUrl.indexOf("?")) : wsUrl;
+            String responseXml = restTemplate.postForObject(endpoint, new HttpEntity<>(soapEnvelope, headers), String.class);
 
-        RestTemplate restTemplate = new RestTemplate();
-        String endpoint = (wsUrl != null && wsUrl.contains("?")) ? wsUrl.substring(0, wsUrl.indexOf("?")) : wsUrl;
-        String responseXml = restTemplate.postForObject(endpoint, new HttpEntity<>(soapEnvelope, headers), String.class);
-
-        return parseOperaciones(responseXml);
+            return parseOperaciones(responseXml);
+        } catch (SmlProcessingException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw new SmlProcessingException("Error retrieving operaciones: " + ex.getMessage(), ex);
+        }
     }
 
-    private List<Operaciones> parseOperaciones(String xml) throws Exception {
+    private List<Operaciones> parseOperaciones(String xml) throws SmlProcessingException {
         List<Operaciones> result = new ArrayList<>();
         
         String innerXml = extractInnerXmlContent(xml);
@@ -154,14 +220,20 @@ public class OperacionesService {
             return result;
         }
         
-        Document doc = parseXmlDocument(sml);
-        validateAndThrowIfError(doc);
-        
-        NodeList operNodes = doc.getElementsByTagName("operacion");
-        for (int i = 0; i < operNodes.getLength(); i++) {
-            Element opEl = (Element) operNodes.item(i);
-            Operaciones op = createOperacionFromElement(opEl);
-            result.add(op);
+        try {
+            Document doc = parseXmlDocument(sml);
+            validateAndThrowIfError(doc);
+            
+            NodeList operNodes = doc.getElementsByTagName("operacion");
+            for (int i = 0; i < operNodes.getLength(); i++) {
+                Element opEl = (Element) operNodes.item(i);
+                Operaciones op = createOperacionFromElement(opEl);
+                result.add(op);
+            }
+        } catch (XmlParsingException ex) {
+            throw new SmlProcessingException("XML parsing error: " + ex.getMessage(), ex);
+        } catch (Exception ex) {
+            throw new SmlProcessingException("Error processing response: " + ex.getMessage(), ex);
         }
         
         return result;
@@ -194,16 +266,20 @@ public class OperacionesService {
                   .replace("&apos;", "'");
     }
     
-    private Document parseXmlDocument(String sml) throws Exception {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setNamespaceAware(false);
-        factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-        factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
-        factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-        factory.setAttribute(javax.xml.XMLConstants.ACCESS_EXTERNAL_DTD, "");
-        factory.setAttribute(javax.xml.XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        return builder.parse(new ByteArrayInputStream(sml.getBytes(StandardCharsets.UTF_8)));
+    private Document parseXmlDocument(String sml) throws com.example.backend.exception.XmlParsingException {
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setNamespaceAware(false);
+            factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            factory.setAttribute(javax.xml.XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            factory.setAttribute(javax.xml.XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            return builder.parse(new ByteArrayInputStream(sml.getBytes(StandardCharsets.UTF_8)));
+        } catch (javax.xml.parsers.ParserConfigurationException | org.xml.sax.SAXException | java.io.IOException ex) {
+            throw new com.example.backend.exception.XmlParsingException("Failed to parse XML document", ex);
+        }
     }
     
     private void validateAndThrowIfError(Document doc) throws SmlProcessingException {
