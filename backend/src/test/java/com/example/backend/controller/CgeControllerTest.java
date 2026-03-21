@@ -35,7 +35,6 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.mockito.ArgumentMatchers.eq;
 
 @WebMvcTest(controllers = CgeController.class)
 @ActiveProfiles("test")
@@ -452,15 +451,22 @@ public class CgeControllerTest {
 
     @Test
     void searchCentrosCodigo_returnsResults() throws Exception {
-        shortCentroContrato c = Mockito.mock(shortCentroContrato.class);
-        when(cgeRepository.findByENTAndEJEAndCGECOD((Integer)1, "E1", "G1"))
-            .thenReturn(List.of(c));
+        shortCentroContrato c = new shortCentroContrato() {
+            public String getCGECOD() { return "G1"; }
+            public String getCGEDES() { return "Desc"; }
+            public String getCGEORG() { return "Org"; }
+            public String getCGEFUN() { return "Fun"; }
+            public Integer getCGECIC() { return 1; }
+        };
+        Mockito.<List<shortCentroContrato>>doReturn(List.of(c))
+            .when(cgeRepository).findByENTAndEJEAndCGECOD((Integer)1, "E1", "G1");
 
         mockMvc.perform(get("/api/cge/search-centros-codigo/1/E1/G1")
                 .accept(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$", hasSize(1)));
+            .andExpect(jsonPath("$", hasSize(1)))
+            .andExpect(jsonPath("$[0].cgecod").value("G1"));
     }
 
     @Test
@@ -476,7 +482,7 @@ public class CgeControllerTest {
 
     @Test
     void searchCentrosCodigo_returnsBadRequestOnDataAccessException() throws Exception {
-        when(cgeRepository.findByENTAndEJEAndCGECOD(anyInt(), anyString(), anyString()))
+        when(cgeRepository.findByENTAndEJEAndCGECOD((Integer)1, "E1", "G1"))
             .thenThrow(new DataAccessResourceFailureException("DB down"));
 
         mockMvc.perform(get("/api/cge/search-centros-codigo/1/E1/G1"))
@@ -487,15 +493,22 @@ public class CgeControllerTest {
 
     @Test
     void searchCentrosDesc_returnsResults() throws Exception {
-        shortCentroContrato c = Mockito.mock(shortCentroContrato.class);
-        when(cgeRepository.findByENTAndEJEAndCGEDESContaining((Integer)1, "E1", "Desc"))
-            .thenReturn(List.of(c));
+        shortCentroContrato c = new shortCentroContrato() {
+            public String getCGECOD() { return "G1"; }
+            public String getCGEDES() { return "Desc"; }
+            public String getCGEORG() { return "Org"; }
+            public String getCGEFUN() { return "Fun"; }
+            public Integer getCGECIC() { return 1; }
+        };
+        Mockito.<List<shortCentroContrato>>doReturn(List.of(c))
+            .when(cgeRepository).findByENTAndEJEAndCGEDESContaining((Integer)1, "E1", "Desc");
 
         mockMvc.perform(get("/api/cge/search-centros-description/1/E1/Desc")
                 .accept(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$", hasSize(1)));
+            .andExpect(jsonPath("$", hasSize(1)))
+            .andExpect(jsonPath("$[0].cgecod").value("G1"));
     }
 
     @Test
@@ -511,7 +524,7 @@ public class CgeControllerTest {
 
     @Test
     void searchCentrosDesc_returnsBadRequestOnDataAccessException() throws Exception {
-        when(cgeRepository.findByENTAndEJEAndCGEDESContaining(anyInt(), anyString(), anyString()))
+        when(cgeRepository.findByENTAndEJEAndCGEDESContaining((Integer)1, "E1", "term"))
             .thenThrow(new DataAccessResourceFailureException("DB down"));
 
         mockMvc.perform(get("/api/cge/search-centros-description/1/E1/term"))

@@ -342,4 +342,208 @@ public class TerControllerTest {
             .andExpect(status().isBadRequest())
             .andExpect(content().string(containsString("Error")));
     }
+
+    @Test
+    void shouldReturn400OnDataAccessException_filterBloqueado() throws Exception {
+        when(terRepository.findByENTAndTERBLO(anyInt(), anyInt()))
+            .thenThrow(new DataAccessResourceFailureException("DB down"));
+
+        mockMvc.perform(get("/api/ter/filter/" + TEST_ENT))
+            .andDo(print())
+            .andExpect(status().isInternalServerError())
+            .andExpect(content().string(containsString("Error")));
+    }
+
+    @Test
+    void shouldReturn400OnDataAccessException_filterNoBloqueado() throws Exception {
+        when(terRepository.findByENTAndTERBLO(anyInt(), anyInt()))
+            .thenThrow(new DataAccessResourceFailureException("DB down"));
+
+        mockMvc.perform(get("/api/ter/filter-no/" + TEST_ENT))
+            .andDo(print())
+            .andExpect(status().isInternalServerError())
+            .andExpect(content().string(containsString("Error")));
+    }
+
+    @Test
+    void shouldReturn400OnDataAccessException_filterByTercod() throws Exception {
+        when(terRepository.findByENTAndTERCODAndTERBLO(anyInt(), anyInt(), anyInt()))
+            .thenThrow(new DataAccessResourceFailureException("DB down"));
+
+        mockMvc.perform(get("/api/ter/by-tercod-bloqueado/" + TEST_ENT + "/tercod/400"))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Error")));
+    }
+
+    @Test
+    void shouldReturn400OnDataAccessException_filterByTernif() throws Exception {
+        when(terRepository.findByENTAndTERNIFContainingAndTERBLO(anyInt(), anyString(), anyInt()))
+            .thenThrow(new DataAccessResourceFailureException("DB down"));
+
+        mockMvc.perform(get("/api/ter/by-ternif-bloquado/" + TEST_ENT + "/ternif/ABC"))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Error")));
+    }
+
+    @Test
+    void shouldReturn400OnDataAccessException_getByEntAndTercod() throws Exception {
+        when(terRepository.findAllByENTAndTERCOD(anyInt(), anyInt()))
+            .thenThrow(new DataAccessResourceFailureException("DB down"));
+
+        mockMvc.perform(get("/api/ter/by-ent/" + TEST_ENT + "/tercod/1200"))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Error")));
+    }
+
+    @Test
+    void shouldReturn400OnDataAccessException_getByEntAndTernif() throws Exception {
+        when(terRepository.findByENTAndTERNIFContaining(anyInt(), anyString()))
+            .thenThrow(new DataAccessResourceFailureException("DB down"));
+
+        mockMvc.perform(get("/api/ter/by-ent/" + TEST_ENT + "/ternif/LOOK"))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Error")));
+    }
+
+    @Test
+    void shouldReturn400OnDataAccessException_search() throws Exception {
+        when(terRepository.findAll(any(Specification.class)))
+            .thenThrow(new DataAccessResourceFailureException("DB down"));
+
+        mockMvc.perform(get("/api/ter/by-ternif-nom-ali-bloquado/" + TEST_ENT + "/search")
+                .param("term", "ABC"))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Error")));
+    }
+
+    @Test
+    void shouldReturn400OnDataAccessException_searchByTerm() throws Exception {
+        when(terRepository.findAll(any(Specification.class)))
+            .thenThrow(new DataAccessResourceFailureException("DB down"));
+
+        mockMvc.perform(get("/api/ter/by-nif-nom-ali-no-bloquado/" + TEST_ENT + "/search-by-term")
+                .param("term", "ABC"))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Error")));
+    }
+
+    @Test
+    void shouldReturn400OnDataAccessException_searchByNomOrAli() throws Exception {
+        when(terRepository.findAll(any(Specification.class)))
+            .thenThrow(new DataAccessResourceFailureException("DB down"));
+
+        mockMvc.perform(get("/api/ter/by-nom-ali-bloquado/" + TEST_ENT + "/searchByNomOrAli")
+                .param("term", "Tech"))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Error")));
+    }
+
+    @Test
+    void shouldReturn400OnDataAccessException_findMatchingNomOrAli() throws Exception {
+        when(terRepository.findAll(any(Specification.class)))
+            .thenThrow(new DataAccessResourceFailureException("DB down"));
+
+        mockMvc.perform(get("/api/ter/by-nom-ali-no-bloquado/" + TEST_ENT + "/findMatchingNomOrAli")
+                .param("term", "Tech"))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Error")));
+    }
+
+    @Test
+    void shouldReturn400OnDataAccessException_searchTodos() throws Exception {
+        when(terRepository.findAll(any(Specification.class)))
+            .thenThrow(new DataAccessResourceFailureException("DB down"));
+
+        mockMvc.perform(get("/api/ter/by-ent/" + TEST_ENT + "/search-todos")
+                .param("term", "ABC"))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Error")));
+    }
+
+    @Test
+    void shouldReturn400OnDataAccessException_updateFields() throws Exception {
+        when(terRepository.findById(any())).thenThrow(new DataAccessResourceFailureException("DB down"));
+
+        String json = "{ \"TERWEB\": \"web.com\", \"TEROBS\": \"obs\", \"TERBLO\": 1, \"TERACU\": 1 }";
+
+        mockMvc.perform(put("/api/ter/updateFields/" + TEST_ENT + "/1500")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+            .andDo(print())
+            .andExpect(status().isInternalServerError())
+            .andExpect(content().string(containsString("Error")));
+    }
+
+    @Test
+    void shouldReturn400OnSaveProv_nullDtos() throws Exception {
+        mockMvc.perform(post("/api/ter/save-proveedores/" + TEST_ENT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("null"))
+            .andDo(print())
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldReturn400OnSaveProv_missingNextTercod() throws Exception {
+        when(terRepository.findNextTercodForEnt(TEST_ENT)).thenReturn(null);
+
+        String json = "[{\"TERNOM\":\"New Provider\",\"TERNIF\":\"11111111A\",\"TERBLO\":0,\"TERACU\":0}]";
+
+        mockMvc.perform(post("/api/ter/save-proveedores/" + TEST_ENT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+            .andDo(print())
+            .andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    void shouldReturn400OnSaveProv_emptyTERNOM() throws Exception {
+        when(terRepository.findNextTercodForEnt(TEST_ENT)).thenReturn(1);
+
+        String json = "[{\"TERNOM\":\"\",\"TERNIF\":\"11111111A\",\"TERBLO\":0,\"TERACU\":0}]";
+
+        mockMvc.perform(post("/api/ter/save-proveedores/" + TEST_ENT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+            .andDo(print())
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldReturn400OnSaveProv_nullTERNIF() throws Exception {
+        when(terRepository.findNextTercodForEnt(TEST_ENT)).thenReturn(1);
+
+        String json = "[{\"TERNOM\":\"Provider\",\"TERNIF\":null,\"TERBLO\":0,\"TERACU\":0}]";
+
+        mockMvc.perform(post("/api/ter/save-proveedores/" + TEST_ENT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+            .andDo(print())
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldReturn400OnUpdateFields_onSaveException() throws Exception {
+        Ter existing = createTer(TEST_ENT, 1500, "Existing", "NIF1", 0);
+        when(terRepository.findById(any())).thenReturn(Optional.of(existing));
+        when(terRepository.save(any(Ter.class))).thenThrow(new DataAccessResourceFailureException("DB error"));
+
+        String json = "{ \"TERWEB\": \"newweb.com\", \"TEROBS\": \"newobs\", \"TERBLO\": 1, \"TERACU\": 1 }";
+
+        mockMvc.perform(put("/api/ter/updateFields/" + TEST_ENT + "/1500")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+            .andDo(print())
+            .andExpect(status().isInternalServerError())
+            .andExpect(content().string(containsString("Error")));
+    }
 }
