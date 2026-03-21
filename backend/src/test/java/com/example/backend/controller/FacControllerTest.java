@@ -5,11 +5,16 @@ import com.example.backend.dto.FacWithTerProjection;
 import com.example.backend.config.TestExceptionHandler;
 import com.example.backend.service.FacturaInsertService;
 import com.example.backend.sqlserver2.model.Fac;
+import com.example.backend.sqlserver2.model.FacId;
+import com.example.backend.sqlserver2.model.Fde;
+import com.example.backend.sqlserver2.model.Gbs;
+import com.example.backend.sqlserver2.model.GbsId;
 import com.example.backend.sqlserver2.model.Ter;
 import com.example.backend.sqlserver2.repository.FacRepository;
 import com.example.backend.sqlserver2.repository.TerRepository;
 import com.example.backend.sqlserver2.repository.FdeRepository;
 import com.example.backend.sqlserver2.repository.GbsRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -22,14 +27,17 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -40,6 +48,9 @@ public class FacControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @MockitoBean
     private FacRepository facRepository;
@@ -215,6 +226,343 @@ public class FacControllerTest {
                 .param("cgecod", "C1")
                 .param("estado", "TODAS")
                 .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Error :")));
+    }
+
+    @Test
+    void addFacturas_returnsOkWithMessages() throws Exception {
+        List<String> messages = List.of("Factura 1 insertada", "Factura 2 insertada");
+        when(facturaInsertService.insertFacturas(any())).thenReturn(messages);
+
+        List<Map<String, Object>> payload = List.of(new HashMap<>());
+
+        mockMvc.perform(post("/api/fac/add-facturas")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload)))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(2)));
+
+        verify(facturaInsertService).insertFacturas(any());
+    }
+
+    @Test
+    void addFacturas_returnsBadRequestOnException() throws Exception {
+        when(facturaInsertService.insertFacturas(any()))
+            .thenThrow(new RuntimeException("Insert failed"));
+
+        mockMvc.perform(post("/api/fac/add-facturas")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(List.of())))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Error :")));
+    }
+
+    @Test
+    void updateFactura_returnsNoContentOnSuccess() throws Exception {
+        FacId id = new FacId(1, "E1", 100);
+        Fac factura = new Fac();
+        when(facRepository.findById(id)).thenReturn(Optional.of(factura));
+
+        Map<String, Object> payload = Map.of(
+            "FACOBS", "Observacion",
+            "CONCTP", "TP",
+            "CONCPR", "PR",
+            "CONCCR", "CR",
+            "FACFRE", "2026-01-22T12:00:00",
+            "FACFPG", "FPG",
+            "FACOPG", "OPG",
+            "FACTPG", "TPG",
+            "FACOCT", 5
+        );
+
+        mockMvc.perform(patch("/api/fac/update-factura/1/E1/100")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload)))
+            .andDo(print())
+            .andExpect(status().isNoContent());
+
+        verify(facRepository).save(any(Fac.class));
+    }
+
+    @Test
+    void updateFactura_returnsNotFoundWhenMissing() throws Exception {
+        FacId id = new FacId(9, "X", 999);
+        when(facRepository.findById(id)).thenReturn(Optional.empty());
+
+        Map<String, Object> payload = Map.of(
+            "FACOBS", "Obs",
+            "CONCTP", "TP",
+            "CONCPR", "PR",
+            "CONCCR", "CR",
+            "FACFRE", "2026-01-22T12:00:00",
+            "FACFPG", "FPG",
+            "FACOPG", "OPG",
+            "FACTPG", "TPG",
+            "FACOCT", 0
+        );
+
+        mockMvc.perform(patch("/api/fac/update-factura/9/X/999")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload)))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(content().string("Sin resultado"));
+    }
+
+    @Test
+    void updateFactura_returnsNoContentWithMissingFields() throws Exception {
+        FacId id = new FacId(1, "E1", 100);
+        Fac factura = new Fac();
+        when(facRepository.findById(id)).thenReturn(Optional.of(factura));
+
+        Map<String, Object> payload = Map.of(
+            "FACOBS", "Obs",
+            "CONCTP", "TP"
+        );
+
+        mockMvc.perform(patch("/api/fac/update-factura/1/E1/100")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload)))
+            .andDo(print())
+            .andExpect(status().isNoContent());
+
+        verify(facRepository).save(any(Fac.class));
+    }
+
+    @Test
+    void updateFactura_returnsBadRequestOnException() throws Exception {
+        FacId id = new FacId(1, "E1", 100);
+        when(facRepository.findById(id)).thenThrow(new DataAccessResourceFailureException("DB error"));
+
+        Map<String, Object> payload = Map.of(
+            "FACOBS", "Obs",
+            "CONCTP", "TP",
+            "CONCPR", "PR",
+            "CONCCR", "CR",
+            "FACFRE", "2026-01-22T12:00:00",
+            "FACFPG", "FPG",
+            "FACOPG", "OPG",
+            "FACTPG", "TPG",
+            "FACOCT", 0
+        );
+
+        mockMvc.perform(patch("/api/fac/update-factura/1/E1/100")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Error :")));
+    }
+
+    @Test
+    void searchContabilizacion_returnsOkWithResults() throws Exception {
+        Fac f = new Fac();
+        f.setENT(1);
+        f.setEJE("E1");
+        f.setFACNUM(200);
+        when(facRepository.findAll(any(Specification.class))).thenReturn(List.of(f));
+
+        mockMvc.perform(get("/api/fac/contabilizacion/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("cgecod", "C1")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(1)));
+    }
+
+    @Test
+    void searchContabilizacion_returnsNotFoundWhenEmpty() throws Exception {
+        when(facRepository.findAll(any(Specification.class))).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/fac/contabilizacion/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("cgecod", "C1")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(content().string("Sin resultado"));
+    }
+
+    @Test
+    void searchContabilizacion_returnsBadRequestOnException() throws Exception {
+        when(facRepository.findAll(any(Specification.class)))
+            .thenThrow(new DataAccessResourceFailureException("DB error"));
+
+        mockMvc.perform(get("/api/fac/contabilizacion/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("cgecod", "C1")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Error :")));
+    }
+
+    @Test
+    void contabilizarFactura_returnsBadRequestWhenPayloadNull() throws Exception {
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("ENT", 1);
+        payload.put("EJE", null);
+        payload.put("FACNUM", 100);
+        payload.put("FACADO", "ADO");
+        payload.put("FACFCO", "2026-01-22T12:00:00");
+        payload.put("CGECOD", "C1");
+        payload.put("ESCONTRATO", false);
+
+        mockMvc.perform(patch("/api/fac/contabilizar-facturas")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Falta un dato obligatorio")));
+    }
+
+    @Test
+    void contabilizarFactura_returnsNotFoundWhenFacturaMissing() throws Exception {
+        when(facRepository.findById(any(FacId.class))).thenReturn(Optional.empty());
+
+        Map<String, Object> payload = Map.of(
+            "ENT", 1,
+            "EJE", "E1",
+            "FACNUM", 100,
+            "FACADO", "ADO",
+            "FACFCO", "2026-01-22T12:00:00",
+            "CGECOD", "C1",
+            "ESCONTRATO", false
+        );
+
+        mockMvc.perform(patch("/api/fac/contabilizar-facturas")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload)))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(content().string(containsString("Factura no encontrada")));
+    }
+
+    @Test
+    void contabilizarFactura_returnsBadRequestWhenBolsaMissing() throws Exception {
+        FacId facId = new FacId(1, "E1", 100);
+        Fac factura = new Fac();
+        when(facRepository.findById(facId)).thenReturn(Optional.of(factura));
+
+        Fde fde = new Fde();
+        fde.setFDEORG("ORG");
+        fde.setFDEFUN("FUN");
+        fde.setFDEECO("ECO");
+        when(fdeRepository.findByENTAndEJEAndFACNUM(1, "E1", 100)).thenReturn(List.of(fde));
+        when(gbsRepository.findByENTAndEJEAndCGECODAndGBSORGAndGBSFUNAndGBSECO(1, "E1", "C1", "ORG", "FUN", "ECO"))
+            .thenReturn(Optional.empty());
+
+        Map<String, Object> payload = Map.of(
+            "ENT", 1,
+            "EJE", "E1",
+            "FACNUM", 100,
+            "FACADO", "ADO",
+            "FACFCO", "2026-01-22T12:00:00",
+            "CGECOD", "C1",
+            "ESCONTRATO", false
+        );
+
+        mockMvc.perform(patch("/api/fac/contabilizar-facturas")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("No existe bolsa para")));
+    }
+
+    @Test
+    void contabilizarFactura_returnsNoContentOnSuccessWithContract() throws Exception {
+        FacId facId = new FacId(1, "E1", 100);
+        Fac factura = new Fac();
+        when(facRepository.findById(facId)).thenReturn(Optional.of(factura));
+
+        Map<String, Object> payload = Map.of(
+            "ENT", 1,
+            "EJE", "E1",
+            "FACNUM", 100,
+            "FACADO", "ADO",
+            "FACFCO", "2026-01-22T12:00:00",
+            "CGECOD", "C1",
+            "ESCONTRATO", true
+        );
+
+        mockMvc.perform(patch("/api/fac/contabilizar-facturas")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload)))
+            .andDo(print())
+            .andExpect(status().isNoContent());
+
+        verify(facRepository).save(any(Fac.class));
+        verify(fdeRepository, never()).findByENTAndEJEAndFACNUM(anyInt(), anyString(), anyInt());
+    }
+
+    @Test
+    void contabilizarFactura_returnsNoContentOnSuccessWithBolsas() throws Exception {
+        FacId facId = new FacId(1, "E1", 100);
+        Fac factura = new Fac();
+        when(facRepository.findById(facId)).thenReturn(Optional.of(factura));
+
+        Fde fde = new Fde();
+        fde.setFDEORG("ORG");
+        fde.setFDEFUN("FUN");
+        fde.setFDEECO("ECO");
+        fde.setFDEIMP(50.0);
+        fde.setFDEDIF(10.0);
+        when(fdeRepository.findByENTAndEJEAndFACNUM(1, "E1", 100)).thenReturn(List.of(fde));
+
+        GbsId gbsId = new GbsId(1, "E1", "C1", "REF");
+        Gbs bolsa = new Gbs();
+        bolsa.setGBSIUS(100.0);
+        bolsa.setGBSIUT(100.0);
+        when(gbsRepository.findByENTAndEJEAndCGECODAndGBSORGAndGBSFUNAndGBSECO(1, "E1", "C1", "ORG", "FUN", "ECO"))
+            .thenReturn(Optional.of(bolsa));
+
+        Map<String, Object> payload = Map.of(
+            "ENT", 1,
+            "EJE", "E1",
+            "FACNUM", 100,
+            "FACADO", "ADO",
+            "FACFCO", "2026-01-22T12:00:00",
+            "CGECOD", "C1",
+            "ESCONTRATO", false
+        );
+
+        mockMvc.perform(patch("/api/fac/contabilizar-facturas")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload)))
+            .andDo(print())
+            .andExpect(status().isNoContent());
+
+        verify(facRepository).save(any(Fac.class));
+        verify(gbsRepository).save(any(Gbs.class));
+    }
+
+    @Test
+    void contabilizarFactura_returnsBadRequestOnException() throws Exception {
+        when(facRepository.findById(any(FacId.class)))
+            .thenThrow(new DataAccessResourceFailureException("DB error"));
+
+        Map<String, Object> payload = Map.of(
+            "ENT", 1,
+            "EJE", "E1",
+            "FACNUM", 100,
+            "FACADO", "ADO",
+            "FACFCO", "2026-01-22T12:00:00",
+            "CGECOD", "C1",
+            "ESCONTRATO", false
+        );
+
+        mockMvc.perform(patch("/api/fac/contabilizar-facturas")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload)))
             .andDo(print())
             .andExpect(status().isBadRequest())
             .andExpect(content().string(containsString("Error :")));

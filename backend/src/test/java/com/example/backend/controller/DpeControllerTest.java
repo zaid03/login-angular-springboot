@@ -242,6 +242,63 @@ public class DpeControllerTest {
     }
 
     @Test
+    void deleteService_returnsNoContentWhenExists() throws Exception {
+        when(dpeRepository.existsById(any())).thenReturn(true);
+
+        mockMvc.perform(delete("/api/depe/delete-service-persona/1/E1/D1/U1"))
+            .andDo(print())
+            .andExpect(status().isNoContent());
+
+        verify(dpeRepository).deleteById(any());
+    }
+
+    @Test
+    void deleteService_returnsNotFoundWhenMissing() throws Exception {
+        when(dpeRepository.existsById(any())).thenReturn(false);
+
+        mockMvc.perform(delete("/api/depe/delete-service-persona/1/E1/D1/U1"))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(content().string("Sin resultado"));
+    }
+
+    @Test
+    void fetchPersonasServicios_returnsPagedResults() throws Exception {
+        when(dpeRepository.findByENTAndEJE(anyInt(), anyString(), any())).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/1/E1/0")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+
+        verify(dpeRepository).findByENTAndEJE(anyInt(), anyString(), any());
+    }
+
+    @Test
+    void fetchPersonasServicios_withNullResultsReturnsNotFound() throws Exception {
+        when(dpeRepository.findByENTAndEJE(anyInt(), anyString(), any())).thenReturn(null);
+
+        mockMvc.perform(get("/api/depe/personas-servicios/1/E1/0")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(content().string("Sin resultado"));
+    }
+
+    @Test
+    void searchPersonasServicios_returnsNotFoundWhenEmpty() throws Exception {
+        when(dpeRepository.findByENTAndEJE(anyInt(), anyString())).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(content().string("Sin resultado"));
+    }
+
+    @Test
     void endpoints_return500OnDataAccessException() throws Exception {
         when(dpeRepository.findByENTAndEJEAndDEPCOD(anyInt(), anyString(), anyString()))
             .thenThrow(new DataAccessResourceFailureException("boom"));

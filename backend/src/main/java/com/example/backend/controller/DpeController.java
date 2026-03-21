@@ -283,7 +283,7 @@ public class DpeController {
             case "almacen" -> "depalm";
             case "comprador" -> "depcom";
             case "contabilidad" -> "depint";
-            case PETICIONARIO -> PETICIONARIO;
+            case "peticionario" -> PETICIONARIO;
             default -> null;
         };
     }
