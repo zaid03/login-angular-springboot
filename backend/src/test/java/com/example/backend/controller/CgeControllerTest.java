@@ -30,8 +30,7 @@ import java.util.Map;
 import org.mockito.Mockito;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -235,6 +234,25 @@ public class CgeControllerTest {
     }
 
     @Test
+    void updateCentro_returnsBadRequestOnSaveException() throws Exception {
+        Cge existing = new Cge();
+        existing.setCGECOD("G1");
+        when(cgeRepository.findById(new com.example.backend.sqlserver2.model.CgeId(1, "E1", "G1"))).thenReturn(Optional.of(existing));
+        when(cgeRepository.save(Mockito.<Cge>any())).thenThrow(new DataAccessResourceFailureException("DB error"));
+
+        Map<String, Object> payload = Map.of(
+            "cgedes", "A", "cgeorg", "B", "cgefun", "C", "cgedat", "D", "cgecic", 1
+        );
+
+        mockMvc.perform(patch("/api/cge/update-cge/1/E1/G1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Error :")));
+    }
+
+    @Test
     void addCentroGestor_returnsCreatedOnSuccess() throws Exception {
         Map<String, Object> payload = Map.of(
             "ent", 1, "eje", "E1", "cgecod", "G1", "cgedes", "Desc",
@@ -249,6 +267,25 @@ public class CgeControllerTest {
             .andExpect(status().isCreated());
 
         verify(cgeRepository).save(Mockito.<Cge>any());
+    }
+
+    @Test
+    void addCentroGestor_returnsConflictWhenExists() throws Exception {
+        Map<String, Object> payload = Map.of(
+            "ent", 1, "eje", "E1", "cgecod", "G1", "cgedes", "Desc",
+            "cgeorg", "Org", "cgefun", "Fun", "cgedat", "Dat", "cgecic", 1
+        );
+        Cge existing = new Cge();
+        doReturn(List.of(existing)).when(cgeRepository).findByENTAndEJEAndCGECOD((Integer)1, "E1", "G1");
+
+        mockMvc.perform(post("/api/cge/Insert-familia")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload)))
+            .andDo(print())
+            .andExpect(status().isConflict())
+            .andExpect(content().string("Sin resultado"));
+
+        verify(cgeRepository, never()).save(Mockito.<Cge>any());
     }
 
     @Test
@@ -332,6 +369,20 @@ public class CgeControllerTest {
     }
 
     @Test
+    void deleteCentroGestor_returnsBadRequestOnDataAccessException() throws Exception {
+        when(gbsRepository.countByENTAndEJEAndCGECOD(1, "E1", "G1")).thenReturn(0L);
+        when(depRepository.countByENTAndEJEAndCGECOD(1, "E1", "G1")).thenReturn(0L);
+        when(cgeRepository.existsById(new com.example.backend.sqlserver2.model.CgeId(1, "E1", "G1"))).thenReturn(true);
+        doThrow(new DataAccessResourceFailureException("DB down"))
+            .when(cgeRepository).deleteById(new com.example.backend.sqlserver2.model.CgeId(1, "E1", "G1"));
+
+        mockMvc.perform(delete("/api/cge/delete-centro-gestor/1/E1/G1"))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Error :")));
+    }
+
+    @Test
     void fetchDescriptionForCge_returnsDescription() throws Exception {
         Cge c = new Cge(); c.setCGEDES("MyDesc");
         when(cgeRepository.findFirstByENTAndEJEAndCGECOD(1, "E1", "G1")).thenReturn(Optional.of(c));
@@ -394,6 +445,76 @@ public class CgeControllerTest {
             .thenThrow(new DataAccessResourceFailureException("DB down"));
 
         mockMvc.perform(get("/api/cge/search-centros/1/E1/term"))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Error :")));
+    }
+
+    @Test
+    void searchCentrosCodigo_returnsResults() throws Exception {
+        shortCentroContrato c = Mockito.mock(shortCentroContrato.class);
+        when(cgeRepository.findByENTAndEJEAndCGECOD((Integer)1, "E1", "G1"))
+            .thenReturn(List.of(c));
+
+        mockMvc.perform(get("/api/cge/search-centros-codigo/1/E1/G1")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(1)));
+    }
+
+    @Test
+    void searchCentrosCodigo_returnsNotFoundWhenEmpty() throws Exception {
+        when(cgeRepository.findByENTAndEJEAndCGECOD((Integer)1, "E1", "G1"))
+            .thenReturn(List.of());
+
+        mockMvc.perform(get("/api/cge/search-centros-codigo/1/E1/G1"))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(content().string("Sin resultado"));
+    }
+
+    @Test
+    void searchCentrosCodigo_returnsBadRequestOnDataAccessException() throws Exception {
+        when(cgeRepository.findByENTAndEJEAndCGECOD(anyInt(), anyString(), anyString()))
+            .thenThrow(new DataAccessResourceFailureException("DB down"));
+
+        mockMvc.perform(get("/api/cge/search-centros-codigo/1/E1/G1"))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Error :")));
+    }
+
+    @Test
+    void searchCentrosDesc_returnsResults() throws Exception {
+        shortCentroContrato c = Mockito.mock(shortCentroContrato.class);
+        when(cgeRepository.findByENTAndEJEAndCGEDESContaining((Integer)1, "E1", "Desc"))
+            .thenReturn(List.of(c));
+
+        mockMvc.perform(get("/api/cge/search-centros-description/1/E1/Desc")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(1)));
+    }
+
+    @Test
+    void searchCentrosDesc_returnsNotFoundWhenEmpty() throws Exception {
+        when(cgeRepository.findByENTAndEJEAndCGEDESContaining((Integer)1, "E1", "X"))
+            .thenReturn(List.of());
+
+        mockMvc.perform(get("/api/cge/search-centros-description/1/E1/X"))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(content().string("Sin resultado"));
+    }
+
+    @Test
+    void searchCentrosDesc_returnsBadRequestOnDataAccessException() throws Exception {
+        when(cgeRepository.findByENTAndEJEAndCGEDESContaining(anyInt(), anyString(), anyString()))
+            .thenThrow(new DataAccessResourceFailureException("DB down"));
+
+        mockMvc.perform(get("/api/cge/search-centros-description/1/E1/term"))
             .andDo(print())
             .andExpect(status().isBadRequest())
             .andExpect(content().string(containsString("Error :")));

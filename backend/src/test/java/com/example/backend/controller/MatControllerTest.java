@@ -101,4 +101,70 @@ public class MatControllerTest {
             .andExpect(status().isBadRequest())
             .andExpect(content().string(containsString("Error:")));
     }
+
+    @Test
+    void shouldFilterOutMatWithNullMag() throws Exception {
+        Mag mag = new Mag();
+        mag.setMAGCOD(1);
+        mag.setDEPCOD("D1");
+        
+        Mta mta1 = new Mta();
+        mta1.setMTACOD(11);
+        mta1.setMTADES("Almacen A");
+
+        Mta mta2 = new Mta();
+        mta2.setMTACOD(22);
+        mta2.setMTADES("Almacen B");
+
+        Mat matWithMag = new Mat();
+        matWithMag.setMag(mag);
+        matWithMag.setMta(mta1);
+
+        Mat matWithoutMag = new Mat();
+        matWithoutMag.setMag(null);
+        matWithoutMag.setMta(mta2);
+
+        when(magRepository.findByENTAndDEPCOD(1, "D1")).thenReturn(Optional.of(mag));
+        when(matRepository.findByENTAndMAGCOD(1, 1)).thenReturn(List.of(matWithMag, matWithoutMag));
+        when(mtaRepository.findFirstByENTAndMTACOD(1, 11)).thenReturn(Optional.of(mta1));
+        when(mtaRepository.findFirstByENTAndMTACOD(1, 22)).thenReturn(Optional.of(mta2));
+
+        mockMvc.perform(get("/api/mat/fetch-almacenajes/1/D1")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(2)));
+    }
+
+    @Test
+    void shouldReturnBadRequestOnMatRepositoryException() throws Exception {
+        Mag mag = new Mag();
+        mag.setMAGCOD(1);
+        mag.setDEPCOD("D1");
+
+        when(magRepository.findByENTAndDEPCOD(1, "D1")).thenReturn(Optional.of(mag));
+        when(matRepository.findByENTAndMAGCOD(1, 1)).thenThrow(new DataAccessResourceFailureException("DB connection lost"));
+
+        mockMvc.perform(get("/api/mat/fetch-almacenajes/1/D1")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Error:")));
+    }
+
+    @Test
+    void shouldReturnNotFoundWhenMatRecordIsEmpty() throws Exception {
+        Mag mag = new Mag();
+        mag.setMAGCOD(1);
+        mag.setDEPCOD("D1");
+
+        when(magRepository.findByENTAndDEPCOD(1, "D1")).thenReturn(Optional.of(mag));
+        when(matRepository.findByENTAndMAGCOD(1, 1)).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/mat/fetch-almacenajes/1/D1")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(content().string("Sin resultado"));
+    }
 }
