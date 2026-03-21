@@ -2,6 +2,7 @@ package com.example.backend.controller;
 
 import com.example.backend.config.TestSecurityConfig;
 import com.example.backend.config.TestExceptionHandler;
+import com.example.backend.dto.ArtAsuContratoProjection;
 import com.example.backend.sqlserver2.model.Art;
 import com.example.backend.sqlserver2.repository.AfaRepository;
 import com.example.backend.sqlserver2.repository.ArtRepository;
@@ -158,5 +159,76 @@ public class ArtControllerTest {
         mockMvc.perform(delete("/api/art/delete-sub-familia/1/AF/ASU"))
             .andDo(print())
             .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void getArticulosContratos_returnsNotFoundWhenEmpty() throws Exception {
+        when(artRepository.findDistinctByENTAndAsuASUECO(1, "C1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/art/art-cont/1/C1"))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(content().string("Sin resultado"));
+
+        verify(artRepository).findDistinctByENTAndAsuASUECO(1, "C1");
+    }
+
+    @Test
+    void getArticulosContratos_returnsBadRequestOnException() throws Exception {
+        when(artRepository.findDistinctByENTAndAsuASUECO(anyInt(), anyString()))
+            .thenThrow(new DataAccessResourceFailureException("DB error"));
+
+        mockMvc.perform(get("/api/art/art-cont/1/C1"))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Error :")));
+    }
+
+    @Test
+    void searchArticulosContratosNum_returnsNotFoundWhenEmpty() throws Exception {
+        when(artRepository.findDistinctByENTAndAsuASUECOAndAFACODOrENTAndAsuASUECOAndASUCOD(1, "C1", "AF", 1, "C1", "AF"))
+            .thenReturn(List.of());
+
+        mockMvc.perform(get("/api/art/search-art-cont/1/C1/AF"))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(content().string("Sin resultado"));
+
+        verify(artRepository).findDistinctByENTAndAsuASUECOAndAFACODOrENTAndAsuASUECOAndASUCOD(1, "C1", "AF", 1, "C1", "AF");
+    }
+
+    @Test
+    void searchArticulosContratosNum_returnsBadRequestOnException() throws Exception {
+        when(artRepository.findDistinctByENTAndAsuASUECOAndAFACODOrENTAndAsuASUECOAndASUCOD(anyInt(), anyString(), anyString(), anyInt(), anyString(), anyString()))
+            .thenThrow(new DataAccessResourceFailureException("DB error"));
+
+        mockMvc.perform(get("/api/art/search-art-cont/1/C1/AF"))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Error :")));
+    }
+
+    @Test
+    void searchArticulosContratosDes_returnsNotFoundWhenEmpty() throws Exception {
+        when(artRepository.findDistinctByENTAndAsuASUECOAndARTDESContaining(1, "C1", "bolt"))
+            .thenReturn(List.of());
+
+        mockMvc.perform(get("/api/art/search-art-cont-des/1/C1/bolt"))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(content().string("Sin resultado"));
+
+        verify(artRepository).findDistinctByENTAndAsuASUECOAndARTDESContaining(1, "C1", "bolt");
+    }
+
+    @Test
+    void searchArticulosContratosDes_returnsBadRequestOnException() throws Exception {
+        when(artRepository.findDistinctByENTAndAsuASUECOAndARTDESContaining(anyInt(), anyString(), anyString()))
+            .thenThrow(new DataAccessResourceFailureException("DB error"));
+
+        mockMvc.perform(get("/api/art/search-art-cont-des/1/C1/bolt"))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Error :")));
     }
 }
