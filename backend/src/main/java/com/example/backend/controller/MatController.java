@@ -17,6 +17,8 @@ import org.springframework.dao.DataAccessException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.HashSet;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/mat")
@@ -68,7 +70,10 @@ public class MatController {
                 almacen.ifPresent(almacenes::add);
             }
 
+            // Deduplicate by MTACOD to return only distinct almacenes
+            Set<Integer> seenMtaCods = new HashSet<>();
             List<MtaDto> mtaDtos = almacenes.stream()
+                .filter(mta -> seenMtaCods.add(mta.getMTACOD()))
                 .map(mta -> new MtaDto(mta.getMTACOD(), mta.getMTADES())) 
                 .toList();
 
