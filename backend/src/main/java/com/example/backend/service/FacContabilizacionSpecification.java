@@ -18,7 +18,6 @@ public class FacContabilizacionSpecification {
     private static final String FACDOC = "FACDOC";
 
     private FacContabilizacionSpecification() {
-        // Hide implicit public constructor
     }
 
     public static class SearchCriteria {

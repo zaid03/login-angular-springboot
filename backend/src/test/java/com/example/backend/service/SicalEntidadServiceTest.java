@@ -32,7 +32,6 @@ public class SicalEntidadServiceTest {
         ReflectionTestUtils.setField(service, "eje", "E1");
     }
 
-    // Service configuration tests
     @Test
     void service_configuresAllRequiredProperties() {
         String wsUrl = (String) ReflectionTestUtils.getField(service, "wsUrl");
@@ -81,30 +80,24 @@ public class SicalEntidadServiceTest {
         assertFalse(orgCode.isEmpty());
     }
 
-    // getEntidades tests
     @Test
     void getEntidades_throwsExceptionWithoutHttpMocking() {
-        // This test verifies the method is callable even without full HTTP mocking
         assertThrows(SmlProcessingException.class, () -> service.getEntidades());
     }
 
     @Test
     void getEntidades_buildsProperSoapEnvelope() {
-        // Verify that getEntidades attempts to build SOAP structure
         assertDoesNotThrow(() -> {
             try {
                 service.getEntidades();
             } catch (SmlProcessingException e) {
-                // Expected - verifies method tries to execute
                 assertNotNull(e.getMessage());
             }
         });
     }
 
-    // XML unescaping tests
     @Test
     void unescapeXml_handlesLessThanEntity() {
-        // Test &lt; entity
         String escaped = "test &lt; data";
         String result = callUnescapeXml(escaped);
         assertEquals("test < data", result);
@@ -112,7 +105,6 @@ public class SicalEntidadServiceTest {
 
     @Test
     void unescapeXml_handlesGreaterThanEntity() {
-        // Test &gt; entity
         String escaped = "test &gt; data";
         String result = callUnescapeXml(escaped);
         assertEquals("test > data", result);
@@ -120,7 +112,6 @@ public class SicalEntidadServiceTest {
 
     @Test
     void unescapeXml_handlesAmpersandEntity() {
-        // Test &amp; entity
         String escaped = "test &amp; data";
         String result = callUnescapeXml(escaped);
         assertEquals("test & data", result);
@@ -128,7 +119,6 @@ public class SicalEntidadServiceTest {
 
     @Test
     void unescapeXml_handlesQuoteEntity() {
-        // Test &quot; entity
         String escaped = "test &quot;quoted&quot; text";
         String result = callUnescapeXml(escaped);
         assertEquals("test \"quoted\" text", result);
@@ -136,7 +126,6 @@ public class SicalEntidadServiceTest {
 
     @Test
     void unescapeXml_handlesApostropheEntity() {
-        // Test &apos; entity
         String escaped = "O&apos;Brien";
         String result = callUnescapeXml(escaped);
         assertEquals("O'Brien", result);
@@ -144,7 +133,6 @@ public class SicalEntidadServiceTest {
 
     @Test
     void unescapeXml_handlesMultipleEntities() {
-        // Test multiple entities
         String escaped = "&lt;test&gt; &quot;data&quot; &apos;ok&apos;";
         String result = callUnescapeXml(escaped);
         assertEquals("<test> \"data\" 'ok'", result);
@@ -169,7 +157,6 @@ public class SicalEntidadServiceTest {
         assertEquals("plain text without entities", result);
     }
 
-    // Base64 decoding tests
     @Test
     void decodeBase64Safe_withValidBase64() {
         String encoded = Base64.getEncoder().encodeToString("TestData".getBytes(StandardCharsets.UTF_8));
@@ -216,14 +203,11 @@ public class SicalEntidadServiceTest {
     void decodeBase64Safe_withMalformedBase64_returnsInputAsFallback() {
         String malformed = "aGVsbG8=extra";
         String result = callDecodeBase64Safe(malformed);
-        // Should return the input as fallback when decoding fails
         assertNotNull(result);
     }
 
-    // Entidad parsing tests
     @Test
     void service_parseEntidadWithCodeAndNombre() {
-        // Test parsing entidad from detalle string with code and nombre
         String codigo = "E001";
         String nombre = "Entidad Prueba";
         String codigoB64 = Base64.getEncoder().encodeToString(codigo.getBytes(StandardCharsets.UTF_8));
@@ -239,7 +223,6 @@ public class SicalEntidadServiceTest {
 
     @Test
     void service_parseEntidadWithOnlyCode() {
-        // Test parsing entidad with only code
         String codigo = "E002";
         String codigoB64 = Base64.getEncoder().encodeToString(codigo.getBytes(StandardCharsets.UTF_8));
         String detalle = codigoB64 + "@";
@@ -253,7 +236,6 @@ public class SicalEntidadServiceTest {
 
     @Test
     void service_parseEntidadWithEmptyCode_returnsNull() {
-        // Empty code should return null
         String detalle = "@nombre";
         Entidad result = callParseEntidadFromDetalle(detalle);
         assertNull(result);
@@ -261,7 +243,6 @@ public class SicalEntidadServiceTest {
 
     @Test
     void service_parseEntidadHandlesNonBase64Values() {
-        // Test that service handles non-base64 detalle values
         String detalle = "plain_codigo@plain_nombre";
         Entidad result = callParseEntidadFromDetalle(detalle);
 
@@ -284,7 +265,6 @@ public class SicalEntidadServiceTest {
         assertEquals(nombre, result.getNombre());
     }
 
-    // Error handling tests
     @Test
     void service_handlesMissingResponse() {
         assertThrows(SmlProcessingException.class, () -> service.getEntidades());
@@ -292,11 +272,9 @@ public class SicalEntidadServiceTest {
 
     @Test
     void service_handlesNullXmlResponse() {
-        // Service should throw SmlProcessingException when response is null
         assertThrows(SmlProcessingException.class, () -> service.getEntidades());
     }
 
-    // SOAP envelope building tests
     @Test
     void service_buildsSoapEnvelopeWithCorrectStructure() {
         assertDoesNotThrow(() -> {
@@ -311,7 +289,6 @@ public class SicalEntidadServiceTest {
 
     @Test
     void service_includesRequiredHeaders() {
-        // Service should attempt to add Content-Type and SOAPAction headers
         assertDoesNotThrow(() -> {
             try {
                 service.getEntidades();
@@ -321,21 +298,17 @@ public class SicalEntidadServiceTest {
         });
     }
 
-    // XML security configuration tests
     @Test
     void service_configuresSecureXmlParsing() {
-        // Verify that service configures XXE protection
         assertDoesNotThrow(() -> {
             try {
                 service.getEntidades();
             } catch (SmlProcessingException e) {
-                // Expected; just verifying parser configuration doesn't cause errors
                 assertNotNull(e);
             }
         });
     }
 
-    // Service initialization test
     @Test
     void service_initializesSuccessfully() {
         assertNotNull(service);
@@ -345,7 +318,6 @@ public class SicalEntidadServiceTest {
         assertNotNull(ReflectionTestUtils.getField(service, "eje"));
     }
 
-    // Helper methods to invoke private methods via reflection
     private String callUnescapeXml(String input) {
         try {
             java.lang.reflect.Method method = SicalEntidadService.class.getDeclaredMethod("unescapeXml", String.class);

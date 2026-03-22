@@ -127,7 +127,6 @@ public class FacWithTerDto {
         }
     }
 
-    // Getters
     public Integer getEnt() { return ent; }
     public String getEje() { return eje; }
     public Integer getFacnum() { return facnum; }
@@ -157,7 +156,6 @@ public class FacWithTerDto {
     public String getTernom() { return ternom; }
     public String getTernif() { return ternif; }
 
-    // Setters
     public void setEnt(Integer ent) { this.ent = ent; }
     public void setEje(String eje) { this.eje = eje; }
     public void setFacnum(Integer facnum) { this.facnum = facnum; }

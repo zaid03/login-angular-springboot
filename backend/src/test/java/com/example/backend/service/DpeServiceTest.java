@@ -32,8 +32,6 @@ class DpeServiceTest {
     void setUp() {
         service = new DpeService(dpeRepository);
     }
-
-    // ==================== Success Path Tests ====================
     
     @Test
     void savePersonaServices_withValidSingleService_succeeds() {
@@ -66,8 +64,8 @@ class DpeServiceTest {
         PersonaServiceRequest req = createRequest(1, "2024", "PER001", "DEP001", "DEP002");
         
         when(dpeRepository.existsById(any(DpeId.class)))
-            .thenReturn(true)   // First service exists
-            .thenReturn(false);  // Second service doesn't exist
+            .thenReturn(true)   
+            .thenReturn(false);  
         when(dpeRepository.save(any(Dpe.class))).thenAnswer(i -> i.getArgument(0));
         
         service.savePersonaServices(req);
@@ -106,8 +104,6 @@ class DpeServiceTest {
         verify(dpeRepository, times(3)).existsById(any(DpeId.class));
         verify(dpeRepository, never()).save(any(Dpe.class));
     }
-
-    // ==================== Empty/Null Handling Tests ====================
     
     @Test
     void savePersonaServices_withNullServicesList_returnsWithoutProcessing() {
@@ -136,18 +132,16 @@ class DpeServiceTest {
         verify(dpeRepository, never()).existsById(any(DpeId.class));
         verify(dpeRepository, never()).save(any(Dpe.class));
     }
-
-    // ==================== Mixed Scenarios ====================
     
     @Test
     void savePersonaServices_withMixedDuplicateAndNew_savesOnlyNew() {
         PersonaServiceRequest req = createRequest(1, "2024", "PER001", "EXIST", "NEW", "EXIST2", "NEW2");
         
         when(dpeRepository.existsById(any(DpeId.class)))
-            .thenReturn(true)   // EXIST
-            .thenReturn(false)  // NEW
-            .thenReturn(true)   // EXIST2
-            .thenReturn(false); // NEW2
+            .thenReturn(true)   
+            .thenReturn(false)  
+            .thenReturn(true)   
+            .thenReturn(false); 
         when(dpeRepository.save(any(Dpe.class))).thenAnswer(i -> i.getArgument(0));
         
         service.savePersonaServices(req);
@@ -264,12 +258,12 @@ class DpeServiceTest {
         PersonaServiceRequest req = createRequest(1, "2024", "PER001", "S1", "S2", "S3", "S4", "S5", "S6");
         
         when(dpeRepository.existsById(any(DpeId.class)))
-            .thenReturn(false) // S1 new
-            .thenReturn(true)  // S2 exists
-            .thenReturn(false) // S3 new
-            .thenReturn(true)  // S4 exists
-            .thenReturn(false) // S5 new
-            .thenReturn(true); // S6 exists
+            .thenReturn(false) 
+            .thenReturn(true)  
+            .thenReturn(false) 
+            .thenReturn(true)  
+            .thenReturn(false) 
+            .thenReturn(true); 
         when(dpeRepository.save(any(Dpe.class))).thenAnswer(i -> i.getArgument(0));
         
         service.savePersonaServices(req);
@@ -284,8 +278,6 @@ class DpeServiceTest {
         assertEquals("S3", savedDpes.get(1).getDEPCOD());
         assertEquals("S5", savedDpes.get(2).getDEPCOD());
     }
-
-    // ==================== Helper Methods ====================
     
     private PersonaServiceRequest createRequest(Integer ent, String eje, String percod, String... services) {
         PersonaServiceRequest req = new PersonaServiceRequest();

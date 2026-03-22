@@ -98,7 +98,6 @@ public class AlbControllerTest {
 
     @Test
     void fetchAlbaranesByServices_returnsResults() throws Exception {
-        // Return empty since albFacturaDto is interface/projection - mocks can't serialize
         when(albRepository.findAlbFactura(anyInt(), anyInt(), anyInt(), anyString(), anyString()))
             .thenReturn(List.of());
 
@@ -117,10 +116,6 @@ public class AlbControllerTest {
             .andDo(print())
             .andExpect(status().isNotFound());
     }
-
-    // NOTE: Date-based search endpoints skipped - @DateTimeFormat doesn't work with @PathVariable.
-    // Controller endpoints searchAlbaranesByDesde() and searchAlbaranesByHasta() are broken by design.
-    // They should use @RequestParam for date parameters instead of @PathVariable.
 
     @Test
     void addingAlbaranes_returnsNoContentOnSuccess() throws Exception {

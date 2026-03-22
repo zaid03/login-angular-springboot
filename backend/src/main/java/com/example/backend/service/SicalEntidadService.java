@@ -40,7 +40,6 @@ public class SicalEntidadService {
         try {
             CryptoSical.SecurityFields sec = CryptoSical.calculateSecurityFields(publicKey);
 
-        // Build SML with required encodings: alphanumeric -> Base64, password -> SHA1+Base64
         StringBuilder sb = new StringBuilder();
         sb.append("<e>");
         sb.append("<ope><apl>SNP</apl><tobj>ListaEntidades</tobj><cmd>LST</cmd><ver>2.0</ver></ope>");
@@ -84,7 +83,6 @@ public class SicalEntidadService {
             throw new SmlProcessingException("Empty response from SICAL");
         }
 
-        // Extract inner servicioReturn content (escaped SML) and unescape it
         String inner = null;
         int start = responseXml.indexOf("<servicioReturn");
         if (start >= 0) {
@@ -220,7 +218,6 @@ public class SicalEntidadService {
             byte[] decoded = Base64.getDecoder().decode(b64);
             return new String(decoded, StandardCharsets.UTF_8);
         } catch (IllegalArgumentException e) {
-            // not base64 or malformed, return raw
             return b64;
         }
     }

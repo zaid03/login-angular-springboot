@@ -30,8 +30,6 @@ class RpcSoapServiceTest {
     void setUp() {
         service = new RpcSoapService();
     }
-
-    // ==================== Success Path Tests ====================
     
     @Test
     void callRpc_withValidPayload_returnsResponse() {
@@ -154,8 +152,6 @@ class RpcSoapServiceTest {
             assertTrue(mocked.constructed().size() >= 1);
         }
     }
-
-    // ==================== Error Handling Tests ====================
     
     @Test
     void callRpc_withRestTemplateException_setsError() {
@@ -196,8 +192,6 @@ class RpcSoapServiceTest {
             assertEquals("Network timeout", result.getError());
         }
     }
-
-    // ==================== SOAP Envelope Structure Tests ====================
     
     @Test
     void callRpc_containsValidSoapEnvelope() {
@@ -256,8 +250,6 @@ class RpcSoapServiceTest {
             assertTrue(request.contains("<Age>30</Age>"));
         }
     }
-
-    // ==================== Helper Method Tests ====================
     
     @Test
     void buildXmlFromParams_createsCorrectStructure() {
@@ -309,8 +301,6 @@ class RpcSoapServiceTest {
         assertTrue(xml.contains("<B>ValueB</B>"));
         assertTrue(xml.contains("<C>ValueC</C>"));
     }
-
-    // ==================== Integration Tests ====================
     
     @Test
     void callRpc_endToEndWithComplexPayload_succeeds() {

@@ -5,23 +5,18 @@ import org.springframework.data.jpa.domain.Specification;
 import jakarta.persistence.criteria.*;
 
 public class TerSearchOptions {
-    
-    // Field name constants
     private static final String ENT = "ENT";
     private static final String TERBLO = "TERBLO";
     private static final String TERNIF = "TERNIF";
     private static final String TERNOM = "TERNOM";
     private static final String TERALI = "TERALI";
     
-    // Fixed values
     private static final Integer BLOQUEADO = 1;
     
-    // Search predicate types
-    private static final int SEARCH_ALL = 1;      // TERNIF, TERNOM, TERALI
-    private static final int SEARCH_NOM_ALI = 2;  // TERNOM, TERALI
+    private static final int SEARCH_ALL = 1;      
+    private static final int SEARCH_NOM_ALI = 2;  
 
     private TerSearchOptions() {
-        // Utility class - cannot be instantiated
     }
 
     public static Specification<Ter> searchFiltered(Integer ent, String term) {
@@ -71,7 +66,6 @@ public class TerSearchOptions {
             );
         }
         
-        // SEARCH_ALL
         return cb.or(
             cb.like(root.get(TERNIF), "%" + term + "%"),
             cb.like(root.get(TERNOM), "%" + term + "%"),

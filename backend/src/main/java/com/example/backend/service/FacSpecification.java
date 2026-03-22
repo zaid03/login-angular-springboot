@@ -11,7 +11,6 @@ import jakarta.persistence.criteria.*;
 
 public class FacSpecification {
     
-    // Field constants
     private static final String ENT = "ENT";
     private static final String EJE = "EJE";
     private static final String CGECOD = "CGECOD";
@@ -28,12 +27,10 @@ public class FacSpecification {
     private static final String TERNIF = "TERNIF";
     private static final String TERNOM = "TERNOM";
     
-    // SQL function constants
     private static final String ROUND = "ROUND";
     private static final Integer ROUND_SCALE = 2;
 
     private FacSpecification() {
-        // Hide implicit public constructor
     }
 
     public static class SearchCriteria {

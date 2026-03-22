@@ -53,8 +53,6 @@ class FacturaInsertServiceTest {
         ReflectionTestUtils.setField(service, "gbsRepository", gbsRepository);
         ReflectionTestUtils.setField(service, "fdeRepository", fdeRepository);
     }
-
-    // ==================== Success Path Tests ====================
     
     @Test
     void insertFacturas_withValidSingleFactura_succeeds() {
@@ -152,8 +150,6 @@ class FacturaInsertServiceTest {
         
         assertEquals(1000, savedFac.getFACNUM());
     }
-
-    // ==================== Error/Validation Path Tests ====================
     
     @Test
     void insertFacturas_withProviderNotFound_returnsMessage() {
@@ -218,8 +214,6 @@ class FacturaInsertServiceTest {
         
         assertEquals(1, savedFac.getFACNUM());
     }
-
-    // ==================== Mixed Scenarios ====================
     
     @Test
     void insertFacturas_withMixedValidAndInvalid_processesIndependently() {
@@ -306,8 +300,6 @@ class FacturaInsertServiceTest {
         assertEquals(0.0, savedFde.getFDEIMP());
         assertEquals(0.0, savedFde.getFDEDIF());
     }
-
-    // ==================== Helper Methods ====================
     
     private FacturaInsertDto createValidFacturaDto(String tercero) {
         FacturaInsertDto dto = new FacturaInsertDto();

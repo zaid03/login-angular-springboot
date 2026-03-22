@@ -25,7 +25,6 @@ public class OperacionesServiceTest {
         ReflectionTestUtils.setField(service, "eje", "E1");
     }
 
-    // SearchCriteria builder tests - verifiable without mocking RestTemplate
     @Test
     void searchCriteria_builder_withAllFields_constructsCorrectly() {
         OperacionesService.SearchCriteria criteria = new OperacionesService.SearchCriteria.Builder()
@@ -95,7 +94,6 @@ public class OperacionesServiceTest {
         assertEquals(9, countNonNullFields(criteria));
     }
 
-    // Service configuration tests
     @Test
     void service_configuresPropertiesCorrectly() {
         String wsUrl = (String) ReflectionTestUtils.getField(service, "wsUrl");
@@ -120,7 +118,6 @@ public class OperacionesServiceTest {
         assertEquals("E1", eje);
     }
 
-    // Helper method
     private int countNonNullFields(OperacionesService.SearchCriteria criteria) {
         int count = 0;
         if (criteria.numeroOperDesde != null) count++;

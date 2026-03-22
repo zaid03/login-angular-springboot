@@ -45,7 +45,6 @@ public class CoaControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    // fetchArticulos tests
     @Test
     void fetchArticulos_returns200WithList() throws Exception {
         when(coaRepository.findAllByENTAndEJEAndConnCONCOD(1, "E1", 100))
@@ -79,7 +78,6 @@ public class CoaControllerTest {
             .andExpect(content().string(containsString("Error :")));
     }
 
-    // updateArticulo tests
     @Test
     void updateArticulo_returns204OnSuccess() throws Exception {
         Coa coa = new Coa();
@@ -136,7 +134,6 @@ public class CoaControllerTest {
             .andExpect(content().string(containsString("Error :")));
     }
 
-    // deleteArticulo tests
     @Test
     void deleteArticulo_returns204OnSuccess() throws Exception {
         CoaId id = new CoaId(1, "E1", 100, "FAM", "SUB", "ART");
@@ -171,7 +168,6 @@ public class CoaControllerTest {
             .andExpect(content().string(containsString("Error :")));
     }
 
-    // saveArticulos tests
     @Test
     void saveArticulos_returns204OnSuccess() throws Exception {
         when(coaRepository.existsByENTAndCONCODAndAFACODAndASUCODAndARTCOD(1, 100, "FAM", "SUB", "ART"))

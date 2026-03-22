@@ -34,7 +34,6 @@ public class JwtAuthFilterTest {
         SecurityContextHolder.clearContext();
     }
 
-    // OPTIONS request tests
     @Test
     void doFilterInternal_optionsRequest_returns200() throws ServletException, IOException {
         MockHttpServletRequest request = new MockHttpServletRequest("OPTIONS", "/api/protected");
@@ -46,7 +45,6 @@ public class JwtAuthFilterTest {
         assertEquals(200, response.getStatus());
     }
 
-    // Static resource tests
     @Test
     void doFilterInternal_cssFile_passesWithoutAuth() throws ServletException, IOException {
         MockHttpServletRequest request = new MockHttpServletRequest("GET", "/styles.css");
@@ -113,7 +111,6 @@ public class JwtAuthFilterTest {
         assertNotEquals(401, response.getStatus());
     }
 
-    // Public endpoints tests
     @Test
     void doFilterInternal_loginEndpoint_passesWithoutAuth() throws ServletException, IOException {
         MockHttpServletRequest request = new MockHttpServletRequest("GET", "/scap/api/login");
@@ -169,7 +166,6 @@ public class JwtAuthFilterTest {
         assertNotEquals(401, response.getStatus());
     }
 
-    // Missing/invalid authorization tests
     @Test
     void doFilterInternal_protectedEndpointWithoutAuth_returns401() throws ServletException, IOException {
         MockHttpServletRequest request = new MockHttpServletRequest("GET", "/api/con/fetch-contratos/1/E1");
@@ -205,7 +201,6 @@ public class JwtAuthFilterTest {
         assertEquals(401, response.getStatus());
     }
 
-    // Valid token tests
     @Test
     void doFilterInternal_protectedEndpointWithValidToken_allowsAccess() throws ServletException, IOException {
         when(jwtUtil.validateAndGetSubject("valid_token")).thenReturn("testuser");
@@ -235,7 +230,6 @@ public class JwtAuthFilterTest {
         assertTrue(chain.getRequest() != null);
     }
 
-    // Invalid token tests
     @Test
     void doFilterInternal_protectedEndpointWithJwtException_returns401() throws ServletException, IOException {
         when(jwtUtil.validateAndGetSubject("invalid_token")).thenThrow(new RuntimeException("Invalid token"));
@@ -264,7 +258,6 @@ public class JwtAuthFilterTest {
         assertEquals(401, response.getStatus());
     }
 
-    // Security context clearing tests
     @Test
     void doFilterInternal_jwtException_clearsSecurityContext() throws ServletException, IOException {
         when(jwtUtil.validateAndGetSubject("bad_token")).thenThrow(new RuntimeException("JWT error"));
@@ -279,13 +272,11 @@ public class JwtAuthFilterTest {
         assertNull(SecurityContextHolder.getContext().getAuthentication());
     }
 
-    // Multiple valid requests
     @Test
     void doFilterInternal_multipleValidTokens_createsCorrectContextForEach() throws ServletException, IOException {
         when(jwtUtil.validateAndGetSubject("token1")).thenReturn("user1");
         when(jwtUtil.validateAndGetSubject("token2")).thenReturn("user2");
 
-        // First request
         MockHttpServletRequest request1 = new MockHttpServletRequest("GET", "/api/protected");
         request1.addHeader(HttpHeaders.AUTHORIZATION, "Bearer token1");
         MockHttpServletResponse response1 = new MockHttpServletResponse();
@@ -294,7 +285,6 @@ public class JwtAuthFilterTest {
         filter.doFilterInternal(request1, response1, chain1);
         assertEquals("user1", SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
-        // Second request
         SecurityContextHolder.clearContext();
         MockHttpServletRequest request2 = new MockHttpServletRequest("GET", "/api/protected");
         request2.addHeader(HttpHeaders.AUTHORIZATION, "Bearer token2");
@@ -305,7 +295,6 @@ public class JwtAuthFilterTest {
         assertEquals("user2", SecurityContextHolder.getContext().getAuthentication().getPrincipal());
     }
 
-    // Case-insensitivity tests
     @Test
     void doFilterInternal_bearerHeaderCaseInsensitive_allowsLowercaseBearer() throws ServletException, IOException {
         MockHttpServletRequest request = new MockHttpServletRequest("GET", "/api/protected");
@@ -315,7 +304,7 @@ public class JwtAuthFilterTest {
 
         filter.doFilterInternal(request, response, chain);
 
-        assertEquals(401, response.getStatus()); // "bearer" (lowercase) doesn't match "Bearer "
+        assertEquals(401, response.getStatus()); 
     }
 
     @Test

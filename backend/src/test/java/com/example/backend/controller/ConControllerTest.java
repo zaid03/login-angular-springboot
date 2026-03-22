@@ -50,7 +50,6 @@ public class ConControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    // Helper method to create mock projection
     private CotContratoProjection createMockProjection() {
         CotContratoProjection projection = new CotContratoProjection() {
             @Override
@@ -84,7 +83,6 @@ public class ConControllerTest {
         return projection;
     }
 
-    // fetchContratos tests
     @Test
     void fetchContratos_returns200WithContratos() throws Exception {
         when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJE(3, 1, "E1"))
@@ -119,7 +117,6 @@ public class ConControllerTest {
             .andExpect(content().string(org.hamcrest.Matchers.containsString("Error :")));
     }
 
-    // searchByCodigoBloque tests
     @Test
     void searchContratosCodigoBloqueado_returns200() throws Exception {
         when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCODAndConnCONBLO(3, 1, "E1", 100, 0))
@@ -152,7 +149,6 @@ public class ConControllerTest {
             .andExpect(status().isInternalServerError());
     }
 
-    // searchByCodigoNoBloque tests
     @Test
     void searchContratosCodigoNoBloqueado_returns200() throws Exception {
         when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCODAndConnCONBLONot(3, 1, "E1", 100, 0))
@@ -174,7 +170,6 @@ public class ConControllerTest {
             .andExpect(status().isNotFound());
     }
 
-    // searchByCodigoTodos tests
     @Test
     void searchContratosCodigoTodos_returns200() throws Exception {
         when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCOD(3, 1, "E1", 100))
@@ -196,7 +191,6 @@ public class ConControllerTest {
             .andExpect(status().isNotFound());
     }
 
-    // searchByDescBloque tests
     @Test
     void searchContratosDescBloqueado_returns200() throws Exception {
         when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDESContainingAndConnCONBLO(3, 1, "E1", "desc", 0))
@@ -218,7 +212,6 @@ public class ConControllerTest {
             .andExpect(status().isNotFound());
     }
 
-    // searchByDescNoBloque tests
     @Test
     void searchContratosDescNoBloqueado_returns200() throws Exception {
         when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDESContainingAndConnCONBLONot(3, 1, "E1", "desc", 0))
@@ -240,7 +233,6 @@ public class ConControllerTest {
             .andExpect(status().isNotFound());
     }
 
-    // searchByDescTodos tests
     @Test
     void searchContratosDescTodos_returns200() throws Exception {
         when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDESContaining(3, 1, "E1", "desc"))
@@ -262,7 +254,6 @@ public class ConControllerTest {
             .andExpect(status().isNotFound());
     }
 
-    // searchByBloqu tests
     @Test
     void searchContratosBloqu_returns200() throws Exception {
         when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONBLO(3, 1, "E1", 0))
@@ -284,7 +275,6 @@ public class ConControllerTest {
             .andExpect(status().isNotFound());
     }
 
-    // searchByNobloq tests
     @Test
     void searchContratosNobloq_returns200() throws Exception {
         when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONBLONot(3, 1, "E1", 0))
@@ -306,7 +296,6 @@ public class ConControllerTest {
             .andExpect(status().isNotFound());
     }
 
-    // updateContrato tests
     @Test
     void updateContrato_returns204OnSuccess() throws Exception {
         ConId id = new ConId(1, "E1", 100);
@@ -391,7 +380,6 @@ public class ConControllerTest {
             .andExpect(status().isInternalServerError());
     }
 
-    // addContrato tests
     @Test
     void addContrato_returns204OnSuccess() throws Exception {
         Conn conn = new Conn();

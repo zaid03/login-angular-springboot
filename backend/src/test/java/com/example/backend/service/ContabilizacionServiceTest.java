@@ -51,7 +51,6 @@ public class ContabilizacionServiceTest {
         ReflectionTestUtils.setField(service, "sicalWsUrl", "http://test-sical-ws:8080/services/Ci");
     }
 
-    // buildSmlInput tests
     @Test
     void buildSmlInput_withValidData_returnsXmlString() throws Exception {
         ContabilizacionRequestDto req = createValidRequest();
@@ -122,7 +121,6 @@ public class ContabilizacionServiceTest {
         String result = service.buildSmlInput(req, fac, fdeList, List.of(), "12345678A");
 
         assertTrue(result.contains("<linea>"));
-        // Should have 2 linea elements
         int count = 0;
         int index = 0;
         while ((index = result.indexOf("<linea>", index)) != -1) {
@@ -132,7 +130,6 @@ public class ContabilizacionServiceTest {
         assertEquals(2, count);
     }
 
-    // parseResponse tests
     @Test
     void parseResponse_withSuccessResponse_returnsExitoTrue() {
         String soapResponse = """
@@ -216,22 +213,14 @@ public class ContabilizacionServiceTest {
         assertNotNull(result.getMensaje());
     }
 
-    // sendSmlRequest tests
     @Test
     void sendSmlRequest_withValidSml_returnsSoapResponse() {
         String smlInput = "<e><test>data</test></e>";
         String expectedResponse = "<soap:Envelope>...</soap:Envelope>";
-
-        // This test is limited without mocking RestTemplate at field level
-        // In real scenario, would use @SpringBootTest or inject RestTemplate
         String result = service.sendSmlRequest(smlInput, "http://test-url");
-
-        // Since we can't easily mock RestTemplate in unit test, we verify the method doesn't crash
-        // In integration test, would verify full response
         assertTrue(result == null || result instanceof String);
     }
 
-    // Helper method tests
     @Test
     void buildSmlInput_formatDateCorrectly() throws Exception {
         ContabilizacionRequestDto req = createValidRequest();
@@ -264,7 +253,6 @@ public class ContabilizacionServiceTest {
 
         String result = service.buildSmlInput(req, fac, List.of(), List.of(), "12345678A");
 
-        // Should use default values when null
         assertTrue(result.contains("tipContrato"));
         assertTrue(result.contains("proContrato"));
         assertTrue(result.contains("criContrato"));
@@ -284,7 +272,6 @@ public class ContabilizacionServiceTest {
         assertTrue(result.contains("<e>"));
     }
 
-    // Response parsing field mapping tests
     @Test
     void parseResponse_withOperacionFields_mapsAllFieldsCorrectly() {
         String soapResponse = """
@@ -318,7 +305,6 @@ public class ContabilizacionServiceTest {
         assertEquals("2026", result.getEjercicio());
     }
 
-    // Helper methods for test data
     private ContabilizacionRequestDto createValidRequest() {
         ContabilizacionRequestDto req = new ContabilizacionRequestDto();
         req.setOrg("ORG001");

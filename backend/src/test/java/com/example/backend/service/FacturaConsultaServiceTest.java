@@ -33,8 +33,6 @@ class FacturaConsultaServiceTest {
         objectMapper.findAndRegisterModules();
         ReflectionTestUtils.setField(service, "sicalWsUrl", "http://test-sical:8080/services/Ci?wsdl");
     }
-
-    // ==================== buildSmlInput Tests ====================
     
     @Test
     void buildSmlInput_withValidAllFields_succeeds() {
@@ -167,7 +165,6 @@ class FacturaConsultaServiceTest {
             String result = service.buildSmlInput(dto);
             
             assertNotNull(result);
-            // Service handles null by including "null" string or skipping
             assertTrue(result.contains("<org>") || result.contains("org"));
         }
     }
@@ -195,7 +192,6 @@ class FacturaConsultaServiceTest {
             String result = service.buildSmlInput(dto);
             
             assertNotNull(result);
-            // Service includes the pwd field even if null
             assertTrue(result.contains("<pwd>") || result.contains("pwd"));
         }
     }
@@ -228,7 +224,6 @@ class FacturaConsultaServiceTest {
             
             String result = service.buildSmlInput(dto);
             
-            // Verify XML structure
             assertTrue(result.startsWith("<e>"));
             assertTrue(result.endsWith("</e>"));
             assertTrue(result.contains("<ope>") && result.contains("</ope>"));
@@ -289,8 +284,6 @@ class FacturaConsultaServiceTest {
         }
     }
 
-    // ==================== sendSmlRequest Tests ====================
-
     @Test
     void sendSmlRequest_withValidInput_constructsSoapEnvelope() {
         String smlInput = "<e><test>data</test></e>";
@@ -299,7 +292,6 @@ class FacturaConsultaServiceTest {
         try {
             service.sendSmlRequest(smlInput, url);
         } catch (Exception e) {
-            // Expected: network/connection errors
             assertNotNull(e);
         }
     }
@@ -311,7 +303,6 @@ class FacturaConsultaServiceTest {
         try {
             service.sendSmlRequest(smlInput, null);
         } catch (Exception e) {
-            // Expected: connection error
             assertNotNull(e);
         }
     }
@@ -323,7 +314,6 @@ class FacturaConsultaServiceTest {
         try {
             service.sendSmlRequest(smlInput, "");
         } catch (Exception e) {
-            // Expected: connection error
             assertNotNull(e);
         }
     }
@@ -336,12 +326,9 @@ class FacturaConsultaServiceTest {
         try {
             service.sendSmlRequest(smlInput, url);
         } catch (Exception e) {
-            // Expected: connection error
             assertNotNull(e);
         }
     }
-
-    // ==================== Helper Methods ====================
 
     private FacturaConsultaRequestDto createValidRequestDto() {
         return createDtoFromMap(Map.of(
