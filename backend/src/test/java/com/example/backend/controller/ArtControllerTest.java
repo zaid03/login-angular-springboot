@@ -231,4 +231,73 @@ public class ArtControllerTest {
             .andExpect(status().isBadRequest())
             .andExpect(content().string(containsString("Error :")));
     }
+
+    @Test
+    void getByEntAndArtdesLike_returnsBadRequestOnException() throws Exception {
+        when(artRepository.findByENTAndARTDESContaining(anyInt(), anyString()))
+            .thenThrow(new DataAccessResourceFailureException("DB error"));
+
+        mockMvc.perform(get("/api/art/by-ent-like/1/search"))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Error :")));
+    }
+
+    @Test
+    void getArtName_returnsBadRequestOnException() throws Exception {
+        when(artRepository.findByENTAndAFACODAndASUCODAndARTCOD(anyInt(), anyString(), anyString(), anyString()))
+            .thenThrow(new DataAccessResourceFailureException("DB error"));
+
+        mockMvc.perform(get("/api/art/art-name/1/AF/ASU/ART"))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Error :")));
+    }
+
+    @Test
+    void deleteFamilia_returnsBadRequestOnException() throws Exception {
+        when(artRepository.countByENTAndAFACOD(anyInt(), anyString()))
+            .thenThrow(new DataAccessResourceFailureException("DB error"));
+
+        mockMvc.perform(delete("/api/art/delete-familia/1/AF"))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Error :")));
+    }
+
+    @Test
+    void deleteSubFamilia_returnsBadRequestOnException() throws Exception {
+        when(artRepository.countByENTAndASUCOD(anyInt(), anyString()))
+            .thenThrow(new DataAccessResourceFailureException("DB error"));
+
+        mockMvc.perform(delete("/api/art/delete-sub-familia/1/AF/ASU"))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Error :")));
+    }
+
+    @Test
+    void getByEntAfacodAsucodArtcod_returnsEmptyWhenNoResults() throws Exception {
+        when(artRepository.findByENTAndAFACOD(1, "AF")).thenReturn(List.of());
+        when(artRepository.findByENTAndASUCOD(1, "ASU")).thenReturn(List.of());
+        when(artRepository.findByENTAndARTCOD(1, "ART")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/art/by-ent/1/AF/ASU/ART").accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(0)));
+    }
+
+    @Test
+    void getByEntAfacodAsucodArtcod_deduplicatesResults() throws Exception {
+        Art a = new Art(); a.setARTCOD("DUP");
+        when(artRepository.findByENTAndAFACOD(1, "AF")).thenReturn(List.of(a));
+        when(artRepository.findByENTAndASUCOD(1, "ASU")).thenReturn(List.of(a));
+        when(artRepository.findByENTAndARTCOD(1, "ART")).thenReturn(List.of(a));
+
+        mockMvc.perform(get("/api/art/by-ent/1/AF/ASU/ART").accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(1)));
+    }
 }

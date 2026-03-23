@@ -6,6 +6,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import com.example.backend.dto.ContabilizacionRequestDto;
 import com.example.backend.dto.ContabilizacionResponseDto;
+import com.example.backend.exception.SmlBuildingException;
 import com.example.backend.sqlserver2.model.Fac;
 import com.example.backend.sqlserver2.model.Fde;
 import com.example.backend.sqlserver2.model.Fdt;
@@ -303,6 +305,179 @@ public class ContabilizacionServiceTest {
         assertEquals("REF001", result.getReferencia());
         assertEquals("1000.50", result.getImporte());
         assertEquals("2026", result.getEjercicio());
+    }
+
+    @Test
+    void buildSmlInput_withNullRequest_throwsException() {
+        Fac fac = createValidFac();
+        assertThrows(SmlBuildingException.class, () -> {
+            service.buildSmlInput(null, fac, List.of(), List.of(), "NIF");
+        });
+    }
+
+    @Test
+    void buildSmlInput_withNullFac_throwsException() {
+        ContabilizacionRequestDto req = createValidRequest();
+        assertThrows(SmlBuildingException.class, () -> {
+            service.buildSmlInput(req, null, List.of(), List.of(), "NIF");
+        });
+    }
+
+    @Test
+    void buildSmlInput_withEmptyFdeAndFdtLists_succeeds() throws Exception {
+        ContabilizacionRequestDto req = createValidRequest();
+        Fac fac = createValidFac();
+
+        String result = service.buildSmlInput(req, fac, List.of(), List.of(), "NIF");
+
+        assertNotNull(result);
+        assertTrue(result.contains("<e>"));
+        assertTrue(result.contains("</e>"));
+    }
+
+    @Test
+    void parseResponse_withEmptySoapResponse_returnsError() {
+        ContabilizacionResponseDto result = service.parseResponse("");
+
+        assertFalse(result.isExito());
+        assertNotNull(result.getMensaje());
+    }
+
+    @Test
+    void parseResponse_withBlankSoapResponse_returnsError() {
+        ContabilizacionResponseDto result = service.parseResponse("   ");
+
+        assertFalse(result.isExito());
+        assertNotNull(result.getMensaje());
+    }
+
+    @Test
+    void parseResponse_withMissingServiceoReturnTag_returnsError() {
+        String soapResponse = "<soap:Envelope><soap:Body></soap:Body></soap:Envelope>";
+
+        ContabilizacionResponseDto result = service.parseResponse(soapResponse);
+
+        assertFalse(result.isExito());
+        assertNotNull(result.getMensaje());
+    }
+
+    @Test
+    void parseResponse_withMissingExitoTag_returnsError() {
+        String soapResponse = """
+            <soap:Envelope>
+              <soap:Body>
+                <servicioReturn>
+                  &lt;response&gt;
+                    &lt;codigo&gt;ERR001&lt;/codigo&gt;
+                  &lt;/response&gt;
+                </servicioReturn>
+              </soap:Body>
+            </soap:Envelope>
+            """;
+
+        ContabilizacionResponseDto result = service.parseResponse(soapResponse);
+
+        assertFalse(result.isExito());
+    }
+
+    @Test
+    void buildSmlInput_withFdeNegativeAmount_skipsLine() throws Exception {
+        ContabilizacionRequestDto req = createValidRequest();
+        Fac fac = createValidFac();
+        Fde fde = createValidFde();
+        fde.setFDEIMP(-50.0);
+        fde.setFDEDIF(-25.0);
+
+        String result = service.buildSmlInput(req, fac, List.of(fde), List.of(), "NIF");
+
+        assertNotNull(result);
+        assertFalse(result.contains("<linea>"));
+    }
+
+    @Test
+    void buildSmlInput_withFdeNullFields_handlesGracefully() throws Exception {
+        ContabilizacionRequestDto req = createValidRequest();
+        Fac fac = createValidFac();
+        Fde fde = new Fde();
+        fde.setFDEIMP(100.0);
+        fde.setFDEDIF(null);
+        fde.setFDEORG(null);
+        fde.setFDEFUN(null);
+        fde.setFDEECO(null);
+        fde.setFDEREF(null);
+
+        String result = service.buildSmlInput(req, fac, List.of(fde), List.of(), "NIF");
+
+        assertNotNull(result);
+        assertTrue(result.contains("<linea>"));
+    }
+
+    @Test
+    void buildSmlInput_withFdtNullFields_handlesGracefully() throws Exception {
+        ContabilizacionRequestDto req = createValidRequest();
+        Fac fac = createValidFac();
+        Fdt fdt = new Fdt();
+        fdt.setFDTARE(null);
+        fdt.setFDTORG(null);
+        fdt.setFDTFUN(null);
+        fdt.setFDTECO(null);
+        fdt.setFDTDTO(null);
+        fdt.setFDTBSE(null);
+        fdt.setFDTPRE(null);
+        fdt.setFDTTXT(null);
+
+        String result = service.buildSmlInput(req, fac, List.of(), List.of(fdt), "NIF");
+
+        assertNotNull(result);
+        assertTrue(result.contains("<dto>"));
+    }
+
+    @Test
+    void parseResponse_withComplexErrorStructure_buildsErrorMessage() {
+        String soapResponse = """
+            <soap:Envelope>
+              <soap:Body>
+                <servicioReturn>
+                  &lt;response&gt;
+                    &lt;exito&gt;0&lt;/exito&gt;
+                    &lt;codigo&gt;ERR001&lt;/codigo&gt;
+                    &lt;desc&gt;Validation failed&lt;/desc&gt;
+                    &lt;error&gt;Field A invalid&lt;/error&gt;
+                    &lt;error&gt;Field B missing&lt;/error&gt;
+                  &lt;/response&gt;
+                </servicioReturn>
+              </soap:Body>
+            </soap:Envelope>
+            """;
+
+        ContabilizacionResponseDto result = service.parseResponse(soapResponse);
+
+        assertFalse(result.isExito());
+        assertTrue(result.getMensaje().contains("ERR001"));
+        assertTrue(result.getMensaje().contains("Validation failed"));
+        assertTrue(result.getMensaje().contains("Field A invalid"));
+    }
+
+    @Test
+    void buildSmlInput_withEmptyTerAyt_buildsValidXml() throws Exception {
+        ContabilizacionRequestDto req = createValidRequest();
+        Fac fac = createValidFac();
+
+        String result = service.buildSmlInput(req, fac, List.of(), List.of(), "");
+
+        assertNotNull(result);
+        assertTrue(result.contains("<e>"));
+    }
+
+    @Test
+    void buildSmlInput_withNullTerAyt_buildsValidXml() throws Exception {
+        ContabilizacionRequestDto req = createValidRequest();
+        Fac fac = createValidFac();
+
+        String result = service.buildSmlInput(req, fac, List.of(), List.of(), null);
+
+        assertNotNull(result);
+        assertTrue(result.contains("<e>"));
     }
 
     private ContabilizacionRequestDto createValidRequest() {

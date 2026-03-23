@@ -307,4 +307,244 @@ public class DpeControllerTest {
             .andDo(print())
             .andExpect(status().isInternalServerError());
     }
+
+    @Test
+    void fetchServicePersonas_returnsEmptyList() throws Exception {
+        when(dpeRepository.findByENTAndEJEAndDEPCOD(1, "E1", "D1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/fetch-service-personas/1/E1/D1")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(content().string("Sin resultado"));
+    }
+
+    @Test
+    void searchPersonasServicios_byPersonaCod() throws Exception {
+        when(dpeRepository.findProjectionByENTAndEJEAndPERCOD(1, "E1", "U1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("persona", "U1")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchPersonasServicios_byPersonaName() throws Exception {
+        when(dpeRepository.findByENTAndEJEAndPer_PERNOMContaining(1, "E1", "John Doe")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("persona", "John Doe")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchPersonasServicios_byCentroGestor() throws Exception {
+        when(dpeRepository.findByENTAndEJEAndDep_Cge_CGECOD(1, "E1", "CG1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("cgecod", "CG1")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchPersonasServicios_byServicioCod() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("servicio", "S1")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchPersonasServicios_byServicioName() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("servicio", "Service Description")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchPersonasServicios_byPerfilAlmacen() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("perfil", "almacen")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchPersonasServicios_byPerfilComprador() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("perfil", "comprador")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchPersonasServicios_byPerfilContabilidad() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("perfil", "contabilidad")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchPersonasServicios_byPerfilPeticionario() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("perfil", "peticionario")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchPersonasServicios_byInvalidPerfil() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("perfil", "invalid")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchPersonasServicios_dataAccessException() throws Exception {
+        when(dpeRepository.findByENTAndEJE(anyInt(), anyString()))
+            .thenThrow(new DataAccessResourceFailureException("DB error"));
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Error :")));
+    }
+
+    @Test
+    void fetchPersonasServicios_returns500OnException() throws Exception {
+        when(dpeRepository.findByENTAndEJE(anyInt(), anyString(), any()))
+            .thenThrow(new RuntimeException("Unexpected error"));
+
+        mockMvc.perform(get("/api/depe/personas-servicios/1/E1/0")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isInternalServerError())
+            .andExpect(content().string(containsString("Error :")));
+    }
+
+    @Test
+    void deleteAllPersonaServices_returns500OnDataAccessException() throws Exception {
+        when(dpeRepository.findByENTAndEJEAndPERCOD(1, "E1", "U1")).thenReturn(List.of(new Dpe()));
+        when(dpeRepository.deleteByENTAndEJEAndPERCOD(1, "E1", "U1"))
+            .thenThrow(new DataAccessResourceFailureException("DB error"));
+
+        mockMvc.perform(delete("/api/depe/delete-persona-Allservice/1/E1/U1"))
+            .andDo(print())
+            .andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    void addPersonaServices_exception() throws Exception {
+        PersonaServiceRequest req = new PersonaServiceRequest();
+        req.setPercod("U1");
+        req.setServices(List.of("S1"));
+
+        doThrow(new RuntimeException("Save failed")).when(dpeService).savePersonaServices(any());
+
+        mockMvc.perform(post("/api/depe/add-persona-services")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(req)))
+            .andDo(print())
+            .andExpect(status().isInternalServerError())
+            .andExpect(content().string(containsString("Error :")));
+    }
+
+    @Test
+    void addServicesPersona_exception() throws Exception {
+        ServicePersonaRequest req = new ServicePersonaRequest();
+        req.setDepcod("S1");
+        req.setPersonas(List.of("U1"));
+
+        doThrow(new RuntimeException("Save failed")).when(dpePersonasForService).saveServicePersonas(any());
+
+        mockMvc.perform(post("/api/depe/add-services-persona")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(req)))
+            .andDo(print())
+            .andExpect(status().isInternalServerError())
+            .andExpect(content().string(containsString("Error :")));
+    }
+
+    @Test
+    void fetchPersonaService_returns500OnDataAccessException() throws Exception {
+        when(dpeRepository.findByENTAndEJEAndPERCOD(anyInt(), anyString(), anyString()))
+            .thenThrow(new DataAccessResourceFailureException("DB error"));
+
+        mockMvc.perform(get("/api/depe/fetch-persona-service/1/E1/U1"))
+            .andDo(print())
+            .andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    void deletePersonaService_returns500OnDataAccessException() throws Exception {
+        when(dpeRepository.existsById(any())).thenReturn(true);
+        doThrow(new DataAccessResourceFailureException("DB error")).when(dpeRepository).deleteById(any());
+
+        mockMvc.perform(delete("/api/depe/delete-persona-service/1/E1/D1/U1"))
+            .andDo(print())
+            .andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    void deleteService_returns500OnDataAccessException() throws Exception {
+        when(dpeRepository.existsById(any())).thenReturn(true);
+        doThrow(new DataAccessResourceFailureException("DB error")).when(dpeRepository).deleteById(any());
+
+        mockMvc.perform(delete("/api/depe/delete-service-persona/1/E1/D1/U1"))
+            .andDo(print())
+            .andExpect(status().isInternalServerError());
+    }
 }

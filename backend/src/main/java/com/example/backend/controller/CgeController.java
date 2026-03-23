@@ -64,7 +64,7 @@ public class CgeController {
             Map<String, Dep> depByCgecod = deps.stream().collect(Collectors.toMap(
                 Dep::getCGECOD,
                 dep -> dep,
-                this::mergeDeps  // ← Extract to helper
+                this::mergeDeps 
             ));
 
             List<String> cgecods = List.copyOf(depByCgecod.keySet());

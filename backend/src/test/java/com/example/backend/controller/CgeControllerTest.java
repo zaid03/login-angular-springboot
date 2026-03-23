@@ -60,26 +60,271 @@ public class CgeControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    void getCentrosGestores_returnsList() throws Exception {
+    void getCentrosGestores_mergesDepsWithDuplicateCgecods() throws Exception {
         Dpe d1 = new Dpe(); d1.setDEPCOD("S1");
         Dpe d2 = new Dpe(); d2.setDEPCOD("S2");
         when(dpeRepository.findByENTAndEJEAndPERCOD(1, "E1", "U1")).thenReturn(List.of(d1, d2));
 
-        Dep dep1 = new Dep(); dep1.setCGECOD("G1"); dep1.setDEPINT(1); dep1.setDEPALM(2); dep1.setDEPCOM(3);
-        Dep dep2 = new Dep(); dep2.setCGECOD("G2"); dep2.setDEPINT(0); dep2.setDEPALM(0); dep2.setDEPCOM(0);
+        // Two deps with same CGECOD - should trigger merge
+        Dep dep1 = new Dep(); dep1.setCGECOD("G1"); dep1.setDEPINT(1); dep1.setDEPALM(0); dep1.setDEPCOM(0);
+        Dep dep2 = new Dep(); dep2.setCGECOD("G1"); dep2.setDEPINT(0); dep2.setDEPALM(2); dep2.setDEPCOM(0);
         when(depRepository.findByENTAndEJEAndDEPCODIn(1, "E1", List.of("S1","S2"))).thenReturn(List.of(dep1, dep2));
 
         Cge c1 = new Cge(); c1.setCGECOD("G1"); c1.setCGEDES("Desc1");
-        Cge c2 = new Cge(); c2.setCGECOD("G2"); c2.setCGEDES("Desc2");
-        when(cgeRepository.findByENTAndEJEAndCGECODIn(1, "E1", List.of("G1","G2"))).thenReturn(List.of(c1, c2));
+        when(cgeRepository.findByENTAndEJEAndCGECODIn(1, "E1", List.of("G1"))).thenReturn(List.of(c1));
 
         mockMvc.perform(get("/api/cge/1/E1/U1")
                 .accept(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$", hasSize(2)))
-            .andExpect(jsonPath("$[*].cge.cgedes", hasItem("Desc1")))
-            .andExpect(jsonPath("$[*].depint", hasItem(1)));
+            .andExpect(jsonPath("$", hasSize(1)))
+            .andExpect(jsonPath("$[0].depint").value(1))
+            .andExpect(jsonPath("$[0].depalm").value(2));
+    }
+
+    @Test
+    void updateCentro_returns400WhenCgesesNull() throws Exception {
+        Map<String, Object> payload = new java.util.HashMap<>();
+        payload.put("cgedes", null);
+        payload.put("cgeorg", "B");
+        payload.put("cgefun", "C");
+        payload.put("cgedat", "D");
+        payload.put("cgecic", 1);
+
+        mockMvc.perform(patch("/api/cge/update-cge/1/E1/G1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Faltan datos obligatorios")));
+    }
+
+    @Test
+    void updateCentro_returns400WhenCgeorgNull() throws Exception {
+        Map<String, Object> payload = new java.util.HashMap<>();
+        payload.put("cgedes", "A");
+        payload.put("cgeorg", null);
+        payload.put("cgefun", "C");
+        payload.put("cgedat", "D");
+        payload.put("cgecic", 1);
+
+        mockMvc.perform(patch("/api/cge/update-cge/1/E1/G1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Faltan datos obligatorios")));
+    }
+
+    @Test
+    void updateCentro_returns400WhenCgefunNull() throws Exception {
+        Map<String, Object> payload = new java.util.HashMap<>();
+        payload.put("cgedes", "A");
+        payload.put("cgeorg", "B");
+        payload.put("cgefun", null);
+        payload.put("cgedat", "D");
+        payload.put("cgecic", 1);
+
+        mockMvc.perform(patch("/api/cge/update-cge/1/E1/G1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Faltan datos obligatorios")));
+    }
+
+    @Test
+    void updateCentro_returns400WhenCgedatNull() throws Exception {
+        Map<String, Object> payload = new java.util.HashMap<>();
+        payload.put("cgedes", "A");
+        payload.put("cgeorg", "B");
+        payload.put("cgefun", "C");
+        payload.put("cgedat", null);
+        payload.put("cgecic", 1);
+
+        mockMvc.perform(patch("/api/cge/update-cge/1/E1/G1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Faltan datos obligatorios")));
+    }
+
+    @Test
+    void updateCentro_returns400WhenCgececNull() throws Exception {
+        Map<String, Object> payload = new java.util.HashMap<>();
+        payload.put("cgedes", "A");
+        payload.put("cgeorg", "B");
+        payload.put("cgefun", "C");
+        payload.put("cgedat", "D");
+        payload.put("cgecic", null);
+
+        mockMvc.perform(patch("/api/cge/update-cge/1/E1/G1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Faltan datos obligatorios")));
+    }
+
+    @Test
+    void addCentroGestor_returns400WhenEntNull() throws Exception {
+        Map<String, Object> payload = new java.util.HashMap<>();
+        payload.put("ent", null);
+        payload.put("eje", "E1");
+        payload.put("cgecod", "G1");
+        payload.put("cgedes", "D");
+        payload.put("cgeorg", "O");
+        payload.put("cgefun", "F");
+        payload.put("cgedat", "Dat");
+        payload.put("cgecic", 1);
+
+        mockMvc.perform(post("/api/cge/Insert-familia")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Faltan datos obligatorios")));
+    }
+
+    @Test
+    void addCentroGestor_returns400WhenEjeNull() throws Exception {
+        Map<String, Object> payload = new java.util.HashMap<>();
+        payload.put("ent", 1);
+        payload.put("eje", null);
+        payload.put("cgecod", "G1");
+        payload.put("cgedes", "D");
+        payload.put("cgeorg", "O");
+        payload.put("cgefun", "F");
+        payload.put("cgedat", "Dat");
+        payload.put("cgecic", 1);
+
+        mockMvc.perform(post("/api/cge/Insert-familia")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Faltan datos obligatorios")));
+    }
+
+    @Test
+    void addCentroGestor_returns400WhenCgecodNull() throws Exception {
+        Map<String, Object> payload = new java.util.HashMap<>();
+        payload.put("ent", 1);
+        payload.put("eje", "E1");
+        payload.put("cgecod", null);
+        payload.put("cgedes", "D");
+        payload.put("cgeorg", "O");
+        payload.put("cgefun", "F");
+        payload.put("cgedat", "Dat");
+        payload.put("cgecic", 1);
+
+        mockMvc.perform(post("/api/cge/Insert-familia")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Faltan datos obligatorios")));
+    }
+
+    @Test
+    void addCentroGestor_returns400WhenCgesesNull() throws Exception {
+        Map<String, Object> payload = new java.util.HashMap<>();
+        payload.put("ent", 1);
+        payload.put("eje", "E1");
+        payload.put("cgecod", "G1");
+        payload.put("cgedes", null);
+        payload.put("cgeorg", "O");
+        payload.put("cgefun", "F");
+        payload.put("cgedat", "Dat");
+        payload.put("cgecic", 1);
+
+        mockMvc.perform(post("/api/cge/Insert-familia")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Faltan datos obligatorios")));
+    }
+
+    @Test
+    void addCentroGestor_returns400WhenCgeorgNull() throws Exception {
+        Map<String, Object> payload = new java.util.HashMap<>();
+        payload.put("ent", 1);
+        payload.put("eje", "E1");
+        payload.put("cgecod", "G1");
+        payload.put("cgedes", "D");
+        payload.put("cgeorg", null);
+        payload.put("cgefun", "F");
+        payload.put("cgedat", "Dat");
+        payload.put("cgecic", 1);
+
+        mockMvc.perform(post("/api/cge/Insert-familia")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Faltan datos obligatorios")));
+    }
+
+    @Test
+    void addCentroGestor_returns400WhenCgefunNull() throws Exception {
+        Map<String, Object> payload = new java.util.HashMap<>();
+        payload.put("ent", 1);
+        payload.put("eje", "E1");
+        payload.put("cgecod", "G1");
+        payload.put("cgedes", "D");
+        payload.put("cgeorg", "O");
+        payload.put("cgefun", null);
+        payload.put("cgedat", "Dat");
+        payload.put("cgecic", 1);
+
+        mockMvc.perform(post("/api/cge/Insert-familia")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Faltan datos obligatorios")));
+    }
+
+    @Test
+    void addCentroGestor_returns400WhenCgedatNull() throws Exception {
+        Map<String, Object> payload = new java.util.HashMap<>();
+        payload.put("ent", 1);
+        payload.put("eje", "E1");
+        payload.put("cgecod", "G1");
+        payload.put("cgedes", "D");
+        payload.put("cgeorg", "O");
+        payload.put("cgefun", "F");
+        payload.put("cgedat", null);
+        payload.put("cgecic", 1);
+
+        mockMvc.perform(post("/api/cge/Insert-familia")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Faltan datos obligatorios")));
+    }
+
+    @Test
+    void addCentroGestor_returns400WhenCgecicNull() throws Exception {
+        Map<String, Object> payload = new java.util.HashMap<>();
+        payload.put("ent", 1);
+        payload.put("eje", "E1");
+        payload.put("cgecod", "G1");
+        payload.put("cgedes", "D");
+        payload.put("cgeorg", "O");
+        payload.put("cgefun", "F");
+        payload.put("cgedat", "Dat");
+        payload.put("cgecic", null);
+
+        mockMvc.perform(post("/api/cge/Insert-familia")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Faltan datos obligatorios")));
     }
 
     @Test
