@@ -53,7 +53,6 @@ public class VersionControllerTest {
             .andExpect(jsonPath("$.version").exists())
             .andExpect(result -> {
                 String versionValue = result.getResponse().getContentAsString();
-                // Should contain either a real version or "desconocida"
                 assert(versionValue.contains("version") && (versionValue.contains("desconocida") || versionValue.length() > 10));
             });
     }

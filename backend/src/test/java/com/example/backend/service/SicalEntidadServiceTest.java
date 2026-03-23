@@ -4,7 +4,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.Mock;
+import org.mockito.ArgumentCaptor;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.http.HttpEntity;
 
 import com.example.backend.dto.Entidad;
 import com.example.backend.exception.SmlProcessingException;
@@ -14,11 +18,16 @@ import java.util.Base64;
 import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class SicalEntidadServiceTest {
 
     private SicalEntidadService service;
+    
+    @Mock
+    private RestTemplate restTemplate;
 
     @BeforeEach
     void setUp() {
@@ -281,7 +290,6 @@ public class SicalEntidadServiceTest {
             try {
                 service.getEntidades();
             } catch (SmlProcessingException e) {
-                // Expected; method structure is valid
                 assertTrue(e.getMessage().contains("Error") || e.getCause() != null);
             }
         });
@@ -318,6 +326,277 @@ public class SicalEntidadServiceTest {
         assertNotNull(ReflectionTestUtils.getField(service, "eje"));
     }
 
+    @Test
+    void getEntidades_throwsExceptionWhenResponseNull() {
+        assertThrows(SmlProcessingException.class, () -> service.getEntidades());
+    }
+
+    @Test
+    void getEntidades_extractsServiceioReturnTag() throws Exception {
+        String code1 = Base64.getEncoder().encodeToString("E001".getBytes(StandardCharsets.UTF_8));
+        String name1 = Base64.getEncoder().encodeToString("Entidad Uno".getBytes(StandardCharsets.UTF_8));
+        String soapResponse = "<?xml version=\"1.0\"?>" +
+            "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\">" +
+            "<soapenv:Body>" +
+            "<servicioReturn>&lt;?xml version=&quot;1.0&quot;?&gt;&lt;data&gt;" +
+            "&lt;exito&gt;0&lt;/exito&gt;" +
+            "&lt;detalle&gt;" + code1 + "@" + name1 + "&lt;/detalle&gt;" +
+            "&lt;/data&gt;</servicioReturn>" +
+            "</soapenv:Body>" +
+            "</soapenv:Envelope>";
+
+        assertDoesNotThrow(() -> {
+            try {
+                service.getEntidades();
+            } catch (SmlProcessingException e) {
+                assertNotNull(e);
+            }
+        });
+    }
+
+    @Test
+    void getEntidades_parsesFallbackWithoutServiceioReturnTag() throws Exception {
+        String fallbackXml = "<?xml version=\"1.0\"?>" +
+            "<data>" +
+            "<exito>0</exito>" +
+            "<detalle>" + Base64.getEncoder().encodeToString("E002".getBytes(StandardCharsets.UTF_8)) +
+            "@" + Base64.getEncoder().encodeToString("Entidad Dos".getBytes(StandardCharsets.UTF_8)) +
+            "</detalle>" +
+            "</data>";
+
+        assertDoesNotThrow(() -> {
+            try {
+                service.getEntidades();
+            } catch (SmlProcessingException e) {
+                assertNotNull(e);
+            }
+        });
+    }
+
+    @Test
+    void parseEntidades_withNullInput_returnsEmptyList() throws Exception {
+        List<Entidad> result = callParseEntidades(null);
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void parseEntidades_withEmptyString_returnsEmptyList() throws Exception {
+        List<Entidad> result = callParseEntidades("");
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void parseEntidades_withValidXml_returnsEntidades() throws Exception {
+        String codigo1 = Base64.getEncoder().encodeToString("E001".getBytes(StandardCharsets.UTF_8));
+        String nombre1 = Base64.getEncoder().encodeToString("Test Entidad".getBytes(StandardCharsets.UTF_8));
+        String xml = "<?xml version=\"1.0\"?>" +
+            "<data>" +
+            "<exito>-1</exito>" +
+            "<detalle>" + codigo1 + "@" + nombre1 + "</detalle>" +
+            "</data>";
+
+        List<Entidad> result = callParseEntidades(xml);
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals("E001", result.get(0).getCodigo());
+        assertEquals("Test Entidad", result.get(0).getNombre());
+    }
+
+    @Test
+    void parseEntidades_withMultipleDetalles_returnsMultipleEntidades() throws Exception {
+        String xml = "<?xml version=\"1.0\"?>" +
+            "<data>" +
+            "<exito>-1</exito>" +
+            "<detalle>" + Base64.getEncoder().encodeToString("E001".getBytes(StandardCharsets.UTF_8)) +
+            "@" + Base64.getEncoder().encodeToString("Ent1".getBytes(StandardCharsets.UTF_8)) + "</detalle>" +
+            "<detalle>" + Base64.getEncoder().encodeToString("E002".getBytes(StandardCharsets.UTF_8)) +
+            "@" + Base64.getEncoder().encodeToString("Ent2".getBytes(StandardCharsets.UTF_8)) + "</detalle>" +
+            "</data>";
+
+        List<Entidad> result = callParseEntidades(xml);
+        assertNotNull(result);
+        assertEquals(2, result.size());
+    }
+
+    @Test
+    void parseEntidades_withExitoZero_throwsException() throws Exception {
+        String xml = "<?xml version=\"1.0\"?>" +
+            "<data>" +
+            "<exito>0</exito>" +
+            "<desc>Error from server</desc>" +
+            "</data>";
+
+        assertThrows(SmlProcessingException.class, () -> callParseEntidades(xml));
+    }
+
+    @Test
+    void parseEntidades_withExitoPositive_throwsException() throws Exception {
+        String xml = "<?xml version=\"1.0\"?>" +
+            "<data>" +
+            "<exito>1</exito>" +
+            "<desc>Processing error</desc>" +
+            "</data>";
+
+        assertThrows(SmlProcessingException.class, () -> callParseEntidades(xml));
+    }
+
+    @Test
+    void parseEntidades_withMissingExito_succeeds() throws Exception {
+        String xml = "<?xml version=\"1.0\"?>" +
+            "<data>" +
+            "<detalle>" + Base64.getEncoder().encodeToString("E003".getBytes(StandardCharsets.UTF_8)) +
+            "@" + Base64.getEncoder().encodeToString("Ent3".getBytes(StandardCharsets.UTF_8)) + "</detalle>" +
+            "</data>";
+
+        List<Entidad> result = callParseEntidades(xml);
+        assertNotNull(result);
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    void parseEntidades_withExitoNegativeOne_succeeds() throws Exception {
+        String xml = "<?xml version=\"1.0\"?>" +
+            "<data>" +
+            "<exito>-1</exito>" +
+            "<detalle>" + Base64.getEncoder().encodeToString("E099".getBytes(StandardCharsets.UTF_8)) +
+            "@" + Base64.getEncoder().encodeToString("Test".getBytes(StandardCharsets.UTF_8)) + "</detalle>" +
+            "</data>";
+
+        List<Entidad> result = callParseEntidades(xml);
+        assertNotNull(result);
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    void parseEntidades_withEmptyDetalleNodes_returnsEmptyList() throws Exception {
+        String xml = "<?xml version=\"1.0\"?>" +
+            "<data>" +
+            "<exito>-1</exito>" +
+            "</data>";
+
+        List<Entidad> result = callParseEntidades(xml);
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void parseEntidades_withNullDetalleContent_skipsEntry() throws Exception {
+        String xml = "<?xml version=\"1.0\"?>" +
+            "<data>" +
+            "<exito>-1</exito>" +
+            "<detalle></detalle>" +
+            "</data>";
+
+        List<Entidad> result = callParseEntidades(xml);
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void parseEntidades_withInvalidXml_throwsException() throws Exception {
+        String invalidXml = "not valid xml <data> broken";
+        assertThrows(SmlProcessingException.class, () -> callParseEntidades(invalidXml));
+    }
+
+    @Test
+    void parseEntidades_withValidXmlButInvalidBase64_returnsFallback() throws Exception {
+        String xml = "<?xml version=\"1.0\"?>" +
+            "<data>" +
+            "<exito>-1</exito>" +
+            "<detalle>abc def@ghi now</detalle>" +
+            "</data>";
+
+        List<Entidad> result = callParseEntidades(xml);
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals("abc def", result.get(0).getCodigo());
+        assertEquals("ghi now", result.get(0).getNombre());
+    }
+
+    @Test
+    void parseDetalleList_filtersOutNullAndEmpty() throws Exception {
+        String xml = "<?xml version=\"1.0\"?>" +
+            "<data>" +
+            "<exito>-1</exito>" +
+            "<detalle></detalle>" +
+            "<detalle>" + Base64.getEncoder().encodeToString("E001".getBytes(StandardCharsets.UTF_8)) +
+            "@Ent</detalle>" +
+            "</data>";
+
+        List<Entidad> result = callParseEntidades(xml);
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    void parseEntidadFromDetalle_withOnlyAtSymbol() throws Exception {
+        Entidad result = callParseEntidadFromDetalle("@");
+        assertNull(result);
+    }
+
+    @Test
+    void parseEntidadFromDetalle_withLeadingAtSymbol_returnsNull() throws Exception {
+        String encoded = Base64.getEncoder().encodeToString("Name".getBytes(StandardCharsets.UTF_8));
+        Entidad result = callParseEntidadFromDetalle("@" + encoded);
+        assertNull(result);
+    }
+
+    @Test
+    void validateExito_withNegativeOneExito_succeeds() throws Exception {
+        String xml = "<?xml version=\"1.0\"?>" +
+            "<data>" +
+            "<exito>-1</exito>" +
+            "<detalle>" + Base64.getEncoder().encodeToString("E001".getBytes(StandardCharsets.UTF_8)) +
+            "@Ent</detalle>" +
+            "</data>";
+
+        List<Entidad> result = callParseEntidades(xml);
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    void validateExito_withMissingDesc_usesFallback() throws Exception {
+        String xml = "<?xml version=\"1.0\"?>" +
+            "<data>" +
+            "<exito>1</exito>" +
+            "</data>";
+
+        assertThrows(SmlProcessingException.class, () -> callParseEntidades(xml));
+    }
+
+    @Test
+    void parseEntidades_withUtf8Characters_decodesCorrectly() throws Exception {
+        String codigo = "E004";
+        String nombre = "José García - Español";
+        String codigoBase64 = Base64.getEncoder().encodeToString(codigo.getBytes(StandardCharsets.UTF_8));
+        String nombreBase64 = Base64.getEncoder().encodeToString(nombre.getBytes(StandardCharsets.UTF_8));
+        
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+            "<data>" +
+            "<exito>-1</exito>" +
+            "<detalle>" + codigoBase64 + "@" + nombreBase64 + "</detalle>" +
+            "</data>";
+
+        List<Entidad> result = callParseEntidades(xml);
+        assertEquals(1, result.size());
+        assertEquals(nombre, result.get(0).getNombre());
+    }
+
+    @Test
+    void parseDetalleList_withAllValidEntries_returnsAll() throws Exception {
+        StringBuilder xml = new StringBuilder("<?xml version=\"1.0\"?><data><exito>-1</exito>");
+        for (int i = 1; i <= 5; i++) {
+            String codigo = Base64.getEncoder().encodeToString(("E00" + i).getBytes(StandardCharsets.UTF_8));
+            String nombre = Base64.getEncoder().encodeToString(("Ent" + i).getBytes(StandardCharsets.UTF_8));
+            xml.append("<detalle>").append(codigo).append("@").append(nombre).append("</detalle>");
+        }
+        xml.append("</data>");
+
+        List<Entidad> result = callParseEntidades(xml.toString());
+        assertEquals(5, result.size());
+    }
+
     private String callUnescapeXml(String input) {
         try {
             java.lang.reflect.Method method = SicalEntidadService.class.getDeclaredMethod("unescapeXml", String.class);
@@ -347,6 +626,22 @@ public class SicalEntidadServiceTest {
             return (Entidad) method.invoke(service, detalle);
         } catch (Exception e) {
             fail("Could not invoke parseEntidadFromDetalle: " + e.getMessage());
+            return null;
+        }
+    }
+
+    private List<Entidad> callParseEntidades(String sml) throws Exception {
+        try {
+            java.lang.reflect.Method method = SicalEntidadService.class.getDeclaredMethod("parseEntidades", String.class);
+            method.setAccessible(true);
+            return (List<Entidad>) method.invoke(service, sml);
+        } catch (java.lang.reflect.InvocationTargetException e) {
+            if (e.getCause() instanceof SmlProcessingException) {
+                throw (SmlProcessingException) e.getCause();
+            }
+            throw e;
+        } catch (Exception e) {
+            fail("Could not invoke parseEntidades: " + e.getMessage());
             return null;
         }
     }

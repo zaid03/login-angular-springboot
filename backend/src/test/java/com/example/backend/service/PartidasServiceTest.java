@@ -9,20 +9,19 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import com.example.backend.exception.XmlParsingException;
-import com.example.backend.exception.SmlProcessingException;
 
 import java.lang.reflect.Method;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
-public class OperacionesServiceTest {
+public class PartidasServiceTest {
 
-    private OperacionesService service;
+    private PartidasService service;
 
     @BeforeEach
     void setUp() {
-        service = new OperacionesService();
+        service = new PartidasService();
         ReflectionTestUtils.setField(service, "wsUrl", "http://test-sical-ws:8080/services/Ci?wsdl");
         ReflectionTestUtils.setField(service, "username", "testuser");
         ReflectionTestUtils.setField(service, "password", "testpass");
@@ -34,71 +33,68 @@ public class OperacionesServiceTest {
 
     @Test
     void searchCriteria_builder_withAllFields_constructsCorrectly() {
-        OperacionesService.SearchCriteria criteria = new OperacionesService.SearchCriteria.Builder()
-            .numeroOperDesde("100")
-            .numeroOperHasta("200")
-            .codigoOperacion("OP001")
-            .organica("ORG001")
-            .funcional("FUN001")
-            .economica("ECO001")
-            .expediente("EXP001")
-            .grupoApunte("GA001")
-            .oficina("OF001")
+        PartidasService.SearchCriteria criteria = new PartidasService.SearchCriteria.Builder()
+            .cenges("CG001")
+            .alias("ALIAS001")
+            .clorg("ORG001")
+            .clfun("FUN001")
+            .cleco("ECO001")
+            .clcte("CTE001")
+            .clpam("PAM001")
+            .usucenges("USER001")
             .build();
 
         assertNotNull(criteria);
-        assertEquals("100", criteria.numeroOperDesde);
-        assertEquals("200", criteria.numeroOperHasta);
-        assertEquals("OP001", criteria.codigoOperacion);
-        assertEquals("ORG001", criteria.organica);
-        assertEquals("FUN001", criteria.funcional);
-        assertEquals("ECO001", criteria.economica);
-        assertEquals("EXP001", criteria.expediente);
-        assertEquals("GA001", criteria.grupoApunte);
-        assertEquals("OF001", criteria.oficina);
+        assertEquals("CG001", criteria.cenges);
+        assertEquals("ALIAS001", criteria.alias);
+        assertEquals("ORG001", criteria.clorg);
+        assertEquals("FUN001", criteria.clfun);
+        assertEquals("ECO001", criteria.cleco);
+        assertEquals("CTE001", criteria.clcte);
+        assertEquals("PAM001", criteria.clpam);
+        assertEquals("USER001", criteria.usucenges);
     }
 
     @Test
     void searchCriteria_builder_withPartialFields_allowsNullValues() {
-        OperacionesService.SearchCriteria criteria = new OperacionesService.SearchCriteria.Builder()
-            .numeroOperDesde("100")
-            .codigoOperacion("OP001")
+        PartidasService.SearchCriteria criteria = new PartidasService.SearchCriteria.Builder()
+            .cenges("CG001")
+            .clorg("ORG001")
             .build();
 
         assertNotNull(criteria);
-        assertEquals("100", criteria.numeroOperDesde);
-        assertEquals("OP001", criteria.codigoOperacion);
-        assertNull(criteria.numeroOperHasta);
-        assertNull(criteria.organica);
+        assertEquals("CG001", criteria.cenges);
+        assertEquals("ORG001", criteria.clorg);
+        assertNull(criteria.alias);
+        assertNull(criteria.clfun);
     }
 
     @Test
     void searchCriteria_builder_withNoFields_constructsWithAllNulls() {
-        OperacionesService.SearchCriteria criteria = new OperacionesService.SearchCriteria.Builder()
+        PartidasService.SearchCriteria criteria = new PartidasService.SearchCriteria.Builder()
             .build();
 
         assertNotNull(criteria);
-        assertNull(criteria.numeroOperDesde);
-        assertNull(criteria.numeroOperHasta);
-        assertNull(criteria.codigoOperacion);
+        assertNull(criteria.cenges);
+        assertNull(criteria.alias);
+        assertNull(criteria.clorg);
     }
 
     @Test
     void searchCriteria_builderChaining_supportsFluentApi() {
-        OperacionesService.SearchCriteria criteria = new OperacionesService.SearchCriteria.Builder()
-            .numeroOperDesde("100")
-            .numeroOperHasta("200")
-            .codigoOperacion("OP001")
-            .organica("ORG001")
-            .funcional("FUN001")
-            .economica("ECO001")
-            .expediente("EXP001")
-            .grupoApunte("GA001")
-            .oficina("OF001")
+        PartidasService.SearchCriteria criteria = new PartidasService.SearchCriteria.Builder()
+            .cenges("CG001")
+            .alias("ALIAS001")
+            .clorg("ORG001")
+            .clfun("FUN001")
+            .cleco("ECO001")
+            .clcte("CTE001")
+            .clpam("PAM001")
+            .usucenges("USER001")
             .build();
 
         assertNotNull(criteria);
-        assertEquals(9, countNonNullFields(criteria));
+        assertEquals(8, countNonNullFields(criteria));
     }
 
     @Test
@@ -125,17 +121,16 @@ public class OperacionesServiceTest {
         assertEquals("E1", eje);
     }
 
-    private int countNonNullFields(OperacionesService.SearchCriteria criteria) {
+    private int countNonNullFields(PartidasService.SearchCriteria criteria) {
         int count = 0;
-        if (criteria.numeroOperDesde != null) count++;
-        if (criteria.numeroOperHasta != null) count++;
-        if (criteria.codigoOperacion != null) count++;
-        if (criteria.organica != null) count++;
-        if (criteria.funcional != null) count++;
-        if (criteria.economica != null) count++;
-        if (criteria.expediente != null) count++;
-        if (criteria.grupoApunte != null) count++;
-        if (criteria.oficina != null) count++;
+        if (criteria.cenges != null) count++;
+        if (criteria.alias != null) count++;
+        if (criteria.clorg != null) count++;
+        if (criteria.clfun != null) count++;
+        if (criteria.cleco != null) count++;
+        if (criteria.clcte != null) count++;
+        if (criteria.clpam != null) count++;
+        if (criteria.usucenges != null) count++;
         return count;
     }
 
@@ -199,17 +194,10 @@ public class OperacionesServiceTest {
 
     @Test
     void extractInnerXmlContent_handlesNestedXml() throws Exception {
-        String xml = "<servicioReturn><operacion><numope>123</numope></operacion></servicioReturn>";
+        String xml = "<servicioReturn><partida><alias>TEST</alias></partida></servicioReturn>";
         String result = invokeExtractInnerXmlContent(xml);
-        assertTrue(result.contains("<operacion>"));
-        assertTrue(result.contains("123"));
-    }
-
-    @Test
-    void extractInnerXmlContent_handlesMultipleServiceioReturn() throws Exception {
-        String xml = "<servicioReturn>first</servicioReturn><servicioReturn>second</servicioReturn>";
-        String result = invokeExtractInnerXmlContent(xml);
-        assertEquals("first", result);
+        assertTrue(result.contains("<partida>"));
+        assertTrue(result.contains("TEST"));
     }
 
     @Test
@@ -219,9 +207,9 @@ public class OperacionesServiceTest {
     }
 
     @Test
-    void toDouble_convertsCommaToDecimal() throws Exception {
-        Double result = invokeToDouble("123,45");
-        assertEquals(123.45, result);
+    void toDouble_handlesPeriodAsDecimal() throws Exception {
+        Double result = invokeToDouble("999.99");
+        assertEquals(999.99, result);
     }
 
     @Test
@@ -261,96 +249,12 @@ public class OperacionesServiceTest {
     }
 
     @Test
-    void toLong_parsesValidLong() throws Exception {
-        Long result = invokeToLong("12345");
-        assertEquals(12345L, result);
-    }
-
-    @Test
-    void toLong_returnsNullForNull() throws Exception {
-        Long result = invokeToLong(null);
-        assertNull(result);
-    }
-
-    @Test
-    void toLong_returnsNullForEmptyString() throws Exception {
-        Long result = invokeToLong("");
-        assertNull(result);
-    }
-
-    @Test
-    void toLong_returnsNullForMalformedString() throws Exception {
-        Long result = invokeToLong("not-a-number");
-        assertNull(result);
-    }
-
-    @Test
-    void toLong_handlesLargeNumbers() throws Exception {
-        Long result = invokeToLong("9223372036854775807");
-        assertEquals(9223372036854775807L, result);
-    }
-
-    @Test
-    void toLong_handlesNegativeNumbers() throws Exception {
-        Long result = invokeToLong("-12345");
-        assertEquals(-12345L, result);
-    }
-
-    @Test
-    void toLong_trimsWhitespace() throws Exception {
-        Long result = invokeToLong("  12345  ");
-        assertEquals(12345L, result);
-    }
-
-    @Test
-    void toInteger_parsesValidInteger() throws Exception {
-        Integer result = invokeToInteger("123");
-        assertEquals(123, result);
-    }
-
-    @Test
-    void toInteger_returnsNullForNull() throws Exception {
-        Integer result = invokeToInteger(null);
-        assertNull(result);
-    }
-
-    @Test
-    void toInteger_returnsNullForEmptyString() throws Exception {
-        Integer result = invokeToInteger("");
-        assertNull(result);
-    }
-
-    @Test
-    void toInteger_returnsNullForMalformedString() throws Exception {
-        Integer result = invokeToInteger("not-a-number");
-        assertNull(result);
-    }
-
-    @Test
-    void toInteger_handlesMaxIntValue() throws Exception {
-        Integer result = invokeToInteger("2147483647");
-        assertEquals(2147483647, result);
-    }
-
-    @Test
-    void toInteger_handlesNegativeNumbers() throws Exception {
-        Integer result = invokeToInteger("-123");
-        assertEquals(-123, result);
-    }
-
-    @Test
-    void toInteger_trimsWhitespace() throws Exception {
-        Integer result = invokeToInteger("  456  ");
-        assertEquals(456, result);
-    }
-
-    @Test
     void getTagValue_returnsTagContent() throws Exception {
-        String xml = "<root><name>John</name></root>";
+        String xml = "<root><alias>TEST_ALIAS</alias></root>";
         Document doc = parseXmlDom(xml);
         Element root = doc.getDocumentElement();
-        String result = invokeGetTagValue(root, "name");
-        assertEquals("John", result);
+        String result = invokeGetTagValue(root, "alias");
+        assertEquals("TEST_ALIAS", result);
     }
 
     @Test
@@ -364,29 +268,29 @@ public class OperacionesServiceTest {
 
     @Test
     void getTagValue_returnsFirstTagWhenMultiple() throws Exception {
-        String xml = "<root><item>first</item><item>second</item></root>";
+        String xml = "<root><alias>first</alias><alias>second</alias></root>";
         Document doc = parseXmlDom(xml);
         Element root = doc.getDocumentElement();
-        String result = invokeGetTagValue(root, "item");
+        String result = invokeGetTagValue(root, "alias");
         assertEquals("first", result);
     }
 
     @Test
     void getTagValue_returnsEmptyStringForEmptyTag() throws Exception {
-        String xml = "<root><name></name></root>";
+        String xml = "<root><alias></alias></root>";
         Document doc = parseXmlDom(xml);
         Element root = doc.getDocumentElement();
-        String result = invokeGetTagValue(root, "name");
+        String result = invokeGetTagValue(root, "alias");
         assertEquals("", result);
     }
 
     @Test
     void getTagValue_returnsNestedContent() throws Exception {
-        String xml = "<root><person><numope>12345</numope></person></root>";
+        String xml = "<root><partida><desc>partition description</desc></partida></root>";
         Document doc = parseXmlDom(xml);
         Element root = doc.getDocumentElement();
-        String result = invokeGetTagValue(root, "numope");
-        assertEquals("12345", result);
+        String result = invokeGetTagValue(root, "desc");
+        assertEquals("partition description", result);
     }
 
     @Test
@@ -416,9 +320,9 @@ public class OperacionesServiceTest {
         Document doc = parseXmlDom(xml);
         try {
             invokeValidateAndThrowIfError(doc);
-            fail("Expected SmlProcessingException");
+            fail("Expected SicalParseException");
         } catch (Exception ex) {
-            assertTrue(ex.getCause() instanceof SmlProcessingException || ex instanceof SmlProcessingException);
+            assertTrue(ex.getCause() instanceof PartidasService.SicalParseException || ex instanceof PartidasService.SicalParseException);
         }
     }
 
@@ -428,10 +332,10 @@ public class OperacionesServiceTest {
         Document doc = parseXmlDom(xml);
         try {
             invokeValidateAndThrowIfError(doc);
-            fail("Expected SmlProcessingException");
+            fail("Expected SicalParseException");
         } catch (Exception ex) {
             Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
-            assertTrue(cause instanceof SmlProcessingException);
+            assertTrue(cause instanceof PartidasService.SicalParseException);
             assertTrue(cause.getMessage().contains("Invalid data"));
         }
     }
@@ -442,9 +346,9 @@ public class OperacionesServiceTest {
         Document doc = parseXmlDom(xml);
         try {
             invokeValidateAndThrowIfError(doc);
-            fail("Expected SmlProcessingException");
+            fail("Expected SicalParseException");
         } catch (Exception ex) {
-            assertTrue(ex.getCause() instanceof SmlProcessingException || ex instanceof SmlProcessingException);
+            assertTrue(ex.getCause() instanceof PartidasService.SicalParseException || ex instanceof PartidasService.SicalParseException);
         }
     }
 
@@ -457,7 +361,7 @@ public class OperacionesServiceTest {
     }
 
     @Test
-    void parseXmlDocument_handsNestedElements() throws Exception {
+    void parseXmlDocument_handlesNestedElements() throws Exception {
         String xml = "<root><parent><child>text</child></parent></root>";
         Document doc = invokeParseXmlDocument(xml);
         assertNotNull(doc);
@@ -485,55 +389,43 @@ public class OperacionesServiceTest {
     }
 
     private String invokeUnescapeXmlEntities(String input) throws Exception {
-        Method method = OperacionesService.class.getDeclaredMethod("unescapeXmlEntities", String.class);
+        Method method = PartidasService.class.getDeclaredMethod("unescapeXmlEntities", String.class);
         method.setAccessible(true);
         return (String) method.invoke(service, input);
     }
 
     private String invokeExtractInnerXmlContent(String xml) throws Exception {
-        Method method = OperacionesService.class.getDeclaredMethod("extractInnerXmlContent", String.class);
+        Method method = PartidasService.class.getDeclaredMethod("extractInnerXmlContent", String.class);
         method.setAccessible(true);
         return (String) method.invoke(service, xml);
     }
 
     private Double invokeToDouble(String value) throws Exception {
-        Method method = OperacionesService.class.getDeclaredMethod("toDouble", String.class);
+        Method method = PartidasService.class.getDeclaredMethod("toDouble", String.class);
         method.setAccessible(true);
         return (Double) method.invoke(service, value);
     }
 
-    private Long invokeToLong(String value) throws Exception {
-        Method method = OperacionesService.class.getDeclaredMethod("toLong", String.class);
-        method.setAccessible(true);
-        return (Long) method.invoke(service, value);
-    }
-
-    private Integer invokeToInteger(String value) throws Exception {
-        Method method = OperacionesService.class.getDeclaredMethod("toInteger", String.class);
-        method.setAccessible(true);
-        return (Integer) method.invoke(service, value);
-    }
-
     private String invokeGetTagValue(Element parent, String tagName) throws Exception {
-        Method method = OperacionesService.class.getDeclaredMethod("getTagValue", Element.class, String.class);
+        Method method = PartidasService.class.getDeclaredMethod("getTagValue", Element.class, String.class);
         method.setAccessible(true);
         return (String) method.invoke(service, parent, tagName);
     }
 
     private void invokeValidateAndThrowIfError(Document doc) throws Exception {
-        Method method = OperacionesService.class.getDeclaredMethod("validateAndThrowIfError", Document.class);
+        Method method = PartidasService.class.getDeclaredMethod("validateAndThrowIfError", Document.class);
         method.setAccessible(true);
         method.invoke(service, doc);
     }
 
     private Document invokeParseXmlDocument(String xml) throws Exception {
-        Method method = OperacionesService.class.getDeclaredMethod("parseXmlDocument", String.class);
+        Method method = PartidasService.class.getDeclaredMethod("parseXmlDocument", String.class);
         method.setAccessible(true);
         return (Document) method.invoke(service, xml);
     }
 
     private Document parseXmlDom(String xml) throws Exception {
-        Method method = OperacionesService.class.getDeclaredMethod("parseXmlDocument", String.class);
+        Method method = PartidasService.class.getDeclaredMethod("parseXmlDocument", String.class);
         method.setAccessible(true);
         return (Document) method.invoke(service, xml);
     }

@@ -65,7 +65,6 @@ public class CgeControllerTest {
         Dpe d2 = new Dpe(); d2.setDEPCOD("S2");
         when(dpeRepository.findByENTAndEJEAndPERCOD(1, "E1", "U1")).thenReturn(List.of(d1, d2));
 
-        // Two deps with same CGECOD - should trigger merge
         Dep dep1 = new Dep(); dep1.setCGECOD("G1"); dep1.setDEPINT(1); dep1.setDEPALM(0); dep1.setDEPCOM(0);
         Dep dep2 = new Dep(); dep2.setCGECOD("G1"); dep2.setDEPINT(0); dep2.setDEPALM(2); dep2.setDEPCOM(0);
         when(depRepository.findByENTAndEJEAndDEPCODIn(1, "E1", List.of("S1","S2"))).thenReturn(List.of(dep1, dep2));
