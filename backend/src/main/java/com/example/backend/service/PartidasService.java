@@ -56,16 +56,70 @@ public class PartidasService {
         public final String clpam;
         public final String usucenges;
 
-        public SearchCriteria(String cenges, String alias, String clorg, String clfun,
-                String cleco, String clcte, String clpam, String usucenges) {
-            this.cenges = cenges;
-            this.alias = alias;
-            this.clorg = clorg;
-            this.clfun = clfun;
-            this.cleco = cleco;
-            this.clcte = clcte;
-            this.clpam = clpam;
-            this.usucenges = usucenges;
+        private SearchCriteria(Builder builder) {
+            this.cenges = builder.cenges;
+            this.alias = builder.alias;
+            this.clorg = builder.clorg;
+            this.clfun = builder.clfun;
+            this.cleco = builder.cleco;
+            this.clcte = builder.clcte;
+            this.clpam = builder.clpam;
+            this.usucenges = builder.usucenges;
+        }
+
+        public static class Builder {
+            private String cenges;
+            private String alias;
+            private String clorg;
+            private String clfun;
+            private String cleco;
+            private String clcte;
+            private String clpam;
+            private String usucenges;
+
+            public Builder cenges(String cenges) {
+                this.cenges = cenges;
+                return this;
+            }
+
+            public Builder alias(String alias) {
+                this.alias = alias;
+                return this;
+            }
+
+            public Builder clorg(String clorg) {
+                this.clorg = clorg;
+                return this;
+            }
+
+            public Builder clfun(String clfun) {
+                this.clfun = clfun;
+                return this;
+            }
+
+            public Builder cleco(String cleco) {
+                this.cleco = cleco;
+                return this;
+            }
+
+            public Builder clcte(String clcte) {
+                this.clcte = clcte;
+                return this;
+            }
+
+            public Builder clpam(String clpam) {
+                this.clpam = clpam;
+                return this;
+            }
+
+            public Builder usucenges(String usucenges) {
+                this.usucenges = usucenges;
+                return this;
+            }
+
+            public SearchCriteria build() {
+                return new SearchCriteria(this);
+            }
         }
     }
 
