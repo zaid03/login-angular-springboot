@@ -48,18 +48,6 @@ public class CogControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    void fetchCentroGestores_returns200WithList() throws Exception {
-
-        when(cogRepository.findAllByENTAndEJEAndCONCOD(1, "E1", 100))
-            .thenReturn(List.of());
-
-        mockMvc.perform(get("/api/cog/fetch-centros/1/E1/100")
-                .accept(MediaType.APPLICATION_JSON))
-            .andDo(print())
-            .andExpect(status().isNotFound());
-    }
-
-    @Test
     void fetchCentroGestores_returns404WhenEmpty() throws Exception {
         when(cogRepository.findAllByENTAndEJEAndCONCOD(1, "E1", 100))
             .thenReturn(List.of());
@@ -120,6 +108,23 @@ public class CogControllerTest {
     void deleteCentroGestore_returns404WhenNotFound() throws Exception {
         when(cogRepository.findByENTAndEJEAndCONCODAndCGECOD(1, "E1", 100, "C1"))
             .thenReturn(Optional.empty());
+
+        mockMvc.perform(delete("/api/cog/delete-centro/1/E1/100/C1"))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(content().string("Sin resultado"));
+    }
+
+    @Test
+    void deleteCentroGestore_returns404WhenCogaipIsNull() throws Exception {
+        COGAIPOnlyDto centro = new COGAIPOnlyDto() {
+            @Override
+            public Double getCOGAIP() {
+                return null;
+            }
+        };
+        when(cogRepository.findByENTAndEJEAndCONCODAndCGECOD(1, "E1", 100, "C1"))
+            .thenReturn(Optional.of(centro));
 
         mockMvc.perform(delete("/api/cog/delete-centro/1/E1/100/C1"))
             .andDo(print())
@@ -237,6 +242,32 @@ public class CogControllerTest {
         mockMvc.perform(patch("/api/cog/update-centro-D/1/E1/100/C1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(Map.of())))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Faltan datos obligatorios")));
+    }
+
+    @Test
+    void addDCentro_returns400WhenCogimpNull() throws Exception {
+        Map<String, Object> payload = Map.of(
+            "COGOPD", "D"
+        );
+        mockMvc.perform(patch("/api/cog/update-centro-D/1/E1/100/C1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Faltan datos obligatorios")));
+    }
+
+    @Test
+    void addDCentro_returns400WhenCogopDNull() throws Exception {
+        Map<String, Object> payload = Map.of(
+            "COGIMP", 150.0
+        );
+        mockMvc.perform(patch("/api/cog/update-centro-D/1/E1/100/C1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload)))
             .andDo(print())
             .andExpect(status().isBadRequest())
             .andExpect(content().string(containsString("Faltan datos obligatorios")));

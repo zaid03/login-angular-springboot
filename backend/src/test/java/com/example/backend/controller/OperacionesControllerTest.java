@@ -3,6 +3,7 @@ package com.example.backend.controller;
 import com.example.backend.config.TestSecurityConfig;
 import com.example.backend.dto.Operaciones;
 import com.example.backend.service.OperacionesService;
+import com.example.backend.exception.SmlProcessingException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -72,6 +73,20 @@ public class OperacionesControllerTest {
     }
 
     @Test
+    void shouldReturnSmlProcessingErrorWhenSmlException() throws Exception {
+        when(operacionesService.getOperaciones(any(OperacionesService.SearchCriteria.class)))
+            .thenThrow(new SmlProcessingException("SML processing failed"));
+
+        mockMvc.perform(get("/api/sical/operaciones")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isInternalServerError())
+            .andExpect(jsonPath("$.error").value("SML processing error: SML processing failed"));
+
+        verify(operacionesService).getOperaciones(any(OperacionesService.SearchCriteria.class));
+    }
+
+    @Test
     void shouldReturn500WhenServiceThrows() throws Exception {
         when(operacionesService.getOperaciones(any(OperacionesService.SearchCriteria.class)))
             .thenThrow(new RuntimeException("sical fail"));
@@ -81,5 +96,7 @@ public class OperacionesControllerTest {
             .andDo(print())
             .andExpect(status().isInternalServerError())
             .andExpect(jsonPath("$.error").value("sical fail"));
+
+        verify(operacionesService).getOperaciones(any(OperacionesService.SearchCriteria.class));
     }
 }

@@ -221,6 +221,43 @@ public class AsuControllerTest {
     }
 
     @Test
+    void updateSubFamilia_successfulUpdate() throws Exception {
+        AsuId id = new AsuId(1, "AF", "S1");
+        Asu existing = new Asu();
+        when(asuRepository.findById(id)).thenReturn(Optional.of(existing));
+
+        Map<String,Object> payload = Map.of("ASUDES", "updated desc", "ASUECO", "E", "MTACOD", 10);
+        mockMvc.perform(patch("/api/asu/update-subfamilia/1/AF/S1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload)))
+            .andDo(print())
+            .andExpect(status().isNoContent());
+
+        ArgumentCaptor<Asu> captor = ArgumentCaptor.forClass(Asu.class);
+        verify(asuRepository).save(captor.capture());
+        assertEquals("updated desc", captor.getValue().getASUDES());
+        assertEquals("E", captor.getValue().getASUECO());
+        assertEquals(10, captor.getValue().getMTACOD());
+    }
+
+    @Test
+    void updateSubFamilia_returns400OnSaveException() throws Exception {
+        AsuId id = new AsuId(1, "AF", "S1");
+        Asu existing = new Asu();
+        when(asuRepository.findById(id)).thenReturn(Optional.of(existing));
+        when(asuRepository.save(Mockito.<Asu>any()))
+            .thenThrow(new DataAccessResourceFailureException("DB down"));
+
+        Map<String,Object> payload = Map.of("ASUDES", "new", "ASUECO", "E", "MTACOD", 5);
+        mockMvc.perform(patch("/api/asu/update-subfamilia/1/AF/S1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Error :")));
+    }
+
+    @Test
     void updateSubFamilia_notFoundAndDbError() throws Exception {
         AsuId id = new AsuId(2, "AF", "NX");
         when(asuRepository.findById(id)).thenReturn(Optional.empty());
@@ -379,5 +416,20 @@ public class AsuControllerTest {
             .andDo(print())
             .andExpect(status().isConflict())
             .andExpect(content().string(containsString("Sin resultado")));
+    }
+
+    @Test
+    void insertSub_returns400OnSaveException() throws Exception {
+        Map<String,Object> payload = Map.of("ent", 1, "afacod", "A", "asucod", "X", "asudes", "D", "asueco", "E", "mtacod", 1);
+        when(asuRepository.findByENTAndAFACODAndASUCOD(1, "A", "X")).thenReturn(List.of());
+        when(asuRepository.save(Mockito.<Asu>any()))
+            .thenThrow(new DataAccessResourceFailureException("DB down during insert"));
+
+        mockMvc.perform(post("/api/asu/Insert-Subfamilia")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Error :")));
     }
 }

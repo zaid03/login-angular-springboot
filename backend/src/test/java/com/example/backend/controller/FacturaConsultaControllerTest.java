@@ -286,4 +286,135 @@ public class FacturaConsultaControllerTest {
             .andExpect(status().isBadRequest())
             .andExpect(content().string("Error desconocido"));
     }
+
+    @Test
+    void consultaFacturas_returns500WhenSoapIsNull() throws Exception {
+        String smlInput = "<sml>test input</sml>";
+
+        when(facturaConsultaService.buildSmlInput(any(FacturaConsultaRequestDto.class)))
+            .thenReturn(smlInput);
+        when(facturaConsultaService.sendSmlRequest(smlInput, "http://ws.url"))
+            .thenReturn(null);
+
+        String requestJson = objectMapper.writeValueAsString(Map.of(
+            "webserviceUrl", "http://ws.url"
+        ));
+
+        mockMvc.perform(post("/api/facturas/consulta")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson))
+            .andDo(print())
+            .andExpect(status().isInternalServerError())
+            .andExpect(content().string("Respuesta SOAP inválida"));
+    }
+
+    @Test
+    void consultaFacturas_returns500WhenSoapIsBlank() throws Exception {
+        String smlInput = "<sml>test input</sml>";
+
+        when(facturaConsultaService.buildSmlInput(any(FacturaConsultaRequestDto.class)))
+            .thenReturn(smlInput);
+        when(facturaConsultaService.sendSmlRequest(smlInput, "http://ws.url"))
+            .thenReturn("   ");
+
+        String requestJson = objectMapper.writeValueAsString(Map.of(
+            "webserviceUrl", "http://ws.url"
+        ));
+
+        mockMvc.perform(post("/api/facturas/consulta")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson))
+            .andDo(print())
+            .andExpect(status().isInternalServerError())
+            .andExpect(content().string("Respuesta SOAP inválida"));
+    }
+
+    @Test
+    void consultaFacturas_returns500WhenServicioReturnMissing() throws Exception {
+        String smlInput = "<sml>test input</sml>";
+        String soapResponse = """
+            <soap:Envelope>
+              <soap:Body>
+                <invalidTag>content</invalidTag>
+              </soap:Body>
+            </soap:Envelope>
+            """;
+
+        when(facturaConsultaService.buildSmlInput(any(FacturaConsultaRequestDto.class)))
+            .thenReturn(smlInput);
+        when(facturaConsultaService.sendSmlRequest(smlInput, "http://ws.url"))
+            .thenReturn(soapResponse);
+
+        String requestJson = objectMapper.writeValueAsString(Map.of(
+            "webserviceUrl", "http://ws.url"
+        ));
+
+        mockMvc.perform(post("/api/facturas/consulta")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson))
+            .andDo(print())
+            .andExpect(status().isInternalServerError())
+            .andExpect(content().string("Respuesta SOAP inválida"));
+    }
+
+    @Test
+    void consultaFacturas_returns500WhenServicioReturnMalformed() throws Exception {
+        String smlInput = "<sml>test input</sml>";
+        String soapResponse = """
+            <soap:Envelope>
+              <soap:Body>
+                <servicioReturn></servicioReturn>
+              </soap:Body>
+            </soap:Envelope>
+            """;
+
+        when(facturaConsultaService.buildSmlInput(any(FacturaConsultaRequestDto.class)))
+            .thenReturn(smlInput);
+        when(facturaConsultaService.sendSmlRequest(smlInput, "http://ws.url"))
+            .thenReturn(soapResponse);
+
+        String requestJson = objectMapper.writeValueAsString(Map.of(
+            "webserviceUrl", "http://ws.url"
+        ));
+
+        mockMvc.perform(post("/api/facturas/consulta")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson))
+            .andDo(print())
+            .andExpect(status().isInternalServerError())
+            .andExpect(content().string(containsString("XML parsing error")));
+    }
+
+    @Test
+    void consultaFacturas_returns400WhenExitoHasNoTextContent() throws Exception {
+        String smlInput = "<sml>test input</sml>";
+        String soapResponse = """
+            <soap:Envelope>
+              <soap:Body>
+                <servicioReturn>
+                  &lt;response&gt;
+                    &lt;exito&gt;&lt;/exito&gt;
+                    &lt;desc&gt;Error description&lt;/desc&gt;
+                  &lt;/response&gt;
+                </servicioReturn>
+              </soap:Body>
+            </soap:Envelope>
+            """;
+
+        when(facturaConsultaService.buildSmlInput(any(FacturaConsultaRequestDto.class)))
+            .thenReturn(smlInput);
+        when(facturaConsultaService.sendSmlRequest(smlInput, "http://ws.url"))
+            .thenReturn(soapResponse);
+
+        String requestJson = objectMapper.writeValueAsString(Map.of(
+            "webserviceUrl", "http://ws.url"
+        ));
+
+        mockMvc.perform(post("/api/facturas/consulta")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string("Error description"));
+    }
 }

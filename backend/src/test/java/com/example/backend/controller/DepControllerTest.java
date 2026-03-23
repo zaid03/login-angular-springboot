@@ -91,6 +91,25 @@ public class DepControllerTest {
     }
 
     @Test
+    void fetchServicesPersona_returns200WithList() throws Exception {
+        DepWithCgeView d = new DepWithCgeView() {
+            @Override public String getDEPCOD() { return "D1"; }
+            @Override public String getDEPDES() { return "Service 1"; }
+            @Override public Integer getDEPALM() { return 1; }
+            @Override public Integer getDEPCOM() { return 0; }
+            @Override public Integer getDEPINT() { return 0; }
+            @Override public String getCGECOD() { return "G1"; }
+        };
+        when(depRepository.findByENTAndEJEAndDpes_PERCOD(1, "E1", "U1")).thenReturn(List.of(d));
+
+        mockMvc.perform(get("/api/dep/fetch-services-persona/1/E1/U1")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(1)));
+    }
+
+    @Test
     void fetchServicesPersona_returns404WhenEmpty() throws Exception {
         when(depRepository.findByENTAndEJEAndDpes_PERCOD(1, "E1", "U1")).thenReturn(List.of());
 
@@ -157,15 +176,37 @@ public class DepControllerTest {
     }
 
     @Test
-    void updateCentro_returns400OnDataAccessException() throws Exception {
+    void updateCentro_returns400OnSaveException() throws Exception {
         Dep existing = new Dep();
         when(depRepository.findById(new DepId(1, "E1", "D1"))).thenReturn(Optional.of(existing));
         when(depRepository.save(Mockito.<Dep>any()))
-            .thenThrow(new DataAccessResourceFailureException("DB error"));
+            .thenThrow(new DataAccessResourceFailureException("DB error during save"));
 
-        Map<String,Object> payload = Map.of("depdes", "n", "depalm", 1, "depcom", 1, "depint", 0);
+        Map<String,Object> payload = Map.of("depdes", "new", "depalm", 1, "depcom", 0, "depint", 0);
 
         mockMvc.perform(patch("/api/dep/update-service/1/E1/D1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Error :")));
+    }
+
+    @Test
+    void updateServiceSecond_returns400OnSaveException() throws Exception {
+        Dep existing = new Dep();
+        when(depRepository.findById(new DepId(1, "E1", "D2"))).thenReturn(Optional.of(existing));
+        when(depRepository.save(Mockito.<Dep>any()))
+            .thenThrow(new DataAccessResourceFailureException("DB error during save"));
+
+        Map<String,Object> payload = Map.of(
+            "depd1c", "a","depd1d","b",
+            "depd2c","c","depd2d","d",
+            "depd3c","e","depd3d","f",
+            "depdco","g","depden","h"
+        );
+
+        mockMvc.perform(patch("/api/dep/update-service-second/1/E1/D2")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(payload)))
             .andDo(print())

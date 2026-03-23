@@ -377,7 +377,8 @@ public class ConControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(payload))
             .andDo(print())
-            .andExpect(status().isInternalServerError());
+            .andExpect(status().isInternalServerError())
+            .andExpect(content().string(org.hamcrest.Matchers.containsString("Error :")));
     }
 
     @Test
@@ -514,6 +515,33 @@ public class ConControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(payload))
             .andDo(print())
-            .andExpect(status().isInternalServerError());
+            .andExpect(status().isInternalServerError())
+            .andExpect(content().string(org.hamcrest.Matchers.containsString("Error :")));
+    }
+
+    @Test
+    void addContrato_nexConcodWithNullConcod() throws Exception {
+        when(conRepository.findFirstByENTAndEJEOrderByCONCODDesc(1, "E1"))
+            .thenReturn(Optional.of(new Conn() {{ setCONCOD(null); }}));
+
+        String payload = objectMapper.writeValueAsString(Map.of(
+            "ENT", 1,
+            "EJE", "E1",
+            "CONLOT", "LOT001",
+            "CONBLO", 0,
+            "CONFIN", "2026-03-21T10:00:00",
+            "CONFFI", "2026-03-21T10:00:00",
+            "CONDES", "New Contract",
+            "TERCOD", 200
+        ));
+
+        mockMvc.perform(post("/api/con/add-contrato")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payload))
+            .andDo(print())
+            .andExpect(status().isNoContent());
+
+        verify(conRepository).save(any(Conn.class));
+        verify(cotRepository).save(any(Cot.class));
     }
 }
