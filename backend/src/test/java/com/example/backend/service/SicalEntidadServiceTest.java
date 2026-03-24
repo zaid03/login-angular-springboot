@@ -597,6 +597,163 @@ public class SicalEntidadServiceTest {
         assertEquals(5, result.size());
     }
 
+    @Test
+    void unescapeXml_handlesConsecutiveEntities() {
+        String input = "&lt;&gt;&amp;&quot;&apos;";
+        String result = callUnescapeXml(input);
+        assertEquals("<>&\"'", result);
+    }
+
+    @Test
+    void unescapeXml_replacesMixedEntities() {
+        String input = "Start &lt;tag&gt; with &amp; end";
+        String result = callUnescapeXml(input);
+        assertEquals("Start <tag> with & end", result);
+    }
+
+    @Test
+    void decodeBase64Safe_withSpecialUtf8() {
+        String original = "España-Português-Français";
+        String encoded = Base64.getEncoder().encodeToString(original.getBytes(StandardCharsets.UTF_8));
+        String result = callDecodeBase64Safe(encoded);
+        assertEquals(original, result);
+    }
+
+    @Test
+    void decodeBase64Safe_withSymbols() {
+        String original = "!@#$%^&*()";
+        String encoded = Base64.getEncoder().encodeToString(original.getBytes(StandardCharsets.UTF_8));
+        String result = callDecodeBase64Safe(encoded);
+        assertEquals(original, result);
+    }
+
+    @Test
+    void parseEntidadFromDetalle_withUrlEncodedValues() {
+        String detalle = "E%20Code@E%20Name";
+        Entidad result = callParseEntidadFromDetalle(detalle);
+        assertNotNull(result);
+        assertEquals("E%20Code", result.getCodigo());
+        assertEquals("E%20Name", result.getNombre());
+    }
+
+    @Test
+    void parseEntidades_withXmlNamespaces() throws Exception {
+        String xml = "<?xml version=\"1.0\"?>" +
+            "<ns:data xmlns:ns=\"http://example.com\">" +
+            "<exito>-1</exito>" +
+            "<detalle>" + Base64.getEncoder().encodeToString("E001".getBytes(StandardCharsets.UTF_8)) +
+            "@" + Base64.getEncoder().encodeToString("Test".getBytes(StandardCharsets.UTF_8)) + "</detalle>" +
+            "</ns:data>";
+
+        List<Entidad> result = callParseEntidades(xml);
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    void parseEntidades_withLargeDataset() throws Exception {
+        StringBuilder xml = new StringBuilder("<?xml version=\"1.0\"?><data><exito>-1</exito>");
+        final int LARGE_COUNT = 50;
+        for (int i = 0; i < LARGE_COUNT; i++) {
+            String cod = "E" + String.format("%04d", i);
+            String name = "Entity " + i;
+            String codB64 = Base64.getEncoder().encodeToString(cod.getBytes(StandardCharsets.UTF_8));
+            String nameB64 = Base64.getEncoder().encodeToString(name.getBytes(StandardCharsets.UTF_8));
+            xml.append("<detalle>").append(codB64).append("@").append(nameB64).append("</detalle>");
+        }
+        xml.append("</data>");
+
+        List<Entidad> result = callParseEntidades(xml.toString());
+        assertEquals(LARGE_COUNT, result.size());
+    }
+
+    @Test
+    void parseEntidades_errorMessageForExito() throws Exception {
+        String xml = "<?xml version=\"1.0\"?>" +
+            "<data>" +
+            "<exito>1</exito>" +
+            "<desc>Authentication failed</desc>" +
+            "</data>";
+
+        SmlProcessingException ex = assertThrows(SmlProcessingException.class, () -> callParseEntidades(xml));
+        assertTrue(ex.getMessage().contains("SICAL error"));
+    }
+
+    @Test
+    void service_propertiesNotNull() {
+        assertNotNull(ReflectionTestUtils.getField(service, "wsUrl"));
+        assertNotNull(ReflectionTestUtils.getField(service, "username"));
+        assertNotNull(ReflectionTestUtils.getField(service, "password"));
+        assertNotNull(ReflectionTestUtils.getField(service, "publicKey"));
+        assertNotNull(ReflectionTestUtils.getField(service, "orgCode"));
+        assertNotNull(ReflectionTestUtils.getField(service, "entidad"));
+        assertNotNull(ReflectionTestUtils.getField(service, "eje"));
+    }
+
+    @Test
+    void parseDetalleList_withMixedValidAndInvalid() throws Exception {
+        String xml = "<?xml version=\"1.0\"?>" +
+            "<data>" +
+            "<exito>-1</exito>" +
+            "<detalle></detalle>" +
+            "<detalle>" + Base64.getEncoder().encodeToString("E100".getBytes(StandardCharsets.UTF_8)) +
+            "@" + Base64.getEncoder().encodeToString("Valid1".getBytes(StandardCharsets.UTF_8)) + "</detalle>" +
+            "<detalle></detalle>" +
+            "<detalle>" + Base64.getEncoder().encodeToString("E101".getBytes(StandardCharsets.UTF_8)) +
+            "@" + Base64.getEncoder().encodeToString("Valid2".getBytes(StandardCharsets.UTF_8)) + "</detalle>" +
+            "</data>";
+
+        List<Entidad> result = callParseEntidades(xml);
+        assertEquals(2, result.size());
+    }
+
+    @Test
+    void unescapeXml_ordersOfOperations() {
+        String input = "&amp;lt;&amp;gt;&amp;amp;";
+        String result = callUnescapeXml(input);
+        assertEquals("&lt;&gt;&amp;", result);
+    }
+
+    @Test
+    void decodeBase64Safe_emptyAfterDecode() {
+        String encoded = Base64.getEncoder().encodeToString("".getBytes(StandardCharsets.UTF_8));
+        String result = callDecodeBase64Safe(encoded);
+        assertEquals("", result);
+    }
+
+    @Test
+    void parseEntidades_withComments() throws Exception {
+        String xml = "<?xml version=\"1.0\"?>" +
+            "<data><!-- Comment -->" +
+            "<exito>-1</exito>" +
+            "<detalle>" + Base64.getEncoder().encodeToString("E200".getBytes(StandardCharsets.UTF_8)) +
+            "@" + Base64.getEncoder().encodeToString("WithComments".getBytes(StandardCharsets.UTF_8)) + "</detalle>" +
+            "</data>";
+
+        List<Entidad> result = callParseEntidades(xml);
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    void parseEntidades_withCData() throws Exception {
+        String codigo = Base64.getEncoder().encodeToString("E300".getBytes(StandardCharsets.UTF_8));
+        String nombre = Base64.getEncoder().encodeToString("CDataTest".getBytes(StandardCharsets.UTF_8));
+        String xml = "<?xml version=\"1.0\"?>" +
+            "<data>" +
+            "<exito>-1</exito>" +
+            "<detalle><![CDATA[" + codigo + "@" + nombre + "]]></detalle>" +
+            "</data>";
+
+        List<Entidad> result = callParseEntidades(xml);
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    void parseEntidades_throwsWithoutValidExitoHandling() throws Exception {
+        String xml = "<?xml version=\"1.0\"?><data><exito>2</exito><desc>Unknown error</desc></data>";
+        SmlProcessingException ex = assertThrows(SmlProcessingException.class, () -> callParseEntidades(xml));
+        assertTrue(ex.getMessage().contains("SICAL error"));
+    }
+
     private String callUnescapeXml(String input) {
         try {
             java.lang.reflect.Method method = SicalEntidadService.class.getDeclaredMethod("unescapeXml", String.class);

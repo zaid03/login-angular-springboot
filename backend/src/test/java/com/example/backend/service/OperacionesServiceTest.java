@@ -537,4 +537,76 @@ public class OperacionesServiceTest {
         method.setAccessible(true);
         return (Document) method.invoke(service, xml);
     }
+
+    @Test
+    void createOperacionFromElement_populatesBasicFields() throws Exception {
+        String xml = "<operacion>" +
+            "<numope>12345</numope>" +
+            "<codope>OP001</codope>" +
+            "<signo>+</signo>" +
+            "</operacion>";
+        Document doc = parseXmlDom(xml);
+        Element opEl = doc.getDocumentElement();
+        
+        assertDoesNotThrow(() -> invokeCreateOperacionFromElement(opEl));
+    }
+
+    @Test
+    void createOperacionFromElement_populatesAllNumericFields() throws Exception {
+        String xml = "<operacion>" +
+            "<numope>999</numope>" +
+            "<numcaja>555</numcaja>" +
+            "<terite>111</terite>" +
+            "<importe>1000.50</importe>" +
+            "</operacion>";
+        Document doc = parseXmlDom(xml);
+        Element opEl = doc.getDocumentElement();
+        
+        assertDoesNotThrow(() -> invokeCreateOperacionFromElement(opEl));
+    }
+
+    @Test
+    void createOperacionFromElement_handlesNullOptionalFields() throws Exception {
+        String xml = "<operacion><numope>123</numope></operacion>";
+        Document doc = parseXmlDom(xml);
+        Element opEl = doc.getDocumentElement();
+        
+        assertDoesNotThrow(() -> invokeCreateOperacionFromElement(opEl));
+    }
+
+    @Test
+    void decodeOrNull_returnsNullForNull() throws Exception {
+        String result = invokeDecodeOrNull(null);
+        assertNull(result);
+    }
+
+    @Test
+    void decodeOrNull_returnsNullForBlank() throws Exception {
+        String result = invokeDecodeOrNull("");
+        assertNull(result);
+    }
+
+    @Test
+    void decodeOrNull_returnsNullForWhitespace() throws Exception {
+        String result = invokeDecodeOrNull("   ");
+        assertNull(result);
+    }
+
+    @Test
+    void decodeOrNull_returnsValueWhenNotBlank() throws Exception {
+        String result = invokeDecodeOrNull("TEST");
+        assertNotNull(result);
+    }
+
+    private Object invokeCreateOperacionFromElement(Element opEl) throws Exception {
+        Method method = OperacionesService.class.getDeclaredMethod("createOperacionFromElement", Element.class);
+        method.setAccessible(true);
+        return method.invoke(service, opEl);
+    }
+
+    private String invokeDecodeOrNull(String value) throws Exception {
+        Method method = OperacionesService.class.getDeclaredMethod("decodeOrNull", String.class);
+        method.setAccessible(true);
+        return (String) method.invoke(service, value);
+    }
 }

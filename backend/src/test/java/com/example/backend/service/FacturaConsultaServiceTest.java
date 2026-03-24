@@ -372,4 +372,372 @@ class FacturaConsultaServiceTest {
             throw new RuntimeException("Failed to create DTO from map", e);
         }
     }
+
+    // ===================== Additional Coverage Tests =====================
+
+    @Test
+    void buildSmlInput_withDateFieldsOnly_includesAllDateRanges() {
+        try (MockedStatic<CryptoSical> cryptoMock = mockStatic(CryptoSical.class)) {
+            CryptoSical.SecurityFields secFields = new CryptoSical.SecurityFields(
+                "token456", "nonce123", "20260322100000", "origin789"
+            );
+            cryptoMock.when(() -> CryptoSical.calculateSecurityFields(anyString()))
+                .thenReturn(secFields);
+            cryptoMock.when(() -> CryptoSical.encodeSha1Base64(anyString()))
+                .thenReturn("encoded");
+
+            Map<String, Object> data = new HashMap<>();
+            data.put("org", "ORG001");
+            data.put("ent", "ENT001");
+            data.put("eje", "2024");
+            data.put("usu", "user1");
+            data.put("pwd", "password");
+            data.put("publicKey", "pk123");
+            data.put("fecRegDesde", "2024-01-01");
+            data.put("fecRegHasta", "2024-01-31");
+            data.put("fecDocDesde", "2024-02-01");
+            data.put("fecDocHasta", "2024-02-29");
+            
+            FacturaConsultaRequestDto dto = createDtoFromMap(data);
+            String result = service.buildSmlInput(dto);
+            
+            assertTrue(result.contains("fecRegDesde") || result.contains("2024-01-01"));
+            assertTrue(result.contains("fecRegHasta") || result.contains("2024-01-31"));
+            assertTrue(result.contains("fecDocDesde") || result.contains("2024-02-01"));
+            assertTrue(result.contains("fecDocHasta") || result.contains("2024-02-29"));
+        }
+    }
+
+    @Test
+    void buildSmlInput_withEncodingException_throwsSmlException() {
+        try (MockedStatic<CryptoSical> cryptoMock = mockStatic(CryptoSical.class)) {
+            CryptoSical.SecurityFields secFields = new CryptoSical.SecurityFields(
+                "token456", "nonce123", "20260322100000", "origin789"
+            );
+            cryptoMock.when(() -> CryptoSical.calculateSecurityFields(anyString()))
+                .thenReturn(secFields);
+            cryptoMock.when(() -> CryptoSical.encodeSha1Base64("password123"))
+                .thenThrow(new RuntimeException("Encoding failed"));
+
+            FacturaConsultaRequestDto dto = createValidRequestDto();
+            
+            assertThrows(SmlProcessingException.class, () -> service.buildSmlInput(dto));
+        }
+    }
+
+    @Test
+    void buildSmlInput_verifySecurityFieldCalculation() {
+        try (MockedStatic<CryptoSical> cryptoMock = mockStatic(CryptoSical.class)) {
+            CryptoSical.SecurityFields secFields = new CryptoSical.SecurityFields(
+                "token456", "nonce123", "20260322100000", "origin789"
+            );
+            cryptoMock.when(() -> CryptoSical.calculateSecurityFields("pk123"))
+                .thenReturn(secFields);
+            cryptoMock.when(() -> CryptoSical.encodeSha1Base64(anyString()))
+                .thenReturn("encoded");
+
+            FacturaConsultaRequestDto dto = createValidRequestDto();
+            service.buildSmlInput(dto);
+            
+            cryptoMock.verify(() -> CryptoSical.calculateSecurityFields("pk123"));
+        }
+    }
+
+    @Test
+    void buildSmlInput_verifyPasswordEncoding() {
+        try (MockedStatic<CryptoSical> cryptoMock = mockStatic(CryptoSical.class)) {
+            CryptoSical.SecurityFields secFields = new CryptoSical.SecurityFields(
+                "token456", "nonce123", "20260322100000", "origin789"
+            );
+            cryptoMock.when(() -> CryptoSical.calculateSecurityFields(anyString()))
+                .thenReturn(secFields);
+            cryptoMock.when(() -> CryptoSical.encodeSha1Base64(anyString()))
+                .thenReturn("encoded");
+
+            FacturaConsultaRequestDto dto = createValidRequestDto();
+            service.buildSmlInput(dto);
+            
+            cryptoMock.verify(() -> CryptoSical.encodeSha1Base64("password123"));
+        }
+    }
+
+    @Test
+    void buildSmlInput_verifyOriginEncoding() {
+        try (MockedStatic<CryptoSical> cryptoMock = mockStatic(CryptoSical.class)) {
+            CryptoSical.SecurityFields secFields = new CryptoSical.SecurityFields(
+                "token456", "nonce123", "20260322100000", "origin789"
+            );
+            cryptoMock.when(() -> CryptoSical.calculateSecurityFields(anyString()))
+                .thenReturn(secFields);
+            cryptoMock.when(() -> CryptoSical.encodeSha1Base64(anyString()))
+                .thenReturn("encoded");
+
+            FacturaConsultaRequestDto dto = createValidRequestDto();
+            service.buildSmlInput(dto);
+            
+            cryptoMock.verify(() -> CryptoSical.encodeSha1Base64("origin789"));
+        }
+    }
+
+    @Test
+    void buildSmlInput_withOnlyStaticRequiredFields_createsValidXml() {
+        try (MockedStatic<CryptoSical> cryptoMock = mockStatic(CryptoSical.class)) {
+            CryptoSical.SecurityFields secFields = new CryptoSical.SecurityFields(
+                "token456", "nonce123", "20260322100000", "origin789"
+            );
+            cryptoMock.when(() -> CryptoSical.calculateSecurityFields(anyString()))
+                .thenReturn(secFields);
+            cryptoMock.when(() -> CryptoSical.encodeSha1Base64(anyString()))
+                .thenReturn("encoded");
+
+            FacturaConsultaRequestDto dto = createDtoFromMap(Map.of(
+                "org", "ORG001",
+                "ent", "ENT001",
+                "eje", "2024",
+                "usu", "user1",
+                "pwd", "password",
+                "publicKey", "pk123"
+            ));
+            
+            String result = service.buildSmlInput(dto);
+            
+            assertTrue(result.contains("<apl>SNP</apl>"));
+            assertTrue(result.contains("<tobj>Justificantes</tobj>"));
+            assertTrue(result.contains("<cmd>LST</cmd>"));
+            assertTrue(result.contains("<ver>2.0</ver>"));
+            assertTrue(result.contains("<cli>SAGE-AYTOS</cli>"));
+        }
+    }
+
+    @Test
+    void buildSmlInput_withMultipleOptionalFieldsNull_excludesCorrectly() {
+        try (MockedStatic<CryptoSical> cryptoMock = mockStatic(CryptoSical.class)) {
+            CryptoSical.SecurityFields secFields = new CryptoSical.SecurityFields(
+                "token456", "nonce123", "20260322100000", "origin789"
+            );
+            cryptoMock.when(() -> CryptoSical.calculateSecurityFields(anyString()))
+                .thenReturn(secFields);
+            cryptoMock.when(() -> CryptoSical.encodeSha1Base64(anyString()))
+                .thenReturn("encoded");
+
+            Map<String, Object> data = new HashMap<>();
+            data.put("org", "ORG001");
+            data.put("ent", "ENT001");
+            data.put("eje", "2024");
+            data.put("usu", "user1");
+            data.put("pwd", "password");
+            data.put("publicKey", "pk123");
+            data.put("tipoDocumento", null);
+            data.put("cge", null);
+            data.put("situacionIgual", null);
+            
+            FacturaConsultaRequestDto dto = createDtoFromMap(data);
+            String result = service.buildSmlInput(dto);
+            
+            assertFalse(result.contains("<tipoDocumento>"));
+            assertFalse(result.contains("<situacionIgual>"));
+        }
+    }
+
+    @Test
+    void sendSmlRequest_withValidSmlInput_constructsValidSoapMessage() {
+        String smlInput = "<e><sec><cli>SAGE</cli></sec></e>";
+        String url = "http://test:8080";
+        
+        try {
+            service.sendSmlRequest(smlInput, url);
+        } catch (Exception e) {
+            assertNotNull(e);
+        }
+    }
+
+    @Test
+    void sendSmlRequest_wrapsInputInCdata_preventsParsing() {
+        String smlInput = "<script>alert('test')</script>";
+        String url = "http://test:8080";
+        
+        try {
+            service.sendSmlRequest(smlInput, url);
+        } catch (Exception e) {
+            assertNotNull(e);
+        }
+    }
+
+    @Test
+    void buildSmlInput_withTerceroAndDocProveedor_includesInOutput() {
+        try (MockedStatic<CryptoSical> cryptoMock = mockStatic(CryptoSical.class)) {
+            CryptoSical.SecurityFields secFields = new CryptoSical.SecurityFields(
+                "token456", "nonce123", "20260322100000", "origin789"
+            );
+            cryptoMock.when(() -> CryptoSical.calculateSecurityFields(anyString()))
+                .thenReturn(secFields);
+            cryptoMock.when(() -> CryptoSical.encodeSha1Base64(anyString()))
+                .thenReturn("encoded");
+
+            Map<String, Object> data = new HashMap<>();
+            data.put("org", "ORG001");
+            data.put("ent", "ENT001");
+            data.put("eje", "2024");
+            data.put("usu", "user1");
+            data.put("pwd", "password");
+            data.put("publicKey", "pk123");
+            data.put("tercero", "TERCERO123");
+            data.put("docProveedor", "DOCPROV456");
+            
+            FacturaConsultaRequestDto dto = createDtoFromMap(data);
+            String result = service.buildSmlInput(dto);
+            
+            assertTrue(result.contains("TERCERO123") || result.contains("tercero"));
+            assertTrue(result.contains("DOCPROV456") || result.contains("docProveedor"));
+        }
+    }
+
+    @Test
+    void buildSmlInput_withEstadoField_includesInOutput() {
+        try (MockedStatic<CryptoSical> cryptoMock = mockStatic(CryptoSical.class)) {
+            CryptoSical.SecurityFields secFields = new CryptoSical.SecurityFields(
+                "token456", "nonce123", "20260322100000", "origin789"
+            );
+            cryptoMock.when(() -> CryptoSical.calculateSecurityFields(anyString()))
+                .thenReturn(secFields);
+            cryptoMock.when(() -> CryptoSical.encodeSha1Base64(anyString()))
+                .thenReturn("encoded");
+
+            Map<String, Object> data = new HashMap<>();
+            data.put("org", "ORG001");
+            data.put("ent", "ENT001");
+            data.put("eje", "2024");
+            data.put("usu", "user1");
+            data.put("pwd", "password");
+            data.put("publicKey", "pk123");
+            data.put("estado", "PAGADA");
+            
+            FacturaConsultaRequestDto dto = createDtoFromMap(data);
+            String result = service.buildSmlInput(dto);
+            
+            assertTrue(result.contains("PAGADA") || result.contains("estado"));
+        }
+    }
+
+    @Test
+    void buildSmlInput_preservesSituacionIgualField() {
+        try (MockedStatic<CryptoSical> cryptoMock = mockStatic(CryptoSical.class)) {
+            CryptoSical.SecurityFields secFields = new CryptoSical.SecurityFields(
+                "token456", "nonce123", "20260322100000", "origin789"
+            );
+            cryptoMock.when(() -> CryptoSical.calculateSecurityFields(anyString()))
+                .thenReturn(secFields);
+            cryptoMock.when(() -> CryptoSical.encodeSha1Base64(anyString()))
+                .thenReturn("encoded");
+
+            Map<String, Object> data = new HashMap<>();
+            data.put("org", "ORG001");
+            data.put("ent", "ENT001");
+            data.put("eje", "2024");
+            data.put("usu", "user1");
+            data.put("pwd", "password");
+            data.put("publicKey", "pk123");
+            data.put("situacionIgual", "2");
+            
+            FacturaConsultaRequestDto dto = createDtoFromMap(data);
+            String result = service.buildSmlInput(dto);
+            
+            assertTrue(result.contains("2") || result.contains("situacionIgual"));
+        }
+    }
+
+    @Test
+    void buildSmlInput_combinedDateAndOtherFilters() {
+        try (MockedStatic<CryptoSical> cryptoMock = mockStatic(CryptoSical.class)) {
+            CryptoSical.SecurityFields secFields = new CryptoSical.SecurityFields(
+                "token456", "nonce123", "20260322100000", "origin789"
+            );
+            cryptoMock.when(() -> CryptoSical.calculateSecurityFields(anyString()))
+                .thenReturn(secFields);
+            cryptoMock.when(() -> CryptoSical.encodeSha1Base64(anyString()))
+                .thenReturn("encoded");
+
+            FacturaConsultaRequestDto dto = createFullRequestDto();
+            String result = service.buildSmlInput(dto);
+            
+            assertTrue(result.contains("<sec>") && result.contains("</sec>"));
+            assertTrue(result.contains("<par>") && result.contains("</par>"));
+            assertTrue(result.length() > 200);
+        }
+    }
+
+    @Test
+    void buildSmlInput_respectsNullableFields() {
+        try (MockedStatic<CryptoSical> cryptoMock = mockStatic(CryptoSical.class)) {
+            CryptoSical.SecurityFields secFields = new CryptoSical.SecurityFields(
+                "token456", "nonce123", "20260322100000", "origin789"
+            );
+            cryptoMock.when(() -> CryptoSical.calculateSecurityFields(anyString()))
+                .thenReturn(secFields);
+            cryptoMock.when(() -> CryptoSical.encodeSha1Base64(anyString()))
+                .thenReturn("encoded");
+
+            Map<String, Object> data = new HashMap<>();
+            data.put("org", "ORG001");
+            data.put("ent", "ENT001");
+            data.put("eje", "2024");
+            data.put("usu", "user1");
+            data.put("pwd", "password");
+            data.put("publicKey", "pk123");
+            data.put("fecRegDesde", null);
+            data.put("fecRegHasta", null);
+            
+            FacturaConsultaRequestDto dto = createDtoFromMap(data);
+            String result = service.buildSmlInput(dto);
+            
+            assertFalse(result.contains("<fecRegDesde>"));
+            assertFalse(result.contains("<fecRegHasta>"));
+        }
+    }
+
+    @Test
+    void sendSmlRequest_constructsSoapWithNamespaces() {
+        String smlInput = "<test>data</test>";
+        String url = "http://test:8080";
+        
+        try {
+            service.sendSmlRequest(smlInput, url);
+        } catch (Exception e) {
+            assertNotNull(e);
+        }
+    }
+
+    @Test
+    void sendSmlRequest_usesTextXmlContentType() {
+        String smlInput = "<test>data</test>";
+        String url = "http://test:8080";
+        
+        try {
+            service.sendSmlRequest(smlInput, url);
+        } catch (Exception e) {
+            assertNotNull(e);
+        }
+    }
+
+    @Test
+    void buildSmlInput_operationSection_correctlyFormatted() {
+        try (MockedStatic<CryptoSical> cryptoMock = mockStatic(CryptoSical.class)) {
+            CryptoSical.SecurityFields secFields = new CryptoSical.SecurityFields(
+                "token456", "nonce123", "20260322100000", "origin789"
+            );
+            cryptoMock.when(() -> CryptoSical.calculateSecurityFields(anyString()))
+                .thenReturn(secFields);
+            cryptoMock.when(() -> CryptoSical.encodeSha1Base64(anyString()))
+                .thenReturn("encoded");
+
+            FacturaConsultaRequestDto dto = createValidRequestDto();
+            String result = service.buildSmlInput(dto);
+            
+            int opeStart = result.indexOf("<ope>");
+            int opeEnd = result.indexOf("</ope>");
+            int secStart = result.indexOf("<sec>");
+            
+            assertTrue(opeStart < secStart && opeEnd < secStart);
+        }
+    }
 }

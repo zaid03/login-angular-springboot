@@ -653,4 +653,335 @@ public class DepControllerTest {
 
         verify(depRepository).save(Mockito.<Dep>any());
     }
+
+    @Test
+    void search_filtersByCgecod_caseInsensitive() throws Exception {
+        Dep d1 = new Dep(); d1.setDEPCOD("D1"); d1.setDEPDES("Service1"); d1.setCGECOD("G1");
+        Dep d2 = new Dep(); d2.setDEPCOD("D2"); d2.setDEPDES("Service2"); d2.setCGECOD("G2");
+        when(depRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of(d1, d2));
+
+        mockMvc.perform(get("/api/dep/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("cgecod", "g1")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(1)))
+            .andExpect(jsonPath("$[0].depcod", is("D1")));
+    }
+
+    @Test
+    void search_withNullCgecod_returnsAll() throws Exception {
+        Dep d1 = new Dep(); d1.setDEPCOD("D1"); d1.setCGECOD("G1");
+        Dep d2 = new Dep(); d2.setDEPCOD("D2"); d2.setCGECOD("G2");
+        when(depRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of(d1, d2));
+
+        mockMvc.perform(get("/api/dep/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("cgecod", "")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(2)));
+    }
+
+    @Test
+    void search_filterByAlmacen_withNullDepalm() throws Exception {
+        Dep d1 = new Dep(); d1.setDEPCOD("D1"); d1.setDEPALM(null);
+        Dep d2 = new Dep(); d2.setDEPCOD("D2"); d2.setDEPALM(1);
+        when(depRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of(d1, d2));
+
+        mockMvc.perform(get("/api/dep/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("perfil", "almacen"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(1)))
+            .andExpect(jsonPath("$[0].depcod", is("D2")));
+    }
+
+    @Test
+    void search_filterByComprador_withNullDepcom() throws Exception {
+        Dep d1 = new Dep(); d1.setDEPCOD("D1"); d1.setDEPCOM(null);
+        Dep d2 = new Dep(); d2.setDEPCOD("D2"); d2.setDEPCOM(1);
+        when(depRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of(d1, d2));
+
+        mockMvc.perform(get("/api/dep/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("perfil", "comprador"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(1)))
+            .andExpect(jsonPath("$[0].depcod", is("D2")));
+    }
+
+    @Test
+    void search_filterByContabilidad_withNullDepint() throws Exception {
+        Dep d1 = new Dep(); d1.setDEPCOD("D1"); d1.setDEPINT(null);
+        Dep d2 = new Dep(); d2.setDEPCOD("D2"); d2.setDEPINT(1);
+        when(depRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of(d1, d2));
+
+        mockMvc.perform(get("/api/dep/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("perfil", "contabilidad"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(1)))
+            .andExpect(jsonPath("$[0].depcod", is("D2")));
+    }
+
+    @Test
+    void search_filterByPeticionario_allRolesNull() throws Exception {
+        Dep d1 = new Dep(); d1.setDEPCOD("D1"); d1.setDEPALM(null); d1.setDEPCOM(null); d1.setDEPINT(null);
+        Dep d2 = new Dep(); d2.setDEPCOD("D2"); d2.setDEPALM(1); d2.setDEPCOM(0); d2.setDEPINT(0);
+        when(depRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of(d1, d2));
+
+        mockMvc.perform(get("/api/dep/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("perfil", "peticionario"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(1)))
+            .andExpect(jsonPath("$[0].depcod", is("D1")));
+    }
+
+    @Test
+    void search_filterByPeticionario_allRolesZero() throws Exception {
+        Dep d1 = new Dep(); d1.setDEPCOD("D1"); d1.setDEPALM(0); d1.setDEPCOM(0); d1.setDEPINT(0);
+        Dep d2 = new Dep(); d2.setDEPCOD("D2"); d2.setDEPALM(1); d2.setDEPCOM(0); d2.setDEPINT(0);
+        when(depRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of(d1, d2));
+
+        mockMvc.perform(get("/api/dep/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("perfil", "peticionario"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(1)))
+            .andExpect(jsonPath("$[0].depcod", is("D1")));
+    }
+
+    @Test
+    void search_perfilCaseInsensitive() throws Exception {
+        Dep d1 = new Dep(); d1.setDEPCOD("D1"); d1.setDEPALM(1);
+        when(depRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of(d1));
+
+        mockMvc.perform(get("/api/dep/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("perfil", "ALMACEN"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(1)));
+    }
+
+    @Test
+    void search_perfilInvalidValueReturnsAll() throws Exception {
+        Dep d1 = new Dep(); d1.setDEPCOD("D1");
+        when(depRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of(d1));
+
+        mockMvc.perform(get("/api/dep/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("perfil", "invalid_role"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(1)));
+    }
+
+    @Test
+    void search_caseInsensitiveSearchInDepcod() throws Exception {
+        Dep d1 = new Dep(); d1.setDEPCOD("DEP123"); d1.setDEPDES("Service");
+        when(depRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of(d1));
+
+        mockMvc.perform(get("/api/dep/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("search", "dep123"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(1)));
+    }
+
+    @Test
+    void search_caseInsensitiveSearchInDepdes() throws Exception {
+        Dep d1 = new Dep(); d1.setDEPCOD("D1"); d1.setDEPDES("STORAGE SERVICE");
+        when(depRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of(d1));
+
+        mockMvc.perform(get("/api/dep/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("search", "storage"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(1)));
+    }
+
+    @Test
+    void search_noMatchInSearchReturnsEmpty() throws Exception {
+        Dep d1 = new Dep(); d1.setDEPCOD("D1"); d1.setDEPDES("Storage");
+        when(depRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of(d1));
+
+        mockMvc.perform(get("/api/dep/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("search", "nonexistent"))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void search_multipleFiltersAllApply() throws Exception {
+        Dep d1 = new Dep(); d1.setDEPCOD("D1"); d1.setDEPDES("Service1"); d1.setCGECOD("G1"); d1.setDEPALM(1);
+        Dep d2 = new Dep(); d2.setDEPCOD("D2"); d2.setDEPDES("Storage"); d2.setCGECOD("G2"); d2.setDEPALM(0);
+        when(depRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of(d1, d2));
+
+        mockMvc.perform(get("/api/dep/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("search", "Service")
+                .param("cgecod", "G1")
+                .param("perfil", "almacen"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(1)))
+            .andExpect(jsonPath("$[0].depcod", is("D1")));
+    }
+
+    @Test
+    void search_multipleFiltersNoMatchReturnsEmpty() throws Exception {
+        Dep d1 = new Dep(); d1.setDEPCOD("D1"); d1.setDEPDES("Service1"); d1.setCGECOD("G1"); d1.setDEPALM(0);
+        when(depRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of(d1));
+
+        mockMvc.perform(get("/api/dep/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("search", "Service")
+                .param("cgecod", "G1")
+                .param("perfil", "almacen"))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void updateServiceSecond_successWithAllFields() throws Exception {
+        Dep existing = new Dep();
+        when(depRepository.findById(new DepId(1, "E1", "D2"))).thenReturn(Optional.of(existing));
+
+        Map<String,Object> payload = Map.of(
+            "depd1c", "a","depd1d","b",
+            "depd2c","c","depd2d","d",
+            "depd3c","e","depd3d","f",
+            "depdco","g","depden","h"
+        );
+
+        mockMvc.perform(patch("/api/dep/update-service-second/1/E1/D2")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload)))
+            .andDo(print())
+            .andExpect(status().isNoContent());
+
+        ArgumentCaptor<Dep> cap = ArgumentCaptor.forClass(Dep.class);
+        verify(depRepository).save(cap.capture());
+        assertEquals("a", cap.getValue().getDEPD1C());
+        assertEquals("c", cap.getValue().getDEPD2C());
+        assertEquals("e", cap.getValue().getDEPD3C());
+    }
+
+    @Test
+    void addCentroGestor_setsAllFieldsCorrectly() throws Exception {
+        when(depRepository.findByENTAndEJEAndDEPCOD(1, "E1", "D3")).thenReturn(List.of());
+        when(ccoRepository.countByENTAndEJEAndCCOCOD(1, "E1", "C1")).thenReturn(1L);
+
+        Map<String,Object> payload = new java.util.HashMap<>();
+        payload.put("ent", 1);
+        payload.put("eje", "E1");
+        payload.put("depcod", "D3");
+        payload.put("depdes", "Desc");
+        payload.put("depalm", 1);
+        payload.put("depcom", 0);
+        payload.put("depint", 1);
+        payload.put("ccocod", "C1");
+        payload.put("cgecod", "G1");
+        payload.put("percod", "U1");
+        payload.put("depd1c", "A");
+        payload.put("depd1d", "B");
+        payload.put("depd2c", "C");
+        payload.put("depd2d", "D");
+        payload.put("depd3c", "E");
+        payload.put("depd3d", "F");
+        payload.put("depdco", "G");
+        payload.put("depden", "H");
+
+        mockMvc.perform(post("/api/dep/Insert-service")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload)))
+            .andDo(print())
+            .andExpect(status().isCreated());
+
+        ArgumentCaptor<Dep> cap = ArgumentCaptor.forClass(Dep.class);
+        verify(depRepository).save(cap.capture());
+        assertEquals("D3", cap.getValue().getDEPCOD());
+        assertEquals("Desc", cap.getValue().getDEPDES());
+        assertEquals(1, cap.getValue().getDEPALM());
+        assertEquals("G1", cap.getValue().getCGECOD());
+    }
+
+    @Test
+    void search_withNullDepcod_handlesGracefully() throws Exception {
+        Dep d1 = new Dep(); d1.setDEPCOD(null); d1.setDEPDES("Service");
+        when(depRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of(d1));
+
+        mockMvc.perform(get("/api/dep/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("search", "test"))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void search_withNullDepdes_handlesGracefully() throws Exception {
+        Dep d1 = new Dep(); d1.setDEPCOD("D1"); d1.setDEPDES(null);
+        when(depRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of(d1));
+
+        mockMvc.perform(get("/api/dep/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("search", "test"))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void updateCentro_updatesAllRequiredFields() throws Exception {
+        Dep existing = new Dep();
+        existing.setDEPDES("old");
+        existing.setDEPALM(0);
+        existing.setDEPCOM(0);
+        existing.setDEPINT(0);
+
+        when(depRepository.findById(new DepId(1, "E1", "D1"))).thenReturn(Optional.of(existing));
+
+        Map<String,Object> payload = Map.of("depdes", "new", "depalm", 1, "depcom", 1, "depint", 1);
+
+        mockMvc.perform(patch("/api/dep/update-service/1/E1/D1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload)))
+            .andDo(print())
+            .andExpect(status().isNoContent());
+
+        ArgumentCaptor<Dep> cap = ArgumentCaptor.forClass(Dep.class);
+        verify(depRepository).save(cap.capture());
+        assertEquals("new", cap.getValue().getDEPDES());
+        assertEquals(1, cap.getValue().getDEPALM());
+        assertEquals(1, cap.getValue().getDEPCOM());
+        assertEquals(1, cap.getValue().getDEPINT());
+    }
 }

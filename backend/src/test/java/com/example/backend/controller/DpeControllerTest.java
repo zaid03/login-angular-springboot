@@ -19,6 +19,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataAccessResourceFailureException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -546,5 +547,441 @@ public class DpeControllerTest {
         mockMvc.perform(delete("/api/depe/delete-service-persona/1/E1/D1/U1"))
             .andDo(print())
             .andExpect(status().isInternalServerError());
+    }
+    
+    @Test
+    void deleteAllPersonaServices_deleteReturnsZero() throws Exception {
+        when(dpeRepository.findByENTAndEJEAndPERCOD(1, "E1", "U1")).thenReturn(List.of(new Dpe()));
+        when(dpeRepository.deleteByENTAndEJEAndPERCOD(1, "E1", "U1")).thenReturn(0);
+
+        mockMvc.perform(delete("/api/depe/delete-persona-Allservice/1/E1/U1"))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(content().string("Sin resultado"));
+    }
+
+    @Test
+    void addPersonaServices_withEmptyPercod() throws Exception {
+        PersonaServiceRequest req = new PersonaServiceRequest();
+        req.setPercod("  ");
+        req.setServices(List.of("S1"));
+
+        mockMvc.perform(post("/api/depe/add-persona-services")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(req)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Falta un dato obligatorio")));
+    }
+
+    @Test
+    void addServicesPersona_withEmptyDepcod() throws Exception {
+        ServicePersonaRequest req = new ServicePersonaRequest();
+        req.setDepcod("  ");
+        req.setPersonas(List.of("U1"));
+
+        mockMvc.perform(post("/api/depe/add-services-persona")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(req)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("El código de servicio es obligatorio.")));
+    }
+
+    @Test
+    void addPersonaServices_withEmptyServices() throws Exception {
+        PersonaServiceRequest req = new PersonaServiceRequest();
+        req.setPercod("U1");
+        req.setServices(List.of());
+
+        mockMvc.perform(post("/api/depe/add-persona-services")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(req)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Debe seleccionar al menos un servicio.")));
+    }
+
+    @Test
+    void addServicesPersona_withEmptyPersonas() throws Exception {
+        ServicePersonaRequest req = new ServicePersonaRequest();
+        req.setDepcod("S1");
+        req.setPersonas(List.of());
+
+        mockMvc.perform(post("/api/depe/add-services-persona")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(req)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Debe seleccionar al menos un persona.")));
+    }
+
+    @Test
+    void searchPersonasServicios_withMultipleFilters_persona_and_servicio() throws Exception {
+        when(dpeRepository.findByENTAndEJEAndPer_PERNOMContaining(1, "E1", "John")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("persona", "John")
+                .param("servicio", "Service")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchPersonasServicios_withMultipleFilters_cgecod_and_perfil() throws Exception {
+        when(dpeRepository.findByENTAndEJEAndDep_Cge_CGECOD(1, "E1", "CG1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("cgecod", "CG1")
+                .param("perfil", "almacen")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void fetchServicePersonas_verifiesRepositoryCalls() throws Exception {
+        Dpe d1 = new Dpe(); d1.setPERCOD("U1");
+        when(dpeRepository.findByENTAndEJEAndDEPCOD(1, "E1", "D1")).thenReturn(List.of(d1));
+
+        Per p1 = new Per(); p1.setPERCOD("U1"); p1.setPERNOM("User");
+        when(perRepository.findByPERCODIn(List.of("U1"))).thenReturn(List.of(p1));
+
+        mockMvc.perform(get("/api/depe/fetch-service-personas/1/E1/D1"))
+            .andDo(print())
+            .andExpect(status().isOk());
+
+        verify(dpeRepository).findByENTAndEJEAndDEPCOD(1, "E1", "D1");
+        verify(perRepository).findByPERCODIn(List.of("U1"));
+    }
+
+    @Test
+    void fetchPersonaService_verifiesRepositoryCalls() throws Exception {
+        Dpe d1 = new Dpe(); d1.setDEPCOD("D1");
+        when(dpeRepository.findByENTAndEJEAndPERCOD(1, "E1", "U1")).thenReturn(List.of(d1));
+
+        Dep dep = new Dep(); dep.setDEPCOD("D1"); dep.setDEPDES("Desc");
+        when(depRepository.findByENTAndEJEAndDEPCODIn(1, "E1", List.of("D1"))).thenReturn(List.of(dep));
+
+        mockMvc.perform(get("/api/depe/fetch-persona-service/1/E1/U1"))
+            .andDo(print())
+            .andExpect(status().isOk());
+
+        verify(dpeRepository).findByENTAndEJEAndPERCOD(1, "E1", "U1");
+        verify(depRepository).findByENTAndEJEAndDEPCODIn(1, "E1", List.of("D1"));
+    }
+
+    @Test
+    void deletePersonaService_verifiesRepositoryCalls() throws Exception {
+        when(dpeRepository.existsById(any())).thenReturn(true);
+
+        mockMvc.perform(delete("/api/depe/delete-persona-service/1/E1/D1/U1"))
+            .andDo(print())
+            .andExpect(status().isNoContent());
+
+        verify(dpeRepository).existsById(any());
+        verify(dpeRepository).deleteById(any());
+    }
+
+    @Test
+    void deleteService_verifiesRepositoryCalls() throws Exception {
+        when(dpeRepository.existsById(any())).thenReturn(true);
+
+        mockMvc.perform(delete("/api/depe/delete-service-persona/1/E1/D1/U1"))
+            .andDo(print())
+            .andExpect(status().isNoContent());
+
+        verify(dpeRepository).existsById(any());
+        verify(dpeRepository).deleteById(any());
+    }
+
+    @Test
+    void addPersonaServices_verifiesServiceCall() throws Exception {
+        PersonaServiceRequest req = new PersonaServiceRequest();
+        req.setPercod("U1");
+        req.setServices(List.of("S1", "S2", "S3"));
+
+        mockMvc.perform(post("/api/depe/add-persona-services")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(req)))
+            .andDo(print())
+            .andExpect(status().isCreated());
+
+        ArgumentCaptor<PersonaServiceRequest> cap = ArgumentCaptor.forClass(PersonaServiceRequest.class);
+        verify(dpeService).savePersonaServices(cap.capture());
+        PersonaServiceRequest captured = cap.getValue();
+        assertEquals("U1", captured.getPercod());
+        assertEquals(3, captured.getServices().size());
+    }
+
+    @Test
+    void addServicesPersona_verifiesServiceCall() throws Exception {
+        ServicePersonaRequest req = new ServicePersonaRequest();
+        req.setDepcod("S1");
+        req.setPersonas(List.of("U1", "U2", "U3"));
+
+        mockMvc.perform(post("/api/depe/add-services-persona")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(req)))
+            .andDo(print())
+            .andExpect(status().isCreated());
+
+        ArgumentCaptor<ServicePersonaRequest> cap = ArgumentCaptor.forClass(ServicePersonaRequest.class);
+        verify(dpePersonasForService).saveServicePersonas(cap.capture());
+        ServicePersonaRequest captured = cap.getValue();
+        assertEquals("S1", captured.getDepcod());
+        assertEquals(3, captured.getPersonas().size());
+    }
+
+    @Test
+    void fetchPersonasServicios_withHighPageNumber() throws Exception {
+        when(dpeRepository.findByENTAndEJE(anyInt(), anyString(), any())).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/1/E1/100")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchPersonasServicios_caseInsensitivePerfilAlmacen() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("perfil", "ALMACEN")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchPersonasServicios_caseInsensitivePerfilComprador() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("perfil", "COMPRADOR")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchPersonasServicios_byPersonaCodeShort() throws Exception {
+        when(dpeRepository.findProjectionByENTAndEJEAndPERCOD(1, "E1", "P1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("persona", "P1")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchPersonasServicios_byServiceCodeShort() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("servicio", "SC123")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void fetchServicePersonas_withDistinctPersonas() throws Exception {
+        Dpe d1 = new Dpe(); d1.setPERCOD("U1");
+        Dpe d2 = new Dpe(); d2.setPERCOD("U1");
+        Dpe d3 = new Dpe(); d3.setPERCOD("U2");
+        when(dpeRepository.findByENTAndEJEAndDEPCOD(1, "E1", "D1")).thenReturn(List.of(d1, d2, d3));
+
+        Per p1 = new Per(); p1.setPERCOD("U1"); p1.setPERNOM("User One");
+        Per p2 = new Per(); p2.setPERCOD("U2"); p2.setPERNOM("User Two");
+        when(perRepository.findByPERCODIn(List.of("U1", "U2"))).thenReturn(List.of(p1, p2));
+
+        mockMvc.perform(get("/api/depe/fetch-service-personas/1/E1/D1"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(2)));
+    }
+
+    @Test
+    void fetchPersonaService_withMultipleDeps() throws Exception {
+        Dpe d1 = new Dpe(); d1.setDEPCOD("D1");
+        Dpe d2 = new Dpe(); d2.setDEPCOD("D2");
+        when(dpeRepository.findByENTAndEJEAndPERCOD(1, "E1", "U1")).thenReturn(List.of(d1, d2));
+
+        Dep dep1 = new Dep(); dep1.setDEPCOD("D1"); dep1.setDEPDES("Service 1");
+        Dep dep2 = new Dep(); dep2.setDEPCOD("D2"); dep2.setDEPDES("Service 2");
+        when(depRepository.findByENTAndEJEAndDEPCODIn(1, "E1", List.of("D1", "D2"))).thenReturn(List.of(dep1, dep2));
+
+        mockMvc.perform(get("/api/depe/fetch-persona-service/1/E1/U1"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(2)));
+    }
+
+    @Test
+    void searchPersonasServicios_byPersonaCode_and_cgecod() throws Exception {
+        when(dpeRepository.findProjectionByENTAndEJEAndPERCOD(1, "E1", "U1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("persona", "U1")
+                .param("cgecod", "CG1")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void fetchPersonasServicios_verifyPageable() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1", PageRequest.of(2, 20))).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/1/E1/2")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void deleteAllPersonaServices_dataAccessExceptionOnDelete() throws Exception {
+        when(dpeRepository.findByENTAndEJEAndPERCOD(1, "E1", "U1")).thenReturn(List.of(new Dpe()));
+        when(dpeRepository.deleteByENTAndEJEAndPERCOD(1, "E1", "U1"))
+            .thenThrow(new DataAccessResourceFailureException("DB constraint"));
+
+        mockMvc.perform(delete("/api/depe/delete-persona-Allservice/1/E1/U1"))
+            .andDo(print())
+            .andExpect(status().isInternalServerError())
+            .andExpect(content().string(containsString("error durante la eliminación:")));
+    }
+
+    @Test
+    void searchPersonasServicios_emptyPersonaParam() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("persona", "")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchPersonasServicios_emptyServicioParam() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("servicio", "")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchPersonasServicios_emptyCgecod() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("cgecod", "")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchPersonasServicios_emptyPerfilParam() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("perfil", "")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void addPersonaServices_withNullServices() throws Exception {
+        PersonaServiceRequest req = new PersonaServiceRequest();
+        req.setPercod("U1");
+        req.setServices(null);
+
+        mockMvc.perform(post("/api/depe/add-persona-services")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(req)))
+            .andDo(print())
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void addServicesPersona_withNullPersonas() throws Exception {
+        ServicePersonaRequest req = new ServicePersonaRequest();
+        req.setDepcod("S1");
+        req.setPersonas(null);
+
+        mockMvc.perform(post("/api/depe/add-services-persona")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(req)))
+            .andDo(print())
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void fetchServicePersonas_allDistinctPersonas() throws Exception {
+        Dpe d1 = new Dpe(); d1.setPERCOD("U1");
+        Dpe d2 = new Dpe(); d2.setPERCOD("U2");
+        Dpe d3 = new Dpe(); d3.setPERCOD("U3");
+        when(dpeRepository.findByENTAndEJEAndDEPCOD(1, "E1", "D1")).thenReturn(List.of(d1, d2, d3));
+
+        Per p1 = new Per(); p1.setPERCOD("U1"); p1.setPERNOM("User One");
+        Per p2 = new Per(); p2.setPERCOD("U2"); p2.setPERNOM("User Two");
+        Per p3 = new Per(); p3.setPERCOD("U3"); p3.setPERNOM("User Three");
+        when(perRepository.findByPERCODIn(List.of("U1", "U2", "U3"))).thenReturn(List.of(p1, p2, p3));
+
+        mockMvc.perform(get("/api/depe/fetch-service-personas/1/E1/D1"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(3)))
+            .andExpect(jsonPath("$[*].percod", containsInAnyOrder("U1", "U2", "U3")));
+    }
+
+    @Test
+    void fetchPersonaService_allDistinctDeps() throws Exception {
+        Dpe d1 = new Dpe(); d1.setDEPCOD("D1");
+        Dpe d2 = new Dpe(); d2.setDEPCOD("D2");
+        Dpe d3 = new Dpe(); d3.setDEPCOD("D3");
+        when(dpeRepository.findByENTAndEJEAndPERCOD(1, "E1", "U1")).thenReturn(List.of(d1, d2, d3));
+
+        Dep dep1 = new Dep(); dep1.setDEPCOD("D1"); dep1.setDEPDES("Service 1");
+        Dep dep2 = new Dep(); dep2.setDEPCOD("D2"); dep2.setDEPDES("Service 2");
+        Dep dep3 = new Dep(); dep3.setDEPCOD("D3"); dep3.setDEPDES("Service 3");
+        when(depRepository.findByENTAndEJEAndDEPCODIn(1, "E1", List.of("D1", "D2", "D3"))).thenReturn(List.of(dep1, dep2, dep3));
+
+        mockMvc.perform(get("/api/depe/fetch-persona-service/1/E1/U1"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(3)))
+            .andExpect(jsonPath("$[*].depcod", containsInAnyOrder("D1", "D2", "D3")));
     }
 }

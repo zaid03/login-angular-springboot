@@ -544,4 +544,485 @@ public class ConControllerTest {
         verify(conRepository).save(any(Conn.class));
         verify(cotRepository).save(any(Cot.class));
     }
+
+    @Test
+    void searchContratosCodigoNoBloqueado_returns500OnException() throws Exception {
+        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCODAndConnCONBLONot(3, 1, "E1", 100, 0))
+            .thenThrow(new DataAccessResourceFailureException("Database error"));
+
+        mockMvc.perform(get("/api/con/searchByCodigoNoBloque/1/E1/100"))
+            .andDo(print())
+            .andExpect(status().isInternalServerError())
+            .andExpect(content().string(org.hamcrest.Matchers.containsString("Error :")));
+    }
+
+    @Test
+    void searchContratosCodigoTodos_returns500OnException() throws Exception {
+        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCOD(3, 1, "E1", 100))
+            .thenThrow(new DataAccessResourceFailureException("Database error"));
+
+        mockMvc.perform(get("/api/con/searchByCodigoTodos/1/E1/100"))
+            .andDo(print())
+            .andExpect(status().isInternalServerError())
+            .andExpect(content().string(org.hamcrest.Matchers.containsString("Error :")));
+    }
+
+    @Test
+    void searchContratosDescBloqueado_returns500OnException() throws Exception {
+        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDESContainingAndConnCONBLO(3, 1, "E1", "desc", 0))
+            .thenThrow(new DataAccessResourceFailureException("Database error"));
+
+        mockMvc.perform(get("/api/con/searchByDescBloque/1/E1/desc"))
+            .andDo(print())
+            .andExpect(status().isInternalServerError())
+            .andExpect(content().string(org.hamcrest.Matchers.containsString("Error :")));
+    }
+
+    @Test
+    void searchContratosDescNoBloqueado_returns500OnException() throws Exception {
+        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDESContainingAndConnCONBLONot(3, 1, "E1", "desc", 0))
+            .thenThrow(new DataAccessResourceFailureException("Database error"));
+
+        mockMvc.perform(get("/api/con/searchByDescNoBloque/1/E1/desc"))
+            .andDo(print())
+            .andExpect(status().isInternalServerError())
+            .andExpect(content().string(org.hamcrest.Matchers.containsString("Error :")));
+    }
+
+    @Test
+    void searchContratosDescTodos_returns500OnException() throws Exception {
+        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDESContaining(3, 1, "E1", "desc"))
+            .thenThrow(new DataAccessResourceFailureException("Database error"));
+
+        mockMvc.perform(get("/api/con/searchByDescTodos/1/E1/desc"))
+            .andDo(print())
+            .andExpect(status().isInternalServerError())
+            .andExpect(content().string(org.hamcrest.Matchers.containsString("Error :")));
+    }
+
+    @Test
+    void searchContratosBloqu_returns500OnException() throws Exception {
+        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONBLO(3, 1, "E1", 0))
+            .thenThrow(new DataAccessResourceFailureException("Database error"));
+
+        mockMvc.perform(get("/api/con/searchByBloqu/1/E1"))
+            .andDo(print())
+            .andExpect(status().isInternalServerError())
+            .andExpect(content().string(org.hamcrest.Matchers.containsString("Error :")));
+    }
+
+    @Test
+    void searchContratosNobloq_returns500OnException() throws Exception {
+        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONBLONot(3, 1, "E1", 0))
+            .thenThrow(new DataAccessResourceFailureException("Database error"));
+
+        mockMvc.perform(get("/api/con/searchByNobloq/1/E1"))
+            .andDo(print())
+            .andExpect(status().isInternalServerError())
+            .andExpect(content().string(org.hamcrest.Matchers.containsString("Error :")));
+    }
+
+    @Test
+    void fetchContratos_returnsMultipleContratos() throws Exception {
+        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJE(3, 1, "E1"))
+            .thenReturn(List.of(createMockProjection(), createMockProjection()));
+
+        mockMvc.perform(get("/api/con/fetch-contratos/1/E1"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$.length()").value(2));
+    }
+
+    @Test
+    void searchContratosCodigoBloqueado_returnsMultipleContratos() throws Exception {
+        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCODAndConnCONBLO(3, 1, "E1", 100, 0))
+            .thenReturn(List.of(createMockProjection(), createMockProjection()));
+
+        mockMvc.perform(get("/api/con/searchByCodigoBloque/1/E1/100"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.length()").value(2));
+    }
+
+    @Test
+    void searchContratosDescBloqueado_returnsMultipleContratos() throws Exception {
+        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDESContainingAndConnCONBLO(3, 1, "E1", "Contract", 0))
+            .thenReturn(List.of(createMockProjection(), createMockProjection(), createMockProjection()));
+
+        mockMvc.perform(get("/api/con/searchByDescBloque/1/E1/Contract"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.length()").value(3));
+    }
+
+    @Test
+    void searchContratosDescBloqueado_withNumericDescription() throws Exception {
+        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDESContainingAndConnCONBLO(3, 2, "E2", "2024", 0))
+            .thenReturn(List.of(createMockProjection()));
+
+        mockMvc.perform(get("/api/con/searchByDescBloque/2/E2/2024"))
+            .andDo(print())
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    void searchContratosCodigoTodos_withDifferentConcod() throws Exception {
+        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCOD(3, 5, "E5", 999))
+            .thenReturn(List.of(createMockProjection()));
+
+        mockMvc.perform(get("/api/con/searchByCodigoTodos/5/E5/999"))
+            .andDo(print())
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    void searchContratosDescTodos_withLongDescription() throws Exception {
+        String longDesc = "A".repeat(100);
+        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDESContaining(3, 1, "E1", longDesc))
+            .thenReturn(List.of());
+
+        mockMvc.perform(get("/api/con/searchByDescTodos/1/E1/" + longDesc))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchContratosBloqu_withDifferentEntity() throws Exception {
+        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONBLO(3, 10, "E10", 0))
+            .thenReturn(List.of(createMockProjection()));
+
+        mockMvc.perform(get("/api/con/searchByBloqu/10/E10"))
+            .andDo(print())
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    void searchContratosNobloq_withDifferentEJE() throws Exception {
+        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONBLONot(3, 1, "E99", 0))
+            .thenReturn(List.of(createMockProjection()));
+
+        mockMvc.perform(get("/api/con/searchByNobloq/1/E99"))
+            .andDo(print())
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    void updateContrato_withNullPayload() throws Exception {
+        mockMvc.perform(patch("/api/con/update-contrato/1/E1/100")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{}"))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string("Faltan datos obligatorios."));
+    }
+
+    @Test
+    void updateContrato_withOnlyConBlo() throws Exception {
+        ConId id = new ConId(1, "E1", 100);
+        Conn conn = new Conn();
+        conn.setCONCOD(100);
+
+        when(conRepository.findById(id)).thenReturn(Optional.of(conn));
+        when(conRepository.save(any(Conn.class))).thenReturn(conn);
+
+        String payload = objectMapper.writeValueAsString(Map.of(
+            "CONBLO", 1,
+            "CONDES", "Updated"
+        ));
+
+        mockMvc.perform(patch("/api/con/update-contrato/1/E1/100")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payload))
+            .andDo(print())
+            .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void updateContrato_updatesAllFields() throws Exception {
+        ConId id = new ConId(1, "E1", 100);
+        Conn conn = new Conn();
+        conn.setCONCOD(100);
+        conn.setCONBLO(0);
+        conn.setCONDES("Old");
+
+        when(conRepository.findById(id)).thenReturn(Optional.of(conn));
+        when(conRepository.save(any(Conn.class))).thenReturn(conn);
+
+        LocalDateTime now = LocalDateTime.now();
+        String payload = objectMapper.writeValueAsString(Map.of(
+            "CONBLO", 1,
+            "CONFIN", now.toString(),
+            "CONFFI", now.toString(),
+            "CONDES", "New Contract Description"
+        ));
+
+        mockMvc.perform(patch("/api/con/update-contrato/1/E1/100")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payload))
+            .andDo(print())
+            .andExpect(status().isNoContent());
+
+        verify(conRepository).save(any(Conn.class));
+    }
+
+    @Test
+    void updateContrato_savesCallVerified() throws Exception {
+        ConId id = new ConId(2, "E2", 200);
+        Conn conn = new Conn();
+
+        when(conRepository.findById(id)).thenReturn(Optional.of(conn));
+        when(conRepository.save(any(Conn.class))).thenReturn(conn);
+
+        String payload = objectMapper.writeValueAsString(Map.of(
+            "CONBLO", 0,
+            "CONDES", "Test"
+        ));
+
+        mockMvc.perform(patch("/api/con/update-contrato/2/E2/200")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payload))
+            .andDo(print())
+            .andExpect(status().isNoContent());
+
+        verify(conRepository).findById(any(ConId.class));
+        verify(conRepository).save(any(Conn.class));
+    }
+
+    @Test
+    void updateContrato_onDifferentIds() throws Exception {
+        ConId id = new ConId(5, "E5", 555);
+        Conn conn = new Conn();
+
+        when(conRepository.findById(id)).thenReturn(Optional.of(conn));
+        when(conRepository.save(any(Conn.class))).thenReturn(conn);
+
+        String payload = objectMapper.writeValueAsString(Map.of(
+            "CONBLO", 1,
+            "CONDES", "Updated"
+        ));
+
+        mockMvc.perform(patch("/api/con/update-contrato/5/E5/555")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payload))
+            .andDo(print())
+            .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void addContrato_withNullPayload() throws Exception {
+        mockMvc.perform(post("/api/con/add-contrato")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{}"))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string("Faltan datos obligatorios."));
+    }
+
+    @Test
+    void addContrato_incrementsConcodCorrectly() throws Exception {
+        Conn existingConn = new Conn();
+        existingConn.setCONCOD(50);
+
+        when(conRepository.findFirstByENTAndEJEOrderByCONCODDesc(1, "E1"))
+            .thenReturn(Optional.of(existingConn));
+        when(conRepository.save(any(Conn.class))).thenReturn(new Conn());
+        when(cotRepository.save(any(Cot.class))).thenReturn(new Cot());
+
+        String payload = objectMapper.writeValueAsString(Map.of(
+            "ENT", 1,
+            "EJE", "E1",
+            "CONLOT", "LOT001",
+            "CONBLO", 0,
+            "CONFIN", "2026-03-21T10:00:00",
+            "CONFFI", "2026-03-21T10:00:00",
+            "CONDES", "New Contract",
+            "TERCOD", 200
+        ));
+
+        mockMvc.perform(post("/api/con/add-contrato")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payload))
+            .andDo(print())
+            .andExpect(status().isNoContent());
+
+        verify(conRepository).save(any(Conn.class));
+    }
+
+    @Test
+    void addContrato_withDifferentEntity() throws Exception {
+        when(conRepository.findFirstByENTAndEJEOrderByCONCODDesc(5, "E5"))
+            .thenReturn(Optional.empty());
+        when(conRepository.save(any(Conn.class))).thenReturn(new Conn());
+        when(cotRepository.save(any(Cot.class))).thenReturn(new Cot());
+
+        String payload = objectMapper.writeValueAsString(Map.of(
+            "ENT", 5,
+            "EJE", "E5",
+            "CONLOT", "LOT005",
+            "CONBLO", 1,
+            "CONFIN", "2026-03-21T10:00:00",
+            "CONFFI", "2026-03-21T10:00:00",
+            "CONDES", "Entity 5 Contract",
+            "TERCOD", 500
+        ));
+
+        mockMvc.perform(post("/api/con/add-contrato")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payload))
+            .andDo(print())
+            .andExpect(status().isNoContent());
+
+        verify(conRepository).save(any(Conn.class));
+        verify(cotRepository).save(any(Cot.class));
+    }
+
+    @Test
+    void addContrato_savesConAndCotEntities() throws Exception {
+        Conn connArg = new Conn();
+        Cot cotArg = new Cot();
+
+        when(conRepository.findFirstByENTAndEJEOrderByCONCODDesc(1, "E1"))
+            .thenReturn(Optional.empty());
+        when(conRepository.save(any(Conn.class))).thenReturn(connArg);
+        when(cotRepository.save(any(Cot.class))).thenReturn(cotArg);
+
+        String payload = objectMapper.writeValueAsString(Map.of(
+            "ENT", 1,
+            "EJE", "E1",
+            "CONLOT", "LOT001",
+            "CONBLO", 0,
+            "CONFIN", "2026-03-21T10:00:00",
+            "CONFFI", "2026-03-21T10:00:00",
+            "CONDES", "Test",
+            "TERCOD", 100
+        ));
+
+        mockMvc.perform(post("/api/con/add-contrato")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payload))
+            .andDo(print())
+            .andExpect(status().isNoContent());
+
+        verify(conRepository).save(any(Conn.class));
+        verify(cotRepository).save(any(Cot.class));
+    }
+
+    @Test
+    void addContrato_returns400OnMissingPayload() throws Exception {
+        mockMvc.perform(post("/api/con/add-contrato")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{}"))
+            .andDo(print())
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void addContrato_withHighConcodNumber() throws Exception {
+        Conn existingConn = new Conn();
+        existingConn.setCONCOD(9999);
+
+        when(conRepository.findFirstByENTAndEJEOrderByCONCODDesc(1, "E1"))
+            .thenReturn(Optional.of(existingConn));
+        when(conRepository.save(any(Conn.class))).thenReturn(new Conn());
+        when(cotRepository.save(any(Cot.class))).thenReturn(new Cot());
+
+        String payload = objectMapper.writeValueAsString(Map.of(
+            "ENT", 1,
+            "EJE", "E1",
+            "CONLOT", "LOT001",
+            "CONBLO", 0,
+            "CONFIN", "2026-03-21T10:00:00",
+            "CONFFI", "2026-03-21T10:00:00",
+            "CONDES", "High Concod",
+            "TERCOD", 200
+        ));
+
+        mockMvc.perform(post("/api/con/add-contrato")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payload))
+            .andDo(print())
+            .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void fetchContratos_responseContainsRequiredFields() throws Exception {
+        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJE(3, 1, "E1"))
+            .thenReturn(List.of(createMockProjection()));
+
+        mockMvc.perform(get("/api/con/fetch-contratos/1/E1"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0].concod").exists())
+            .andExpect(jsonPath("$[0].conlot").exists())
+            .andExpect(jsonPath("$[0].condes").exists())
+            .andExpect(jsonPath("$[0].tercod").exists())
+            .andExpect(jsonPath("$[0].ternom").exists());
+    }
+
+    @Test
+    void searchContratosCodigoBloqueado_responseValidation() throws Exception {
+        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCODAndConnCONBLO(3, 1, "E1", 100, 0))
+            .thenReturn(List.of(createMockProjection()));
+
+        mockMvc.perform(get("/api/con/searchByCodigoBloque/1/E1/100"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0].concod").value(100))
+            .andExpect(jsonPath("$[0].tercod").value(200));
+    }
+
+    @Test
+    void updateContrato_verifiesSaveWithCorrectData() throws Exception {
+        ConId id = new ConId(1, "E1", 100);
+        Conn conn = new Conn();
+
+        when(conRepository.findById(id)).thenReturn(Optional.of(conn));
+        when(conRepository.save(any(Conn.class))).thenReturn(conn);
+
+        String payload = objectMapper.writeValueAsString(Map.of(
+            "CONBLO", 1,
+            "CONFIN", "2026-03-21T10:00:00",
+            "CONFFI", "2026-03-22T10:00:00",
+            "CONDES", "Test Description"
+        ));
+
+        mockMvc.perform(patch("/api/con/update-contrato/1/E1/100")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payload))
+            .andDo(print())
+            .andExpect(status().isNoContent());
+
+        verify(conRepository).findById(new ConId(1, "E1", 100));
+        verify(conRepository).save(any(Conn.class));
+    }
+
+    @Test
+    void addContrato_verifiesRepositoryCalls() throws Exception {
+        when(conRepository.findFirstByENTAndEJEOrderByCONCODDesc(1, "E1"))
+            .thenReturn(Optional.empty());
+        when(conRepository.save(any(Conn.class))).thenReturn(new Conn());
+        when(cotRepository.save(any(Cot.class))).thenReturn(new Cot());
+
+        String payload = objectMapper.writeValueAsString(Map.of(
+            "ENT", 1,
+            "EJE", "E1",
+            "CONLOT", "LOT001",
+            "CONBLO", 0,
+            "CONFIN", "2026-03-21T10:00:00",
+            "CONFFI", "2026-03-21T10:00:00",
+            "CONDES", "Test",
+            "TERCOD", 200
+        ));
+
+        mockMvc.perform(post("/api/con/add-contrato")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payload))
+            .andDo(print())
+            .andExpect(status().isNoContent());
+
+        verify(conRepository).findFirstByENTAndEJEOrderByCONCODDesc(1, "E1");
+        verify(conRepository).save(any(Conn.class));
+        verify(cotRepository).save(any(Cot.class));
+    }
 }

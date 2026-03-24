@@ -15,6 +15,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @ExtendWith(MockitoExtension.class)
 public class SicalServiceTest {
@@ -719,6 +720,91 @@ public class SicalServiceTest {
         assertEquals("ID001", t.getIdenTercero());
         assertEquals("Juan", t.getNomTercero());
         assertNull(t.getNIFtercero());
+    }
+
+    @Test
+    void extractAndUnescapeXmlContent_unescapesAndExtractsSoapContent() throws Exception {
+        String soap = "<soapenv:Body><impl:servicio><servicioReturn>&lt;tag&gt;</servicioReturn></impl:servicio></soapenv:Body>";
+        Method method = SicalService.class.getDeclaredMethod("extractAndUnescapeXmlContent", String.class);
+        method.setAccessible(true);
+        String result = (String) method.invoke(service, soap);
+        assertEquals("<tag>", result);
+    }
+
+    @Test
+    void parseXmlDocument_withSecurityFeatures() throws Exception {
+        String xml = "<?xml version=\"1.0\"?><root><name>Test</name></root>";
+        Document doc = parseXmlDom(xml);
+        assertNotNull(doc);
+        assertEquals("root", doc.getDocumentElement().getTagName());
+    }
+
+    @Test
+    void parseTerceroFromElement_withDetterField() throws Exception {
+        String xml = "<tercero><detter>ID1-@-NIF1-@-TYPE-@-ALIAS-@-NAME-@--@--@--@--@--@--@--@--@--@--@--@--@--@--@--@--@--@--@-OBS-@-NO-@-email@test.com-@-Full Name-@-First-@-Last</detter></tercero>";
+        Document doc = parseXmlDom(xml);
+        Element element = (Element) doc.getElementsByTagName("tercero").item(0);
+        
+        Method method = SicalService.class.getDeclaredMethod("parseTerceroFromElement", Element.class);
+        method.setAccessible(true);
+        Tercero result = (Tercero) method.invoke(service, element);
+        
+        assertNotNull(result);
+        assertEquals("ID1", result.getIdenTercero());
+        assertEquals("NIF1", result.getNIFtercero());
+    }
+
+    @Test
+    void parseTerceroFromElement_withoutDetterField() throws Exception {
+        String xml = "<tercero><idenTercero>ID1</idenTercero><NIFtercero>NIF1</NIFtercero><nomTercero>Juan</nomTercero><apellTercero>García</apellTercero></tercero>";
+        Document doc = parseXmlDom(xml);
+        Element element = (Element) doc.getElementsByTagName("tercero").item(0);
+        
+        Method method = SicalService.class.getDeclaredMethod("parseTerceroFromElement", Element.class);
+        method.setAccessible(true);
+        Tercero result = (Tercero) method.invoke(service, element);
+        
+        assertNotNull(result);
+        assertEquals("Juan", result.getNomTercero());
+    }
+
+    @Test
+    void unescapeXmlEntities_handlesAllEntityTypes() throws Exception {
+        String input = "&lt;tag&gt;&quot;quoted&quot;&apos;apostrophe&apos;";
+        String result = invokeUnescapeXmlEntities(input);
+        assertEquals("<tag>\"quoted\"'apostrophe'", result);
+    }
+
+    @Test
+    void extractSoapContent_handlesNoServiceioReturn() throws Exception {
+        String xml = "<other>content</other>";
+        String result = invokeExtractSoapContent(xml);
+        assertEquals(xml, result);
+    }
+
+    @Test
+    void unescapePart_withValidBaseCase() throws Exception {
+        String[] parts = {"value", "second"};
+        String result = invokeUnescapePart(parts, 0);
+        assertEquals("value", result);
+    }
+
+    @Test
+    void parseTerceros_withMultipleElements() throws Exception {
+        String xml = "<?xml version=\"1.0\"?><data><tercero><idenTercero>ID1</idenTercero><nomTercero>Juan</nomTercero></tercero><tercero><idenTercero>ID2</idenTercero><nomTercero>Maria</nomTercero></tercero></data>";
+        Method method = SicalService.class.getDeclaredMethod("parseTerceros", String.class);
+        method.setAccessible(true);
+        List<Tercero> result = (List<Tercero>) method.invoke(service, xml);
+        assertEquals(2, result.size());
+    }
+
+    @Test
+    void parseTerceros_withEmptyData() throws Exception {
+        String xml = "<?xml version=\"1.0\"?><data></data>";
+        Method method = SicalService.class.getDeclaredMethod("parseTerceros", String.class);
+        method.setAccessible(true);
+        List<Tercero> result = (List<Tercero>) method.invoke(service, xml);
+        assertEquals(0, result.size());
     }
 
     private String invokeUnescapeXmlEntities(String input) throws Exception {

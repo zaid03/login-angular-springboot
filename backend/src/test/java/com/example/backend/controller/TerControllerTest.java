@@ -546,4 +546,382 @@ public class TerControllerTest {
             .andExpect(status().isInternalServerError())
             .andExpect(content().string(containsString("Error")));
     }
+
+    @Test
+    void shouldFilterByTercodBloqueado_returns404WhenEmpty() throws Exception {
+        when(terRepository.findByENTAndTERCODAndTERBLO(TEST_ENT, 400, 1)).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/ter/by-tercod-bloqueado/" + TEST_ENT + "/tercod/400"))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(content().string("Sin resultado"));
+    }
+
+    @Test
+    void shouldFilterByTercodNoBloqueado_returns404WhenEmpty() throws Exception {
+        when(terRepository.findByENTAndTERCODAndTERBLO(TEST_ENT, 500, 0)).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/ter/by-tercod-no-bloqueado/" + TEST_ENT + "/tercod/500"))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(content().string("Sin resultado"));
+    }
+
+    @Test
+    void shouldFilterByTernifBloqueado_returns404WhenEmpty() throws Exception {
+        when(terRepository.findByENTAndTERNIFContainingAndTERBLO(TEST_ENT, "ABC", 1)).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/ter/by-ternif-bloquado/" + TEST_ENT + "/ternif/ABC"))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(content().string("Sin resultado"));
+    }
+
+    @Test
+    void shouldFilterByTernifNoBloqueado_returns404WhenEmpty() throws Exception {
+        when(terRepository.findByENTAndTERNIFContainingAndTERBLO(TEST_ENT, "MATCH", 0)).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/ter/by-ternif-no-bloqueado/" + TEST_ENT + "/ternif/MATCH"))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(content().string("Sin resultado"));
+    }
+
+    @Test
+    void shouldSearchByTernifNomAliBloqueado_returns404WhenEmpty() throws Exception {
+        when(terRepository.findAll(any(Specification.class))).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/ter/by-ternif-nom-ali-bloquado/" + TEST_ENT + "/search")
+                .param("term", "ABC"))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(content().string("Sin resultado"));
+    }
+
+    @Test
+    void shouldSearchByNifNomAliNoBloqueado_returns404WhenEmpty() throws Exception {
+        when(terRepository.findAll(any(Specification.class))).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/ter/by-nif-nom-ali-no-bloquado/" + TEST_ENT + "/search-by-term")
+                .param("term", "ABC"))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(content().string("Sin resultado"));
+    }
+
+    @Test
+    void shouldSearchByNomOrAliBloqueado_returns404WhenEmpty() throws Exception {
+        when(terRepository.findAll(any(Specification.class))).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/ter/by-nom-ali-bloquado/" + TEST_ENT + "/searchByNomOrAli")
+                .param("term", "Tech"))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(content().string("Sin resultado"));
+    }
+
+    @Test
+    void shouldFindMatchingNomOrAliNoBloqueado_returns404WhenEmpty() throws Exception {
+        when(terRepository.findAll(any(Specification.class))).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/ter/by-nom-ali-no-bloquado/" + TEST_ENT + "/findMatchingNomOrAli")
+                .param("term", "Tech"))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(content().string("Sin resultado"));
+    }
+
+    @Test
+    void shouldGetByEntAndTercod_returns404WhenEmpty() throws Exception {
+        when(terRepository.findAllByENTAndTERCOD(TEST_ENT, 1200)).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/ter/by-ent/" + TEST_ENT + "/tercod/1200"))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(content().string("Sin resultado"));
+    }
+
+    @Test
+    void shouldGetByEntAndTernif_returns404WhenEmpty() throws Exception {
+        when(terRepository.findByENTAndTERNIFContaining(TEST_ENT, "LOOK")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/ter/by-ent/" + TEST_ENT + "/ternif/LOOK"))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(content().string("Sin resultado"));
+    }
+
+    @Test
+    void shouldSearchTodos_returns404WhenEmpty() throws Exception {
+        when(terRepository.findAll(any(Specification.class))).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/ter/by-ent/" + TEST_ENT + "/search-todos")
+                .param("term", "ABC"))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(content().string("Sin resultado"));
+    }
+
+    @Test
+    void shouldFilterByBloqueado_returns404WhenEmpty() throws Exception {
+        when(terRepository.findByENTAndTERBLO(TEST_ENT, 1)).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/ter/filter/" + TEST_ENT))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(content().string("Sin resultado"));
+    }
+
+    @Test
+    void shouldFilterByNoBloqueado_returns404WhenEmpty() throws Exception {
+        when(terRepository.findByENTAndTERBLO(TEST_ENT, 0)).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/ter/filter-no/" + TEST_ENT))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(content().string("Sin resultado"));
+    }
+
+    @Test
+    void shouldReturn400OnDataAccessException_filterByTercodNoBloqueado() throws Exception {
+        when(terRepository.findByENTAndTERCODAndTERBLO(anyInt(), anyInt(), anyInt()))
+            .thenThrow(new DataAccessResourceFailureException("DB down"));
+
+        mockMvc.perform(get("/api/ter/by-tercod-no-bloqueado/" + TEST_ENT + "/tercod/500"))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Error")));
+    }
+
+    @Test
+    void shouldReturn400OnDataAccessException_filterByTernifNoBloqueado() throws Exception {
+        when(terRepository.findByENTAndTERNIFContainingAndTERBLO(anyInt(), anyString(), anyInt()))
+            .thenThrow(new DataAccessResourceFailureException("DB down"));
+
+        mockMvc.perform(get("/api/ter/by-ternif-no-bloqueado/" + TEST_ENT + "/ternif/MATCH"))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Error")));
+    }
+
+    @Test
+    void shouldFilterByTercodBloqueado_returnsMultipleRecords() throws Exception {
+        Ter t1 = createTer(TEST_ENT, 400, "P1", "101", 1);
+        Ter t2 = createTer(TEST_ENT, 400, "P2", "102", 1);
+        when(terRepository.findByENTAndTERCODAndTERBLO(TEST_ENT, 400, 1)).thenReturn(List.of(t1, t2));
+
+        mockMvc.perform(get("/api/ter/by-tercod-bloqueado/" + TEST_ENT + "/tercod/400"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.length()").value(2));
+    }
+
+    @Test
+    void shouldFilterByTernifBloqueado_returnsMultipleRecords() throws Exception {
+        Ter t1 = createTer(TEST_ENT, 600, "B1", "ABC123", 1);
+        Ter t2 = createTer(TEST_ENT, 601, "B2", "ABC456", 1);
+        when(terRepository.findByENTAndTERNIFContainingAndTERBLO(TEST_ENT, "ABC", 1)).thenReturn(List.of(t1, t2));
+
+        mockMvc.perform(get("/api/ter/by-ternif-bloquado/" + TEST_ENT + "/ternif/ABC"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.length()").value(2));
+    }
+
+    @Test
+    void shouldGetByEntAndTercod_returnsMultipleRecords() throws Exception {
+        Ter t1 = createTer(TEST_ENT, 1200, "P1", "NIF1", 0);
+        Ter t2 = createTer(TEST_ENT, 1200, "P2", "NIF2", 1);
+        when(terRepository.findAllByENTAndTERCOD(TEST_ENT, 1200)).thenReturn(List.of(t1, t2));
+
+        mockMvc.perform(get("/api/ter/by-ent/" + TEST_ENT + "/tercod/1200"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.length()").value(2));
+    }
+
+    @Test
+    void shouldSaveProveedores_withMultipleProveedores() throws Exception {
+        when(terRepository.findNextTercodForEnt(TEST_ENT)).thenReturn(100);
+        when(terRepository.save(any(Ter.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        String json = String.format(
+            "[{\"TERNOM\":\"Provider A\",\"TERNIF\":\"11111111A\",\"TERBLO\":0,\"TERACU\":0},"
+            + "{\"TERNOM\":\"Provider B\",\"TERNIF\":\"22222222B\",\"TERBLO\":1,\"TERACU\":1},"
+            + "{\"TERNOM\":\"Provider C\",\"TERNIF\":\"33333333C\",\"TERBLO\":0,\"TERACU\":0}]"
+        );
+
+        mockMvc.perform(post("/api/ter/save-proveedores/" + TEST_ENT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+            .andDo(print())
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.length()").value(3))
+            .andExpect(jsonPath("$[0].tercod").value(100))
+            .andExpect(jsonPath("$[1].tercod").value(101))
+            .andExpect(jsonPath("$[2].tercod").value(102));
+
+        verify(terRepository, times(3)).save(any(Ter.class));
+    }
+
+    @Test
+    void shouldSaveProveedores_withOptionalFields() throws Exception {
+        when(terRepository.findNextTercodForEnt(TEST_ENT)).thenReturn(1);
+        when(terRepository.save(any(Ter.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        String json = "[{\"TERNOM\":\"Provider\",\"TERNIF\":\"NIF123\",\"TERDOM\":\"Address\",\"TERCPO\":\"12345\",\"TERTЕЛ\":\"555-1234\",\"TERFAX\":\"555-5678\",\"TERWEB\":\"www.test.com\"}]";
+
+        mockMvc.perform(post("/api/ter/save-proveedores/" + TEST_ENT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+            .andDo(print())
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.length()").value(1));
+
+        verify(terRepository).save(any(Ter.class));
+    }
+
+    @Test
+    void shouldReturn400OnSaveProv_emptyDtos() throws Exception {
+        mockMvc.perform(post("/api/ter/save-proveedores/" + TEST_ENT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("[]"))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string("Faltan datos obligatorios"));
+    }
+
+    @Test
+    void shouldReturn400OnSaveProv_whitespaceOnlyTERNOM() throws Exception {
+        when(terRepository.findNextTercodForEnt(TEST_ENT)).thenReturn(1);
+
+        String json = "[{\"TERNOM\":\"   \",\"TERNIF\":\"11111111A\",\"TERBLO\":0,\"TERACU\":0}]";
+
+        mockMvc.perform(post("/api/ter/save-proveedores/" + TEST_ENT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+            .andDo(print())
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldReturn400OnSaveProv_missingTERNOM() throws Exception {
+        when(terRepository.findNextTercodForEnt(TEST_ENT)).thenReturn(1);
+
+        String json = "[{\"TERNIF\":\"11111111A\",\"TERBLO\":0,\"TERACU\":0}]";
+
+        mockMvc.perform(post("/api/ter/save-proveedores/" + TEST_ENT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+            .andDo(print())
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldReturn400OnSaveProv_emptyTERNIF() throws Exception {
+        when(terRepository.findNextTercodForEnt(TEST_ENT)).thenReturn(1);
+
+        String json = "[{\"TERNOM\":\"Provider\",\"TERNIF\":\"\",\"TERBLO\":0,\"TERACU\":0}]";
+
+        mockMvc.perform(post("/api/ter/save-proveedores/" + TEST_ENT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+            .andDo(print())
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldUpdateFields_withMinimalPayload() throws Exception {
+        Ter existing = createTer(TEST_ENT, 1500, "Existing", "NIF1", 0);
+        when(terRepository.findById(new TerId(TEST_ENT, 1500))).thenReturn(Optional.of(existing));
+        when(terRepository.save(any(Ter.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        String json = "{ \"TERWEB\": null, \"TEROBS\": null, \"TERBLO\": 0, \"TERACU\": 0 }";
+
+        mockMvc.perform(put("/api/ter/updateFields/" + TEST_ENT + "/1500")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+            .andDo(print())
+            .andExpect(status().isNoContent());
+
+        verify(terRepository).save(any(Ter.class));
+    }
+
+    @Test
+    void shouldUpdateFields_verifiesRepository() throws Exception {
+        Ter existing = createTer(TEST_ENT, 1600, "Test", "NIF", 0);
+        when(terRepository.findById(new TerId(TEST_ENT, 1600))).thenReturn(Optional.of(existing));
+        when(terRepository.save(any(Ter.class))).thenReturn(existing);
+
+        String json = "{ \"TERWEB\": \"updated.com\", \"TEROBS\": \"updated obs\", \"TERBLO\": 1, \"TERACU\": 1 }";
+
+        mockMvc.perform(put("/api/ter/updateFields/" + TEST_ENT + "/1600")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+            .andDo(print())
+            .andExpect(status().isNoContent());
+
+        verify(terRepository).findById(new TerId(TEST_ENT, 1600));
+        verify(terRepository).save(any(Ter.class));
+    }
+
+    @Test
+    void shouldReturn400OnDataAccessException_filterBloqueadoEmpty() throws Exception {
+        when(terRepository.findByENTAndTERBLO(anyInt(), anyInt()))
+            .thenThrow(new DataAccessResourceFailureException("DB down"));
+
+        mockMvc.perform(get("/api/ter/filter/" + TEST_ENT))
+            .andDo(print())
+            .andExpect(status().isInternalServerError())
+            .andExpect(content().string(containsString("Error")));
+    }
+
+    @Test
+    void shouldFilterByTercodBloqueado_responseValidation() throws Exception {
+        Ter b1 = createTer(TEST_ENT, 400, "B1", "101", 1);
+        when(terRepository.findByENTAndTERCODAndTERBLO(TEST_ENT, 400, 1)).thenReturn(List.of(b1));
+
+        mockMvc.perform(get("/api/ter/by-tercod-bloqueado/" + TEST_ENT + "/tercod/400"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0].ent").exists())
+            .andExpect(jsonPath("$[0].tercod").exists())
+            .andExpect(jsonPath("$[0].ternom").exists())
+            .andExpect(jsonPath("$[0].ternif").exists())
+            .andExpect(jsonPath("$[0].terblo").exists());
+    }
+
+    @Test
+    void shouldSaveProveedores_incrementsConcodCorrectly() throws Exception {
+        when(terRepository.findNextTercodForEnt(TEST_ENT)).thenReturn(50);
+        when(terRepository.save(any(Ter.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        String json = "[{\"TERNOM\":\"Provider\",\"TERNIF\":\"NIF123\",\"TERBLO\":0,\"TERACU\":0}]";
+
+        mockMvc.perform(post("/api/ter/save-proveedores/" + TEST_ENT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+            .andDo(print())
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$[0].tercod").value(50));
+    }
+
+    @Test
+    void shouldSaveProveedores_withDifferentEnt() throws Exception {
+        int differentEnt = 888888;
+        when(terRepository.findNextTercodForEnt(differentEnt)).thenReturn(1);
+        when(terRepository.save(any(Ter.class))).thenAnswer(invocation -> {
+            Ter t = invocation.getArgument(0);
+            assertEquals(differentEnt, t.getENT());
+            return t;
+        });
+
+        String json = "[{\"TERNOM\":\"Provider\",\"TERNIF\":\"NIF456\",\"TERBLO\":0,\"TERACU\":0}]";
+
+        mockMvc.perform(post("/api/ter/save-proveedores/" + differentEnt)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+            .andDo(print())
+            .andExpect(status().isCreated());
+    }
 }

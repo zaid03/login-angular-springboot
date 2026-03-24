@@ -184,10 +184,9 @@ public class FacSpecification {
     }
     
     private static Predicate applyEstadoFilter(Predicate predicate, Root<Fac> root, CriteriaBuilder cb, String estado) {
-        if ("TODAS".equals(estado)) {
+        if (estado == null || "TODAS".equals(estado)) {
             return predicate;
         }
-        
         Predicate estadoPredicate = switch (estado) {
             case "CONT" -> cb.isNotNull(root.get(FACADO));
             case "NO_CONT" -> cb.isNull(root.get(FACADO));
@@ -195,7 +194,6 @@ public class FacSpecification {
             case "PTE_SIN" -> buildPteSinPredicate(root, cb);
             default -> cb.conjunction();
         };
-        
         return cb.and(predicate, estadoPredicate);
     }
     
@@ -225,17 +223,15 @@ public class FacSpecification {
     
     private static Predicate applyFacannFilter(Predicate predicate, Root<Fac> root, CriteriaBuilder cb,
             String facannMode, String facann) {
-        if ("ANY".equals(facannMode)) {
+        if (facannMode == null || "ANY".equals(facannMode)) {
             return predicate;
         }
-        
         Predicate facannPredicate = switch (facannMode) {
             case "NULL" -> cb.isNull(root.get(FACANN));
             case "NOT_NULL" -> cb.isNotNull(root.get(FACANN));
             case "VALUE" -> cb.equal(root.get(FACANN), Integer.parseInt(facann));
             default -> cb.conjunction();
         };
-        
         return cb.and(predicate, facannPredicate);
     }
     

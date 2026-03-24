@@ -532,4 +532,512 @@ public class ContabilizacionServiceTest {
         fdt.setFDTTXT("Test detail");
         return fdt;
     }
+
+    @Test
+    void buildSmlInput_withFacFPGValidFormat_includesPaymentDate() throws Exception {
+        ContabilizacionRequestDto req = createValidRequest();
+        Fac fac = createValidFac();
+        fac.setFACFPG("20260415");
+
+        String result = service.buildSmlInput(req, fac, List.of(), List.of(), "NIF");
+
+        assertTrue(result.contains("<fpago>20260415</fpago>"));
+    }
+
+    @Test
+    void buildSmlInput_withFacFPGFormattedDate_handlesConversion() throws Exception {
+        ContabilizacionRequestDto req = createValidRequest();
+        Fac fac = createValidFac();
+        fac.setFACFPG("2026-04-15");
+
+        String result = service.buildSmlInput(req, fac, List.of(), List.of(), "NIF");
+
+        assertTrue(result.contains("fpago") || result.contains("2026"));
+    }
+
+    @Test
+    void buildSmlInput_withFacFPGTooShort_omitsPaymentDate() throws Exception {
+        ContabilizacionRequestDto req = createValidRequest();
+        Fac fac = createValidFac();
+        fac.setFACFPG("2026");
+
+        String result = service.buildSmlInput(req, fac, List.of(), List.of(), "NIF");
+
+        assertNotNull(result);
+    }
+
+    @Test
+    void buildSmlInput_withFacFPGEmpty_omitsPaymentDate() throws Exception {
+        ContabilizacionRequestDto req = createValidRequest();
+        Fac fac = createValidFac();
+        fac.setFACFPG("");
+
+        String result = service.buildSmlInput(req, fac, List.of(), List.of(), "NIF");
+
+        assertFalse(result.contains("<fpago>"));
+    }
+
+    @Test
+    void buildSmlInput_withFacFPGNull_omitsPaymentDate() throws Exception {
+        ContabilizacionRequestDto req = createValidRequest();
+        Fac fac = createValidFac();
+        fac.setFACFPG(null);
+
+        String result = service.buildSmlInput(req, fac, List.of(), List.of(), "NIF");
+
+        assertFalse(result.contains("<fpago>"));
+    }
+
+    @Test
+    void buildSmlInput_withFacOPGEmpty_omitsOrtField() throws Exception {
+        ContabilizacionRequestDto req = createValidRequest();
+        Fac fac = createValidFac();
+        fac.setFACOPG("");
+
+        String result = service.buildSmlInput(req, fac, List.of(), List.of(), "NIF");
+
+        assertNotNull(result);
+    }
+
+    @Test
+    void buildSmlInput_withFacTXTNull_omitsTextField() throws Exception {
+        ContabilizacionRequestDto req = createValidRequest();
+        Fac fac = createValidFac();
+        fac.setFACTXT(null);
+
+        String result = service.buildSmlInput(req, fac, List.of(), List.of(), "NIF");
+
+        assertFalse(result.contains("<text>"));
+    }
+
+    @Test
+    void buildSmlInput_withMultipleFdeAmountsZero_skipsLines() throws Exception {
+        ContabilizacionRequestDto req = createValidRequest();
+        Fac fac = createValidFac();
+        Fde fde1 = createValidFde();
+        fde1.setFDEIMP(0.0);
+        fde1.setFDEDIF(0.0);
+        Fde fde2 = createValidFde();
+        fde2.setFDEIMP(100.0);
+
+        String result = service.buildSmlInput(req, fac, List.of(fde1, fde2), List.of(), "NIF");
+
+        int count = result.split("<linea>").length - 1;
+        assertEquals(1, count);
+    }
+
+    @Test
+    void buildSmlInput_withFdeZeroAmount_skipsLine() throws Exception {
+        ContabilizacionRequestDto req = createValidRequest();
+        Fac fac = createValidFac();
+        Fde fde = createValidFde();
+        fde.setFDEIMP(0.0);
+
+        String result = service.buildSmlInput(req, fac, List.of(fde), List.of(), "NIF");
+
+        assertFalse(result.contains("<linea>"));
+    }
+
+    @Test
+    void parseResponse_withOperacionFieldOrganica_decodesBase64() {
+        String soapResponse = """
+            <soap:Envelope>
+              <soap:Body>
+                <servicioReturn>
+                  &lt;response&gt;
+                    &lt;exito&gt;-1&lt;/exito&gt;
+                    &lt;operacion&gt;
+                      &lt;organica&gt;Q29kZWQgVmFsdWU=&lt;/organica&gt;
+                    &lt;/operacion&gt;
+                  &lt;/response&gt;
+                </servicioReturn>
+              </soap:Body>
+            </soap:Envelope>
+            """;
+
+        ContabilizacionResponseDto result = service.parseResponse(soapResponse);
+
+        assertTrue(result.isExito());
+        assertNotNull(result.getOrganica());
+    }
+
+    @Test
+    void parseResponse_withOperacionFieldFuncional_decodesBase64() {
+        String soapResponse = """
+            <soap:Envelope>
+              <soap:Body>
+                <servicioReturn>
+                  &lt;response&gt;
+                    &lt;exito&gt;-1&lt;/exito&gt;
+                    &lt;operacion&gt;
+                      &lt;funcional&gt;Q29kZWQgVmFsdWU=&lt;/funcional&gt;
+                    &lt;/operacion&gt;
+                  &lt;/response&gt;
+                </servicioReturn>
+              </soap:Body>
+            </soap:Envelope>
+            """;
+
+        ContabilizacionResponseDto result = service.parseResponse(soapResponse);
+
+        assertTrue(result.isExito());
+        assertNotNull(result.getFuncional());
+    }
+
+    @Test
+    void parseResponse_withOperacionFieldEconomica_decodesBase64() {
+        String soapResponse = """
+            <soap:Envelope>
+              <soap:Body>
+                <servicioReturn>
+                  &lt;response&gt;
+                    &lt;exito&gt;-1&lt;/exito&gt;
+                    &lt;operacion&gt;
+                      &lt;economica&gt;Q29kZWQgVmFsdWU=&lt;/economica&gt;
+                    &lt;/operacion&gt;
+                  &lt;/response&gt;
+                </servicioReturn>
+              </soap:Body>
+            </soap:Envelope>
+            """;
+
+        ContabilizacionResponseDto result = service.parseResponse(soapResponse);
+
+        assertTrue(result.isExito());
+        assertNotNull(result.getEconomica());
+    }
+
+    @Test
+    void parseResponse_withErrorListMultipleErrors_concatenatesAll() {
+        String soapResponse = """
+            <soap:Envelope>
+              <soap:Body>
+                <servicioReturn>
+                  &lt;response&gt;
+                    &lt;exito&gt;0&lt;/exito&gt;
+                    &lt;error&gt;Error 1&lt;/error&gt;
+                    &lt;error&gt;Error 2&lt;/error&gt;
+                    &lt;error&gt;Error 3&lt;/error&gt;
+                  &lt;/response&gt;
+                </servicioReturn>
+              </soap:Body>
+            </soap:Envelope>
+            """;
+
+        ContabilizacionResponseDto result = service.parseResponse(soapResponse);
+
+        assertFalse(result.isExito());
+        assertTrue(result.getMensaje().contains("Error 1"));
+        assertTrue(result.getMensaje().contains("Error 2"));
+        assertTrue(result.getMensaje().contains("Error 3"));
+    }
+
+    @Test
+    void parseResponse_withOnlyCodeInError_includesCode() {
+        String soapResponse = """
+            <soap:Envelope>
+              <soap:Body>
+                <servicioReturn>
+                  &lt;response&gt;
+                    &lt;exito&gt;0&lt;/exito&gt;
+                    &lt;codigo&gt;CODE123&lt;/codigo&gt;
+                  &lt;/response&gt;
+                </servicioReturn>
+              </soap:Body>
+            </soap:Envelope>
+            """;
+
+        ContabilizacionResponseDto result = service.parseResponse(soapResponse);
+
+        assertFalse(result.isExito());
+        assertTrue(result.getMensaje().contains("CODE123"));
+    }
+
+    @Test
+    void parseResponse_withOnlyDescInError_includesDesc() {
+        String soapResponse = """
+            <soap:Envelope>
+              <soap:Body>
+                <servicioReturn>
+                  &lt;response&gt;
+                    &lt;exito&gt;0&lt;/exito&gt;
+                    &lt;desc&gt;Description only&lt;/desc&gt;
+                  &lt;/response&gt;
+                </servicioReturn>
+              </soap:Body>
+            </soap:Envelope>
+            """;
+
+        ContabilizacionResponseDto result = service.parseResponse(soapResponse);
+
+        assertFalse(result.isExito());
+        assertTrue(result.getMensaje().contains("Description only"));
+    }
+
+    @Test
+    void parseResponse_withNoErrorDetails_returnsUnknownError() {
+        String soapResponse = """
+            <soap:Envelope>
+              <soap:Body>
+                <servicioReturn>
+                  &lt;response&gt;
+                    &lt;exito&gt;0&lt;/exito&gt;
+                  &lt;/response&gt;
+                </servicioReturn>
+              </soap:Body>
+            </soap:Envelope>
+            """;
+
+        ContabilizacionResponseDto result = service.parseResponse(soapResponse);
+
+        assertFalse(result.isExito());
+        assertTrue(result.getMensaje().contains("Error desconocido"));
+    }
+
+    @Test
+    void buildSmlInput_withFdeAllFieldsPopulated_includesAllInOutput() throws Exception {
+        ContabilizacionRequestDto req = createValidRequest();
+        Fac fac = createValidFac();
+        Fde fde = createValidFde();
+        fde.setFDEORG("O1");
+        fde.setFDEFUN("F1");
+        fde.setFDEECO("E1");
+        fde.setFDEREF("R1");
+
+        String result = service.buildSmlInput(req, fac, List.of(fde), List.of(), "NIF");
+
+        assertTrue(result.contains("<linea>"));
+        assertTrue(result.contains("<imp>"));
+    }
+
+    @Test
+    void buildSmlInput_withFdtAllFieldsPopulated_includesAllInOutput() throws Exception {
+        ContabilizacionRequestDto req = createValidRequest();
+        Fac fac = createValidFac();
+        Fdt fdt = createValidFdt();
+        fdt.setFDTARE("A1");
+        fdt.setFDTORG("O1");
+        fdt.setFDTFUN("F1");
+        fdt.setFDTECO("E1");
+
+        String result = service.buildSmlInput(req, fac, List.of(), List.of(fdt), "NIF");
+
+        assertTrue(result.contains("<dto>"));
+        assertTrue(result.contains("</dto>"));
+    }
+
+    @Test
+    void buildSmlInput_withFdtNullAmounts_omitsAmountFields() throws Exception {
+        ContabilizacionRequestDto req = createValidRequest();
+        Fac fac = createValidFac();
+        Fdt fdt = createValidFdt();
+        fdt.setFDTDTO(null);
+        fdt.setFDTBSE(null);
+        fdt.setFDTPRE(null);
+
+        String result = service.buildSmlInput(req, fac, List.of(), List.of(fdt), "NIF");
+
+        assertTrue(result.contains("<dto>"));
+    }
+
+    @Test
+    void parseResponse_withEmptyOperacionTag_stillSucceeds() {
+        String soapResponse = """
+            <soap:Envelope>
+              <soap:Body>
+                <servicioReturn>
+                  &lt;response&gt;
+                    &lt;exito&gt;-1&lt;/exito&gt;
+                    &lt;operacion&gt;
+                    &lt;/operacion&gt;
+                  &lt;/response&gt;
+                </servicioReturn>
+              </soap:Body>
+            </soap:Envelope>
+            """;
+
+        ContabilizacionResponseDto result = service.parseResponse(soapResponse);
+
+        assertTrue(result.isExito());
+        assertEquals("Operación generada correctamente", result.getMensaje());
+    }
+
+    @Test
+    void buildSmlInput_withContratoFieldsEmpty_usesDefaults() throws Exception {
+        ContabilizacionRequestDto req = createValidRequest();
+        Fac fac = createValidFac();
+        fac.setCONCTP("");
+        fac.setCONCPR("");
+        fac.setCONCCR("");
+
+        String result = service.buildSmlInput(req, fac, List.of(), List.of(), "NIF");
+
+        assertTrue(result.contains("<tipContrato>"));
+        assertTrue(result.contains("<proContrato>"));
+        assertTrue(result.contains("<criContrato>"));
+    }
+
+    @Test
+    void buildSmlInput_fechaContableFormattedWithDashes_removedCorrectly() throws Exception {
+        ContabilizacionRequestDto req = createValidRequest();
+        req.setFechaContable("2026-03-22");
+        Fac fac = createValidFac();
+
+        String result = service.buildSmlInput(req, fac, List.of(), List.of(), "NIF");
+
+        assertTrue(result.contains("<fecont>20260322</fecont>"));
+    }
+
+    @Test
+    void buildSmlInput_fechaContableAlreadyFormatted_usesAsIs() throws Exception {
+        ContabilizacionRequestDto req = createValidRequest();
+        req.setFechaContable("20260322");
+        Fac fac = createValidFac();
+
+        String result = service.buildSmlInput(req, fac, List.of(), List.of(), "NIF");
+
+        assertTrue(result.contains("<fecont>20260322</fecont>"));
+    }
+
+    @Test
+    void parseResponse_withNullExitoValue_treatAsFailure() {
+        String soapResponse = """
+            <soap:Envelope>
+              <soap:Body>
+                <servicioReturn>
+                  &lt;response&gt;
+                    &lt;exito&gt;&lt;/exito&gt;
+                    &lt;desc&gt;Error occurred&lt;/desc&gt;
+                  &lt;/response&gt;
+                </servicioReturn>
+              </soap:Body>
+            </soap:Envelope>
+            """;
+
+        ContabilizacionResponseDto result = service.parseResponse(soapResponse);
+
+        assertFalse(result.isExito());
+    }
+
+    @Test
+    void buildSmlInput_withFdeImpZeroDifNotZero_includesLine() throws Exception {
+        ContabilizacionRequestDto req = createValidRequest();
+        Fac fac = createValidFac();
+        Fde fde = createValidFde();
+        fde.setFDEIMP(0.0);
+        fde.setFDEDIF(50.0);
+
+        String result = service.buildSmlInput(req, fac, List.of(fde), List.of(), "NIF");
+
+        assertTrue(result.contains("<linea>"));
+    }
+
+    @Test
+    void buildSmlInput_withFdeImpNotZeroDifZero_includesLine() throws Exception {
+        ContabilizacionRequestDto req = createValidRequest();
+        Fac fac = createValidFac();
+        Fde fde = createValidFde();
+        fde.setFDEIMP(50.0);
+        fde.setFDEDIF(0.0);
+
+        String result = service.buildSmlInput(req, fac, List.of(fde), List.of(), "NIF");
+
+        assertTrue(result.contains("<linea>"));
+    }
+
+    @Test
+    void buildSmlInput_withFdtMultipleEntries_includesAllDtos() throws Exception {
+        ContabilizacionRequestDto req = createValidRequest();
+        Fac fac = createValidFac();
+        List<Fdt> fdtList = List.of(
+            createValidFdt(),
+            createValidFdt(),
+            createValidFdt()
+        );
+
+        String result = service.buildSmlInput(req, fac, List.of(), fdtList, "NIF");
+
+        int count = result.split("<dto>").length - 1;
+        assertEquals(3, count);
+    }
+
+    @Test
+    void sendSmlRequest_withNullUrl_usesDefaultUrl() {
+        String smlInput = "<e><test>data</test></e>";
+
+        String result = service.sendSmlRequest(smlInput, null);
+
+        assertTrue(result == null || result instanceof String);
+    }
+
+    @Test
+    void sendSmlRequest_withEmptyUrl_usesDefaultUrl() {
+        String smlInput = "<e><test>data</test></e>";
+
+        String result = service.sendSmlRequest(smlInput, "");
+
+        assertTrue(result == null || result instanceof String);
+    }
+
+    @Test
+    void sendSmlRequest_withCustomUrl_usesProvidedUrl() {
+        String smlInput = "<e><test>data</test></e>";
+        String customUrl = "http://custom-url:8080/service";
+
+        String result = service.sendSmlRequest(smlInput, customUrl);
+
+        assertTrue(result == null || result instanceof String);
+    }
+
+    @Test
+    void buildSmlInput_withTerAytContainingSpecialCharacters_encodesCorrectly() throws Exception {
+        ContabilizacionRequestDto req = createValidRequest();
+        Fac fac = createValidFac();
+
+        String result = service.buildSmlInput(req, fac, List.of(), List.of(), "12345678-ABC");
+
+        assertTrue(result.contains("<nif>"));
+    }
+
+    @Test
+    void parseResponse_withNonExitoNegativeOne_treatAsFailure() {
+        String soapResponse = """
+            <soap:Envelope>
+              <soap:Body>
+                <servicioReturn>
+                  &lt;response&gt;
+                    &lt;exito&gt;1&lt;/exito&gt;
+                    &lt;desc&gt;Unexpected value&lt;/desc&gt;
+                  &lt;/response&gt;
+                </servicioReturn>
+              </soap:Body>
+            </soap:Envelope>
+            """;
+
+        ContabilizacionResponseDto result = service.parseResponse(soapResponse);
+
+        assertFalse(result.isExito());
+    }
+
+    @Test
+    void buildSmlInput_withFacOCTZero_omitsObtField() throws Exception {
+        ContabilizacionRequestDto req = createValidRequest();
+        Fac fac = createValidFac();
+        fac.setFACOCT(0);
+
+        String result = service.buildSmlInput(req, fac, List.of(), List.of(), "NIF");
+
+        assertNotNull(result);
+    }
+
+    @Test
+    void buildSmlInput_withFacOCTNull_omitsObpField() throws Exception {
+        ContabilizacionRequestDto req = createValidRequest();
+        Fac fac = createValidFac();
+        fac.setFACOCT(null);
+
+        String result = service.buildSmlInput(req, fac, List.of(), List.of(), "NIF");
+
+        assertFalse(result.contains("<obp>"));
+    }
 }

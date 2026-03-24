@@ -429,4 +429,91 @@ public class PartidasServiceTest {
         method.setAccessible(true);
         return (Document) method.invoke(service, xml);
     }
+
+    @Test
+    void createPartidaFromElement_populatesBasicFields() throws Exception {
+        String xml = "<partida>" +
+            "<alias>TEST_ALIAS</alias>" +
+            "<ejeapl>EJE001</ejeapl>" +
+            "<desc>Test description</desc>" +
+            "</partida>";
+        Document doc = parseXmlDom(xml);
+        Element partidaEl = doc.getDocumentElement();
+        
+        assertDoesNotThrow(() -> invokeCreatePartidaFromElement(partidaEl));
+    }
+
+    @Test
+    void createPartidaFromElement_populatesDoubleFields() throws Exception {
+        String xml = "<partida>" +
+            "<cipocin>1000.00</cipocin>" +
+            "<modcred>2000.50</modcred>" +
+            "<credextra>500.25</credextra>" +
+            "<cretot>3500.75</cretot>" +
+            "</partida>";
+        Document doc = parseXmlDom(xml);
+        Element partidaEl = doc.getDocumentElement();
+        
+        assertDoesNotThrow(() -> invokeCreatePartidaFromElement(partidaEl));
+    }
+
+    @Test
+    void createPartidaFromElement_handlesAllDoubleAmounts() throws Exception {
+        String xml = "<partida>" +
+            "<alias>TEST</alias>" +
+            "<gasauto>100.00</gasauto>" +
+            "<autdisp>200.00</autdisp>" +
+            "<gascomp>300.00</gascomp>" +
+            "<sdisp>400.00</sdisp>" +
+            "</partida>";
+        Document doc = parseXmlDom(xml);
+        Element partidaEl = doc.getDocumentElement();
+        
+        assertDoesNotThrow(() -> invokeCreatePartidaFromElement(partidaEl));
+    }
+
+    @Test
+    void createPartidaFromElement_handlesNullOptionalFields() throws Exception {
+        String xml = "<partida><alias>TEST</alias></partida>";
+        Document doc = parseXmlDom(xml);
+        Element partidaEl = doc.getDocumentElement();
+        
+        assertDoesNotThrow(() -> invokeCreatePartidaFromElement(partidaEl));
+    }
+
+    @Test
+    void decodeOrNull_returnsNullForNull() throws Exception {
+        String result = invokeDecodeOrNull(null);
+        assertNull(result);
+    }
+
+    @Test
+    void decodeOrNull_returnsNullForBlank() throws Exception {
+        String result = invokeDecodeOrNull("");
+        assertNull(result);
+    }
+
+    @Test
+    void decodeOrNull_returnsNullForWhitespace() throws Exception {
+        String result = invokeDecodeOrNull("   ");
+        assertNull(result);
+    }
+
+    @Test
+    void decodeOrNull_returnsValueWhenNotBlank() throws Exception {
+        String result = invokeDecodeOrNull("TEST");
+        assertNotNull(result);
+    }
+
+    private Object invokeCreatePartidaFromElement(Element partidaEl) throws Exception {
+        Method method = PartidasService.class.getDeclaredMethod("createPartidaFromElement", Element.class);
+        method.setAccessible(true);
+        return method.invoke(service, partidaEl);
+    }
+
+    private String invokeDecodeOrNull(String value) throws Exception {
+        Method method = PartidasService.class.getDeclaredMethod("decodeOrNull", String.class);
+        method.setAccessible(true);
+        return (String) method.invoke(service, value);
+    }
 }
