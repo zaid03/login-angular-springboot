@@ -71,6 +71,7 @@ export class ProveedoreesComponent {
           }
         },
         error: (err) => {
+          this.proveedores = [];
           this.error = err.error.error ?? err.error;
           this.isLoading = false;
         }
@@ -211,6 +212,7 @@ export class ProveedoreesComponent {
             this.isLoading = false;
           },
           error: (err) => {
+            this.proveedores = [];
             this.error = err.error.error ?? err.error;
             this.isLoading = false;
           }
@@ -223,6 +225,7 @@ export class ProveedoreesComponent {
             this.isLoading = false;
           },
           error: (err) => {
+            this.proveedores = [];
             this.error = err.error.error ?? err.error;
             this.isLoading = false;
           }
@@ -240,6 +243,7 @@ export class ProveedoreesComponent {
               this.isLoading = false;
             },
             error: (err) => {
+              this.proveedores = [];
               this.error = err.error || err.error.error;
               this.isLoading = false;
             }
@@ -252,6 +256,7 @@ export class ProveedoreesComponent {
               this.isLoading = false;
             },
             error: (err) => {
+              this.proveedores = [];
               this.error = err.error || err.error.error;
               this.isLoading = false;
             }
@@ -266,6 +271,7 @@ export class ProveedoreesComponent {
               this.isLoading = false;
             },
             error: (err) => {
+              this.proveedores = [];
               this.error = err.error || err.error.error;
               this.isLoading = false;
             }
@@ -278,6 +284,7 @@ export class ProveedoreesComponent {
               this.isLoading = false;
             },
             error: (err) => {
+              this.proveedores = [];
               this.error = err.error || err.error.error;
               this.isLoading = false;
             }
@@ -292,6 +299,7 @@ export class ProveedoreesComponent {
               this.isLoading = false;
             },
             error: (err) => {
+              this.proveedores = [];
               this.error = err.error || err.error.error;
               this.isLoading = false;
             }
@@ -304,6 +312,7 @@ export class ProveedoreesComponent {
               this.isLoading = false;
             },
             error: (err) => {
+              this.proveedores = [];
               this.error = err.error || err.error.error;
               this.isLoading = false;
             }
@@ -319,6 +328,7 @@ export class ProveedoreesComponent {
             this.isLoading = false;
           },
           error: (err) => {
+            this.proveedores = [];
             this.error = err.error || err.error.error;
             this.isLoading = false;
           }
@@ -331,6 +341,7 @@ export class ProveedoreesComponent {
             this.isLoading = false;
           },
           error: (err) => {
+            this.proveedores = [];
             this.error = err.error || err.error.error;
             this.isLoading = false;
           }
@@ -343,6 +354,7 @@ export class ProveedoreesComponent {
             this.isLoading = false;
           },
           error: (err) => {
+            this.proveedores = [];
             this.error = err.error || err.error.error;
             this.isLoading = false;
           }
@@ -357,6 +369,7 @@ export class ProveedoreesComponent {
             this.isLoading = false;
           },
           error: (err) => {
+            this.proveedores = [];
             this.error = err.error || err.error.error;
             this.isLoading = false;
           }
@@ -370,6 +383,7 @@ export class ProveedoreesComponent {
             this.isLoading = false;
           },
           error: (err) => {
+            this.proveedores = [];
             this.error = err.error || err.error.error;
             this.isLoading = false;
           }
@@ -382,6 +396,7 @@ export class ProveedoreesComponent {
     this.limpiarMessages();
     this.proveedores = [...this.backupProveedores];
     this.page = 0;
+    this.searchTerm = '';
   }
   
   DownloadPDF() {

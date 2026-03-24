@@ -4,10 +4,16 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.springframework.data.jpa.domain.Specification;
+
 import com.example.backend.sqlserver2.model.Fac;
 import com.example.backend.sqlserver2.model.Ter;
 
-import jakarta.persistence.criteria.*;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 
 public class FacSpecification {
     
@@ -26,6 +32,8 @@ public class FacSpecification {
     private static final String TERCOD = "TERCOD";
     private static final String TERNIF = "TERNIF";
     private static final String TERNOM = "TERNOM";
+    private static final String FACNUM = "FACNUM";
+    private static final String TERADO = "TERADO";
     
     private static final String ROUND = "ROUND";
     private static final Integer ROUND_SCALE = 2;
@@ -136,7 +144,7 @@ public class FacSpecification {
     
     public static Specification<Fac> searchFacturas(SearchCriteria criteria) {
         return (root, query, cb) -> {
-            Join<Fac, Ter> terJoin = root.join("ter", JoinType.INNER);
+            Join<Fac, Ter> terJoin = root.join("ter", JoinType.LEFT);
             
             Predicate predicate = cb.conjunction();
             predicate = applyBasicFilters(predicate, root, cb, criteria.ent, criteria.eje, criteria.cgecod);
@@ -144,8 +152,8 @@ public class FacSpecification {
             predicate = applyEstadoFilter(predicate, root, cb, criteria.estado);
             predicate = applyFacannFilter(predicate, root, cb, criteria.facannMode, criteria.facann);
             
-            if (criteria.search != null && !criteria.search.isEmpty()) {
-                Predicate searchPredicate = buildSearchPredicate(terJoin, root, cb, criteria.search, criteria.searchType);
+            if (criteria.search != null && !criteria.search.trim().isEmpty()) {
+                Predicate searchPredicate = buildSearchPredicate(terJoin, root, cb, criteria.search.trim(), criteria.searchType);
                 predicate = cb.and(predicate, searchPredicate);
             }
             
@@ -237,33 +245,38 @@ public class FacSpecification {
     
     private static Predicate buildSearchPredicate(Join<Fac, Ter> terJoin, Root<Fac> root, CriteriaBuilder cb,
             String search, String searchType) {
-        String searchUpper = search.toUpperCase();
-        
-        return switch (searchType) {
-            case TERCOD -> searchByTercod(root, cb, search);
-            case "NIF" -> cb.like(
-                cb.upper(cb.coalesce(terJoin.get(TERNIF), "")),
-                "%" + searchUpper + "%"
-            );
-            case "NIF_LETTERS" -> cb.or(
-                cb.like(cb.upper(cb.coalesce(terJoin.get(TERNIF), "")), "%" + searchUpper + "%"),
-                cb.like(cb.upper(cb.coalesce(terJoin.get(TERNOM), "")), "%" + searchUpper + "%"),
-                cb.like(cb.upper(cb.coalesce(root.get(FACDOC), "")), "%" + searchUpper + "%")
-            );
-            case "OTROS" -> cb.or(
-                cb.like(cb.upper(cb.coalesce(terJoin.get(TERNOM), "")), "%" + searchUpper + "%"),
-                cb.like(cb.upper(cb.coalesce(root.get(FACDOC), "")), "%" + searchUpper + "%")
-            );
-            default -> cb.conjunction();
-        };
-    }
-    
-    private static Predicate searchByTercod(Root<Fac> root, CriteriaBuilder cb, String search) {
-        try {
-            int tercod = Integer.parseInt(search);
-            return cb.equal(root.get(TERCOD), tercod);
-        } catch (NumberFormatException e) {
-            return cb.disjunction();
+        if (search == null || search.trim().isEmpty()) {
+            return cb.conjunction();
         }
+        
+        String trimmedSearch = search.trim();
+        String searchUpper = trimmedSearch.toUpperCase();
+        
+        // Always search FAC.FACDOC (document reference number)
+        Predicate predicate = cb.like(
+            cb.upper(cb.coalesce(root.get(FACDOC), "")), 
+            "%" + searchUpper + "%"
+        );
+        
+        // Also search TER fields via the join
+        predicate = cb.or(predicate,
+            cb.like(cb.upper(cb.coalesce(terJoin.get(TERNIF), "")), "%" + searchUpper + "%"),
+            cb.like(cb.upper(cb.coalesce(terJoin.get(TERNOM), "")), "%" + searchUpper + "%")
+        );
+        
+        // If search is numeric, also search by TERCOD and FACNUM
+        if (trimmedSearch.matches("\\d+")) {
+            try {
+                int numValue = Integer.parseInt(trimmedSearch);
+                predicate = cb.or(predicate,
+                    cb.equal(root.get(TERCOD), numValue),
+                    cb.equal(root.get(FACNUM), numValue)
+                );
+            } catch (NumberFormatException e) {
+                // Continue with text search only
+            }
+        }
+        
+        return predicate;
     }
 }

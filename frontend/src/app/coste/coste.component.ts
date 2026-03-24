@@ -80,6 +80,7 @@ export class CosteComponent {
         }
       },
       error: (err) => {
+        this.costes = [];
         this.isLoading = false;
         this.costeError = err.error.error ?? err.error;
       }
@@ -213,6 +214,7 @@ export class CosteComponent {
           this.isLoading = false
         },
         error: (err) => {
+          this.costes = [];
           this.costeError = err.error.error ?? err.error;
           this.isLoading = false
         }
@@ -225,6 +227,7 @@ export class CosteComponent {
           this.isLoading = false
         },
         error: (err) => {
+          this.costes = [];
           this.costeError = err.error.error ?? err.error;
           this.isLoading = false
         }

@@ -54,6 +54,7 @@ export class EntregaComponent {
         }
       },
       error: (err) => {
+        this.entregas = [];
         this.isLoading = false;
         this.entregasError = err.error.error ?? err.error;
       }
@@ -187,6 +188,7 @@ export class EntregaComponent {
           this.isLoading = false;
         },
         error: (err) => {
+          this.entregas = [];
           this.entregasError = err.error.error ?? err.error;
           this.isLoading = false;
         }
@@ -199,6 +201,7 @@ export class EntregaComponent {
           this.isLoading = false;
         },
         error: (err) => {
+          this.entregas = [];
           this.entregasError = err.error.error ?? err.error;
           this.isLoading = false;
         }

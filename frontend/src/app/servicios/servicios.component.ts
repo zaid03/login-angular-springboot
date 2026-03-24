@@ -48,7 +48,6 @@ export class ServiciosComponent {
   isLoading: boolean = false;
 
   ngOnInit() {
-    this.isLoading = true;
     this.limpiarMessages();
     const entidad = sessionStorage.getItem('Entidad');
     const eje = sessionStorage.getItem('EJERCICIO');
@@ -71,6 +70,7 @@ export class ServiciosComponent {
 
   //main table functions
   private fetchServices(): void {
+    this.isLoading = true;
     if (this.entcod === null || this.eje === null) return;
     this.http.get<any>(`${environment.backendUrl}/api/dep/fetch-services/${this.entcod}/${this.eje}`).subscribe({
       next: (res) => {

@@ -45,7 +45,6 @@ export class CgeComponent {
 
   ngOnInit() {
     this.limpiarMessages();
-    this.isLoading = true;
     const entidad = sessionStorage.getItem('Entidad');
     const eje = sessionStorage.getItem('EJERCICIO');
     const cge = sessionStorage.getItem('CENTROGESTOR');
@@ -77,6 +76,7 @@ export class CgeComponent {
 
   //main table functions
   fetchCentro() {
+    this.isLoading = true;
     this.http.get<any>(`${environment.backendUrl}/api/cge/fetch-all/${this.entcod}/${this.eje}`).subscribe({
       next: (res) => {
         this.centroGestores = Array.isArray(res) ? [...res] : [];

@@ -323,10 +323,30 @@ export class PersonasPorServiciosComponent {
   centroGestor: string = '';
   perfilServicio: 'almacen' | 'comprador' | 'contabilidad' | 'peticionario' | 'todos'  = 'todos';
   inSearch: boolean = false;
+
+  handleSearchInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    let value = (input.value ?? '').toUpperCase();
+    if(value.length > 4) {
+      value = value.slice(0, 4);
+    }
+    this.centroGestor = value;
+    input.value = value;
+  }
+
+  serviceUpper(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    let value = (input.value ?? '').toUpperCase();
+
+    this.servicio = value;
+    input.value = value;
+  }
+
   search() {
     this.limpiarMessages();
     this.isNotSearch = false;
 
+    this.services = [];
     if (this.perfilServicio === 'todos' && this.servicio === '' && this.persona === '' && this.centroGestor === '') {
       this.fetchServices();
       return;

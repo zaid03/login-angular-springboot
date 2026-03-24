@@ -72,6 +72,7 @@ export class EjercicioComponent {
         this.isLoading = false;
       },
       error: (err) => {
+        this.ejercicios = [];
         this.ejercicioError = err.error.error ?? err.error;
         this.isLoading = false;
       }
@@ -286,6 +287,7 @@ export class EjercicioComponent {
         this.isLoading = false;
       },
       error: (err) => {
+        this.ejercicios = [];
         this.ejercicioError = err.error.error ?? err.error;
         this.isLoading = false;
       }

@@ -78,6 +78,7 @@ export class ContratosComponent {
         this.isLoading = false;
       },
       error: (err) => {
+        this.contratos = [];
         this.mainError = err.error.error ?? err.error;
         this.isLoading = false;
       }
@@ -307,6 +308,7 @@ export class ContratosComponent {
             this.isLoading = false;
           },
           error: (err) => {
+            this.contratos = [];
             this.mainError = err.error.error ?? err.error;
             this.isLoading = false;
           }
@@ -323,6 +325,7 @@ export class ContratosComponent {
             this.isLoading = false;
           },
           error: (err) => {
+            this.contratos = [];
             this.mainError = err.error.error ?? err.error;
             this.isLoading = false;
           }
@@ -339,6 +342,7 @@ export class ContratosComponent {
             this.isLoading = false;
           },
           error: (err) => {
+            this.contratos = [];
             this.mainError = err.error.error ?? err.error;
             this.isLoading = false;
           }
@@ -357,6 +361,7 @@ export class ContratosComponent {
             this.isLoading = false;
           },
           error: (err) => {
+            this.contratos = [];
             this.mainError = err.error.error ?? err.error;
             this.isLoading = false;
           }
@@ -373,6 +378,7 @@ export class ContratosComponent {
             this.isLoading = false;
           },
           error: (err) => {
+            this.contratos = [];
             this.mainError = err.error.error ?? err.error;
             this.isLoading = false;
           }
@@ -389,6 +395,7 @@ export class ContratosComponent {
             this.isLoading = false;
           },
           error: (err) => {
+            this.contratos = [];
             this.mainError = err.error.error ?? err.error;
             this.isLoading = false;
           }
@@ -407,6 +414,7 @@ export class ContratosComponent {
             this.isLoading = false;
           },
           error: (err) => {
+            this.contratos = [];
             this.mainError = err.error.error ?? err.error;
             this.isLoading = false;
           }
@@ -423,6 +431,7 @@ export class ContratosComponent {
             this.isLoading = false;
           },
           error: (err) => {
+            this.contratos = [];
             this.mainError = err.error.error ?? err.error;
             this.isLoading = false;
           }

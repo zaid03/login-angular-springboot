@@ -47,7 +47,6 @@ export class PersonaComponent {
   isLoading: boolean = false;
 
   ngOnInit(): void {
-    this.isLoading = true;
     this.limpiarMessages();
     const entidad = sessionStorage.getItem('Entidad');
     const eje = sessionStorage.getItem('EJERCICIO');
@@ -67,6 +66,7 @@ export class PersonaComponent {
 
   //main table functions
   fetchPersonas() {
+    this.isLoading = true;
     this.http.get<any>(`${environment.backendUrl}/api/Per/fetch-all`).subscribe({
       next: (res) => {
         this.personas = res;

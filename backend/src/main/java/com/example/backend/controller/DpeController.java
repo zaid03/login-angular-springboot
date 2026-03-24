@@ -276,10 +276,10 @@ public class DpeController {
     }
 
     private String mapPerfilType(String perfil) {
-        if (perfil == null || perfil.isEmpty()) {
+        if (perfil == null || perfil.trim().isEmpty()) {
             return null;
         }
-        return switch (perfil.toLowerCase()) {
+        return switch (perfil.trim().toLowerCase()) {
             case "almacen" -> "depalm";
             case "comprador" -> "depcom";
             case "contabilidad" -> "depint";
@@ -288,7 +288,7 @@ public class DpeController {
         };
     }
 
-    private List<personasPorServiciosProjection> getInitialData(Integer ent, String eje, String persona, String cgecod) {
+    private List<personasPorServiciosProjection> getInitialData(Integer ent, String eje, String persona, String cgecod) {   
         if (cgecod != null && !cgecod.isEmpty()) {
             return nullSafeList(dpeRepository.findByENTAndEJEAndDep_Cge_CGECOD(ent, eje, cgecod));
         }
@@ -308,6 +308,8 @@ public class DpeController {
         String cgecod,
         String perfilType
     ) {
+        if (data == null || data.isEmpty()) return data;
+        
         if (servicio != null && !servicio.isEmpty()) {
             data = filterByServicio(data, servicio);
         }
@@ -316,7 +318,7 @@ public class DpeController {
         }
         if (data != null && cgecod != null && !cgecod.isEmpty()) {
             data = data.stream()
-                .filter(p -> p.getDep().getCge().getCGECOD().equals(cgecod))
+                .filter(p -> p != null && p.getDep() != null && p.getDep().getCge() != null && p.getDep().getCge().getCGECOD() != null && p.getDep().getCge().getCGECOD().equals(cgecod))
                 .toList();
         }
         if (perfilType != null) {
@@ -327,42 +329,74 @@ public class DpeController {
 
     private List<personasPorServiciosProjection> filterByPerfil(List<personasPorServiciosProjection> data, String perfilType) {
         if (data == null || data.isEmpty()) return data;
+        if (perfilType == null) return data;
         
         if (PETICIONARIO.equals(perfilType)) {
             return data.stream()
-                .filter(p -> p.getDep().getDEPALM() == 0 && p.getDep().getDEPCOM() == 0 && p.getDep().getDEPINT() == 0)
+                .filter(p -> p != null && p.getDep() != null 
+                    && isZero(p.getDep().getDEPALM()) 
+                    && isZero(p.getDep().getDEPCOM()) 
+                    && isZero(p.getDep().getDEPINT()))
                 .toList();
         } else if ("depalm".equals(perfilType)) {
-            return data.stream().filter(p -> p.getDep().getDEPALM() == 1).toList();
+            return data.stream()
+                .filter(p -> p != null && p.getDep() != null && isOne(p.getDep().getDEPALM()))
+                .toList();
         } else if ("depcom".equals(perfilType)) {
-            return data.stream().filter(p -> p.getDep().getDEPCOM() == 1).toList();
+            return data.stream()
+                .filter(p -> p != null && p.getDep() != null && isOne(p.getDep().getDEPCOM()))
+                .toList();
         } else if ("depint".equals(perfilType)) {
-            return data.stream().filter(p -> p.getDep().getDEPINT() == 1).toList();
+            return data.stream()
+                .filter(p -> p != null && p.getDep() != null && isOne(p.getDep().getDEPINT()))
+                .toList();
         }
         return data;
     }
 
     private List<personasPorServiciosProjection> filterByPersona(List<personasPorServiciosProjection> data, String persona) {
         if (data == null || data.isEmpty()) return data;
+        if (persona == null || persona.trim().isEmpty()) return data;
         
-        if (persona.length() <= 20) {
-            return data.stream().filter(p -> persona.equals(p.getPERCOD())).toList();
+        String trimmedPersona = persona.trim();
+        if (trimmedPersona.length() <= 20) {
+            return data.stream()
+                .filter(p -> p != null && trimmedPersona.equals(p.getPERCOD()))
+                .toList();
         } else {
-            return data.stream().filter(p -> p.getPer().getPERNOM().contains(persona)).toList();
+            return data.stream()
+                .filter(p -> p != null && p.getPer() != null && p.getPer().getPERNOM() != null 
+                    && p.getPer().getPERNOM().contains(trimmedPersona))
+                .toList();
         }
     }
 
     private List<personasPorServiciosProjection> filterByServicio(List<personasPorServiciosProjection> data, String servicio) {
         if (data == null || data.isEmpty()) return data;
+        if (servicio == null || servicio.trim().isEmpty()) return data;
         
-        if (servicio.length() <= 6) {
-            return data.stream().filter(p -> p.getDEPCOD().contains(servicio)).toList();
+        String trimmedServicio = servicio.trim();
+        if (trimmedServicio.length() <= 6) {
+            return data.stream()
+                .filter(p -> p != null && p.getDEPCOD() != null && p.getDEPCOD().contains(trimmedServicio))
+                .toList();
         } else {
-            return data.stream().filter(p -> p.getDep().getDEPDES().contains(servicio)).toList();
+            return data.stream()
+                .filter(p -> p != null && p.getDep() != null && p.getDep().getDEPDES() != null 
+                    && p.getDep().getDEPDES().contains(trimmedServicio))
+                .toList();
         }
     }
 
     private List<personasPorServiciosProjection> nullSafeList(List<personasPorServiciosProjection> data) {
         return data == null ? List.of() : data;
+    }
+
+    private boolean isOne(Integer value) {
+        return value != null && value == 1;
+    }
+
+    private boolean isZero(Integer value) {
+        return value == null || value == 0;
     }
 }
