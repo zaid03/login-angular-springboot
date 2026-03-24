@@ -393,10 +393,10 @@ class FacturaConsultaServiceTest {
             data.put("usu", "user1");
             data.put("pwd", "password");
             data.put("publicKey", "pk123");
-            data.put("fecRegDesde", "2024-01-01");
-            data.put("fecRegHasta", "2024-01-31");
-            data.put("fecDocDesde", "2024-02-01");
-            data.put("fecDocHasta", "2024-02-29");
+            data.put("fecRegDesde", LocalDateTime.of(2024, 1, 1, 0, 0));
+            data.put("fecRegHasta", LocalDateTime.of(2024, 1, 31, 23, 59));
+            data.put("fecDocDesde", LocalDateTime.of(2024, 2, 1, 0, 0));
+            data.put("fecDocHasta", LocalDateTime.of(2024, 2, 28, 23, 59));
             
             FacturaConsultaRequestDto dto = createDtoFromMap(data);
             String result = service.buildSmlInput(dto);
@@ -404,7 +404,7 @@ class FacturaConsultaServiceTest {
             assertTrue(result.contains("fecRegDesde") || result.contains("2024-01-01"));
             assertTrue(result.contains("fecRegHasta") || result.contains("2024-01-31"));
             assertTrue(result.contains("fecDocDesde") || result.contains("2024-02-01"));
-            assertTrue(result.contains("fecDocHasta") || result.contains("2024-02-29"));
+            assertTrue(result.contains("fecDocHasta") || result.contains("2024-02-28"));
         }
     }
 
