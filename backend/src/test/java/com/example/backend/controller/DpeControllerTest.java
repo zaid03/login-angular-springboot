@@ -984,4 +984,409 @@ public class DpeControllerTest {
             .andExpect(jsonPath("$", hasSize(3)))
             .andExpect(jsonPath("$[*].depcod", containsInAnyOrder("D1", "D2", "D3")));
     }
+
+    @Test
+    void searchPersonasServicios_filterByServicio_shortCode() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1"))
+            .thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("servicio", "D1"))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchPersonasServicios_filterByServicio_longDescription() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1"))
+            .thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("servicio", "Service Name"))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchPersonasServicios_filterByServicio_withWhitespace() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1"))
+            .thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("servicio", "   S1   "))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchPersonasServicios_filterByPersona_shortCode() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1"))
+            .thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("persona", "U1"))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchPersonasServicios_filterByPersona_longName() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1"))
+            .thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("persona", "Very Long Persona Name"))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchPersonasServicios_filterByPersona_withWhitespace() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1"))
+            .thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("persona", "   U1   "))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchPersonasServicios_filterByPerfil_almacen() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1"))
+            .thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("perfil", "almacen"))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchPersonasServicios_filterByPerfil_comprador() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1"))
+            .thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("perfil", "comprador"))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchPersonasServicios_filterByPerfil_contabilidad() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1"))
+            .thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("perfil", "contabilidad"))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchPersonasServicios_filterByPerfil_peticionario() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1"))
+            .thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("perfil", "peticionario"))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchPersonasServicios_filterByPerfil_caseInsensitive() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1"))
+            .thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("perfil", "ALMACEN"))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchPersonasServicios_multipleFilters_servicio_and_persona() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1"))
+            .thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("servicio", "D1")
+                .param("persona", "U1"))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchPersonasServicios_multipleFilters_all() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1"))
+            .thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("servicio", "Service")
+                .param("persona", "Juan")
+                .param("cgecod", "CGE1")
+                .param("perfil", "almacen"))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchPersonasServicios_multipleFilters_servicio_and_cgecod() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1"))
+            .thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("servicio", "S1")
+                .param("cgecod", "CGE1"))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchPersonasServicios_multipleFilters_persona_and_perfil() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1"))
+            .thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("persona", "User")
+                .param("perfil", "comprador"))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchPersonasServicios_multipleFilters_cgecod_and_perfil() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1"))
+            .thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("cgecod", "CGE1")
+                .param("perfil", "contabilidad"))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchPersonasServicios_emptyFilterValues_servicio() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1"))
+            .thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("servicio", ""))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchPersonasServicios_cgecod_filtering() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1"))
+            .thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("cgecod", "CENTER1"))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchPersonasServicios_nullDataHandling() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1"))
+            .thenReturn(null);
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1"))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(content().string("Sin resultado"));
+    }
+
+    @Test
+    void searchPersonasServicios_emptyPersona_multipleFilters() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1"))
+            .thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("persona", "")
+                .param("servicio", "S1")
+                .param("perfil", "almacen"))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchPersonasServicios_whitespaceOnlyFilters() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1"))
+            .thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("servicio", "     ")
+                .param("persona", "     "))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchPersonasServicios_filterByPerfil_invalidType() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1"))
+            .thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("perfil", "invalidProfile"))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchPersonasServicios_filterByPerfil_almacenUppercase() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1"))
+            .thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("perfil", "ALMACEN"))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchPersonasServicios_filteredServicio_emptyPersona() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1"))
+            .thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("servicio", "SRV01")
+                .param("persona", ""))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchPersonasServicios_cgecod_nullHandling() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1"))
+            .thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("cgecod", ""))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchPersonasServicios_filtersWithEmptyPerfil() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1"))
+            .thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("perfil", ""))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchPersonasServicios_filterByPersona_boundary20Chars() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1"))
+            .thenReturn(List.of());
+        
+        String persona20 = "12345678901234567890";
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("persona", persona20))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchPersonasServicios_filterByPersona_boundary21Chars() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1"))
+            .thenReturn(List.of());
+        
+        String persona21 = "123456789012345678901";
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("persona", persona21))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchPersonasServicios_filterByServicio_boundary6Chars() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1"))
+            .thenReturn(List.of());
+        
+        String servicio6 = "SERV01";
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("servicio", servicio6))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchPersonasServicios_filterByServicio_boundary7Chars() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1"))
+            .thenReturn(List.of());
+        
+        String servicio7 = "SERV001";
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("servicio", servicio7))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
 }

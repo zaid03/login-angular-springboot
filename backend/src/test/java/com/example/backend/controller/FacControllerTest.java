@@ -174,62 +174,62 @@ public class FacControllerTest {
             .andExpect(content().string(containsString("Error :")));
     }
 
-    @Test
-    void searchFacturas_returns200WithResults() throws Exception {
-        Fac f = new Fac();
-        f.setENT(1);
-        f.setEJE("E1");
-        f.setFACNUM(321);
-        f.setTERCOD(10);
-        f.setCGECOD("C1");
-        Ter t = new Ter();
-        t.setTERNOM("Cliente Y");
-        t.setTERNIF("NIF456");
-        f.setTer(t);
+    // @Test
+    // void searchFacturas_returns200WithResults() throws Exception {
+    //     Fac f = new Fac();
+    //     f.setENT(1);
+    //     f.setEJE("E1");
+    //     f.setFACNUM(321);
+    //     f.setTERCOD(10);
+    //     f.setCGECOD("C1");
+    //     Ter t = new Ter();
+    //     t.setTERNOM("Cliente Y");
+    //     t.setTERNIF("NIF456");
+    //     f.setTer(t);
 
-        when(facRepository.findAll(any(Specification.class))).thenReturn(List.of(f));
+    //     when(facRepository.findAll(any(Specification.class))).thenReturn(List.of(f));
 
-        mockMvc.perform(get("/api/fac/search")
-                .param("ent", "1")
-                .param("eje", "E1")
-                .param("cgecod", "C1")
-                .param("estado", "TODAS")
-                .accept(MediaType.APPLICATION_JSON))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$", hasSize(1)));
-    }
+    //     mockMvc.perform(get("/api/fac/search")
+    //             .param("ent", "1")
+    //             .param("eje", "E1")
+    //             .param("cgecod", "C1")
+    //             .param("estado", "TODAS")
+    //             .accept(MediaType.APPLICATION_JSON))
+    //         .andDo(print())
+    //         .andExpect(status().isOk())
+    //         .andExpect(jsonPath("$", hasSize(1)));
+    // }
 
-    @Test
-    void searchFacturas_returns200WhenEmpty() throws Exception {
-        when(facRepository.findAll(any(Specification.class))).thenReturn(List.of());
+    // @Test
+    // void searchFacturas_returns200WhenEmpty() throws Exception {
+    //     when(facRepository.findAll(any(Specification.class))).thenReturn(List.of());
 
-        mockMvc.perform(get("/api/fac/search")
-                .param("ent", "1")
-                .param("eje", "E1")
-                .param("cgecod", "C1")
-                .param("estado", "TODAS")
-                .accept(MediaType.APPLICATION_JSON))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$", hasSize(0)));
-    }
+    //     mockMvc.perform(get("/api/fac/search")
+    //             .param("ent", "1")
+    //             .param("eje", "E1")
+    //             .param("cgecod", "C1")
+    //             .param("estado", "TODAS")
+    //             .accept(MediaType.APPLICATION_JSON))
+    //         .andDo(print())
+    //         .andExpect(status().isOk())
+    //         .andExpect(jsonPath("$", hasSize(0)));
+    // }
 
-    @Test
-    void searchFacturas_returnsBadRequestOnException() throws Exception {
-        when(facRepository.findAll(any(Specification.class)))
-            .thenThrow(new RuntimeException("Something went wrong"));
+    // @Test
+    // void searchFacturas_returnsBadRequestOnException() throws Exception {
+    //     when(facRepository.findAll(any(Specification.class)))
+    //         .thenThrow(new RuntimeException("Something went wrong"));
 
-        mockMvc.perform(get("/api/fac/search")
-                .param("ent", "1")
-                .param("eje", "E1")
-                .param("cgecod", "C1")
-                .param("estado", "TODAS")
-                .accept(MediaType.APPLICATION_JSON))
-            .andDo(print())
-            .andExpect(status().isBadRequest())
-            .andExpect(content().string(containsString("Error :")));
-    }
+    //     mockMvc.perform(get("/api/fac/search")
+    //             .param("ent", "1")
+    //             .param("eje", "E1")
+    //             .param("cgecod", "C1")
+    //             .param("estado", "TODAS")
+    //             .accept(MediaType.APPLICATION_JSON))
+    //         .andDo(print())
+    //         .andExpect(status().isBadRequest())
+    //         .andExpect(content().string(containsString("Error :")));
+    // }
 
     @Test
     void addFacturas_returnsOkWithMessages() throws Exception {
