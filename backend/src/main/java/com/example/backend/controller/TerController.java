@@ -332,7 +332,10 @@ public class TerController {
     //for selected proveedores to be added from sicalwin
     @PostMapping(value = "/save-proveedores/{ent}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
-    public ResponseEntity<?> createMultipleForEnt(@PathVariable int ent, @RequestBody(required = false) List<TerDto> dtos) {
+    public ResponseEntity<?> createMultipleForEnt(
+        @PathVariable int ent, 
+        @RequestBody(required = false) List<TerDto> dtos
+    ) {
         try {
             if (dtos == null || dtos.isEmpty()) {
                 return ResponseEntity.badRequest().body("Faltan datos obligatorios");
@@ -364,7 +367,11 @@ public class TerController {
                 t.setTERWEB(dto.getTERWEB());
                 t.setTERCOE(dto.getTERCOE());
                 t.setTEROBS(dto.getTEROBS());
+                t.setPROCOD(dto.getPROCOD());
                 t.setTERPOB(dto.getTERPOB());
+                t.setTERAYT(dto.getTERAYT());
+                t.setTERACU(0);
+                t.setTERBLO(0);
                 saved.add(terRepository.save(t));
             }
 

@@ -1148,7 +1148,11 @@ export class ProveedoreesComponent {
           TERWEB: d.web ?? '',
           TERCOE: d.email ?? '',
           TEROBS: d.observaciones ?? '',
+          PROCOD: d.provincia ?? '',
           TERPOB: d.poblacion ?? '',
+          // TERAYT: d. ?? '',
+          TERACU: 0,
+          TERBLO: 0,
           __raw: d
         }));
         this.fullProveedoresSearchResults = mappedResults;
@@ -1234,7 +1238,9 @@ export class ProveedoreesComponent {
       TERWEB: p.TERWEB ?? '',
       TERCOE: p.TERCOE ?? '',
       TEROBS: p.TEROBS ?? '',
+      PROCOD: p.PROCOD ?? '',
       TERPOB: p.TERPOB ?? '',
+      TERAYT: p.TERAYT ?? ''
     }));
 
     const token = sessionStorage.getItem('JWT');
@@ -1244,20 +1250,21 @@ export class ProveedoreesComponent {
 
     this.isSaving = true;
     this.limpiarMessages();
-    this.http.post<any[]>(`${environment.backendUrl}/api/ter/save-proveedores/${ent}`, payload, { headers, observe: 'response', responseType: 'text' as 'json' })
-      .subscribe({
-        next: (res) => {
-          this.isSaving = false;
-          const savedCount = Array.isArray(res.body) ? res.body.length : this.selectedProveediresFromResults.length;
-          this.clearSelectedProveedores();
-          this.guardarProveedorIssuccess = true;
-          this.guardarMessageProveedor = `Proveedores guardados correctamente (${savedCount}).`;
-        },
-        error: (err) => {
-          this.isSaving = false;
-          const msg = err.error.error ?? err.error;  
-        }
-      })
+    console.log(payload)
+    // this.http.post<any[]>(`${environment.backendUrl}/api/ter/save-proveedores/${ent}`, payload, { headers, observe: 'response', responseType: 'text' as 'json' })
+    //   .subscribe({
+    //     next: (res) => {
+    //       this.isSaving = false;
+    //       const savedCount = Array.isArray(res.body) ? res.body.length : this.selectedProveediresFromResults.length;
+    //       this.clearSelectedProveedores();
+    //       this.guardarProveedorIssuccess = true;
+    //       this.guardarMessageProveedor = `Proveedores guardados correctamente (${savedCount}).`;
+    //     },
+    //     error: (err) => {
+    //       this.isSaving = false;
+    //       const msg = err.error.error ?? err.error;  
+    //     }
+    //   })
   }
 
   isSaving = false;
