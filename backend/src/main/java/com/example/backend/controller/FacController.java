@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.jpa.domain.Specification;
@@ -17,16 +16,14 @@ import org.springframework.web.bind.annotation.*;
 
 import com.example.backend.service.FacContabilizacionSpecification;
 import com.example.backend.service.FacturaInsertService;
+import com.example.backend.service.FacturaSearch;
 import com.example.backend.sqlserver2.model.Fde;
 import com.example.backend.sqlserver2.model.Gbs;
 import com.example.backend.sqlserver2.model.Fac;
 import com.example.backend.sqlserver2.model.FacId;
-import com.example.backend.sqlserver2.model.Ter;
 import com.example.backend.sqlserver2.repository.FacRepository;
-import com.example.backend.sqlserver2.repository.TerRepository;
 import com.example.backend.sqlserver2.repository.FdeRepository;
 import com.example.backend.sqlserver2.repository.GbsRepository;
-import com.example.backend.dto.FacWithTerDto;
 import com.example.backend.dto.FacWithTerProjection;
 import com.example.backend.dto.FacturaInsertDto;
 
@@ -36,13 +33,13 @@ public class FacController {
     @Autowired
     private FacRepository facRepository;
     @Autowired
-    private TerRepository terRepository;
-    @Autowired
     private FacturaInsertService facturaInsertService;
     @Autowired
     private FdeRepository fdeRepository;
     @Autowired
     private GbsRepository gbsRepository;
+    @Autowired
+    private FacturaSearch facturaSearch;
 
     private static final String SIN_RESULTADO = "Sin resultado";
     private static final String ERROR = "Error :";
@@ -67,78 +64,40 @@ public class FacController {
     }
 
     //search in gestion de factura
-    // @GetMapping("/search")
-    // public ResponseEntity<?> searchFacturas(
-    //     @RequestParam Integer ent,
-    //     @RequestParam String eje,
-    //     @RequestParam String cgecod,
-    //     @RequestParam(defaultValue = "TODAS") String estado,
-    //     @RequestParam(defaultValue = "REGISTRO") String dateType,
-    //     @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
-    //     @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
-    //     @RequestParam(defaultValue = "ANY") String facannMode,
-    //     @RequestParam(required = false) String facann,
-    //     @RequestParam(required = false) String search,
-    //     @RequestParam(defaultValue = "OTROS") String searchType
-    // ) {
-    //     try {
-    //         FacSpecification.SearchCriteria criteria = new FacSpecification.SearchCriteria.Builder()
-    //             .ent(ent)
-    //             .eje(eje)
-    //             .cgecod(cgecod)
-    //             .estado(estado)
-    //             .dateType(dateType)
-    //             .fromDate(fromDate)
-    //             .toDate(toDate)
-    //             .facannMode(facannMode)
-    //             .facann(facann)
-    //             .search(search)
-    //             .searchType(searchType)
-    //             .build();
-    //         Specification<Fac> spec = FacSpecification.searchFacturas(criteria);
-            
-    //         List<Fac> facturas = facRepository.findAll(spec);
-            
-    //         List<FacWithTerDto> result = facturas.stream().map(f -> {
-    //             Ter ter = f.getTer();
-    //             return new FacWithTerDto.Builder()
-    //                 .ent(f.getENT())
-    //                 .eje(f.getEJE())
-    //                 .facnum(f.getFACNUM())
-    //                 .tercod(f.getTERCOD())
-    //                 .cgecod(f.getCGECOD())
-    //                 .facobs(f.getFACOBS())
-    //                 .facimp(f.getFACIMP())
-    //                 .faciec(f.getFACIEC())
-    //                 .facidi(f.getFACIDI())
-    //                 .factdc(f.getFACTDC())
-    //                 .facann(f.getFACANN() != null ? String.valueOf(f.getFACANN()) : null)
-    //                 .facfac(f.getFACFAC() != null ? String.valueOf(f.getFACFAC()) : null)
-    //                 .facdoc(f.getFACDOC())
-    //                 .facdat(f.getFACDAT())
-    //                 .facfco(f.getFACFCO())
-    //                 .facado(f.getFACADO())
-    //                 .factxt(f.getFACTXT())
-    //                 .facfre(f.getFACFRE())
-    //                 .conctp(f.getCONCTP())
-    //                 .concpr(f.getCONCPR())
-    //                 .conccr(f.getCONCCR())
-    //                 .facoct(f.getFACOCT())
-    //                 .facfpg(f.getFACFPG())
-    //                 .facopg(f.getFACOPG())
-    //                 .factpg(f.getFACTPG())
-    //                 .facdto(f.getFACDTO())
-    //                 .ternom(ter != null ? ter.getTERNOM() : null)
-    //                 .ternif(ter != null ? ter.getTERNIF() : null)
-    //                 .build();
-    //         }).collect(Collectors.toList());
-            
-    //         return ResponseEntity.ok(result);
-    //     } catch (Exception ex) {
-    //         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-    //             .body(ERROR + ex.getMessage());
-    //     }
-    // }
+    @GetMapping("/search-factura")
+    public ResponseEntity<?> searchFacturas (
+        @RequestParam Integer ent,
+        @RequestParam String eje,
+        @RequestParam String cgecod,
+        @RequestParam(required = false) String main_filter,
+        @RequestParam(required = false) Integer ej_factura,
+        @RequestParam(required = false) String estado,
+        @RequestParam(required = false) String fecha,
+        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate
+    ) {
+        try {
+            List<FacWithTerProjection> facturas = facturaSearch.searchFactura(
+                ent,
+                eje,
+                cgecod,
+                main_filter,
+                ej_factura,
+                estado,
+                fecha,
+                fromDate,
+                toDate
+            );
+
+            if (facturas.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
+            }
+
+            return ResponseEntity.ok(facturas);
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ERROR + ex.getMessage());
+        }
+    }
 
     //adding a factura
     @PostMapping("/add-facturas")
