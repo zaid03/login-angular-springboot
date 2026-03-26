@@ -491,7 +491,7 @@ export class FacturasComponent {
   filterFacturaMessage: string = '';
   
   fechaTipo: 'registro' | 'factura' | 'contable' | 'Fecha' | '' = '';
-  estadoTipo: 'contabilizadas' | 'no-contabilizadas' | 'aplicadas' | 'sin-aplicadas' | '' = 'no-contabilizadas';
+  estadoTipo: 'contabilizadas' | 'noContabilizadas' | 'ptApplidas' | 'sinPtApplicar' | '' = 'noContabilizadas';
   fromDate: string = '';
   toDate: string = '';
   facturaSearch: string = '';
@@ -571,7 +571,7 @@ export class FacturasComponent {
     this.facturaSearchTouched = false;
     this.searchQueryTouched = false;
     this.fechaTipo = '';
-    this.estadoTipo = 'no-contabilizadas';
+    this.estadoTipo = 'noContabilizadas';
     this.fromDate = '';
     this.toDate = '';
     this.page = 0;
