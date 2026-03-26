@@ -346,6 +346,7 @@ public class ContabilizacionService {
             case "organica" -> dto.setOrganica(decodeIfBase64(value));
             case "funcional" -> dto.setFuncional(decodeIfBase64(value));
             case "economica" -> dto.setEconomica(decodeIfBase64(value));
+            default -> throw new IllegalArgumentException("Unknown field in XML response: " + name);
         }
     }
 
