@@ -202,9 +202,9 @@ export class ProveedoreesComponent {
   filterOption: string = 'noBloqueados';
   search() {
     this.limpiarMessages();
-    this.isLoading = true
     if (this.searchTerm.trim() === '') {
       if (this.filterOption === 'Bloqueados') {
+        this.isLoading = true
         this.http.get<any[]>(`${environment.backendUrl}/api/ter/filter/${this.entcod}`).subscribe({
           next: (response) => {
             this.proveedores = response;
@@ -218,6 +218,7 @@ export class ProveedoreesComponent {
           }
         })
       } else if (this.filterOption === 'noBloqueados') {
+        this.isLoading = true
         this.http.get<any[]>(`${environment.backendUrl}/api/ter/filter-no/${this.entcod}`).subscribe({
           next: (response) => {
             this.proveedores = response;
@@ -236,6 +237,7 @@ export class ProveedoreesComponent {
     if(/^\d+$/.test(this.searchTerm)) {
       if(this.filterOption === 'noBloqueados') {
         if ((this.searchTerm.length <= 5)) {
+          this.isLoading = true
           this.http.get<any[]>(`${environment.backendUrl}/api/ter/by-tercod-no-bloqueado/${this.entcod}/tercod/${this.searchTerm}`).subscribe({
             next: (response) => {
               this.proveedores = response;
@@ -249,6 +251,7 @@ export class ProveedoreesComponent {
             }
           })
         } else if ((this.searchTerm.length > 5)) {
+          this.isLoading = true
           this.http.get<any[]>(`${environment.backendUrl}/api/ter/by-ternif-no-bloqueado/${this.entcod}/ternif/${this.searchTerm}`).subscribe({
             next: (response) => {
               this.proveedores = response;
@@ -264,6 +267,7 @@ export class ProveedoreesComponent {
         }
       } else if(this.filterOption === 'Bloqueados') {
         if ((this.searchTerm.length <= 5)) {
+          this.isLoading = true
           this.http.get<any[]>(`${environment.backendUrl}/api/ter/by-tercod-bloqueado/${this.entcod}/tercod/${this.searchTerm}`).subscribe({
             next: (response) => {
               this.proveedores = response;
@@ -277,6 +281,7 @@ export class ProveedoreesComponent {
             }
           })
         } if ((this.searchTerm.length > 5)) {
+          this.isLoading = true
           this.http.get<any[]>(`${environment.backendUrl}/api/ter/by-ternif-bloquado/${this.entcod}/ternif/${this.searchTerm}`).subscribe({
             next: (response) => {
               this.proveedores = response;
@@ -292,6 +297,7 @@ export class ProveedoreesComponent {
         }
       } else if(this.filterOption === 'Todos') {
         if ((this.searchTerm.length <= 5)){
+          this.isLoading = true
           this.http.get<any[]>(`${environment.backendUrl}/api/ter/by-ent/${this.entcod}/tercod/${this.searchTerm}`).subscribe({
             next: (response) => {
               this.proveedores = response;
@@ -305,6 +311,7 @@ export class ProveedoreesComponent {
             }
           })
         } else if ((this.searchTerm.length > 5)) {
+          this.isLoading = true
           this.http.get<any[]>(`${environment.backendUrl}/api/ter/by-ent/${this.entcod}/ternif/${this.searchTerm}`).subscribe({
             next: (response) => {
               this.proveedores = response;
@@ -321,6 +328,7 @@ export class ProveedoreesComponent {
       }
     } else if (/^[a-zA-Z0-9]+$/.test(this.searchTerm)) {
       if(this.filterOption === 'noBloqueados') {
+        this.isLoading = true
         this.http.get<any[]>(`${environment.backendUrl}/api/ter/by-nif-nom-ali-no-bloquado/${this.entcod}/search-by-term?term=${this.searchTerm}`).subscribe({
           next: (response) => {
             this.proveedores = response;
@@ -334,6 +342,7 @@ export class ProveedoreesComponent {
           }
         })
       } if(this.filterOption === 'Bloqueados') {
+        this.isLoading = true
         this.http.get<any[]>(`${environment.backendUrl}/api/ter/by-ternif-nom-ali-bloquado/${this.entcod}/search?term=${this.searchTerm}`).subscribe({
           next: (response) => {
             this.proveedores = response;
@@ -347,6 +356,7 @@ export class ProveedoreesComponent {
           }
         })
       } if(this.filterOption === 'Todos') {
+        this.isLoading = true
         this.http.get<any[]>(`${environment.backendUrl}/api/ter/by-ent/${this.entcod}/search-todos?term=${this.searchTerm}`).subscribe({
           next: (response) => {
             this.proveedores = response;
@@ -362,6 +372,7 @@ export class ProveedoreesComponent {
       }
     } else {
       if(this.filterOption === 'noBloqueados') {
+        this.isLoading = true
         this.http.get<any[]>(`${environment.backendUrl}/api/ter/by-nom-ali-no-bloquado/${this.entcod}/findMatchingNomOrAli?term=${this.searchTerm}`).subscribe({
           next: (response) => {
             this.proveedores = response;
@@ -376,6 +387,7 @@ export class ProveedoreesComponent {
         })
       }
       if(this.filterOption === 'Bloqueados') {
+        this.isLoading = true
         this.http.get<any[]>(`${environment.backendUrl}/api/ter/by-nom-ali-bloquado/${this.entcod}/searchByNomOrAli?term=${this.searchTerm}`).subscribe({
           next: (response) => {
             this.proveedores = response;
@@ -1251,20 +1263,20 @@ export class ProveedoreesComponent {
     this.isSaving = true;
     this.limpiarMessages();
     console.log(payload)
-    // this.http.post<any[]>(`${environment.backendUrl}/api/ter/save-proveedores/${ent}`, payload, { headers, observe: 'response', responseType: 'text' as 'json' })
-    //   .subscribe({
-    //     next: (res) => {
-    //       this.isSaving = false;
-    //       const savedCount = Array.isArray(res.body) ? res.body.length : this.selectedProveediresFromResults.length;
-    //       this.clearSelectedProveedores();
-    //       this.guardarProveedorIssuccess = true;
-    //       this.guardarMessageProveedor = `Proveedores guardados correctamente (${savedCount}).`;
-    //     },
-    //     error: (err) => {
-    //       this.isSaving = false;
-    //       const msg = err.error.error ?? err.error;  
-    //     }
-    //   })
+    this.http.post<any[]>(`${environment.backendUrl}/api/ter/save-proveedores/${ent}`, payload, { headers, observe: 'response', responseType: 'text' as 'json' })
+      .subscribe({
+        next: (res) => {
+          this.isSaving = false;
+          const savedCount = Array.isArray(res.body) ? res.body.length : this.selectedProveediresFromResults.length;
+          this.clearSelectedProveedores();
+          this.guardarProveedorIssuccess = true;
+          this.guardarMessageProveedor = `Proveedores guardados correctamente (${savedCount}).`;
+        },
+        error: (err) => {
+          this.isSaving = false;
+          const msg = err.error.error ?? err.error;  
+        }
+      })
   }
 
   isSaving = false;
