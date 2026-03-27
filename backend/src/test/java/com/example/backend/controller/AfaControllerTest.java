@@ -9,9 +9,9 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
-import org.mockito.Mockito;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -183,7 +183,7 @@ public class AfaControllerTest {
             .andExpect(status().isNotFound())
             .andExpect(content().string("Sin resultado"));
 
-        when(afaRepository.findById(Mockito.<AfaId>any()))
+        when(afaRepository.findById(any(AfaId.class)))
             .thenThrow(new DataAccessResourceFailureException("DB down"));
         mockMvc.perform(patch("/api/afa/update-familia/1/AF1")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -221,7 +221,7 @@ public class AfaControllerTest {
             .andDo(print())
             .andExpect(status().isCreated());
 
-        verify(afaRepository).save(Mockito.<Afa>any());
+        verify(afaRepository).save(any(Afa.class));
 
         Map<String,Object> missing = Map.of("ent", 1, "afacod", "A");
         mockMvc.perform(post("/api/afa/Insert-familia")

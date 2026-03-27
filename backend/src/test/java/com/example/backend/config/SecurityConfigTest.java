@@ -219,8 +219,9 @@ class SecurityConfigTest {
 
     @Test
     void securityFilterChain_jwt_filter_present() throws Exception {
-        SecurityFilterChain chain = securityConfig.securityFilterChain(any());
-        assertNotNull(chain, "Security filter chain should not be null");
+        mockMvc.perform(get("/api/factura/list")
+                .header("Authorization", "Bearer invalid"))
+            .andExpect(status().isUnauthorized());
     }
 
     @Test
