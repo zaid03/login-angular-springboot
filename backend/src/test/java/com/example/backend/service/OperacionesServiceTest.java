@@ -3,24 +3,37 @@ package com.example.backend.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpEntity;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.client.RestTemplate;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import com.example.backend.exception.XmlParsingException;
 import com.example.backend.exception.SmlProcessingException;
 import com.example.backend.dto.Operaciones;
+import com.example.sical.CryptoSical;
 
 import java.lang.reflect.Method;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class OperacionesServiceTest {
 
     private OperacionesService service;
+    
+    @Mock
+    private RestTemplate restTemplate;
 
     @BeforeEach
     void setUp() {
@@ -32,6 +45,7 @@ public class OperacionesServiceTest {
         ReflectionTestUtils.setField(service, "orgCode", "ORG001");
         ReflectionTestUtils.setField(service, "entidad", "1");
         ReflectionTestUtils.setField(service, "eje", "E1");
+        ReflectionTestUtils.setField(service, "restTemplate", restTemplate);
     }
 
     @Test
@@ -910,5 +924,165 @@ public class OperacionesServiceTest {
         Method method = OperacionesService.class.getDeclaredMethod("parseLineaList", Element.class);
         method.setAccessible(true);
         return (List<Operaciones.Linea>) method.invoke(service, opEl);
+    }
+
+    @Test
+    void getOperaciones_withAllCriteria_callsRestTemplate() throws Exception {
+        OperacionesService.SearchCriteria criteria = new OperacionesService.SearchCriteria.Builder()
+            .numeroOperDesde("100")
+            .numeroOperHasta("200")
+            .codigoOperacion("OP001")
+            .organica("ORG001")
+            .funcional("FUN001")
+            .build();
+
+        try (MockedStatic<CryptoSical> mockedCrypto = mockStatic(CryptoSical.class)) {
+            CryptoSical.SecurityFields secFields = new CryptoSical.SecurityFields("2026-01-01", "nonce123", "token456", "origin789");
+            
+            mockedCrypto.when(() -> CryptoSical.calculateSecurityFields(any())).thenReturn(secFields);
+            mockedCrypto.when(() -> CryptoSical.encodeSha1Base64(any())).thenReturn("hashed");
+            mockedCrypto.when(() -> CryptoSical.encodeBase64(any())).thenReturn("encoded");
+            
+            String mockResponse = "<soapenv:Body><impl:servicio><servicioReturn><operaciones><operacion><numope>123</numope></operacion></operaciones></servicioReturn></impl:servicio></soapenv:Body>";
+            when(restTemplate.postForObject(anyString(), any(HttpEntity.class), eq(String.class)))
+                .thenReturn(mockResponse);
+            
+            List<Operaciones> result = service.getOperaciones(criteria);
+            
+            assertNotNull(result);
+            assertEquals(1, result.size());
+        }
+    }
+
+    @Test
+    void getOperaciones_withMinimalCriteria_buildsRequestWithMinimalFields() throws Exception {
+        OperacionesService.SearchCriteria criteria = new OperacionesService.SearchCriteria.Builder()
+            .numeroOperDesde("100")
+            .build();
+
+        try (MockedStatic<CryptoSical> mockedCrypto = mockStatic(CryptoSical.class)) {
+            CryptoSical.SecurityFields secFields = new CryptoSical.SecurityFields("2026-01-01", "nonce123", "token456", "origin789");
+            
+            mockedCrypto.when(() -> CryptoSical.calculateSecurityFields(any())).thenReturn(secFields);
+            mockedCrypto.when(() -> CryptoSical.encodeSha1Base64(any())).thenReturn("hashed");
+            mockedCrypto.when(() -> CryptoSical.encodeBase64(any())).thenReturn("encoded");
+            
+            String mockResponse = "<soapenv:Body><impl:servicio><servicioReturn><operaciones /></servicioReturn></impl:servicio></soapenv:Body>";
+            when(restTemplate.postForObject(anyString(), any(HttpEntity.class), eq(String.class)))
+                .thenReturn(mockResponse);
+            
+            List<Operaciones> result = service.getOperaciones(criteria);
+            
+            assertNotNull(result);
+            assertTrue(result.isEmpty());
+        }
+    }
+
+    @Test
+    void getOperaciones_withNullCriteria_throwsException() {
+        try (MockedStatic<CryptoSical> mockedCrypto = mockStatic(CryptoSical.class)) {
+            mockedCrypto.when(() -> CryptoSical.calculateSecurityFields(any()))
+                .thenThrow(new RuntimeException("Test error"));
+            
+            assertThrows(SmlProcessingException.class, () -> service.getOperaciones(null));
+        }
+    }
+
+    @Test
+    void getOperaciones_whenRestTemplateThrowsException_wrapsInSmlProcessingException() throws Exception {
+        OperacionesService.SearchCriteria criteria = new OperacionesService.SearchCriteria.Builder()
+            .numeroOperDesde("100")
+            .build();
+
+        try (MockedStatic<CryptoSical> mockedCrypto = mockStatic(CryptoSical.class)) {
+            CryptoSical.SecurityFields secFields = new CryptoSical.SecurityFields("2026-01-01", "nonce123", "token456", "origin789");
+            
+            mockedCrypto.when(() -> CryptoSical.calculateSecurityFields(any())).thenReturn(secFields);
+            mockedCrypto.when(() -> CryptoSical.encodeSha1Base64(any())).thenReturn("hashed");
+            mockedCrypto.when(() -> CryptoSical.encodeBase64(any())).thenReturn("encoded");
+            
+            when(restTemplate.postForObject(anyString(), any(HttpEntity.class), eq(String.class)))
+                .thenThrow(new RuntimeException("Network error"));
+            
+            assertThrows(SmlProcessingException.class, () -> service.getOperaciones(criteria));
+        }
+    }
+
+    @Test
+    void getOperaciones_withErrorResponseFromService_throwsException() throws Exception {
+        OperacionesService.SearchCriteria criteria = new OperacionesService.SearchCriteria.Builder()
+            .numeroOperDesde("100")
+            .build();
+
+        try (MockedStatic<CryptoSical> mockedCrypto = mockStatic(CryptoSical.class)) {
+            CryptoSical.SecurityFields secFields = new CryptoSical.SecurityFields("2026-01-01", "nonce123", "token456", "origin789");
+            
+            mockedCrypto.when(() -> CryptoSical.calculateSecurityFields(any())).thenReturn(secFields);
+            mockedCrypto.when(() -> CryptoSical.encodeSha1Base64(any())).thenReturn("hashed");
+            mockedCrypto.when(() -> CryptoSical.encodeBase64(any())).thenReturn("encoded");
+            
+            String errorResponse = "<soapenv:Body><impl:servicio><servicioReturn><exito>0</exito><desc>Service error</desc></servicioReturn></impl:servicio></soapenv:Body>";
+            when(restTemplate.postForObject(anyString(), any(HttpEntity.class), eq(String.class)))
+                .thenReturn(errorResponse);
+            
+            assertThrows(SmlProcessingException.class, () -> service.getOperaciones(criteria));
+        }
+    }
+
+    @Test
+    void getOperaciones_withValidResponseMultipleOperaciones_returnsAllParsed() throws Exception {
+        OperacionesService.SearchCriteria criteria = new OperacionesService.SearchCriteria.Builder()
+            .numeroOperDesde("100")
+            .build();
+
+        try (MockedStatic<CryptoSical> mockedCrypto = mockStatic(CryptoSical.class)) {
+            CryptoSical.SecurityFields secFields = new CryptoSical.SecurityFields("2026-01-01", "nonce123", "token456", "origin789");
+            
+            mockedCrypto.when(() -> CryptoSical.calculateSecurityFields(any())).thenReturn(secFields);
+            mockedCrypto.when(() -> CryptoSical.encodeSha1Base64(any())).thenReturn("hashed");
+            mockedCrypto.when(() -> CryptoSical.encodeBase64(any())).thenReturn("encoded");
+            
+            String mockResponse = "<soapenv:Body><impl:servicio><servicioReturn>" +
+                "<operaciones>" +
+                "<operacion><numope>111</numope></operacion>" +
+                "<operacion><numope>222</numope></operacion>" +
+                "<operacion><numope>333</numope></operacion>" +
+                "</operaciones>" +
+                "</servicioReturn></impl:servicio></soapenv:Body>";
+            when(restTemplate.postForObject(anyString(), any(HttpEntity.class), eq(String.class)))
+                .thenReturn(mockResponse);
+            
+            List<Operaciones> result = service.getOperaciones(criteria);
+            
+            assertNotNull(result);
+            assertEquals(3, result.size());
+        }
+    }
+
+    @Test
+    void getOperaciones_buildsCorrectSOAPEnvelope() throws Exception {
+        OperacionesService.SearchCriteria criteria = new OperacionesService.SearchCriteria.Builder()
+            .numeroOperDesde("100")
+            .build();
+
+        try (MockedStatic<CryptoSical> mockedCrypto = mockStatic(CryptoSical.class)) {
+            CryptoSical.SecurityFields secFields = new CryptoSical.SecurityFields("2026-01-01", "nonce123", "token456", "origin789");
+            
+            mockedCrypto.when(() -> CryptoSical.calculateSecurityFields(any())).thenReturn(secFields);
+            mockedCrypto.when(() -> CryptoSical.encodeSha1Base64(any())).thenReturn("hashed");
+            mockedCrypto.when(() -> CryptoSical.encodeBase64(any())).thenReturn("encoded");
+            
+            String mockResponse = "<soapenv:Body><impl:servicio><servicioReturn><operaciones /></servicioReturn></impl:servicio></soapenv:Body>";
+            when(restTemplate.postForObject(anyString(), any(HttpEntity.class), eq(String.class)))
+                .thenReturn(mockResponse);
+            
+            service.getOperaciones(criteria);
+            
+            org.mockito.Mockito.verify(restTemplate).postForObject(
+                anyString(),
+                any(HttpEntity.class),
+                eq(String.class)
+            );
+        }
     }
 }

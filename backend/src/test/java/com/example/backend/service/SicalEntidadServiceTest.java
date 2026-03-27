@@ -6,12 +6,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.Mock;
 import org.mockito.ArgumentCaptor;
+import org.mockito.MockedStatic;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.http.HttpEntity;
 
 import com.example.backend.dto.Entidad;
 import com.example.backend.exception.SmlProcessingException;
+import com.example.sical.CryptoSical;
 
 import java.util.List;
 import java.util.Base64;
@@ -20,6 +22,7 @@ import java.nio.charset.StandardCharsets;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mockStatic;
 
 @ExtendWith(MockitoExtension.class)
 public class SicalEntidadServiceTest {
@@ -800,6 +803,151 @@ public class SicalEntidadServiceTest {
         } catch (Exception e) {
             fail("Could not invoke parseEntidades: " + e.getMessage());
             return null;
+        }
+    }
+
+    @Test
+    void getEntidades_withValidServiceioReturn_extractsAndUnescapesXml() throws Exception {
+        try (MockedStatic<CryptoSical> mockedCrypto = mockStatic(CryptoSical.class)) {
+            CryptoSical.SecurityFields secFields = new CryptoSical.SecurityFields("2026-01-01", "nonce123", "token456", "origin789");
+            mockedCrypto.when(() -> CryptoSical.calculateSecurityFields(any())).thenReturn(secFields);
+            mockedCrypto.when(() -> CryptoSical.encodeSha1Base64(any())).thenReturn("hashed");
+            
+            String codigoB64 = Base64.getEncoder().encodeToString("E001".getBytes(StandardCharsets.UTF_8));
+            String nombreB64 = Base64.getEncoder().encodeToString("Entidad Uno".getBytes(StandardCharsets.UTF_8));
+            String innerContent = "&lt;?xml version=&quot;1.0&quot;?&gt;&lt;data&gt;&lt;exito&gt;-1&lt;/exito&gt;&lt;detalle&gt;" + codigoB64 + "@" + nombreB64 + "&lt;/detalle&gt;&lt;/data&gt;";
+            String soapResponse = "<?xml version=\"1.0\"?><soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"><soapenv:Body><servicioReturn>" + innerContent + "</servicioReturn></soapenv:Body></soapenv:Envelope>";
+            
+            when(restTemplate.postForObject(anyString(), any(HttpEntity.class), eq(String.class))).thenReturn(soapResponse);
+            ReflectionTestUtils.setField(service, "restTemplate", restTemplate);
+            
+            List<Entidad> result = service.getEntidades();
+            
+            assertNotNull(result);
+            assertEquals(1, result.size());
+            assertEquals("E001", result.get(0).getCodigo());
+            assertEquals("Entidad Uno", result.get(0).getNombre());
+        }
+    }
+
+    @Test
+    void getEntidades_withNullResponse_throwsSmlProcessingException() {
+        try (MockedStatic<CryptoSical> mockedCrypto = mockStatic(CryptoSical.class)) {
+            CryptoSical.SecurityFields secFields = new CryptoSical.SecurityFields("2026-01-01", "nonce123", "token456", "origin789");
+            mockedCrypto.when(() -> CryptoSical.calculateSecurityFields(any())).thenReturn(secFields);
+            mockedCrypto.when(() -> CryptoSical.encodeSha1Base64(any())).thenReturn("hashed");
+            
+            when(restTemplate.postForObject(anyString(), any(HttpEntity.class), eq(String.class))).thenReturn(null);
+            ReflectionTestUtils.setField(service, "restTemplate", restTemplate);
+            
+            assertThrows(SmlProcessingException.class, () -> service.getEntidades());
+        }
+    }
+
+    @Test
+    void getEntidades_withoutServiceioReturn_fallsBackToFullResponse() throws Exception {
+        try (MockedStatic<CryptoSical> mockedCrypto = mockStatic(CryptoSical.class)) {
+            CryptoSical.SecurityFields secFields = new CryptoSical.SecurityFields("2026-01-01", "nonce123", "token456", "origin789");
+            mockedCrypto.when(() -> CryptoSical.calculateSecurityFields(any())).thenReturn(secFields);
+            mockedCrypto.when(() -> CryptoSical.encodeSha1Base64(any())).thenReturn("hashed");
+            
+            String codigoB64 = Base64.getEncoder().encodeToString("E002".getBytes(StandardCharsets.UTF_8));
+            String nombreB64 = Base64.getEncoder().encodeToString("Entidad Dos".getBytes(StandardCharsets.UTF_8));
+            String fallbackXml = "<?xml version=\"1.0\"?><data><exito>-1</exito><detalle>" + codigoB64 + "@" + nombreB64 + "</detalle></data>";
+            
+            when(restTemplate.postForObject(anyString(), any(HttpEntity.class), eq(String.class))).thenReturn(fallbackXml);
+            ReflectionTestUtils.setField(service, "restTemplate", restTemplate);
+            
+            List<Entidad> result = service.getEntidades();
+            
+            assertNotNull(result);
+            assertEquals(1, result.size());
+            assertEquals("E002", result.get(0).getCodigo());
+            assertEquals("Entidad Dos", result.get(0).getNombre());
+        }
+    }
+
+    @Test
+    void getEntidades_withRestTemplateException_wrapsInSmlProcessingException() {
+        try (MockedStatic<CryptoSical> mockedCrypto = mockStatic(CryptoSical.class)) {
+            CryptoSical.SecurityFields secFields = new CryptoSical.SecurityFields("2026-01-01", "nonce123", "token456", "origin789");
+            mockedCrypto.when(() -> CryptoSical.calculateSecurityFields(any())).thenReturn(secFields);
+            mockedCrypto.when(() -> CryptoSical.encodeSha1Base64(any())).thenReturn("hashed");
+            
+            when(restTemplate.postForObject(anyString(), any(HttpEntity.class), eq(String.class)))
+                .thenThrow(new RuntimeException("Network connection failed"));
+            ReflectionTestUtils.setField(service, "restTemplate", restTemplate);
+            
+            assertThrows(SmlProcessingException.class, () -> service.getEntidades());
+        }
+    }
+
+    @Test
+    void getEntidades_withErrorExito_throwsSmlProcessingException() throws Exception {
+        try (MockedStatic<CryptoSical> mockedCrypto = mockStatic(CryptoSical.class)) {
+            CryptoSical.SecurityFields secFields = new CryptoSical.SecurityFields("2026-01-01", "nonce123", "token456", "origin789");
+            mockedCrypto.when(() -> CryptoSical.calculateSecurityFields(any())).thenReturn(secFields);
+            mockedCrypto.when(() -> CryptoSical.encodeSha1Base64(any())).thenReturn("hashed");
+            
+            String errorXml = "<?xml version=\"1.0\"?><soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"><soapenv:Body><servicioReturn>&lt;data&gt;&lt;exito&gt;1&lt;/exito&gt;&lt;desc&gt;Service error&lt;/desc&gt;&lt;/data&gt;</servicioReturn></soapenv:Body></soapenv:Envelope>";
+            
+            when(restTemplate.postForObject(anyString(), any(HttpEntity.class), eq(String.class))).thenReturn(errorXml);
+            ReflectionTestUtils.setField(service, "restTemplate", restTemplate);
+            
+            assertThrows(SmlProcessingException.class, () -> service.getEntidades());
+        }
+    }
+
+    @Test
+    void getEntidades_withMultipleEntidades_returnsAll() throws Exception {
+        try (MockedStatic<CryptoSical> mockedCrypto = mockStatic(CryptoSical.class)) {
+            CryptoSical.SecurityFields secFields = new CryptoSical.SecurityFields("2026-01-01", "nonce123", "token456", "origin789");
+            mockedCrypto.when(() -> CryptoSical.calculateSecurityFields(any())).thenReturn(secFields);
+            mockedCrypto.when(() -> CryptoSical.encodeSha1Base64(any())).thenReturn("hashed");
+            
+            StringBuilder innerContent = new StringBuilder("&lt;data&gt;&lt;exito&gt;-1&lt;/exito&gt;");
+            for (int i = 1; i <= 3; i++) {
+                String codigoB64 = Base64.getEncoder().encodeToString(("E" + i).getBytes(StandardCharsets.UTF_8));
+                String nombreB64 = Base64.getEncoder().encodeToString(("Entidad " + i).getBytes(StandardCharsets.UTF_8));
+                innerContent.append("&lt;detalle&gt;").append(codigoB64).append("@").append(nombreB64).append("&lt;/detalle&gt;");
+            }
+            innerContent.append("&lt;/data&gt;");
+            
+            String soapResponse = "<?xml version=\"1.0\"?><soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"><soapenv:Body><servicioReturn>" + innerContent.toString() + "</servicioReturn></soapenv:Body></soapenv:Envelope>";
+            
+            when(restTemplate.postForObject(anyString(), any(HttpEntity.class), eq(String.class))).thenReturn(soapResponse);
+            ReflectionTestUtils.setField(service, "restTemplate", restTemplate);
+            
+            List<Entidad> result = service.getEntidades();
+            
+            assertNotNull(result);
+            assertEquals(3, result.size());
+            assertEquals("E1", result.get(0).getCodigo());
+            assertEquals("E2", result.get(1).getCodigo());
+            assertEquals("E3", result.get(2).getCodigo());
+        }
+    }
+
+    @Test
+    void getEntidades_unescapesXmlEntitiesInServiceioReturn() throws Exception {
+        try (MockedStatic<CryptoSical> mockedCrypto = mockStatic(CryptoSical.class)) {
+            CryptoSical.SecurityFields secFields = new CryptoSical.SecurityFields("2026-01-01", "nonce123", "token456", "origin789");
+            mockedCrypto.when(() -> CryptoSical.calculateSecurityFields(any())).thenReturn(secFields);
+            mockedCrypto.when(() -> CryptoSical.encodeSha1Base64(any())).thenReturn("hashed");
+            
+            String codigoB64 = Base64.getEncoder().encodeToString("E-001".getBytes(StandardCharsets.UTF_8));
+            String nombreB64 = Base64.getEncoder().encodeToString("Test & Co.".getBytes(StandardCharsets.UTF_8));
+            String innerContent = "&lt;data&gt;&lt;exito&gt;-1&lt;/exito&gt;&lt;detalle&gt;" + codigoB64 + "@" + nombreB64 + "&lt;/detalle&gt;&lt;/data&gt;";
+            String soapResponse = "<?xml version=\"1.0\"?><soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"><soapenv:Body><servicioReturn>" + innerContent + "</servicioReturn></soapenv:Body></soapenv:Envelope>";
+            
+            when(restTemplate.postForObject(anyString(), any(HttpEntity.class), eq(String.class))).thenReturn(soapResponse);
+            ReflectionTestUtils.setField(service, "restTemplate", restTemplate);
+            
+            List<Entidad> result = service.getEntidades();
+            
+            assertNotNull(result);
+            assertEquals(1, result.size());
+            assertEquals("Test & Co.", result.get(0).getNombre());
         }
     }
 }

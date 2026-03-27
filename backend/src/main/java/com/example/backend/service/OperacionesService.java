@@ -8,6 +8,7 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -51,6 +52,9 @@ public class OperacionesService {
 
     @Value("${sical.eje}")
     private String eje;
+
+    @Autowired(required = false)
+    private RestTemplate restTemplate;
 
     public static class SearchCriteria {
         public final String numeroOperDesde;
@@ -195,9 +199,9 @@ public class OperacionesService {
             headers.add(HttpHeaders.ACCEPT, "text/xml");
             headers.add("SOAPAction", "");
 
-            RestTemplate restTemplate = new RestTemplate();
+            RestTemplate template = (this.restTemplate != null) ? this.restTemplate : new RestTemplate();
             String endpoint = (wsUrl != null && wsUrl.contains("?")) ? wsUrl.substring(0, wsUrl.indexOf("?")) : wsUrl;
-            String responseXml = restTemplate.postForObject(endpoint, new HttpEntity<>(soapEnvelope, headers), String.class);
+            String responseXml = template.postForObject(endpoint, new HttpEntity<>(soapEnvelope, headers), String.class);
 
             return parseOperaciones(responseXml);
         } catch (SmlProcessingException ex) {

@@ -4,6 +4,7 @@ import com.example.backend.dto.Entidad;
 import com.example.backend.exception.SmlProcessingException;
 import com.example.sical.CryptoSical;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
@@ -35,6 +36,9 @@ public class SicalEntidadService {
     private String wsUrl;
     @Value("${sical.public.key}")
     private String publicKey;
+
+    @Autowired(required = false)
+    private RestTemplate restTemplate;
 
     public List<Entidad> getEntidades() throws SmlProcessingException {
         try {
@@ -76,8 +80,8 @@ public class SicalEntidadService {
         headers.add("SOAPAction", "");
 
         HttpEntity<String> request = new HttpEntity<>(soapEnvelope, headers);
-        RestTemplate restTemplate = new RestTemplate();
-        String responseXml = restTemplate.postForObject(wsUrl, request, String.class);
+        RestTemplate template = (this.restTemplate != null) ? this.restTemplate : new RestTemplate();
+        String responseXml = template.postForObject(wsUrl, request, String.class);
         
         if (responseXml == null) {
             throw new SmlProcessingException("Empty response from SICAL");
