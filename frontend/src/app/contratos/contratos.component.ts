@@ -610,192 +610,36 @@ export class ContratosComponent {
   }
 
   searchTerm: string = '';
-  filterOption: string = 'noBloqueados';
+  filterOption: string = 'Nobloqueado';
   searchProveedor() {
     this.limpiarMessages();
     this.isLoadingPro = true
-    if (this.searchTerm.trim() === '') {
-      if (this.filterOption === 'Bloqueados') {
-        this.http.get<any[]>(`${environment.backendUrl}/api/ter/filter/${this.entcod}`).subscribe({
-          next: (response) => {
-            this.proveedores = response;
-            this.page = 0;
-            this.isLoadingPro = false;
-          },
-          error: (err) => {
-            this.error = err.error.error ?? err.error;
-            this.isLoadingPro = false;
-          }
-        })
-      } else if (this.filterOption === 'noBloqueados') {
-        this.http.get<any[]>(`${environment.backendUrl}/api/ter/filter-no/${this.entcod}`).subscribe({
-          next: (response) => {
-            this.proveedores = response;
-            this.page = 0;
-            this.isLoadingPro = false;
-          },
-          error: (err) => {
-            this.error = err.error.error ?? err.error;
-            this.isLoadingPro = false;
-          }
-        })
-      }
-    }
+    const params = {
+      ent: this.entcod || '',
+      searchMode: this.filterOption,
+      term: this.searchTerm
+    };
 
-    if(/^\d+$/.test(this.searchTerm)) {
-      if(this.filterOption === 'noBloqueados') {
-        if ((this.searchTerm.length <= 5)) {
-          this.http.get<any[]>(`${environment.backendUrl}/api/ter/by-tercod-no-bloqueado/${this.entcod}/tercod/${this.searchTerm}`).subscribe({
-            next: (response) => {
-              this.proveedores = response;
-              this.page = 0;
-              this.isLoadingPro = false;
-            },
-            error: (err) => {
-              this.error = err.error || err.error.error;
-              this.isLoadingPro = false;
-            }
-          })
-        } else if ((this.searchTerm.length > 5)) {
-          this.http.get<any[]>(`${environment.backendUrl}/api/ter/by-ternif-no-bloqueado/${this.entcod}/ternif/${this.searchTerm}`).subscribe({
-            next: (response) => {
-              this.proveedores = response;
-              this.page = 0;
-              this.isLoadingPro = false;
-            },
-            error: (err) => {
-              this.error = err.error || err.error.error;
-              this.isLoadingPro = false;
-            }
-          })
-        }
-      } else if(this.filterOption === 'Bloqueados') {
-        if ((this.searchTerm.length <= 5)) {
-          this.http.get<any[]>(`${environment.backendUrl}/api/ter/by-tercod-bloqueado/${this.entcod}/tercod/${this.searchTerm}`).subscribe({
-            next: (response) => {
-              this.proveedores = response;
-              this.page = 0;
-              this.isLoadingPro = false;
-            },
-            error: (err) => {
-              this.error = err.error || err.error.error;
-              this.isLoadingPro = false;
-            }
-          })
-        } if ((this.searchTerm.length > 5)) {
-          this.http.get<any[]>(`${environment.backendUrl}/api/ter/by-ternif-bloquado/${this.entcod}/ternif/${this.searchTerm}`).subscribe({
-            next: (response) => {
-              this.proveedores = response;
-              this.page = 0;
-              this.isLoadingPro = false;
-            },
-            error: (err) => {
-              this.error = err.error || err.error.error;
-              this.isLoadingPro = false;
-            }
-          })
-        }
-      } else if(this.filterOption === 'Todos') {
-        if ((this.searchTerm.length <= 5)){
-          this.http.get<any[]>(`${environment.backendUrl}/api/ter/by-ent/${this.entcod}/tercod/${this.searchTerm}`).subscribe({
-            next: (response) => {
-              this.proveedores = response;
-              this.page = 0;
-              this.isLoadingPro = false;
-            },
-            error: (err) => {
-              this.error = err.error || err.error.error;
-              this.isLoadingPro = false;
-            }
-          })
-        } else if ((this.searchTerm.length > 5)) {
-          this.http.get<any[]>(`${environment.backendUrl}/api/ter/by-ent/${this.entcod}/ternif/${this.searchTerm}`).subscribe({
-            next: (response) => {
-              this.proveedores = response;
-              this.page = 0;
-              this.isLoadingPro = false;
-            },
-            error: (err) => {
-              this.error = err.error || err.error.error;
-              this.isLoadingPro = false;
-            }
-          })
-        }
+    this.http.get<any[]>(`${environment.backendUrl}/api/ter/search-proveedores`, {params}).subscribe({
+      next: (response) => {
+        this.proveedores = response;
+        this.page = 0;
+        this.isLoadingPro = false;
+      },
+      error: (err) => {
+        this.proveedores = [];
+        this.error = err.error.error ?? err.error;
+        this.isLoadingPro = false;
       }
-    } else if (/^[a-zA-Z0-9]+$/.test(this.searchTerm)) {
-      if(this.filterOption === 'noBloqueados') {
-        this.http.get<any[]>(`${environment.backendUrl}/api/ter/by-nif-nom-ali-no-bloquado/${this.entcod}/search-by-term?term=${this.searchTerm}`).subscribe({
-          next: (response) => {
-            this.proveedores = response;
-            this.page = 0;
-            this.isLoadingPro = false;
-          },
-          error: (err) => {
-            this.error = err.error || err.error.error;
-            this.isLoadingPro = false;
-          }
-        })
-      } if(this.filterOption === 'Bloqueados') {
-        this.http.get<any[]>(`${environment.backendUrl}/api/ter/by-ternif-nom-ali-bloquado/${this.entcod}/search?term=${this.searchTerm}`).subscribe({
-          next: (response) => {
-            this.proveedores = response;
-            this.page = 0;
-            this.isLoadingPro = false;
-          },
-          error: (err) => {
-            this.error = err.error || err.error.error;
-            this.isLoadingPro = false;
-          }
-        })
-      } if(this.filterOption === 'Todos') {
-        this.http.get<any[]>(`${environment.backendUrl}/api/ter/by-ent/${this.entcod}/search-todos?term=${this.searchTerm}`).subscribe({
-          next: (response) => {
-            this.proveedores = response;
-            this.page = 0;
-            this.isLoadingPro = false;
-          },
-          error: (err) => {
-            this.error = err.error || err.error.error;
-            this.isLoadingPro = false;
-          }
-        })
-      }
-    } else {
-      if(this.filterOption === 'noBloqueados') {
-        this.http.get<any[]>(`${environment.backendUrl}/api/ter/by-nom-ali-no-bloquado/${this.entcod}/findMatchingNomOrAli?term=${this.searchTerm}`).subscribe({
-          next: (response) => {
-            this.proveedores = response;
-            this.page = 0;
-            this.isLoadingPro = false;
-          },
-          error: (err) => {
-            this.error = err.error || err.error.error;
-            this.isLoadingPro = false;
-          }
-        })
-      }
-      if(this.filterOption === 'Bloqueados') {
-        this.http.get<any[]>(`${environment.backendUrl}/api/ter/by-nom-ali-bloquado/${this.entcod}/searchByNomOrAli?term=${this.searchTerm}`).subscribe({
-          next: (response) => {
-            this.proveedores = response;
-            this.page = 0;
-            this.isLoadingPro = false;
-          },
-          error: (err) => {
-            this.error = err.error || err.error.error;
-            this.isLoadingPro = false;
-          }
-        })
-      }
-    }
+    })
   }
 
   clearSearch() {
     this.limpiarMessages();
     this.fetchProveedores();
+    this.filterOption = 'Nobloqueado';
     this.page = 0;
     this.searchTerm = '';
-    this.filterOption = 'noBloqueados';
   }
 
   proveedorTercod: number | null = null

@@ -18,9 +18,9 @@
                         <input type="text" class="search-bar" placeholder="Buscar proveedor" name="search" [(ngModel)]="searchTerm" (keyup.enter)="search()"/>
                         <div class="search-options">
                             <label>
-                                <input type="radio" name="optiones" value="Todos" [(ngModel)]="filterOption" /> Todos
-                                <input type="radio" name="optiones" value="noBloqueados" [(ngModel)]="filterOption" /> No Bloqueados
-                                <input type="radio" name="optiones" value="Bloqueados" [(ngModel)]="filterOption"  /> Bloqueados
+                                <input type="radio" name="optiones" value="todos" [(ngModel)]="filterOption" /> Todos
+                                <input type="radio" name="optiones" value="Nobloqueado" [(ngModel)]="filterOption" /> No Bloqueados
+                                <input type="radio" name="optiones" value="bloqueado" [(ngModel)]="filterOption"  /> Bloqueados
                             </label>
                         </div>
                         <div class="search-btns">
