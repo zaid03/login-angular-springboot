@@ -531,8 +531,11 @@ public class FacControllerTest {
         projection.terNom = "Proveedor A";
         projection.terNif = "NIF001";
 
-        when(facturaSearch.searchFactura(1, "E1", "C1", "search", 2024, "CONT", "REGISTRO", 
-            LocalDate.of(2026, 1, 1), LocalDate.of(2026, 12, 31)))
+        when(facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").mainFilter("search")
+                .ejFactura(2024).estado("CONT").fecha("REGISTRO")
+                .fromDate(LocalDate.of(2026, 1, 1)).toDate(LocalDate.of(2026, 12, 31)).build()))
             .thenReturn(List.of(projection));
 
         mockMvc.perform(get("/api/fac/search-factura")
@@ -552,8 +555,11 @@ public class FacControllerTest {
             .andExpect(jsonPath("$[0].facnum", is(100)))
             .andExpect(jsonPath("$[0].ter_TERNOM", is("Proveedor A")));
 
-        verify(facturaSearch).searchFactura(1, "E1", "C1", "search", 2024, "CONT", "REGISTRO",
-            LocalDate.of(2026, 1, 1), LocalDate.of(2026, 12, 31));
+        verify(facturaSearch).searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").mainFilter("search")
+                .ejFactura(2024).estado("CONT").fecha("REGISTRO")
+                .fromDate(LocalDate.of(2026, 1, 1)).toDate(LocalDate.of(2026, 12, 31)).build());
     }
 
     @Test
@@ -567,7 +573,9 @@ public class FacControllerTest {
         projection.facimp = 250.0;
         projection.terNom = "Proveedor B";
 
-        when(facturaSearch.searchFactura(1, "E1", "C1", null, null, null, null, null, null))
+        when(facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").build()))
             .thenReturn(List.of(projection));
 
         mockMvc.perform(get("/api/fac/search-factura")
@@ -580,7 +588,9 @@ public class FacControllerTest {
             .andExpect(jsonPath("$", hasSize(1)))
             .andExpect(jsonPath("$[0].facnum", is(200)));
 
-        verify(facturaSearch).searchFactura(1, "E1", "C1", null, null, null, null, null, null);
+        verify(facturaSearch).searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").build());
     }
 
     @Test
@@ -590,7 +600,10 @@ public class FacControllerTest {
         projection.facimp = 750.50;
         projection.terNom = "Proveedor C";
 
-        when(facturaSearch.searchFactura(1, "E1", "C2", "supplier", null, "NO_CONT", null, null, null))
+        when(facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C2").mainFilter("supplier")
+                .estado("NO_CONT").build()))
             .thenReturn(List.of(projection));
 
         mockMvc.perform(get("/api/fac/search-factura")
@@ -611,8 +624,10 @@ public class FacControllerTest {
         projection.facnum = 400;
         projection.facimp = 1200.0;
 
-        when(facturaSearch.searchFactura(1, "E1", "C1", null, null, null, "FACTURA",
-            LocalDate.of(2026, 3, 1), LocalDate.of(2026, 3, 31)))
+        when(facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").fecha("FACTURA")
+                .fromDate(LocalDate.of(2026, 3, 1)).toDate(LocalDate.of(2026, 3, 31)).build()))
             .thenReturn(List.of(projection));
 
         mockMvc.perform(get("/api/fac/search-factura")
@@ -633,8 +648,10 @@ public class FacControllerTest {
         FacWithTerProjectionImpl projection = new FacWithTerProjectionImpl();
         projection.facnum = 500;
 
-        when(facturaSearch.searchFactura(1, "E1", "C1", null, null, null, "REGISTRO",
-            LocalDate.of(2026, 1, 15), null))
+        when(facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").fecha("REGISTRO")
+                .fromDate(LocalDate.of(2026, 1, 15)).build()))
             .thenReturn(List.of(projection));
 
         mockMvc.perform(get("/api/fac/search-factura")
@@ -647,8 +664,10 @@ public class FacControllerTest {
             .andDo(print())
             .andExpect(status().isOk());
 
-        verify(facturaSearch).searchFactura(1, "E1", "C1", null, null, null, "REGISTRO",
-            LocalDate.of(2026, 1, 15), null);
+        verify(facturaSearch).searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").fecha("REGISTRO")
+                .fromDate(LocalDate.of(2026, 1, 15)).build());
     }
 
     @Test
@@ -656,8 +675,10 @@ public class FacControllerTest {
         FacWithTerProjectionImpl projection = new FacWithTerProjectionImpl();
         projection.facnum = 600;
 
-        when(facturaSearch.searchFactura(1, "E1", "C1", null, null, null, "CONTABLE",
-            null, LocalDate.of(2026, 6, 30)))
+        when(facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").fecha("CONTABLE")
+                .toDate(LocalDate.of(2026, 6, 30)).build()))
             .thenReturn(List.of(projection));
 
         mockMvc.perform(get("/api/fac/search-factura")
@@ -677,7 +698,9 @@ public class FacControllerTest {
         projection.facnum = 700;
         projection.facann = 2024;
 
-        when(facturaSearch.searchFactura(1, "E1", "C1", null, 2024, null, null, null, null))
+        when(facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").ejFactura(2024).build()))
             .thenReturn(List.of(projection));
 
         mockMvc.perform(get("/api/fac/search-factura")
@@ -693,7 +716,9 @@ public class FacControllerTest {
 
     @Test
     void searchFacturas_returnsNotFoundWhenNoResults() throws Exception {
-        when(facturaSearch.searchFactura(1, "E1", "C1", "nonexistent", null, null, null, null, null))
+        when(facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").mainFilter("nonexistent").build()))
             .thenReturn(List.of());
 
         mockMvc.perform(get("/api/fac/search-factura")
@@ -709,7 +734,8 @@ public class FacControllerTest {
 
     @Test
     void searchFacturas_returnsNotFoundWhenEmptyResult() throws Exception {
-        when(facturaSearch.searchFactura(anyInt(), anyString(), anyString(), anyString(), any(), anyString(), anyString(), any(), any()))
+        when(facturaSearch.searchFactura(argThat(criteria -> 
+            criteria.ent == 999 && criteria.eje.equals("E99") && criteria.cgecod.equals("C99"))))
             .thenReturn(List.of());
 
         mockMvc.perform(get("/api/fac/search-factura")
@@ -724,7 +750,8 @@ public class FacControllerTest {
 
     @Test
     void searchFacturas_returnsBadRequestOnServiceException() throws Exception {
-        when(facturaSearch.searchFactura(eq(1), eq("E1"), eq("C1"), isNull(), isNull(), isNull(), isNull(), isNull(), isNull()))
+        when(facturaSearch.searchFactura(argThat(criteria -> 
+            criteria.ent == 1 && criteria.eje.equals("E1") && criteria.cgecod.equals("C1"))))
             .thenThrow(new RuntimeException("Service error"));
 
         mockMvc.perform(get("/api/fac/search-factura")
@@ -739,7 +766,8 @@ public class FacControllerTest {
 
     @Test
     void searchFacturas_returnsBadRequestOnNullPointerException() throws Exception {
-        when(facturaSearch.searchFactura(eq(1), eq("E1"), eq("C1"), isNull(), isNull(), isNull(), isNull(), isNull(), isNull()))
+        when(facturaSearch.searchFactura(argThat(criteria -> 
+            criteria.ent == 1 && criteria.eje.equals("E1") && criteria.cgecod.equals("C1"))))
             .thenThrow(new NullPointerException("Filter parameter is null"));
 
         mockMvc.perform(get("/api/fac/search-factura")
@@ -769,7 +797,9 @@ public class FacControllerTest {
         proj3.facimp = 300.0;
         proj3.terNom = "Prov 3";
 
-        when(facturaSearch.searchFactura(1, "E1", "C1", null, null, "CONT", null, null, null))
+        when(facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").estado("CONT").build()))
             .thenReturn(List.of(proj1, proj2, proj3));
 
         mockMvc.perform(get("/api/fac/search-factura")
@@ -802,8 +832,11 @@ public class FacControllerTest {
         projection.terNom = "Big Supplier";
         projection.terNif = "NIF999";
 
-        when(facturaSearch.searchFactura(1, "E1", "C1", "12345", 2024, "PTE_APL", "REGISTRO",
-            LocalDate.of(2025, 1, 1), LocalDate.of(2026, 12, 31)))
+        when(facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").mainFilter("12345")
+                .ejFactura(2024).estado("PTE_APL").fecha("REGISTRO")
+                .fromDate(LocalDate.of(2025, 1, 1)).toDate(LocalDate.of(2026, 12, 31)).build()))
             .thenReturn(List.of(projection));
 
         mockMvc.perform(get("/api/fac/search-factura")
@@ -826,7 +859,8 @@ public class FacControllerTest {
 
     @Test
     void searchFacturas_returnsBadRequestOnDataAccessException() throws Exception {
-        when(facturaSearch.searchFactura(eq(1), eq("E1"), eq("C1"), isNull(), isNull(), isNull(), isNull(), isNull(), isNull()))
+        when(facturaSearch.searchFactura(argThat(criteria -> 
+            criteria.ent == 1 && criteria.eje.equals("E1") && criteria.cgecod.equals("C1"))))
             .thenThrow(new DataAccessResourceFailureException("Database connection failed"));
 
         mockMvc.perform(get("/api/fac/search-factura")
@@ -845,7 +879,9 @@ public class FacControllerTest {
         FacWithTerProjectionImpl projection = new FacWithTerProjectionImpl();
         projection.facnum = 1000;
 
-        when(facturaSearch.searchFactura(1, "E1", "C1", "", null, "", null, null, null))
+        when(facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").mainFilter("").estado("").build()))
             .thenReturn(List.of(projection));
 
         mockMvc.perform(get("/api/fac/search-factura")

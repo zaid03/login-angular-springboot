@@ -94,7 +94,9 @@ public class FacturaSearchTest {
         when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
             .thenReturn(List.of(proj1, proj2));
 
-        List<FacWithTerProjection> result = facturaSearch.searchFactura(1, "E1", "C1", "100", null, null, null, null, null);
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").mainFilter("100").build());
 
         assertEquals(1, result.size());
         assertEquals(100, result.get(0).getTERCOD());
@@ -110,7 +112,9 @@ public class FacturaSearchTest {
         when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
             .thenReturn(List.of(proj1, proj2));
 
-        List<FacWithTerProjection> result = facturaSearch.searchFactura(1, "E1", "C1", "123456", null, null, null, null, null);
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").mainFilter("123456").build());
 
         assertEquals(1, result.size());
         assertEquals("123456", result.get(0).getTer_TERNIF());
@@ -129,7 +133,9 @@ public class FacturaSearchTest {
         when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
             .thenReturn(List.of(proj1, proj2));
 
-        List<FacWithTerProjection> result = facturaSearch.searchFactura(1, "E1", "C1", "ABC", null, null, null, null, null);
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").mainFilter("ABC").build());
 
         assertEquals(1, result.size());
         assertEquals("ABC123", result.get(0).getTer_TERNIF());
@@ -145,7 +151,9 @@ public class FacturaSearchTest {
         when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
             .thenReturn(List.of(proj1, proj2));
 
-        List<FacWithTerProjection> result = facturaSearch.searchFactura(1, "E1", "C1", null, null, null, null, null, null);
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").build());
 
         assertEquals(2, result.size());
     }
@@ -160,7 +168,9 @@ public class FacturaSearchTest {
         when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
             .thenReturn(List.of(proj1, proj2));
 
-        List<FacWithTerProjection> result = facturaSearch.searchFactura(1, "E1", "C1", "", null, null, null, null, null);
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").mainFilter("").build());
 
         assertEquals(2, result.size());
     }
@@ -175,7 +185,9 @@ public class FacturaSearchTest {
         when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
             .thenReturn(List.of(proj1, proj2));
 
-        List<FacWithTerProjection> result = facturaSearch.searchFactura(1, "E1", "C1", null, null, "contabilizadas", null, null, null);
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").estado("contabilizadas").build());
 
         assertEquals(1, result.size());
         assertEquals("2024-01-15", result.get(0).getFACADO());
@@ -191,7 +203,9 @@ public class FacturaSearchTest {
         when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
             .thenReturn(List.of(proj1, proj2));
 
-        List<FacWithTerProjection> result = facturaSearch.searchFactura(1, "E1", "C1", null, null, "noContabilizadas", null, null, null);
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").estado("noContabilizadas").build());
 
         assertEquals(1, result.size());
         assertNull(result.get(0).getFACADO());
@@ -207,7 +221,9 @@ public class FacturaSearchTest {
         when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
             .thenReturn(List.of(proj1, proj2));
 
-        List<FacWithTerProjection> result = facturaSearch.searchFactura(1, "E1", "C1", null, null, "ptApplidas", null, null, null);
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").estado("ptApplidas").build());
 
         assertEquals(1, result.size());
         assertEquals(100.0, result.get(0).getFACIMP());
@@ -223,7 +239,9 @@ public class FacturaSearchTest {
         when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
             .thenReturn(List.of(proj1, proj2));
 
-        List<FacWithTerProjection> result = facturaSearch.searchFactura(1, "E1", "C1", null, null, "sinPtApplicar", null, null, null);
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").estado("sinPtApplicar").build());
 
         assertEquals(1, result.size());
         assertEquals(200.0, result.get(0).getFACIMP());
@@ -239,7 +257,9 @@ public class FacturaSearchTest {
         when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
             .thenReturn(List.of(proj1, proj2));
 
-        List<FacWithTerProjection> result = facturaSearch.searchFactura(1, "E1", "C1", null, 2024, null, null, null, null);
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").ejFactura(2024).build());
 
         assertEquals(1, result.size());
         assertEquals(2024, result.get(0).getFACANN());
@@ -253,7 +273,9 @@ public class FacturaSearchTest {
         when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
             .thenReturn(List.of(proj1));
 
-        List<FacWithTerProjection> result = facturaSearch.searchFactura(1, "E1", "C1", null, 2025, null, null, null, null);
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").ejFactura(2025).build());
 
         assertEquals(0, result.size());
     }
@@ -271,8 +293,10 @@ public class FacturaSearchTest {
         when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
             .thenReturn(List.of(proj1, proj2, proj3));
 
-        List<FacWithTerProjection> result = facturaSearch.searchFactura(1, "E1", "C1", null, null, null, "registro",
-            LocalDate.of(2026, 1, 1), LocalDate.of(2026, 3, 31));
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").fecha("registro")
+                .fromDate(LocalDate.of(2026, 1, 1)).toDate(LocalDate.of(2026, 3, 31)).build());
 
         assertEquals(2, result.size());
     }
@@ -288,8 +312,10 @@ public class FacturaSearchTest {
         when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
             .thenReturn(List.of(proj1, proj2));
 
-        List<FacWithTerProjection> result = facturaSearch.searchFactura(1, "E1", "C1", null, null, null, "registro",
-            LocalDate.of(2026, 3, 1), null);
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").fecha("registro")
+                .fromDate(LocalDate.of(2026, 3, 1)).build());
 
         assertEquals(1, result.size());
     }
@@ -305,8 +331,10 @@ public class FacturaSearchTest {
         when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
             .thenReturn(List.of(proj1, proj2));
 
-        List<FacWithTerProjection> result = facturaSearch.searchFactura(1, "E1", "C1", null, null, null, "registro",
-            null, LocalDate.of(2026, 3, 1));
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").fecha("registro")
+                .toDate(LocalDate.of(2026, 3, 1)).build());
 
         assertEquals(1, result.size());
     }
@@ -324,8 +352,10 @@ public class FacturaSearchTest {
         when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
             .thenReturn(List.of(proj1, proj2, proj3));
 
-        List<FacWithTerProjection> result = facturaSearch.searchFactura(1, "E1", "C1", null, null, null, "factura",
-            LocalDate.of(2026, 1, 1), LocalDate.of(2026, 3, 31));
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").fecha("factura")
+                .fromDate(LocalDate.of(2026, 1, 1)).toDate(LocalDate.of(2026, 3, 31)).build());
 
         assertEquals(2, result.size());
     }
@@ -341,8 +371,10 @@ public class FacturaSearchTest {
         when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
             .thenReturn(List.of(proj1, proj2));
 
-        List<FacWithTerProjection> result = facturaSearch.searchFactura(1, "E1", "C1", null, null, null, "factura",
-            LocalDate.of(2026, 3, 1), null);
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").fecha("factura")
+                .fromDate(LocalDate.of(2026, 3, 1)).build());
 
         assertEquals(1, result.size());
     }
@@ -358,8 +390,10 @@ public class FacturaSearchTest {
         when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
             .thenReturn(List.of(proj1, proj2));
 
-        List<FacWithTerProjection> result = facturaSearch.searchFactura(1, "E1", "C1", null, null, null, "factura",
-            null, LocalDate.of(2026, 3, 1));
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").fecha("factura")
+                .toDate(LocalDate.of(2026, 3, 1)).build());
 
         assertEquals(1, result.size());
     }
@@ -377,8 +411,10 @@ public class FacturaSearchTest {
         when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
             .thenReturn(List.of(proj1, proj2, proj3));
 
-        List<FacWithTerProjection> result = facturaSearch.searchFactura(1, "E1", "C1", null, null, null, "contable",
-            LocalDate.of(2026, 1, 1), LocalDate.of(2026, 3, 31));
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").fecha("contable")
+                .fromDate(LocalDate.of(2026, 1, 1)).toDate(LocalDate.of(2026, 3, 31)).build());
 
         assertEquals(2, result.size());
     }
@@ -394,8 +430,10 @@ public class FacturaSearchTest {
         when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
             .thenReturn(List.of(proj1, proj2));
 
-        List<FacWithTerProjection> result = facturaSearch.searchFactura(1, "E1", "C1", null, null, null, "contable",
-            LocalDate.of(2026, 3, 1), null);
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").fecha("contable")
+                .fromDate(LocalDate.of(2026, 3, 1)).build());
 
         assertEquals(1, result.size());
     }
@@ -411,8 +449,10 @@ public class FacturaSearchTest {
         when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
             .thenReturn(List.of(proj1, proj2));
 
-        List<FacWithTerProjection> result = facturaSearch.searchFactura(1, "E1", "C1", null, null, null, "contable",
-            null, LocalDate.of(2026, 3, 1));
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").fecha("contable")
+                .toDate(LocalDate.of(2026, 3, 1)).build());
 
         assertEquals(1, result.size());
     }
@@ -429,7 +469,10 @@ public class FacturaSearchTest {
         when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
             .thenReturn(List.of(proj1, proj2, proj3));
 
-        List<FacWithTerProjection> result = facturaSearch.searchFactura(1, "E1", "C1", "100", 2024, "contabilizadas", null, null, null);
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").mainFilter("100")
+                .ejFactura(2024).estado("contabilizadas").build());
 
         assertEquals(1, result.size());
         assertEquals(100, result.get(0).getTERCOD());
@@ -447,8 +490,11 @@ public class FacturaSearchTest {
             .thenReturn(List.of(proj1));
 
         List<FacWithTerProjection> result = facturaSearch.searchFactura(
-            1, "E1", "C1", "100", 2024, "contabilizadas", "registro",
-            LocalDate.of(2026, 1, 1), LocalDate.of(2026, 2, 1));
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1")
+                .mainFilter("100").ejFactura(2024).estado("contabilizadas")
+                .fecha("registro")
+                .fromDate(LocalDate.of(2026, 1, 1)).toDate(LocalDate.of(2026, 2, 1)).build());
 
         assertEquals(1, result.size());
     }
@@ -458,7 +504,9 @@ public class FacturaSearchTest {
         when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
             .thenReturn(List.of());
 
-        List<FacWithTerProjection> result = facturaSearch.searchFactura(1, "E1", "C1", null, null, null, null, null, null);
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").build());
 
         assertEquals(0, result.size());
     }
@@ -468,7 +516,9 @@ public class FacturaSearchTest {
         when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
             .thenReturn(null);
 
-        List<FacWithTerProjection> result = facturaSearch.searchFactura(1, "E1", "C1", null, null, null, null, null, null);
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").build());
 
         assertNull(result);
     }
@@ -483,7 +533,9 @@ public class FacturaSearchTest {
         when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
             .thenReturn(List.of(proj1, proj2));
 
-        List<FacWithTerProjection> result = facturaSearch.searchFactura(1, "E1", "C1", null, null, "", null, null, null);
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").estado("").build());
 
         assertEquals(2, result.size());
     }
@@ -496,8 +548,13 @@ public class FacturaSearchTest {
         when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
             .thenReturn(List.of(proj1));
 
-        List<FacWithTerProjection> result = facturaSearch.searchFactura(1, "E1", "C1", null, null, null, "", 
-            LocalDate.of(2026, 1, 1), LocalDate.of(2026, 12, 31));
+        when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
+            .thenReturn(List.of(proj1));
+
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").fecha("")
+                .fromDate(LocalDate.of(2026, 1, 1)).toDate(LocalDate.of(2026, 12, 31)).build());
 
         assertEquals(1, result.size());
     }
@@ -512,7 +569,9 @@ public class FacturaSearchTest {
         when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
             .thenReturn(List.of(proj1, proj2));
 
-        List<FacWithTerProjection> result = facturaSearch.searchFactura(1, "E1", "C1", null, null, null, null, null, null);
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").build());
 
         assertEquals(2, result.size());
         verify(facRepository).findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1");
@@ -526,7 +585,9 @@ public class FacturaSearchTest {
         when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
             .thenReturn(List.of(proj1));
 
-        List<FacWithTerProjection> result = facturaSearch.searchFactura(1, "E1", "C1", "100", null, null, null, null, null);
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").mainFilter("100").build());
 
         assertEquals(0, result.size());
     }
@@ -539,7 +600,9 @@ public class FacturaSearchTest {
         when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
             .thenReturn(List.of(proj1));
 
-        List<FacWithTerProjection> result = facturaSearch.searchFactura(1, "E1", "C1", "ABC123", null, null, null, null, null);
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").mainFilter("ABC123").build());
 
         assertEquals(0, result.size());
     }
@@ -552,8 +615,10 @@ public class FacturaSearchTest {
         when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
             .thenReturn(List.of(proj1));
 
-        List<FacWithTerProjection> result = facturaSearch.searchFactura(1, "E1", "C1", null, null, null, "registro",
-            LocalDate.of(2026, 1, 1), LocalDate.of(2026, 12, 31));
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").fecha("registro")
+                .fromDate(LocalDate.of(2026, 1, 1)).toDate(LocalDate.of(2026, 12, 31)).build());
 
         assertEquals(0, result.size());
     }
@@ -570,7 +635,9 @@ public class FacturaSearchTest {
         when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
             .thenReturn(List.of(proj1, proj2, proj3));
 
-        List<FacWithTerProjection> result = facturaSearch.searchFactura(1, "E1", "C1", "100", null, null, null, null, null);
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").mainFilter("100").build());
 
         assertEquals(3, result.size());
     }
@@ -585,7 +652,9 @@ public class FacturaSearchTest {
         when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
             .thenReturn(List.of(proj1, proj2));
 
-        List<FacWithTerProjection> result = facturaSearch.searchFactura(1, "E1", "C1", "acme", null, null, null, null, null);
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").mainFilter("acme").build());
 
         assertEquals(1, result.size());
         assertEquals("ACME CORP", result.get(0).getTer_TERNOM());

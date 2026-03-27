@@ -15,57 +15,96 @@ public class FacturaSearch {
     @Autowired
     private FacRepository facRepository;
 
-    public List<FacWithTerProjection> searchFactura(
-        Integer ent, 
-        String eje, 
-        String cgecod,
-        String main_filter,
-        Integer ej_factura,
-        String estado,
-        String fecha,
-        LocalDate fromDate,
-        LocalDate toDate
-    ) {
-        LocalDateTime fromDateTime = fromDate != null ? fromDate.atStartOfDay() : null;
-        LocalDateTime toDateTime = toDate != null ? toDate.atTime(23, 59, 59) : null;
+    public static class FacturaSearchCriteria {
+        public final Integer ent;
+        public final String eje;
+        public final String cgecod;
+        public final String mainFilter;
+        public final Integer ejFactura;
+        public final String estado;
+        public final String fecha;
+        public final LocalDate fromDate;
+        public final LocalDate toDate;
 
+        private FacturaSearchCriteria(Builder builder) {
+            this.ent = builder.ent;
+            this.eje = builder.eje;
+            this.cgecod = builder.cgecod;
+            this.mainFilter = builder.mainFilter;
+            this.ejFactura = builder.ejFactura;
+            this.estado = builder.estado;
+            this.fecha = builder.fecha;
+            this.fromDate = builder.fromDate;
+            this.toDate = builder.toDate;
+        }
 
-        List<FacWithTerProjection> facturas = facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(ent, eje, cgecod);
+        public static class Builder {
+            private Integer ent;
+            private String eje;
+            private String cgecod;
+            private String mainFilter;
+            private Integer ejFactura;
+            private String estado;
+            private String fecha;
+            private LocalDate fromDate;
+            private LocalDate toDate;
+
+            public Builder ent(Integer ent) { this.ent = ent; return this; }
+            public Builder eje(String eje) { this.eje = eje; return this; }
+            public Builder cgecod(String cgecod) { this.cgecod = cgecod; return this; }
+            public Builder mainFilter(String mainFilter) { this.mainFilter = mainFilter; return this; }
+            public Builder ejFactura(Integer ejFactura) { this.ejFactura = ejFactura; return this; }
+            public Builder estado(String estado) { this.estado = estado; return this; }
+            public Builder fecha(String fecha) { this.fecha = fecha; return this; }
+            public Builder fromDate(LocalDate fromDate) { this.fromDate = fromDate; return this; }
+            public Builder toDate(LocalDate toDate) { this.toDate = toDate; return this; }
+
+            public FacturaSearchCriteria build() {
+                return new FacturaSearchCriteria(this);
+            }
+        }
+    }
+
+    public List<FacWithTerProjection> searchFactura(FacturaSearchCriteria criteria) {
+        LocalDateTime fromDateTime = criteria.fromDate != null ? criteria.fromDate.atStartOfDay() : null;
+        LocalDateTime toDateTime = criteria.toDate != null ? criteria.toDate.atTime(23, 59, 59) : null;
+
+        List<FacWithTerProjection> facturas = facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(criteria.ent, criteria.eje, criteria.cgecod);
         
         if (facturas != null && !facturas.isEmpty()) {
-            if (main_filter != null && !main_filter.isEmpty()) {
-                if (isNumbersOnly(main_filter)) {
-                    if (main_filter.length() <= 5) {
-                        facturas = filterByTercodOrFacado(facturas, main_filter);
+            if (criteria.mainFilter != null && !criteria.mainFilter.isEmpty()) {
+                if (isNumbersOnly(criteria.mainFilter)) {
+                    if (criteria.mainFilter.length() <= 5) {
+                        facturas = filterByTercodOrFacado(facturas, criteria.mainFilter);
                     } else {
-                        facturas = filterByTernif(facturas, main_filter);
+                        facturas = filterByTernif(facturas, criteria.mainFilter);
                     }
                 }
-                else if (isMixed(main_filter)) {
-                    facturas = filterByTernifOrTernomOrFacdoc(facturas, main_filter);
+                else if (isMixed(criteria.mainFilter)) {
+                    facturas = filterByTernifOrTernomOrFacdoc(facturas, criteria.mainFilter);
                 } else {
-                    facturas = filterByTernomOrFacdoc(facturas, main_filter);
+                    facturas = filterByTernomOrFacdoc(facturas, criteria.mainFilter);
                 }
             }
 
-            if (ej_factura != null) {
-                facturas = filterByFacann(facturas, ej_factura);
+            if (criteria.ejFactura != null) {
+                facturas = filterByFacann(facturas, criteria.ejFactura);
             }
 
-            if (estado != null && !estado.isEmpty()) {
-                if (estado.equals("contabilizadas")) {
+            if (criteria.estado != null && !criteria.estado.isEmpty()) {
+                if (criteria.estado.equals("contabilizadas")) {
                     facturas = filterByFacadoNNull(facturas);
-                } else if (estado.equals("noContabilizadas")) {
+                } else if (criteria.estado.equals("noContabilizadas")) {
                     facturas = filterByFacadoNull(facturas);
-                } else if (estado.equals("ptApplidas")) {
+                } else if (criteria.estado.equals("ptApplidas")) {
                     facturas = filterByFacadoNullAndEMath(facturas);
-                } else if (estado.equals("sinPtApplicar")) {
+                } else if (criteria.estado.equals("sinPtApplicar")) {
                     facturas = filterByFacadoNullAndNotEMath(facturas);
                 }
             }
 
-            if (fecha != null && !fecha.isEmpty()) {
-                if (fecha.equals("registro")) {
+            if (criteria.fecha != null && !criteria.fecha.isEmpty()) {
+                if (criteria.fecha.equals("registro")) {
                     if (fromDateTime != null && toDateTime != null) {
                         facturas = filterByFacfreBetween(facturas, fromDateTime, toDateTime);
                     } else if (fromDateTime != null && toDateTime == null) {
@@ -73,7 +112,7 @@ public class FacturaSearch {
                     } else if (toDateTime != null && fromDateTime == null) {
                         facturas = filterByFacfreTo(facturas, toDateTime);
                     }
-                } else if (fecha.equals("factura")) {
+                } else if (criteria.fecha.equals("factura")) {
                     if (fromDateTime != null && toDateTime != null) {
                         facturas = filterByFacdatBetween(facturas, fromDateTime, toDateTime);
                     } else if (fromDateTime != null && toDateTime == null) {
@@ -81,7 +120,7 @@ public class FacturaSearch {
                     } else if (toDateTime != null && fromDateTime == null) {
                         facturas = filterByFacdatTo(facturas, toDateTime);
                     }
-                } else if (fecha.equals("contable")) {
+                } else if (criteria.fecha.equals("contable")) {
                     if (fromDateTime != null && toDateTime != null) {
                         facturas = filterByFacfcoBetween(facturas, fromDateTime, toDateTime);
                     } else if (fromDateTime != null && toDateTime == null) {

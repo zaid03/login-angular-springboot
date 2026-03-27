@@ -77,17 +77,19 @@ public class FacController {
         @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate
     ) {
         try {
-            List<FacWithTerProjection> facturas = facturaSearch.searchFactura(
-                ent,
-                eje,
-                cgecod,
-                main_filter,
-                ej_factura,
-                estado,
-                fecha,
-                fromDate,
-                toDate
-            );
+            FacturaSearch.FacturaSearchCriteria criteria = new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(ent)
+                .eje(eje)
+                .cgecod(cgecod)
+                .mainFilter(main_filter)
+                .ejFactura(ej_factura)
+                .estado(estado)
+                .fecha(fecha)
+                .fromDate(fromDate)
+                .toDate(toDate)
+                .build();
+            
+            List<FacWithTerProjection> facturas = facturaSearch.searchFactura(criteria);
 
             if (facturas.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);

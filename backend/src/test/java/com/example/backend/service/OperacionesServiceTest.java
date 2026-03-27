@@ -10,8 +10,10 @@ import org.w3c.dom.Element;
 
 import com.example.backend.exception.XmlParsingException;
 import com.example.backend.exception.SmlProcessingException;
+import com.example.backend.dto.Operaciones;
 
 import java.lang.reflect.Method;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -608,5 +610,305 @@ public class OperacionesServiceTest {
         Method method = OperacionesService.class.getDeclaredMethod("decodeOrNull", String.class);
         method.setAccessible(true);
         return (String) method.invoke(service, value);
+    }
+
+    @Test
+    void parseOperaciones_withEmptyXml_returnsEmptyList() throws Exception {
+        String xml = "";
+        List<Operaciones> result = invokeParseOperaciones(xml);
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void parseOperaciones_withNullXml_returnsEmptyList() throws Exception {
+        String xml = null;
+        List<Operaciones> result = invokeParseOperaciones(xml);
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void parseOperaciones_withMultipleOperaciones_returnsAllElements() throws Exception {
+        String xml = "<root>" +
+            "<operacion><numope>111</numope></operacion>" +
+            "<operacion><numope>222</numope></operacion>" +
+            "<operacion><numope>333</numope></operacion>" +
+            "</root>";
+        List<Operaciones> result = invokeParseOperaciones(xml);
+        assertEquals(3, result.size());
+    }
+
+    @Test
+    void parseOperaciones_withXmlError_throwsSmlProcessingException() throws Exception {
+        String xml = "<root><exito>0</exito><desc>Test error</desc></root>";
+        try {
+            invokeParseOperaciones(xml);
+            fail("Expected SmlProcessingException");
+        } catch (Exception ex) {
+            Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
+            assertTrue(cause instanceof SmlProcessingException);
+        }
+    }
+
+    @Test
+    void parseOperaciones_withInvalidXml_throwsSmlProcessingException() throws Exception {
+        String xml = "<unclosed>";
+        try {
+            invokeParseOperaciones(xml);
+            fail("Expected SmlProcessingException");
+        } catch (Exception ex) {
+            Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
+            assertTrue(cause instanceof SmlProcessingException);
+        }
+    }
+
+    @Test
+    void parseDtoList_withSingleDto_populatesAllFields() throws Exception {
+        String xml = "<parent>" +
+            "<dto>" +
+            "<numdto>12345</numdto>" +
+            "<dtoeje>5</dtoeje>" +
+            "<dtoimp>1000.50</dtoimp>" +
+            "<dtosaldo>500.25</dtosaldo>" +
+            "<dtobase>100.00</dtobase>" +
+            "<dtosaldobase>50.00</dtosaldobase>" +
+            "<dtopretencion>10.00</dtopretencion>" +
+            "<dtonumopecan>1</dtonumopecan>" +
+            "<dtolinopecan>101</dtolinopecan>" +
+            "<dtoanodevengo>2023</dtoanodevengo>" +
+            "<dtobase1>100.00</dtobase1>" +
+            "<dtobase2>200.00</dtobase2>" +
+            "<dtobase3>300.00</dtobase3>" +
+            "<dtoiva1>10.00</dtoiva1>" +
+            "<dtoiva2>20.00</dtoiva2>" +
+            "<dtoiva3>30.00</dtoiva3>" +
+            "<dtotiva1>100.00</dtotiva1>" +
+            "<dtotiva2>200.00</dtotiva2>" +
+            "<dtotiva3>300.00</dtotiva3>" +
+            "<dtoporcent1>5.0</dtoporcent1>" +
+            "<dtoporcent2>10.0</dtoporcent2>" +
+            "<dtoporcent3>15.0</dtoporcent3>" +
+            "</dto>" +
+            "</parent>";
+        Document doc = parseXmlDom(xml);
+        Element parent = doc.getDocumentElement();
+        List<Operaciones.Dto> result = invokeParseDtoList(parent);
+        
+        assertEquals(1, result.size());
+        Operaciones.Dto dto = result.get(0);
+        assertEquals(12345L, dto.getNumdto());
+        assertEquals(5, dto.getDtoeje());
+        assertEquals(1000.50, dto.getDtoimp());
+        assertEquals(500.25, dto.getDtosaldo());
+        assertEquals(100.00, dto.getDtobase());
+        assertEquals(5.0, dto.getDtoporcent1());
+    }
+
+    @Test
+    void parseDtoList_withMultipleDtos_returnsAllElements() throws Exception {
+        String xml = "<parent>" +
+            "<dto><numdto>111</numdto></dto>" +
+            "<dto><numdto>222</numdto></dto>" +
+            "<dto><numdto>333</numdto></dto>" +
+            "</parent>";
+        Document doc = parseXmlDom(xml);
+        Element parent = doc.getDocumentElement();
+        List<Operaciones.Dto> result = invokeParseDtoList(parent);
+        
+        assertEquals(3, result.size());
+    }
+
+    @Test
+    void parseDtoList_withEmptyDtos_returnsEmptyList() throws Exception {
+        String xml = "<parent></parent>";
+        Document doc = parseXmlDom(xml);
+        Element parent = doc.getDocumentElement();
+        List<Operaciones.Dto> result = invokeParseDtoList(parent);
+        
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void parseIvaList_withSingleIva_populatesAllFields() throws Exception {
+        String xml = "<parent>" +
+            "<iva>" +
+            "<ivabase1>100.00</ivabase1>" +
+            "<ivabase2>200.00</ivabase2>" +
+            "<ivabase3>300.00</ivabase3>" +
+            "<ivasbase1>50.00</ivasbase1>" +
+            "<ivasbase2>100.00</ivasbase2>" +
+            "<ivasbase3>150.00</ivasbase3>" +
+            "<ivativa1>10.00</ivativa1>" +
+            "<ivativa2>20.00</ivativa2>" +
+            "<ivativa3>30.00</ivativa3>" +
+            "<ivaporcent1>5.0</ivaporcent1>" +
+            "<ivaporcent2>10.0</ivaporcent2>" +
+            "<ivaporcent3>15.0</ivaporcent3>" +
+            "<ivaimp1>5.00</ivaimp1>" +
+            "<ivaimp2>10.00</ivaimp2>" +
+            "<ivaimp3>15.00</ivaimp3>" +
+            "<ivabexenta>50.00</ivabexenta>" +
+            "</iva>" +
+            "</parent>";
+        Document doc = parseXmlDom(xml);
+        Element parent = doc.getDocumentElement();
+        List<Operaciones.Iva> result = invokeParseIvaList(parent);
+        
+        assertEquals(1, result.size());
+        Operaciones.Iva iva = result.get(0);
+        assertEquals(100.00, iva.getIvabase1());
+        assertEquals(200.00, iva.getIvabase2());
+        assertEquals(5.0, iva.getIvaporcent1());
+        assertEquals(50.00, iva.getIvabexenta());
+    }
+
+    @Test
+    void parseIvaList_withMultipleIvas_returnsAllElements() throws Exception {
+        String xml = "<parent>" +
+            "<iva><ivaporcent1>5.0</ivaporcent1></iva>" +
+            "<iva><ivaporcent1>10.0</ivaporcent1></iva>" +
+            "<iva><ivaporcent1>15.0</ivaporcent1></iva>" +
+            "</parent>";
+        Document doc = parseXmlDom(xml);
+        Element parent = doc.getDocumentElement();
+        List<Operaciones.Iva> result = invokeParseIvaList(parent);
+        
+        assertEquals(3, result.size());
+    }
+
+    @Test
+    void parseIvaList_withEmptyIvas_returnsEmptyList() throws Exception {
+        String xml = "<parent></parent>";
+        Document doc = parseXmlDom(xml);
+        Element parent = doc.getDocumentElement();
+        List<Operaciones.Iva> result = invokeParseIvaList(parent);
+        
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void parseRelacionList_withSingleRelacion_populatesAllFields() throws Exception {
+        String xml = "<parent>" +
+            "<Relacion>" +
+            "<AnnoRelacion>2023</AnnoRelacion>" +
+            "<OrdenRelacion>1</OrdenRelacion>" +
+            "</Relacion>" +
+            "</parent>";
+        Document doc = parseXmlDom(xml);
+        Element parent = doc.getDocumentElement();
+        List<Operaciones.Relacion> result = invokeParseRelacionList(parent);
+        
+        assertEquals(1, result.size());
+        Operaciones.Relacion rel = result.get(0);
+        assertEquals(2023, rel.getAnnoRelacion());
+        assertEquals(1, rel.getOrdenRelacion());
+    }
+
+    @Test
+    void parseRelacionList_withMultipleRelaciones_returnsAllElements() throws Exception {
+        String xml = "<parent>" +
+            "<Relacion><AnnoRelacion>2021</AnnoRelacion></Relacion>" +
+            "<Relacion><AnnoRelacion>2022</AnnoRelacion></Relacion>" +
+            "<Relacion><AnnoRelacion>2023</AnnoRelacion></Relacion>" +
+            "</parent>";
+        Document doc = parseXmlDom(xml);
+        Element parent = doc.getDocumentElement();
+        List<Operaciones.Relacion> result = invokeParseRelacionList(parent);
+        
+        assertEquals(3, result.size());
+    }
+
+    @Test
+    void parseRelacionList_withEmptyRelaciones_returnsEmptyList() throws Exception {
+        String xml = "<parent></parent>";
+        Document doc = parseXmlDom(xml);
+        Element parent = doc.getDocumentElement();
+        List<Operaciones.Relacion> result = invokeParseRelacionList(parent);
+        
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void parseLineaList_withSingleLinea_populatesAllFields() throws Exception {
+        String xml = "<parent>" +
+            "<linea>" +
+            "<nlinea>1</nlinea>" +
+            "<opeasc>12345</opeasc>" +
+            "<lineasc>101</lineasc>" +
+            "<prya>1</prya>" +
+            "<pryo>2</pryo>" +
+            "<pryx>3</pryx>" +
+            "<lineje>5</lineje>" +
+            "<referencia>123</referencia>" +
+            "<limporte>1000.50</limporte>" +
+            "<saldo>500.25</saldo>" +
+            "<saldop>250.00</saldop>" +
+            "</linea>" +
+            "</parent>";
+        Document doc = parseXmlDom(xml);
+        Element parent = doc.getDocumentElement();
+        List<Operaciones.Linea> result = invokeParseLineaList(parent);
+        
+        assertEquals(1, result.size());
+        Operaciones.Linea linea = result.get(0);
+        assertEquals(1, linea.getNlinea());
+        assertEquals(12345L, linea.getOpeasc());
+        assertEquals(1000.50, linea.getLimporte());
+        assertEquals(500.25, linea.getSaldo());
+    }
+
+    @Test
+    void parseLineaList_withMultipleLineas_returnsAllElements() throws Exception {
+        String xml = "<parent>" +
+            "<linea><nlinea>1</nlinea></linea>" +
+            "<linea><nlinea>2</nlinea></linea>" +
+            "<linea><nlinea>3</nlinea></linea>" +
+            "</parent>";
+        Document doc = parseXmlDom(xml);
+        Element parent = doc.getDocumentElement();
+        List<Operaciones.Linea> result = invokeParseLineaList(parent);
+        
+        assertEquals(3, result.size());
+    }
+
+    @Test
+    void parseLineaList_withEmptyLineas_returnsEmptyList() throws Exception {
+        String xml = "<parent></parent>";
+        Document doc = parseXmlDom(xml);
+        Element parent = doc.getDocumentElement();
+        List<Operaciones.Linea> result = invokeParseLineaList(parent);
+        
+        assertTrue(result.isEmpty());
+    }
+
+    private List<Operaciones> invokeParseOperaciones(String xml) throws Exception {
+        Method method = OperacionesService.class.getDeclaredMethod("parseOperaciones", String.class);
+        method.setAccessible(true);
+        return (List<Operaciones>) method.invoke(service, xml);
+    }
+
+    private List<Operaciones.Dto> invokeParseDtoList(Element opEl) throws Exception {
+        Method method = OperacionesService.class.getDeclaredMethod("parseDtoList", Element.class);
+        method.setAccessible(true);
+        return (List<Operaciones.Dto>) method.invoke(service, opEl);
+    }
+
+    private List<Operaciones.Iva> invokeParseIvaList(Element opEl) throws Exception {
+        Method method = OperacionesService.class.getDeclaredMethod("parseIvaList", Element.class);
+        method.setAccessible(true);
+        return (List<Operaciones.Iva>) method.invoke(service, opEl);
+    }
+
+    private List<Operaciones.Relacion> invokeParseRelacionList(Element opEl) throws Exception {
+        Method method = OperacionesService.class.getDeclaredMethod("parseRelacionList", Element.class);
+        method.setAccessible(true);
+        return (List<Operaciones.Relacion>) method.invoke(service, opEl);
+    }
+
+    private List<Operaciones.Linea> invokeParseLineaList(Element opEl) throws Exception {
+        Method method = OperacionesService.class.getDeclaredMethod("parseLineaList", Element.class);
+        method.setAccessible(true);
+        return (List<Operaciones.Linea>) method.invoke(service, opEl);
     }
 }
