@@ -7,6 +7,7 @@ import com.example.backend.sqlserver2.model.Ter;
 import com.example.backend.sqlserver2.repository.TerRepository;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ProveedoresSearch {
@@ -90,7 +91,9 @@ public class ProveedoresSearch {
     ) {
         return proveedores.stream().filter(p -> 
             (p.getTERCOD() != null && p.getTERCOD().toString().equals(term)) 
-            && p.getTERBLO() == terblo).toList();
+            && Objects.equals(p.getTERBLO(), terblo)).toList();
+
+            
     }
     private List<Ter> filterNoBloqueadoByTercodAndTernifAndTerblo (
         List<Ter> proveedores,
@@ -100,7 +103,7 @@ public class ProveedoresSearch {
         return proveedores.stream().filter(p -> 
             ((p.getTERCOD() != null && p.getTERCOD().toString().equals(term)) 
             || (p.getTERNIF() != null && p.getTERNIF().contains(term))) 
-            && p.getTERBLO() == terblo).toList();
+            && Objects.equals(p.getTERBLO(), terblo)).toList(); 
     }
     private List<Ter> filterNoBloqueadoByTercodAndTernomAndTeraliAndTerblo (
         List<Ter> proveedores,
@@ -111,6 +114,6 @@ public class ProveedoresSearch {
             ((p.getTERNIF() != null && p.getTERNIF().contains(term)) 
             || (p.getTERNOM() != null && p.getTERNOM().contains(term)) 
             || (p.getTERALI() != null && p.getTERALI().contains(term)))
-            && p.getTERBLO() == terblo).toList();
+            && Objects.equals(p.getTERBLO(), terblo)).toList();
     }
 }
