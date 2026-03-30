@@ -659,4 +659,521 @@ public class FacturaSearchTest {
         assertEquals(1, result.size());
         assertEquals("ACME CORP", result.get(0).getTer_TERNOM());
     }
+
+    @Test
+    void filterByTernif_exactMatch_returnsSingleResult() {
+        FacProjectionMock proj1 = new FacProjectionMock(100, "123456", 100.0, 50.0, 50.0, null,
+            LocalDateTime.now(), null, null, 2024, "Supplier A");
+        FacProjectionMock proj2 = new FacProjectionMock(200, "789012", 200.0, 100.0, 100.0, null,
+            LocalDateTime.now(), null, null, 2024, "Supplier B");
+
+        List<FacWithTerProjection> list = List.of(proj1, proj2);
+        
+        when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
+            .thenReturn(list);
+
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").mainFilter("123456").build());
+
+        assertEquals(1, result.size());
+        assertEquals("123456", result.get(0).getTer_TERNIF());
+    }
+
+    @Test
+    void filterByTernif_noMatch_returnsEmptyList() {
+        FacProjectionMock proj1 = new FacProjectionMock(100, "123456", 100.0, 50.0, 50.0, null,
+            LocalDateTime.now(), null, null, 2024, "Supplier A");
+
+        when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
+            .thenReturn(List.of(proj1));
+
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").mainFilter("999999").build());
+
+        assertEquals(0, result.size());
+    }
+
+    @Test
+    void filterByTernif_multipleMatches_returnsAllMatches() {
+        FacProjectionMock proj1 = new FacProjectionMock(100, "123456", 100.0, 50.0, 50.0, null,
+            LocalDateTime.now(), null, null, 2024, "Supplier A");
+        FacProjectionMock proj2 = new FacProjectionMock(200, "123456", 200.0, 100.0, 100.0, null,
+            LocalDateTime.now(), null, null, 2024, "Supplier B");
+
+        when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
+            .thenReturn(List.of(proj1, proj2));
+
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").mainFilter("123456").build());
+
+        assertEquals(2, result.size());
+    }
+
+    @Test
+    void filterByTernifOrTernomOrFacdoc_filterByTernif_returnsMatch() {
+        FacProjectionMock proj1 = new FacProjectionMock(100, "ABC123", 100.0, 50.0, 50.0, null,
+            LocalDateTime.now(), null, null, 2024, "Acme Corp");
+        FacProjectionMock proj2 = new FacProjectionMock(200, "XYZ789", 200.0, 100.0, 100.0, null,
+            LocalDateTime.now(), null, null, 2024, "Other Corp");
+
+        when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
+            .thenReturn(List.of(proj1, proj2));
+
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").mainFilter("ABC").build());
+
+        assertEquals(1, result.size());
+        assertEquals("ABC123", result.get(0).getTer_TERNIF());
+    }
+
+    @Test
+    void filterByTernifOrTernomOrFacdoc_filterByTernom_returnsMatch() {
+        FacProjectionMock proj1 = new FacProjectionMock(100, "NIF001", 100.0, 50.0, 50.0, null,
+            LocalDateTime.now(), null, null, 2024, "Acme Corporation");
+        FacProjectionMock proj2 = new FacProjectionMock(200, "NIF002", 200.0, 100.0, 100.0, null,
+            LocalDateTime.now(), null, null, 2024, "Other Corp");
+
+        when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
+            .thenReturn(List.of(proj1, proj2));
+
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").mainFilter("Acme").build());
+
+        assertEquals(1, result.size());
+        assertEquals("Acme Corporation", result.get(0).getTer_TERNOM());
+    }
+
+    @Test
+    void filterByTernifOrTernomOrFacdoc_caseInsensitive() {
+        FacProjectionMock proj1 = new FacProjectionMock(100, "NIF001", 100.0, 50.0, 50.0, null,
+            LocalDateTime.now(), null, null, 2024, "SUPPLIER COMPANY");
+
+        when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
+            .thenReturn(List.of(proj1));
+
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").mainFilter("supplier").build());
+
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    void filterByTernomOrFacdoc_filterByTernom_returnsMatch() {
+        FacProjectionMock proj1 = new FacProjectionMock(100, "NIF001", 100.0, 50.0, 50.0, null,
+            LocalDateTime.now(), null, null, 2024, "Acme Corporation");
+        FacProjectionMock proj2 = new FacProjectionMock(200, "NIF002", 200.0, 100.0, 100.0, null,
+            LocalDateTime.now(), null, null, 2024, "Other Corp");
+
+        when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
+            .thenReturn(List.of(proj1, proj2));
+
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").mainFilter("Acme").build());
+
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    void filterByFacann_exactMatch_returnsSingleResult() {
+        FacProjectionMock proj1 = new FacProjectionMock(100, "NIF001", 100.0, 50.0, 50.0, null,
+            LocalDateTime.now(), null, null, 2024, "Supplier A");
+        FacProjectionMock proj2 = new FacProjectionMock(200, "NIF002", 200.0, 100.0, 100.0, null,
+            LocalDateTime.now(), null, null, 2025, "Supplier B");
+
+        when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
+            .thenReturn(List.of(proj1, proj2));
+
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").ejFactura(2024).build());
+
+        assertEquals(1, result.size());
+        assertEquals(2024, result.get(0).getFACANN());
+    }
+
+    @Test
+    void filterByFacann_noMatch_returnsEmptyList() {
+        FacProjectionMock proj1 = new FacProjectionMock(100, "NIF001", 100.0, 50.0, 50.0, null,
+            LocalDateTime.now(), null, null, 2024, "Supplier A");
+
+        when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
+            .thenReturn(List.of(proj1));
+
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").ejFactura(2025).build());
+
+        assertEquals(0, result.size());
+    }
+
+    @Test
+    void filterByFacadoNNull_filtersNotNull() {
+        FacProjectionMock proj1 = new FacProjectionMock(100, "NIF001", 100.0, 50.0, 50.0, "2024-01-15",
+            LocalDateTime.now(), null, null, 2024, "Supplier A");
+        FacProjectionMock proj2 = new FacProjectionMock(200, "NIF002", 200.0, 100.0, 100.0, null,
+            LocalDateTime.now(), null, null, 2024, "Supplier B");
+
+        when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
+            .thenReturn(List.of(proj1, proj2));
+
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").estado("contabilizadas").build());
+
+        assertEquals(1, result.size());
+        assertNotNull(result.get(0).getFACADO());
+    }
+
+    @Test
+    void filterByFacadoNull_filtersNull() {
+        FacProjectionMock proj1 = new FacProjectionMock(100, "NIF001", 100.0, 50.0, 50.0, "2024-01-15",
+            LocalDateTime.now(), null, null, 2024, "Supplier A");
+        FacProjectionMock proj2 = new FacProjectionMock(200, "NIF002", 200.0, 100.0, 100.0, null,
+            LocalDateTime.now(), null, null, 2024, "Supplier B");
+
+        when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
+            .thenReturn(List.of(proj1, proj2));
+
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").estado("noContabilizadas").build());
+
+        assertEquals(1, result.size());
+        assertNull(result.get(0).getFACADO());
+    }
+
+    @Test
+    void filterByFacadoNullAndEMath_exactMatch_returnsMatch() {
+        FacProjectionMock proj1 = new FacProjectionMock(100, "NIF001", 100.0, 50.0, 50.0, null,
+            LocalDateTime.now(), null, null, 2024, "Supplier A");
+        FacProjectionMock proj2 = new FacProjectionMock(200, "NIF002", 200.0, 100.0, 50.0, null,
+            LocalDateTime.now(), null, null, 2024, "Supplier B");
+
+        when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
+            .thenReturn(List.of(proj1, proj2));
+
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").estado("ptApplidas").build());
+
+        assertEquals(1, result.size());
+        assertEquals(100.0, result.get(0).getFACIMP());
+    }
+
+    @Test
+    void filterByFacadoNullAndNotEMath_noMatch_returnsExclude() {
+        FacProjectionMock proj1 = new FacProjectionMock(100, "NIF001", 100.0, 50.0, 50.0, null,
+            LocalDateTime.now(), null, null, 2024, "Supplier A");
+        FacProjectionMock proj2 = new FacProjectionMock(200, "NIF002", 200.0, 150.0, 100.0, null,
+            LocalDateTime.now(), null, null, 2024, "Supplier B");
+
+        when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
+            .thenReturn(List.of(proj1, proj2));
+
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").estado("sinPtApplicar").build());
+
+        assertEquals(1, result.size());
+        assertEquals(200.0, result.get(0).getFACIMP());
+    }
+
+    @Test
+    void filterByFacfreFrom_filtersAfterDate() {
+        LocalDateTime date1 = LocalDateTime.of(2026, 1, 15, 10, 0);
+        LocalDateTime date2 = LocalDateTime.of(2026, 3, 15, 10, 0);
+
+        FacProjectionMock proj1 = new FacProjectionMock(100, "NIF001", 100.0, 50.0, 50.0, null,
+            date1, null, null, 2024, "Supplier A");
+        FacProjectionMock proj2 = new FacProjectionMock(200, "NIF002", 200.0, 100.0, 100.0, null,
+            date2, null, null, 2024, "Supplier B");
+
+        when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
+            .thenReturn(List.of(proj1, proj2));
+
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").fecha("registro")
+                .fromDate(LocalDate.of(2026, 2, 1)).build());
+
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    void filterByFacfreTo_filtersBeforeDate() {
+        LocalDateTime date1 = LocalDateTime.of(2026, 1, 15, 10, 0);
+        LocalDateTime date2 = LocalDateTime.of(2026, 3, 15, 10, 0);
+
+        FacProjectionMock proj1 = new FacProjectionMock(100, "NIF001", 100.0, 50.0, 50.0, null,
+            date1, null, null, 2024, "Supplier A");
+        FacProjectionMock proj2 = new FacProjectionMock(200, "NIF002", 200.0, 100.0, 100.0, null,
+            date2, null, null, 2024, "Supplier B");
+
+        when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
+            .thenReturn(List.of(proj1, proj2));
+
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").fecha("registro")
+                .toDate(LocalDate.of(2026, 2, 1)).build());
+
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    void filterByFacfreBetween_filtersBothBoundaries() {
+        LocalDateTime date1 = LocalDateTime.of(2026, 1, 15, 10, 0);
+        LocalDateTime date2 = LocalDateTime.of(2026, 2, 15, 10, 0);
+        LocalDateTime date3 = LocalDateTime.of(2026, 3, 15, 10, 0);
+
+        FacProjectionMock proj1 = new FacProjectionMock(100, "NIF001", 100.0, 50.0, 50.0, null,
+            date1, null, null, 2024, "Supplier A");
+        FacProjectionMock proj2 = new FacProjectionMock(200, "NIF002", 200.0, 100.0, 100.0, null,
+            date2, null, null, 2024, "Supplier B");
+        FacProjectionMock proj3 = new FacProjectionMock(300, "NIF003", 300.0, 150.0, 150.0, null,
+            date3, null, null, 2024, "Supplier C");
+
+        when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
+            .thenReturn(List.of(proj1, proj2, proj3));
+
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").fecha("registro")
+                .fromDate(LocalDate.of(2026, 1, 1)).toDate(LocalDate.of(2026, 3, 1)).build());
+
+        assertEquals(2, result.size());
+    }
+
+    @Test
+    void filterByFacdatFrom_filtersAfterDate() {
+        LocalDateTime date1 = LocalDateTime.of(2026, 1, 15, 10, 0);
+        LocalDateTime date2 = LocalDateTime.of(2026, 3, 15, 10, 0);
+
+        FacProjectionMock proj1 = new FacProjectionMock(100, "NIF001", 100.0, 50.0, 50.0, null,
+            null, date1, null, 2024, "Supplier A");
+        FacProjectionMock proj2 = new FacProjectionMock(200, "NIF002", 200.0, 100.0, 100.0, null,
+            null, date2, null, 2024, "Supplier B");
+
+        when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
+            .thenReturn(List.of(proj1, proj2));
+
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").fecha("factura")
+                .fromDate(LocalDate.of(2026, 2, 1)).build());
+
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    void filterByFacdatTo_filtersBeforeDate() {
+        LocalDateTime date1 = LocalDateTime.of(2026, 1, 15, 10, 0);
+        LocalDateTime date2 = LocalDateTime.of(2026, 3, 15, 10, 0);
+
+        FacProjectionMock proj1 = new FacProjectionMock(100, "NIF001", 100.0, 50.0, 50.0, null,
+            null, date1, null, 2024, "Supplier A");
+        FacProjectionMock proj2 = new FacProjectionMock(200, "NIF002", 200.0, 100.0, 100.0, null,
+            null, date2, null, 2024, "Supplier B");
+
+        when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
+            .thenReturn(List.of(proj1, proj2));
+
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").fecha("factura")
+                .toDate(LocalDate.of(2026, 2, 1)).build());
+
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    void filterByFacdatBetween_filtersBothBoundaries() {
+        LocalDateTime date1 = LocalDateTime.of(2026, 1, 15, 10, 0);
+        LocalDateTime date2 = LocalDateTime.of(2026, 2, 15, 10, 0);
+        LocalDateTime date3 = LocalDateTime.of(2026, 3, 15, 10, 0);
+
+        FacProjectionMock proj1 = new FacProjectionMock(100, "NIF001", 100.0, 50.0, 50.0, null,
+            null, date1, null, 2024, "Supplier A");
+        FacProjectionMock proj2 = new FacProjectionMock(200, "NIF002", 200.0, 100.0, 100.0, null,
+            null, date2, null, 2024, "Supplier B");
+        FacProjectionMock proj3 = new FacProjectionMock(300, "NIF003", 300.0, 150.0, 150.0, null,
+            null, date3, null, 2024, "Supplier C");
+
+        when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
+            .thenReturn(List.of(proj1, proj2, proj3));
+
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").fecha("factura")
+                .fromDate(LocalDate.of(2026, 1, 1)).toDate(LocalDate.of(2026, 3, 1)).build());
+
+        assertEquals(2, result.size());
+    }
+
+    @Test
+    void filterByFacfcoFrom_filtersAfterDate() {
+        LocalDateTime date1 = LocalDateTime.of(2026, 1, 15, 10, 0);
+        LocalDateTime date2 = LocalDateTime.of(2026, 3, 15, 10, 0);
+
+        FacProjectionMock proj1 = new FacProjectionMock(100, "NIF001", 100.0, 50.0, 50.0, null,
+            null, null, date1, 2024, "Supplier A");
+        FacProjectionMock proj2 = new FacProjectionMock(200, "NIF002", 200.0, 100.0, 100.0, null,
+            null, null, date2, 2024, "Supplier B");
+
+        when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
+            .thenReturn(List.of(proj1, proj2));
+
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").fecha("contable")
+                .fromDate(LocalDate.of(2026, 2, 1)).build());
+
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    void filterByFacfcoTo_filtersBeforeDate() {
+        LocalDateTime date1 = LocalDateTime.of(2026, 1, 15, 10, 0);
+        LocalDateTime date2 = LocalDateTime.of(2026, 3, 15, 10, 0);
+
+        FacProjectionMock proj1 = new FacProjectionMock(100, "NIF001", 100.0, 50.0, 50.0, null,
+            null, null, date1, 2024, "Supplier A");
+        FacProjectionMock proj2 = new FacProjectionMock(200, "NIF002", 200.0, 100.0, 100.0, null,
+            null, null, date2, 2024, "Supplier B");
+
+        when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
+            .thenReturn(List.of(proj1, proj2));
+
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").fecha("contable")
+                .toDate(LocalDate.of(2026, 2, 1)).build());
+
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    void filterByFacfcoBetween_filtersBothBoundaries() {
+        LocalDateTime date1 = LocalDateTime.of(2026, 1, 15, 10, 0);
+        LocalDateTime date2 = LocalDateTime.of(2026, 2, 15, 10, 0);
+        LocalDateTime date3 = LocalDateTime.of(2026, 3, 15, 10, 0);
+
+        FacProjectionMock proj1 = new FacProjectionMock(100, "NIF001", 100.0, 50.0, 50.0, null,
+            null, null, date1, 2024, "Supplier A");
+        FacProjectionMock proj2 = new FacProjectionMock(200, "NIF002", 200.0, 100.0, 100.0, null,
+            null, null, date2, 2024, "Supplier B");
+        FacProjectionMock proj3 = new FacProjectionMock(300, "NIF003", 300.0, 150.0, 150.0, null,
+            null, null, date3, 2024, "Supplier C");
+
+        when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
+            .thenReturn(List.of(proj1, proj2, proj3));
+
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").fecha("contable")
+                .fromDate(LocalDate.of(2026, 1, 1)).toDate(LocalDate.of(2026, 3, 1)).build());
+
+        assertEquals(2, result.size());
+    }
+
+    @Test
+    void filterByTercodOrFacado_filterByTercod_returnsMatch() {
+        FacProjectionMock proj1 = new FacProjectionMock(100, "NIF001", 100.0, 50.0, 50.0, null,
+            LocalDateTime.now(), null, null, 2024, "Supplier A");
+        FacProjectionMock proj2 = new FacProjectionMock(200, "NIF002", 200.0, 100.0, 100.0, null,
+            LocalDateTime.now(), null, null, 2024, "Supplier B");
+
+        when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
+            .thenReturn(List.of(proj1, proj2));
+
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").mainFilter("100").build());
+
+        assertEquals(1, result.size());
+        assertEquals(100, result.get(0).getTERCOD());
+    }
+
+    @Test
+    void filterByTercodOrFacado_filterByFacado_returnsMatch() {
+        FacProjectionMock proj1 = new FacProjectionMock(100, "NIF001", 100.0, 50.0, 50.0, "2024-01-15",
+            LocalDateTime.now(), null, null, 2024, "Supplier A");
+        FacProjectionMock proj2 = new FacProjectionMock(200, "NIF002", 200.0, 100.0, 100.0, "2024-02-20",
+            LocalDateTime.now(), null, null, 2024, "Supplier B");
+
+        when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
+            .thenReturn(List.of(proj1, proj2));
+
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").mainFilter("1").build());
+
+        assertEquals(1, result.size());
+        assertEquals("2024-01-15", result.get(0).getFACADO());
+    }
+
+    @Test
+    void complexFilter_allFiltersApplied_inCorrectOrder() {
+        LocalDateTime regDate = LocalDateTime.of(2026, 1, 15, 10, 0);
+        LocalDateTime facDate = LocalDateTime.of(2026, 1, 20, 10, 0);
+        LocalDateTime contDate = LocalDateTime.of(2026, 1, 25, 10, 0);
+
+        FacProjectionMock proj1 = new FacProjectionMock(100, "ABC123", 100.0, 50.0, 50.0, "2024-01-15",
+            regDate, facDate, contDate, 2024, "Acme Corp");
+
+        when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
+            .thenReturn(List.of(proj1));
+
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1")
+                .mainFilter("ABC").ejFactura(2024).estado("contabilizadas")
+                .fecha("registro")
+                .fromDate(LocalDate.of(2026, 1, 1)).toDate(LocalDate.of(2026, 2, 1)).build());
+
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    void filterByTernif_withNullTernif_excludesNullValues() {
+        FacProjectionMock proj1 = new FacProjectionMock(100, null, 100.0, 50.0, 50.0, null,
+            LocalDateTime.now(), null, null, 2024, "Supplier A");
+        FacProjectionMock proj2 = new FacProjectionMock(200, "123456", 200.0, 100.0, 100.0, null,
+            LocalDateTime.now(), null, null, 2024, "Supplier B");
+
+        when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
+            .thenReturn(List.of(proj1, proj2));
+
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").mainFilter("123456").build());
+
+        assertEquals(1, result.size());
+        assertEquals("123456", result.get(0).getTer_TERNIF());
+    }
+
+    @Test
+    void filterByFacfreFrom_withNullFacfre_excludesNullValues() {
+        FacProjectionMock proj1 = new FacProjectionMock(100, "NIF001", 100.0, 50.0, 50.0, null,
+            null, null, null, 2024, "Supplier A");
+        FacProjectionMock proj2 = new FacProjectionMock(200, "NIF002", 200.0, 100.0, 100.0, null,
+            LocalDateTime.of(2026, 3, 15, 10, 0), null, null, 2024, "Supplier B");
+
+        when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
+            .thenReturn(List.of(proj1, proj2));
+
+        List<FacWithTerProjection> result = facturaSearch.searchFactura(
+            new FacturaSearch.FacturaSearchCriteria.Builder()
+                .ent(1).eje("E1").cgecod("C1").fecha("registro")
+                .fromDate(LocalDate.of(2026, 2, 1)).build());
+
+        assertEquals(1, result.size());
+    }
 }

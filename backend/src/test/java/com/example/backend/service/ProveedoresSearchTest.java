@@ -564,4 +564,394 @@ public class ProveedoresSearchTest {
         assertEquals(1, result.size());
         assertEquals(1, result.get(0).getTERBLO());
     }
+
+    @Test
+    @DisplayName("filterTodosByTercodAndTernif: matches by TERCOD exact")
+    void filterTodosByTercodAndTernif_matchesByTercod() {
+        Ter ter1 = createTer(12345, "Provider", "NIFXYZ", "Alias", 0);
+        Ter ter2 = createTer(99999, "Provider", "NIF123", "Alias", 0);
+        when(terRepository.findByENT(TEST_ENT)).thenReturn(List.of(ter1, ter2));
+
+        List<Ter> result = proveedoresSearch.searchProveedoers(TEST_ENT, "todos", "12345");
+
+        assertEquals(1, result.size());
+        assertEquals(12345, result.get(0).getTERCOD());
+    }
+
+    @Test
+    @DisplayName("filterTodosByTercodAndTernif: matches by TERNIF contains")
+    void filterTodosByTercodAndTernif_matchesByTernif() {
+        Ter ter1 = createTer(100, "Provider", "NIF12345ABC", "Alias", 0);
+        Ter ter2 = createTer(200, "Provider", "NIFXYZ", "Alias", 0);
+        when(terRepository.findByENT(TEST_ENT)).thenReturn(List.of(ter1, ter2));
+
+        List<Ter> result = proveedoresSearch.searchProveedoers(TEST_ENT, "todos", "12345");
+
+        assertEquals(1, result.size());
+        assertEquals("NIF12345ABC", result.get(0).getTERNIF());
+    }
+
+    @Test
+    @DisplayName("filterTodosByTercodAndTernif: matches both TERCOD and TERNIF")
+    void filterTodosByTercodAndTernif_matchesBoth() {
+        Ter ter1 = createTer(12345, "Provider", "NIF12345", "Alias", 0);
+        Ter ter2 = createTer(200, "Provider", "NIFXYZ", "Alias", 0);
+        when(terRepository.findByENT(TEST_ENT)).thenReturn(List.of(ter1, ter2));
+
+        List<Ter> result = proveedoresSearch.searchProveedoers(TEST_ENT, "todos", "12345");
+
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    @DisplayName("filterTodosByTercodAndTernif: no match returns empty")
+    void filterTodosByTercodAndTernif_noMatch() {
+        Ter ter1 = createTer(100, "Provider", "NIF111", "Alias", 0);
+        when(terRepository.findByENT(TEST_ENT)).thenReturn(List.of(ter1));
+
+        List<Ter> result = proveedoresSearch.searchProveedoers(TEST_ENT, "todos", "99999");
+
+        assertEquals(0, result.size());
+    }
+
+    @Test
+    @DisplayName("filterTodosByTercodAndTernif: null TERNIF doesn't cause exception")
+    void filterTodosByTercodAndTernif_nullTernif() {
+        Ter ter1 = createTer(100, "Provider", null, "Alias", 0);
+        Ter ter2 = createTer(12345, "Provider", "NIF", "Alias", 0);
+        when(terRepository.findByENT(TEST_ENT)).thenReturn(List.of(ter1, ter2));
+
+        List<Ter> result = proveedoresSearch.searchProveedoers(TEST_ENT, "todos", "12345");
+
+        assertEquals(1, result.size());
+        assertEquals(12345, result.get(0).getTERCOD());
+    }
+
+    @Test
+    @DisplayName("filterTodosByTercodAndTernif: null TERCOD doesn't cause exception")
+    void filterTodosByTercodAndTernif_nullTercod() {
+        Ter ter1 = createTer(null, "Provider", "NIF12345", "Alias", 0);
+        Ter ter2 = createTer(100, "Provider", "NIFXYZ", "Alias", 0);
+        when(terRepository.findByENT(TEST_ENT)).thenReturn(List.of(ter1, ter2));
+
+        List<Ter> result = proveedoresSearch.searchProveedoers(TEST_ENT, "todos", "12345");
+
+        assertEquals(1, result.size());
+        assertEquals("NIF12345", result.get(0).getTERNIF());
+    }
+
+    @Test
+    @DisplayName("filterTodosByTercodAndTernif: TERNIF partial match contains")
+    void filterTodosByTercodAndTernif_ternifPartialMatch() {
+        Ter ter1 = createTer(100, "Provider", "PREFIX12345SUFFIX", "Alias", 0);
+        when(terRepository.findByENT(TEST_ENT)).thenReturn(List.of(ter1));
+
+        List<Ter> result = proveedoresSearch.searchProveedoers(TEST_ENT, "todos", "12345");
+
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    @DisplayName("filterTodosByTercodAndTernomAndTerali: matches by TERNIF contains")
+    void filterTodosByTercodAndTernomAndTerali_matchesByTernif() {
+        Ter ter1 = createTer(100, "Provider", "NIFABC", "Alias", 0);
+        Ter ter2 = createTer(200, "Provider", "NIF", "Alias", 0);
+        when(terRepository.findByENT(TEST_ENT)).thenReturn(List.of(ter1, ter2));
+
+        List<Ter> result = proveedoresSearch.searchProveedoers(TEST_ENT, "todos", "ABC");
+
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    @DisplayName("filterTodosByTercodAndTernomAndTerali: matches by TERNOM contains")
+    void filterTodosByTercodAndTernomAndTerali_matchesByTermom() {
+        Ter ter1 = createTer(100, "ABC Company", "NIF1", "Alias", 0);
+        Ter ter2 = createTer(200, "XYZ Corp", "NIF2", "Alias", 0);
+        when(terRepository.findByENT(TEST_ENT)).thenReturn(List.of(ter1, ter2));
+
+        List<Ter> result = proveedoresSearch.searchProveedoers(TEST_ENT, "todos", "ABC");
+
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    @DisplayName("filterTodosByTercodAndTernomAndTerali: matches by TERALI contains")
+    void filterTodosByTercodAndTernomAndTerali_matchesByTerali() {
+        Ter ter1 = createTer(100, "Provider", "NIF1", "ABC Alias", 0);
+        Ter ter2 = createTer(200, "Provider", "NIF2", "XYZ Alias", 0);
+        when(terRepository.findByENT(TEST_ENT)).thenReturn(List.of(ter1, ter2));
+
+        List<Ter> result = proveedoresSearch.searchProveedoers(TEST_ENT, "todos", "ABC");
+
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    @DisplayName("filterTodosByTercodAndTernomAndTerali: matches from all three fields")
+    void filterTodosByTercodAndTernomAndTerali_matchesAllThree() {
+        Ter ter1 = createTer(100, "ABC Company", "NIFABC", "ABC Alias", 0);
+        when(terRepository.findByENT(TEST_ENT)).thenReturn(List.of(ter1));
+
+        List<Ter> result = proveedoresSearch.searchProveedoers(TEST_ENT, "todos", "ABC");
+
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    @DisplayName("filterTodosByTercodAndTernomAndTerali: no match returns empty")
+    void filterTodosByTercodAndTernomAndTerali_noMatch() {
+        Ter ter1 = createTer(100, "Provider", "NIF1", "Alias", 0);
+        when(terRepository.findByENT(TEST_ENT)).thenReturn(List.of(ter1));
+
+        List<Ter> result = proveedoresSearch.searchProveedoers(TEST_ENT, "todos", "NOMATCH");
+
+        assertEquals(0, result.size());
+    }
+
+    @Test
+    @DisplayName("filterTodosByTercodAndTernomAndTerali: null values handled")
+    void filterTodosByTercodAndTernomAndTerali_nullValues() {
+        Ter ter1 = createTer(100, null, "NIFABC", null, 0);
+        Ter ter2 = createTer(200, "ABC Company", null, "ABC Alias", 0);
+        when(terRepository.findByENT(TEST_ENT)).thenReturn(List.of(ter1, ter2));
+
+        List<Ter> result = proveedoresSearch.searchProveedoers(TEST_ENT, "todos", "ABC");
+
+        assertEquals(2, result.size());
+    }
+
+    @Test
+    @DisplayName("filterTodosByTercodAndTernomAndTerali: case-sensitive matching")
+    void filterTodosByTercodAndTernomAndTerali_caseSensitive() {
+        Ter ter1 = createTer(100, "ABC Company", "NIF1", "Alias", 0);
+        Ter ter2 = createTer(200, "abc company", "NIF2", "Alias", 0);
+        when(terRepository.findByENT(TEST_ENT)).thenReturn(List.of(ter1, ter2));
+
+        List<Ter> result = proveedoresSearch.searchProveedoers(TEST_ENT, "todos", "ABC");
+
+        assertEquals(1, result.size());
+        assertEquals("ABC Company", result.get(0).getTERNOM());
+    }
+
+    @Test
+    @DisplayName("filterNoBloqueadoByTercodAndTerblo: matches TERCOD with TERBLO=0")
+    void filterNoBloqueadoByTercodAndTerblo_matchesAndFilters() {
+        Ter ter1 = createTer(123, "Provider", "NIF1", "Alias", 0);
+        Ter ter2 = createTer(123, "Provider", "NIF2", "Alias", 1);
+        when(terRepository.findByENT(TEST_ENT)).thenReturn(List.of(ter1, ter2));
+
+        List<Ter> result = proveedoresSearch.searchProveedoers(TEST_ENT, "Nobloqueado", "123");
+
+        assertEquals(1, result.size());
+        assertEquals(0, result.get(0).getTERBLO());
+    }
+
+    @Test
+    @DisplayName("filterNoBloqueadoByTercodAndTerblo: TERBLO=1 excluded for Nobloqueado")
+    void filterNoBloqueadoByTercodAndTerblo_excludesTerblo1() {
+        Ter ter1 = createTer(123, "Provider", "NIF1", "Alias", 1);
+        when(terRepository.findByENT(TEST_ENT)).thenReturn(List.of(ter1));
+
+        List<Ter> result = proveedoresSearch.searchProveedoers(TEST_ENT, "Nobloqueado", "123");
+
+        assertEquals(0, result.size());
+    }
+
+    @Test
+    @DisplayName("filterNoBloqueadoByTercodAndTerblo: bloqueado mode matches TERBLO=1")
+    void filterNoBloqueadoByTercodAndTerblo_bloqueadoMode() {
+        Ter ter1 = createTer(123, "Provider", "NIF1", "Alias", 1);
+        Ter ter2 = createTer(123, "Provider", "NIF2", "Alias", 0);
+        when(terRepository.findByENT(TEST_ENT)).thenReturn(List.of(ter1, ter2));
+
+        List<Ter> result = proveedoresSearch.searchProveedoers(TEST_ENT, "bloqueado", "123");
+
+        assertEquals(1, result.size());
+        assertEquals(1, result.get(0).getTERBLO());
+    }
+
+    @Test
+    @DisplayName("filterNoBloqueadoByTercodAndTerblo: null TERBLO handled")
+    void filterNoBloqueadoByTercodAndTerblo_nullTerblo() {
+        Ter ter1 = createTer(123, "Provider", "NIF1", "Alias", null);
+        Ter ter2 = createTer(123, "Provider", "NIF2", "Alias", 0);
+        when(terRepository.findByENT(TEST_ENT)).thenReturn(List.of(ter1, ter2));
+
+        List<Ter> result = proveedoresSearch.searchProveedoers(TEST_ENT, "Nobloqueado", "123");
+
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    @DisplayName("filterNoBloqueadoByTercodAndTernifAndTerblo: matches TERCOD with TERBLO=0")
+    void filterNoBloqueadoByTercodAndTernifAndTerblo_matchesTercod() {
+        Ter ter1 = createTer(12345, "Provider", "NIF1", "Alias", 0);
+        Ter ter2 = createTer(200, "Provider", "NIF2", "Alias", 0);
+        when(terRepository.findByENT(TEST_ENT)).thenReturn(List.of(ter1, ter2));
+
+        List<Ter> result = proveedoresSearch.searchProveedoers(TEST_ENT, "Nobloqueado", "12345");
+
+        assertEquals(1, result.size());
+        assertEquals(0, result.get(0).getTERBLO());
+    }
+
+    @Test
+    @DisplayName("filterNoBloqueadoByTercodAndTernifAndTerblo: matches TERNIF with TERBLO=0")
+    void filterNoBloqueadoByTercodAndTernifAndTerblo_matchesTernif() {
+        Ter ter1 = createTer(100, "Provider", "NIF12345", "Alias", 0);
+        Ter ter2 = createTer(200, "Provider", "NIFXYZ", "Alias", 0);
+        when(terRepository.findByENT(TEST_ENT)).thenReturn(List.of(ter1, ter2));
+
+        List<Ter> result = proveedoresSearch.searchProveedoers(TEST_ENT, "Nobloqueado", "12345");
+
+        assertEquals(1, result.size());
+        assertEquals(0, result.get(0).getTERBLO());
+    }
+
+    @Test
+    @DisplayName("filterNoBloqueadoByTercodAndTernifAndTerblo: excludes TERBLO=1")
+    void filterNoBloqueadoByTercodAndTernifAndTerblo_excludesTerblo1() {
+        Ter ter1 = createTer(12345, "Provider", "NIF12345", "Alias", 1);
+        Ter ter2 = createTer(200, "Provider", "NIF12345", "Alias", 0);
+        when(terRepository.findByENT(TEST_ENT)).thenReturn(List.of(ter1, ter2));
+
+        List<Ter> result = proveedoresSearch.searchProveedoers(TEST_ENT, "Nobloqueado", "12345");
+
+        assertEquals(1, result.size());
+        assertEquals(0, result.get(0).getTERBLO());
+    }
+
+    @Test
+    @DisplayName("filterNoBloqueadoByTercodAndTernifAndTerblo: bloqueado mode matches TERBLO=1")
+    void filterNoBloqueadoByTercodAndTernifAndTerblo_bloqueadoMode() {
+        Ter ter1 = createTer(12345, "Provider", "NIF12345", "Alias", 1);
+        Ter ter2 = createTer(200, "Provider", "NIF12345", "Alias", 0);
+        when(terRepository.findByENT(TEST_ENT)).thenReturn(List.of(ter1, ter2));
+
+        List<Ter> result = proveedoresSearch.searchProveedoers(TEST_ENT, "bloqueado", "12345");
+
+        assertEquals(1, result.size());
+        assertEquals(1, result.get(0).getTERBLO());
+    }
+
+    @Test
+    @DisplayName("filterNoBloqueadoByTercodAndTernifAndTerblo: multiple matches all filtered by TERBLO")
+    void filterNoBloqueadoByTercodAndTernifAndTerblo_multipleMatches() {
+        Ter ter1 = createTer(100, "Provider", "NIF12345", "Alias", 0);
+        Ter ter2 = createTer(200, "Provider", "NIF1234567", "Alias", 0);
+        Ter ter3 = createTer(300, "Provider", "NIF12345", "Alias", 1);
+        when(terRepository.findByENT(TEST_ENT)).thenReturn(List.of(ter1, ter2, ter3));
+
+        List<Ter> result = proveedoresSearch.searchProveedoers(TEST_ENT, "Nobloqueado", "12345");
+
+        assertEquals(2, result.size());
+        assertTrue(result.stream().allMatch(t -> t.getTERBLO() == 0));
+    }
+
+    @Test
+    @DisplayName("filterNoBloqueadoByTercodAndTernomAndTeraliAndTerblo: matches TERNIF with TERBLO=0")
+    void filterNoBloqueadoByTercodAndTernomAndTeraliAndTerblo_matchesTernif() {
+        Ter ter1 = createTer(100, "Provider", "NIFABC", "Alias", 0);
+        Ter ter2 = createTer(200, "Provider", "NIFXYZ", "Alias", 0);
+        when(terRepository.findByENT(TEST_ENT)).thenReturn(List.of(ter1, ter2));
+
+        List<Ter> result = proveedoresSearch.searchProveedoers(TEST_ENT, "Nobloqueado", "ABC");
+
+        assertEquals(1, result.size());
+        assertEquals(0, result.get(0).getTERBLO());
+    }
+
+    @Test
+    @DisplayName("filterNoBloqueadoByTercodAndTernomAndTeraliAndTerblo: matches TERNOM with TERBLO=0")
+    void filterNoBloqueadoByTercodAndTernomAndTeraliAndTerblo_matchesTernom() {
+        Ter ter1 = createTer(100, "ABC Company", "NIF1", "Alias", 0);
+        Ter ter2 = createTer(200, "XYZ Corp", "NIF2", "Alias", 0);
+        when(terRepository.findByENT(TEST_ENT)).thenReturn(List.of(ter1, ter2));
+
+        List<Ter> result = proveedoresSearch.searchProveedoers(TEST_ENT, "Nobloqueado", "ABC");
+
+        assertEquals(1, result.size());
+        assertEquals(0, result.get(0).getTERBLO());
+    }
+
+    @Test
+    @DisplayName("filterNoBloqueadoByTercodAndTernomAndTeraliAndTerblo: matches TERALI with TERBLO=0")
+    void filterNoBloqueadoByTercodAndTernomAndTeraliAndTerblo_matchesTerali() {
+        Ter ter1 = createTer(100, "Provider", "NIF1", "ABC Alias", 0);
+        Ter ter2 = createTer(200, "Provider", "NIF2", "XYZ Alias", 0);
+        when(terRepository.findByENT(TEST_ENT)).thenReturn(List.of(ter1, ter2));
+
+        List<Ter> result = proveedoresSearch.searchProveedoers(TEST_ENT, "Nobloqueado", "ABC");
+
+        assertEquals(1, result.size());
+        assertEquals(0, result.get(0).getTERBLO());
+    }
+
+    @Test
+    @DisplayName("filterNoBloqueadoByTercodAndTernomAndTeraliAndTerblo: excludes TERBLO=1")
+    void filterNoBloqueadoByTercodAndTernomAndTeraliAndTerblo_excludesTerblo1() {
+        Ter ter1 = createTer(100, "ABC Company", "NIFABC", "ABC Alias", 1);
+        Ter ter2 = createTer(200, "ABC Corp", "NIF2", "ABC2", 0);
+        when(terRepository.findByENT(TEST_ENT)).thenReturn(List.of(ter1, ter2));
+
+        List<Ter> result = proveedoresSearch.searchProveedoers(TEST_ENT, "Nobloqueado", "ABC");
+
+        assertEquals(1, result.size());
+        assertEquals(0, result.get(0).getTERBLO());
+    }
+
+    @Test
+    @DisplayName("filterNoBloqueadoByTercodAndTernomAndTeraliAndTerblo: bloqueado matches TERBLO=1")
+    void filterNoBloqueadoByTercodAndTernomAndTeraliAndTerblo_bloqueadoMode() {
+        Ter ter1 = createTer(100, "ABC Company", "NIFABC", "ABC Alias", 1);
+        Ter ter2 = createTer(200, "ABC Corp", "NIF2", "ABC2", 0);
+        when(terRepository.findByENT(TEST_ENT)).thenReturn(List.of(ter1, ter2));
+
+        List<Ter> result = proveedoresSearch.searchProveedoers(TEST_ENT, "bloqueado", "ABC");
+
+        assertEquals(1, result.size());
+        assertEquals(1, result.get(0).getTERBLO());
+    }
+
+    @Test
+    @DisplayName("filterNoBloqueadoByTercodAndTernomAndTeraliAndTerblo: multiple matches from different fields")
+    void filterNoBloqueadoByTercodAndTernomAndTeraliAndTerblo_multipleFields() {
+        Ter ter1 = createTer(100, "ABC Company", "NIF1", "Alias", 0);
+        Ter ter2 = createTer(200, "Provider", "NIFABC", "Alias", 0);
+        Ter ter3 = createTer(300, "Provider", "NIF3", "ABC Alias", 0);
+        Ter ter4 = createTer(400, "ABC Corp", "NIF4", "Alias", 1);
+        when(terRepository.findByENT(TEST_ENT)).thenReturn(List.of(ter1, ter2, ter3, ter4));
+
+        List<Ter> result = proveedoresSearch.searchProveedoers(TEST_ENT, "Nobloqueado", "ABC");
+
+        assertEquals(3, result.size());
+        assertTrue(result.stream().allMatch(t -> t.getTERBLO() == 0));
+    }
+
+    @Test
+    @DisplayName("filterNoBloqueadoByTercodAndTernomAndTeraliAndTerblo: null values in all fields")
+    void filterNoBloqueadoByTercodAndTernomAndTeraliAndTerblo_nullValues() {
+        Ter ter1 = createTer(100, null, "NIFABC", null, 0);
+        Ter ter2 = createTer(200, "ABC", null, "Alias", 0);
+        Ter ter3 = createTer(300, "Provider", null, "ABC", 0);
+        when(terRepository.findByENT(TEST_ENT)).thenReturn(List.of(ter1, ter2, ter3));
+
+        List<Ter> result = proveedoresSearch.searchProveedoers(TEST_ENT, "Nobloqueado", "ABC");
+
+        assertEquals(3, result.size());
+    }
+
+    @Test
+    @DisplayName("filterNoBloqueadoByTercodAndTernomAndTeraliAndTerblo: case-sensitive matching")
+    void filterNoBloqueadoByTercodAndTernomAndTeraliAndTerblo_caseSensitive() {
+        Ter ter1 = createTer(100, "ABC Company", "NIF1", "Alias", 0);
+        Ter ter2 = createTer(200, "abc company", "NIF2", "Alias", 0);
+        when(terRepository.findByENT(TEST_ENT)).thenReturn(List.of(ter1, ter2));
+
+        List<Ter> result = proveedoresSearch.searchProveedoers(TEST_ENT, "Nobloqueado", "ABC");
+
+        assertEquals(1, result.size());
+        assertEquals("ABC Company", result.get(0).getTERNOM());
+    }
 }

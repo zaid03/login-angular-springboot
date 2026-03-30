@@ -1,43 +1,51 @@
 package com.example.backend.controller;
 
-import com.example.backend.config.TestSecurityConfig;
+import java.util.List;
+
+import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.dao.DataAccessResourceFailureException;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.example.backend.config.TestExceptionHandler;
+import com.example.backend.config.TestSecurityConfig;
 import com.example.backend.dto.PersonaServiceRequest;
 import com.example.backend.dto.ServicePersonaRequest;
+import com.example.backend.service.DpePersonasForService;
+import com.example.backend.service.DpeService;
 import com.example.backend.sqlserver2.model.Dep;
 import com.example.backend.sqlserver2.model.Dpe;
 import com.example.backend.sqlserver2.model.Per;
 import com.example.backend.sqlserver2.repository.DepRepository;
 import com.example.backend.sqlserver2.repository.DpeRepository;
 import com.example.backend.sqlserver2.repository.PerRepository;
-import com.example.backend.service.DpePersonasForService;
-import com.example.backend.service.DpeService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.context.annotation.Import;
-import org.springframework.dao.DataAccessResourceFailureException;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
-import org.mockito.ArgumentCaptor;
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import static org.hamcrest.Matchers.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = DpeController.class)
 @ActiveProfiles("test")
@@ -1646,6 +1654,468 @@ public class DpeControllerTest {
                 .param("ent", "1")
                 .param("eje", "E1")
                 .param("servicio", servicio7))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void helper_filterByServicio_shortCode_lessThan6Chars() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("servicio", "S1")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void helper_filterByServicio_shortCode_exactly6Chars() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("servicio", "S12345")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void helper_filterByServicio_longDescription_moreThan6Chars() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("servicio", "Service Description Long")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void helper_filterByServicio_withWhitespace() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("servicio", "  S1  ")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void helper_filterByPersona_shortCode_lessThan20Chars() throws Exception {
+        when(dpeRepository.findProjectionByENTAndEJEAndPERCOD(1, "E1", "USER01")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("persona", "USER01")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void helper_filterByPersona_shortCode_exactly20Chars() throws Exception {
+        String code20Chars = "USER0123456789012345";
+        when(dpeRepository.findProjectionByENTAndEJEAndPERCOD(1, "E1", code20Chars)).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("persona", code20Chars)
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void helper_filterByPersona_longName_moreThan20Chars() throws Exception {
+        when(dpeRepository.findByENTAndEJEAndPer_PERNOMContaining(1, "E1", "John Doe Long Name Here")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("persona", "John Doe Long Name Here")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void helper_filterByPersona_withWhitespace() throws Exception {
+        when(dpeRepository.findByENTAndEJEAndPer_PERNOMContaining(1, "E1", "John Doe")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("persona", "  John Doe  ")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void helper_filterByPerfil_almacen_mapsCorrectly() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("perfil", "almacen")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void helper_filterByPerfil_comprador_mapsCorrectly() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("perfil", "comprador")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void helper_filterByPerfil_contabilidad_mapsCorrectly() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("perfil", "contabilidad")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void helper_filterByPerfil_peticionario_mapsCorrectly() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("perfil", "peticionario")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void helper_filterByPerfil_almacen_upperCase_mapsCorrectly() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("perfil", "ALMACEN")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void helper_filterByPerfil_invalid_returnsAllData() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("perfil", "invalid_perfil_type")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void helper_filterByPerfil_null_returnsAllData() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void helper_filterByCgecod_filtering() throws Exception {
+        when(dpeRepository.findByENTAndEJEAndDep_Cge_CGECOD(1, "E1", "CG01")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("cgecod", "CG01")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void helper_filterByCgecod_null_ignored() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void helper_filterByCgecod_empty_ignored() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("cgecod", "")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void applyFilters_servicio_and_persona_combined() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("servicio", "S1")
+                .param("persona", "USER01")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void applyFilters_servicio_and_cgecod_combined() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("servicio", "S1")
+                .param("cgecod", "CG01")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void applyFilters_persona_and_perfil_combined() throws Exception {
+        when(dpeRepository.findProjectionByENTAndEJEAndPERCOD(1, "E1", "USER01")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("persona", "USER01")
+                .param("perfil", "almacen")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void applyFilters_cgecod_and_perfil_combined() throws Exception {
+        when(dpeRepository.findByENTAndEJEAndDep_Cge_CGECOD(1, "E1", "CG01")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("cgecod", "CG01")
+                .param("perfil", "comprador")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void applyFilters_all_filters_combined() throws Exception {
+        when(dpeRepository.findByENTAndEJEAndDep_Cge_CGECOD(1, "E1", "CG01")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("servicio", "S1")
+                .param("persona", "USER01")
+                .param("cgecod", "CG01")
+                .param("perfil", "almacen")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void getInitialData_selectsByCgecod_whenProvided() throws Exception {
+        when(dpeRepository.findByENTAndEJEAndDep_Cge_CGECOD(1, "E1", "CG01")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("cgecod", "CG01")
+                .param("persona", "USER01")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+
+        verify(dpeRepository).findByENTAndEJEAndDep_Cge_CGECOD(1, "E1", "CG01");
+    }
+
+    @Test
+    void getInitialData_selectsByPersonaCode_when20CharsOrLess() throws Exception {
+        when(dpeRepository.findProjectionByENTAndEJEAndPERCOD(1, "E1", "U01")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("persona", "U01")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+
+        verify(dpeRepository).findProjectionByENTAndEJEAndPERCOD(1, "E1", "U01");
+    }
+
+    @Test
+    void getInitialData_selectsByPersonaName_whenMoreThan20Chars() throws Exception {
+        when(dpeRepository.findByENTAndEJEAndPer_PERNOMContaining(1, "E1", "John Doe Very Long Name")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("persona", "John Doe Very Long Name")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+
+        verify(dpeRepository).findByENTAndEJEAndPer_PERNOMContaining(1, "E1", "John Doe Very Long Name");
+    }
+
+    @Test
+    void getInitialData_selectsAll_whenNoFilterSpecified() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+
+        verify(dpeRepository).findByENTAndEJE(1, "E1");
+    }
+
+    @Test
+    void nullSafeList_handlesNull_returnsEmpty() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(null);
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(content().string("Sin resultado"));
+    }
+
+    @Test
+    void helper_filterByPersona_boundary_exactly20CharsCode() throws Exception {
+        String code20 = "12345678901234567890";
+        when(dpeRepository.findProjectionByENTAndEJEAndPERCOD(1, "E1", code20)).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("persona", code20)
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void helper_filterByPersona_boundary_21CharsGoesToName() throws Exception {
+        String name21 = "123456789012345678901";
+        when(dpeRepository.findByENTAndEJEAndPer_PERNOMContaining(1, "E1", name21)).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("persona", name21)
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void helper_filterByServicio_boundary_exactly6CharsCode() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("servicio", "123456")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void helper_filterByServicio_boundary_7CharsGoesToDescription() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("servicio", "1234567")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void applyFilters_emptyStringFilters_treated_asMissing() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("servicio", "")
+                .param("persona", "")
+                .param("cgecod", "")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void applyFilters_whitespaceOnlyFilters_trimmedCorrectly() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("servicio", "   ")
+                .param("persona", "   ")
+                .param("cgecod", "   ")
+                .accept(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isNotFound());
     }
