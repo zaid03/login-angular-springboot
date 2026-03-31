@@ -194,7 +194,7 @@ export class EntregaComponent {
         }
       });
     }
-    if(isChar.test(this.searchText) || isAlphanumeric.test(this.searchText)) {
+    else {
       this.http.get<any[]>(`${environment.backendUrl}/api/Len/filter-lendes/${this.searchText}`).subscribe({
         next: (res) => {
           this.entregas = res;
