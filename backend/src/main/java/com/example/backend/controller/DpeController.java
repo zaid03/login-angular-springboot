@@ -292,12 +292,6 @@ public class DpeController {
         if (cgecod != null && !cgecod.isEmpty()) {
             return nullSafeList(dpeRepository.findByENTAndEJEAndDep_Cge_CGECOD(ent, eje, cgecod));
         }
-        if (persona != null && !persona.isEmpty() && persona.length() <= 20) {
-            return nullSafeList(dpeRepository.findProjectionByENTAndEJEAndPERCOD(ent, eje, persona));
-        }
-        if (persona != null && !persona.isEmpty()) {
-            return nullSafeList(dpeRepository.findByENTAndEJEAndPer_PERNOMContaining(ent, eje, persona));
-        }
         return nullSafeList(dpeRepository.findByENTAndEJE(ent, eje));
     }
 
@@ -361,12 +355,16 @@ public class DpeController {
         String trimmedPersona = persona.trim();
         if (trimmedPersona.length() <= 20) {
             return data.stream()
-                .filter(p -> p != null && trimmedPersona.equals(p.getPERCOD()))
+                .filter(p -> p != null && (
+                    trimmedPersona.equalsIgnoreCase(p.getPERCOD()) ||
+                    (p.getPer() != null && p.getPer().getPERNOM() != null && 
+                    p.getPer().getPERNOM().toLowerCase().contains(trimmedPersona.toLowerCase()))
+                ))
                 .toList();
         } else {
             return data.stream()
                 .filter(p -> p != null && p.getPer() != null && p.getPer().getPERNOM() != null 
-                    && p.getPer().getPERNOM().contains(trimmedPersona))
+                    && p.getPer().getPERNOM().toLowerCase().contains(trimmedPersona.toLowerCase()))
                 .toList();
         }
     }

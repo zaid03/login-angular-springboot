@@ -14,6 +14,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1980,8 +1981,8 @@ public class DpeControllerTest {
     }
 
     @Test
-    void getInitialData_selectsByPersonaCode_when20CharsOrLess() throws Exception {
-        when(dpeRepository.findProjectionByENTAndEJEAndPERCOD(1, "E1", "U01")).thenReturn(List.of());
+    void getInitialData_ignoresPersonaParam_returnsFullDataset_when20CharsOrLess() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
 
         mockMvc.perform(get("/api/depe/personas-servicios/search")
                 .param("ent", "1")
@@ -1991,12 +1992,13 @@ public class DpeControllerTest {
             .andDo(print())
             .andExpect(status().isNotFound());
 
-        verify(dpeRepository).findProjectionByENTAndEJEAndPERCOD(1, "E1", "U01");
+        verify(dpeRepository).findByENTAndEJE(1, "E1");
+        verify(dpeRepository, never()).findProjectionByENTAndEJEAndPERCOD(anyInt(), anyString(), anyString());
     }
 
     @Test
-    void getInitialData_selectsByPersonaName_whenMoreThan20Chars() throws Exception {
-        when(dpeRepository.findByENTAndEJEAndPer_PERNOMContaining(1, "E1", "John Doe Very Long Name")).thenReturn(List.of());
+    void getInitialData_ignoresPersonaParam_returnsFullDataset_whenMoreThan20Chars() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
 
         mockMvc.perform(get("/api/depe/personas-servicios/search")
                 .param("ent", "1")
@@ -2006,7 +2008,8 @@ public class DpeControllerTest {
             .andDo(print())
             .andExpect(status().isNotFound());
 
-        verify(dpeRepository).findByENTAndEJEAndPer_PERNOMContaining(1, "E1", "John Doe Very Long Name");
+        verify(dpeRepository).findByENTAndEJE(1, "E1");
+        verify(dpeRepository, never()).findByENTAndEJEAndPer_PERNOMContaining(anyInt(), anyString(), anyString());
     }
 
     @Test
@@ -2118,5 +2121,214 @@ public class DpeControllerTest {
                 .accept(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void getInitialData_withPersonaParam_returnsFullDataset_noPrefilteredByPersona() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("persona", "U01")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+
+        verify(dpeRepository).findByENTAndEJE(1, "E1");
+    }
+
+    @Test
+    void filterByPersona_searchByPERCODExactMatch_whenPersonaLessThan20Chars() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("persona", "U01")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void filterByPersona_searchByPERNOM_whenPersonaLessThan20Chars() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("persona", "John")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void filterByPersona_searchOnlyByPERNOM_whenPersonaMoreThan20Chars() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("persona", "This is a very long name string")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void filterByPersona_caseInsensitiveSearch_onPERCOD() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("persona", "u01")  
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void filterByPersona_caseInsensitiveSearch_onPERNOM() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("persona", "john") 
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void filterByPersona_partialMatch_onPERNOM() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("persona", "Joh")  
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void getInitialData_filtersByCgecod_whenProvided() throws Exception {
+        when(dpeRepository.findByENTAndEJEAndDep_Cge_CGECOD(1, "E1", "CG01")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("cgecod", "CG01")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+
+        verify(dpeRepository).findByENTAndEJEAndDep_Cge_CGECOD(1, "E1", "CG01");
+    }
+
+    @Test
+    void getInitialData_returnsAll_whenCgecodNotProvided() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+
+        verify(dpeRepository).findByENTAndEJE(1, "E1");
+    }
+
+    @Test
+    void searchPersonasServicios_personaAnd20Charboundary_searchsBothFields() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("persona", "12345678901234567890") 
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchPersonasServicios_personaWith21Chars_searchesOnlyPERNOM() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("persona", "123456789012345678901") 
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void searchPersonasServicios_personaAndCgecod_combined() throws Exception {
+        when(dpeRepository.findByENTAndEJEAndDep_Cge_CGECOD(1, "E1", "CG01")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("persona", "U01")
+                .param("cgecod", "CG01")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+
+        verify(dpeRepository).findByENTAndEJEAndDep_Cge_CGECOD(1, "E1", "CG01");
+    }
+
+    @Test
+    void searchPersonasServicios_multipleFiltersWithPersona_appliedCorrectly() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("persona", "U01")
+                .param("servicio", "SRV01")
+                .param("perfil", "almacen")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+
+        verify(dpeRepository).findByENTAndEJE(1, "E1");
+    }
+
+    @Test
+    void filterByPersona_withWhitespace_trimmedBeforeComparison() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("persona", "  U01  ")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void getInitialData_noPrefilteredByPersona_regardlessOfLength() throws Exception {
+        when(dpeRepository.findByENTAndEJE(1, "E1")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/depe/personas-servicios/search")
+                .param("ent", "1")
+                .param("eje", "E1")
+                .param("persona", "A")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+
+        verify(dpeRepository).findByENTAndEJE(1, "E1");
     }
 }
