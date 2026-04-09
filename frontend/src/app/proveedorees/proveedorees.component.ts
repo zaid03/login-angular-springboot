@@ -249,7 +249,7 @@ export class ProveedoreesComponent {
       { header: 'Correo electronico', dataKey: 'tercoe' },
       { header: 'Observaciones', dataKey: 'terobs' }
     ];
-    const data = this.proveedores;
+    const data = this.paginatedProveedores;
 
     autoTable(doc, {
       columns,
