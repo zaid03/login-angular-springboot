@@ -11,6 +11,7 @@ import org.w3c.dom.Element;
 import com.example.backend.dto.Tercero;
 import com.example.backend.exception.XmlParsingException;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -805,6 +806,327 @@ public class SicalServiceTest {
         method.setAccessible(true);
         List<Tercero> result = (List<Tercero>) method.invoke(service, xml);
         assertEquals(0, result.size());
+    }
+
+    @Test
+    void extractSoapContent_withProperServiceioReturnTag() throws Exception {
+        String xml = "<soapenv:Body><impl:servicio><servicioReturn>extracted content</servicioReturn></impl:servicio></soapenv:Body>";
+        String result = invokeExtractSoapContent(xml);
+        assertEquals("extracted content", result);
+    }
+
+    @Test
+    void extractSoapContent_withServiceioReturnAndNestedXml() throws Exception {
+        String xml = "<soapenv:Body><servicioReturn><root><tercero><id>1</id></tercero></root></servicioReturn></soapenv:Body>";
+        String result = invokeExtractSoapContent(xml);
+        assertTrue(result.contains("<root>"));
+        assertTrue(result.contains("</root>"));
+    }
+
+    @Test
+    void extractSoapContent_returnsXmlUnchangedWhenNoClosingTag() throws Exception {
+        String xml = "<soapenv:Body><servicioReturn>incomplete";
+        String result = invokeExtractSoapContent(xml);
+        assertEquals(xml, result);
+    }
+
+    @Test
+    void extractSoapContent_returnsXmlUnchangedWhenNoOpeningTag() throws Exception {
+        String xml = "<soapenv:Body>incomplete</servicioReturn>";
+        String result = invokeExtractSoapContent(xml);
+        assertEquals(xml, result);
+    }
+
+    @Test
+    void extractSoapContent_withMultipleServiceioReturnTags() throws Exception {
+        String xml = "<servicioReturn>first</servicioReturn><servicioReturn>second</servicioReturn>";
+        String result = invokeExtractSoapContent(xml);
+        assertEquals("first", result);
+    }
+
+    @Test
+    void parseTerceros_throwsXmlParsingExceptionOnMalformedXml() throws Exception {
+        String malformedXml = "<unclosed><tag>";
+        Method method = SicalService.class.getDeclaredMethod("parseTerceros", String.class);
+        method.setAccessible(true);
+        assertThrows(InvocationTargetException.class, () -> method.invoke(service, malformedXml));
+    }
+
+    @Test
+    void parseTerceros_throwsXmlParsingExceptionOnInvalidCharacters() throws Exception {
+        String invalidXml = "<root>\u0000invalid</root>";
+        Method method = SicalService.class.getDeclaredMethod("parseTerceros", String.class);
+        method.setAccessible(true);
+        assertThrows(InvocationTargetException.class, () -> method.invoke(service, invalidXml));
+    }
+
+    @Test
+    void deriveMissingApellido_withEmptyStringAppellidoTercero() throws Exception {
+        Tercero t = new Tercero();
+        t.setApellTercero("");
+        t.setApellido1("García");
+        t.setApellido2("López");
+        
+        invokDeriveMissingApellido(t);
+        assertEquals("García López", t.getApellTercero());
+    }
+
+    @Test
+    void deriveMissingApellido_withBothApellidosEmpty() throws Exception {
+        Tercero t = new Tercero();
+        t.setApellTercero(null);
+        t.setApellido1("");
+        t.setApellido2("");
+        t.setNombreCompleto("John Smith");
+        
+        invokDeriveMissingApellido(t);
+        assertEquals("Smith", t.getApellTercero());
+    }
+
+    @Test
+    void deriveMissingApellido_withApellido1EmptyApellido2Null() throws Exception {
+        Tercero t = new Tercero();
+        t.setApellTercero(null);
+        t.setApellido1("");
+        t.setApellido2(null);
+        t.setNombreCompleto("John Doe");
+        
+        invokDeriveMissingApellido(t);
+        assertEquals("Doe", t.getApellTercero());
+    }
+
+    @Test
+    void deriveMissingApellido_withApellido1NullApellido2Empty() throws Exception {
+        Tercero t = new Tercero();
+        t.setApellTercero(null);
+        t.setApellido1(null);
+        t.setApellido2("");
+        t.setNombreCompleto("Jane Brown");
+        
+        invokDeriveMissingApellido(t);
+        assertEquals("Brown", t.getApellTercero());
+    }
+
+    @Test
+    void deriveMissingApellido_withNombreCompletoEmpty() throws Exception {
+        Tercero t = new Tercero();
+        t.setApellTercero(null);
+        t.setApellido1(null);
+        t.setApellido2(null);
+        t.setNombreCompleto("");
+        
+        invokDeriveMissingApellido(t);
+        assertNull(t.getApellTercero());
+    }
+
+    @Test
+    void deriveMissingApellido_withNombreCompletoOnlyWhitespace() throws Exception {
+        Tercero t = new Tercero();
+        t.setApellTercero(null);
+        t.setApellido1(null);
+        t.setApellido2(null);
+        t.setNombreCompleto("   ");
+        
+        invokDeriveMissingApellido(t);
+        assertNull(t.getApellTercero());
+    }
+
+    @Test
+    void parseNombreCompleto_withEmptyNombreCompleto() throws Exception {
+        Tercero t = new Tercero();
+        t.setNombreCompleto("");
+        
+        invokeParseNombreCompleto(t);
+        assertEquals("", t.getNomTercero());
+    }
+
+    @Test
+    void parseNombreCompleto_withNullNombreCompleto() throws Exception {
+        Tercero t = new Tercero();
+        t.setNombreCompleto(null);
+        
+        assertThrows(InvocationTargetException.class, () -> invokeParseNombreCompleto(t));
+    }
+
+    @Test
+    void parseNombreCompleto_withWhitespaceOnlyNombreCompleto() throws Exception {
+        Tercero t = new Tercero();
+        t.setNombreCompleto("     ");
+        
+        invokeParseNombreCompleto(t);
+        assertEquals("     ", t.getNomTercero());
+    }
+
+    @Test
+    void parseNombreCompleto_withThreeWordName() throws Exception {
+        Tercero t = new Tercero();
+        t.setNombreCompleto("Juan Carlos García");
+        
+        invokeParseNombreCompleto(t);
+        assertEquals("Juan Carlos", t.getNomTercero());
+        assertEquals("García", t.getApellTercero());
+    }
+
+    @Test
+    void parseNombreCompleto_withHighlyMultiwordName() throws Exception {
+        Tercero t = new Tercero();
+        t.setNombreCompleto("José María José García López");
+        
+        invokeParseNombreCompleto(t);
+        assertEquals("José María José García", t.getNomTercero());
+        assertEquals("López", t.getApellTercero());
+    }
+
+    @Test
+    void parseNombreCompleto_preservesLeadingAndTrailingSpaces() throws Exception {
+        Tercero t = new Tercero();
+        t.setNombreCompleto("  Juan  García  ");
+        
+        invokeParseNombreCompleto(t);
+        assertEquals("Juan", t.getNomTercero());
+        assertEquals("García", t.getApellTercero());
+    }
+
+    @Test
+    void parseTerceros_withMalformedXmlButValidTerceroElement() throws Exception {
+        String xml = "<data><tercero><idenTercero>ID1</idenTercero></tercero><invalid";
+        Method method = SicalService.class.getDeclaredMethod("parseTerceros", String.class);
+        method.setAccessible(true);
+        assertThrows(InvocationTargetException.class, () -> method.invoke(service, xml));
+    }
+
+    @Test
+    void parseTerceros_withValidXmlButExceptionDuringParse() throws Exception {
+        String malformedXml = "<?xml version=\"1.0\"?><data>&#xD;&#x00;</data>";
+        Method method = SicalService.class.getDeclaredMethod("parseTerceros", String.class);
+        method.setAccessible(true);
+        assertThrows(InvocationTargetException.class, () -> method.invoke(service, malformedXml));
+    }
+
+    @Test
+    void deriveMissingApellido_withApellido1OnlyAsFirstApellido() throws Exception {
+        Tercero t = new Tercero();
+        t.setApellTercero(null);
+        t.setApellido1("Martínez");
+        t.setApellido2(null);
+        
+        invokDeriveMissingApellido(t);
+        assertEquals("Martínez", t.getApellTercero());
+    }
+
+    @Test
+    void deriveMissingApellido_trimsProperlyWhenBothApellidosPresent() throws Exception {
+        Tercero t = new Tercero();
+        t.setApellTercero(null);
+        t.setApellido1("  García");
+        t.setApellido2("López  ");
+        
+        invokDeriveMissingApellido(t);
+        assertTrue(t.getApellTercero().contains("García"));
+        assertTrue(t.getApellTercero().contains("López"));
+    }
+
+    @Test
+    void unescapeXmlEntities_withSequentialEntities() throws Exception {
+        String input = "&lt;&gt;&lt;&gt;";
+        String result = invokeUnescapeXmlEntities(input);
+        assertEquals("<><>", result);
+    }
+
+    @Test
+    void unescapeXmlEntities_withMixedEntitiesAndText() throws Exception {
+        String input = "Start&lt;tag&gt;middle&quot;quote&quot;end&apos;mark";
+        String result = invokeUnescapeXmlEntities(input);
+        assertEquals("Start<tag>middle\"quote\"end'mark", result);
+    }
+
+    @Test
+    void extractSoapContent_withEmptyServiceioReturn() throws Exception {
+        String xml = "<servicioReturn></servicioReturn>";
+        String result = invokeExtractSoapContent(xml);
+        assertEquals("", result);
+    }
+
+    @Test
+    void extractSoapContent_withWhitespaceInServiceioReturn() throws Exception {
+        String xml = "<servicioReturn>   content   </servicioReturn>";
+        String result = invokeExtractSoapContent(xml);
+        assertEquals("   content   ", result);
+    }
+
+    @Test
+    void parseTerceros_withMultipleTercerosAndExceptionInSecond() throws Exception {
+        String xml = "<?xml version=\"1.0\"?><data><tercero><idenTercero>ID1</idenTercero><nomTercero>Juan</nomTercero></tercero><tercero><invalid</tercero></data>";
+        Method method = SicalService.class.getDeclaredMethod("parseTerceros", String.class);
+        method.setAccessible(true);
+        assertThrows(InvocationTargetException.class, () -> method.invoke(service, xml));
+    }
+
+    @Test
+    void populateTerceroFromDetter_withOnlyFirstField() throws Exception {
+        String detter = "ID001-@--@--@--@--@--@--@--@--@--@--@--@--@--@--@--@--@--@--@--@--@--@-";
+        Tercero t = new Tercero();
+        
+        invokePopulateTerceroFromDetter(t, detter);
+        assertEquals("ID001", t.getIdenTercero());
+    }
+
+    @Test
+    void populateTerceroFromDetter_withSpecialCharactersInVariousFields() throws Exception {
+        String detter = "ID&lt;001&gt;-@-NIF&quot;123&quot;-@-&apos;TYPE&apos;-@--@-Juan&lt;Name&gt;-@--@--@--@--@--@--@--@--@--@--@--@--@--@--@--@--@--@--@-";
+        Tercero t = new Tercero();
+        
+        invokePopulateTerceroFromDetter(t, detter);
+        assertEquals("ID<001>", t.getIdenTercero());
+        assertEquals("NIF\"123\"", t.getNIFtercero());
+        assertEquals("'TYPE'", t.getTipoDocumento());
+        assertEquals("Juan<Name>", t.getNomTercero());
+    }
+
+    @Test
+    void unescapePart_withIndexAtBoundary() throws Exception {
+        String[] parts = {"first", "second", "third"};
+        String result = invokeUnescapePart(parts, 2);
+        assertEquals("third", result);
+    }
+
+    @Test
+    void getTagValue_withNestedElementsReturnsFirstMatch() throws Exception {
+        String xml = "<root><container><name>nested</name></container><name>top</name></root>";
+        Document doc = parseXmlDom(xml);
+        Element root = doc.getDocumentElement();
+        String result = invokeGetTagValue(root, "name");
+        assertEquals("nested", result);
+    }
+
+    @Test
+    void deriveMissingApellido_callsParseNombreCompletoWhenBothAppellidosNull() throws Exception {
+        Tercero t = new Tercero();
+        t.setApellTercero(null);
+        t.setApellido1(null);
+        t.setApellido2(null);
+        t.setNombreCompleto("FirstName LastName");
+        
+        invokDeriveMissingApellido(t);
+        assertNotNull(t.getApellTercero());
+        assertEquals("LastName", t.getApellTercero());
+    }
+
+    @Test
+    void parseNombreCompleto_singleWordReturnsOnlyNomTercero() throws Exception {
+        Tercero t = new Tercero();
+        t.setNombreCompleto("SingleName");
+        
+        invokeParseNombreCompleto(t);
+        assertEquals("SingleName", t.getNomTercero());
+        assertNull(t.getApellTercero());
+    }
+
+    @Test
+    void extractSoapContent_findsCorrectClosingTagWhenMultipleTagsExist() throws Exception {
+        String xml = "<other><servicioReturn>first</servicioReturn></other><servicioReturn>second</servicioReturn>";
+        String result = invokeExtractSoapContent(xml);
+        assertEquals("first", result);
     }
 
     private String invokeUnescapeXmlEntities(String input) throws Exception {

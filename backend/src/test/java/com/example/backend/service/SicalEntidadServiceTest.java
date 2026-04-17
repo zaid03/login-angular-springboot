@@ -950,4 +950,326 @@ public class SicalEntidadServiceTest {
             assertEquals("Test & Co.", result.get(0).getNombre());
         }
     }
+
+    @Test
+    void getEntidades_withServiceioReturnTag_extractsContentBetweenGtAndEnd() throws Exception {
+        try (MockedStatic<CryptoSical> mockedCrypto = mockStatic(CryptoSical.class)) {
+            CryptoSical.SecurityFields secFields = new CryptoSical.SecurityFields("2026-01-01", "nonce123", "token456", "origin789");
+            mockedCrypto.when(() -> CryptoSical.calculateSecurityFields(any())).thenReturn(secFields);
+            mockedCrypto.when(() -> CryptoSical.encodeSha1Base64(any())).thenReturn("hashed");
+            
+            String codigoB64 = Base64.getEncoder().encodeToString("E999".getBytes(StandardCharsets.UTF_8));
+            String nombreB64 = Base64.getEncoder().encodeToString("Test".getBytes(StandardCharsets.UTF_8));
+            String innerXml = "&lt;data&gt;&lt;exito&gt;-1&lt;/exito&gt;&lt;detalle&gt;" + codigoB64 + "@" + nombreB64 + "&lt;/detalle&gt;&lt;/data&gt;";
+            String soapResponse = "<?xml version=\"1.0\"?><soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"><soapenv:Body><servicioReturn attr=\"value\">" + innerXml + "</servicioReturn></soapenv:Body></soapenv:Envelope>";
+            
+            when(restTemplate.postForObject(anyString(), any(HttpEntity.class), eq(String.class))).thenReturn(soapResponse);
+            ReflectionTestUtils.setField(service, "restTemplate", restTemplate);
+            
+            List<Entidad> result = service.getEntidades();
+            
+            assertNotNull(result);
+            assertEquals(1, result.size());
+            assertEquals("E999", result.get(0).getCodigo());
+        }
+    }
+
+    @Test
+    void getEntidades_withoutServiceioReturnTag_usesFullResponse() throws Exception {
+        try (MockedStatic<CryptoSical> mockedCrypto = mockStatic(CryptoSical.class)) {
+            CryptoSical.SecurityFields secFields = new CryptoSical.SecurityFields("2026-01-01", "nonce123", "token456", "origin789");
+            mockedCrypto.when(() -> CryptoSical.calculateSecurityFields(any())).thenReturn(secFields);
+            mockedCrypto.when(() -> CryptoSical.encodeSha1Base64(any())).thenReturn("hashed");
+            
+            String codigoB64 = Base64.getEncoder().encodeToString("E777".getBytes(StandardCharsets.UTF_8));
+            String nombreB64 = Base64.getEncoder().encodeToString("Direct".getBytes(StandardCharsets.UTF_8));
+            String response = "<?xml version=\"1.0\"?><data><exito>-1</exito><detalle>" + codigoB64 + "@" + nombreB64 + "</detalle></data>";
+            
+            when(restTemplate.postForObject(anyString(), any(HttpEntity.class), eq(String.class))).thenReturn(response);
+            ReflectionTestUtils.setField(service, "restTemplate", restTemplate);
+            
+            List<Entidad> result = service.getEntidades();
+            
+            assertNotNull(result);
+            assertEquals(1, result.size());
+            assertEquals("E777", result.get(0).getCodigo());
+        }
+    }
+
+    @Test
+    void getEntidades_withNullRestTemplate_createsNewInstance() throws Exception {
+        try (MockedStatic<CryptoSical> mockedCrypto = mockStatic(CryptoSical.class)) {
+            ReflectionTestUtils.setField(service, "restTemplate", null);
+            assertThrows(SmlProcessingException.class, () -> service.getEntidades());
+        }
+    }
+
+    @Test
+    void parseEntidades_withXmlParsingException_throwsSmlProcessingException() throws Exception {
+        String invalidXml = "<unclosed><tag>";
+        assertThrows(SmlProcessingException.class, () -> callParseEntidades(invalidXml));
+    }
+
+    @Test
+    void parseXmlDocument_withInvalidXmlContent_throwsXmlParsingException() throws Exception {
+        String badXml = "not xml at all {$^&";
+        assertThrows(SmlProcessingException.class, () -> callParseEntidades(badXml));
+    }
+
+    @Test
+    void validateExito_withNullExitoNodes_returnWithoutError() throws Exception {
+        String xml = "<?xml version=\"1.0\"?>" +
+            "<data>" +
+            "<detalle>" + Base64.getEncoder().encodeToString("E888".getBytes(StandardCharsets.UTF_8)) +
+            "@Test</detalle>" +
+            "</data>";
+        
+        List<Entidad> result = callParseEntidades(xml);
+        assertNotNull(result);
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    void validateExito_withZeroLengthExitoNodes_returnWithoutError() throws Exception {
+        String xml = "<?xml version=\"1.0\"?>" +
+            "<data>" +
+            "<detalle>" + Base64.getEncoder().encodeToString("E555".getBytes(StandardCharsets.UTF_8)) +
+            "@Value</detalle>" +
+            "</data>";
+        
+        List<Entidad> result = callParseEntidades(xml);
+        assertNotNull(result);
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    void parseDetalleList_withNullDetalleContent_skipsNull() throws Exception {
+        String xml = "<?xml version=\"1.0\"?>" +
+            "<data>" +
+            "<exito>-1</exito>" +
+            "<detalle>" + Base64.getEncoder().encodeToString("E111".getBytes(StandardCharsets.UTF_8)) +
+            "@Name1</detalle>" +
+            "<detalle></detalle>" +
+            "<detalle>" + Base64.getEncoder().encodeToString("E222".getBytes(StandardCharsets.UTF_8)) +
+            "@Name2</detalle>" +
+            "</data>";
+        
+        List<Entidad> result = callParseEntidades(xml);
+        assertEquals(2, result.size());
+        assertEquals("E111", result.get(0).getCodigo());
+        assertEquals("E222", result.get(1).getCodigo());
+    }
+
+    @Test
+    void parseDetalleList_withAllEmptyDetalles_returnsEmpty() throws Exception {
+        String xml = "<?xml version=\"1.0\"?>" +
+            "<data>" +
+            "<exito>-1</exito>" +
+            "<detalle></detalle>" +
+            "<detalle></detalle>" +
+            "</data>";
+        
+        List<Entidad> result = callParseEntidades(xml);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void parseDetalleList_filtersOutNullEntidades() throws Exception {
+        String xml = "<?xml version=\"1.0\"?>" +
+            "<data>" +
+            "<exito>-1</exito>" +
+            "<detalle>@OnlyNombre</detalle>" +
+            "<detalle>" + Base64.getEncoder().encodeToString("E333".getBytes(StandardCharsets.UTF_8)) +
+            "@Name</detalle>" +
+            "</data>";
+        
+        List<Entidad> result = callParseEntidades(xml);
+        assertEquals(1, result.size());
+        assertEquals("E333", result.get(0).getCodigo());
+    }
+
+    @Test
+    void parseEntidadFromDetalle_withSinglePart_noAtSymbol() {
+        String codigoB64 = Base64.getEncoder().encodeToString("SinglePart".getBytes(StandardCharsets.UTF_8));
+        Entidad result = callParseEntidadFromDetalle(codigoB64);
+        assertNotNull(result);
+        assertEquals("SinglePart", result.getCodigo());
+        assertEquals("", result.getNombre());
+    }
+
+    @Test
+    void parseEntidadFromDetalle_partsLengthGreaterThanOne() {
+        String codigoB64 = Base64.getEncoder().encodeToString("Codigo".getBytes(StandardCharsets.UTF_8));
+        String nombreB64 = Base64.getEncoder().encodeToString("Nombre".getBytes(StandardCharsets.UTF_8));
+        // When split with limit 2, "a@b@c" becomes ["a", "b@c"]
+        // The second part "nombreB64@Extra" is not valid base64, so decodeBase64Safe returns it as-is
+        Entidad result = callParseEntidadFromDetalle(codigoB64 + "@" + nombreB64 + "@Extra");
+        assertNotNull(result);
+        assertEquals("Codigo", result.getCodigo());
+        // nombreB64 + "@Extra" is not valid base64, returned as-is
+        assertEquals(nombreB64 + "@Extra", result.getNombre());
+    }
+
+    @Test
+    void parseEntidadFromDetalle_withZeroLengthCodigoAfterDecode() {
+        String result_str = callDecodeBase64Safe("");
+        assertEquals("", result_str);
+    }
+
+    @Test
+    void parseEntidadFromDetalle_codigoEmptyAfterDecode_returnsNull() {
+        String encoded = Base64.getEncoder().encodeToString("".getBytes(StandardCharsets.UTF_8));
+        Entidad result = callParseEntidadFromDetalle(encoded + "@Nombre");
+        assertNull(result);
+    }
+
+    @Test
+    void decodeBase64Safe_withEmptyInput_returnsEmpty() {
+        String result = callDecodeBase64Safe("");
+        assertEquals("", result);
+    }
+
+    @Test
+    void decodeBase64Safe_withInvalidBase64Pattern_returnsOriginalString() {
+        String invalid = "!@#$%^&*()";
+        String result = callDecodeBase64Safe(invalid);
+        assertEquals(invalid, result);
+    }
+
+    @Test
+    void parseEntidadFromDetalle_withTwoPartsAllEmpty() {
+        Entidad result = callParseEntidadFromDetalle("@");
+        assertNull(result);
+    }
+
+    @Test
+    void parseDetalleList_skipsNullEntidadesFromNullCodigo() throws Exception {
+        String emptyBase64 = Base64.getEncoder().encodeToString("".getBytes(StandardCharsets.UTF_8));
+        String xml = "<?xml version=\"1.0\"?>" +
+            "<data>" +
+            "<exito>-1</exito>" +
+            "<detalle>" + emptyBase64 + "@Ignore</detalle>" +
+            "<detalle>" + Base64.getEncoder().encodeToString("E444".getBytes(StandardCharsets.UTF_8)) +
+            "@Keep</detalle>" +
+            "</data>";
+        
+        List<Entidad> result = callParseEntidades(xml);
+        assertEquals(1, result.size());
+        assertEquals("E444", result.get(0).getCodigo());
+    }
+
+    @Test
+    void unescapeXml_replacesAllEntitiesInSequence() {
+        String input = "&amp;&lt;&gt;&quot;&apos;";
+        String result = callUnescapeXml(input);
+        assertEquals("&<>\"'", result);
+    }
+
+    @Test
+    void unescapeXml_handlesRepeatedEntities() {
+        String input = "&lt;&lt;&lt;&gt;&gt;&gt;";
+        String result = callUnescapeXml(input);
+        assertEquals("<<<>>>", result);
+    }
+
+    @Test
+    void parseEntidades_withComplexUtf8Entities() throws Exception {
+        String codigo = "E-UTF8";
+        String nombre = "Münch - Åse - Łódź";
+        String codigoB64 = Base64.getEncoder().encodeToString(codigo.getBytes(StandardCharsets.UTF_8));
+        String nombreB64 = Base64.getEncoder().encodeToString(nombre.getBytes(StandardCharsets.UTF_8));
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+            "<data>" +
+            "<exito>-1</exito>" +
+            "<detalle>" + codigoB64 + "@" + nombreB64 + "</detalle>" +
+            "</data>";
+        
+        List<Entidad> result = callParseEntidades(xml);
+        assertEquals(1, result.size());
+        assertEquals(nombre, result.get(0).getNombre());
+    }
+
+    @Test
+    void getEntidades_withServiceioReturnContainingNestedTags() throws Exception {
+        try (MockedStatic<CryptoSical> mockedCrypto = mockStatic(CryptoSical.class)) {
+            CryptoSical.SecurityFields secFields = new CryptoSical.SecurityFields("2026-01-01", "nonce", "token", "origin");
+            mockedCrypto.when(() -> CryptoSical.calculateSecurityFields(any())).thenReturn(secFields);
+            mockedCrypto.when(() -> CryptoSical.encodeSha1Base64(any())).thenReturn("hashed");
+            
+            String innerXml = "&lt;data&gt;&lt;exito&gt;-1&lt;/exito&gt;&lt;detalle&gt;" +
+                Base64.getEncoder().encodeToString("E666".getBytes(StandardCharsets.UTF_8)) + "@" +
+                Base64.getEncoder().encodeToString("Nested".getBytes(StandardCharsets.UTF_8)) +
+                "&lt;/detalle&gt;&lt;/data&gt;";
+            String response = "<servicioReturn>" + innerXml + "</servicioReturn>";
+            
+            when(restTemplate.postForObject(anyString(), any(HttpEntity.class), eq(String.class))).thenReturn(response);
+            ReflectionTestUtils.setField(service, "restTemplate", restTemplate);
+            
+            List<Entidad> result = service.getEntidades();
+            assertNotNull(result);
+            assertEquals(1, result.size());
+        }
+    }
+
+    @Test
+    void parseDetalleList_withMixedNullAndValidEntries() throws Exception {
+        String xml = "<?xml version=\"1.0\"?>" +
+            "<data>" +
+            "<exito>-1</exito>" +
+            "<detalle></detalle>" +
+            "<detalle>" + Base64.getEncoder().encodeToString("EA1".getBytes(StandardCharsets.UTF_8)) + "@A</detalle>" +
+            "<detalle></detalle>" +
+            "<detalle>" + Base64.getEncoder().encodeToString("EA2".getBytes(StandardCharsets.UTF_8)) + "@B</detalle>" +
+            "<detalle></detalle>" +
+            "</data>";
+        
+        List<Entidad> result = callParseEntidades(xml);
+        assertEquals(2, result.size());
+    }
+
+    @Test
+    void decodeBase64Safe_withValidBase64ContainingSpecialChars() {
+        String original = "Test-123_!@";
+        String encoded = Base64.getEncoder().encodeToString(original.getBytes(StandardCharsets.UTF_8));
+        String result = callDecodeBase64Safe(encoded);
+        assertEquals(original, result);
+    }
+
+    @Test
+    void parseEntidadFromDetalle_withMultipleAtSymbols() {
+        String codigoB64 = Base64.getEncoder().encodeToString("Code".getBytes(StandardCharsets.UTF_8));
+        String nombreB64 = Base64.getEncoder().encodeToString("Name@With@At".getBytes(StandardCharsets.UTF_8));
+        Entidad result = callParseEntidadFromDetalle(codigoB64 + "@" + nombreB64);
+        assertNotNull(result);
+        assertEquals("Code", result.getCodigo());
+        assertEquals("Name@With@At", result.getNombre());
+    }
+
+    @Test
+    void validateExito_withMultipleExitoNodes_usesFirst() throws Exception {
+        String xml = "<?xml version=\"1.0\"?>" +
+            "<data>" +
+            "<exito>-1</exito>" +
+            "<exito>1</exito>" +
+            "<detalle>" + Base64.getEncoder().encodeToString("E10".getBytes(StandardCharsets.UTF_8)) + "@T</detalle>" +
+            "</data>";
+        
+        List<Entidad> result = callParseEntidades(xml);
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    void getEntidades_throwsSmlProcessingExceptionOnRestException() throws Exception {
+        try (MockedStatic<CryptoSical> mockedCrypto = mockStatic(CryptoSical.class)) {
+            CryptoSical.SecurityFields secFields = new CryptoSical.SecurityFields("2026-01-01", "nonce", "token", "origin");
+            mockedCrypto.when(() -> CryptoSical.calculateSecurityFields(any())).thenReturn(secFields);
+            mockedCrypto.when(() -> CryptoSical.encodeSha1Base64(any())).thenReturn("hashed");
+            
+            when(restTemplate.postForObject(anyString(), any(HttpEntity.class), eq(String.class)))
+                .thenThrow(new RuntimeException("Connection failed"));
+            ReflectionTestUtils.setField(service, "restTemplate", restTemplate);
+            
+            assertThrows(SmlProcessingException.class, () -> service.getEntidades());
+        }
+    }
 }
