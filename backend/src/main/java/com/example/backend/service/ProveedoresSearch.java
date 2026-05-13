@@ -1,13 +1,13 @@
 package com.example.backend.service;
 
+import java.util.List;
+import java.util.Objects;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.backend.sqlserver2.model.Ter;
 import com.example.backend.sqlserver2.repository.TerRepository;
-
-import java.util.List;
-import java.util.Objects;
 
 @Service
 public class ProveedoresSearch {
@@ -19,6 +19,7 @@ public class ProveedoresSearch {
         String searchMode, 
         String term
     ) {
+        term = term.replaceAll("\\s+", " ").trim();
         List<Ter> proveedores = terRepository.findByENT(ent);
 
         if (proveedores != null && !proveedores.isEmpty()) {
@@ -75,13 +76,15 @@ public class ProveedoresSearch {
         List<Ter> proveedores,
         String term
     ) {
-        return proveedores.stream().filter(p -> (p.getTERCOD() != null && p.getTERCOD().toString().equals(term)) || (p.getTERNIF() != null && p.getTERNIF().contains(term))).toList();
+        String termLower = term.toLowerCase();
+        return proveedores.stream().filter(p -> (p.getTERCOD() != null && p.getTERCOD().toString().equals(term)) || (p.getTERNIF() != null && p.getTERNIF().replaceAll("\\s+", " ").toLowerCase().contains(termLower))).toList();
     }
     private List<Ter> filterTodosByTercodAndTernomAndTerali (
         List<Ter> proveedores,
         String term
     ) {
-        return proveedores.stream().filter(p -> (p.getTERNIF() != null && p.getTERNIF().contains(term)) || (p.getTERNOM() != null && p.getTERNOM().contains(term)) || (p.getTERALI() != null && p.getTERALI().contains(term))).toList();
+        String termLower = term.toLowerCase();
+        return proveedores.stream().filter(p -> (p.getTERNIF() != null && p.getTERNIF().replaceAll("\\s+", " ").toLowerCase().contains(termLower)) || (p.getTERNOM() != null && p.getTERNOM().replaceAll("\\s+", " ").toLowerCase().contains(termLower)) || (p.getTERALI() != null && p.getTERALI().replaceAll("\\s+", " ").toLowerCase().contains(termLower))).toList();
     }
 
     private List<Ter> filterNoBloqueadoByTercodAndTerblo (
@@ -100,9 +103,10 @@ public class ProveedoresSearch {
         String term,
         Integer terblo
     ) {
+        String termLower = term.toLowerCase();
         return proveedores.stream().filter(p -> 
             ((p.getTERCOD() != null && p.getTERCOD().toString().equals(term)) 
-            || (p.getTERNIF() != null && p.getTERNIF().contains(term))) 
+            || (p.getTERNIF() != null && p.getTERNIF().replaceAll("\\s+", " ").toLowerCase().contains(termLower))) 
             && Objects.equals(p.getTERBLO(), terblo)).toList(); 
     }
     private List<Ter> filterNoBloqueadoByTercodAndTernomAndTeraliAndTerblo (
@@ -110,10 +114,11 @@ public class ProveedoresSearch {
         String term,
         Integer terblo
     ) {
+        String termLower = term.toLowerCase();
         return proveedores.stream().filter(p -> 
-            ((p.getTERNIF() != null && p.getTERNIF().contains(term)) 
-            || (p.getTERNOM() != null && p.getTERNOM().contains(term)) 
-            || (p.getTERALI() != null && p.getTERALI().contains(term)))
+            ((p.getTERNIF() != null && p.getTERNIF().replaceAll("\\s+", " ").toLowerCase().contains(termLower)) 
+            || (p.getTERNOM() != null && p.getTERNOM().replaceAll("\\s+", " ").toLowerCase().contains(termLower)) 
+            || (p.getTERALI() != null && p.getTERALI().replaceAll("\\s+", " ").toLowerCase().contains(termLower)))
             && Objects.equals(p.getTERBLO(), terblo)).toList();
     }
 }
