@@ -59,11 +59,13 @@ export class PersonasPorServiciosComponent {
       return;
     }
     this.fetchServices();
+    this.getNumberPages();
   }
 
   //global functions
   isLoading: boolean = false;
   isNotSearch: boolean = false;
+  pageNum: number = 0;
   fetchServices() {
     if (this.entcod === null || this.eje === null) return;
     this.inSearch = false;
@@ -88,6 +90,18 @@ export class PersonasPorServiciosComponent {
       }
     });
   };
+
+  getNumberPages() {
+    if (this.entcod === null || this.eje === null) return;
+    this.http.get<any>(`${environment.backendUrl}/api/depe/personas-servicios-pagination/${this.entcod}/${this.eje}`).subscribe({
+      next: (res) => {
+        this.pageNum = Math.ceil(res / 20);
+      },
+      error: (err) => {
+        console.warn(err.error.error ?? err.error);
+      }
+    })
+  }
 
   private updatePagination(): void {
     const total = this.totalPages;
@@ -409,6 +423,7 @@ export class PersonasPorServiciosComponent {
     this.inSearch = false;
     this.pageLoad = 1;
     this.fetchServices();
+    this.getNumberPages();
   }
 
   //misc

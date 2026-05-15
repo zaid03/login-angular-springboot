@@ -248,6 +248,24 @@ public class DpeController {
         }
     }
 
+    //getting the number of pages
+    @GetMapping("/personas-servicios-pagination/{ent}/{eje}")
+    public ResponseEntity<?> getPaginationNumber(
+        @PathVariable Integer ent,
+        @PathVariable String eje
+    ) {
+        try {
+            Integer number = dpeRepository.countByENTAndEJE(ent, eje);
+            if (number == 0) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
+            }
+
+            return ResponseEntity.ok(number);
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ERROR + ex.getMessage());
+        }
+    }
+
     //search in personas de servicio
     @GetMapping("/personas-servicios/search")
     public ResponseEntity<?> searchPersonasServicios(
