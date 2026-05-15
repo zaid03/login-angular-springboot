@@ -200,17 +200,38 @@
                                     <h1 class="h1-style">{{tempProveedor.procod || '#'}}</h1>
                                     <h1 class="h1-style">{{tempProveedor.terpob || '#'}}</h1>
                                 </div>
-                                <h1 class="h1-style">{{tempProveedor.tercpo || '#'}}</h1>
+                                <div class="on-three">
+                                    <h1 class="h1-style">{{tempProveedor.tercpo || '#'}}</h1>
+                                    <p class="p-style">C.contable</p>
+                                    <h1 class="h1-style">{{tempProveedor.terayt || '#'}}</h1>
+                                </div>
                             </div>
                         </div>
                         <div class="chunk-three">
                             <div class="left">
-                                <p class="p-style">C.contable</p>
-                                <p class="p-style">Bloqueado</p>
+                                <p class="p-style">Fax</p>
                                 <p class="p-style">Teléfono</p>
+                                <p class="p-style">Correo electrónico</p>
                             </div>
                             <div class="right">
-                                <h1 class="h1-style">{{tempProveedor.terayt || '#'}}</h1>
+                                <h1 class="h1-style">{{tempProveedor.terfax || '#'}}</h1>
+                                <h1 class="h1-style">{{tempProveedor.tertel || '#'}}</h1>
+                                <h1 class="h1-style">{{tempProveedor.tercoe || '#'}}</h1>
+                            </div>
+                        </div>
+                        <div class="chunk-four">
+                            <div class="left left-special">
+                                <p class="p-style">Web</p>
+                                <p class="p-style">Bloqueado</p>
+                                <p class="p-style">Tiene acuerdo marco</p>
+                            </div>
+                            <div class="right">
+                                <textarea 
+                                    class="textArea-style largeArea" 
+                                    [(ngModel)]="tempProveedor.terweb"
+                                    [disabled]="!isUpdate"
+                                    (input)="allowToUpdate = true"
+                                ></textarea>
                                 <div class="bloq">
                                     <input type="checkbox"
                                         [checked]="tempProveedor.terblo == 1"
@@ -220,35 +241,17 @@
                                         class="checkbox" 
                                     />
                                 </div>
-                                <h1 class="h1-style">{{tempProveedor.tertel || '#'}}</h1>
+                                <div class="bloq">
+                                    <input type="checkbox"
+                                        [checked]="tempProveedor.teracu == 1"
+                                        (change)="onCheckboxGeneric($event, 'teracu')"
+                                        [disabled]="!isUpdate"
+                                        (input)="allowToUpdate = true"
+                                        class="checkbox" 
+                                    />
+                                        
+                                </div>
                             </div>
-                        </div>
-                        <div class="chunk-four">
-                            <div class="left">
-                                <p class="p-style">Fax</p>
-                                <p class="p-style">Web</p>
-                                <p class="p-style">Correo electrónico</p>
-                            </div>
-                            <div class="right">
-                                <h1 class="h1-style">{{tempProveedor.terfax || '#'}}</h1>
-                                <textarea 
-                                    class="textArea-style largeArea" 
-                                    [(ngModel)]="tempProveedor.terweb"
-                                    [disabled]="!isUpdate"
-                                    (input)="allowToUpdate = true"
-                                ></textarea>
-                                <h1 class="h1-style">{{tempProveedor.tercoe || '#'}}</h1>
-                            </div>
-                        </div>
-                        <div class="acuerdo">
-                            <input type="checkbox"
-                                [checked]="tempProveedor.teracu == 1"
-                                (change)="onCheckboxGeneric($event, 'teracu')"
-                                [disabled]="!isUpdate"
-                                (input)="allowToUpdate = true"
-                                class="checkbox" 
-                            />
-                                Tiene acuerdo marco
                         </div>
                         <div class="observ">
                             <p class="p-style">Observaciones:</p>
