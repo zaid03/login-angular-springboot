@@ -117,7 +117,10 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let p of paginatedProveedores" [class.grey-row]="p.terblo == 1">
+                    <tr 
+                        *ngFor="let p of paginatedProveedores" 
+                        [ngClass]="{ 'grey-row': p.terblo === 1 && isTodos }"
+                    >
                         <td (click)="showDetails(p)" style="cursor: pointer;">{{ p.tercod }}</td>
                         <td>{{ p.ternom }}</td>
                         <td>{{ p.ternif }}</td>

@@ -200,9 +200,11 @@ export class ProveedoreesComponent {
   //proveedores main related functions
   searchTerm: string = '';
   filterOption: string = 'Nobloqueado';
+  isTodos: boolean = true;
   search() {
     this.limpiarMessages();
     this.isLoading = true
+    if (this.filterOption != 'todos') {this.isTodos = false;}
     const params = {
       ent: this.entcod || '',
       searchMode: this.filterOption,
@@ -229,6 +231,7 @@ export class ProveedoreesComponent {
     this.filterOption = 'Nobloqueado';
     this.page = 0;
     this.searchTerm = '';
+    this.isTodos = true;
   }
   
   DownloadPDF() {

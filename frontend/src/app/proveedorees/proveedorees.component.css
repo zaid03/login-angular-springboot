@@ -16,6 +16,7 @@
 .align tbody td:nth-child(11),
 .align tbody td:nth-child(12),
 .align tbody td:nth-child(13) {width: 50px !important; max-width: 50px !important;}
+.grey-row {background-color: gray;}
 /* main table */
 /* detail grid */
 .detail-container { display: flex; flex-wrap: wrap; align-items: center; padding: 5px; gap: 10px; }
