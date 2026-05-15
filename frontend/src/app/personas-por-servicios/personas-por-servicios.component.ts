@@ -225,7 +225,7 @@ export class PersonasPorServiciosComponent {
 
   excelDownload() {
     this.limpiarMessages(); 
-    const rows = this.paginatedServices;
+    const rows = this.services;
     if (!rows || rows.length === 0) {
       this.personasServicesError = 'No hay datos para exportar.';
       return;
@@ -272,7 +272,7 @@ export class PersonasPorServiciosComponent {
 
   toPrint() {
     this.limpiarMessages();
-    const source = this.paginatedServices;
+    const source = this.services;
     if (!source?.length) {
       this.personasServicesError = 'No hay datos para exportar.';
       return;

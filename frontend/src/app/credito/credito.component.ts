@@ -236,7 +236,7 @@ export class CreditoComponent {
   DownloadPDF() {
     this.limpiarMessages();
 
-    const source = this.paginatedBolsas;
+    const source = this.creditos;
     if (!source?.length) {
       this.tableMessage = 'No hay datos para exportar.';
       return;
@@ -332,7 +332,7 @@ export class CreditoComponent {
       { header: 'Disponible', dataKey: 'getkdispon'}
     ];
 
-    const rows = (this.paginatedBolsas || []).map((f: any) => ({
+    const rows = (this.creditos || []).map((f: any) => ({
       aplicacion: `${f.gbsorg ?? ''} - ${f.gbsfun ?? ''} - ${f.gbseco ?? ''}`,
       desc: f.partidas[0]?.desc,
       gbsope: f.gbsope,

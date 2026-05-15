@@ -212,7 +212,7 @@ export class MonitorContabilizacionComponent {
   DownloadPDF() {
     this.limpiarMEssages();
 
-    const source = this.paginatedFacturas;
+    const source = this.facturas;
     if (!source?.length) {
       this.filterFacturaMessage = 'No hay datos para exportar.';
       return;
@@ -321,7 +321,7 @@ export class MonitorContabilizacionComponent {
       { header: 'F.Contable', dataKey: 'facfco' }
     ];
 
-    const rows = (this.paginatedFacturas || []).map((p: any) => ({
+    const rows = (this.facturas || []).map((p: any) => ({
       facnum: p.facnum,
       tercod: p.tercod,
       ternom: p.ternom,

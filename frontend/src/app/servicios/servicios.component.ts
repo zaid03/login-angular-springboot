@@ -213,7 +213,7 @@ export class ServiciosComponent {
 
   excelDownload() {
     this.limpiarMessages();
-    const rows = this.paginatedServices;
+    const rows = this.services;
     if (!rows || rows.length === 0) {
       this.servicessMessageError = 'No hay datos para exportar.';
       return;
@@ -256,7 +256,7 @@ export class ServiciosComponent {
 
   exportPdf() {
     this.limpiarMessages();
-    const source = this.paginatedServices;
+    const source = this.services;
     if (!source?.length) {
       this.servicessMessageError = 'No hay datos para exportar.';
       return;

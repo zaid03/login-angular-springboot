@@ -191,7 +191,7 @@ export class PersonaComponent {
 
   excelDownload() {
     this.limpiarMessages(); 
-    const rows = this.paginatedPersonas;
+    const rows = this.personas;
     if (!rows || rows.length === 0) {
       this.personasMessageError = 'No hay datos para exportar.';
       return;
@@ -232,7 +232,7 @@ export class PersonaComponent {
 
   exportPdf() {
     this.limpiarMessages();
-    const source = this.paginatedPersonas;
+    const source = this.personas;
     if (!source?.length) {
       this.personasMessageError = 'No hay datos para exportar.';
       return;

@@ -137,7 +137,7 @@ export class FamiliaComponent {
 
   excelDownload() {
     this.limpiarMessages();
-    const rows = this.paginatedFamilias;
+    const rows = this.familias;
     if (!rows || rows.length === 0) {
       this.tableMessage = 'No hay datos para exportar.';
       return;
@@ -174,7 +174,7 @@ export class FamiliaComponent {
 
   toPrint() {
     this.limpiarMessages();
-    const source = this.paginatedFamilias;
+    const source = this.familias;
     if (!source?.length) {
       this.tableMessage = 'No hay datos para exportar.';
       return;

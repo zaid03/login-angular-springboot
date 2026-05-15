@@ -280,7 +280,7 @@ export class CgeComponent {
 
   excelDownload() {
     this.limpiarMessages();
-    const rows = this.paginatedCentroGestor;
+    const rows = this.centroGestores;
     if (!rows || rows.length === 0) {
       this.SearchDownMessageError = 'No hay datos para exportar.';
       return;
@@ -319,7 +319,7 @@ export class CgeComponent {
 
   pdfDownload() {
     this.limpiarMessages();
-    const source = this.paginatedCentroGestor;
+    const source = this.centroGestores;
     if (!source?.length) {
       this.SearchDownMessageError = 'No hay datos para exportar.';
       return;

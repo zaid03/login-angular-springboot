@@ -258,7 +258,7 @@ export class ConsultaBolsasComponent {
   DownloadPDF() {
     this.limpiarMessages();
 
-    const source = this.paginatedBolsas;
+    const source = this.creditos;
     if (!source?.length) {
       this.tableIsError = true;
       this.tableMessage = 'No hay datos para exportar.';
@@ -356,7 +356,7 @@ export class ConsultaBolsasComponent {
       { header: 'Disponible', dataKey: 'getkdispon'}
     ];
 
-    const rows = (this.paginatedBolsas || []).map((f: any) => ({
+    const rows = (this.creditos || []).map((f: any) => ({
       aplicacion: `${f.gbsorg ?? ''} - ${f.gbsfun ?? ''} - ${f.gbseco ?? ''}`,
       desc: f.partidas[0]?.desc,
       gbsope: f.gbsope,

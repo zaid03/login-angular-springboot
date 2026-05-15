@@ -244,7 +244,7 @@ export class CosteComponent {
 
   downloadExcel() {
     this.emptyAllMessages();
-    const rows = this.paginatedCostes;
+    const rows = this.costes;
     if (!rows || rows.length === 0) {
       this.costeError = 'No hay datos para exportar.';
       return;
@@ -277,7 +277,7 @@ export class CosteComponent {
 
   exportPdf() {
     this.emptyAllMessages();
-    const source = this.paginatedCostes;
+    const source = this.costes;
 
     if (!source?.length) {
       this.costeError = 'No hay datos para exportar.';

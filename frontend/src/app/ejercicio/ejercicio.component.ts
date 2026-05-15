@@ -192,7 +192,7 @@ export class EjercicioComponent {
 
   excelDownload() {
     this.limpiarMessages();
-    const rows = this.paginatedEjercicios;
+    const rows = this.ejercicios;
     if (!rows || rows.length === 0) {
       this.ejercicioError = 'No hay datos para exportar.';
       return;
@@ -226,7 +226,7 @@ export class EjercicioComponent {
   pdfDownload() {
     this.limpiarMessages();
     this.ejercicioError = '';
-    const source = this.paginatedEjercicios;
+    const source = this.ejercicios;
     if (!source?.length) {
       this.ejercicioError = 'No hay datos para exportar.';
       return;

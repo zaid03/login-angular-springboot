@@ -218,7 +218,7 @@ export class EntregaComponent {
 
   downloadExcel() {
     this.emptyAllMessages();
-    const rows = this.paginatedEntregas;
+    const rows = this.entregas;
     if (!rows || rows.length === 0) {
       this.entregasError = 'No hay datos para exportar.';
       return;
@@ -251,7 +251,7 @@ export class EntregaComponent {
 
   exportPdf() {
     this.emptyAllMessages();
-    const source = this.paginatedEntregas;
+    const source = this.entregas;
 
     if (!source?.length) {
       this.entregasError = 'No hay datos para exportar.';
