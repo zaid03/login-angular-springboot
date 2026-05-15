@@ -493,7 +493,7 @@
         <p class="p-style">Subfamilia: {{ articuloToDelete.asucod }}</p>
         <p class="p-style">Artículo: {{ articuloToDelete.artcod }}</p>
     </div>
-    <button class="red-btn" (click)="confirmDelete()">-</button>
+    <button class="red-btn" (click)="confirmDelete()">Borrar</button>
 </div>
 
 <div class="modal-backdrop" *ngIf="showDeletePersona" (click)="closeDeleteConfirm()"></div>
@@ -512,7 +512,7 @@
             <h1 class="p-style titleDelete">{{personaToDelete.tpenom}}</h1>
         </div>
     </div>
-    <button class="red-btn" (click)="confirmDeletePersona()">-</button>
+    <button class="red-btn" (click)="confirmDeletePersona()">Borrar</button>
 </div>
 
 <div class="modal-backdrop" *ngIf="showPersonasGrid" (click)="hidePersonas()"></div>
