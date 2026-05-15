@@ -252,7 +252,7 @@ export class ProveedoreesComponent {
       { header: 'Correo electronico', dataKey: 'tercoe' },
       { header: 'Observaciones', dataKey: 'terobs' }
     ];
-    const data = this.paginatedProveedores;
+    const data = this.proveedores;
 
     autoTable(doc, {
       columns,
@@ -291,7 +291,7 @@ export class ProveedoreesComponent {
 
   downloadExcel() {
     this.limpiarMessages();
-    const rows = this.paginatedProveedores;
+    const rows = this.proveedores;
     if (!rows || rows.length === 0) {
       this.error = 'No hay datos para exportar.';
       return;
