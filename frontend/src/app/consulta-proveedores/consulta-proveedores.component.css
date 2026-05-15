@@ -8,13 +8,15 @@
 .hello-modal .anadir-articulo-form input[type="radio"] { margin: 0 6px 0 0; accent-color: #25176b; width: 18px; height: 18px; vertical-align: middle; outline: none; box-shadow: none; }
 /* search */
 /* main table */
+.align thead th:nth-child(1) {max-width: 24 px;}
+.align thead th:nth-child(3),
 .align tbody td:nth-child(5),
-.align tbody td:nth-child(6),
 .align tbody td:nth-child(9),
 .align tbody td:nth-child(10),
 .align tbody td:nth-child(11),
 .align tbody td:nth-child(12),
 .align tbody td:nth-child(13) {width: 50px !important; max-width: 50px !important;}
+.grey-row {background-color: gray;}
 /* main table */
 /* detail grid */
 .detail-container { display: flex; flex-wrap: wrap; align-items: center; padding: 5px; gap: 10px; }
@@ -30,6 +32,7 @@
 .largeArea { width: 250px; }
 .observ { width: 50%; gap: 10px; }
 .observ textarea { width: 90%; height: 100px; max-width: 100%; }
+.left-special {width: 40%;}
 /* detail grid */
 /* sub tables and lists */  
 .art thead th:first-child,
@@ -66,5 +69,6 @@
 .pct .red-btn,
 .art .red-btn { margin-right: 10px;}
 /* sub tables and lists */
-@media (min-width: 1700px) { .chunk-one, .chunk-two, .chunk-three, .chunk-four { width: 22%; }
-.save-btn-articulos {margin-left: 10px;} }
+@media (min-width: 1700px) { .chunk-one, .chunk-two, .chunk-three { width: 22%; }
+.save-btn-articulos {margin-left: 10px;}
+.chunk-four {width: 30%;} }

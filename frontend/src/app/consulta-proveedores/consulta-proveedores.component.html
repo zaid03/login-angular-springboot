@@ -117,7 +117,10 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let p of paginatedProveedores" [class.grey-row]="p.terblo == 1">
+                    <tr 
+                        *ngFor="let p of paginatedProveedores" 
+                        [ngClass]="{ 'grey-row': p.terblo === 1 && isTodos }"
+                    >
                         <td (click)="showDetails(p)" style="cursor: pointer;">{{ p.tercod }}</td>
                         <td>{{ p.ternom }}</td>
                         <td>{{ p.ternif }}</td>
@@ -187,50 +190,61 @@
                                     <h1 class="h1-style">{{selectedProveedor.procod || '#'}}</h1>
                                     <h1 class="h1-style">{{selectedProveedor.terpob || '#'}}</h1>
                                 </div>
-                                <h1 class="h1-style">{{selectedProveedor.tercpo || '#'}}</h1>
+                                <div class="on-three">
+                                    <h1 class="h1-style">{{selectedProveedor.tercpo || '#'}}</h1>
+                                    <p class="p-style">C.contable</p>
+                                    <h1 class="h1-style">{{selectedProveedor.terayt || '#'}}</h1>
+                                </div>
                             </div>
                         </div>
                         <div class="chunk-three">
                             <div class="left">
-                                <p class="p-style">C.contable</p>
-                                <p class="p-style">Bloqueado</p>
+                                <p class="p-style">Fax</p>
                                 <p class="p-style">Teléfono</p>
-                            </div>
-                            <div class="right">
-                                <h1 class="h1-style">{{selectedProveedor.terayt || '#'}}</h1>
-                                <div class="bloq">
-                                    <input type="checkbox"
-                                        [checked]="selectedProveedor.terblo == 1"
-                                        (click)="$event.preventDefault()"
-                                        class="checkbox" 
-                                    />
-                                </div>
-                                <h1 class="h1-style">{{selectedProveedor.tertel || '#'}}</h1>
-                            </div>
-                        </div>
-                        <div class="chunk-four">
-                            <div class="left">
-                                <p class="p-style margin">Fax</p>
-                                <p class="p-style">Web</p>
                                 <p class="p-style">Correo electrónico</p>
                             </div>
                             <div class="right">
                                 <h1 class="h1-style">{{selectedProveedor.terfax || '#'}}</h1>
-                                <h1 class="h1-style">{{selectedProveedor.terweb || '#'}}</h1>
+                                <h1 class="h1-style">{{selectedProveedor.tertel || '#'}}</h1>
                                 <h1 class="h1-style">{{selectedProveedor.tercoe || '#'}}</h1>
                             </div>
                         </div>
-                        <div class="acuerdo">
-                            <input type="checkbox"
-                                [checked]="selectedProveedor.teracu == 1"
-                                (click)="$event.preventDefault()"
-                                class="checkbox" 
-                            />
-                                Tiene acuerdo marco
+                        <div class="chunk-four">
+                            <div class="left left-special">
+                                <p class="p-style">Web</p>
+                                <p class="p-style">Bloqueado</p>
+                                <p class="p-style">Tiene acuerdo marco</p>
+                            </div>
+                            <div class="right">
+                                <textarea 
+                                    class="textArea-style largeArea" 
+                                    [(ngModel)]="selectedProveedor.terweb"
+                                    disabled
+                                ></textarea>
+                                <div class="bloq">
+                                    <input type="checkbox"
+                                        [checked]="selectedProveedor.terblo == 1"
+                                        class="checkbox" 
+                                        disabled
+                                    />
+                                </div>
+                                <div class="bloq">
+                                    <input type="checkbox"
+                                        [checked]="selectedProveedor.teracu == 1"
+                                        class="checkbox" 
+                                        disabled
+                                    />
+                                        
+                                </div>
+                            </div>
                         </div>
                         <div class="observ">
                             <p class="p-style">Observaciones:</p>
-                            <h1 class="h1-style">{{selectedProveedor.terobs || '#'}}</h1>
+                            <textarea 
+                                class="textArea-style"
+                                [(ngModel)]="selectedProveedor.terobs"
+                                disabled
+                            ></textarea>
                         </div>
                     </div>
                     <div class="more-detail-container">

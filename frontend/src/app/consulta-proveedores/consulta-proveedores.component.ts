@@ -195,9 +195,11 @@ export class ConsultaProveedoresComponent {
   //proveedores main related functions
   searchTerm: string = '';
   filterOption: string = 'Nobloqueado';
+  isTodos: boolean = true;
   search() {
     this.limpiarMessages();
     this.isLoading = true
+    if (this.filterOption != 'todos') {this.isTodos = false;}
     const params = {
       ent: this.entcod || '',
       searchMode: this.filterOption,
@@ -224,6 +226,7 @@ export class ConsultaProveedoresComponent {
     this.filterOption = 'Nobloqueado';
     this.searchTerm = '';
     this.page = 0;
+    this.isTodos = true;
   }
   
   DownloadPDF() {
@@ -244,7 +247,7 @@ export class ConsultaProveedoresComponent {
       { header: 'Correo electronico', dataKey: 'tercoe' },
       { header: 'Observaciones', dataKey: 'terobs' }
     ];
-    const data = this.paginatedProveedores;
+    const data = this.proveedores;
 
     autoTable(doc, {
       columns,
@@ -283,7 +286,7 @@ export class ConsultaProveedoresComponent {
 
   downloadExcel() {
     this.limpiarMessages();
-    const rows = this.paginatedProveedores;
+    const rows = this.proveedores;
     if (!rows || rows.length === 0) {
       this.error = 'No hay datos para exportar.';
       return;
