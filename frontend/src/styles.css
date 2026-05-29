@@ -25,9 +25,12 @@ app-sidebar { flex-shrink: 0; z-index: 2000; }
 .h1-style {font-size: 18px; font-weight: bold; color: #38249b;}
 .h1-style {color: #162a3a; font-size: 16px;}
 .textArea-style,
-.select-style {height: 20px; padding: 2px 4px; border-radius: 6px; min-width: 80px; max-width: 290px; font-weight: bold; color: #162a3a;}
+.select-style,
+.input-style {height: 20px; padding: 2px 4px; border-radius: 6px; min-width: 80px; max-width: 290px; font-weight: bold; color: #162a3a;}
+.input-style {border: 1px solid gray;}
 .textArea-style:focus,
-.select-style:focus {outline: none; border: 1px solid #1c5d8c;}
+.select-style:focus,
+.input-style:focus {outline: none; border: 1px solid #1c5d8c;}
 .right-add select {height: 25px;}
 /* buttons */
 .pagination-controls button,

@@ -548,6 +548,8 @@ export class ContratosComponent {
   closeAdd() {
     this.showAddGrid = false;
     this.proveedores = [];
+    this.proveedorTercod = null;
+    this.proveedorTernom = null;
   }
 
   showProveedorGrid: boolean = false;
@@ -652,18 +654,22 @@ export class ContratosComponent {
   
   addContrato(economica: any, description: any, fecha_ini: any, fecha_final: any) {
     this.limpiarMessages();
-    this.isAdding = true;
+
+    if (economica === '' || description === '') {this.addContratoError = 'Economica y description no pueden estar vacías.'; return;}
+    if (this.proveedorTercod === null) {this.addContratoError = 'Seleccione una proveedor'; return;}
+
     const payload = {
       "ENT": this.entcod,
       "EJE": this.eje,
       "CONLOT": economica,
       "CONBLO": 0,
-      "CONFIN": fecha_ini,
-      "CONFFI": fecha_final,
+      "CONFIN": fecha_ini ? new Date(fecha_ini).toISOString() : null,
+      "CONFFI": fecha_final ? new Date(fecha_final).toISOString() : null,
       "CONDES": description,
       "TERCOD": this.proveedorTercod
     }
 
+    this.isAdding = true;
     this.http.post(`${environment.backendUrl}/api/con/add-contrato`, payload).subscribe({
       next: (res) => {
         this.isAdding = false;
