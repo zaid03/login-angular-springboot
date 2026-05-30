@@ -652,6 +652,7 @@ export class ContratosComponent {
     this.closeProveedores();
   }
   
+  conblo: number = 0;
   addContrato(economica: any, description: any, fecha_ini: any, fecha_final: any) {
     this.limpiarMessages();
 
@@ -662,10 +663,10 @@ export class ContratosComponent {
       "ENT": this.entcod,
       "EJE": this.eje,
       "CONLOT": economica,
-      "CONBLO": 0,
+      "CONDES": description,
       "CONFIN": fecha_ini ? new Date(fecha_ini).toISOString() : null,
       "CONFFI": fecha_final ? new Date(fecha_final).toISOString() : null,
-      "CONDES": description,
+      "CONBLO": this.conblo,
       "TERCOD": this.proveedorTercod
     }
 
@@ -674,6 +675,7 @@ export class ContratosComponent {
       next: (res) => {
         this.isAdding = false;
         this.mainSuccess = 'contrato añadido exitosamente';
+        this.fetchContratos();
         this.closeAdd();
       },
       error: (err) => {

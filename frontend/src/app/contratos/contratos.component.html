@@ -427,6 +427,14 @@
                     <textarea class="textArea-style long-add" #economica></textarea>
                     <p class="p-style">Descripción*</p>
                     <textarea class="textArea-style long-add height" #description></textarea>
+                    <div class="bloq-add">
+                        <input 
+                            type="checkbox" 
+                            class="check" 
+                            [checked]="conblo === 1"
+                            (change)="conblo = $any($event.target).check ? 1 : 0"
+                        /> <span class="p-style">Bloqueado</span>
+                    </div>
                 </div>  
             </div>
         </div>

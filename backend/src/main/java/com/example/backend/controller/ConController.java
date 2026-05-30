@@ -312,10 +312,13 @@ public class ConController {
             conAdd.setEJE(payload.EJE());
             conAdd.setCONCOD(concod);
             conAdd.setCONLOT(payload.CONLOT());
-            conAdd.setCONBLO(payload.CONBLO());
+            conAdd.setCONDES(payload.CONDES());
+            conAdd.setCONTIP(3);
+            conAdd.setCONPRE(1);
             conAdd.setCONFIN(payload.CONFIN());
             conAdd.setCONFFI(payload.CONFFI());
-            conAdd.setCONDES(payload.CONDES());
+            conAdd.setCONIMP(0.00);
+            conAdd.setCONBLO(payload.CONBLO());
             conRepository.save(conAdd);
 
             Cot cotAdd = new Cot();
@@ -323,6 +326,7 @@ public class ConController {
             cotAdd.setEJE(payload.EJE());
             cotAdd.setCONCOD(concod);
             cotAdd.setTERCOD(payload.TERCOD());
+            cotAdd.setCOTLIN(1);
             cotRepository.save(cotAdd);
 
             return ResponseEntity.noContent().build();

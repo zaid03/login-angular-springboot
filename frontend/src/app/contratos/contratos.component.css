@@ -35,6 +35,7 @@
 .patch {margin-right: 25px;}
 .proveedor-select {margin-top: 10px;}
 .height {height: 50px !important;}
+.bloq-add {display: flex; align-items: center; gap: 10px;}
 /* add grid */
 /* proveedores grid in add */
 .proveedor-grid-modal{ position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 94%; max-height: 80vh; overflow: auto; background: #ffffff; border-radius: 12px; padding: 18px; box-shadow: 0 12px 36px rgba(0,0,0,0.18); z-index: 5001; display: flex; flex-direction: column; gap: 12px;}
