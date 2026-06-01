@@ -11,8 +11,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.example.backend.controller.ConController.CUpdate;
 import com.example.backend.dto.ContratoDto;
 import com.example.backend.service.CotContratoProjection;
+import com.example.backend.service.ContratosSearch;
 import com.example.backend.sqlserver2.repository.CotRepository;
 import com.example.backend.sqlserver2.model.Cot;
 import com.example.backend.sqlserver2.model.Conn;
@@ -26,6 +28,8 @@ public class ConController {
     private CotRepository cotRepository;
     @Autowired
     private ConRepository conRepository;
+    @Autowired
+    private ContratosSearch contratosSearch;
 
     private static final String SIN_RESULTADO = "Sin resultado";
     private static final String ERROR = "Error :";
@@ -67,187 +71,18 @@ public class ConController {
     }
 
     //search by concod bloqueado
-    @GetMapping("/searchByCodigoBloque/{ent}/{eje}/{concod}")
+    @GetMapping("/searchByCodigoBloque/{ent}/{eje}/{searchMode}")
     public ResponseEntity<?> searchContratosCodigoBloqueado(
         @PathVariable Integer ent,
         @PathVariable String eje,
-        @PathVariable Integer concod
+        @PathVariable String searchMode,
+        @RequestParam(required = false) String term
     ) {
         try {
-            List<CotContratoProjection> rows = cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCODAndConnCONBLO(3, ent, eje, concod, 0);
-            if (rows == null || rows.isEmpty()) {
+            List<ContratoDto> dto = contratosSearch.searchContrtos(ent, eje, searchMode, term);
+            if (dto == null || dto.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
             }
-
-            List<ContratoDto> dto = rows.stream()
-                .map(p -> buildContratoDto(p.getConn(), p.getTer()))
-                .collect(Collectors.toList());
-
-            return ResponseEntity.ok(dto);
-        } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ERROR + ex.getMostSpecificCause().getMessage());
-        }
-    }
-
-    //search by concod no bloqueado
-    @GetMapping("/searchByCodigoNoBloque/{ent}/{eje}/{concod}")
-    public ResponseEntity<?> searchContratosCodigoNoBloqueado(
-        @PathVariable Integer ent,
-        @PathVariable String eje,
-        @PathVariable Integer concod
-    ) {
-        try {
-            List<CotContratoProjection> rows = cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCODAndConnCONBLONot(3, ent, eje, concod, 0);
-            if (rows == null || rows.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
-            }
-
-            List<ContratoDto> dto = rows.stream()
-                .map(p -> buildContratoDto(p.getConn(), p.getTer()))
-                .collect(Collectors.toList());
-
-            return ResponseEntity.ok(dto);
-        } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ERROR + ex.getMostSpecificCause().getMessage());
-        }
-    }
-
-    //search by concod all
-    @GetMapping("/searchByCodigoTodos/{ent}/{eje}/{concod}")
-    public ResponseEntity<?> searchContratosCodigoTodos(
-        @PathVariable Integer ent,
-        @PathVariable String eje,
-        @PathVariable Integer concod
-    ) {
-        try {
-            List<CotContratoProjection> rows = cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCOD(3, ent, eje, concod);
-            if (rows == null || rows.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
-            }
-
-            List<ContratoDto> dto = rows.stream()
-                .map(p -> buildContratoDto(p.getConn(), p.getTer()))
-                .collect(Collectors.toList());
-
-            return ResponseEntity.ok(dto);
-        } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ERROR + ex.getMostSpecificCause().getMessage());
-        }
-    }
-
-    //search by condes bloqueado
-    @GetMapping("/searchByDescBloque/{ent}/{eje}/{condes}")
-    public ResponseEntity<?> searchContratosDescBloqueado(
-        @PathVariable Integer ent,
-        @PathVariable String eje,
-        @PathVariable String condes
-    ) {
-        try {
-            List<CotContratoProjection> rows = cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDESContainingAndConnCONBLO(3, ent, eje, condes, 0);
-            if (rows == null || rows.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
-            }
-
-            List<ContratoDto> dto = rows.stream()
-                .map(p -> buildContratoDto(p.getConn(), p.getTer()))
-                .collect(Collectors.toList());
-
-            return ResponseEntity.ok(dto);
-        } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ERROR + ex.getMostSpecificCause().getMessage());
-        }
-    }
-
-    //search by condes no bloqueado
-    @GetMapping("/searchByDescNoBloque/{ent}/{eje}/{condes}")
-    public ResponseEntity<?> searchContratosDescNoBloqueado(
-        @PathVariable Integer ent,
-        @PathVariable String eje,
-        @PathVariable String condes
-    ) {
-        try {
-            List<CotContratoProjection> rows = cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDESContainingAndConnCONBLONot(3, ent, eje, condes, 0);
-            if (rows == null || rows.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
-            }
-
-            List<ContratoDto> dto = rows.stream()
-                .map(p -> buildContratoDto(p.getConn(), p.getTer()))
-                .collect(Collectors.toList());
-
-            return ResponseEntity.ok(dto);
-        } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ERROR + ex.getMostSpecificCause().getMessage());
-        }
-    }
-
-    //search by condes all
-    @GetMapping("/searchByDescTodos/{ent}/{eje}/{condes}")
-    public ResponseEntity<?> searchContratosDescTodos(
-        @PathVariable Integer ent,
-        @PathVariable String eje,
-        @PathVariable String condes
-    ) {
-        try {
-            List<CotContratoProjection> rows = cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDESContaining(3, ent, eje, condes);
-            if (rows == null || rows.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
-            }
-
-            List<ContratoDto> dto = rows.stream()
-                .map(p -> buildContratoDto(p.getConn(), p.getTer()))
-                .collect(Collectors.toList());
-
-            return ResponseEntity.ok(dto);
-        } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ERROR + ex.getMostSpecificCause().getMessage());
-        }
-    }
-
-    //search by bloqueado all
-    @GetMapping("/searchByBloqu/{ent}/{eje}")
-    public ResponseEntity<?> searchContratosBloqu(
-        @PathVariable Integer ent,
-        @PathVariable String eje
-    ) {
-        try {
-            List<CotContratoProjection> rows = cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONBLO(3, ent, eje, 0);
-            if (rows == null || rows.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
-            }
-
-            List<ContratoDto> dto = rows.stream()
-                .map(p -> buildContratoDto(p.getConn(), p.getTer()))
-                .collect(Collectors.toList());
-
-            return ResponseEntity.ok(dto);
-        } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ERROR + ex.getMostSpecificCause().getMessage());
-        }
-    }
-
-    //search by bloqueado all
-    @GetMapping("/searchByNobloq/{ent}/{eje}")
-    public ResponseEntity<?> searchContratosNobloq(
-        @PathVariable Integer ent,
-        @PathVariable String eje
-    ) {
-        try {
-            List<CotContratoProjection> rows = cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONBLONot(3, ent, eje, 0);
-            if (rows == null || rows.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
-            }
-
-            List<ContratoDto> dto = rows.stream()
-                .map(p -> buildContratoDto(p.getConn(), p.getTer()))
-                .collect(Collectors.toList());
 
             return ResponseEntity.ok(dto);
         } catch (DataAccessException ex) {

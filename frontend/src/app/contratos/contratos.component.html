@@ -21,27 +21,27 @@
                             class="search-bar" 
                             placeholder="Buscar contratos" 
                             name="search" 
-                            [(ngModel)]="searchInput"
+                            [(ngModel)]="term"
                         />
                         <div class="search-options">
                             <label>
                                 <input 
                                     type="radio" 
                                     name="optiones" 
-                                    value="Todos" 
-                                    [(ngModel)]="searchOption"
+                                    value="todos" 
+                                    [(ngModel)]="searchMode"
                                 /> Todos
                                 <input 
                                     type="radio" 
                                     name="optiones" 
                                     value="noBloque" 
-                                    [(ngModel)]="searchOption"
+                                    [(ngModel)]="searchMode"
                                 /> No Bloqueados
                                 <input 
                                     type="radio" 
                                     name="optiones" 
-                                    value="Bloque" 
-                                    [(ngModel)]="searchOption"
+                                    value="bloque" 
+                                    [(ngModel)]="searchMode"
                                 /> Bloqueados
                             </label>
                         </div>
@@ -120,8 +120,8 @@
                         <td (click)="openDetails(c)" class="pointer">{{c.concod}}</td>
                         <td>{{c.conlot}}</td>
                         <td>{{c.condes}}</td>
-                        <td>{{c.confin?.slice(0,10)}}</td>
-                        <td>{{c.conffi?.slice(0,10)}}</td>
+                        <td>{{c.confin | date: 'dd/MM/yyyy': 'UTC': 'es-ES'}}</td>
+                        <td>{{c.conffi | date: 'dd/MM/yyyy': 'UTC': 'es-ES'}}</td>
                         <td>{{setBloqueado(c.conblo)}}</td>
                         <td>{{c.tercod}}</td>
                         <td>{{c.ternom}}</td>
@@ -195,19 +195,24 @@
                                     <p class="p-style">Fecha fin</p>
                                 </div>
                                 <div class="left-right">
-                                    <textarea 
-                                        class="textArea-style average" 
-                                        [(ngModel)]="tempContrato.confin" 
+                                    <input
+                                        type="date" 
+                                        class="input-style average" 
+                                        [ngModel]="tempContrato.confin?.substring(0, 10)"
+                                        (ngModelChange)="tempContrato.confin = $event"
                                         [disabled]="!isUpdate"
                                         (input)="allowToUpdate = true"
-                                        #confin></textarea>
-                                    <textarea 
-                                        class="textArea-style average" 
-                                        [(ngModel)]="tempContrato.conffi" 
+                                        #confin
+                                    >
+                                    <input
+                                        type="date" 
+                                        class="input-style average" 
+                                        [ngModel]="tempContrato.conffi?.substring(0, 10)"
+                                        (ngModelChange)="tempContrato.conffi = $event"
                                         [disabled]="!isUpdate"
                                         (input)="allowToUpdate = true"
                                         #conffi
-                                    ></textarea>
+                                    >
                                 </div>
                             </div>
                             <div class="right">
@@ -230,13 +235,13 @@
                             [disabled]="isUpdate" 
 	                        [ngClass]="{ 'disabled-btn': isUpdate }" 
                             (click)="showArticulosAddGrid(selectedContrato.conlot)"
-                        >Añadir articulo</button>
+                        >Añadir Artículos</button>
                         <button 
                             class="purple-btn"
                             [disabled]="isUpdate" 
 	                        [ngClass]="{ 'disabled-btn': isUpdate }" 
                             (click)="showAddCentro()"
-                        >Añadir D/ centro Gestor</button>
+                        >Añadir Centro Gestor</button>
                         <button 
                             class="red-btn" 
                             *ngIf="isUpdate" 
@@ -403,7 +408,7 @@
         <div class="title">
             <h3>Añadir un contrato</h3>
         </div>
-        <button class="purple-btn" (click)="addContrato(economica.value, description.value, fechaIni.value, fechaFin.value)">+</button>
+        <button class="purple-btn" (click)="addContrato(description.value, fechaIni.value, fechaFin.value)">+</button>
         <button class="red-btn" (click)="closeAdd()">✖</button>
     </div>
     <h1 class="errorBtn">{{addContratoError}}</h1>
@@ -424,7 +429,11 @@
                     <input type="date" class="input-style long-add" #fechaFin />
                 </div>
                 <div class="on-two">
-                    <textarea class="textArea-style long-add" #economica></textarea>
+                    <textarea 
+                        class="textArea-style long-add" 
+                        [(ngModel)]="economicaAdd"
+                        (input)="onEconomicaInput($event)"
+                    ></textarea>
                     <p class="p-style">Descripción*</p>
                     <textarea class="textArea-style long-add height" #description></textarea>
                     <div class="bloq-add">

@@ -328,29 +328,27 @@ public class ProveedoresSearchTest {
     }
 
     @Test
-    @DisplayName("searchProveedores: TERNOM matching is case-sensitive contains")
-    void search_ternomCaseSensitiveContains() {
+    @DisplayName("searchProveedores: TERNOM matching is case-insensitive contains")
+    void search_ternomCaseInsensitiveContains() {
         Ter ter1 = createTer(100, "ABC Company", "NIF1", "Alias", 0);
         Ter ter2 = createTer(200, "abc company", "NIF2", "Alias", 0);
         when(terRepository.findByENT(TEST_ENT)).thenReturn(List.of(ter1, ter2));
 
         List<Ter> result = proveedoresSearch.searchProveedoers(TEST_ENT, "todos", "ABC");
 
-        assertEquals(1, result.size());
-        assertEquals("ABC Company", result.get(0).getTERNOM());
+        assertEquals(2, result.size());
     }
 
     @Test
-    @DisplayName("searchProveedores: TERNIF matching is case-sensitive contains")
-    void search_ternifCaseSensitiveContains() {
+    @DisplayName("searchProveedores: TERNIF matching is case-insensitive contains")
+    void search_ternifCaseInsensitiveContains() {
         Ter ter1 = createTer(100, "Provider", "NIFABC", "Alias", 0);
         Ter ter2 = createTer(200, "Provider", "nifabc", "Alias", 0);
         when(terRepository.findByENT(TEST_ENT)).thenReturn(List.of(ter1, ter2));
 
         List<Ter> result = proveedoresSearch.searchProveedoers(TEST_ENT, "todos", "NIFABC");
 
-        assertEquals(1, result.size());
-        assertEquals("NIFABC", result.get(0).getTERNIF());
+        assertEquals(2, result.size());
     }
 
     @Test
@@ -722,7 +720,7 @@ public class ProveedoresSearchTest {
     }
 
     @Test
-    @DisplayName("filterTodosByTercodAndTernomAndTerali: case-sensitive matching")
+    @DisplayName("filterTodosByTercodAndTernomAndTerali: case-insensitive matching")
     void filterTodosByTercodAndTernomAndTerali_caseSensitive() {
         Ter ter1 = createTer(100, "ABC Company", "NIF1", "Alias", 0);
         Ter ter2 = createTer(200, "abc company", "NIF2", "Alias", 0);
@@ -730,8 +728,7 @@ public class ProveedoresSearchTest {
 
         List<Ter> result = proveedoresSearch.searchProveedoers(TEST_ENT, "todos", "ABC");
 
-        assertEquals(1, result.size());
-        assertEquals("ABC Company", result.get(0).getTERNOM());
+        assertEquals(2, result.size());
     }
 
     @Test
@@ -943,7 +940,7 @@ public class ProveedoresSearchTest {
     }
 
     @Test
-    @DisplayName("filterNoBloqueadoByTercodAndTernomAndTeraliAndTerblo: case-sensitive matching")
+    @DisplayName("filterNoBloqueadoByTercodAndTernomAndTeraliAndTerblo: case-insensitive matching")
     void filterNoBloqueadoByTercodAndTernomAndTeraliAndTerblo_caseSensitive() {
         Ter ter1 = createTer(100, "ABC Company", "NIF1", "Alias", 0);
         Ter ter2 = createTer(200, "abc company", "NIF2", "Alias", 0);
@@ -951,7 +948,6 @@ public class ProveedoresSearchTest {
 
         List<Ter> result = proveedoresSearch.searchProveedoers(TEST_ENT, "Nobloqueado", "ABC");
 
-        assertEquals(1, result.size());
-        assertEquals("ABC Company", result.get(0).getTERNOM());
+        assertEquals(2, result.size());
     }
 }

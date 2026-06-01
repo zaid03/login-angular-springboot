@@ -290,169 +290,34 @@ export class ContratosComponent {
     doc.save('contratos.pdf');
   }
 
-  searchInput: string = '';
-  searchOption: string = 'noBloque';
+  term: string = '';
+  searchMode: string = 'noBloque';
   search() {
     this.limpiarMessages();
     this.isLoading = true;
 
-    if (this.isDigitsOnly(this.searchInput)) {
-      if (this.searchOption === 'noBloque') {
-        this.http.get<any>(`${environment.backendUrl}/api/con/searchByCodigoNoBloque/${this.entcod}/${this.eje}/${this.searchInput}`).subscribe({
-          next: (res) => {
-            this.contratos = res;
-            this.backupContratos = Array.isArray(res) ? [...res] : [];
-            this.defaultContratos = [...this.backupContratos];
-            this.page = 0;
-            this.updatePagination();
-            this.isLoading = false;
-          },
-          error: (err) => {
-            this.contratos = [];
-            this.mainError = err.error.error ?? err.error;
-            this.isLoading = false;
-          }
-        })
+    this.http.get<any>(`${environment.backendUrl}/api/con/searchByCodigoBloque/${this.entcod}/${this.eje}/${this.searchMode}`, {params: { term: this.term || '' }}).subscribe({
+      next: (res) => {
+        this.contratos = res;
+        this.backupContratos = Array.isArray(res) ? [...res] : [];
+        this.defaultContratos = [...this.backupContratos];
+        this.page = 0;
+        this.updatePagination();
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.contratos = [];
+        this.mainError = err.error.error ?? err.error;
+        this.isLoading = false;
       }
-      else if (this.searchOption === 'Bloque') {
-        this.http.get<any>(`${environment.backendUrl}/api/con/searchByCodigoBloque/${this.entcod}/${this.eje}/${this.searchInput}`).subscribe({
-          next: (res) => {
-            this.contratos = res;
-            this.updatePagination();
-            this.backupContratos = Array.isArray(res) ? [...res] : [];
-            this.defaultContratos = [...this.backupContratos];
-            this.page = 0;
-            this.isLoading = false;
-          },
-          error: (err) => {
-            this.contratos = [];
-            this.mainError = err.error.error ?? err.error;
-            this.isLoading = false;
-          }
-        })
-      }
-      else if (this.searchOption === 'Todos') {
-        this.http.get<any>(`${environment.backendUrl}/api/con/searchByCodigoTodos/${this.entcod}/${this.eje}/${this.searchInput}`).subscribe({
-          next: (res) => {
-            this.contratos = res;
-            this.updatePagination();
-            this.backupContratos = Array.isArray(res) ? [...res] : [];
-            this.defaultContratos = [...this.backupContratos];
-            this.page = 0;
-            this.isLoading = false;
-          },
-          error: (err) => {
-            this.contratos = [];
-            this.mainError = err.error.error ?? err.error;
-            this.isLoading = false;
-          }
-        })
-      }
-    }
-    else if (!this.isDigitsOnly(this.searchInput)) {
-      if (this.searchOption === 'noBloque') {
-        this.http.get<any>(`${environment.backendUrl}/api/con/searchByDescNoBloque/${this.entcod}/${this.eje}/${this.searchInput}`).subscribe({
-          next: (res) => {
-            this.contratos = res;
-            this.updatePagination();
-            this.backupContratos = Array.isArray(res) ? [...res] : [];
-            this.defaultContratos = [...this.backupContratos];
-            this.page = 0;
-            this.isLoading = false;
-          },
-          error: (err) => {
-            this.contratos = [];
-            this.mainError = err.error.error ?? err.error;
-            this.isLoading = false;
-          }
-        })
-      }
-      else if (this.searchOption === 'Bloque') {
-        this.http.get<any>(`${environment.backendUrl}/api/con/searchByDescBloque/${this.entcod}/${this.eje}/${this.searchInput}`).subscribe({
-          next: (res) => {
-            this.contratos = res;
-            this.updatePagination();
-            this.backupContratos = Array.isArray(res) ? [...res] : [];
-            this.defaultContratos = [...this.backupContratos];
-            this.page = 0;
-            this.isLoading = false;
-          },
-          error: (err) => {
-            this.contratos = [];
-            this.mainError = err.error.error ?? err.error;
-            this.isLoading = false;
-          }
-        })
-      }
-      else if (this.searchOption === 'Todos') {
-        this.http.get<any>(`${environment.backendUrl}/api/con/searchByDescTodos/${this.entcod}/${this.eje}/${this.searchInput}`).subscribe({
-          next: (res) => {
-            this.contratos = res;
-            this.updatePagination();
-            this.backupContratos = Array.isArray(res) ? [...res] : [];
-            this.defaultContratos = [...this.backupContratos];
-            this.page = 0;
-            this.isLoading = false;
-          },
-          error: (err) => {
-            this.contratos = [];
-            this.mainError = err.error.error ?? err.error;
-            this.isLoading = false;
-          }
-        })
-      }
-    }
-    else if (this.searchInput === '') {
-      if (this.searchOption === 'noBloque') {
-        this.http.get<any>(`${environment.backendUrl}/api/con/searchByNobloq/${this.entcod}/${this.eje}`).subscribe({
-          next: (res) => {
-            this.contratos = res;
-            this.updatePagination();
-            this.backupContratos = Array.isArray(res) ? [...res] : [];
-            this.defaultContratos = [...this.backupContratos];
-            this.page = 0;
-            this.isLoading = false;
-          },
-          error: (err) => {
-            this.contratos = [];
-            this.mainError = err.error.error ?? err.error;
-            this.isLoading = false;
-          }
-        })
-      }
-      else if (this.searchOption === 'Bloque') {
-        this.http.get<any>(`${environment.backendUrl}/api/con/searchByBloqu/${this.entcod}/${this.eje}`).subscribe({
-          next: (res) => {
-            this.contratos = res;
-            this.updatePagination();
-            this.backupContratos = Array.isArray(res) ? [...res] : [];
-            this.defaultContratos = [...this.backupContratos];
-            this.page = 0;
-            this.isLoading = false;
-          },
-          error: (err) => {
-            this.contratos = [];
-            this.mainError = err.error.error ?? err.error;
-            this.isLoading = false;
-          }
-        })
-      }
-      else if (this.searchOption === 'Todos') {
-        this.fetchContratos();
-      }
-    }
+    })
   }
 
   limpiarSearch() {
     this.limpiarMessages();
     this.fetchContratos();
-    this.searchOption = 'noBloque'
-    this.searchInput = '';
-  }
-
-  private isDigitsOnly(value: string): boolean {
-    if (!value) return false;
-    return /^\d+$/.test(value.trim());
+    this.searchMode = 'noBloque'
+    this.term = '';
   }
 
   //detail grid
@@ -518,8 +383,8 @@ export class ContratosComponent {
 
     const payload = {
       "CONBLO": bloque,
-      "CONFIN": fecha_ini,
-      "CONFFI": fecha_fin,
+      "CONFIN": fecha_ini ? new Date(fecha_ini).toISOString() : null,
+      "CONFFI": fecha_fin ? new Date(fecha_fin).toISOString() : null,
       "CONDES": descripción
     }
 
@@ -550,6 +415,7 @@ export class ContratosComponent {
     this.proveedores = [];
     this.proveedorTercod = null;
     this.proveedorTernom = null;
+    this.economicaAdd = '';
   }
 
   showProveedorGrid: boolean = false;
@@ -653,16 +519,16 @@ export class ContratosComponent {
   }
   
   conblo: number = 0;
-  addContrato(economica: any, description: any, fecha_ini: any, fecha_final: any) {
+  addContrato(description: any, fecha_ini: any, fecha_final: any) {
     this.limpiarMessages();
 
-    if (economica === '' || description === '') {this.addContratoError = 'Economica y description no pueden estar vacías.'; return;}
+    if (this.economicaAdd === '' || description === '') {this.addContratoError = 'Economica y description no pueden estar vacías.'; return;}
     if (this.proveedorTercod === null) {this.addContratoError = 'Seleccione una proveedor'; return;}
 
     const payload = {
       "ENT": this.entcod,
       "EJE": this.eje,
-      "CONLOT": economica,
+      "CONLOT": this.economicaAdd,
       "CONDES": description,
       "CONFIN": fecha_ini ? new Date(fecha_ini).toISOString() : null,
       "CONFFI": fecha_final ? new Date(fecha_final).toISOString() : null,
@@ -683,6 +549,15 @@ export class ContratosComponent {
         this.isAdding = false;
       }
     })
+  }
+
+  economicaAdd: string = '';
+  onEconomicaInput(event: any): void {
+    let value = event.target.value;
+    let formatted = value.replace(/\D/g, '');
+    formatted = formatted.substring(0, 5);
+    event.target.value = formatted;
+    this.economicaAdd = formatted;
   }
 
   //sub detail's articulo's grids
@@ -1255,7 +1130,7 @@ export class ContratosComponent {
       },
       error: (err) => {
         this.isLoadingD = false;
-        this.DErrorMessage = err.error.error ?? err.error;
+        this.DErrorMessage = 'No hay operaciones D para los datos requeridos';
       }
     })
   }
