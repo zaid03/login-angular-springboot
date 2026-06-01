@@ -192,69 +192,6 @@ public class ConControllerTest {
     }
 
     @Test
-    void searchContratosDescBloqueado_returns200() throws Exception {
-        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDESContainingAndConnCONBLO(3, 1, "E1", "desc", 0))
-            .thenReturn(List.of(createMockProjection()));
-
-        mockMvc.perform(get("/api/con/searchByDescBloque/1/E1/desc"))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$[0].concod").value(100));
-    }
-
-    @Test
-    void searchContratosDescBloqueado_returns404WhenEmpty() throws Exception {
-        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDESContainingAndConnCONBLO(3, 1, "E1", "desc", 0))
-            .thenReturn(List.of());
-
-        mockMvc.perform(get("/api/con/searchByDescBloque/1/E1/desc"))
-            .andDo(print())
-            .andExpect(status().isNotFound());
-    }
-
-    @Test
-    void searchContratosDescNoBloqueado_returns200() throws Exception {
-        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDESContainingAndConnCONBLONot(3, 1, "E1", "desc", 0))
-            .thenReturn(List.of(createMockProjection()));
-
-        mockMvc.perform(get("/api/con/searchByDescNoBloque/1/E1/desc"))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$[0].concod").value(100));
-    }
-
-    @Test
-    void searchContratosDescNoBloqueado_returns404WhenEmpty() throws Exception {
-        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDESContainingAndConnCONBLONot(3, 1, "E1", "desc", 0))
-            .thenReturn(List.of());
-
-        mockMvc.perform(get("/api/con/searchByDescNoBloque/1/E1/desc"))
-            .andDo(print())
-            .andExpect(status().isNotFound());
-    }
-
-    @Test
-    void searchContratosDescTodos_returns200() throws Exception {
-        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDESContaining(3, 1, "E1", "desc"))
-            .thenReturn(List.of(createMockProjection()));
-
-        mockMvc.perform(get("/api/con/searchByDescTodos/1/E1/desc"))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$[0].concod").value(100));
-    }
-
-    @Test
-    void searchContratosDescTodos_returns404WhenEmpty() throws Exception {
-        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDESContaining(3, 1, "E1", "desc"))
-            .thenReturn(List.of());
-
-        mockMvc.perform(get("/api/con/searchByDescTodos/1/E1/desc"))
-            .andDo(print())
-            .andExpect(status().isNotFound());
-    }
-
-    @Test
     void searchContratosBloqu_returns200() throws Exception {
         when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONBLO(3, 1, "E1", 0))
             .thenReturn(List.of(createMockProjection()));
@@ -568,39 +505,6 @@ public class ConControllerTest {
     }
 
     @Test
-    void searchContratosDescBloqueado_returns500OnException() throws Exception {
-        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDESContainingAndConnCONBLO(3, 1, "E1", "desc", 0))
-            .thenThrow(new DataAccessResourceFailureException("Database error"));
-
-        mockMvc.perform(get("/api/con/searchByDescBloque/1/E1/desc"))
-            .andDo(print())
-            .andExpect(status().isInternalServerError())
-            .andExpect(content().string(org.hamcrest.Matchers.containsString("Error :")));
-    }
-
-    @Test
-    void searchContratosDescNoBloqueado_returns500OnException() throws Exception {
-        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDESContainingAndConnCONBLONot(3, 1, "E1", "desc", 0))
-            .thenThrow(new DataAccessResourceFailureException("Database error"));
-
-        mockMvc.perform(get("/api/con/searchByDescNoBloque/1/E1/desc"))
-            .andDo(print())
-            .andExpect(status().isInternalServerError())
-            .andExpect(content().string(org.hamcrest.Matchers.containsString("Error :")));
-    }
-
-    @Test
-    void searchContratosDescTodos_returns500OnException() throws Exception {
-        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDESContaining(3, 1, "E1", "desc"))
-            .thenThrow(new DataAccessResourceFailureException("Database error"));
-
-        mockMvc.perform(get("/api/con/searchByDescTodos/1/E1/desc"))
-            .andDo(print())
-            .andExpect(status().isInternalServerError())
-            .andExpect(content().string(org.hamcrest.Matchers.containsString("Error :")));
-    }
-
-    @Test
     void searchContratosBloqu_returns500OnException() throws Exception {
         when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONBLO(3, 1, "E1", 0))
             .thenThrow(new DataAccessResourceFailureException("Database error"));
@@ -646,27 +550,6 @@ public class ConControllerTest {
     }
 
     @Test
-    void searchContratosDescBloqueado_returnsMultipleContratos() throws Exception {
-        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDESContainingAndConnCONBLO(3, 1, "E1", "Contract", 0))
-            .thenReturn(List.of(createMockProjection(), createMockProjection(), createMockProjection()));
-
-        mockMvc.perform(get("/api/con/searchByDescBloque/1/E1/Contract"))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.length()").value(3));
-    }
-
-    @Test
-    void searchContratosDescBloqueado_withNumericDescription() throws Exception {
-        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDESContainingAndConnCONBLO(3, 2, "E2", "2024", 0))
-            .thenReturn(List.of(createMockProjection()));
-
-        mockMvc.perform(get("/api/con/searchByDescBloque/2/E2/2024"))
-            .andDo(print())
-            .andExpect(status().isOk());
-    }
-
-    @Test
     void searchContratosCodigoTodos_withDifferentConcod() throws Exception {
         when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCOD(3, 5, "E5", 999))
             .thenReturn(List.of(createMockProjection()));
@@ -674,17 +557,6 @@ public class ConControllerTest {
         mockMvc.perform(get("/api/con/searchByCodigoTodos/5/E5/999"))
             .andDo(print())
             .andExpect(status().isOk());
-    }
-
-    @Test
-    void searchContratosDescTodos_withLongDescription() throws Exception {
-        String longDesc = "A".repeat(100);
-        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDESContaining(3, 1, "E1", longDesc))
-            .thenReturn(List.of());
-
-        mockMvc.perform(get("/api/con/searchByDescTodos/1/E1/" + longDesc))
-            .andDo(print())
-            .andExpect(status().isNotFound());
     }
 
     @Test
