@@ -27,12 +27,9 @@ public class ContratosSearchTest {
 
     @InjectMocks
     private ContratosSearch contratosSearch;
-
-    // ==================== Test searchContrtos with "todos" mode ====================
     
     @Test
     void testSearchContratos_TodosMode_NullTerm() {
-        // Arrange
         Integer ent = 1;
         String eje = "2024";
         String searchMode = "todos";
@@ -61,10 +58,8 @@ public class ContratosSearchTest {
         when(mockTerInfo.getTERCOD()).thenReturn(5);
         when(mockTerInfo.getTERNOM()).thenReturn("Supplier");
         
-        // Act
         List<ContratoDto> result = contratosSearch.searchContrtos(ent, eje, searchMode, term);
         
-        // Assert
         assertNotNull(result);
         assertEquals(1, result.size());
         assertEquals(100, result.get(0).getConcod());
@@ -74,7 +69,6 @@ public class ContratosSearchTest {
 
     @Test
     void testSearchContratos_TodosMode_EmptyTerm() {
-        // Arrange
         Integer ent = 1;
         String eje = "2024";
         String searchMode = "todos";
@@ -103,10 +97,8 @@ public class ContratosSearchTest {
         when(mockTerInfo.getTERCOD()).thenReturn(10);
         when(mockTerInfo.getTERNOM()).thenReturn("Provider");
         
-        // Act
         List<ContratoDto> result = contratosSearch.searchContrtos(ent, eje, searchMode, term);
         
-        // Assert
         assertNotNull(result);
         assertEquals(1, result.size());
         verify(cotRepository, times(1)).findAllProjectedByConnCONTIPAndConnENTAndConnEJE(3, ent, eje);
@@ -114,7 +106,6 @@ public class ContratosSearchTest {
 
     @Test
     void testSearchContratos_TodosMode_NumericTerm() {
-        // Arrange
         Integer ent = 1;
         String eje = "2024";
         String searchMode = "todos";
@@ -143,10 +134,8 @@ public class ContratosSearchTest {
         when(mockTerInfo.getTERCOD()).thenReturn(15);
         when(mockTerInfo.getTERNOM()).thenReturn("Vendor");
         
-        // Act
         List<ContratoDto> result = contratosSearch.searchContrtos(ent, eje, searchMode, term);
         
-        // Assert
         assertNotNull(result);
         assertEquals(1, result.size());
         assertEquals(12345, result.get(0).getConcod());
@@ -155,7 +144,6 @@ public class ContratosSearchTest {
 
     @Test
     void testSearchContratos_TodosMode_TextTerm() {
-        // Arrange
         Integer ent = 1;
         String eje = "2024";
         String searchMode = "todos";
@@ -184,21 +172,16 @@ public class ContratosSearchTest {
         when(mockTerInfo.getTERCOD()).thenReturn(20);
         when(mockTerInfo.getTERNOM()).thenReturn("Company");
         
-        // Act
         List<ContratoDto> result = contratosSearch.searchContrtos(ent, eje, searchMode, term);
         
-        // Assert
         assertNotNull(result);
         assertEquals(1, result.size());
         assertEquals("SearchText", result.get(0).getCondes());
         verify(cotRepository, times(1)).findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDES(3, ent, eje, term);
     }
-
-    // ==================== Test searchContrtos with "noBloque" mode ====================
     
     @Test
     void testSearchContratos_NoBloqueMode_NullTerm() {
-        // Arrange
         Integer ent = 1;
         String eje = "2024";
         String searchMode = "noBloque";
@@ -214,7 +197,7 @@ public class ContratosSearchTest {
         List<CotContratoProjection> mockResults = new ArrayList<>();
         mockResults.add(mockProjection);
         
-        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONBLONot(3, ent, eje, 0))
+        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONBLO(3, ent, eje, 0))
             .thenReturn(mockResults);
         
         when(mockConnInfo.getCONCOD()).thenReturn(400);
@@ -227,18 +210,16 @@ public class ContratosSearchTest {
         when(mockTerInfo.getTERCOD()).thenReturn(25);
         when(mockTerInfo.getTERNOM()).thenReturn("Supplier1");
         
-        // Act
         List<ContratoDto> result = contratosSearch.searchContrtos(ent, eje, searchMode, term);
         
-        // Assert
         assertNotNull(result);
         assertEquals(1, result.size());
-        verify(cotRepository, times(1)).findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONBLONot(3, ent, eje, 0);
+        verify(cotRepository, times(1))
+            .findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONBLO(3, ent, eje, 0);
     }
 
     @Test
     void testSearchContratos_NoBloqueMode_EmptyTerm() {
-        // Arrange
         Integer ent = 1;
         String eje = "2024";
         String searchMode = "noBloque";
@@ -254,7 +235,7 @@ public class ContratosSearchTest {
         List<CotContratoProjection> mockResults = new ArrayList<>();
         mockResults.add(mockProjection);
         
-        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONBLONot(3, ent, eje, 0))
+        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONBLO(3, ent, eje, 0))
             .thenReturn(mockResults);
         
         when(mockConnInfo.getCONCOD()).thenReturn(500);
@@ -267,18 +248,16 @@ public class ContratosSearchTest {
         when(mockTerInfo.getTERCOD()).thenReturn(30);
         when(mockTerInfo.getTERNOM()).thenReturn("Supplier2");
         
-        // Act
         List<ContratoDto> result = contratosSearch.searchContrtos(ent, eje, searchMode, term);
         
-        // Assert
         assertNotNull(result);
         assertEquals(1, result.size());
-        verify(cotRepository, times(1)).findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONBLONot(3, ent, eje, 0);
+        verify(cotRepository, times(1))
+            .findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONBLO(3, ent, eje, 0);
     }
 
     @Test
     void testSearchContratos_NoBloqueMode_NumericTerm() {
-        // Arrange
         Integer ent = 1;
         String eje = "2024";
         String searchMode = "noBloque";
@@ -294,7 +273,7 @@ public class ContratosSearchTest {
         List<CotContratoProjection> mockResults = new ArrayList<>();
         mockResults.add(mockProjection);
         
-        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCODAndConnCONBLONot(3, ent, eje, 54321, 0))
+        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCODAndConnCONBLO(3, ent, eje, 54321, 0))
             .thenReturn(mockResults);
         
         when(mockConnInfo.getCONCOD()).thenReturn(54321);
@@ -307,18 +286,16 @@ public class ContratosSearchTest {
         when(mockTerInfo.getTERCOD()).thenReturn(35);
         when(mockTerInfo.getTERNOM()).thenReturn("Supplier3");
         
-        // Act
         List<ContratoDto> result = contratosSearch.searchContrtos(ent, eje, searchMode, term);
         
-        // Assert
         assertNotNull(result);
         assertEquals(1, result.size());
-        verify(cotRepository, times(1)).findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCODAndConnCONBLONot(3, ent, eje, 54321, 0);
+        verify(cotRepository, times(1))
+            .findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCODAndConnCONBLO(3, ent, eje, 54321, 0);
     }
 
     @Test
     void testSearchContratos_NoBloqueMode_TextTerm() {
-        // Arrange
         Integer ent = 1;
         String eje = "2024";
         String searchMode = "noBloque";
@@ -334,7 +311,7 @@ public class ContratosSearchTest {
         List<CotContratoProjection> mockResults = new ArrayList<>();
         mockResults.add(mockProjection);
         
-        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDESAndConnCONBLONot(3, ent, eje, term, 0))
+        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDESAndConnCONBLO(3, ent, eje, term, 0))
             .thenReturn(mockResults);
         
         when(mockConnInfo.getCONCOD()).thenReturn(600);
@@ -347,20 +324,16 @@ public class ContratosSearchTest {
         when(mockTerInfo.getTERCOD()).thenReturn(40);
         when(mockTerInfo.getTERNOM()).thenReturn("Supplier4");
         
-        // Act
         List<ContratoDto> result = contratosSearch.searchContrtos(ent, eje, searchMode, term);
         
-        // Assert
         assertNotNull(result);
         assertEquals(1, result.size());
-        verify(cotRepository, times(1)).findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDESAndConnCONBLONot(3, ent, eje, term, 0);
+        verify(cotRepository, times(1))
+            .findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDESAndConnCONBLO(3, ent, eje, term, 0);
     }
-
-    // ==================== Test searchContrtos with "bloque" mode ====================
     
     @Test
     void testSearchContratos_BloqueMode_NullTerm() {
-        // Arrange
         Integer ent = 1;
         String eje = "2024";
         String searchMode = "bloque";
@@ -376,7 +349,7 @@ public class ContratosSearchTest {
         List<CotContratoProjection> mockResults = new ArrayList<>();
         mockResults.add(mockProjection);
         
-        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONBLO(3, ent, eje, 0))
+        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONBLONot(3, ent, eje, 0))
             .thenReturn(mockResults);
         
         when(mockConnInfo.getCONCOD()).thenReturn(700);
@@ -389,18 +362,16 @@ public class ContratosSearchTest {
         when(mockTerInfo.getTERCOD()).thenReturn(45);
         when(mockTerInfo.getTERNOM()).thenReturn("Supplier5");
         
-        // Act
         List<ContratoDto> result = contratosSearch.searchContrtos(ent, eje, searchMode, term);
         
-        // Assert
         assertNotNull(result);
         assertEquals(1, result.size());
-        verify(cotRepository, times(1)).findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONBLO(3, ent, eje, 0);
+        verify(cotRepository, times(1))
+            .findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONBLONot(3, ent, eje, 0);
     }
 
     @Test
     void testSearchContratos_BloqueMode_EmptyTerm() {
-        // Arrange
         Integer ent = 1;
         String eje = "2024";
         String searchMode = "bloque";
@@ -416,7 +387,7 @@ public class ContratosSearchTest {
         List<CotContratoProjection> mockResults = new ArrayList<>();
         mockResults.add(mockProjection);
         
-        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONBLO(3, ent, eje, 0))
+        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONBLONot(3, ent, eje, 0))
             .thenReturn(mockResults);
         
         when(mockConnInfo.getCONCOD()).thenReturn(800);
@@ -429,18 +400,16 @@ public class ContratosSearchTest {
         when(mockTerInfo.getTERCOD()).thenReturn(50);
         when(mockTerInfo.getTERNOM()).thenReturn("Supplier6");
         
-        // Act
         List<ContratoDto> result = contratosSearch.searchContrtos(ent, eje, searchMode, term);
         
-        // Assert
         assertNotNull(result);
         assertEquals(1, result.size());
-        verify(cotRepository, times(1)).findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONBLO(3, ent, eje, 0);
+        verify(cotRepository, times(1))
+            .findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONBLONot(3, ent, eje, 0);
     }
 
     @Test
     void testSearchContratos_BloqueMode_NumericTerm() {
-        // Arrange
         Integer ent = 1;
         String eje = "2024";
         String searchMode = "bloque";
@@ -456,7 +425,7 @@ public class ContratosSearchTest {
         List<CotContratoProjection> mockResults = new ArrayList<>();
         mockResults.add(mockProjection);
         
-        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCODAndConnCONBLO(3, ent, eje, 99999, 0))
+        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCODAndConnCONBLONot(3, ent, eje, 99999, 0))
             .thenReturn(mockResults);
         
         when(mockConnInfo.getCONCOD()).thenReturn(99999);
@@ -469,18 +438,16 @@ public class ContratosSearchTest {
         when(mockTerInfo.getTERCOD()).thenReturn(55);
         when(mockTerInfo.getTERNOM()).thenReturn("Supplier7");
         
-        // Act
         List<ContratoDto> result = contratosSearch.searchContrtos(ent, eje, searchMode, term);
         
-        // Assert
         assertNotNull(result);
         assertEquals(1, result.size());
-        verify(cotRepository, times(1)).findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCODAndConnCONBLO(3, ent, eje, 99999, 0);
+        verify(cotRepository, times(1))
+            .findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCODAndConnCONBLONot(3, ent, eje, 99999, 0);
     }
 
     @Test
     void testSearchContratos_BloqueMode_TextTerm() {
-        // Arrange
         Integer ent = 1;
         String eje = "2024";
         String searchMode = "bloque";
@@ -496,7 +463,7 @@ public class ContratosSearchTest {
         List<CotContratoProjection> mockResults = new ArrayList<>();
         mockResults.add(mockProjection);
         
-        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDESAndConnCONBLO(3, ent, eje, term, 0))
+        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDESAndConnCONBLONot(3, ent, eje, term, 0))
             .thenReturn(mockResults);
         
         when(mockConnInfo.getCONCOD()).thenReturn(900);
@@ -509,20 +476,16 @@ public class ContratosSearchTest {
         when(mockTerInfo.getTERCOD()).thenReturn(60);
         when(mockTerInfo.getTERNOM()).thenReturn("Supplier8");
         
-        // Act
         List<ContratoDto> result = contratosSearch.searchContrtos(ent, eje, searchMode, term);
         
-        // Assert
         assertNotNull(result);
         assertEquals(1, result.size());
-        verify(cotRepository, times(1)).findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDESAndConnCONBLO(3, ent, eje, term, 0);
+        verify(cotRepository, times(1))
+            .findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDESAndConnCONBLONot(3, ent, eje, term, 0);
     }
-
-    // ==================== Test empty results ====================
     
     @Test
     void testSearchContratos_EmptyResult() {
-        // Arrange
         Integer ent = 1;
         String eje = "2024";
         String searchMode = "todos";
@@ -531,17 +494,14 @@ public class ContratosSearchTest {
         when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJE(3, ent, eje))
             .thenReturn(new ArrayList<>());
         
-        // Act
         List<ContratoDto> result = contratosSearch.searchContrtos(ent, eje, searchMode, term);
         
-        // Assert
         assertNotNull(result);
         assertEquals(0, result.size());
     }
 
     @Test
     void testSearchContratos_NullRepositoryResult() {
-        // Arrange
         Integer ent = 1;
         String eje = "2024";
         String searchMode = "todos";
@@ -550,19 +510,14 @@ public class ContratosSearchTest {
         when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJE(3, ent, eje))
             .thenReturn(null);
         
-        // Act
         List<ContratoDto> result = contratosSearch.searchContrtos(ent, eje, searchMode, term);
         
-        // Assert
         assertNotNull(result);
         assertEquals(0, result.size());
     }
-
-    // ==================== Test multiple results ====================
     
     @Test
     void testSearchContratos_MultipleResults() {
-        // Arrange
         Integer ent = 1;
         String eje = "2024";
         String searchMode = "todos";
@@ -605,10 +560,8 @@ public class ContratosSearchTest {
         when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJE(3, ent, eje))
             .thenReturn(mockResults);
         
-        // Act
         List<ContratoDto> result = contratosSearch.searchContrtos(ent, eje, searchMode, term);
         
-        // Assert
         assertNotNull(result);
         assertEquals(2, result.size());
         assertEquals(1000, result.get(0).getConcod());
@@ -616,12 +569,9 @@ public class ContratosSearchTest {
         assertEquals("Vendor A", result.get(0).getTernom());
         assertEquals("Vendor B", result.get(1).getTernom());
     }
-
-    // ==================== Test isNumbersOnly private method (via search) ====================
     
     @Test
     void testIsNumbersOnly_ValidNumericString() {
-        // Arrange
         Integer ent = 1;
         String eje = "2024";
         String searchMode = "todos";
@@ -650,16 +600,13 @@ public class ContratosSearchTest {
         when(mockTerInfo.getTERCOD()).thenReturn(1);
         when(mockTerInfo.getTERNOM()).thenReturn("Supplier");
         
-        // Act - should call numeric search
         List<ContratoDto> result = contratosSearch.searchContrtos(ent, eje, searchMode, term);
         
-        // Assert - verify numeric repository method was called (proving isNumbersOnly returned true)
         verify(cotRepository, times(1)).findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCOD(3, ent, eje, 123456);
     }
 
     @Test
     void testIsNumbersOnly_StringWithLetters() {
-        // Arrange
         Integer ent = 1;
         String eje = "2024";
         String searchMode = "todos";
@@ -688,16 +635,13 @@ public class ContratosSearchTest {
         when(mockTerInfo.getTERCOD()).thenReturn(1);
         when(mockTerInfo.getTERNOM()).thenReturn("Supplier");
         
-        // Act - should call text search
         List<ContratoDto> result = contratosSearch.searchContrtos(ent, eje, searchMode, term);
         
-        // Assert - verify text repository method was called (proving isNumbersOnly returned false)
         verify(cotRepository, times(1)).findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDES(3, ent, eje, term);
     }
 
     @Test
     void testIsNumbersOnly_StringWithSpecialChars() {
-        // Arrange
         Integer ent = 1;
         String eje = "2024";
         String searchMode = "todos";
@@ -726,16 +670,13 @@ public class ContratosSearchTest {
         when(mockTerInfo.getTERCOD()).thenReturn(1);
         when(mockTerInfo.getTERNOM()).thenReturn("Supplier");
         
-        // Act
         List<ContratoDto> result = contratosSearch.searchContrtos(ent, eje, searchMode, term);
         
-        // Assert
         verify(cotRepository, times(1)).findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDES(3, ent, eje, term);
     }
 
     @Test
     void testIsNumbersOnly_EmptyString() {
-        // Arrange - empty string is treated as no search term
         Integer ent = 1;
         String eje = "2024";
         String searchMode = "todos";
@@ -764,18 +705,13 @@ public class ContratosSearchTest {
         when(mockTerInfo.getTERCOD()).thenReturn(1);
         when(mockTerInfo.getTERNOM()).thenReturn("Supplier");
         
-        // Act
         List<ContratoDto> result = contratosSearch.searchContrtos(ent, eje, searchMode, term);
         
-        // Assert - should not parse as number
         verify(cotRepository, times(1)).findAllProjectedByConnCONTIPAndConnENTAndConnEJE(3, ent, eje);
     }
-
-    // ==================== Test buildContratoDto with edge cases ====================
     
     @Test
     void testBuildContratoDto_AllFieldsPopulated() {
-        // Arrange
         Integer ent = 1;
         String eje = "2024";
         String searchMode = "todos";
@@ -807,10 +743,8 @@ public class ContratosSearchTest {
         when(mockTerInfo.getTERCOD()).thenReturn(777);
         when(mockTerInfo.getTERNOM()).thenReturn("Complete Supplier Name");
         
-        // Act
         List<ContratoDto> result = contratosSearch.searchContrtos(ent, eje, searchMode, term);
         
-        // Assert
         assertNotNull(result);
         assertEquals(1, result.size());
         
@@ -827,7 +761,6 @@ public class ContratosSearchTest {
 
     @Test
     void testBuildContratoDto_WithZeroValues() {
-        // Arrange
         Integer ent = 1;
         String eje = "2024";
         String searchMode = "todos";
@@ -856,10 +789,8 @@ public class ContratosSearchTest {
         when(mockTerInfo.getTERCOD()).thenReturn(0);
         when(mockTerInfo.getTERNOM()).thenReturn("");
         
-        // Act
         List<ContratoDto> result = contratosSearch.searchContrtos(ent, eje, searchMode, term);
         
-        // Assert
         assertNotNull(result);
         assertEquals(1, result.size());
         
@@ -871,12 +802,9 @@ public class ContratosSearchTest {
         assertEquals(0, dto.getTercod());
         assertEquals("", dto.getTernom());
     }
-
-    // ==================== Test with different entity and exercise combinations ====================
     
     @Test
     void testSearchContratos_DifferentEntity() {
-        // Arrange
         Integer ent = 999;
         String eje = "2025";
         String searchMode = "todos";
@@ -905,20 +833,15 @@ public class ContratosSearchTest {
         when(mockTerInfo.getTERCOD()).thenReturn(1);
         when(mockTerInfo.getTERNOM()).thenReturn("Supplier");
         
-        // Act
         List<ContratoDto> result = contratosSearch.searchContrtos(ent, eje, searchMode, term);
         
-        // Assert
         assertNotNull(result);
         assertEquals(1, result.size());
         verify(cotRepository, times(1)).findAllProjectedByConnCONTIPAndConnENTAndConnEJE(3, ent, eje);
     }
-
-    // ==================== Test with large result sets ====================
     
     @Test
     void testSearchContratos_LargeResultSet() {
-        // Arrange
         Integer ent = 1;
         String eje = "2024";
         String searchMode = "todos";
@@ -949,10 +872,8 @@ public class ContratosSearchTest {
         when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJE(3, ent, eje))
             .thenReturn(mockResults);
         
-        // Act
         List<ContratoDto> result = contratosSearch.searchContrtos(ent, eje, searchMode, term);
         
-        // Assert
         assertNotNull(result);
         assertEquals(1000, result.size());
         assertEquals(0, result.get(0).getConcod());
@@ -961,7 +882,6 @@ public class ContratosSearchTest {
 
     @Test
     void testSearchContratos_RepositoryCalledWithCorrectParameters() {
-        // Arrange - This test verifies the exact parameters passed to repository
         Integer ent = 42;
         String eje = "2024";
         String searchMode = "todos";
@@ -970,10 +890,8 @@ public class ContratosSearchTest {
         when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJE(3, ent, eje))
             .thenReturn(new ArrayList<>());
         
-        // Act
         contratosSearch.searchContrtos(ent, eje, searchMode, term);
         
-        // Assert - verify CONTIP is always 3
         verify(cotRepository).findAllProjectedByConnCONTIPAndConnENTAndConnEJE(3, ent, eje);
     }
 }

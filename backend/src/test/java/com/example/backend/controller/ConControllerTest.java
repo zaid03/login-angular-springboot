@@ -4,6 +4,7 @@ import com.example.backend.config.TestSecurityConfig;
 import com.example.backend.config.TestExceptionHandler;
 import com.example.backend.dto.ContratoDto;
 import com.example.backend.service.CotContratoProjection;
+import com.example.backend.service.ContratosSearch;
 import com.example.backend.sqlserver2.repository.CotRepository;
 import com.example.backend.sqlserver2.repository.ConRepository;
 import com.example.backend.sqlserver2.model.Cot;
@@ -46,6 +47,9 @@ public class ConControllerTest {
 
     @MockitoBean
     private ConRepository conRepository;
+
+    @MockitoBean
+    private ContratosSearch contratosSearch;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -119,8 +123,9 @@ public class ConControllerTest {
 
     @Test
     void searchContratosCodigoBloqueado_returns200() throws Exception {
-        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCODAndConnCONBLO(3, 1, "E1", 100, 0))
-            .thenReturn(List.of(createMockProjection()));
+
+        when(contratosSearch.searchContrtos(1, "E1", "100", null))
+            .thenReturn(List.of(createMockDto()));
 
         mockMvc.perform(get("/api/con/searchByCodigoBloque/1/E1/100"))
             .andDo(print())
@@ -130,7 +135,8 @@ public class ConControllerTest {
 
     @Test
     void searchContratosCodigoBloqueado_returns404WhenEmpty() throws Exception {
-        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCODAndConnCONBLO(3, 1, "E1", 100, 0))
+
+        when(contratosSearch.searchContrtos(1, "E1", "100", null))
             .thenReturn(List.of());
 
         mockMvc.perform(get("/api/con/searchByCodigoBloque/1/E1/100"))
@@ -141,96 +147,14 @@ public class ConControllerTest {
 
     @Test
     void searchContratosCodigoBloqueado_returns500OnException() throws Exception {
-        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCODAndConnCONBLO(3, 1, "E1", 100, 0))
+
+        when(contratosSearch.searchContrtos(1, "E1", "100", null))
             .thenThrow(new DataAccessResourceFailureException("Database error"));
 
         mockMvc.perform(get("/api/con/searchByCodigoBloque/1/E1/100"))
             .andDo(print())
-            .andExpect(status().isInternalServerError());
-    }
-
-    @Test
-    void searchContratosCodigoNoBloqueado_returns200() throws Exception {
-        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCODAndConnCONBLONot(3, 1, "E1", 100, 0))
-            .thenReturn(List.of(createMockProjection()));
-
-        mockMvc.perform(get("/api/con/searchByCodigoNoBloque/1/E1/100"))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$[0].concod").value(100));
-    }
-
-    @Test
-    void searchContratosCodigoNoBloqueado_returns404WhenEmpty() throws Exception {
-        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCODAndConnCONBLONot(3, 1, "E1", 100, 0))
-            .thenReturn(List.of());
-
-        mockMvc.perform(get("/api/con/searchByCodigoNoBloque/1/E1/100"))
-            .andDo(print())
-            .andExpect(status().isNotFound());
-    }
-
-    @Test
-    void searchContratosCodigoTodos_returns200() throws Exception {
-        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCOD(3, 1, "E1", 100))
-            .thenReturn(List.of(createMockProjection()));
-
-        mockMvc.perform(get("/api/con/searchByCodigoTodos/1/E1/100"))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$[0].concod").value(100));
-    }
-
-    @Test
-    void searchContratosCodigoTodos_returns404WhenEmpty() throws Exception {
-        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCOD(3, 1, "E1", 100))
-            .thenReturn(List.of());
-
-        mockMvc.perform(get("/api/con/searchByCodigoTodos/1/E1/100"))
-            .andDo(print())
-            .andExpect(status().isNotFound());
-    }
-
-    @Test
-    void searchContratosBloqu_returns200() throws Exception {
-        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONBLO(3, 1, "E1", 0))
-            .thenReturn(List.of(createMockProjection()));
-
-        mockMvc.perform(get("/api/con/searchByBloqu/1/E1"))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$[0].concod").value(100));
-    }
-
-    @Test
-    void searchContratosBloqu_returns404WhenEmpty() throws Exception {
-        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONBLO(3, 1, "E1", 0))
-            .thenReturn(List.of());
-
-        mockMvc.perform(get("/api/con/searchByBloqu/1/E1"))
-            .andDo(print())
-            .andExpect(status().isNotFound());
-    }
-
-    @Test
-    void searchContratosNobloq_returns200() throws Exception {
-        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONBLONot(3, 1, "E1", 0))
-            .thenReturn(List.of(createMockProjection()));
-
-        mockMvc.perform(get("/api/con/searchByNobloq/1/E1"))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$[0].concod").value(100));
-    }
-
-    @Test
-    void searchContratosNobloq_returns404WhenEmpty() throws Exception {
-        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONBLONot(3, 1, "E1", 0))
-            .thenReturn(List.of());
-
-        mockMvc.perform(get("/api/con/searchByNobloq/1/E1"))
-            .andDo(print())
-            .andExpect(status().isNotFound());
+            .andExpect(status().isInternalServerError())
+            .andExpect(content().string(org.hamcrest.Matchers.containsString("Error :")));
     }
 
     @Test
@@ -483,50 +407,6 @@ public class ConControllerTest {
     }
 
     @Test
-    void searchContratosCodigoNoBloqueado_returns500OnException() throws Exception {
-        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCODAndConnCONBLONot(3, 1, "E1", 100, 0))
-            .thenThrow(new DataAccessResourceFailureException("Database error"));
-
-        mockMvc.perform(get("/api/con/searchByCodigoNoBloque/1/E1/100"))
-            .andDo(print())
-            .andExpect(status().isInternalServerError())
-            .andExpect(content().string(org.hamcrest.Matchers.containsString("Error :")));
-    }
-
-    @Test
-    void searchContratosCodigoTodos_returns500OnException() throws Exception {
-        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCOD(3, 1, "E1", 100))
-            .thenThrow(new DataAccessResourceFailureException("Database error"));
-
-        mockMvc.perform(get("/api/con/searchByCodigoTodos/1/E1/100"))
-            .andDo(print())
-            .andExpect(status().isInternalServerError())
-            .andExpect(content().string(org.hamcrest.Matchers.containsString("Error :")));
-    }
-
-    @Test
-    void searchContratosBloqu_returns500OnException() throws Exception {
-        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONBLO(3, 1, "E1", 0))
-            .thenThrow(new DataAccessResourceFailureException("Database error"));
-
-        mockMvc.perform(get("/api/con/searchByBloqu/1/E1"))
-            .andDo(print())
-            .andExpect(status().isInternalServerError())
-            .andExpect(content().string(org.hamcrest.Matchers.containsString("Error :")));
-    }
-
-    @Test
-    void searchContratosNobloq_returns500OnException() throws Exception {
-        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONBLONot(3, 1, "E1", 0))
-            .thenThrow(new DataAccessResourceFailureException("Database error"));
-
-        mockMvc.perform(get("/api/con/searchByNobloq/1/E1"))
-            .andDo(print())
-            .andExpect(status().isInternalServerError())
-            .andExpect(content().string(org.hamcrest.Matchers.containsString("Error :")));
-    }
-
-    @Test
     void fetchContratos_returnsMultipleContratos() throws Exception {
         when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJE(3, 1, "E1"))
             .thenReturn(List.of(createMockProjection(), createMockProjection()));
@@ -540,8 +420,9 @@ public class ConControllerTest {
 
     @Test
     void searchContratosCodigoBloqueado_returnsMultipleContratos() throws Exception {
-        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCODAndConnCONBLO(3, 1, "E1", 100, 0))
-            .thenReturn(List.of(createMockProjection(), createMockProjection()));
+
+        when(contratosSearch.searchContrtos(1, "E1", "100", null))
+            .thenReturn(List.of(createMockDto(), createMockDto()));
 
         mockMvc.perform(get("/api/con/searchByCodigoBloque/1/E1/100"))
             .andDo(print())
@@ -550,43 +431,8 @@ public class ConControllerTest {
     }
 
     @Test
-    void searchContratosCodigoTodos_withDifferentConcod() throws Exception {
-        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCOD(3, 5, "E5", 999))
-            .thenReturn(List.of(createMockProjection()));
-
-        mockMvc.perform(get("/api/con/searchByCodigoTodos/5/E5/999"))
-            .andDo(print())
-            .andExpect(status().isOk());
-    }
-
-    @Test
-    void searchContratosBloqu_withDifferentEntity() throws Exception {
-        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONBLO(3, 10, "E10", 0))
-            .thenReturn(List.of(createMockProjection()));
-
-        mockMvc.perform(get("/api/con/searchByBloqu/10/E10"))
-            .andDo(print())
-            .andExpect(status().isOk());
-    }
-
-    @Test
-    void searchContratosNobloq_withDifferentEJE() throws Exception {
-        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONBLONot(3, 1, "E99", 0))
-            .thenReturn(List.of(createMockProjection()));
-
-        mockMvc.perform(get("/api/con/searchByNobloq/1/E99"))
-            .andDo(print())
-            .andExpect(status().isOk());
-    }
-
-    @Test
     void updateContrato_withNullPayload() throws Exception {
-        mockMvc.perform(patch("/api/con/update-contrato/1/E1/100")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{}"))
-            .andDo(print())
-            .andExpect(status().isBadRequest())
-            .andExpect(content().string("Faltan datos obligatorios."));
+        mockMvc.perform(patch("/api/con/update-contrato/1/E1/100").contentType(MediaType.APPLICATION_JSON).content("{}")).andDo(print()).andExpect(status().isBadRequest()).andExpect(content().string("Faltan datos obligatorios."));
     }
 
     @Test
@@ -834,8 +680,9 @@ public class ConControllerTest {
 
     @Test
     void searchContratosCodigoBloqueado_responseValidation() throws Exception {
-        when(cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCODAndConnCONBLO(3, 1, "E1", 100, 0))
-            .thenReturn(List.of(createMockProjection()));
+
+        when(contratosSearch.searchContrtos(1, "E1", "100", null))
+            .thenReturn(List.of(createMockDto()));
 
         mockMvc.perform(get("/api/con/searchByCodigoBloque/1/E1/100"))
             .andDo(print())
@@ -896,5 +743,15 @@ public class ConControllerTest {
         verify(conRepository).findFirstByENTAndEJEOrderByCONCODDesc(1, "E1");
         verify(conRepository).save(any(Conn.class));
         verify(cotRepository).save(any(Cot.class));
+    }
+
+    private ContratoDto createMockDto() {
+        return new ContratoDto.Builder()
+            .concod(100)
+            .conlot("LOT001")
+            .condes("Contract Description")
+            .tercod(200)
+            .ternom("Supplier Name")
+            .build();
     }
 }

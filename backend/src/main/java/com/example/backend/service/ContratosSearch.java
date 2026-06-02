@@ -24,7 +24,7 @@ public class ContratosSearch {
     ) {
         List<CotContratoProjection> contratos = null;
 
-        if (searchMode.contains("todos")) {
+        if (searchMode.equals("todos")) {
             if (term == null || term.isEmpty()) {
                 contratos = cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJE(3, ent, eje);
             }
@@ -35,7 +35,7 @@ public class ContratosSearch {
                 contratos = cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDES(3, ent, eje, term);
             }
         }
-        if (searchMode.contains("bloque")) {
+        else if (searchMode.equals("bloque")) {
             if (term == null || term.isEmpty()) {
                 contratos = cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONBLONot(3, ent, eje, 0);
             }
@@ -46,7 +46,7 @@ public class ContratosSearch {
                 contratos = cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDESAndConnCONBLONot(3, ent, eje, term, 0);
             }
         }
-        if (searchMode.contains("noBloque")) {
+        else if (searchMode.equals("noBloque")) {
             if (term == null || term.isEmpty()) {
                 contratos = cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONBLO(3, ent, eje, 0);
             }
