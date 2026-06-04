@@ -35,7 +35,9 @@ public class OperacionesController {
         @RequestParam(name = "cleco", required = false) String economica,
         @RequestParam(name = "expediente", required = false) String expediente,
         @RequestParam(name = "grupoApunte", required = false) String grupoApunte,
-        @RequestParam(name = "oficina", required = false) String oficina) {
+        @RequestParam(name = "oficina", required = false) String oficina,
+        @RequestParam(name = "indice", required = false) String indice,
+        @RequestParam(name = "numRegDev", required = false) Integer numRegDev) {
         try {
             OperacionesService.SearchCriteria criteria = new OperacionesService.SearchCriteria.Builder()
                     .numeroOperDesde(numeroOperDesde)
@@ -47,6 +49,8 @@ public class OperacionesController {
                     .expediente(expediente)
                     .grupoApunte(grupoApunte)
                     .oficina(oficina)
+                    .indice(indice)
+                    .numRegDev(numRegDev)
                     .build();
             List<Operaciones> operaciones = operacionesService.getOperaciones(criteria);
             return ResponseEntity.ok(operaciones);

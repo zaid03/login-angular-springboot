@@ -142,7 +142,7 @@
                 <span>de {{ totalPages }}</span>
                 <button (click)="nextPage()" [disabled]="page + 1 >= totalPages">Siguiente</button>
             </div>
-            <div class="modal-backdrop" *ngIf="selectedContrato" (click)="closeDetailsSure()"></div>
+            <div class="modal-backdrop" *ngIf="selectedContrato"></div>
             <div class="display">
                 <div class="modal" *ngIf="selectedContrato">
                     <div class="btns">
@@ -402,7 +402,7 @@
     </div>
 </div>
 
-<div class="modal-backdrop" *ngIf="showAddGrid" (click)="closeAdd()"></div>
+<div class="modal-backdrop" *ngIf="showAddGrid"></div>
 <div class="add-confirm-modal" *ngIf="showAddGrid">
     <div class="btns">
         <div class="title">
@@ -454,7 +454,7 @@
     </div>
 </div>
 
-<div class="modal-backdrop" *ngIf="showProveedorGrid" (click)="closeProveedores()"></div>
+<div class="modal-backdrop" *ngIf="showProveedorGrid"></div>
 <div class="proveedor-grid-modal" *ngIf="showProveedorGrid">
     <div class="btns">
         <div class="title">
@@ -497,9 +497,6 @@
                     <th>Domicilio</th>
                     <th>Código Postal</th>
                     <th>Municipio</th>
-                    <!-- <th>Código contable</th>
-                    <th>Fax</th>
-                    <th>Web</th> -->
                     <th>Correo electrónico</th>
                     <th>Observaciones</th>
                 </tr>
@@ -539,7 +536,7 @@
     </div>
 </div>
 
-<div class="modal-backdrop" *ngIf="deleteArticuloGrid" (click)="closeDeleteArticulo()"></div>
+<div class="modal-backdrop" *ngIf="deleteArticuloGrid"></div>
 <div class="delete-confirm-modal" *ngIf="deleteArticuloGrid">
     <div class="btns">
         <button class="purple-btn" (click)="closeDeleteArticulo()">✖</button>
@@ -556,7 +553,7 @@
     <button class="red-btn" (click)="deleteArticulo(articuloToDelete[0]?.concod, articuloToDelete[1]?.afacod, articuloToDelete[1]?.asucod, articuloToDelete[1]?.artcod)">Borrar</button>
 </div>
 
-<div class="modal-backdrop" *ngIf="articulosAddGrid" (click)="closeArticuloAddGrid()"></div>
+<div class="modal-backdrop" *ngIf="articulosAddGrid"></div>
 <div class="hello-modal" *ngIf="articulosAddGrid">
     <div class="btns">
         <div class="title">
@@ -617,7 +614,7 @@
     </form>
 </div>
 
-<div class="modal-backdrop" *ngIf="centroGestorDelete" (click)="closeDeleteCentro()"></div>
+<div class="modal-backdrop" *ngIf="centroGestorDelete"></div>
 <div class="delete-confirm-modal" *ngIf="centroGestorDelete">
     <div class="btns">
         <button class="purple-btn" (click)="closeDeleteCentro()">✖</button>
@@ -643,7 +640,7 @@
     <button class="red-btn" (click)="deleteCentroGestor(centroToDelete.cgecod)">Borrar</button>
 </div>
 
-<div class="modal-backdrop" *ngIf="addCentroGestor" (click)="closeAddCentro()"></div>
+<div class="modal-backdrop" *ngIf="addCentroGestor"></div>
 <div class="hello-modal" *ngIf="addCentroGestor">
     <div class="btns">
         <div class="title">
@@ -703,7 +700,7 @@
     </form>
 </div>
 
-<div class="modal-backdrop" *ngIf="DGridShow" (click)="closeAddD()"></div>
+<div class="modal-backdrop" *ngIf="DGridShow"></div>
 <div class="D-modal" *ngIf="DGridShow">
     <div class="btns">
         <div class="title">

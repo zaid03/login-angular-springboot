@@ -191,7 +191,7 @@ export class ContratosComponent {
 
   setBloqueado(conblo: number) {
     if (conblo == 0) {return 'No';}
-    else if (conblo == 1) {return 'No';}
+    else if (conblo == 1) {return 'Si';}
     else {return 'no'}
   }
 

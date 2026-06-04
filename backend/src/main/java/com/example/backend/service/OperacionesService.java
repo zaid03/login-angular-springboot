@@ -19,14 +19,13 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.example.backend.exception.XmlParsingException;
-
 import com.example.backend.dto.Operaciones;
 import com.example.backend.dto.Operaciones.Dto;
 import com.example.backend.dto.Operaciones.Iva;
 import com.example.backend.dto.Operaciones.Linea;
 import com.example.backend.dto.Operaciones.Relacion;
 import com.example.backend.exception.SmlProcessingException;
+import com.example.backend.exception.XmlParsingException;
 import com.example.sical.CryptoSical;
 
 @Service
@@ -66,6 +65,8 @@ public class OperacionesService {
         public final String expediente;
         public final String grupoApunte;
         public final String oficina;
+        public final String indice;
+        public final Integer numRegDev;
 
         private SearchCriteria(Builder builder) {
             this.numeroOperDesde = builder.numeroOperDesde;
@@ -77,6 +78,8 @@ public class OperacionesService {
             this.expediente = builder.expediente;
             this.grupoApunte = builder.grupoApunte;
             this.oficina = builder.oficina;
+            this.indice = builder.indice;
+            this.numRegDev = builder.numRegDev;
         }
 
         public static class Builder {
@@ -89,6 +92,8 @@ public class OperacionesService {
             private String expediente;
             private String grupoApunte;
             private String oficina;
+            private String indice;
+            private Integer numRegDev;
 
             public Builder numeroOperDesde(String numeroOperDesde) {
                 this.numeroOperDesde = numeroOperDesde;
@@ -135,6 +140,16 @@ public class OperacionesService {
                 return this;
             }
 
+            public Builder indice(String indice) {
+                this.indice = indice;
+                return this;
+            }
+
+            public Builder numRegDev(Integer numRegDev) {
+                this.numRegDev = numRegDev;
+                return this;
+            }
+
             public SearchCriteria build() {
                 return new SearchCriteria(this);
             }
@@ -151,15 +166,17 @@ public class OperacionesService {
 
             String filtroXml =
                 "<filtro>" +
-                (criteria.numeroOperDesde != null ? "<numeroOperDesde>" + criteria.numeroOperDesde + "</numeroOperDesde>" : "") +
-                (criteria.numeroOperHasta != null ? "<numeroOperHasta>" + criteria.numeroOperHasta + "</numeroOperHasta>" : "") +
-                (criteria.codigoOperacion != null ? "<codigoOperacion>" + CryptoSical.encodeBase64(criteria.codigoOperacion) + "</codigoOperacion>" : "") +
-                (criteria.organica != null ? "<organica>" + CryptoSical.encodeBase64(criteria.organica) + "</organica>" : "") +
-                (criteria.funcional != null ? "<funcional>" + CryptoSical.encodeBase64(criteria.funcional) + "</funcional>" : "") +
-                (criteria.economica != null ? "<economica>" + CryptoSical.encodeBase64(criteria.economica) + "</economica>" : "") +
-                (criteria.expediente != null ? "<expediente>" + CryptoSical.encodeBase64(criteria.expediente) + "</expediente>" : "") +
-                (criteria.grupoApunte != null ? "<grupoApunte>" + CryptoSical.encodeBase64(criteria.grupoApunte) + "</grupoApunte>" : "") +
-                (criteria.oficina != null ? "<oficina>" + CryptoSical.encodeBase64(criteria.oficina) + "</oficina>" : "") +
+                (criteria.numeroOperDesde != null ? "<numopeDesde>" + criteria.numeroOperDesde + "</numopeDesde>" : "") +
+                (criteria.numeroOperHasta != null ? "<numopeHasta>" + criteria.numeroOperHasta + "</numopeHasta>" : "") +
+                (criteria.codigoOperacion != null ? "<codope>" + CryptoSical.encodeBase64(criteria.codigoOperacion) + "</codope>" : "") +
+                (criteria.organica != null ? "<clorg>" + CryptoSical.encodeBase64(criteria.organica) + "</clorg>" : "") +
+                (criteria.funcional != null ? "<clfun>" + CryptoSical.encodeBase64(criteria.funcional) + "</clfun>" : "") +
+                (criteria.economica != null ? "<cleco>" + CryptoSical.encodeBase64(criteria.economica) + "</cleco>" : "") +
+                (criteria.expediente != null ? "<nexp>" + CryptoSical.encodeBase64(criteria.expediente) + "</nexp>" : "") +
+                (criteria.grupoApunte != null ? "<gapuntes>" + CryptoSical.encodeBase64(criteria.grupoApunte) + "</gapuntes>" : "") +
+                (criteria.oficina != null ? "<ofig>" + CryptoSical.encodeBase64(criteria.oficina) + "</ofig>" : "") +
+                (criteria.indice != null ? "<indice>" + criteria.indice + "</indice>" : "") +
+                "<NumRegDev>" + (criteria.numRegDev != null ? criteria.numRegDev : 50) + "</NumRegDev>" +
                 "</filtro>";
 
             String xml =
@@ -266,6 +283,7 @@ public class OperacionesService {
     private String unescapeXmlEntities(String xml) {
         return xml.replace("&lt;", "<")
                   .replace("&gt;", ">")
+                  .replace("&amp;", "&")
                   .replace("&quot;", "\"")
                   .replace("&apos;", "'");
     }
@@ -312,39 +330,39 @@ public class OperacionesService {
         op.setCodope(decodeOrNull(getTagValue(opEl, "codope")));
         op.setSigno(decodeOrNull(getTagValue(opEl, "signo")));
         op.setFase(decodeOrNull(getTagValue(opEl, "fase")));
-        op.setArea(decodeOrNull(getTagValue(opEl, "area")));
-        op.setAgrupacion(decodeOrNull(getTagValue(opEl, "agrupacion")));
+        op.setArea(decodeOrNull(getTagValue(opEl, "are")));
+        op.setAgrupacion(decodeOrNull(getTagValue(opEl, "agr")));
         op.setNifter(decodeOrNull(getTagValue(opEl, "nifter")));
         op.setNifend(decodeOrNull(getTagValue(opEl, "nifend")));
-        op.setCuenta(decodeOrNull(getTagValue(opEl, "cuenta")));
-        op.setFechaentrada(getTagValue(opEl, "fechaentrada"));
+        op.setCuenta(decodeOrNull(getTagValue(opEl, "cta")));
+        op.setFechaentrada(getTagValue(opEl, "fent"));
         op.setFecope(getTagValue(opEl, "fecope"));
         op.setGapuntes(decodeOrNull(getTagValue(opEl, "gapuntes")));
-        op.setDocumento(decodeOrNull(getTagValue(opEl, "documento")));
-        op.setFechadocu(getTagValue(opEl, "fechadocu"));
+        op.setDocumento(decodeOrNull(getTagValue(opEl, "doc")));
+        op.setFechadocu(getTagValue(opEl, "fdoc"));
         op.setOrdinal(decodeOrNull(getTagValue(opEl, "ordinal")));
-        op.setFechapago(getTagValue(opEl, "fechapago"));
-        op.setTipopago(decodeOrNull(getTagValue(opEl, "tipopago")));
-        op.setTipoexp(decodeOrNull(getTagValue(opEl, "tipoexp")));
+        op.setFechapago(getTagValue(opEl, "fpag"));
+        op.setTipopago(decodeOrNull(getTagValue(opEl, "tpag")));
+        op.setTipoexp(decodeOrNull(getTagValue(opEl, "texp")));
         op.setNexp(decodeOrNull(getTagValue(opEl, "nexp")));
-        op.setFechaexp(getTagValue(opEl, "fechaexp"));
+        op.setFechaexp(getTagValue(opEl, "fexp"));
         op.setAreages(decodeOrNull(getTagValue(opEl, "areages")));
-        op.setOficina(decodeOrNull(getTagValue(opEl, "oficina")));
-        op.setImporte(toDouble(getTagValue(opEl, "importe")));
-        op.setImpiva(toDouble(getTagValue(opEl, "impiva")));
-        op.setImpdto(toDouble(getTagValue(opEl, "impdto")));
-        op.setTexto(decodeOrNull(getTagValue(opEl, "texto")));
-        op.setNumcaja(toLong(getTagValue(opEl, "numcaja")));
-        op.setAnoprestamo(toInteger(getTagValue(opEl, "anoprestamo")));
-        op.setTipoprestamo(decodeOrNull(getTagValue(opEl, "tipoprestamo")));
-        op.setNumprestamo(decodeOrNull(getTagValue(opEl, "numprestamo")));
+        op.setOficina(decodeOrNull(getTagValue(opEl, "ofig")));
+        op.setImporte(toDouble(getTagValue(opEl, "imp")));
+        op.setImpiva(toDouble(getTagValue(opEl, "iva")));
+        op.setImpdto(toDouble(getTagValue(opEl, "dto")));
+        op.setTexto(decodeOrNull(getTagValue(opEl, "txt")));
+        op.setNumcaja(toLong(getTagValue(opEl, "ncaj")));
+        op.setAnoprestamo(toInteger(getTagValue(opEl, "apre")));
+        op.setTipoprestamo(decodeOrNull(getTagValue(opEl, "tpre")));
+        op.setNumprestamo(decodeOrNull(getTagValue(opEl, "npre")));
         op.setTerite(toLong(getTagValue(opEl, "terite")));
         op.setEndite(toLong(getTagValue(opEl, "endite")));
-        op.setNumOpePrev(toLong(getTagValue(opEl, "NumOpePrev")));
-        op.setTipContrato(decodeOrNull(getTagValue(opEl, "tipContrato")));
-        op.setProContrato(decodeOrNull(getTagValue(opEl, "proContrato")));
-        op.setCriContrato(decodeOrNull(getTagValue(opEl, "criContrato")));
-        op.setNExpElec(decodeOrNull(getTagValue(opEl, "nExpElec")));
+        op.setNumOpePrev(toLong(getTagValue(opEl, "numopeprev")));
+        op.setTipContrato(decodeOrNull(getTagValue(opEl, "tcon")));
+        op.setProContrato(decodeOrNull(getTagValue(opEl, "pcon")));
+        op.setCriContrato(decodeOrNull(getTagValue(opEl, "ccon")));
+        op.setNExpElec(decodeOrNull(getTagValue(opEl, "nexp_e")));
         
         op.setDtoList(parseDtoList(opEl));
         op.setIvaList(parseIvaList(opEl));
@@ -447,21 +465,21 @@ public class OperacionesService {
             Linea linea = new Linea();
             linea.setNlinea(toInteger(getTagValue(linEl, "nlinea")));
             linea.setOpeasc(toLong(getTagValue(linEl, "opeasc")));
-            linea.setLineasc(toLong(getTagValue(linEl, "lineasc")));
-            linea.setLincta(decodeOrNull(getTagValue(linEl, "lincta")));
+            linea.setLineasc(toLong(getTagValue(linEl, "linasc")));
+            linea.setLincta(decodeOrNull(getTagValue(linEl, "cta")));
             linea.setPrya(toInteger(getTagValue(linEl, "prya")));
             linea.setPryt(decodeOrNull(getTagValue(linEl, "pryt")));
             linea.setPryo(toInteger(getTagValue(linEl, "pryo")));
             linea.setPryn(decodeOrNull(getTagValue(linEl, "pryn")));
             linea.setPryx(toInteger(getTagValue(linEl, "pryx")));
-            linea.setLineje(toInteger(getTagValue(linEl, "lineje")));
-            linea.setLinorg(decodeOrNull(getTagValue(linEl, "linorg")));
-            linea.setLinfun(decodeOrNull(getTagValue(linEl, "linfun")));
-            linea.setLineco(decodeOrNull(getTagValue(linEl, "lineco")));
-            linea.setReferencia(toLong(getTagValue(linEl, "referencia")));
-            linea.setLimporte(toDouble(getTagValue(linEl, "limporte")));
-            linea.setSaldo(toDouble(getTagValue(linEl, "saldo")));
-            linea.setSaldop(toDouble(getTagValue(linEl, "saldop")));
+            linea.setLineje(toInteger(getTagValue(linEl, "eje")));
+            linea.setLinorg(decodeOrNull(getTagValue(linEl, "org")));
+            linea.setLinfun(decodeOrNull(getTagValue(linEl, "fun")));
+            linea.setLineco(decodeOrNull(getTagValue(linEl, "eco")));
+            linea.setReferencia(toLong(getTagValue(linEl, "refe")));
+            linea.setLimporte(toDouble(getTagValue(linEl, "imp")));
+            linea.setSaldo(toDouble(getTagValue(linEl, "sal")));
+            linea.setSaldop(toDouble(getTagValue(linEl, "salp")));
             linea.setLincte(decodeOrNull(getTagValue(linEl, "lincte")));
             linea.setLinpam(decodeOrNull(getTagValue(linEl, "linpam")));
             list.add(linea);
