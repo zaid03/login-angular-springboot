@@ -59,11 +59,14 @@ public class OperacionesService {
         public final String numeroOperDesde;
         public final String numeroOperHasta;
         public final String codigoOperacion;
+        public final String signo;
+        public final String fase;
+        public final String tercero;
         public final String organica;
         public final String funcional;
         public final String economica;
         public final String expediente;
-        public final String grupoApunte;
+        public final String grupoApunte; 
         public final String oficina;
         public final String indice;
         public final Integer numRegDev;
@@ -72,6 +75,9 @@ public class OperacionesService {
             this.numeroOperDesde = builder.numeroOperDesde;
             this.numeroOperHasta = builder.numeroOperHasta;
             this.codigoOperacion = builder.codigoOperacion;
+            this.signo = builder.signo;
+            this.fase = builder.fase;
+            this.tercero = builder.tercero;
             this.organica = builder.organica;
             this.funcional = builder.funcional;
             this.economica = builder.economica;
@@ -86,6 +92,9 @@ public class OperacionesService {
             private String numeroOperDesde;
             private String numeroOperHasta;
             private String codigoOperacion;
+            private String signo;
+            private String fase;
+            private String tercero;
             private String organica;
             private String funcional;
             private String economica;
@@ -107,6 +116,21 @@ public class OperacionesService {
 
             public Builder codigoOperacion(String codigoOperacion) {
                 this.codigoOperacion = codigoOperacion;
+                return this;
+            }
+
+            public Builder signo(String signo) {
+                this.signo = signo;
+                return this;
+            }
+
+            public Builder fase(String fase) {
+                this.fase = fase;
+                return this;
+            }
+
+            public Builder tercero(String tercero) {
+                this.tercero = tercero;
                 return this;
             }
 
@@ -168,20 +192,23 @@ public class OperacionesService {
                 "<filtro>" +
                 (criteria.numeroOperDesde != null ? "<numopeDesde>" + criteria.numeroOperDesde + "</numopeDesde>" : "") +
                 (criteria.numeroOperHasta != null ? "<numopeHasta>" + criteria.numeroOperHasta + "</numopeHasta>" : "") +
-                (criteria.codigoOperacion != null ? "<codope>" + CryptoSical.encodeBase64(criteria.codigoOperacion) + "</codope>" : "") +
-                (criteria.organica != null ? "<clorg>" + CryptoSical.encodeBase64(criteria.organica) + "</clorg>" : "") +
-                (criteria.funcional != null ? "<clfun>" + CryptoSical.encodeBase64(criteria.funcional) + "</clfun>" : "") +
-                (criteria.economica != null ? "<cleco>" + CryptoSical.encodeBase64(criteria.economica) + "</cleco>" : "") +
-                (criteria.expediente != null ? "<nexp>" + CryptoSical.encodeBase64(criteria.expediente) + "</nexp>" : "") +
-                (criteria.grupoApunte != null ? "<gapuntes>" + CryptoSical.encodeBase64(criteria.grupoApunte) + "</gapuntes>" : "") +
-                (criteria.oficina != null ? "<ofig>" + CryptoSical.encodeBase64(criteria.oficina) + "</ofig>" : "") +
+                (criteria.codigoOperacion != null ? "<codope>" + criteria.codigoOperacion + "</codope>" : "") +
+                (criteria.signo != null ? "<signo>" + criteria.signo + "</signo>" : "") +
+                (criteria.fase != null ? "<fase>" + criteria.fase + "</fase>" : "") +
+                (criteria.tercero != null ? "<tercero>" + criteria.tercero + "</tercero>" : "") +
+                (criteria.organica != null ? "<organica>" + criteria.organica + "</organica>" : "") +
+                (criteria.funcional != null ? "<funcional>" + criteria.funcional + "</funcional>" : "") +
+                (criteria.economica != null ? "<economica>" + criteria.economica + "</economica>" : "") +
+                (criteria.expediente != null ? "<expediente>" + criteria.expediente + "</expediente>" : "") +
+                (criteria.grupoApunte != null ? "<grupoApunte>" + criteria.grupoApunte + "</grupoApunte>" : "") +
+                (criteria.oficina != null ? "<oficina>" + criteria.oficina + "</oficina>" : "") +
                 (criteria.indice != null ? "<indice>" + criteria.indice + "</indice>" : "") +
                 "<NumRegDev>" + (criteria.numRegDev != null ? criteria.numRegDev : 50) + "</NumRegDev>" +
                 "</filtro>";
 
             String xml =
                 "<e>" +
-                "<ope><apl>SNP</apl><tobj>ConOpeGastos</tobj><cmd>LST</cmd><ver>2.0</ver></ope>" +
+                "<ope><apl>SNP</apl><tobj>ConOpeGastosPrev</tobj><cmd>LST</cmd><ver>2.0</ver></ope>" +
                 "<sec>" +
                 "<cli>SAGE-AYTOS</cli>" +
                 "<org>" + orgCode + "</org>" +
@@ -329,39 +356,39 @@ public class OperacionesService {
         op.setCodope(decodeOrNull(getTagValue(opEl, "codope")));
         op.setSigno(decodeOrNull(getTagValue(opEl, "signo")));
         op.setFase(decodeOrNull(getTagValue(opEl, "fase")));
-        op.setArea(decodeOrNull(getTagValue(opEl, "are")));
-        op.setAgrupacion(decodeOrNull(getTagValue(opEl, "agr")));
+        op.setArea(decodeOrNull(getTagValue(opEl, "area")));
+        op.setAgrupacion(decodeOrNull(getTagValue(opEl, "agrupacion")));
         op.setNifter(decodeOrNull(getTagValue(opEl, "nifter")));
         op.setNifend(decodeOrNull(getTagValue(opEl, "nifend")));
-        op.setCuenta(decodeOrNull(getTagValue(opEl, "cta")));
-        op.setFechaentrada(getTagValue(opEl, "fent"));
+        op.setCuenta(decodeOrNull(getTagValue(opEl, "cuenta")));
+        op.setFechaentrada(getTagValue(opEl, "fechaentrada"));
         op.setFecope(getTagValue(opEl, "fecope"));
         op.setGapuntes(decodeOrNull(getTagValue(opEl, "gapuntes")));
         op.setDocumento(decodeOrNull(getTagValue(opEl, "doc")));
-        op.setFechadocu(getTagValue(opEl, "fdoc"));
+        op.setFechadocu(getTagValue(opEl, "fechadocu"));
         op.setOrdinal(decodeOrNull(getTagValue(opEl, "ordinal")));
-        op.setFechapago(getTagValue(opEl, "fpag"));
+        op.setFechapago(getTagValue(opEl, "fechapago"));
         op.setTipopago(decodeOrNull(getTagValue(opEl, "tpag")));
         op.setTipoexp(decodeOrNull(getTagValue(opEl, "texp")));
         op.setNexp(decodeOrNull(getTagValue(opEl, "nexp")));
         op.setFechaexp(getTagValue(opEl, "fexp"));
         op.setAreages(decodeOrNull(getTagValue(opEl, "areages")));
-        op.setOficina(decodeOrNull(getTagValue(opEl, "ofig")));
-        op.setImporte(toDouble(getTagValue(opEl, "imp")));
-        op.setImpiva(toDouble(getTagValue(opEl, "iva")));
-        op.setImpdto(toDouble(getTagValue(opEl, "dto")));
-        op.setTexto(decodeOrNull(getTagValue(opEl, "txt")));
-        op.setNumcaja(toLong(getTagValue(opEl, "ncaj")));
-        op.setAnoprestamo(toInteger(getTagValue(opEl, "apre")));
-        op.setTipoprestamo(decodeOrNull(getTagValue(opEl, "tpre")));
-        op.setNumprestamo(decodeOrNull(getTagValue(opEl, "npre")));
+        op.setOficina(decodeOrNull(getTagValue(opEl, "oficina")));
+        op.setImporte(toDouble(getTagValue(opEl, "importe")));
+        op.setImpiva(toDouble(getTagValue(opEl, "impiva")));
+        op.setImpdto(toDouble(getTagValue(opEl, "impdto")));
+        op.setTexto(decodeOrNull(getTagValue(opEl, "texto")));
+        op.setNumcaja(toLong(getTagValue(opEl, "numcaja")));
+        op.setAnoprestamo(toInteger(getTagValue(opEl, "anoprestamo")));
+        op.setTipoprestamo(decodeOrNull(getTagValue(opEl, "tipoprestamo")));
+        op.setNumprestamo(decodeOrNull(getTagValue(opEl, "numprestamo")));
         op.setTerite(toLong(getTagValue(opEl, "terite")));
         op.setEndite(toLong(getTagValue(opEl, "endite")));
-        op.setNumOpePrev(toLong(getTagValue(opEl, "numopeprev")));
-        op.setTipContrato(decodeOrNull(getTagValue(opEl, "tcon")));
-        op.setProContrato(decodeOrNull(getTagValue(opEl, "pcon")));
-        op.setCriContrato(decodeOrNull(getTagValue(opEl, "ccon")));
-        op.setNExpElec(decodeOrNull(getTagValue(opEl, "nexp_e")));
+        op.setNumOpePrev(toLong(getTagValue(opEl, "numopedef")));
+        op.setTipContrato(decodeOrNull(getTagValue(opEl, "tipContrato")));
+        op.setProContrato(decodeOrNull(getTagValue(opEl, "proContrato")));
+        op.setCriContrato(decodeOrNull(getTagValue(opEl, "criContrato")));
+        op.setNExpElec(decodeOrNull(getTagValue(opEl, "NExpElec")));
         
         op.setDtoList(parseDtoList(opEl));
         op.setIvaList(parseIvaList(opEl));
