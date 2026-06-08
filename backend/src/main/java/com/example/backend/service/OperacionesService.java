@@ -325,7 +325,6 @@ public class OperacionesService {
     
     private Operaciones createOperacionFromElement(Element opEl) {
         Operaciones op = new Operaciones();
-        
         op.setNumope(toLong(getTagValue(opEl, "numope")));
         op.setCodope(decodeOrNull(getTagValue(opEl, "codope")));
         op.setSigno(decodeOrNull(getTagValue(opEl, "signo")));
