@@ -3,11 +3,14 @@ package com.example.backend.service;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -20,10 +23,6 @@ import org.w3c.dom.NodeList;
 import com.example.backend.dto.Tercero;
 import com.example.backend.exception.XmlParsingException;
 import com.example.sical.CryptoSical;
-
-import java.util.regex.Pattern;
-import java.util.Arrays;
-import org.apache.commons.text.StringEscapeUtils;
 
 @Service
 public class SicalService {
@@ -80,8 +79,8 @@ public class SicalService {
                   "<portal>S</portal>" + 
                   "<idenTercero></idenTercero>" +
                   (nif   != null ? "<NIFtercero>"   + CryptoSical.encodeBase64(nif)   + "</NIFtercero>"   : "") +
-                  (nom   != null ? "<nomTercero>"   + CryptoSical.encodeBase64(nom)   + "</nomTercero>"   : "") +
-                  (apell != null ? "<apellTercero>" + CryptoSical.encodeBase64(apell) + "</apellTercero>" : "") +
+                  (nom   != null ? "<nomTercero>"   + CryptoSical.encodeBase64("%" + nom + "%")   + "</nomTercero>"   : "") +
+                  (apell != null ? "<apellTercero>" + CryptoSical.encodeBase64("%" + apell + "%") + "</apellTercero>" : "") +
                   "<indice>0</indice>" +
                   "<NumRegDev>50</NumRegDev>" +
                 "</tercero>" +
