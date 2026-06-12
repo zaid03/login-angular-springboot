@@ -189,19 +189,16 @@ public class OperacionesService {
             String tokenSha1 = CryptoSical.encodeSha1Base64(sec.origin);
 
             String filtroXml =
-                "<filtro>" +
+                 "<filtro>" +
                 (criteria.numeroOperDesde != null ? "<numopeDesde>" + criteria.numeroOperDesde + "</numopeDesde>" : "") +
                 (criteria.numeroOperHasta != null ? "<numopeHasta>" + criteria.numeroOperHasta + "</numopeHasta>" : "") +
-                (criteria.codigoOperacion != null ? "<codope>" + criteria.codigoOperacion + "</codope>" : "") +
-                (criteria.signo != null ? "<signo>" + criteria.signo + "</signo>" : "") +
-                (criteria.fase != null ? "<fase>" + criteria.fase + "</fase>" : "") +
-                (criteria.tercero != null ? "<tercero>" + criteria.tercero + "</tercero>" : "") +
-                (criteria.organica != null ? "<organica>" + criteria.organica + "</organica>" : "") +
-                (criteria.funcional != null ? "<funcional>" + criteria.funcional + "</funcional>" : "") +
-                (criteria.economica != null ? "<economica>" + criteria.economica + "</economica>" : "") +
-                (criteria.expediente != null ? "<expediente>" + criteria.expediente + "</expediente>" : "") +
-                (criteria.grupoApunte != null ? "<grupoApunte>" + criteria.grupoApunte + "</grupoApunte>" : "") +
-                (criteria.oficina != null ? "<oficina>" + criteria.oficina + "</oficina>" : "") +
+                (criteria.codigoOperacion != null ? "<codope>" + CryptoSical.encodeBase64(criteria.codigoOperacion) + "</codope>" : "") +
+                (criteria.organica != null ? "<clorg>" + CryptoSical.encodeBase64(criteria.organica) + "</clorg>" : "") +
+                (criteria.funcional != null ? "<clfun>" + CryptoSical.encodeBase64(criteria.funcional) + "</clfun>" : "") +
+                (criteria.economica != null ? "<cleco>" + CryptoSical.encodeBase64(criteria.economica) + "</cleco>" : "") +
+                (criteria.expediente != null ? "<nexp>" + CryptoSical.encodeBase64(criteria.expediente) + "</nexp>" : "") +
+                (criteria.grupoApunte != null ? "<gapuntes>" + CryptoSical.encodeBase64(criteria.grupoApunte) + "</gapuntes>" : "") +
+                (criteria.oficina != null ? "<ofig>" + CryptoSical.encodeBase64(criteria.oficina) + "</ofig>" : "") +
                 (criteria.indice != null ? "<indice>" + criteria.indice + "</indice>" : "") +
                 "<NumRegDev>" + (criteria.numRegDev != null ? criteria.numRegDev : 50) + "</NumRegDev>" +
                 "</filtro>";
@@ -237,6 +234,10 @@ public class OperacionesService {
                 "</impl:servicio>" +
                 "</soapenv:Body>" +
                 "</soapenv:Envelope>";
+
+            // Log the generated XML and SOAP envelope to the terminal
+            System.out.println("DEBUG - filtro xmn: " + xml);
+            System.out.println("DEBUG - SML XML Payload: " + xml);
 
             HttpHeaders headers = new HttpHeaders();
             headers.add(HttpHeaders.CONTENT_TYPE, "text/xml");
@@ -364,14 +365,14 @@ public class OperacionesService {
         op.setFechaentrada(getTagValue(opEl, "fechaentrada"));
         op.setFecope(getTagValue(opEl, "fecope"));
         op.setGapuntes(decodeOrNull(getTagValue(opEl, "gapuntes")));
-        op.setDocumento(decodeOrNull(getTagValue(opEl, "doc")));
+        op.setDocumento(decodeOrNull(getTagValue(opEl, "documento")));
         op.setFechadocu(getTagValue(opEl, "fechadocu"));
         op.setOrdinal(decodeOrNull(getTagValue(opEl, "ordinal")));
         op.setFechapago(getTagValue(opEl, "fechapago"));
-        op.setTipopago(decodeOrNull(getTagValue(opEl, "tpag")));
-        op.setTipoexp(decodeOrNull(getTagValue(opEl, "texp")));
+        op.setTipopago(decodeOrNull(getTagValue(opEl, "tipopago")));
+        op.setTipoexp(decodeOrNull(getTagValue(opEl, "tipoexp")));
         op.setNexp(decodeOrNull(getTagValue(opEl, "nexp")));
-        op.setFechaexp(getTagValue(opEl, "fexp"));
+        op.setFechaexp(getTagValue(opEl, "fechaexp"));
         op.setAreages(decodeOrNull(getTagValue(opEl, "areages")));
         op.setOficina(decodeOrNull(getTagValue(opEl, "oficina")));
         op.setImporte(toDouble(getTagValue(opEl, "importe")));
@@ -491,21 +492,21 @@ public class OperacionesService {
             Linea linea = new Linea();
             linea.setNlinea(toInteger(getTagValue(linEl, "nlinea")));
             linea.setOpeasc(toLong(getTagValue(linEl, "opeasc")));
-            linea.setLineasc(toLong(getTagValue(linEl, "linasc")));
-            linea.setLincta(decodeOrNull(getTagValue(linEl, "cta")));
+            linea.setLineasc(toLong(getTagValue(linEl, "lineasc")));
+            linea.setLincta(decodeOrNull(getTagValue(linEl, "lincta")));
             linea.setPrya(toInteger(getTagValue(linEl, "prya")));
             linea.setPryt(decodeOrNull(getTagValue(linEl, "pryt")));
             linea.setPryo(toInteger(getTagValue(linEl, "pryo")));
             linea.setPryn(decodeOrNull(getTagValue(linEl, "pryn")));
             linea.setPryx(toInteger(getTagValue(linEl, "pryx")));
-            linea.setLineje(toInteger(getTagValue(linEl, "eje")));
-            linea.setLinorg(decodeOrNull(getTagValue(linEl, "org")));
-            linea.setLinfun(decodeOrNull(getTagValue(linEl, "fun")));
-            linea.setLineco(decodeOrNull(getTagValue(linEl, "eco")));
-            linea.setReferencia(toLong(getTagValue(linEl, "refe")));
-            linea.setLimporte(toDouble(getTagValue(linEl, "imp")));
-            linea.setSaldo(toDouble(getTagValue(linEl, "sal")));
-            linea.setSaldop(toDouble(getTagValue(linEl, "salp")));
+            linea.setLineje(toInteger(getTagValue(linEl, "lineje")));
+            linea.setLinorg(decodeOrNull(getTagValue(linEl, "linorg")));
+            linea.setLinfun(decodeOrNull(getTagValue(linEl, "linfun")));
+            linea.setLineco(decodeOrNull(getTagValue(linEl, "lineco")));
+            linea.setReferencia(toLong(getTagValue(linEl, "referencia")));
+            linea.setLimporte(toDouble(getTagValue(linEl, "limporte")));
+            linea.setSaldo(toDouble(getTagValue(linEl, "saldo")));
+            linea.setSaldop(toDouble(getTagValue(linEl, "saldop")));
             linea.setLincte(decodeOrNull(getTagValue(linEl, "lincte")));
             linea.setLinpam(decodeOrNull(getTagValue(linEl, "linpam")));
             list.add(linea);
