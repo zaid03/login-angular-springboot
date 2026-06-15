@@ -12,10 +12,6 @@ import com.example.backend.dto.FacturaConsultaRequestDto;
 import com.example.backend.exception.SmlProcessingException;
 import com.example.sical.CryptoSical;
 
-import java.time.Instant;
-import java.time.format.DateTimeFormatter;
-import java.security.SecureRandom;
-
 
 @Service
 public class FacturaConsultaService {
@@ -60,16 +56,17 @@ public class FacturaConsultaService {
             sb.append("<tokenSha1>").append(tokenSha1).append("</tokenSha1>");
             sb.append("</sec>");
             sb.append("<par>");
+            if (req.getTipoRegistro() != null) sb.append("<tipoRegistro>").append(CryptoSical.encodeBase64(req.getTipoRegistro())).append("</tipoRegistro>");
             if (req.getTipoDocumento() != null) sb.append("<tipoDocumento>").append(req.getTipoDocumento()).append("</tipoDocumento>");
-            if (req.getCge() != null) sb.append("<cge>").append(req.getCge()).append("</cge>");
-            if (req.getSituacionIgual() != null) sb.append("<situacionIgual>").append(req.getSituacionIgual()).append("</situacionIgual>");
-            if (req.getEstado() != null) sb.append("<estado>").append(req.getEstado()).append("</estado>");
-            if (req.getTercero() != null) sb.append("<tercero>").append(req.getTercero()).append("</tercero>");
-            if (req.getDocProveedor() != null) sb.append("<docProveedor>").append(req.getDocProveedor()).append("</docProveedor>");
-            if (req.getFecRegDesde() != null) sb.append("<fecRegDesde>").append(req.getFecRegDesde()).append("</fecRegDesde>");
-            if (req.getFecRegHasta() != null) sb.append("<fecRegHasta>").append(req.getFecRegHasta()).append("</fecRegHasta>");
-            if (req.getFecDocDesde() != null) sb.append("<fecDocDesde>").append(req.getFecDocDesde()).append("</fecDocDesde>");
-            if (req.getFecDocHasta() != null) sb.append("<fecDocHasta>").append(req.getFecDocHasta()).append("</fecDocHasta>");
+            if (req.getCge() != null) sb.append("<cge>").append(CryptoSical.encodeBase64(req.getCge())).append("</cge>");
+            if (req.getSituacionIgual() != null) sb.append("<situacionIgual>").append(CryptoSical.encodeBase64(req.getSituacionIgual())).append("</situacionIgual>");
+            if (req.getEstado() != null) sb.append("<estado>").append(CryptoSical.encodeBase64(req.getEstado())).append("</estado>");
+            if (req.getTercero() != null) sb.append("<tercero>").append(CryptoSical.encodeBase64(req.getTercero())).append("</tercero>");
+            if (req.getDocProveedor() != null) sb.append("<docProveedor>").append(CryptoSical.encodeBase64(req.getDocProveedor())).append("</docProveedor>");
+            if (req.getFecRegDesde() != null) sb.append("<fecRegDesde>").append(formatDate(req.getFecRegDesde())).append("</fecRegDesde>");
+            if (req.getFecRegHasta() != null) sb.append("<fecRegHasta>").append(formatDate(req.getFecRegHasta())).append("</fecRegHasta>");
+            if (req.getFecDocDesde() != null) sb.append("<fecDocDesde>").append(formatDate(req.getFecDocDesde())).append("</fecDocDesde>");
+            if (req.getFecDocHasta() != null) sb.append("<fecDocHasta>").append(formatDate(req.getFecDocHasta())).append("</fecDocHasta>");
             sb.append("</par>");
             sb.append("</e>");
             return sb.toString();
@@ -97,5 +94,10 @@ public class FacturaConsultaService {
         HttpEntity<String> entity = new HttpEntity<>(soapEnvelope, headers);
         ResponseEntity<String> response = restTemplate.postForEntity(endpoint, entity, String.class);
         return response.getBody();
+    }
+
+    private String formatDate(java.time.LocalDateTime dateTime) {
+        if (dateTime == null) return "";
+        return dateTime.format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd"));
     }
 }

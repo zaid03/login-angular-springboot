@@ -1056,7 +1056,7 @@ export class FacturasComponent {
       "tipoDocumento": 0,
       "cge": this.centroGestor,
       "situacionIgual": "08",
-      "estado": "E"
+      "estado": 0
     }
 
     this.http.post<any>(`${environment.backendUrl}/api/facturas/consulta`, payload).subscribe({
@@ -1091,7 +1091,7 @@ export class FacturasComponent {
   searchFacturas() {
     this.limpiarMEssages();
     const params: any = {};
-
+    
     if (this.proveedor) params.proveedor = this.proveedor;
     if (this.facturaNumero) params.facturaNumero = this.facturaNumero;
     if (this.RcfDesde) params.rcfDesde = this.RcfDesde;
@@ -1100,7 +1100,7 @@ export class FacturasComponent {
     if (this.fechaFacturaHasta) params.fechaFacturaHasta = this.fechaFacturaHasta;
 
     this.isLoading = true;
-    this.http.post<any[]>(`${environment.backendUrl}/api/facturas`, { params }).subscribe({
+    this.http.post<any[]>(`${environment.backendUrl}/api/facturas/consulta`, { params }).subscribe({
       next: (response) => {
         this.facturas = response;
         this.updatePagination();
