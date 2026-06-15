@@ -17,6 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,6 +43,10 @@ class FacturaConsultaServiceTest {
                 "token456", "nonce123", "20260322100000", "origin789"
             );
             
+            // Mock CryptoSical.encodeBase64 for all string parameters that are now encoded
+            cryptoMock.when(() -> CryptoSical.encodeBase64(anyString()))
+                .thenAnswer(invocation -> Base64.getEncoder().encodeToString(invocation.getArgument(0, String.class).getBytes(StandardCharsets.UTF_8)));
+
             cryptoMock.when(() -> CryptoSical.calculateSecurityFields("pk123"))
                 .thenReturn(secFields);
             cryptoMock.when(() -> CryptoSical.encodeSha1Base64("origin789"))
@@ -57,10 +63,11 @@ class FacturaConsultaServiceTest {
             assertTrue(result.contains("<ent>ENT001</ent>"));
             assertTrue(result.contains("<eje>2024</eje>"));
             assertTrue(result.contains("<usu>user1</usu>"));
+            assertTrue(result.contains("<tipoRegistro>" + Base64.getEncoder().encodeToString("F".getBytes(StandardCharsets.UTF_8)) + "</tipoRegistro>"));
             assertTrue(result.contains("<pwd>encodedPwd</pwd>"));
             assertTrue(result.contains("<tipoDocumento>1</tipoDocumento>"));
-            assertTrue(result.contains("<cge>CGE001</cge>"));
             assertTrue(result.contains("<apl>SNP</apl>"));
+            assertTrue(result.contains("<cge>" + Base64.getEncoder().encodeToString("CGE001".getBytes(StandardCharsets.UTF_8)) + "</cge>"));
             assertTrue(result.contains("<tobj>Justificantes</tobj>"));
             assertTrue(result.contains("<cmd>LST</cmd>"));
             assertTrue(result.contains("<ver>2.0</ver>"));
@@ -78,6 +85,9 @@ class FacturaConsultaServiceTest {
                 .thenReturn(secFields);
             cryptoMock.when(() -> CryptoSical.encodeSha1Base64(anyString()))
                 .thenReturn("encoded");
+            // Mock CryptoSical.encodeBase64 for all string parameters that are now encoded
+            cryptoMock.when(() -> CryptoSical.encodeBase64(anyString()))
+                .thenAnswer(invocation -> Base64.getEncoder().encodeToString(invocation.getArgument(0, String.class).getBytes(StandardCharsets.UTF_8)));
 
             FacturaConsultaRequestDto dto = createDtoFromMap(Map.of(
                 "org", "ORG001",
@@ -108,18 +118,22 @@ class FacturaConsultaServiceTest {
                 .thenReturn(secFields);
             cryptoMock.when(() -> CryptoSical.encodeSha1Base64(anyString()))
                 .thenReturn("encoded");
+            // Mock CryptoSical.encodeBase64 for all string parameters that are now encoded
+            cryptoMock.when(() -> CryptoSical.encodeBase64(anyString()))
+                .thenAnswer(invocation -> Base64.getEncoder().encodeToString(invocation.getArgument(0, String.class).getBytes(StandardCharsets.UTF_8)));
 
             FacturaConsultaRequestDto dto = createFullRequestDto();
             
             String result = service.buildSmlInput(dto);
             
             assertNotNull(result);
+            assertTrue(result.contains("<tipoRegistro>" + Base64.getEncoder().encodeToString("F".getBytes(StandardCharsets.UTF_8)) + "</tipoRegistro>"));
             assertTrue(result.contains("<tipoDocumento>1</tipoDocumento>"));
-            assertTrue(result.contains("<cge>CGE001</cge>"));
-            assertTrue(result.contains("<situacionIgual>1</situacionIgual>"));
-            assertTrue(result.contains("<estado>ACEPTADA</estado>"));
-            assertTrue(result.contains("<tercero>TERC001</tercero>"));
-            assertTrue(result.contains("<docProveedor>DOC001</docProveedor>"));
+            assertTrue(result.contains("<cge>" + Base64.getEncoder().encodeToString("CGE001".getBytes(StandardCharsets.UTF_8)) + "</cge>"));
+            assertTrue(result.contains("<situacionIgual>" + Base64.getEncoder().encodeToString("1".getBytes(StandardCharsets.UTF_8)) + "</situacionIgual>"));
+            assertTrue(result.contains("<estado>" + Base64.getEncoder().encodeToString("ACEPTADA".getBytes(StandardCharsets.UTF_8)) + "</estado>"));
+            assertTrue(result.contains("<tercero>" + Base64.getEncoder().encodeToString("TERC001".getBytes(StandardCharsets.UTF_8)) + "</tercero>"));
+            assertTrue(result.contains("<docProveedor>" + Base64.getEncoder().encodeToString("DOC001".getBytes(StandardCharsets.UTF_8)) + "</docProveedor>"));
         }
     }
 
@@ -151,7 +165,10 @@ class FacturaConsultaServiceTest {
             cryptoMock.when(() -> CryptoSical.calculateSecurityFields(anyString()))
                 .thenReturn(secFields);
             cryptoMock.when(() -> CryptoSical.encodeSha1Base64(anyString()))
-                .thenReturn("encoded");
+                .thenReturn("encodedSha1");
+            // Mock CryptoSical.encodeBase64 for all string parameters that are now encoded
+            cryptoMock.when(() -> CryptoSical.encodeBase64(anyString()))
+                .thenAnswer(invocation -> Base64.getEncoder().encodeToString(invocation.getArgument(0, String.class).getBytes(StandardCharsets.UTF_8)));
 
             Map<String, Object> data = new HashMap<>();
             data.put("org", null);
@@ -178,7 +195,7 @@ class FacturaConsultaServiceTest {
             cryptoMock.when(() -> CryptoSical.calculateSecurityFields(anyString()))
                 .thenReturn(secFields);
             cryptoMock.when(() -> CryptoSical.encodeSha1Base64(anyString()))
-                .thenReturn("encoded");
+                .thenReturn("encodedSha1");
 
             Map<String, Object> data = new HashMap<>();
             data.put("org", "ORG001");
@@ -243,7 +260,10 @@ class FacturaConsultaServiceTest {
             cryptoMock.when(() -> CryptoSical.calculateSecurityFields(anyString()))
                 .thenReturn(secFields);
             cryptoMock.when(() -> CryptoSical.encodeSha1Base64(anyString()))
-                .thenReturn("encoded");
+                .thenReturn("encodedSha1");
+            // Mock CryptoSical.encodeBase64 for all string parameters that are now encoded
+            cryptoMock.when(() -> CryptoSical.encodeBase64(anyString()))
+                .thenAnswer(invocation -> Base64.getEncoder().encodeToString(invocation.getArgument(0, String.class).getBytes(StandardCharsets.UTF_8)));
 
             FacturaConsultaRequestDto dto = createDtoFromMap(Map.of(
                 "org", "ORG001",
@@ -252,14 +272,14 @@ class FacturaConsultaServiceTest {
                 "usu", "user1",
                 "pwd", "password",
                 "publicKey", "pk123",
-                "tipoDocumento", 2,
-                "cge", "CGE<001>"
+                "tipoRegistro", "F",
+                "cge", "CGE<001>" // This value will be Base64 encoded
             ));
             
             String result = service.buildSmlInput(dto);
-            
             assertNotNull(result);
-            assertTrue(result.contains("CGE") || result.contains("&"));
+            assertTrue(result.contains("<tipoRegistro>" + Base64.getEncoder().encodeToString("F".getBytes(StandardCharsets.UTF_8)) + "</tipoRegistro>"));
+            assertTrue(result.contains("<cge>" + Base64.getEncoder().encodeToString("CGE<001>".getBytes(StandardCharsets.UTF_8)) + "</cge>"));
         }
     }
 
@@ -274,6 +294,9 @@ class FacturaConsultaServiceTest {
                 .thenReturn(secFields);
             cryptoMock.when(() -> CryptoSical.encodeSha1Base64(anyString()))
                 .thenReturn("encoded");
+            // Mock CryptoSical.encodeBase64 for all string parameters that are now encoded
+            cryptoMock.when(() -> CryptoSical.encodeBase64(anyString()))
+                .thenAnswer(invocation -> Base64.getEncoder().encodeToString(invocation.getArgument(0, String.class).getBytes(StandardCharsets.UTF_8)));
 
             FacturaConsultaRequestDto dto = createValidRequestDto();
             
@@ -337,7 +360,8 @@ class FacturaConsultaServiceTest {
             "eje", "2024",
             "usu", "user1",
             "pwd", "password123",
-            "publicKey", "pk123",
+            "publicKey", "pk123", // Required for security fields calculation
+            "tipoRegistro", "F", // Added for new Base64 encoded field
             "tipoDocumento", 1,
             "cge", "CGE001"
         ));
@@ -350,17 +374,18 @@ class FacturaConsultaServiceTest {
         data.put("eje", "2024");
         data.put("usu", "user1");
         data.put("pwd", "password123");
-        data.put("publicKey", "pk123");
+        data.put("publicKey", "pk123"); // Required for security fields calculation
+        data.put("tipoRegistro", "F"); // Added for new Base64 encoded field
         data.put("tipoDocumento", 1);
         data.put("cge", "CGE001");
         data.put("situacionIgual", "1");
         data.put("estado", "ACEPTADA");
         data.put("tercero", "TERC001");
         data.put("docProveedor", "DOC001");
-        data.put("fecRegDesde", LocalDateTime.of(2024, 1, 1, 0, 0));
-        data.put("fecRegHasta", LocalDateTime.of(2024, 12, 31, 23, 59));
-        data.put("fecDocDesde", LocalDateTime.of(2024, 1, 15, 0, 0));
-        data.put("fecDocHasta", LocalDateTime.of(2024, 12, 15, 23, 59));
+        data.put("fecRegDesde", LocalDateTime.of(2024, 1, 1, 0, 0)); // Date fields are formatted, not Base64 encoded
+        data.put("fecRegHasta", LocalDateTime.of(2024, 12, 31, 23, 59)); // Date fields are formatted, not Base64 encoded
+        data.put("fecDocDesde", LocalDateTime.of(2024, 1, 15, 0, 0)); // Date fields are formatted, not Base64 encoded
+        data.put("fecDocHasta", LocalDateTime.of(2024, 12, 15, 23, 59)); // Date fields are formatted, not Base64 encoded
         return createDtoFromMap(data);
     }
 
@@ -384,7 +409,10 @@ class FacturaConsultaServiceTest {
             cryptoMock.when(() -> CryptoSical.calculateSecurityFields(anyString()))
                 .thenReturn(secFields);
             cryptoMock.when(() -> CryptoSical.encodeSha1Base64(anyString()))
-                .thenReturn("encoded");
+                .thenReturn("encodedSha1");
+            // Mock CryptoSical.encodeBase64 for all string parameters that are now encoded
+            cryptoMock.when(() -> CryptoSical.encodeBase64(anyString()))
+                .thenAnswer(invocation -> Base64.getEncoder().encodeToString(invocation.getArgument(0, String.class).getBytes(StandardCharsets.UTF_8)));
 
             Map<String, Object> data = new HashMap<>();
             data.put("org", "ORG001");
@@ -393,18 +421,18 @@ class FacturaConsultaServiceTest {
             data.put("usu", "user1");
             data.put("pwd", "password");
             data.put("publicKey", "pk123");
-            data.put("fecRegDesde", LocalDateTime.of(2024, 1, 1, 0, 0));
-            data.put("fecRegHasta", LocalDateTime.of(2024, 1, 31, 23, 59));
-            data.put("fecDocDesde", LocalDateTime.of(2024, 2, 1, 0, 0));
-            data.put("fecDocHasta", LocalDateTime.of(2024, 2, 28, 23, 59));
+            data.put("fecRegDesde", LocalDateTime.of(2024, 1, 1, 0, 0)); // Date fields are formatted, not Base64 encoded
+            data.put("fecRegHasta", LocalDateTime.of(2024, 1, 31, 23, 59)); // Date fields are formatted, not Base64 encoded
+            data.put("fecDocDesde", LocalDateTime.of(2024, 2, 1, 0, 0)); // Date fields are formatted, not Base64 encoded
+            data.put("fecDocHasta", LocalDateTime.of(2024, 2, 28, 23, 59)); // Date fields are formatted, not Base64 encoded
             
             FacturaConsultaRequestDto dto = createDtoFromMap(data);
             String result = service.buildSmlInput(dto);
             
-            assertTrue(result.contains("fecRegDesde") || result.contains("2024-01-01"));
-            assertTrue(result.contains("fecRegHasta") || result.contains("2024-01-31"));
-            assertTrue(result.contains("fecDocDesde") || result.contains("2024-02-01"));
-            assertTrue(result.contains("fecDocHasta") || result.contains("2024-02-28"));
+            assertTrue(result.contains("<fecRegDesde>20240101</fecRegDesde>"));
+            assertTrue(result.contains("<fecRegHasta>20240131</fecRegHasta>"));
+            assertTrue(result.contains("<fecDocDesde>20240201</fecDocDesde>"));
+            assertTrue(result.contains("<fecDocHasta>20240228</fecDocHasta>"));
         }
     }
 
@@ -417,6 +445,9 @@ class FacturaConsultaServiceTest {
             cryptoMock.when(() -> CryptoSical.calculateSecurityFields(anyString()))
                 .thenReturn(secFields);
             cryptoMock.when(() -> CryptoSical.encodeSha1Base64("password123"))
+                .thenThrow(new RuntimeException("Encoding failed"));
+            // Mock CryptoSical.encodeBase64 for all string parameters that are now encoded
+            cryptoMock.when(() -> CryptoSical.encodeBase64(anyString()))
                 .thenThrow(new RuntimeException("Encoding failed"));
 
             FacturaConsultaRequestDto dto = createValidRequestDto();
@@ -434,7 +465,10 @@ class FacturaConsultaServiceTest {
             cryptoMock.when(() -> CryptoSical.calculateSecurityFields("pk123"))
                 .thenReturn(secFields);
             cryptoMock.when(() -> CryptoSical.encodeSha1Base64(anyString()))
-                .thenReturn("encoded");
+                .thenReturn("encodedSha1");
+            // Mock CryptoSical.encodeBase64 for all string parameters that are now encoded
+            cryptoMock.when(() -> CryptoSical.encodeBase64(anyString()))
+                .thenAnswer(invocation -> Base64.getEncoder().encodeToString(invocation.getArgument(0, String.class).getBytes(StandardCharsets.UTF_8)));
 
             FacturaConsultaRequestDto dto = createValidRequestDto();
             service.buildSmlInput(dto);
@@ -452,7 +486,10 @@ class FacturaConsultaServiceTest {
             cryptoMock.when(() -> CryptoSical.calculateSecurityFields(anyString()))
                 .thenReturn(secFields);
             cryptoMock.when(() -> CryptoSical.encodeSha1Base64(anyString()))
-                .thenReturn("encoded");
+                .thenReturn("encodedSha1");
+            // Mock CryptoSical.encodeBase64 for all string parameters that are now encoded
+            cryptoMock.when(() -> CryptoSical.encodeBase64(anyString()))
+                .thenAnswer(invocation -> Base64.getEncoder().encodeToString(invocation.getArgument(0, String.class).getBytes(StandardCharsets.UTF_8)));
 
             FacturaConsultaRequestDto dto = createValidRequestDto();
             service.buildSmlInput(dto);
@@ -470,7 +507,10 @@ class FacturaConsultaServiceTest {
             cryptoMock.when(() -> CryptoSical.calculateSecurityFields(anyString()))
                 .thenReturn(secFields);
             cryptoMock.when(() -> CryptoSical.encodeSha1Base64(anyString()))
-                .thenReturn("encoded");
+                .thenReturn("encodedSha1");
+            // Mock CryptoSical.encodeBase64 for all string parameters that are now encoded
+            cryptoMock.when(() -> CryptoSical.encodeBase64(anyString()))
+                .thenAnswer(invocation -> Base64.getEncoder().encodeToString(invocation.getArgument(0, String.class).getBytes(StandardCharsets.UTF_8)));
 
             FacturaConsultaRequestDto dto = createValidRequestDto();
             service.buildSmlInput(dto);
@@ -488,7 +528,10 @@ class FacturaConsultaServiceTest {
             cryptoMock.when(() -> CryptoSical.calculateSecurityFields(anyString()))
                 .thenReturn(secFields);
             cryptoMock.when(() -> CryptoSical.encodeSha1Base64(anyString()))
-                .thenReturn("encoded");
+                .thenReturn("encodedSha1");
+            // Mock CryptoSical.encodeBase64 for all string parameters that are now encoded
+            cryptoMock.when(() -> CryptoSical.encodeBase64(anyString()))
+                .thenAnswer(invocation -> Base64.getEncoder().encodeToString(invocation.getArgument(0, String.class).getBytes(StandardCharsets.UTF_8)));
 
             FacturaConsultaRequestDto dto = createDtoFromMap(Map.of(
                 "org", "ORG001",
@@ -497,6 +540,7 @@ class FacturaConsultaServiceTest {
                 "usu", "user1",
                 "pwd", "password",
                 "publicKey", "pk123"
+                ,"tipoRegistro", "F"
             ));
             
             String result = service.buildSmlInput(dto);
@@ -518,7 +562,10 @@ class FacturaConsultaServiceTest {
             cryptoMock.when(() -> CryptoSical.calculateSecurityFields(anyString()))
                 .thenReturn(secFields);
             cryptoMock.when(() -> CryptoSical.encodeSha1Base64(anyString()))
-                .thenReturn("encoded");
+                .thenReturn("encodedSha1");
+            // Mock CryptoSical.encodeBase64 for all string parameters that are now encoded
+            cryptoMock.when(() -> CryptoSical.encodeBase64(anyString()))
+                .thenAnswer(invocation -> Base64.getEncoder().encodeToString(invocation.getArgument(0, String.class).getBytes(StandardCharsets.UTF_8)));
 
             Map<String, Object> data = new HashMap<>();
             data.put("org", "ORG001");
@@ -528,6 +575,7 @@ class FacturaConsultaServiceTest {
             data.put("pwd", "password");
             data.put("publicKey", "pk123");
             data.put("tipoDocumento", null);
+            data.put("tipoRegistro", null); // Ensure this is also handled as nullable
             data.put("cge", null);
             data.put("situacionIgual", null);
             
@@ -535,6 +583,7 @@ class FacturaConsultaServiceTest {
             String result = service.buildSmlInput(dto);
             
             assertFalse(result.contains("<tipoDocumento>"));
+            assertFalse(result.contains("<tipoRegistro>"));
             assertFalse(result.contains("<situacionIgual>"));
         }
     }
@@ -572,7 +621,10 @@ class FacturaConsultaServiceTest {
             cryptoMock.when(() -> CryptoSical.calculateSecurityFields(anyString()))
                 .thenReturn(secFields);
             cryptoMock.when(() -> CryptoSical.encodeSha1Base64(anyString()))
-                .thenReturn("encoded");
+                .thenReturn("encodedSha1");
+            // Mock CryptoSical.encodeBase64 for all string parameters that are now encoded
+            cryptoMock.when(() -> CryptoSical.encodeBase64(anyString()))
+                .thenAnswer(invocation -> Base64.getEncoder().encodeToString(invocation.getArgument(0, String.class).getBytes(StandardCharsets.UTF_8)));
 
             Map<String, Object> data = new HashMap<>();
             data.put("org", "ORG001");
@@ -581,14 +633,14 @@ class FacturaConsultaServiceTest {
             data.put("usu", "user1");
             data.put("pwd", "password");
             data.put("publicKey", "pk123");
-            data.put("tercero", "TERCERO123");
-            data.put("docProveedor", "DOCPROV456");
+            data.put("tipoRegistro", "F");
+            data.put("tercero", "TERCERO123"); // This value will be Base64 encoded
+            data.put("docProveedor", "DOCPROV456"); // This value will be Base64 encoded
             
             FacturaConsultaRequestDto dto = createDtoFromMap(data);
             String result = service.buildSmlInput(dto);
-            
-            assertTrue(result.contains("TERCERO123") || result.contains("tercero"));
-            assertTrue(result.contains("DOCPROV456") || result.contains("docProveedor"));
+            assertTrue(result.contains("<tercero>" + Base64.getEncoder().encodeToString("TERCERO123".getBytes(StandardCharsets.UTF_8)) + "</tercero>"));
+            assertTrue(result.contains("<docProveedor>" + Base64.getEncoder().encodeToString("DOCPROV456".getBytes(StandardCharsets.UTF_8)) + "</docProveedor>"));
         }
     }
 
@@ -601,7 +653,10 @@ class FacturaConsultaServiceTest {
             cryptoMock.when(() -> CryptoSical.calculateSecurityFields(anyString()))
                 .thenReturn(secFields);
             cryptoMock.when(() -> CryptoSical.encodeSha1Base64(anyString()))
-                .thenReturn("encoded");
+                .thenReturn("encodedSha1");
+            // Mock CryptoSical.encodeBase64 for all string parameters that are now encoded
+            cryptoMock.when(() -> CryptoSical.encodeBase64(anyString()))
+                .thenAnswer(invocation -> Base64.getEncoder().encodeToString(invocation.getArgument(0, String.class).getBytes(StandardCharsets.UTF_8)));
 
             Map<String, Object> data = new HashMap<>();
             data.put("org", "ORG001");
@@ -610,12 +665,12 @@ class FacturaConsultaServiceTest {
             data.put("usu", "user1");
             data.put("pwd", "password");
             data.put("publicKey", "pk123");
-            data.put("estado", "PAGADA");
+            data.put("tipoRegistro", "F");
+            data.put("estado", "PAGADA"); // This value will be Base64 encoded
             
             FacturaConsultaRequestDto dto = createDtoFromMap(data);
             String result = service.buildSmlInput(dto);
-            
-            assertTrue(result.contains("PAGADA") || result.contains("estado"));
+            assertTrue(result.contains("<estado>" + Base64.getEncoder().encodeToString("PAGADA".getBytes(StandardCharsets.UTF_8)) + "</estado>"));
         }
     }
 
@@ -628,7 +683,10 @@ class FacturaConsultaServiceTest {
             cryptoMock.when(() -> CryptoSical.calculateSecurityFields(anyString()))
                 .thenReturn(secFields);
             cryptoMock.when(() -> CryptoSical.encodeSha1Base64(anyString()))
-                .thenReturn("encoded");
+                .thenReturn("encodedSha1");
+            // Mock CryptoSical.encodeBase64 for all string parameters that are now encoded
+            cryptoMock.when(() -> CryptoSical.encodeBase64(anyString()))
+                .thenAnswer(invocation -> Base64.getEncoder().encodeToString(invocation.getArgument(0, String.class).getBytes(StandardCharsets.UTF_8)));
 
             Map<String, Object> data = new HashMap<>();
             data.put("org", "ORG001");
@@ -637,12 +695,12 @@ class FacturaConsultaServiceTest {
             data.put("usu", "user1");
             data.put("pwd", "password");
             data.put("publicKey", "pk123");
-            data.put("situacionIgual", "2");
+            data.put("tipoRegistro", "F");
+            data.put("situacionIgual", "2"); // This value will be Base64 encoded
             
             FacturaConsultaRequestDto dto = createDtoFromMap(data);
             String result = service.buildSmlInput(dto);
-            
-            assertTrue(result.contains("2") || result.contains("situacionIgual"));
+            assertTrue(result.contains("<situacionIgual>" + Base64.getEncoder().encodeToString("2".getBytes(StandardCharsets.UTF_8)) + "</situacionIgual>"));
         }
     }
 
@@ -655,7 +713,10 @@ class FacturaConsultaServiceTest {
             cryptoMock.when(() -> CryptoSical.calculateSecurityFields(anyString()))
                 .thenReturn(secFields);
             cryptoMock.when(() -> CryptoSical.encodeSha1Base64(anyString()))
-                .thenReturn("encoded");
+                .thenReturn("encodedSha1");
+            // Mock CryptoSical.encodeBase64 for all string parameters that are now encoded
+            cryptoMock.when(() -> CryptoSical.encodeBase64(anyString()))
+                .thenAnswer(invocation -> Base64.getEncoder().encodeToString(invocation.getArgument(0, String.class).getBytes(StandardCharsets.UTF_8)));
 
             FacturaConsultaRequestDto dto = createFullRequestDto();
             String result = service.buildSmlInput(dto);
@@ -675,7 +736,10 @@ class FacturaConsultaServiceTest {
             cryptoMock.when(() -> CryptoSical.calculateSecurityFields(anyString()))
                 .thenReturn(secFields);
             cryptoMock.when(() -> CryptoSical.encodeSha1Base64(anyString()))
-                .thenReturn("encoded");
+                .thenReturn("encodedSha1");
+            // Mock CryptoSical.encodeBase64 for all string parameters that are now encoded
+            cryptoMock.when(() -> CryptoSical.encodeBase64(anyString()))
+                .thenAnswer(invocation -> Base64.getEncoder().encodeToString(invocation.getArgument(0, String.class).getBytes(StandardCharsets.UTF_8)));
 
             Map<String, Object> data = new HashMap<>();
             data.put("org", "ORG001");
@@ -684,6 +748,7 @@ class FacturaConsultaServiceTest {
             data.put("usu", "user1");
             data.put("pwd", "password");
             data.put("publicKey", "pk123");
+            data.put("tipoRegistro", "F");
             data.put("fecRegDesde", null);
             data.put("fecRegHasta", null);
             
@@ -728,7 +793,10 @@ class FacturaConsultaServiceTest {
             cryptoMock.when(() -> CryptoSical.calculateSecurityFields(anyString()))
                 .thenReturn(secFields);
             cryptoMock.when(() -> CryptoSical.encodeSha1Base64(anyString()))
-                .thenReturn("encoded");
+                .thenReturn("encodedSha1");
+            // Mock CryptoSical.encodeBase64 for all string parameters that are now encoded
+            cryptoMock.when(() -> CryptoSical.encodeBase64(anyString()))
+                .thenAnswer(invocation -> Base64.getEncoder().encodeToString(invocation.getArgument(0, String.class).getBytes(StandardCharsets.UTF_8)));
 
             FacturaConsultaRequestDto dto = createValidRequestDto();
             String result = service.buildSmlInput(dto);
