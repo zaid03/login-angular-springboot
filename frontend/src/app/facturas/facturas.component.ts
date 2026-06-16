@@ -1089,9 +1089,7 @@ export class FacturasComponent {
   fechaFacturaDesde: string = '';
   fechaFacturaHasta: string = '';
   searchFacturas() {
-    this.limpiarMEssages();
-    const params: any = {};
-    
+    this.limpiarMEssages();    
     const payload: any = {
       "org": this.WSorg,
       "ent": this.WSent,
@@ -1112,10 +1110,10 @@ export class FacturasComponent {
     if (this.fechaFacturaDesde) payload.fecDocDesde = this.fechaFacturaDesde;
     if (this.fechaFacturaHasta) payload.fecDocHasta = this.fechaFacturaHasta;
 
-    this.isLoading = true;
+    this.isLoadingFactura = true;
     this.http.post<any[]>(`${environment.backendUrl}/api/facturas/consulta`, payload).subscribe({
       next: (response) => {
-        this.facturas = response;
+        this.facturasWb = response;
         this.updatePagination();
         this.isLoading = false;
       },
