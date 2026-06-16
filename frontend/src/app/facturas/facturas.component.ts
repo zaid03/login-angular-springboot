@@ -1092,15 +1092,28 @@ export class FacturasComponent {
     this.limpiarMEssages();
     const params: any = {};
     
-    if (this.proveedor) params.proveedor = this.proveedor;
-    if (this.facturaNumero) params.facturaNumero = this.facturaNumero;
-    if (this.RcfDesde) params.rcfDesde = this.RcfDesde;
-    if (this.RcfHasta) params.rcfHasta = this.RcfHasta;
-    if (this.fechaFacturaDesde) params.fechaFacturaDesde = this.fechaFacturaDesde;
-    if (this.fechaFacturaHasta) params.fechaFacturaHasta = this.fechaFacturaHasta;
+    const payload: any = {
+      "org": this.WSorg,
+      "ent": this.WSent,
+      "eje": this.eje,
+      "usu": environment.sicalUsername,
+      "pwd": environment.sicalPassword,
+      "publicKey": environment.sicalPublicKey,
+      "tipoDocumento": 0,
+      "cge": this.centroGestor,
+      "situacionIgual": "08",
+      "estado": 0
+    }
+
+    if (this.proveedor) payload.tercero = this.proveedor;
+    if (this.facturaNumero) payload.docProveedor = this.facturaNumero;
+    if (this.RcfDesde) payload.fecRegDesde = this.RcfDesde;
+    if (this.RcfHasta) payload.fecRegHasta = this.RcfHasta;
+    if (this.fechaFacturaDesde) payload.fecDocDesde = this.fechaFacturaDesde;
+    if (this.fechaFacturaHasta) payload.fecDocHasta = this.fechaFacturaHasta;
 
     this.isLoading = true;
-    this.http.post<any[]>(`${environment.backendUrl}/api/facturas/consulta`, { params }).subscribe({
+    this.http.post<any[]>(`${environment.backendUrl}/api/facturas/consulta`, payload).subscribe({
       next: (response) => {
         this.facturas = response;
         this.updatePagination();
@@ -1108,7 +1121,7 @@ export class FacturasComponent {
       },
       error: (err) => {
         this.facturasWb = [];
-        this.filterFacturaMessage = err.error?.error ?? err.error;
+        this.facturasErrorMessage = err.error?.error ?? err.error;
         this.isLoading = false;
       }
     });
