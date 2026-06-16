@@ -1105,11 +1105,11 @@ export class FacturasComponent {
 
     if (this.proveedor) payload.tercero = this.proveedor;
     if (this.facturaNumero) payload.docProveedor = this.facturaNumero;
-    if (this.RcfDesde) payload.fecRegDesde = this.RcfDesde;
-    if (this.RcfHasta) payload.fecRegHasta = this.RcfHasta;
-    if (this.fechaFacturaDesde) payload.fecDocDesde = this.fechaFacturaDesde;
-    if (this.fechaFacturaHasta) payload.fecDocHasta = this.fechaFacturaHasta;
+    if (this.RcfDesde) payload.fecRegDesde = `${this.RcfDesde}T00:00:00`;
+    if (this.RcfHasta) payload.fecRegHasta = `${this.RcfHasta}T23:59:59`;
 
+    if (this.fechaFacturaDesde) payload.fecDocDesde = `${this.fechaFacturaDesde}T00:00:00`;
+    if (this.fechaFacturaHasta) payload.fecDocHasta = `${this.fechaFacturaHasta}T23:59:59`;
     this.isLoadingFactura = true;
     this.http.post<any[]>(`${environment.backendUrl}/api/facturas/consulta`, payload).subscribe({
       next: (response) => {
