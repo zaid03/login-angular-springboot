@@ -180,81 +180,81 @@ public class OperacionesService {
         }
     }
 
-    public List<Operaciones> getOperaciones(SearchCriteria criteria) throws SmlProcessingException {
-        try {
-            CryptoSical.SecurityFields sec = CryptoSical.calculateSecurityFields(publicKey);
-            String fecha = sec.created;
-            String nonce = sec.nonce;
-            String token = sec.token;
-            String tokenSha1 = CryptoSical.encodeSha1Base64(sec.origin);
+        public List<Operaciones> getOperaciones(SearchCriteria criteria) throws SmlProcessingException {
+            try {
+                CryptoSical.SecurityFields sec = CryptoSical.calculateSecurityFields(publicKey);
+                String fecha = sec.created;
+                String nonce = sec.nonce;
+                String token = sec.token;
+                String tokenSha1 = CryptoSical.encodeSha1Base64(sec.origin);
 
-            String filtroXml =
-                 "<filtro>" +
-                (criteria.numeroOperDesde != null ? "<numopeDesde>" + criteria.numeroOperDesde + "</numopeDesde>" : "") +
-                (criteria.numeroOperHasta != null ? "<numopeHasta>" + criteria.numeroOperHasta + "</numopeHasta>" : "") +
-                (criteria.codigoOperacion != null ? "<codope>" + CryptoSical.encodeBase64(criteria.codigoOperacion) + "</codope>" : "") +
-                (criteria.organica != null ? "<clorg>" + CryptoSical.encodeBase64(criteria.organica) + "</clorg>" : "") +
-                (criteria.funcional != null ? "<clfun>" + CryptoSical.encodeBase64(criteria.funcional) + "</clfun>" : "") +
-                (criteria.economica != null ? "<cleco>" + CryptoSical.encodeBase64(criteria.economica) + "</cleco>" : "") +
-                (criteria.expediente != null ? "<nexp>" + CryptoSical.encodeBase64(criteria.expediente) + "</nexp>" : "") +
-                (criteria.grupoApunte != null ? "<gapuntes>" + CryptoSical.encodeBase64(criteria.grupoApunte) + "</gapuntes>" : "") +
-                (criteria.oficina != null ? "<ofig>" + CryptoSical.encodeBase64(criteria.oficina) + "</ofig>" : "") +
-                (criteria.indice != null ? "<indice>" + criteria.indice + "</indice>" : "") +
-                "<NumRegDev>" + (criteria.numRegDev != null ? criteria.numRegDev : 50) + "</NumRegDev>" +
-                "</filtro>";
+                String filtroXml =
+                    "<filtro>" +
+                    (criteria.numeroOperDesde != null ? "<numeroOperDesde>" + criteria.numeroOperDesde + "</numeroOperDesde>" : "") +
+                    (criteria.numeroOperHasta != null ? "<numeroOperHasta>" + criteria.numeroOperHasta + "</numeroOperHasta>" : "") +
+                    (criteria.codigoOperacion != null ? "<codigoOperacion>" + CryptoSical.encodeBase64(criteria.codigoOperacion) + "</codigoOperacion>" : "") +
+                    (criteria.organica != null ? "<organica>" + CryptoSical.encodeBase64(criteria.organica) + "</organica>" : "") +
+                    (criteria.funcional != null ? "<funcional>" + CryptoSical.encodeBase64(criteria.funcional) + "</funcional>" : "") +
+                    (criteria.economica != null ? "<economica>" + CryptoSical.encodeBase64(criteria.economica) + "</economica>" : "") +
+                    (criteria.expediente != null ? "<expediente>" + CryptoSical.encodeBase64(criteria.expediente) + "</expediente>" : "") +
+                    (criteria.grupoApunte != null ? "<grupoApunte>" + CryptoSical.encodeBase64(criteria.grupoApunte) + "</grupoApunte>" : "") +
+                    (criteria.oficina != null ? "<oficina>" + CryptoSical.encodeBase64(criteria.oficina) + "</oficina>" : "") +
+                    (criteria.indice != null ? "<indice>" + criteria.indice + "</indice>" : "") +
+                    "<NumRegDev>" + (criteria.numRegDev != null ? criteria.numRegDev : 50) + "</NumRegDev>" +
+                    "</filtro>";
 
-            String xml =
-                "<e>" +
-                "<ope><apl>SNP</apl><tobj>ConOpeGastosPrev</tobj><cmd>LST</cmd><ver>2.0</ver></ope>" +
-                "<sec>" +
-                "<cli>SAGE-AYTOS</cli>" +
-                "<org>" + orgCode + "</org>" +
-                "<ent>" + entidad + "</ent>" +
-                "<eje>" + eje + "</eje>" +
-                "<usu>" + username + "</usu>" +
-                "<pwd>" + CryptoSical.encodeSha1Base64(password) + "</pwd>" +
-                "<fecha>" + fecha + "</fecha>" +
-                "<nonce>" + nonce + "</nonce>" +
-                "<token>" + token + "</token>" +
-                "<tokenSha1>" + tokenSha1 + "</tokenSha1>" +
-                "</sec>" +
-                "<par>" +
-                "<desdetalle>S</desdetalle>" +
-                filtroXml +
-                "</par>" +
-                "</e>";
+                String xml =
+                    "<e>" +
+                    "<ope><apl>SNP</apl><tobj>ConOpeGastosPrev</tobj><cmd>LST</cmd><ver>2.0</ver></ope>" +
+                    "<sec>" +
+                    "<cli>SAGE-AYTOS</cli>" +
+                    "<org>" + orgCode + "</org>" +
+                    "<ent>" + entidad + "</ent>" +
+                    "<eje>" + eje + "</eje>" +
+                    "<usu>" + username + "</usu>" +
+                    "<pwd>" + CryptoSical.encodeSha1Base64(password) + "</pwd>" +
+                    "<fecha>" + fecha + "</fecha>" +
+                    "<nonce>" + nonce + "</nonce>" +
+                    "<token>" + token + "</token>" +
+                    "<tokenSha1>" + tokenSha1 + "</tokenSha1>" +
+                    "</sec>" +
+                    "<par>" +
+                    "<desdetalle>S</desdetalle>" +
+                    filtroXml +
+                    "</par>" +
+                    "</e>";
 
-            String soapEnvelope =
-                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-                "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:impl=\"http://desa-sical-ws:8080/services/Ci\">" +
-                "<soapenv:Header/>" +
-                "<soapenv:Body>" +
-                "<impl:servicio>" +
-                "<impl:in0><![CDATA[" + xml + "]]></impl:in0>" +
-                "</impl:servicio>" +
-                "</soapenv:Body>" +
-                "</soapenv:Envelope>";
+                String soapEnvelope =
+                    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                    "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:impl=\"http://desa-sical-ws:8080/services/Ci\">" +
+                    "<soapenv:Header/>" +
+                    "<soapenv:Body>" +
+                    "<impl:servicio>" +
+                    "<impl:in0><![CDATA[" + xml + "]]></impl:in0>" +
+                    "</impl:servicio>" +
+                    "</soapenv:Body>" +
+                    "</soapenv:Envelope>";
 
-            // Log the generated XML and SOAP envelope to the terminal
-            System.out.println("DEBUG - filtro xmn: " + xml);
-            System.out.println("DEBUG - SML XML Payload: " + xml);
+                // Log the generated XML and SOAP envelope to the terminal
+                System.out.println("DEBUG - filtro xmn: " + xml);
+                System.out.println("DEBUG - SML XML Payload: " + xml);
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.add(HttpHeaders.CONTENT_TYPE, "text/xml");
-            headers.add(HttpHeaders.ACCEPT, "text/xml");
-            headers.add("SOAPAction", "");
+                HttpHeaders headers = new HttpHeaders();
+                headers.add(HttpHeaders.CONTENT_TYPE, "text/xml");
+                headers.add(HttpHeaders.ACCEPT, "text/xml");
+                headers.add("SOAPAction", "");
 
-            RestTemplate template = (this.restTemplate != null) ? this.restTemplate : new RestTemplate();
-            String endpoint = (wsUrl != null && wsUrl.contains("?")) ? wsUrl.substring(0, wsUrl.indexOf("?")) : wsUrl;
-            String responseXml = template.postForObject(endpoint, new HttpEntity<>(soapEnvelope, headers), String.class);
+                RestTemplate template = (this.restTemplate != null) ? this.restTemplate : new RestTemplate();
+                String endpoint = (wsUrl != null && wsUrl.contains("?")) ? wsUrl.substring(0, wsUrl.indexOf("?")) : wsUrl;
+                String responseXml = template.postForObject(endpoint, new HttpEntity<>(soapEnvelope, headers), String.class);
 
-            return parseOperaciones(responseXml);
-        } catch (SmlProcessingException ex) {
-            throw ex;
-        } catch (Exception ex) {
-            throw new SmlProcessingException("Error retrieving operaciones: " + ex.getMessage(), ex);
+                return parseOperaciones(responseXml);
+            } catch (SmlProcessingException ex) {
+                throw ex;
+            } catch (Exception ex) {
+                throw new SmlProcessingException("Error retrieving operaciones: " + ex.getMessage(), ex);
+            }
         }
-    }
 
     private List<Operaciones> parseOperaciones(String xml) throws SmlProcessingException {
         List<Operaciones> result = new ArrayList<>();
