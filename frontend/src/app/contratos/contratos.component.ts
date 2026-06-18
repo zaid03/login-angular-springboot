@@ -1123,7 +1123,7 @@ export class ContratosComponent {
     const oficina = 'AL';
     this.isLoadingD = true;
 
-    this.http.get<any>(`${environment.backendUrl}/api/sical/operaciones?codigoOperacion=${codigoOperacion}&clorg=${this.organica}&clfun=${this.programa}&cleco=${this.economica}&oficina=${oficina}`).subscribe({
+    this.http.get<any>(`${environment.backendUrl}/api/sical/operaciones?codigoOperacion=${codigoOperacion}&organica=${this.organica}&funcional=${this.programa}&economica=${this.economica}&oficina=${oficina}`).subscribe({
       next: (res) => {
         this.isLoadingD = false;
         this.listaDeD = res;
