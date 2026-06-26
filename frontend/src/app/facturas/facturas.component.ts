@@ -1031,7 +1031,6 @@ export class FacturasComponent {
   openFacturaAdd() {
     this.limpiarMEssages();
     this.addFacturaGrid = true;
-    this.fetchFacturasWs();
   }
 
   closeFacturaAdd() {
@@ -1042,37 +1041,6 @@ export class FacturasComponent {
     this.caughtFacturas = [];
   }
 
-  fetchFacturasWs() {
-    this.limpiarMEssages();
-    this.isLoadingFactura = true;
-
-    const payload = {
-      "org": this.WSorg,
-      "ent": this.WSent,
-      "eje": this.eje,
-      "usu": environment.sicalUsername,
-      "pwd": environment.sicalPassword,
-      "publicKey": environment.sicalPublicKey,
-      "tipoDocumento": 0,
-      "cge": this.centroGestor,
-      "situacionIgual": "08",
-      "estado": 0
-    }
-
-    this.http.post<any>(`${environment.backendUrl}/api/facturas/consulta`, payload).subscribe({
-      next: (res) => {
-        this.isLoadingFactura = false;
-        this.facturasWb = res;
-        this.pageFacturas = 0;
-      },
-      error: (err) => {
-        this.facturasWb = [];
-        this.pageFacturas = 0;
-        this.isLoadingFactura = false;
-        this.facturasErrorMessage = err.error.error ?? err.error;
-      }
-    })
-  }
   pageFacturas = 0;
   get paginatedFacturaWs(): any[] {if (!this.facturasWb || this.facturasWb.length === 0) return []; const start = this.pageFacturas * this.pageSize; return this.facturasWb.slice(start, start + this.pageSize);}
   get totalPagesFacturas(): number {return Math.max(1, Math.ceil((this.facturasWb?.length ?? 0) / this.pageSize));}
@@ -1115,12 +1083,12 @@ export class FacturasComponent {
       next: (response) => {
         this.facturasWb = response;
         this.updatePagination();
-        this.isLoading = false;
+        this.isLoadingFactura = false;
       },
       error: (err) => {
         this.facturasWb = [];
         this.facturasErrorMessage = err.error?.error ?? err.error;
-        this.isLoading = false;
+        this.isLoadingFactura = false;
       }
     });
   }
@@ -1128,7 +1096,6 @@ export class FacturasComponent {
   clearSearch() {
     this.limpiarMEssages();
     this.emptySearch();
-    this.fetchFacturasWs();
   }
 
   emptySearch() {
@@ -1138,6 +1105,7 @@ export class FacturasComponent {
     this.RcfHasta = '';
     this.fechaFacturaDesde = '';
     this.fechaFacturaHasta = '';
+    this.facturasWb = [];
   }
 
   caughtFacturas: any[] = [];
@@ -1159,27 +1127,30 @@ export class FacturasComponent {
   facturasSuccessMessage: string = '';
   addingFacturas() {
     this.limpiarMEssages();
-    this.isAddingFactura = true;
 
     const today = new Date();
-    const payload = this.caughtFacturas.map(Obj => ({
-      "ENT": this.entcod,
-      "EJE": this.eje,
-      "tercero": Obj.tercero,
-      "CGECOD": this.centroGestor,
-      "FACIMP": Obj.impFactura,
-      "FACIEC": 0,
-      "FACIDI": 0,
-      "FACTDC": Obj.tipoRegistro,
-      "FACANN": Obj.annoRegistro,
-      "FACFAC": Obj.numRegistro,
-      "FACDOC": Obj.numDocumento,
-      "FACDAT": Obj.fechaDocumento,
-      "FACTXT": Obj.Texto,
-      "FACDTO": 0,
-      "FACFRE": today.toISOString()
-    }))
+    const payload = this.caughtFacturas.map(Obj => {
+      const [day, month, year] = Obj.fechaDocumento.split("/");
+      return {
+        "ENT": this.entcod,
+        "EJE": this.eje,
+        "tercero": Obj.tercero,
+        "CGECOD": this.centroGestor,
+        "FACIMP": Number(Obj.impFactura.replace(",", ".")),
+        "FACIEC": 0,
+        "FACIDI": 0,
+        "FACTDC": Obj.tipoRegistro,
+        "FACANN": Number(Obj.annoRegistro),
+        "FACFAC": Number(Obj.numRegistro),
+        "FACDOC": Obj.numDocumento,
+        "FACDAT": `${year}-${month}-${day}T00:00:00`,
+        "FACTXT": Obj.Texto,
+        "FACDTO": 0,
+        "FACFRE": today.toISOString()
+      };
+    });
 
+    this.isAddingFactura = true;
     this.http.post(`${environment.backendUrl}/api/fac/add-facturas`, payload).subscribe({
       next: (res) => {
         if (res = []) {

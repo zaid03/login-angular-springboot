@@ -739,6 +739,7 @@
             <tr 
                 *ngFor="let f of paginatedFacturaWs"
                 (click)="selectFacturasAdd(f)"
+                [class.selected-row]="isFacturaSelected(f)"
             >
                 <td>{{f.tipoRegistro}}</td>
                 <td>{{f.annoRegistro}}</td>
