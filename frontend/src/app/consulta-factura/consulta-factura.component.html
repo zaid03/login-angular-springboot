@@ -107,14 +107,14 @@
                             <span class="sort-indicator" *ngIf="sortColumn === 'tercod'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
                             <div class="resizer" (mousedown)="startResize($event, 1)"></div>
                         </th>
-                        <th class="sortable resizable" (click)="toggleSort('ternom')">
+                        <th class="sortable resizable" (click)="toggleSort('ter_TERNOM')">
                             Nombre Proveedor
-                            <span class="sort-indicator" *ngIf="sortColumn === 'ternom'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                            <span class="sort-indicator" *ngIf="sortColumn === 'ter_TERNOM'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
                             <div class="resizer" (mousedown)="startResize($event, 2)"></div>
                         </th>
-                        <th class="sortable resizable" (click)="toggleSort('ternif')">
+                        <th class="sortable resizable" (click)="toggleSort('ter_TERNIF')">
                             NIF Prov
-                            <span class="sort-indicator" *ngIf="sortColumn === 'ternif'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+                            <span class="sort-indicator" *ngIf="sortColumn === 'ter_TERNIF'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
                             <div class="resizer" (mousedown)="startResize($event, 3)"></div>
                         </th>
                         <th class="sortable resizable" (click)="toggleSort('facfre')">

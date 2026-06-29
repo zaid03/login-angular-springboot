@@ -120,7 +120,7 @@ export class FacturasComponent {
   }
 
   //main table functions
-  sortField: 'facnum' | 'tercod' | 'ternom' | 'ternif' | 'facfre' | 'facimp' | 'facdoc' | 'facann' | 'facfac' | 'facdat' | 'facado' | 'facfco' |'getPendingApply(p)' | 'cgecod' | 'getStaus(p.facado, p.facimp, p.faciec, p.facidi)' | null = null;
+  sortField: 'facnum' | 'tercod' | 'ter_TERNOM' | 'ter_TERNIF' | 'facfre' | 'facimp' | 'facdoc' | 'facann' | 'facfac' | 'facdat' | 'facado' | 'facfco' |'getPendingApply(p)' | 'cgecod' | 'getStaus(p.facado, p.facimp, p.faciec, p.facidi)' | null = null;
   sortColumn: string = '';
   sortDirection: 'asc' | 'desc' = 'asc';
   private defaultProveedores: any[] = [];
@@ -451,7 +451,7 @@ export class FacturasComponent {
     const FACIDI = toNum(facidi);
 
     if (FACADO != 0){
-      return 'contbilizadas';
+      return 'contabilizadas';
     }
     if (facado === '' && (this.Math.round((FACIMP * 100) / 100) === this.Math.round((FACIEC + FACIDI) * 100) / 100)) {
       return 'Pte. Aplicada';

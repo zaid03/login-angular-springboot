@@ -1,14 +1,14 @@
 package com.example.backend.service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.backend.dto.FacWithTerProjection;
 import com.example.backend.sqlserver2.repository.FacRepository;
-
-import java.util.List;
-import java.time.LocalDateTime;
-import java.time.LocalDate;
 
 @Service
 public class FacturaSearch {
@@ -75,9 +75,9 @@ public class FacturaSearch {
             if (criteria.mainFilter != null && !criteria.mainFilter.isEmpty()) {
                 if (isNumbersOnly(criteria.mainFilter)) {
                     if (criteria.mainFilter.length() <= 5) {
-                        facturas = filterByTercodOrFacado(facturas, criteria.mainFilter);
+                        facturas = filterByTercod(facturas, criteria.mainFilter);
                     } else {
-                        facturas = filterByTernif(facturas, criteria.mainFilter);
+                        facturas = filterByTernifOrFacado(facturas, criteria.mainFilter);
                     }
                 }
                 else if (isMixed(criteria.mainFilter)) {
@@ -138,20 +138,22 @@ public class FacturaSearch {
     private boolean isNumbersOnly(String text) {return text.matches("^[0-9]+$");}
     private boolean isMixed(String text) {return !isNumbersOnly(text);}
 
-    private List<FacWithTerProjection> filterByTercodOrFacado (
+    private List<FacWithTerProjection> filterByTercod (
         List<FacWithTerProjection> facturas, 
         String main_filter
     ) {
         return facturas.stream().filter(f -> 
-            (f.getTERCOD() != null && f.getTERCOD().toString().equals(main_filter)) || 
-            (f.getFACADO() != null && f.getFACADO().contains(main_filter))
+            (f.getTERCOD() != null && f.getTERCOD().toString().equals(main_filter))
         ).toList();
     }
-    private List<FacWithTerProjection> filterByTernif (
+    private List<FacWithTerProjection> filterByTernifOrFacado (
         List<FacWithTerProjection> facturas, 
         String main_filter
     ) {
-        return  facturas.stream().filter(f -> (f.getTer_TERNIF() != null && f.getTer_TERNIF().equals(main_filter))).toList();
+        return  facturas.stream().filter(f -> 
+            (f.getTer_TERNIF() != null && f.getTer_TERNIF().equals(main_filter)) || 
+            (f.getFACADO() != null && f.getFACADO().contains(main_filter))
+        ).toList();
     }
     private List<FacWithTerProjection> filterByTernifOrTernomOrFacdoc (
         List<FacWithTerProjection> facturas, 
