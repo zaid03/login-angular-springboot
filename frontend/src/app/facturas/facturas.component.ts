@@ -1150,26 +1150,36 @@ export class FacturasComponent {
       };
     });
 
+    if (this.caughtFacturas.some(obj => obj.numDocumento == null)) {
+      return;
+    }
+
     this.isAddingFactura = true;
     this.http.post(`${environment.backendUrl}/api/fac/add-facturas`, payload).subscribe({
       next: (res) => {
-        if (res = []) {
-          this.fetchFacturas();
-          this.isAddingFactura = false;
-          this.caughtFacturas = [];
-          this.closeFacturaAdd();
-          this.estadoMessage = 'facturas agregadas exitosamente';
-        } else {
-          this.isAddingFactura = false;
-          this.caughtFacturas = [];
-          this.facturasSuccessMessage = res;
-        }
+        this.isAddingFactura = false;
+        this.caughtFacturas = [];
+        this.addFacturaStatus = res;
+        this.openAddFactura();
       },
       error: (err) => {
         this.isAddingFactura = true;
         this.facturasErrorMessage = err.error.error ?? err.error
       }
     })
+  }
+
+  addFacturaStatus: any;
+  addFacturaMessage: boolean = false;
+  openAddFactura() {
+    this.addFacturaMessage = true;
+  }
+
+  closeAddFactura() {
+    this.fetchFacturas();
+    this.limpiarMEssages();
+    this.addFacturaMessage = false;
+    this.closeFacturaAdd();
   }
 
   //misc 

@@ -775,7 +775,7 @@
 <div class="factura-cargar albran-add" *ngIf="albaranesAddGrid">
     <div class="btns">
         <div class="title">
-            <h1 class="art-title">añadir albaranes</h1>
+            <h1 class="art-title">Añadir albaranes</h1>
         </div>
         <button class="purple-btn" (click)="adingAlbaranes()">+</button>
         <button class="red-btn" (click)="closeAlbaranesAdd()">✖</button>
@@ -875,4 +875,20 @@
     </div>
     <h1 class="errorBtn">{{dalbaranesDeleteMessage}}</h1>
     <button class="red-btn" (click)="quitarAlbaran()">Confirmar</button>
+</div>
+
+<div class="modal-backdrop" *ngIf="addFacturaMessage" (click)="closeAddFactura()"></div>
+<div class="delete-confirm-modal" *ngIf="addFacturaMessage">
+    <div class="btns">
+        <button class="red-btn margin" (click)="closeAddFactura()">✖</button>
+    </div>
+    <div class="messages-factura">
+        <table class="main-table">
+            <tbody>
+                <tr *ngFor="let a of addFacturaStatus">
+                    <td>{{a}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
