@@ -201,63 +201,81 @@ public class FacturaSearch {
         List<FacWithTerProjection> facturas,
         LocalDateTime fromDateTime
     ) {
-        return facturas.stream().filter(f -> (f.getFACFRE() != null && f.getFACFRE().isAfter(fromDateTime)))
-        .toList();
+        return facturas.stream().filter(f -> 
+            (f.getFACFRE() != null && f.getFACFRE().isAfter(fromDateTime)) ||
+            (f.getFACFRE() != null && f.getFACFRE().isEqual(fromDateTime))
+        ).toList();
     }
     private List<FacWithTerProjection> filterByFacfreTo (
         List<FacWithTerProjection> facturas,
         LocalDateTime fromDateTime
     ) {
-        return facturas.stream().filter(f -> (f.getFACFRE() != null && f.getFACFRE().isBefore(fromDateTime)))
-        .toList();
+        return facturas.stream().filter(f -> 
+            (f.getFACFRE() != null && f.getFACFRE().isBefore(fromDateTime)) ||
+            (f.getFACFRE() != null && f.getFACFRE().isEqual(fromDateTime))
+        ).toList();
     }
     private List<FacWithTerProjection> filterByFacfreBetween (
         List<FacWithTerProjection> facturas,
         LocalDateTime fromDateTime,
         LocalDateTime toDateTime
     ) {
-        return facturas.stream().filter(f -> (f.getFACFRE() != null && f.getFACFRE().isAfter(fromDateTime) && f.getFACFRE().isBefore(toDateTime))).toList();
+        return facturas.stream().filter(f -> 
+            (f.getFACFRE() != null && !f.getFACFRE().isBefore(fromDateTime) && !f.getFACFRE().isAfter(toDateTime))
+        ).toList();
     }
     private List<FacWithTerProjection> filterByFacdatFrom (
         List<FacWithTerProjection> facturas,
         LocalDateTime fromDateTime
     ) {
-        return facturas.stream().filter(f -> (f.getFACDAT() != null && f.getFACDAT().isAfter(fromDateTime)))
-        .toList();
+        return facturas.stream().filter(f -> 
+            (f.getFACDAT() != null && f.getFACDAT().isAfter(fromDateTime)) ||
+            (f.getFACDAT() != null && f.getFACDAT().isEqual(fromDateTime))
+        ).toList();
     }
     private List<FacWithTerProjection> filterByFacdatTo (
         List<FacWithTerProjection> facturas,
         LocalDateTime fromDateTime
     ) {
-        return facturas.stream().filter(f -> (f.getFACDAT() != null && f.getFACDAT().isBefore(fromDateTime)))
-        .toList();
+        return facturas.stream().filter(f -> 
+            (f.getFACDAT() != null && f.getFACDAT().isBefore(fromDateTime)) ||
+            (f.getFACDAT() != null && f.getFACDAT().isEqual(fromDateTime))
+        ).toList();
     }
     private List<FacWithTerProjection> filterByFacdatBetween (
         List<FacWithTerProjection> facturas,
         LocalDateTime fromDateTime,
         LocalDateTime toDateTime
     ) {
-        return facturas.stream().filter(f -> (f.getFACDAT() != null && f.getFACDAT().isAfter(fromDateTime) && f.getFACDAT().isBefore(toDateTime))).toList();
+        return facturas.stream().filter(f -> 
+            (f.getFACDAT() != null && !f.getFACDAT().isBefore(fromDateTime) && !f.getFACDAT().isAfter(toDateTime))
+        ).toList();
     }
     private List<FacWithTerProjection> filterByFacfcoFrom (
         List<FacWithTerProjection> facturas,
         LocalDateTime fromDateTime
     ) {
-        return facturas.stream().filter(f -> (f.getFACFCO() != null && f.getFACFCO().isAfter(fromDateTime)))
-        .toList();
+        return facturas.stream().filter(f -> 
+            (f.getFACFCO() != null && f.getFACFCO().isAfter(fromDateTime)) ||
+            (f.getFACFCO() != null && f.getFACFCO().isEqual(fromDateTime))
+        ).toList();
     }
     private List<FacWithTerProjection> filterByFacfcoTo (
         List<FacWithTerProjection> facturas,
         LocalDateTime fromDateTime
     ) {
-        return facturas.stream().filter(f -> (f.getFACFCO() != null && f.getFACFCO().isBefore(fromDateTime)))
-        .toList();
+        return facturas.stream().filter(f -> 
+            (f.getFACFCO() != null && f.getFACFCO().isBefore(fromDateTime)) ||
+            (f.getFACFCO() != null && f.getFACFCO().isEqual(fromDateTime))
+        ).toList();
     }
     private List<FacWithTerProjection> filterByFacfcoBetween (
         List<FacWithTerProjection> facturas,
         LocalDateTime fromDateTime,
         LocalDateTime toDateTime
     ) {
-        return facturas.stream().filter(f -> (f.getFACFCO() != null && f.getFACFCO().isAfter(fromDateTime) && f.getFACFCO().isBefore(toDateTime))).toList();
+        return facturas.stream().filter(f -> 
+            (f.getFACFCO() != null && !f.getFACFCO().isBefore(fromDateTime) && !f.getFACFCO().isAfter(toDateTime))
+        ).toList();
     }
 }
