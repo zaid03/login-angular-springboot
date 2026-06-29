@@ -1101,24 +1101,30 @@ public class FacturaSearchTest {
         assertEquals(100, result.get(0).getTERCOD());
     }
 
-    @Test
-    void filterByTercodOrFacado_filterByFacado_returnsMatch() {
-        FacProjectionMock proj1 = new FacProjectionMock(100, "NIF001", 100.0, 50.0, 50.0, "2024-01-15",
-            LocalDateTime.now(), null, null, 2024, "Supplier A");
-        FacProjectionMock proj2 = new FacProjectionMock(200, "NIF002", 200.0, 100.0, 100.0, "2024-02-20",
-            LocalDateTime.now(), null, null, 2024, "Supplier B");
+   @Test
+void filterByTernifOrFacado_filterByFacado_returnsMatch() {
+    FacProjectionMock proj1 = new FacProjectionMock(
+        100, "NIF001", 100.0, 50.0, 50.0,
+        "86518964531", LocalDateTime.now(), null, null, 2024, "Supplier A");
 
-        when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
-            .thenReturn(List.of(proj1, proj2));
+    FacProjectionMock proj2 = new FacProjectionMock(
+        200, "NIF002", 200.0, 100.0, 100.0,
+        "86518964532", LocalDateTime.now(), null, null, 2024, "Supplier B");
 
-        List<FacWithTerProjection> result = facturaSearch.searchFactura(
-            new FacturaSearch.FacturaSearchCriteria.Builder()
-                .ent(1).eje("E1").cgecod("C1").mainFilter("1").build());
+    when(facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(1, "E1", "C1"))
+        .thenReturn(List.of(proj1, proj2));
 
-        assertEquals(1, result.size());
-        assertEquals("2024-01-15", result.get(0).getFACADO());
-    }
+    List<FacWithTerProjection> result = facturaSearch.searchFactura(
+        new FacturaSearch.FacturaSearchCriteria.Builder()
+            .ent(1)
+            .eje("E1")
+            .cgecod("C1")
+            .mainFilter("86518964531")
+            .build());
 
+    assertEquals(1, result.size());
+    assertEquals("86518964531", result.get(0).getFACADO());
+}
     @Test
     void complexFilter_allFiltersApplied_inCorrectOrder() {
         LocalDateTime regDate = LocalDateTime.of(2026, 1, 15, 10, 0);
