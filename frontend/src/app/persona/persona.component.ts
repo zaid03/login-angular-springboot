@@ -631,6 +631,8 @@ export class PersonaComponent {
     this.count = this.linesSelected.length;
   }
   
+  isAddingservices: boolean = false;
+  cargarServicesError: string = '';
   addServicePersona(services: string[]) {
     if(!services) {this.servicesAddError = 'Debe seleccionar al menos un servicio.'; return;}
 
@@ -641,16 +643,33 @@ export class PersonaComponent {
       "services": services
     }
 
-    this.http.post(`${environment.backendUrl}/api/depe/add-persona-services`, payload).subscribe({
+    this.isAddingservices = true;
+    this.http.post<any>(`${environment.backendUrl}/api/depe/add-persona-services`, payload).subscribe({
       next: (res) => {
-        this.serviceSuccessMessage = 'Los servicios se han añadido correctamente';
-        this.fetchServices(this.selectedPersona.percod);
-        this.closeAddService();
+        this.isAddingservices = false;
+        this.savedNames = res.savedNames.join(', ') ?? '';
+        this.unsavedNames = res?.unsavedNames.join(', ') ?? '';
+        this.openServicesMessages();
       },
       error: (err) => {
-        this.servicesAddError = err.error.error ?? err.error;
+        this.isAddingservices = false;
+        this.cargarServicesError = err.error.error ?? err.error;
       }
     })
+  }
+
+  savedNames: string[] = [];
+  unsavedNames: string[] = [];
+  servicesMessages: boolean = false;
+  openServicesMessages() {
+    this.servicesMessages = true;
+  }
+
+  closeServicesMessages() {
+    this.limpiarMessages();
+    this.fetchServices(this.selectedPersona.percod);
+    this.servicesMessages = false;
+    this.closeAddService();
   }
 
   //add personas grid functions
@@ -701,7 +720,6 @@ export class PersonaComponent {
     const input = event.target as HTMLInputElement;
     input.value = input.value.toUpperCase();
   }
-
 
   //compiar grid functions
   compiarPersona: boolean = false;

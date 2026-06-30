@@ -49,10 +49,7 @@ public class DpePersonasForService {
 
                 savedNames.add(percod);
             }
-
-            
         }
-
         return new NamesResponse(savedNames, unsavedNames);
     }
 

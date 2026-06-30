@@ -354,7 +354,12 @@
         <div class="count-selected">
             <p class="p-style">seleccionado {{count}} líneas</p>
         </div>
-        <button class="purple-btn" (click)="addServicePersona(linesSelected)">+</button>
+        <button 
+            class="purple-btn" 
+            (click)="addServicePersona(linesSelected)"
+            [ngClass]="{'disabled-btn': linesSelected.length === 0}"
+        >+ Cargar
+        </button>
         <button class="red-btn" (click)="closeAddService()">✖</button>
     </div>
     <div class="title-menu">
@@ -392,6 +397,10 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div *ngIf="isAddingservices" class="loading-message">
+        <div class="spinner"></div>
+        <span>añadiendo</span>
     </div>
     <h1 class="errorBtn">{{servicesAddError}}</h1>
     <table class="main-table">
@@ -457,6 +466,18 @@
             <span>de {{ totalPagesAdd }}</span>
             <button (click)="nextPageAdd()" [disabled]="pageAdd + 1 >= totalPagesAdd">Siguiente</button>
         </div>
+    </div>
+</div>
+
+<div class="modal-backdrop force" *ngIf="servicesMessages"></div>
+<div class="delete-confirm-modal adj" *ngIf="servicesMessages">
+    <div class="btns">
+        <button class="red-btn" (click)="closeServicesMessages()">✖</button>
+    </div>
+    <div class="saved-details">
+        <p class="p-style" *ngIf="cargarServicesError">{{cargarServicesError}}</p>
+        <p class="p-style" *ngIf="savedNames.length">Servicios cargadas: <span class="message-text">{{savedNames}}</span></p>
+        <p class="p-style" *ngIf="unsavedNames.length">Servicios ya existentes: <span class="message-text">{{unsavedNames}}</span></p>
     </div>
 </div>
 

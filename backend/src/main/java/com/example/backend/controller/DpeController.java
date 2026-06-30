@@ -173,8 +173,8 @@ public class DpeController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Debe seleccionar al menos un servicio.");
             }
 
-            dpeService.savePersonaServices(request);
-            return ResponseEntity.status(HttpStatus.CREATED).build();
+            DpeService.NamesResponse response = dpeService.savePersonaServices(request);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ERROR + ex.getMessage());

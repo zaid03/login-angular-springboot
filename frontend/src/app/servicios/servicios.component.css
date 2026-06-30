@@ -83,11 +83,6 @@
 .proveedor-grid-modal .pts thead th:first-child {width: 190px;}
 .proveedor-grid-modal .title {width: 60%;}
 /* add personas for a service */
-/* messages grid */
-.saved-details {display: flex; flex-direction: column; text-align: left; gap: 10px; margin-top: 10px; width: 90%;}
-.message-text {color: #000000;}
-.adj {width: 600px !important;}
-/* messages grid */
 /* media querries */
 @media screen and (min-width: 1450px) and (max-width: 1600px) {
     .search-form {width: 68%;}
