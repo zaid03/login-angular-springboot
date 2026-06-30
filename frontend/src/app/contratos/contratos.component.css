@@ -70,7 +70,6 @@
 .apt thead th:nth-child(2),
 .apt thead th:nth-child(3) {width: 12%;}
 .selected {text-align: center; margin: 0px;}
-.selected-row {background-color: #cce6ff;}
 /* add articulo grid */
 /* delete grid for centros */
 .delete-info-titles {display: flex; width: 100%;}

@@ -63,5 +63,4 @@
 .contabilizar-container {width: 100%; display: flex; justify-content: center; gap: 10px;}
 .cont-date {display: flex;  align-items: center; gap: 10px;}
 .cont-btn {display: flex; flex-direction: column; justify-content: center;}
-.selected-row {background-color: #cce6ff;}
 /* contabilizar-container */

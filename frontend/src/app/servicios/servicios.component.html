@@ -569,7 +569,12 @@
         <div class="count-selected">
             <p class="p-style">seleccionado {{count}} líneas</p>
         </div>
-        <button class="purple-btn" (click)="addPersonasToService(linesSelected)">+</button>
+        <button 
+            class="purple-btn" 
+            (click)="addPersonasToService(linesSelected)"
+            [ngClass]="{'disabled-btn': linesSelected.length === 0}"
+        >+ Cargar
+        </button>
         <button class="red-btn" (click)="closeAddPersonas()">✖</button>
     </div>
     <div class="search-holder">
