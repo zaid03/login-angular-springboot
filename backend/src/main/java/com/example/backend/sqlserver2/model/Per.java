@@ -23,9 +23,6 @@ public class Per {
 
     private String PEROBS;
 
-    @Lob
-    private byte[] PERSIG;
-
     public String getPERCOD() { return PERCOD; }
     public void setPERCOD(String PERCOD) { this.PERCOD = PERCOD; }
 
@@ -46,7 +43,4 @@ public class Per {
 
     public String getPEROBS() { return PEROBS; }
     public void setPEROBS(String PEROBS) { this.PEROBS = PEROBS; }
-
-    public byte[] getPERSIG() { return PERSIG; }
-    public void setPERSIG(byte[] PERSIG) { this.PERSIG = PERSIG; }
 }

@@ -478,11 +478,6 @@ export class ConsultaFacturaComponent {
       this.isLoading = false;
       return;
     }
-    if (!this.searchQuery && !this.fechaTipo && !this.fromDate && !this.toDate && !this.facturaSearch) {
-      this.fetchFacturas();
-      this.isLoading = false;
-      return;
-    }
     if ((this.fromDate || this.toDate) && !this.fechaTipo) {
       this.filterFacturaMessage = 'Seleccione un tipo de fecha antes de buscar.';
       this.isLoading = false;

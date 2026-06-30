@@ -451,7 +451,7 @@ export class FacturasComponent {
     const FACIDI = toNum(facidi);
 
     if (FACADO != 0){
-      return 'contabilizadas';
+      return 'contabilizada';
     }
     if (facado === '' && (this.Math.round((FACIMP * 100) / 100) === this.Math.round((FACIEC + FACIDI) * 100) / 100)) {
       return 'Pte. Aplicada';
@@ -502,11 +502,6 @@ export class FacturasComponent {
     this.isLoading = true;
     if (this.entcod == null || this.eje == null || !this.centroGestor) {
       this.filterFacturaMessage = 'Faltan datos de sesión.';
-      this.isLoading = false;
-      return;
-    }
-    if (!this.searchQuery && !this.fechaTipo && !this.fromDate && !this.toDate && !this.facturaSearch) {
-      this.fetchFacturas();
       this.isLoading = false;
       return;
     }
