@@ -8,6 +8,9 @@ import com.example.backend.sqlserver2.model.DpeId;
 import com.example.backend.sqlserver2.repository.DpeRepository;
 
 import jakarta.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class DpePersonasForService {
@@ -18,9 +21,13 @@ public class DpePersonasForService {
     }
 
     @Transactional
-    public void saveServicePersonas(ServicePersonaRequest req) {
+    public NamesResponse saveServicePersonas(ServicePersonaRequest req) {
+
+        List<String> savedNames = new ArrayList<>();
+        List<String> unsavedNames = new ArrayList<>();
+
         if (req.getPersonas() == null || req.getPersonas().isEmpty()) {
-            return;
+            return new NamesResponse(savedNames, unsavedNames);
         }
 
         Integer ent = req.getEnt();
@@ -28,9 +35,10 @@ public class DpePersonasForService {
         String depcod = req.getDepcod();
 
         for (String percod : req.getPersonas()) {
-            DpeId id = new DpeId(ent, eje, percod, depcod);
-            if (dpeRepository.existsById(id)) {
-                continue;
+            DpeId id = new DpeId(ent, eje, depcod, percod);
+            Optional<Dpe> persona = dpeRepository.findById(id);
+            if (persona.isPresent()) {
+                unsavedNames.add(persona.get().getPERCOD());
             }
 
             Dpe dpe = new Dpe();
@@ -38,8 +46,16 @@ public class DpePersonasForService {
             dpe.setEJE(eje);
             dpe.setPERCOD(percod);
             dpe.setDEPCOD(depcod);
-
             dpeRepository.save(dpe);
+
+            savedNames.add(percod);
         }
+
+        return new NamesResponse(savedNames, unsavedNames);
     }
+
+    public record NamesResponse (
+        List<String> savedNames,
+        List<String> unsavedNames
+    ) {}
 }

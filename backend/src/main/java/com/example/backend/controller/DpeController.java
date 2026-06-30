@@ -206,7 +206,7 @@ public class DpeController {
         }
     }
 
-    //adding serivces for a person
+    //adding personas for a service
     @PostMapping("/add-services-persona")
     public ResponseEntity<?> addServicePersonas(@RequestBody ServicePersonaRequest request) {
         try {
@@ -217,8 +217,8 @@ public class DpeController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Debe seleccionar al menos un persona.");
             }
 
-            dpePersonasForService.saveServicePersonas(request);
-            return ResponseEntity.status(HttpStatus.CREATED).build();
+            DpePersonasForService.NamesResponse response = dpePersonasForService.saveServicePersonas(request);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ERROR + ex.getMessage());
