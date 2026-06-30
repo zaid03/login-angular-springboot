@@ -850,8 +850,8 @@ export class ServiciosComponent {
     this.http.post<any>(`${environment.backendUrl}/api/depe/add-services-persona`, payload).subscribe({
       next: (res) => {
         this.isAddingPersonnas = false;
-        this.savedNames = res.savedNames ?? '';
-        this.unsavedNames = res?.unsavedNames ?? '';
+        this.savedNames = res.savedNames.join(', ') ?? '';
+        this.unsavedNames = res?.unsavedNames.join(', ') ?? '';
         this.option = 'personas';
         this.openPersonasMessages();
       },
