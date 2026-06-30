@@ -39,16 +39,18 @@ public class DpePersonasForService {
             Optional<Dpe> persona = dpeRepository.findById(id);
             if (persona.isPresent()) {
                 unsavedNames.add(persona.get().getPERCOD());
+            } else {
+                Dpe dpe = new Dpe();
+                dpe.setENT(ent);
+                dpe.setEJE(eje);
+                dpe.setPERCOD(percod);
+                dpe.setDEPCOD(depcod);
+                dpeRepository.save(dpe);
+
+                savedNames.add(percod);
             }
 
-            Dpe dpe = new Dpe();
-            dpe.setENT(ent);
-            dpe.setEJE(eje);
-            dpe.setPERCOD(percod);
-            dpe.setDEPCOD(depcod);
-            dpeRepository.save(dpe);
-
-            savedNames.add(percod);
+            
         }
 
         return new NamesResponse(savedNames, unsavedNames);

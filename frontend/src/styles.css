@@ -113,5 +113,7 @@ th.sortable { cursor: pointer; user-select: none; }
 .tab-btn:hover { filter: brightness(0.98); transform: translateY(-1px); }
 .tab-btn.active-tab {background: #ffffff; border-color: #25176b; color: #25176b; box-shadow: 0 8px 20px rgba(28,93,140,0.10); transform: translateY(-3px);}
 .tab-btn:focus {outline: none; box-shadow: 0 0 0 4px rgba(28,93,140,0.06);}
-
+/* misc */
+.force {z-index: 5000;}
 .selected-row { background: #e6f0ff; }
+/* misc */

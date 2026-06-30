@@ -576,7 +576,7 @@
         >+ Cargar
         </button>
         <button class="red-btn" (click)="closeAddPersonas()">✖</button>
-    </div>
+    </div> 
     <div class="search-holder">
         <div class="search-container">
             <div class="search-form">
@@ -594,6 +594,10 @@
         </div>
     </div>
     <h1 class="errorBtn">{{errorCopy}}</h1>
+    <div *ngIf="isAddingPersonnas" class="loading-message">
+        <div class="spinner"></div>
+        <span>añadiendo</span>
+    </div>
     <div class="all-add-content">
         <table class="main-table pts">
             <thead>
@@ -630,5 +634,17 @@
                 <button (click)="nextPageCopy()" [disabled]="pageCopy + 1 >= totalPagesCopy">Siguiente</button>
             </div>
         </div>
+    </div>
+</div>
+
+<div class="modal-backdrop force" *ngIf="perosanasMessages"></div>
+<div class="delete-confirm-modal" *ngIf="perosanasMessages">
+    <div class="btns">
+        <button class="red-btn" (click)="closePersonasMessages()">✖</button>
+    </div>
+    <div class="saved-details">
+        <p class="p-style" *ngIf="cargarPersonasError">{{cargarPersonasError}}</p>
+        <p class="p-style" *ngIf="savedNames.length">Personas añadieron: <span class="message-text">{{savedNames}}</span></p>
+        <p class="p-style" *ngIf="unsavedNames.length">Personas existentes: <span class="message-text">{{unsavedNames}}</span></p>
     </div>
 </div>

@@ -834,6 +834,8 @@ export class ServiciosComponent {
     this.count = this.linesSelected.length;
   }
 
+  isAddingPersonnas: boolean = false;
+  cargarPersonasError: string = '';
   addPersonasToService(personas: string[]) {
     if(!personas) {this.errorCopy = 'Debes seleccionar al menos una persona'; return;}
 
@@ -844,16 +846,33 @@ export class ServiciosComponent {
       "personas": personas
     }
 
-    this.http.post(`${environment.backendUrl}/api/depe/add-services-persona`, payload).subscribe({
+    this.isAddingPersonnas = true;
+    this.http.post<any>(`${environment.backendUrl}/api/depe/add-services-persona`, payload).subscribe({
       next: (res) => {
-        this.personasSuccess = 'Las personas han sido agregadas exitosamente';
-        this.closeAddPersonas();
+        this.isAddingPersonnas = false;
+        this.savedNames = res.savedNames ?? '';
+        this.unsavedNames = res?.unsavedNames ?? '';
         this.option = 'personas';
+        this.openPersonasMessages();
       },
       error: (err) => {
-        this.errorCopy = err.error.error ?? err.error;
+        this.isAddingPersonnas = false;
+        this.cargarPersonasError = err.error.error ?? err.error;
       }
     })
+  }
+
+  savedNames: string[] = [];
+  unsavedNames: string[] = [];
+  perosanasMessages: boolean = false;
+  openPersonasMessages() {
+    this.perosanasMessages = true;
+  }
+
+  closePersonasMessages() {
+    this.limpiarMessages();
+    this.perosanasMessages = false;
+    this.closeAddPersonas();
   }
 
   //misc
@@ -870,5 +889,6 @@ export class ServiciosComponent {
     this.personasSuccess = '';
     this.deleErr = '';
     this.almacenSecondError = '';
+    this.cargarPersonasError = '';
   }
 }
