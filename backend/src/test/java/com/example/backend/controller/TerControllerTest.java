@@ -20,11 +20,13 @@ import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.mockito.ArgumentCaptor;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -446,6 +448,7 @@ public class TerControllerTest {
     @DisplayName("createMultipleForEnt: should create single provider successfully")
     void createMultipleForEnt_shouldCreateSingleProvider() throws Exception {
         when(terRepository.findNextTercodForEnt(TEST_ENT)).thenReturn(1);
+        when(terRepository.findAllByENTAndTERNIF(eq(TEST_ENT), anyString())).thenReturn(new ArrayList<>());
         when(terRepository.save(any(Ter.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         String json = "[{\"TERNOM\":\"New Provider\",\"TERNIF\":\"11111111A\",\"TERBLO\":0,\"TERACU\":0}]";
@@ -455,8 +458,9 @@ public class TerControllerTest {
                 .content(json))
             .andDo(print())
             .andExpect(status().isCreated())
-            .andExpect(jsonPath("$", hasSize(1)))
-            .andExpect(jsonPath("$[0].tercod").value(1));
+            .andExpect(jsonPath("$.savedNames", hasSize(1)))
+            .andExpect(jsonPath("$.savedNames[0]").value("11111111A"))
+            .andExpect(jsonPath("$.unsavedNames", hasSize(0)));
 
         verify(terRepository).findNextTercodForEnt(TEST_ENT);
         verify(terRepository).save(any(Ter.class));
@@ -466,6 +470,7 @@ public class TerControllerTest {
     @DisplayName("createMultipleForEnt: should create multiple providers")
     void createMultipleForEnt_shouldCreateMultipleProviders() throws Exception {
         when(terRepository.findNextTercodForEnt(TEST_ENT)).thenReturn(100);
+        when(terRepository.findAllByENTAndTERNIF(eq(TEST_ENT), anyString())).thenReturn(new ArrayList<>());
         when(terRepository.save(any(Ter.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         String json = "[{\"TERNOM\":\"Provider A\",\"TERNIF\":\"11111111A\",\"TERBLO\":0,\"TERACU\":0},"
@@ -477,10 +482,9 @@ public class TerControllerTest {
                 .content(json))
             .andDo(print())
             .andExpect(status().isCreated())
-            .andExpect(jsonPath("$", hasSize(3)))
-            .andExpect(jsonPath("$[0].tercod").value(100))
-            .andExpect(jsonPath("$[1].tercod").value(101))
-            .andExpect(jsonPath("$[2].tercod").value(102));
+            .andExpect(jsonPath("$.savedNames", hasSize(3)))
+            .andExpect(jsonPath("$.savedNames", contains("11111111A", "22222222B", "33333333C")))
+            .andExpect(jsonPath("$.unsavedNames", hasSize(0)));
 
         verify(terRepository, times(3)).save(any(Ter.class));
     }
@@ -633,6 +637,7 @@ public class TerControllerTest {
     @DisplayName("createMultipleForEnt: should increment tercod for multiple providers")
     void createMultipleForEnt_shouldIncrementTercod() throws Exception {
         when(terRepository.findNextTercodForEnt(TEST_ENT)).thenReturn(50);
+        when(terRepository.findAllByENTAndTERNIF(eq(TEST_ENT), anyString())).thenReturn(new ArrayList<>());
         when(terRepository.save(any(Ter.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         String json = "[{\"TERNOM\":\"A\",\"TERNIF\":\"111\",\"TERBLO\":0,\"TERACU\":0},"
@@ -644,9 +649,14 @@ public class TerControllerTest {
                 .content(json))
             .andDo(print())
             .andExpect(status().isCreated())
-            .andExpect(jsonPath("$[0].tercod").value(50))
-            .andExpect(jsonPath("$[1].tercod").value(51))
-            .andExpect(jsonPath("$[2].tercod").value(52));
+            .andExpect(jsonPath("$.savedNames", hasSize(3)));
+
+        ArgumentCaptor<Ter> captor = ArgumentCaptor.forClass(Ter.class);
+        verify(terRepository, times(3)).save(captor.capture());
+        List<Ter> saved = captor.getAllValues();
+        assertEquals(50, saved.get(0).getTERCOD());
+        assertEquals(51, saved.get(1).getTERCOD());
+        assertEquals(52, saved.get(2).getTERCOD());
     }
 
     @Test
@@ -674,6 +684,7 @@ public class TerControllerTest {
     @DisplayName("createMultipleForEnt: should set TERBLO and TERACU to 0")
     void createMultipleForEnt_shouldSetTerbloAndTeracu() throws Exception {
         when(terRepository.findNextTercodForEnt(TEST_ENT)).thenReturn(1);
+        when(terRepository.findAllByENTAndTERNIF(eq(TEST_ENT), anyString())).thenReturn(new ArrayList<>());
         when(terRepository.save(any(Ter.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         String json = "[{\"TERNOM\":\"Provider A\",\"TERNIF\":\"111\",\"TERBLO\":0,\"TERACU\":0},"
@@ -684,20 +695,26 @@ public class TerControllerTest {
                 .content(json))
             .andDo(print())
             .andExpect(status().isCreated())
-            .andExpect(jsonPath("$[0].terblo").value(0))
-            .andExpect(jsonPath("$[0].teracu").value(0))
-            .andExpect(jsonPath("$[1].terblo").value(0))
-            .andExpect(jsonPath("$[1].teracu").value(0));
+            .andExpect(jsonPath("$.savedNames", hasSize(2)));
+
+        ArgumentCaptor<Ter> captor = ArgumentCaptor.forClass(Ter.class);
+        verify(terRepository, times(2)).save(captor.capture());
+        List<Ter> saved = captor.getAllValues();
+        assertEquals(0, saved.get(0).getTERBLO());
+        assertEquals(0, saved.get(0).getTERACU());
+        assertEquals(0, saved.get(1).getTERBLO());
+        assertEquals(0, saved.get(1).getTERACU());
     }
 
     @Test
     @DisplayName("createMultipleForEnt: should handle optional fields")
     void createMultipleForEnt_shouldHandleOptionalFields() throws Exception {
         when(terRepository.findNextTercodForEnt(TEST_ENT)).thenReturn(1);
+        when(terRepository.findAllByENTAndTERNIF(eq(TEST_ENT), anyString())).thenReturn(new ArrayList<>());
         when(terRepository.save(any(Ter.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        String json = "[{\"TERNOM\":\"Provider\",\"TERNIF\":\"NIF\",\"TERDOM\":\"Address\","
-                    + "\"TERCPO\":\"12345\",\"TERTЕЛ\":\"555-1234\",\"TERFAX\":\"555-5678\","
+        String json = "[{\"TERNOM\":\"Provider\",\"TERNIF\":\"NIF\",\"TERDOM\":\"Address\"," 
+                + "\"TERCPO\":\"12345\",\"TERTEL\":\"555-1234\",\"TERFAX\":\"555-5678\"," 
                     + "\"TERWEB\":\"www.test.com\",\"TERACU\":0,\"TERBLO\":0}]";
 
         mockMvc.perform(post("/api/ter/save-proveedores/" + TEST_ENT)
@@ -705,7 +722,9 @@ public class TerControllerTest {
                 .content(json))
             .andDo(print())
             .andExpect(status().isCreated())
-            .andExpect(jsonPath("$", hasSize(1)));
+            .andExpect(jsonPath("$.savedNames", hasSize(1)))
+            .andExpect(jsonPath("$.savedNames[0]").value("NIF"))
+            .andExpect(jsonPath("$.unsavedNames", hasSize(0)));
 
         verify(terRepository).save(any(Ter.class));
     }
