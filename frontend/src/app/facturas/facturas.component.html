@@ -410,8 +410,8 @@
                         >Guardar</button>
                     </div>
                     <div class="more-detail-container">
-                        <div class="tabs" role="tablist" aria-label="Detalle tabs">
-                            <button
+                        <div class="tabs" role="tablist" aria-label="Opciones de Albaranes">
+                            <!-- <button
                                 class="tab-btn"
                                 role="tab" 
                                 [attr.aria-selected]="detailView === 'Albaranes'"
@@ -428,12 +428,39 @@
                                 (click)="openContabilizacion()"
                             >
                                 Datos Contabilización
+                            </button> -->
+                            <button
+                                class="tab-btn"
+                                role="tab"
+                                [attr.aria-selected]="albaranesOptio === 'albaranes'"
+                                [class.active-tab]="albaranesOptio === 'albaranes'"
+                                (click)="setAlbaranesOptio('albaranes', selectedFacturas?.facnum)"
+                            >
+                                Albaranes
+                            </button>
+                            <button
+                                class="tab-btn"
+                                role="tab"
+                                [attr.aria-selected]="albaranesOptio === 'albaranes'"
+                                [class.active-tab]="albaranesOptio === 'aplicaciones'"
+                                (click)="setAlbaranesOptio('aplicaciones', selectedFacturas?.facnum)"
+                            >
+                                Aplicaciones
+                            </button>
+                            <button
+                                class="tab-btn"
+                                role="tab"
+                                [attr.aria-selected]="albaranesOptio === 'albaranes'"
+                                [class.active-tab]="albaranesOptio === 'descuentos'"
+                                (click)="setAlbaranesOptio('descuentos', selectedFacturas?.facnum)"
+                            >
+                                Descuentos
                             </button>
                         </div>
                     </div>
                     <div class="more-details">
                         <div class="detail-grid" *ngIf="AlbaranesGrid">
-                            <div class="more-detail-container">
+                            <!-- <div class="more-detail-container">
                                 <div class="tabs" role="tablist" aria-label="Opciones de Albaranes">
                                     <button
                                         class="tab-btn"
@@ -463,7 +490,7 @@
                                         Descuentos
                                     </button>
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="detail-switch-second-content">
                                 <ng-container [ngSwitch]="albaranesOptio">
                                     <ng-container *ngSwitchCase="'albaranes'">
@@ -647,7 +674,15 @@
         <div class="title">
             <h1 class="art-title">Cargar facturas</h1>
         </div>
-        <button class="purple-btn" (click)="addingFacturas()">+</button>
+        <div class="count-selected">
+            <p class="p-style center">Seleccionados: {{caughtFacturas.length}} facturas</p>
+        </div>
+        <button 
+            class="purple-btn" 
+            (click)="addingFacturas()"
+            [ngClass]="{'disabled-btn': caughtFacturas.length === 0}"
+        >+ Cargar
+        </button>
         <button class="red-btn" (click)="closeFacturaAdd()">✖</button>
     </div>
     <div class="search-option-container">
@@ -754,7 +789,6 @@
             </tr>
         </tbody>
     </table>
-    <p class="p-style center" *ngIf="caughtFacturas.length > 0">{{caughtFacturas.length}} Facturas seleccionados</p>
     <div class="pagination-controls alignment">
         <button (click)="prevPageFacturas()" [disabled]="pageFacturas === 0">Anterior</button>
         <span>Página</span>
@@ -877,18 +911,54 @@
     <button class="red-btn" (click)="quitarAlbaran()">Confirmar</button>
 </div>
 
-<div class="modal-backdrop" *ngIf="addFacturaMessage" (click)="closeAddFactura()"></div>
-<div class="delete-confirm-modal" *ngIf="addFacturaMessage">
+<div class="modal-backdrop force" *ngIf="addFacturaMessage"></div>
+<div class="delete-confirm-modal adj" *ngIf="addFacturaMessage">
     <div class="btns">
-        <button class="red-btn margin" (click)="closeAddFactura()">✖</button>
+        <button class="red-btn margin" (click)="closeFacturasMessages()">✖</button>
     </div>
-    <div class="messages-factura">
-        <table class="main-table">
-            <tbody>
-                <tr *ngFor="let a of addFacturaStatus">
-                    <td>{{a}}</td>
-                </tr>
-            </tbody>
-        </table>
+    <div class="saved-details special">
+        <p class="p-style" *ngIf="cargarFacturaError">{{cargarFacturaError}}</p>
+        <p class="p-style" *ngIf="missingProviders.length">Proveedores no existen: {{missingProviders}}</p>
+        <div class="saved-table" *ngIf="savedNames.length">
+            <p class="p-style adjs">Facturas cargadas</p>
+            <table class="main-table">
+                <thead>
+                    <tr>
+                        <th>facann</th>
+                        <th>factdc</th>
+                        <th>facfac</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let s of savedNames">
+                        <td>{{s.facann}}</td>
+                        <td>{{s.factdc}}</td>
+                        <td>{{s.facfac}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="saved-table" *ngIf="unsavedNames.length">
+            <p class="p-style adjs">Facturas ya existentes</p>
+            <table class="main-table">
+                <thead>
+                    <tr>
+                        <th>facann</th>
+                        <th>factdc</th>
+                        <th>facfac</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let s of unsavedNames">
+                        <td>{{s.facann}}</td>
+                        <td>{{s.factdc}}</td>
+                        <td>{{s.facfac}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+       
+        <!-- <p class="p-style" *ngIf="savedNames.length">Factura cargadas: <span class="message-text">{{savedNames}}</span></p> -->
+        <!-- <p class="p-style" *ngIf="unsavedNames.length">Factura ya existentes: <span class="message-text">{{unsavedNames}}</span></p> -->
     </div>
 </div>

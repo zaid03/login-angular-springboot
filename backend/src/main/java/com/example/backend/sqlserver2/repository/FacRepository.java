@@ -21,5 +21,5 @@ public interface FacRepository extends JpaRepository<Fac, FacId>, JpaSpecificati
     @Query("SELECT MAX(f.FACNUM) FROM Fac f WHERE f.ENT = :ent AND f.EJE = :eje")
     Integer findMaxFACNUMByENTAndEJE(@Param("ent") Integer ent, @Param("eje") String eje);
 
-    boolean existsByFACTDCAndFACANNAndFACFAC(String FACTDC, Integer FACANN, Integer FACFAC);
+    List<Fac> findByFACTDCAndFACANNAndFACFAC(String FACTDC, Integer FACANN, Integer FACFAC);
 }

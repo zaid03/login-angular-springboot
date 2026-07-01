@@ -31,67 +31,94 @@ public class FacturaInsertService {
     @Autowired
     private FdeRepository fdeRepository;
 
-    public List<String> insertFacturas(List<FacturaInsertDto> facturas) {
-        List<String> messages = new ArrayList<>();
+    public NamesResponse insertFacturas(List<FacturaInsertDto> facturas) {
+        List<FacturaInfo> savedNames = new ArrayList<>();
+        List<FacturaInfo> unsavedNames = new ArrayList<>();
+        List<String> missingProviders = new ArrayList<>();
         for (FacturaInsertDto dto : facturas) {
             Ter ter = terRepository.findByENTAndTERNIF(dto.ENT, dto.tercero);
             if (ter == null) {
-                messages.add("El proveedor no está registrado: " + dto.tercero);
+                missingProviders.add(dto.tercero);
                 continue;
             }
 
-            boolean exists = facRepository.existsByFACTDCAndFACANNAndFACFAC(dto.FACTDC, dto.FACANN, dto.FACFAC);
-            if (exists) {
-                messages.add("La factura ya estaba cargada: " + dto.FACTDC + "-" + dto.FACANN + "-" + dto.FACFAC);
-                continue;
-            }
+            List<Fac> factura = facRepository.findByFACTDCAndFACANNAndFACFAC(dto.FACTDC, dto.FACANN, dto.FACFAC);
+            if (!factura.isEmpty()) {
+                unsavedNames.add(
+                    new FacturaInfo(
+                        factura.get(0).getFACANN(),
+                        factura.get(0).getFACTDC(),
+                        factura.get(0).getFACFAC()
+                    )
+                );
+            } else {
+                List<Cfg> cfgList = cfgRepository.findByENTAndEJE(dto.ENT, dto.EJE);
+                if (cfgList == null || cfgList.isEmpty()) continue;
+                Cfg cfg = cfgList.get(0);
 
-            List<Cfg> cfgList = cfgRepository.findByENTAndEJE(dto.ENT, dto.EJE);
-            if (cfgList == null || cfgList.isEmpty()) continue;
-            Cfg cfg = cfgList.get(0);
+                Integer maxFacnum = facRepository.findMaxFACNUMByENTAndEJE(dto.ENT, dto.EJE);
+                int newFacnum = (maxFacnum == null ? 1 : maxFacnum + 1);
 
-            Integer maxFacnum = facRepository.findMaxFACNUMByENTAndEJE(dto.ENT, dto.EJE);
-            int newFacnum = (maxFacnum == null ? 1 : maxFacnum + 1);
+                Fac fac = new Fac();
+                fac.setENT(dto.ENT);
+                fac.setEJE(dto.EJE);
+                fac.setFACNUM(newFacnum);
+                fac.setTERCOD(ter.getTERCOD());
+                fac.setCGECOD(dto.CGECOD);
+                fac.setFACIMP(dto.FACIMP);
+                fac.setFACIEC(dto.FACIEC);
+                fac.setFACIDI(dto.FACIDI);
+                fac.setFACTDC(dto.FACTDC);
+                fac.setFACANN(dto.FACANN);
+                fac.setFACFAC(dto.FACFAC);
+                fac.setFACDOC(dto.FACDOC);
+                fac.setFACDAT(dto.FACDAT);
+                fac.setFACTXT(dto.FACTXT);
+                fac.setFACDTO(dto.FACDTO);
+                fac.setFACFRE(dto.FACFRE);
+                fac.setFACFPG(cfg.getCFGFPG());
+                fac.setFACOPG(cfg.getCFGOPG());
+                fac.setFACTPG(cfg.getCFGTPG());
+                facRepository.save(fac);
 
-            Fac fac = new Fac();
-            fac.setENT(dto.ENT);
-            fac.setEJE(dto.EJE);
-            fac.setFACNUM(newFacnum);
-            fac.setTERCOD(ter.getTERCOD());
-            fac.setCGECOD(dto.CGECOD);
-            fac.setFACIMP(dto.FACIMP);
-            fac.setFACIEC(dto.FACIEC);
-            fac.setFACIDI(dto.FACIDI);
-            fac.setFACTDC(dto.FACTDC);
-            fac.setFACANN(dto.FACANN);
-            fac.setFACFAC(dto.FACFAC);
-            fac.setFACDOC(dto.FACDOC);
-            fac.setFACDAT(dto.FACDAT);
-            fac.setFACTXT(dto.FACTXT);
-            fac.setFACDTO(dto.FACDTO);
-            fac.setFACFRE(dto.FACFRE);
-            fac.setFACFPG(cfg.getCFGFPG());
-            fac.setFACOPG(cfg.getCFGOPG());
-            fac.setFACTPG(cfg.getCFGTPG());
-            facRepository.save(fac);
+                List<Gbs> gbsRows = gbsRepository.findByENTAndEJEAndCGECOD(dto.ENT, dto.EJE, dto.CGECOD);
+                for (Gbs gbs : gbsRows) {
+                    Fde fde = new Fde();
+                    fde.setENT(dto.ENT);
+                    fde.setEJE(dto.EJE);
+                    fde.setFACNUM(newFacnum);
+                    fde.setFDEREF(gbs.getGBSREF());
+                    fde.setFDEOPE(gbs.getGBSOPE());
+                    fde.setFDEORG(gbs.getGBSORG());
+                    fde.setFDEFUN(gbs.getGBSFUN());
+                    fde.setFDEECO(gbs.getGBSECO());
+                    fde.setFDESUB(gbs.getGBSSUB());
+                    fde.setFDEIMP(0.0);
+                    fde.setFDEDIF(0.0);
+                    fdeRepository.save(fde);
+                }
 
-            List<Gbs> gbsRows = gbsRepository.findByENTAndEJEAndCGECOD(dto.ENT, dto.EJE, dto.CGECOD);
-            for (Gbs gbs : gbsRows) {
-                Fde fde = new Fde();
-                fde.setENT(dto.ENT);
-                fde.setEJE(dto.EJE);
-                fde.setFACNUM(newFacnum);
-                fde.setFDEREF(gbs.getGBSREF());
-                fde.setFDEOPE(gbs.getGBSOPE());
-                fde.setFDEORG(gbs.getGBSORG());
-                fde.setFDEFUN(gbs.getGBSFUN());
-                fde.setFDEECO(gbs.getGBSECO());
-                fde.setFDESUB(gbs.getGBSSUB());
-                fde.setFDEIMP(0.0);
-                fde.setFDEDIF(0.0);
-                fdeRepository.save(fde);
+                savedNames.add(
+                    new FacturaInfo(
+                        dto.FACANN,
+                        dto.FACTDC,
+                        dto.FACFAC
+                    )
+                );
             }
         }
-        return messages;
+        return new NamesResponse(savedNames, unsavedNames, missingProviders);
     }
+
+    public record NamesResponse (
+        List<FacturaInfo> savedNames,
+        List<FacturaInfo> unsavedNames,
+        List<String> missingProviders
+    ) {}
+
+    public record FacturaInfo(
+        Integer facann,
+        String factdc,
+        Integer facfac
+    ) {}
 }

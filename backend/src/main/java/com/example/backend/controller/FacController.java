@@ -107,8 +107,8 @@ public class FacController {
         @RequestBody List<FacturaInsertDto> facturas
     ) {
         try {
-            List<String> messages = facturaInsertService.insertFacturas(facturas);
-            return ResponseEntity.ok(messages);
+            FacturaInsertService.NamesResponse response = facturaInsertService.insertFacturas(facturas);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ERROR + ex.getMessage());
         }

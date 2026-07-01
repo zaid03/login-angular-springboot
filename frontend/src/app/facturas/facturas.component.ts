@@ -665,12 +665,12 @@ export class FacturasComponent {
     this.setAlbaranesOptio('albaranes', this.selectedFacturas.facnum);
   }
 
-  openContabilizacion() {
-    this.limpiarMEssages();
-    this.AlbaranesGrid = false;
-    this.ContabilizacionGrid = true;
-    this.detailView = 'Contabilización';
-  }
+  // openContabilizacion() {
+  //   this.limpiarMEssages();
+  //   this.AlbaranesGrid = false;
+  //   this.ContabilizacionGrid = true;
+  //   this.detailView = 'Contabilización';
+  // }
 
   setAlbaranesOptio(option: 'albaranes' | 'aplicaciones' | 'descuentos', facnum: number): void {
     this.albaranesOptio = option;
@@ -1120,6 +1120,7 @@ export class FacturasComponent {
   }
 
   facturasSuccessMessage: string = '';
+  cargarFacturaError: string = '';
   addingFacturas() {
     this.limpiarMEssages();
 
@@ -1150,28 +1151,31 @@ export class FacturasComponent {
     }
 
     this.isAddingFactura = true;
-    this.http.post(`${environment.backendUrl}/api/fac/add-facturas`, payload).subscribe({
+    this.http.post<any>(`${environment.backendUrl}/api/fac/add-facturas`, payload).subscribe({
       next: (res) => {
+        console.log(res);
         this.isAddingFactura = false;
-        this.caughtFacturas = [];
-        this.addFacturaStatus = res;
-        this.openAddFactura();
+        this.openFacturaMessages();
+        this.savedNames = res.savedNames;
+        this.unsavedNames = res?.unsavedNames;
+        this.missingProviders = res?.missingProviders.join(', ') ?? '';
       },
       error: (err) => {
         this.isAddingFactura = true;
-        this.facturasErrorMessage = err.error.error ?? err.error
+        this.cargarFacturaError = err.error.error ?? err.error
       }
     })
   }
 
-  addFacturaStatus: any;
+  savedNames: any = [];
+  unsavedNames: any = [];
+  missingProviders: any = [];
   addFacturaMessage: boolean = false;
-  openAddFactura() {
+  openFacturaMessages() {
     this.addFacturaMessage = true;
   }
 
-  closeAddFactura() {
-    this.fetchFacturas();
+  closeFacturasMessages() {
     this.limpiarMEssages();
     this.addFacturaMessage = false;
     this.closeFacturaAdd();
@@ -1190,5 +1194,6 @@ export class FacturasComponent {
     this.facturaDetailError = '';
     this.albaranError = '';
     this.descuentosError = '';
+    this.cargarFacturaError = '';
   }
 }

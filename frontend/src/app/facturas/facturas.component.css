@@ -97,12 +97,11 @@
 /* delete modal */
 .delete-confirm-modal .margin {margin-left: 10px;}
 /* delete modal */
+/* special */
+.special {width: 98%;}
+.adjs {text-align: center;}
+/* special */
 @media (min-width: 1700px) { .tallTextarea {width: 250px; max-width: 300px;}
 .averageTextarea{ width: 120px; max-width: 190px;} }
 @media (max-width: 1450px) { .display .right h1 {font-size: 14px !important;}
 .averageSecond {width: 160px; max-width: 200px;} }
-
-
-
-
-.nigger {border: 1px solid red; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(14, 76, 138, 0.35); z-index: 1000; backdrop-filter: blur(1px); -webkit-backdrop-filter: blur(1px);}
