@@ -184,8 +184,15 @@ public class FacControllerTest {
 
     @Test
     void addFacturas_returnsOkWithMessages() throws Exception {
-        List<String> messages = List.of("Factura 1 insertada", "Factura 2 insertada");
-        when(facturaInsertService.insertFacturas(any())).thenReturn(messages);
+        FacturaInsertService.NamesResponse response = new FacturaInsertService.NamesResponse(
+            List.of(
+                new FacturaInsertService.FacturaInfo(2024, "F", 1),
+                new FacturaInsertService.FacturaInfo(2024, "F", 2)
+            ),
+            List.of(),
+            List.of()
+        );
+        when(facturaInsertService.insertFacturas(any())).thenReturn(response);
 
         List<Map<String, Object>> payload = List.of(new HashMap<>());
 
@@ -193,8 +200,10 @@ public class FacControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(payload)))
             .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$", hasSize(2)));
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.savedNames", hasSize(2)))
+            .andExpect(jsonPath("$.unsavedNames", hasSize(0)))
+            .andExpect(jsonPath("$.missingProviders", hasSize(0)));
 
         verify(facturaInsertService).insertFacturas(any());
     }

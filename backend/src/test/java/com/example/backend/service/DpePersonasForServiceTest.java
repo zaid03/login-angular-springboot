@@ -19,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
 class DpePersonasForServiceTest {
@@ -37,12 +38,12 @@ class DpePersonasForServiceTest {
     void saveServicePersonas_withValidSinglePersona_succeeds() {
         ServicePersonaRequest req = createRequest(1, "2024", "DEP001", "PER001");
         
-        when(dpeRepository.existsById(any(DpeId.class))).thenReturn(false);
+        when(dpeRepository.findById(any(DpeId.class))).thenReturn(Optional.empty());
         when(dpeRepository.save(any(Dpe.class))).thenAnswer(i -> i.getArgument(0));
         
         service.saveServicePersonas(req);
         
-        verify(dpeRepository, times(1)).existsById(any(DpeId.class));
+        verify(dpeRepository, times(1)).findById(any(DpeId.class));
         verify(dpeRepository, times(1)).save(any(Dpe.class));
     }
 
@@ -50,12 +51,12 @@ class DpePersonasForServiceTest {
     void saveServicePersonas_withMultiplePersonas_savesAll() {
         ServicePersonaRequest req = createRequest(1, "2024", "DEP001", "PER001", "PER002", "PER003");
         
-        when(dpeRepository.existsById(any(DpeId.class))).thenReturn(false);
+        when(dpeRepository.findById(any(DpeId.class))).thenReturn(Optional.empty());
         when(dpeRepository.save(any(Dpe.class))).thenAnswer(i -> i.getArgument(0));
         
         service.saveServicePersonas(req);
         
-        verify(dpeRepository, times(3)).existsById(any(DpeId.class));
+        verify(dpeRepository, times(3)).findById(any(DpeId.class));
         verify(dpeRepository, times(3)).save(any(Dpe.class));
     }
 
@@ -63,14 +64,14 @@ class DpePersonasForServiceTest {
     void saveServicePersonas_withDuplicatePersona_skipsExisting() {
         ServicePersonaRequest req = createRequest(1, "2024", "DEP001", "PER001", "PER002");
         
-        when(dpeRepository.existsById(any(DpeId.class)))
-            .thenReturn(true)   
-            .thenReturn(false);  
+        when(dpeRepository.findById(any(DpeId.class)))
+            .thenReturn(Optional.of(existingDpe("PER001")))
+            .thenReturn(Optional.empty());
         when(dpeRepository.save(any(Dpe.class))).thenAnswer(i -> i.getArgument(0));
         
         service.saveServicePersonas(req);
         
-        verify(dpeRepository, times(2)).existsById(any(DpeId.class));
+        verify(dpeRepository, times(2)).findById(any(DpeId.class));
         verify(dpeRepository, times(1)).save(any(Dpe.class));
     }
 
@@ -78,7 +79,7 @@ class DpePersonasForServiceTest {
     void saveServicePersonas_savesWithCorrectFields() {
         ServicePersonaRequest req = createRequest(1, "2024", "DEP001", "PER001");
         
-        when(dpeRepository.existsById(any(DpeId.class))).thenReturn(false);
+        when(dpeRepository.findById(any(DpeId.class))).thenReturn(Optional.empty());
         when(dpeRepository.save(any(Dpe.class))).thenAnswer(i -> i.getArgument(0));
         
         service.saveServicePersonas(req);
@@ -97,11 +98,11 @@ class DpePersonasForServiceTest {
     void saveServicePersonas_withAllDuplicates_savesNone() {
         ServicePersonaRequest req = createRequest(1, "2024", "DEP001", "PER001", "PER002", "PER003");
         
-        when(dpeRepository.existsById(any(DpeId.class))).thenReturn(true);
+        when(dpeRepository.findById(any(DpeId.class))).thenReturn(Optional.of(existingDpe("PER001")));
         
         service.saveServicePersonas(req);
         
-        verify(dpeRepository, times(3)).existsById(any(DpeId.class));
+        verify(dpeRepository, times(3)).findById(any(DpeId.class));
         verify(dpeRepository, never()).save(any(Dpe.class));
     }
     
@@ -115,7 +116,7 @@ class DpePersonasForServiceTest {
         
         service.saveServicePersonas(req);
         
-        verify(dpeRepository, never()).existsById(any(DpeId.class));
+        verify(dpeRepository, never()).findById(any(DpeId.class));
         verify(dpeRepository, never()).save(any(Dpe.class));
     }
 
@@ -129,7 +130,7 @@ class DpePersonasForServiceTest {
         
         service.saveServicePersonas(req);
         
-        verify(dpeRepository, never()).existsById(any(DpeId.class));
+        verify(dpeRepository, never()).findById(any(DpeId.class));
         verify(dpeRepository, never()).save(any(Dpe.class));
     }
     
@@ -137,16 +138,16 @@ class DpePersonasForServiceTest {
     void saveServicePersonas_withMixedDuplicateAndNew_savesOnlyNew() {
         ServicePersonaRequest req = createRequest(1, "2024", "DEP001", "EXIST", "NEW", "EXIST2", "NEW2");
         
-        when(dpeRepository.existsById(any(DpeId.class)))
-            .thenReturn(true)   
-            .thenReturn(false)  
-            .thenReturn(true)   
-            .thenReturn(false); 
+        when(dpeRepository.findById(any(DpeId.class)))
+            .thenReturn(Optional.of(existingDpe("EXIST")))
+            .thenReturn(Optional.empty())
+            .thenReturn(Optional.of(existingDpe("EXIST2")))
+            .thenReturn(Optional.empty());
         when(dpeRepository.save(any(Dpe.class))).thenAnswer(i -> i.getArgument(0));
         
         service.saveServicePersonas(req);
         
-        verify(dpeRepository, times(4)).existsById(any(DpeId.class));
+        verify(dpeRepository, times(4)).findById(any(DpeId.class));
         verify(dpeRepository, times(2)).save(any(Dpe.class));
     }
 
@@ -154,13 +155,13 @@ class DpePersonasForServiceTest {
     void saveServicePersonas_savesWithCorrectCompositeIds() {
         ServicePersonaRequest req = createRequest(5, "2025", "DEPT05", "PERS1", "PERS2");
         
-        when(dpeRepository.existsById(any(DpeId.class))).thenReturn(false);
+        when(dpeRepository.findById(any(DpeId.class))).thenReturn(Optional.empty());
         when(dpeRepository.save(any(Dpe.class))).thenAnswer(i -> i.getArgument(0));
         
         service.saveServicePersonas(req);
         
         ArgumentCaptor<DpeId> idCaptor = ArgumentCaptor.forClass(DpeId.class);
-        verify(dpeRepository, times(2)).existsById(idCaptor.capture());
+        verify(dpeRepository, times(2)).findById(idCaptor.capture());
         
         List<DpeId> capturedIds = idCaptor.getAllValues();
         assertEquals(2, capturedIds.size());
@@ -179,12 +180,12 @@ class DpePersonasForServiceTest {
         req.setDepcod("DEP001");
         req.setPersonas(personas);
         
-        when(dpeRepository.existsById(any(DpeId.class))).thenReturn(false);
+        when(dpeRepository.findById(any(DpeId.class))).thenReturn(Optional.empty());
         when(dpeRepository.save(any(Dpe.class))).thenAnswer(i -> i.getArgument(0));
         
         service.saveServicePersonas(req);
         
-        verify(dpeRepository, times(100)).existsById(any(DpeId.class));
+        verify(dpeRepository, times(100)).findById(any(DpeId.class));
         verify(dpeRepository, times(100)).save(any(Dpe.class));
     }
 
@@ -193,7 +194,7 @@ class DpePersonasForServiceTest {
         ServicePersonaRequest req1 = createRequest(1, "2024", "DEP001", "PER001");
         ServicePersonaRequest req2 = createRequest(2, "2025", "DEP002", "PER002");
         
-        when(dpeRepository.existsById(any(DpeId.class))).thenReturn(false);
+        when(dpeRepository.findById(any(DpeId.class))).thenReturn(Optional.empty());
         when(dpeRepository.save(any(Dpe.class))).thenAnswer(i -> i.getArgument(0));
         
         service.saveServicePersonas(req1);
@@ -213,7 +214,7 @@ class DpePersonasForServiceTest {
     void saveServicePersonas_persistsAllPersonasInSingleRequest() {
         ServicePersonaRequest req = createRequest(1, "2024", "DEP001", "A", "B", "C", "D", "E");
         
-        when(dpeRepository.existsById(any(DpeId.class))).thenReturn(false);
+        when(dpeRepository.findById(any(DpeId.class))).thenReturn(Optional.empty());
         when(dpeRepository.save(any(Dpe.class))).thenAnswer(i -> i.getArgument(0));
         
         service.saveServicePersonas(req);
@@ -236,5 +237,11 @@ class DpePersonasForServiceTest {
         req.setDepcod(depcod);
         req.setPersonas(Arrays.asList(personas));
         return req;
+    }
+
+    private Dpe existingDpe(String percod) {
+        Dpe dpe = new Dpe();
+        dpe.setPERCOD(percod);
+        return dpe;
     }
 }

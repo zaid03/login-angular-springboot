@@ -61,7 +61,7 @@ class FacturaInsertServiceTest {
         List<Gbs> gbsList = List.of(createGbs("REF001", "OPE001", "ORG001"));
         
         when(terRepository.findByENTAndTERNIF(1, "PROV001")).thenReturn(ter);
-        when(facRepository.existsByFACTDCAndFACANNAndFACFAC("F", 2024, 1)).thenReturn(false);
+        when(facRepository.findByFACTDCAndFACANNAndFACFAC("F", 2024, 1)).thenReturn(new ArrayList<>());
         when(cfgRepository.findByENTAndEJE(1, "2024")).thenReturn(List.of(cfg));
         when(facRepository.findMaxFACNUMByENTAndEJE(1, "2024")).thenReturn(100);
         when(gbsRepository.findByENTAndEJEAndCGECOD(1, "2024", "CGE001")).thenReturn(gbsList);
@@ -71,9 +71,11 @@ class FacturaInsertServiceTest {
         FacturaInsertDto dto = createValidFacturaDto("PROV001");
         List<FacturaInsertDto> facturas = List.of(dto);
         
-        List<String> messages = service.insertFacturas(facturas);
+        FacturaInsertService.NamesResponse response = service.insertFacturas(facturas);
         
-        assertEquals(0, messages.size());
+        assertEquals(1, response.savedNames().size());
+        assertEquals(0, response.unsavedNames().size());
+        assertEquals(0, response.missingProviders().size());
         verify(facRepository, times(1)).save(any(Fac.class));
         verify(fdeRepository, times(gbsList.size())).save(any(Fde.class));
     }
@@ -85,7 +87,7 @@ class FacturaInsertServiceTest {
         List<Gbs> gbsList = List.of(createGbs("REF001", "OPE001", "ORG001"));
         
         when(terRepository.findByENTAndTERNIF(1, "PROV001")).thenReturn(ter);
-        when(facRepository.existsByFACTDCAndFACANNAndFACFAC(anyString(), anyInt(), anyInt())).thenReturn(false);
+        when(facRepository.findByFACTDCAndFACANNAndFACFAC(anyString(), anyInt(), anyInt())).thenReturn(new ArrayList<>());
         when(cfgRepository.findByENTAndEJE(1, "2024")).thenReturn(List.of(cfg));
         when(facRepository.findMaxFACNUMByENTAndEJE(1, "2024")).thenReturn(100, 101);
         when(gbsRepository.findByENTAndEJEAndCGECOD(1, "2024", "CGE001")).thenReturn(gbsList);
@@ -96,9 +98,11 @@ class FacturaInsertServiceTest {
         FacturaInsertDto dto2 = createValidFacturaDto("PROV001");
         List<FacturaInsertDto> facturas = List.of(dto1, dto2);
         
-        List<String> messages = service.insertFacturas(facturas);
+        FacturaInsertService.NamesResponse response = service.insertFacturas(facturas);
         
-        assertEquals(0, messages.size());
+        assertEquals(2, response.savedNames().size());
+        assertEquals(0, response.unsavedNames().size());
+        assertEquals(0, response.missingProviders().size());
         verify(facRepository, times(2)).save(any(Fac.class));
         verify(fdeRepository, times(2 * gbsList.size())).save(any(Fde.class));
     }
@@ -114,7 +118,7 @@ class FacturaInsertServiceTest {
         );
         
         when(terRepository.findByENTAndTERNIF(1, "PROV001")).thenReturn(ter);
-        when(facRepository.existsByFACTDCAndFACANNAndFACFAC("F", 2024, 1)).thenReturn(false);
+        when(facRepository.findByFACTDCAndFACANNAndFACFAC("F", 2024, 1)).thenReturn(new ArrayList<>());
         when(cfgRepository.findByENTAndEJE(1, "2024")).thenReturn(List.of(cfg));
         when(facRepository.findMaxFACNUMByENTAndEJE(1, "2024")).thenReturn(100);
         when(gbsRepository.findByENTAndEJEAndCGECOD(1, "2024", "CGE001")).thenReturn(gbsList);
@@ -123,9 +127,11 @@ class FacturaInsertServiceTest {
 
         FacturaInsertDto dto = createValidFacturaDto("PROV001");
         
-        List<String> messages = service.insertFacturas(List.of(dto));
+        FacturaInsertService.NamesResponse response = service.insertFacturas(List.of(dto));
         
-        assertEquals(0, messages.size());
+        assertEquals(1, response.savedNames().size());
+        assertEquals(0, response.unsavedNames().size());
+        assertEquals(0, response.missingProviders().size());
         verify(fdeRepository, times(3)).save(any(Fde.class));
     }
 
@@ -135,7 +141,7 @@ class FacturaInsertServiceTest {
         Cfg cfg = createCfg("CFG001", "TPG001", "OPG001", "FPG001");
         
         when(terRepository.findByENTAndTERNIF(1, "PROV001")).thenReturn(ter);
-        when(facRepository.existsByFACTDCAndFACANNAndFACFAC(anyString(), anyInt(), anyInt())).thenReturn(false);
+        when(facRepository.findByFACTDCAndFACANNAndFACFAC(anyString(), anyInt(), anyInt())).thenReturn(new ArrayList<>());
         when(cfgRepository.findByENTAndEJE(1, "2024")).thenReturn(List.of(cfg));
         when(facRepository.findMaxFACNUMByENTAndEJE(1, "2024")).thenReturn(999);
         when(gbsRepository.findByENTAndEJEAndCGECOD(1, "2024", "CGE001")).thenReturn(new ArrayList<>());
@@ -156,25 +162,32 @@ class FacturaInsertServiceTest {
         when(terRepository.findByENTAndTERNIF(1, "INVALID")).thenReturn(null);
         
         FacturaInsertDto dto = createValidFacturaDto("INVALID");
-        List<String> messages = service.insertFacturas(List.of(dto));
+        FacturaInsertService.NamesResponse response = service.insertFacturas(List.of(dto));
         
-        assertEquals(1, messages.size());
-        assertTrue(messages.get(0).contains("proveedor no está registrado"));
+        assertEquals(0, response.savedNames().size());
+        assertEquals(0, response.unsavedNames().size());
+        assertEquals(1, response.missingProviders().size());
+        assertEquals("INVALID", response.missingProviders().get(0));
         verify(facRepository, never()).save(any());
     }
 
     @Test
     void insertFacturas_withDuplicateFactura_returnsMessage() {
         Ter ter = createTer(1, "PROV001");
+        Fac existing = new Fac();
+        existing.setFACTDC("F");
+        existing.setFACANN(2024);
+        existing.setFACFAC(1);
         
         when(terRepository.findByENTAndTERNIF(1, "PROV001")).thenReturn(ter);
-        when(facRepository.existsByFACTDCAndFACANNAndFACFAC("F", 2024, 1)).thenReturn(true);
+        when(facRepository.findByFACTDCAndFACANNAndFACFAC("F", 2024, 1)).thenReturn(List.of(existing));
         
         FacturaInsertDto dto = createValidFacturaDto("PROV001");
-        List<String> messages = service.insertFacturas(List.of(dto));
+        FacturaInsertService.NamesResponse response = service.insertFacturas(List.of(dto));
         
-        assertEquals(1, messages.size());
-        assertTrue(messages.get(0).contains("factura ya estaba cargada"));
+        assertEquals(0, response.savedNames().size());
+        assertEquals(1, response.unsavedNames().size());
+        assertEquals(0, response.missingProviders().size());
         verify(facRepository, never()).save(any(Fac.class));
     }
 
@@ -183,13 +196,15 @@ class FacturaInsertServiceTest {
         Ter ter = createTer(1, "PROV001");
         
         when(terRepository.findByENTAndTERNIF(1, "PROV001")).thenReturn(ter);
-        when(facRepository.existsByFACTDCAndFACANNAndFACFAC("F", 2024, 1)).thenReturn(false);
+        when(facRepository.findByFACTDCAndFACANNAndFACFAC("F", 2024, 1)).thenReturn(new ArrayList<>());
         when(cfgRepository.findByENTAndEJE(1, "2024")).thenReturn(new ArrayList<>());
         
         FacturaInsertDto dto = createValidFacturaDto("PROV001");
-        List<String> messages = service.insertFacturas(List.of(dto));
+        FacturaInsertService.NamesResponse response = service.insertFacturas(List.of(dto));
         
-        assertEquals(0, messages.size());
+        assertEquals(0, response.savedNames().size());
+        assertEquals(0, response.unsavedNames().size());
+        assertEquals(0, response.missingProviders().size());
         verify(facRepository, never()).save(any(Fac.class));
     }
 
@@ -199,7 +214,7 @@ class FacturaInsertServiceTest {
         Cfg cfg = createCfg("CFG001", "TPG001", "OPG001", "FPG001");
         
         when(terRepository.findByENTAndTERNIF(1, "PROV001")).thenReturn(ter);
-        when(facRepository.existsByFACTDCAndFACANNAndFACFAC("F", 2024, 1)).thenReturn(false);
+        when(facRepository.findByFACTDCAndFACANNAndFACFAC("F", 2024, 1)).thenReturn(new ArrayList<>());
         when(cfgRepository.findByENTAndEJE(1, "2024")).thenReturn(List.of(cfg));
         when(facRepository.findMaxFACNUMByENTAndEJE(1, "2024")).thenReturn(null);
         when(gbsRepository.findByENTAndEJEAndCGECOD(1, "2024", "CGE001")).thenReturn(new ArrayList<>());
@@ -222,7 +237,7 @@ class FacturaInsertServiceTest {
         
         when(terRepository.findByENTAndTERNIF(1, "PROV001")).thenReturn(ter);
         when(terRepository.findByENTAndTERNIF(1, "INVALID")).thenReturn(null);
-        when(facRepository.existsByFACTDCAndFACANNAndFACFAC(anyString(), anyInt(), anyInt())).thenReturn(false);
+        when(facRepository.findByFACTDCAndFACANNAndFACFAC(anyString(), anyInt(), anyInt())).thenReturn(new ArrayList<>());
         when(cfgRepository.findByENTAndEJE(1, "2024")).thenReturn(List.of(cfg));
         when(facRepository.findMaxFACNUMByENTAndEJE(1, "2024")).thenReturn(100);
         when(gbsRepository.findByENTAndEJEAndCGECOD(1, "2024", "CGE001")).thenReturn(new ArrayList<>());
@@ -231,18 +246,22 @@ class FacturaInsertServiceTest {
         FacturaInsertDto validDto = createValidFacturaDto("PROV001");
         FacturaInsertDto invalidDto = createValidFacturaDto("INVALID");
         
-        List<String> messages = service.insertFacturas(List.of(validDto, invalidDto));
+        FacturaInsertService.NamesResponse response = service.insertFacturas(List.of(validDto, invalidDto));
         
-        assertEquals(1, messages.size());
-        assertTrue(messages.get(0).contains("proveedor no está registrado"));
+        assertEquals(1, response.savedNames().size());
+        assertEquals(0, response.unsavedNames().size());
+        assertEquals(1, response.missingProviders().size());
+        assertEquals("INVALID", response.missingProviders().get(0));
         verify(facRepository, times(1)).save(any(Fac.class));
     }
 
     @Test
     void insertFacturas_withEmptyList_returnsEmptyMessages() {
-        List<String> messages = service.insertFacturas(new ArrayList<>());
+        FacturaInsertService.NamesResponse response = service.insertFacturas(new ArrayList<>());
         
-        assertEquals(0, messages.size());
+        assertEquals(0, response.savedNames().size());
+        assertEquals(0, response.unsavedNames().size());
+        assertEquals(0, response.missingProviders().size());
         verify(terRepository, never()).findByENTAndTERNIF(anyInt(), anyString());
     }
 
@@ -252,7 +271,7 @@ class FacturaInsertServiceTest {
         Cfg cfg = createCfg("CFG001", "TPG001", "OPG001", "FPG001");
         
         when(terRepository.findByENTAndTERNIF(1, "PROV001")).thenReturn(ter);
-        when(facRepository.existsByFACTDCAndFACANNAndFACFAC("F", 2024, 1)).thenReturn(false);
+        when(facRepository.findByFACTDCAndFACANNAndFACFAC("F", 2024, 1)).thenReturn(new ArrayList<>());
         when(cfgRepository.findByENTAndEJE(1, "2024")).thenReturn(List.of(cfg));
         when(facRepository.findMaxFACNUMByENTAndEJE(1, "2024")).thenReturn(100);
         when(gbsRepository.findByENTAndEJEAndCGECOD(1, "2024", "CGE001")).thenReturn(new ArrayList<>());
@@ -279,7 +298,7 @@ class FacturaInsertServiceTest {
         Gbs gbs = createGbs("REF001", "OPE001", "ORG001");
         
         when(terRepository.findByENTAndTERNIF(1, "PROV001")).thenReturn(ter);
-        when(facRepository.existsByFACTDCAndFACANNAndFACFAC("F", 2024, 1)).thenReturn(false);
+        when(facRepository.findByFACTDCAndFACANNAndFACFAC("F", 2024, 1)).thenReturn(new ArrayList<>());
         when(cfgRepository.findByENTAndEJE(1, "2024")).thenReturn(List.of(cfg));
         when(facRepository.findMaxFACNUMByENTAndEJE(1, "2024")).thenReturn(100);
         when(gbsRepository.findByENTAndEJEAndCGECOD(1, "2024", "CGE001")).thenReturn(List.of(gbs));
