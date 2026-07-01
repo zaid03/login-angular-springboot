@@ -125,32 +125,46 @@ public class TerController {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             }
 
-            List<Ter> saved = new ArrayList<>();
+            List<String> savedNames = new ArrayList<>();
+            List<String> unsavedNames = new ArrayList<>();
+
             for (TerDto dto : dtos) {
-                Ter t = new Ter();
-                t.setENT(ent);
-                t.setTERCOD(next++);
-                t.setTERNOM(dto.getTERNOM());
-                t.setTERALI(dto.getTERALI());
-                t.setTERNIF(dto.getTERNIF());
-                t.setTERDOM(dto.getTERDOM());
-                t.setTERCPO(dto.getTERCPO());
-                t.setTERTEL(dto.getTERTEL());
-                t.setTERFAX(dto.getTERFAX());
-                t.setTERWEB(dto.getTERWEB());
-                t.setTERCOE(dto.getTERCOE());
-                t.setTEROBS(dto.getTEROBS());
-                t.setPROCOD(dto.getPROCOD());
-                t.setTERPOB(dto.getTERPOB());
-                t.setTERAYT(dto.getTERAYT());
-                t.setTERACU(0);
-                t.setTERBLO(0);
-                saved.add(terRepository.save(t));
+                List<Ter> proveedores = terRepository.findAllByENTAndTERNIF(ent, dto.getTERNIF());
+                if (!proveedores.isEmpty()) {
+                    unsavedNames.add(proveedores.get(0).getTERNIF());
+                } else {
+                    Ter t = new Ter();
+                    t.setENT(ent);
+                    t.setTERCOD(next++);
+                    t.setTERNOM(dto.getTERNOM());
+                    t.setTERALI(dto.getTERALI());
+                    t.setTERNIF(dto.getTERNIF());
+                    t.setTERDOM(dto.getTERDOM());
+                    t.setTERCPO(dto.getTERCPO());
+                    t.setTERTEL(dto.getTERTEL());
+                    t.setTERFAX(dto.getTERFAX());
+                    t.setTERWEB(dto.getTERWEB());
+                    t.setTERCOE(dto.getTERCOE());
+                    t.setTEROBS(dto.getTEROBS());
+                    // t.setPROCOD(dto.getPROCOD());
+                    t.setTERPOB(dto.getTERPOB());
+                    t.setTERAYT(dto.getTERAYT());
+                    t.setTERACU(0);
+                    t.setTERBLO(0);
+                    terRepository.save(t);
+
+                    savedNames.add(dto.getTERNIF());
+                }
             }
 
-            return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+            return ResponseEntity.status(HttpStatus.CREATED).body(new NamesResponse(savedNames, unsavedNames));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Server error: " + e.getClass().getSimpleName() + " - " + e.getMessage());
         }
     }
+
+    public record NamesResponse (
+        List<String> savedNames,
+        List<String> unsavedNames
+    ) {}
 }

@@ -523,16 +523,20 @@ export class PersonaComponent {
   services: any = [];
   backupServicesAdd: any = [];
   servicesAddError: string = '';
+  isLoadingServices: boolean = false;
   fetchServicesAdd() {
     if (this.entcod === null || this.eje === null) return;
+    this.isLoadingServices = true;
     this.http.get<any>(`${environment.backendUrl}/api/dep/fetch-services/${this.entcod}/${this.eje}`).subscribe({
       next: (res) => {
+        this.isLoadingServices = false;
         this.services = res;
         this.backupServices = Array.isArray(res) ? [...res] : [];
         this.backupServicesAdd = [...this.backupServices];
         this.pageAdd = 0;
       },
       error: (err) => {
+        this.isLoadingServices = false;
         this.servicesAddError = err.error.error ?? err.error;
       }
     });

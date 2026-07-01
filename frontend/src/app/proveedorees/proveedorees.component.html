@@ -618,7 +618,7 @@
             class="purple-btn" 
             (click)="saveProveedorees()" 
             [ngClass]="{ 'disabled-btn': selectedProveediresFromResults.length === 0 }"
-        >✔
+        >+ Cargar
         </button>
         <button class="red-btn" (click)="closeProveedorModal()">×</button>
     </div>
@@ -724,5 +724,17 @@
                 [disabled]="proveedoresSearchPage + 1 >= proveedoresSearchTotalPages"
             >Siguiente</button>
         </div>
+    </div>
+</div>
+
+<div class="modal-backdrop force" *ngIf="proveedoresMessage"></div>
+<div class="delete-confirm-modal adj" *ngIf="proveedoresMessage">
+    <div class="btns">
+        <button class="red-btn" (click)="closeProveedoresMessages()">✖</button>
+    </div>
+    <div class="saved-details">
+        <p class="p-style" *ngIf="cargarProveedoresError">{{cargarProveedoresError}}</p>
+        <p class="p-style" *ngIf="savedNames.length">Proveedores cargadas: <span class="message-text">{{savedNames}}</span></p>
+        <p class="p-style" *ngIf="unsavedNames.length">Proveedores ya existentes: <span class="message-text">{{unsavedNames}}</span></p>
     </div>
 </div>

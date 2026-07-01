@@ -1036,28 +1036,14 @@ export class ProveedoreesComponent {
     this.limpiarMessages();
   }
 
-  private proveedorExistsInMainList(candidate: any): boolean {
-    const candidateNif = (candidate?.NIF ?? candidate?.TERNIF ?? '').toString().trim().toLowerCase();
-    if (!candidateNif) return false;
-    return (this.proveedores ?? []).some(main =>
-      (main?.ternif ?? '').toString().trim().toLowerCase() === candidateNif
-    );
-  }
-
   guardarMessageProveedor: string = '';
+  cargarProveedoresError: string = '';
   saveProveedorees() {
     this.limpiarMessages();
     const ent = this.entcod;
 
     if (!this.selectedProveediresFromResults || this.selectedProveediresFromResults.length === 0) {
       this.anadirProveedorErrorMessage = 'No hay proveedores seleccionados';
-      return;
-    }
-
-    const uniqueSelections = this.selectedProveediresFromResults.filter(p => !this.proveedorExistsInMainList(p));
-
-    if (uniqueSelections.length === 0) {
-      this.anadirProveedorErrorMessage = 'Todos los proveedores seleccionados ya existen en la lista.';
       return;
     }
 
@@ -1085,21 +1071,32 @@ export class ProveedoreesComponent {
 
     this.isSaving = true;
     this.limpiarMessages();
-    console.log(payload)
-    this.http.post<any[]>(`${environment.backendUrl}/api/ter/save-proveedores/${ent}`, payload, { headers, observe: 'response', responseType: 'text' as 'json' })
-      .subscribe({
-        next: (res) => {
-          this.isSaving = false;
-          const savedCount = Array.isArray(res.body) ? res.body.length : this.selectedProveediresFromResults.length;
-          this.clearSelectedProveedores();
-          this.guardarProveedorIssuccess = true;
-          this.guardarMessageProveedor = `Proveedores guardados correctamente (${savedCount}).`;
-        },
-        error: (err) => {
-          this.isSaving = false;
-          const msg = err.error.error ?? err.error;  
-        }
-      })
+    this.http.post<any>(`${environment.backendUrl}/api/ter/save-proveedores/${ent}`, payload, {headers}).subscribe({
+      next: (res) => {
+        this.isSaving = false;
+        this.savedNames = res.savedNames.join(', ') ?? '';
+        this.unsavedNames = res?.unsavedNames.join(', ') ?? '';
+        this.openProveedoresMessages();
+      },
+      error: (err) => {
+        this.isSaving = false;
+        this.cargarProveedoresError = err.error.error ?? err.error;
+      }
+    })
+  }
+
+  savedNames: string[] = [];
+  unsavedNames: string[] = [];
+  proveedoresMessage: boolean = false;
+  openProveedoresMessages() {
+    this.proveedoresMessage = true;
+  }
+
+  closeProveedoresMessages() {
+    this.limpiarMessages();
+    this.proveedoresMessage = false;
+    this.clearSelectedProveedores();
+    this.closeProveedorModal();
   }
 
   isSaving = false;
@@ -1168,5 +1165,6 @@ export class ProveedoreesComponent {
     this.anadirProveedorErrorMessage = '';
     this.articulosShowError = '';
     this.personaError = '';
+    this.cargarProveedoresError = '';
   }
 }
