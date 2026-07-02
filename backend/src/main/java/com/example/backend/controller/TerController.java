@@ -146,7 +146,7 @@ public class TerController {
                     t.setTERWEB(dto.getTERWEB());
                     t.setTERCOE(dto.getTERCOE());
                     t.setTEROBS(dto.getTEROBS());
-                    // t.setPROCOD(dto.getPROCOD());
+                    t.setPROCOD(dto.getPROCOD());
                     t.setTERPOB(dto.getTERPOB());
                     t.setTERAYT(dto.getTERAYT());
                     t.setTERACU(0);

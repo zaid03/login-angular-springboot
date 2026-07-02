@@ -1152,7 +1152,6 @@ export class FacturasComponent {
     this.isAddingFactura = true;
     this.http.post<any>(`${environment.backendUrl}/api/fac/add-facturas`, payload).subscribe({
       next: (res) => {
-        console.log(res);
         this.isAddingFactura = false;
         this.openFacturaMessages();
         this.savedNames = res.savedNames;

@@ -1059,7 +1059,7 @@ export class ProveedoreesComponent {
       TERWEB: p.TERWEB ?? '',
       TERCOE: p.TERCOE ?? '',
       TEROBS: p.TEROBS ?? '',
-      PROCOD: p.PROCOD ?? '',
+      PROCOD: (p.TERCPO ?? '').slice(0, 2),
       TERPOB: p.TERPOB ?? '',
       TERAYT: p.TERAYT ?? ''
     }));
