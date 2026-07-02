@@ -75,7 +75,7 @@ public class FacturaSearch {
             if (criteria.mainFilter != null && !criteria.mainFilter.isEmpty()) {
                 if (isNumbersOnly(criteria.mainFilter)) {
                     if (criteria.mainFilter.length() <= 5) {
-                        facturas = filterByTercod(facturas, criteria.mainFilter);
+                        facturas = filterByTercodOrFacfac(facturas, criteria.mainFilter);
                     } else {
                         facturas = filterByTernifOrFacado(facturas, criteria.mainFilter);
                     }
@@ -138,12 +138,13 @@ public class FacturaSearch {
     private boolean isNumbersOnly(String text) {return text.matches("^[0-9]+$");}
     private boolean isMixed(String text) {return !isNumbersOnly(text);}
 
-    private List<FacWithTerProjection> filterByTercod (
+    private List<FacWithTerProjection> filterByTercodOrFacfac (
         List<FacWithTerProjection> facturas, 
         String main_filter
     ) {
         return facturas.stream().filter(f -> 
-            (f.getTERCOD() != null && f.getTERCOD().toString().equals(main_filter))
+            (f.getTERCOD() != null && f.getTERCOD().toString().equals(main_filter)) ||
+            (f.getFACFAC() != null && f.getFACFAC().toString().equals(main_filter))
         ).toList();
     }
     private List<FacWithTerProjection> filterByTernifOrFacado (

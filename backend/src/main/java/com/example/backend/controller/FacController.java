@@ -115,7 +115,7 @@ public class FacController {
     }
 
     //modifying a factura
-    public record facturaUpdate(String FACOBS, String CONCTP, String CONCPR, String CONCCR, LocalDateTime FACFRE, String FACFPG, String FACOPG, String FACTPG, Integer FACOCT) {}
+    public record facturaUpdate(String FACOBS, String CONCTP, String CONCPR, String CONCCR, String FACFPG, String FACOPG, String FACTPG, Integer FACOCT) {}
     @PatchMapping("/update-factura/{ent}/{eje}/{facnum}")
     public ResponseEntity<?> updateFactura(
         @PathVariable Integer ent,
@@ -140,7 +140,6 @@ public class FacController {
             factura.setCONCTP(payload.CONCTP());
             factura.setCONCPR(payload.CONCPR());
             factura.setCONCCR(payload.CONCCR());
-            factura.setFACFRE(payload.FACFRE());
             factura.setFACFPG(payload.FACFPG());
             factura.setFACOPG(payload.FACOPG());
             factura.setFACTPG(payload.FACTPG());

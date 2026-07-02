@@ -464,7 +464,7 @@ export class ConsultaFacturaComponent {
   filterFacturaMessage: string = '';
   
   fechaTipo: 'registro' | 'factura' | 'contable' | 'Fecha' | '' = '';
-  estadoTipo: 'contabilizadas' | 'noContabilizadas' | 'ptApplidas' | 'sinPtApplicar' | '' = 'noContabilizadas';
+  estadoTipo: 'contabilizadas' | 'noContabilizadas' | 'ptApplidas' | 'sinPtApplicar' | '' = '';
   fromDate: string = '';
   toDate: string = '';
   facturaSearch: string = '';

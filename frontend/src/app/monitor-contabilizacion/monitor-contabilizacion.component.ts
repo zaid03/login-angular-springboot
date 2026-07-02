@@ -91,7 +91,7 @@ export class MonitorContabilizacionComponent {
     this.limpiarMEssages();
     this.isLoading = true;
 
-    this.http.get<any>(`http://localhost:8080/scap/api/fac/contabilizacion/search?ent=${this.entcod}&eje=${this.eje}&cgecod=${this.centroGestor}`).subscribe({
+    this.http.get<any>(`${environment.backendUrl}/api/fac/contabilizacion/search?ent=${this.entcod}&eje=${this.eje}&cgecod=${this.centroGestor}`).subscribe({
       next: (res) => {
         this.isLoading = false;
         this.page = 0;

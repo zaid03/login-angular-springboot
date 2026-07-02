@@ -29,9 +29,10 @@
 .chunk-four,
 .chunk-five,
 .chunk-six { width: 32%; display: flex; padding: 2px; }
-.left { width: 30%; display: flex; flex-direction: column; gap: 10px; }
-.right { width: 70%; display: flex; flex-direction: column; gap: 12px;}
-.gap {gap: 15px !important;}
+.left { width: 30%; display: flex; flex-direction: column; gap: 10px;}
+.right { width: 70%; display: flex; flex-direction: column; gap: 13px;}
+.gap {gap: 16px !important;}
+.gap2 {gap: 14px !important;}
 .special-needs {width: 50%;}
 .on-three,
 .on-two { display: flex; gap: 10px; align-items: center;}
@@ -45,12 +46,11 @@
 .tallTextarea {width: 220px; max-width: 240px;}
 .averageTextarea{ width: 100px; max-width: 160px;}
 .averageSecond {width: 160px; max-width: 290px;}
+.averageThird {width: 220px; max-width: 260px;}
 .smallTextarea{width: 60px; max-width: 100px;}
 .pagoSmallWidth {width: 45px !important; min-width: 10px !important; max-width: 50px;}
 .observ { width: 50%; display: flex; gap: 5px; align-items: center;}
 .observ textarea { width: 90%; max-width: 100%; height: 40px;}
-.gap {gap: 20px;}
-.moreGap {gap: 25px}
 .pagoFix {margin-left: 14px;}
 .input-style {border: 1px solid grey; width: 90px;}
 /* main-detail grid */
@@ -67,7 +67,7 @@
 /* sub detail grids */
 /* cargar facturas */
 .factura-cargar { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 16px; box-shadow: 0 8px 32px rgba(44, 62, 80, 0.18), 0 1.5px 6px rgba(44,62,80,0.08); padding: 25px 30px; min-width: 85%; min-height: 120px; max-height: 80vh; z-index: 3000; display: flex; flex-direction: column; align-items: center;}
-.factura-cargar .title {width: 50%;}
+.factura-cargar .title {width: 50%; display: flex; justify-content: center;}
 .info-D {display: flex; width: 100%; gap: 10px; justify-content: center; margin: 10px;}
 .info-content {display: flex; align-items: center; width: 30%; gap: 10px;}
 .art-title {width: 25%; font-size: 23px;}
