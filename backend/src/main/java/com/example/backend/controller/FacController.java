@@ -63,6 +63,25 @@ public class FacController {
         }
     }
 
+    //same but for gestion
+    @GetMapping("/noCont/{ent}/{eje}/{cgecod}")
+    public ResponseEntity<?> getFacturasNoCont(
+        @PathVariable Integer ent,
+        @PathVariable String eje,
+        @PathVariable String cgecod
+    ) {
+        try {
+            List<FacWithTerProjection> facturas = facRepository.findByENTAndEJEAndCGECODAndFACADOIsNullOrderByFACFREAsc(ent, eje, cgecod);
+            if (facturas.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
+            }
+            
+            return ResponseEntity.ok(facturas);
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ERROR + ex.getMostSpecificCause().getMessage());
+        }
+    }
+
     //search in gestion de factura
     @GetMapping("/search-factura")
     public ResponseEntity<?> searchFacturas (

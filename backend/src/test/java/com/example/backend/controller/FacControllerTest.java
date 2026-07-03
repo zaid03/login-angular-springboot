@@ -860,4 +860,56 @@ public class FacControllerTest {
             .andDo(print())
             .andExpect(status().isOk());
     }
+
+    @Test
+    void getFacturasNoCont_returns200WithDto() throws Exception {
+        FacWithTerProjectionImpl projection = new FacWithTerProjectionImpl();
+        projection.ent = 1;
+        projection.eje = "E1";
+        projection.facnum = 321;
+        projection.tercod = 2;
+        projection.cgecod = "C1";
+        projection.facobs = "OBS-NOCONT";
+        projection.facimp = 150.0;
+        projection.facado = null;
+        projection.terNom = "Proveedor NC";
+        projection.terNif = "NIF999";
+
+        when(facRepository.findByENTAndEJEAndCGECODAndFACADOIsNullOrderByFACFREAsc(1, "E1", "C1"))
+            .thenReturn(List.of(projection));
+
+        mockMvc.perform(get("/api/fac/noCont/1/E1/C1")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(1)))
+            .andExpect(jsonPath("$[0].facnum", is(321)))
+            .andExpect(jsonPath("$[0].ter_TERNOM", is("Proveedor NC")));
+
+        verify(facRepository).findByENTAndEJEAndCGECODAndFACADOIsNullOrderByFACFREAsc(1, "E1", "C1");
+    }
+
+    @Test
+    void getFacturasNoCont_returnsNotFoundWhenEmpty() throws Exception {
+        when(facRepository.findByENTAndEJEAndCGECODAndFACADOIsNullOrderByFACFREAsc(1, "E1", "C1"))
+            .thenReturn(List.of());
+
+        mockMvc.perform(get("/api/fac/noCont/1/E1/C1")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(content().string(containsString("Sin resultado")));
+    }
+
+    @Test
+    void getFacturasNoCont_returnsBadRequestOnDataAccessException() throws Exception {
+        when(facRepository.findByENTAndEJEAndCGECODAndFACADOIsNullOrderByFACFREAsc(anyInt(), anyString(), anyString()))
+            .thenThrow(new DataAccessResourceFailureException("DB down"));
+
+        mockMvc.perform(get("/api/fac/noCont/1/E1/C1")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Error :")));
+    }
 }

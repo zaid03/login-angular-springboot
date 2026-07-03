@@ -95,7 +95,7 @@ export class FacturasComponent {
 
   fetchFacturas() {
     this.isLoading = true;
-    this.http.get<any>(`${environment.backendUrl}/api/fac/${this.entcod}/${this.eje}/${this.centroGestor}`).subscribe({
+    this.http.get<any>(`${environment.backendUrl}/api/fac/noCont/${this.entcod}/${this.eje}/${this.centroGestor}`).subscribe({
       next: (response) => {
         if (!Array.isArray(response) || response.length === 0) {
           this.facturaMessageIsSuccess = true;
