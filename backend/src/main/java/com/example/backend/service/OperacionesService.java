@@ -60,32 +60,76 @@ public class OperacionesService {
         public final String numeroOperHasta;
         public final String codigoOperacion;
         public final String signo;
+        public final String areaGestora;
         public final String fase;
+        public final String fechaOperDesde;
+        public final String fechaOperHasta;
         public final String tercero;
+        public final String ascendente;
+        public final String referencia;
         public final String organica;
         public final String funcional;
         public final String economica;
+        public final String importeDesde;
+        public final String importeHasta;
         public final String expediente;
         public final String grupoApunte; 
         public final String oficina;
+        public final String fechaArqueo;
+        public final String ordinal;
+        public final String codterr;
+        public final String pActMun;
+        public final String ejeapli;
+        public final String tipContrato;
+        public final String proContrato;
+        public final String criContrato;
+        public final String tipoRelacion;
+        public final String annoRelacion;
+        public final String ordenRelacion;
+        public final String solosaldo;
+        public final String nlinea;
         public final String indice;
         public final Integer numRegDev;
+        public final String expedienteElectronico;
+        public final String desdetalle;
 
         private SearchCriteria(Builder builder) {
             this.numeroOperDesde = builder.numeroOperDesde;
             this.numeroOperHasta = builder.numeroOperHasta;
             this.codigoOperacion = builder.codigoOperacion;
             this.signo = builder.signo;
+            this.areaGestora = builder.areaGestora;
             this.fase = builder.fase;
+            this.fechaOperDesde = builder.fechaOperDesde;
+            this.fechaOperHasta = builder.fechaOperHasta;
             this.tercero = builder.tercero;
+            this.ascendente = builder.ascendente;
+            this.referencia = builder.referencia;
             this.organica = builder.organica;
             this.funcional = builder.funcional;
             this.economica = builder.economica;
+            this.importeDesde = builder.importeDesde;
+            this.importeHasta = builder.importeHasta;
             this.expediente = builder.expediente;
             this.grupoApunte = builder.grupoApunte;
             this.oficina = builder.oficina;
+            this.fechaArqueo = builder.fechaArqueo;
+            this.ordinal = builder.ordinal;
+            this.codterr = builder.codterr;
+            this.pActMun = builder.pActMun;
+            this.ejeapli = builder.ejeapli;
+            this.tipContrato = builder.tipContrato;
+            this.proContrato = builder.proContrato;
+            this.criContrato = builder.criContrato;
+            this.tipoRelacion = builder.tipoRelacion;
+            this.annoRelacion = builder.annoRelacion;
+            this.ordenRelacion = builder.ordenRelacion;
+            this.solosaldo = builder.solosaldo;
+            this.nlinea = builder.nlinea;
             this.indice = builder.indice;
             this.numRegDev = builder.numRegDev;
+            this.expedienteElectronico = builder.expedienteElectronico;
+            this.desdetalle = builder.desdetalle;
         }
 
         public static class Builder {
@@ -93,16 +137,38 @@ public class OperacionesService {
             private String numeroOperHasta;
             private String codigoOperacion;
             private String signo;
+            private String areaGestora;
             private String fase;
+            private String fechaOperDesde;
+            private String fechaOperHasta;
             private String tercero;
+            private String ascendente;
+            private String referencia;
             private String organica;
             private String funcional;
             private String economica;
+            private String importeDesde;
+            private String importeHasta;
             private String expediente;
             private String grupoApunte;
             private String oficina;
+            private String fechaArqueo;
+            private String ordinal;
+            private String codterr;
+            private String pActMun;
+            private String ejeapli;
+            private String tipContrato;
+            private String proContrato;
+            private String criContrato;
+            private String tipoRelacion;
+            private String annoRelacion;
+            private String ordenRelacion;
+            private String solosaldo;
+            private String nlinea;
             private String indice;
             private Integer numRegDev;
+            private String expedienteElectronico;
+            private String desdetalle;
 
             public Builder numeroOperDesde(String numeroOperDesde) {
                 this.numeroOperDesde = numeroOperDesde;
@@ -124,13 +190,38 @@ public class OperacionesService {
                 return this;
             }
 
+            public Builder areaGestora(String areaGestora) {
+                this.areaGestora = areaGestora;
+                return this;
+            }
+
             public Builder fase(String fase) {
                 this.fase = fase;
                 return this;
             }
 
+            public Builder fechaOperDesde(String fechaOperDesde) {
+                this.fechaOperDesde = fechaOperDesde;
+                return this;
+            }
+
+            public Builder fechaOperHasta(String fechaOperHasta) {
+                this.fechaOperHasta = fechaOperHasta;
+                return this;
+            }
+
             public Builder tercero(String tercero) {
                 this.tercero = tercero;
+                return this;
+            }
+
+            public Builder ascendente(String ascendente) {
+                this.ascendente = ascendente;
+                return this;
+            }
+
+            public Builder referencia(String referencia) {
+                this.referencia = referencia;
                 return this;
             }
 
@@ -149,6 +240,16 @@ public class OperacionesService {
                 return this;
             }
 
+            public Builder importeDesde(String importeDesde) {
+                this.importeDesde = importeDesde;
+                return this;
+            }
+
+            public Builder importeHasta(String importeHasta) {
+                this.importeHasta = importeHasta;
+                return this;
+            }
+
             public Builder expediente(String expediente) {
                 this.expediente = expediente;
                 return this;
@@ -164,6 +265,71 @@ public class OperacionesService {
                 return this;
             }
 
+            public Builder fechaArqueo(String fechaArqueo) {
+                this.fechaArqueo = fechaArqueo;
+                return this;
+            }
+
+            public Builder ordinal(String ordinal) {
+                this.ordinal = ordinal;
+                return this;
+            }
+
+            public Builder codterr(String codterr) {
+                this.codterr = codterr;
+                return this;
+            }
+
+            public Builder pActMun(String pActMun) {
+                this.pActMun = pActMun;
+                return this;
+            }
+
+            public Builder ejeapli(String ejeapli) {
+                this.ejeapli = ejeapli;
+                return this;
+            }
+
+            public Builder tipContrato(String tipContrato) {
+                this.tipContrato = tipContrato;
+                return this;
+            }
+
+            public Builder proContrato(String proContrato) {
+                this.proContrato = proContrato;
+                return this;
+            }
+
+            public Builder criContrato(String criContrato) {
+                this.criContrato = criContrato;
+                return this;
+            }
+
+            public Builder tipoRelacion(String tipoRelacion) {
+                this.tipoRelacion = tipoRelacion;
+                return this;
+            }
+
+            public Builder annoRelacion(String annoRelacion) {
+                this.annoRelacion = annoRelacion;
+                return this;
+            }
+
+            public Builder ordenRelacion(String ordenRelacion) {
+                this.ordenRelacion = ordenRelacion;
+                return this;
+            }
+
+            public Builder solosaldo(String solosaldo) {
+                this.solosaldo = solosaldo;
+                return this;
+            }
+
+            public Builder nlinea(String nlinea) {
+                this.nlinea = nlinea;
+                return this;
+            }
+
             public Builder indice(String indice) {
                 this.indice = indice;
                 return this;
@@ -171,6 +337,16 @@ public class OperacionesService {
 
             public Builder numRegDev(Integer numRegDev) {
                 this.numRegDev = numRegDev;
+                return this;
+            }
+
+            public Builder expedienteElectronico(String expedienteElectronico) {
+                this.expedienteElectronico = expedienteElectronico;
+                return this;
+            }
+
+            public Builder desdetalle(String desdetalle) {
+                this.desdetalle = desdetalle;
                 return this;
             }
 
@@ -188,24 +364,48 @@ public class OperacionesService {
                 String token = sec.token;
                 String tokenSha1 = CryptoSical.encodeSha1Base64(sec.origin);
 
-                String filtroXml =
-                    "<filtro>" +
-                    (criteria.numeroOperDesde != null ? "<numeroOperDesde>" + criteria.numeroOperDesde + "</numeroOperDesde>" : "") +
-                    (criteria.numeroOperHasta != null ? "<numeroOperHasta>" + criteria.numeroOperHasta + "</numeroOperHasta>" : "") +
-                    (criteria.codigoOperacion != null ? "<codigoOperacion>" + CryptoSical.encodeBase64(criteria.codigoOperacion) + "</codigoOperacion>" : "") +
-                    (criteria.organica != null ? "<organica>" + CryptoSical.encodeBase64(criteria.organica) + "</organica>" : "") +
-                    (criteria.funcional != null ? "<funcional>" + CryptoSical.encodeBase64(criteria.funcional) + "</funcional>" : "") +
-                    (criteria.economica != null ? "<economica>" + CryptoSical.encodeBase64(criteria.economica) + "</economica>" : "") +
-                    (criteria.expediente != null ? "<expediente>" + CryptoSical.encodeBase64(criteria.expediente) + "</expediente>" : "") +
-                    (criteria.grupoApunte != null ? "<grupoApunte>" + CryptoSical.encodeBase64(criteria.grupoApunte) + "</grupoApunte>" : "") +
-                    (criteria.oficina != null ? "<oficina>" + CryptoSical.encodeBase64(criteria.oficina) + "</oficina>" : "") +
-                    (criteria.indice != null ? "<indice>" + criteria.indice + "</indice>" : "") +
-                    "<NumRegDev>" + (criteria.numRegDev != null ? criteria.numRegDev : 50) + "</NumRegDev>" +
-                    "</filtro>";
+                StringBuilder filtro = new StringBuilder("<filtro>");
+                appendRawTag(filtro, "numeroOperDesde", criteria.numeroOperDesde);
+                appendRawTag(filtro, "numeroOperHasta", criteria.numeroOperHasta);
+                appendB64Tag(filtro, "codigoOperacion", criteria.codigoOperacion);
+                appendRawTag(filtro, "signo", criteria.signo);
+                appendB64Tag(filtro, "areaGestora", criteria.areaGestora);
+                appendB64Tag(filtro, "fase", criteria.fase);
+                appendRawTag(filtro, "fechaOperDesde", criteria.fechaOperDesde);
+                appendRawTag(filtro, "fechaOperHasta", criteria.fechaOperHasta);
+                appendB64Tag(filtro, "tercero", criteria.tercero);
+                appendRawTag(filtro, "ascendente", criteria.ascendente);
+                appendRawTag(filtro, "referencia", criteria.referencia);
+                appendB64Tag(filtro, "organica", criteria.organica);
+                appendB64Tag(filtro, "funcional", criteria.funcional);
+                appendB64Tag(filtro, "economica", criteria.economica);
+                appendRawTag(filtro, "importeDesde", criteria.importeDesde);
+                appendRawTag(filtro, "importeHasta", criteria.importeHasta);
+                appendB64Tag(filtro, "expediente", criteria.expediente);
+                appendB64Tag(filtro, "grupoApunte", criteria.grupoApunte);
+                appendB64Tag(filtro, "oficina", criteria.oficina);
+                appendRawTag(filtro, "fechaArqueo", criteria.fechaArqueo);
+                appendRawTag(filtro, "ordinal", criteria.ordinal);
+                appendB64Tag(filtro, "codterr", criteria.codterr);
+                appendB64Tag(filtro, "PActMun", criteria.pActMun);
+                appendRawTag(filtro, "ejeapli", criteria.ejeapli);
+                appendB64Tag(filtro, "tipContrato", criteria.tipContrato);
+                appendB64Tag(filtro, "proContrato", criteria.proContrato);
+                appendB64Tag(filtro, "criContrato", criteria.criContrato);
+                appendB64Tag(filtro, "TipoRelacion", criteria.tipoRelacion);
+                appendRawTag(filtro, "AnnoRelacion", criteria.annoRelacion);
+                appendRawTag(filtro, "OrdenRelacion", criteria.ordenRelacion);
+                appendB64Tag(filtro, "solosaldo", criteria.solosaldo);
+                appendRawTag(filtro, "nlinea", criteria.nlinea);
+                appendRawTag(filtro, "indice", criteria.indice);
+                appendRawTag(filtro, "NumRegDev", criteria.numRegDev != null ? String.valueOf(criteria.numRegDev) : "50");
+                appendB64Tag(filtro, "ExpedienteElectronico", criteria.expedienteElectronico);
+                filtro.append("</filtro>");
+                String filtroXml = filtro.toString();
 
                 String xml =
                     "<e>" +
-                    "<ope><apl>SNP</apl><tobj>ConOpeGastosPrev</tobj><cmd>LST</cmd><ver>2.0</ver></ope>" +
+                    "<ope><apl>SNP</apl><tobj>ConOpeGastos</tobj><cmd>LST</cmd><ver>2.0</ver></ope>" +
                     "<sec>" +
                     "<cli>SAGE-AYTOS</cli>" +
                     "<org>" + orgCode + "</org>" +
@@ -219,7 +419,7 @@ public class OperacionesService {
                     "<tokenSha1>" + tokenSha1 + "</tokenSha1>" +
                     "</sec>" +
                     "<par>" +
-                    "<desdetalle>S</desdetalle>" +
+                    "<desdetalle>" + (normalize(criteria.desdetalle) != null ? normalize(criteria.desdetalle) : "S") + "</desdetalle>" +
                     filtroXml +
                     "</par>" +
                     "</e>";
@@ -271,7 +471,9 @@ public class OperacionesService {
         
         try {
             Document doc = parseXmlDocument(sml);
-            validateAndThrowIfError(doc);
+            if (validateAndThrowIfError(doc)) {
+                return result;
+            }
             
             NodeList operNodes = doc.getElementsByTagName("operacion");
             for (int i = 0; i < operNodes.getLength(); i++) {
@@ -332,15 +534,15 @@ public class OperacionesService {
         }
     }
     
-    private void validateAndThrowIfError(Document doc) throws SmlProcessingException {
+    private boolean validateAndThrowIfError(Document doc) throws SmlProcessingException {
         NodeList exitoNodes = doc.getElementsByTagName("exito");
         if (exitoNodes.getLength() == 0) {
-            return;
+            return false;
         }
         
         String exito = exitoNodes.item(0).getTextContent();
         if ("-1".equals(exito) || "1".equals(exito)) {
-            return;
+            return false;
         }
         
         String desc = "";
@@ -348,7 +550,36 @@ public class OperacionesService {
         if (descNodes.getLength() > 0) {
             desc = descNodes.item(0).getTextContent();
         }
+        if (desc != null && desc.toLowerCase().contains("no hay datos")) {
+            return true;
+        }
         throw new SmlProcessingException("SICAL error: " + desc);
+    }
+
+    private String normalize(String value) {
+        if (value == null) {
+            return null;
+        }
+        String trimmed = value.trim();
+        return trimmed.isEmpty() ? null : trimmed;
+    }
+
+    private void appendRawTag(StringBuilder sb, String tagName, String value) {
+        String normalized = normalize(value);
+        if (normalized != null) {
+            sb.append("<").append(tagName).append(">")
+              .append(normalized)
+              .append("</").append(tagName).append(">");
+        }
+    }
+
+    private void appendB64Tag(StringBuilder sb, String tagName, String value) {
+        String normalized = normalize(value);
+        if (normalized != null) {
+            sb.append("<").append(tagName).append(">")
+              .append(CryptoSical.encodeBase64(normalized))
+              .append("</").append(tagName).append(">");
+        }
     }
     
     private Operaciones createOperacionFromElement(Element opEl) {
@@ -389,7 +620,11 @@ public class OperacionesService {
         op.setTipContrato(decodeOrNull(getTagValue(opEl, "tipContrato")));
         op.setProContrato(decodeOrNull(getTagValue(opEl, "proContrato")));
         op.setCriContrato(decodeOrNull(getTagValue(opEl, "criContrato")));
-        op.setNExpElec(decodeOrNull(getTagValue(opEl, "NExpElec")));
+        String nExpElec = getTagValue(opEl, "nExpElec");
+        if (nExpElec == null) {
+            nExpElec = getTagValue(opEl, "NExpElec");
+        }
+        op.setNExpElec(decodeOrNull(nExpElec));
         
         op.setDtoList(parseDtoList(opEl));
         op.setIvaList(parseIvaList(opEl));
