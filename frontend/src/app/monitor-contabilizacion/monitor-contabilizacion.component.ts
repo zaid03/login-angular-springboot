@@ -661,10 +661,9 @@ export class MonitorContabilizacionComponent {
       this.filterFacturaMessage = `${fallidas} factura(s) con errores`;
     }
 
+    this.openMonitorMessages();
     const successFacnums = this.contabilizarResults.filter(r => r.success).map(r => r.facnum);
     this.caughtFacturas = this.caughtFacturas.filter(f => !successFacnums.includes(f.facnum));
-
-    this.fetchFacturas();
   }
 
   filterfacturaSuccess: string = '';
@@ -728,6 +727,17 @@ export class MonitorContabilizacionComponent {
     });
   }
 
+  monitoresMessage: boolean = false;
+  openMonitorMessages() {
+    this.monitoresMessage = true;
+  }
+
+  closeMonitoresMessages() {
+    this.limpiarMEssages();
+    this.caughtFacturas = [];
+    this.monitoresMessage = false;
+    this.fetchFacturas();
+  }
   updateFactura(facnum: number, facado: any, facfco: string) {
     return new Promise<void>((resolve, reject) => {
       const payload = {
