@@ -217,157 +217,215 @@
                         <button class="red-btn" (click)="closeDetails()">✖</button>
                     </div>
                     <div class="detail-container">
-                        <div class="chunk-one">
-                            <div class="left">
-                                <p class="p-style">Núm. Reg:</p>
-                                <p class="p-style">Núm.Factura:</p>
-                                <p class="p-style">R.C.F:</p>
-                            </div>
-                            <div class="right gap">
-                                <div class="on-two">
+                        <table class="details-table" >
+                            <tr>
+                                <td>
+                                    <p class="p-style">Núm. Reg:</p>
+                                </td>
+                                <td>
                                     <h1 class="h1-style">{{selectedFacturas.facnum}}</h1>
-                                    <p class="p-style">F.Contable:</p>
-                                    <h1 class="h1-style">{{selectedFacturas.facfco | date:'dd-MM-yyyy'}}</h1>
-                                </div>
-                                <h1 class="h1-style">{{selectedFacturas.facdoc}}</h1>
-                                <div class="on-two">
-                                    <h1 class="h1-style">{{selectedFacturas.facfac}}</h1>
-                                    <h1 class="h1-style">{{selectedFacturas.facann}}</h1>
-                                    <h1 class="h1-style">{{selectedFacturas.factdc}}</h1>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="chunk-two">
-                            <div class="left">
-                                <p class="p-style">Proveedor:</p>
-                                <p class="p-style">NIF:</p>
-                                <p class="p-style">Fecha Factura:</p>
-                            </div>
-                            <div class="right">
-                                <div class="on-two">
-                                    <h1 class="h1-style">{{selectedFacturas.tercod}}</h1>
-                                    <h1 class="h1-style">{{selectedFacturas.ter_TERNOM}}</h1>
-                                </div>
-                                <div class="on-two">
+                                </td>
+                                <td>
+                                    <p class="p-style">Proveedor:</p>
+                                </td>
+                                <td>
+                                    <div class="cell-content">
+                                        <h1 class="h1-style">{{selectedFacturas.tercod}}</h1>
+                                        <h1 class="h1-style">{{selectedFacturas.ter_TERNOM}}</h1>
+                                    </div>
+                                </td>
+                                <td>
+                                    <p class="p-style">NIF:</p>
+                                </td>
+                                <td>
                                     <h1 class="h1-style">{{selectedFacturas.ter_TERNIF}}</h1>
-                                    <p class="p-style">C.Gestor:</p>
-                                    <h1 class="h1-style">{{selectedFacturas.cgecod}}</h1>
-                                </div>
-                                <div class="on-two">
-                                    <h1 class="h1-style">{{selectedFacturas.facdat | date:'dd-MM-yyyy'}}</h1>
-                                    <p class="p-style">F.Registro:</p>
-                                    <h1 class="h1-style">{{selectedFacturas.facfre | date:'dd-MM-yyyy'}}</h1>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="chunk-three special-chunk">
-                            <div class="left special-needs gap">
-                                <p class="p-style">Tipo de contrato:</p>
-                                <p class="p-style">Criterio de puntuación:</p>
-                                <p class="p-style">Procedimiento de contacto:</p>
-                            </div>
-                            <div class="right gap">
-                                <textarea 
-                                    class="textArea-style averageSecond" 
-                                    [(ngModel)]="selectedFacturas.conctp"
+                                </td>
+                                <td>
+                                    <p class="p-style">Total Factura:</p>
+                                </td>
+                                <td>
+                                    <h1 class="h1-style">{{selectedFacturas.facimp | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</h1>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <p class="p-style">Núm.Factura:</p>
+                                </td>
+                                <td>
+                                    <h1 class="h1-style">{{selectedFacturas.facdoc}}</h1>
+                                </td>
+                                <td>
+                                    <p class="p-style">Des.Fact/ADO:</p>
+                                </td>
+                                <td>
+                                    <textarea 
+                                    class="textArea-style averageThird" 
+                                    [(ngModel)]="selectedFacturas.factxt"
                                     disabled
-                                ></textarea>
-                                <textarea 
-                                    class="textArea-style averageSecond" 
-                                    [(ngModel)]="selectedFacturas.concpr"
-                                    disabled
-                                ></textarea>
-                                <textarea 
-                                    class="textArea-style averageSecond" 
-                                    [(ngModel)]="selectedFacturas.conccr"
-                                    disabled
-                                ></textarea>
-                            </div>
-                        </div>
-                        <div class="chunk-four">
-                            <div class="left">
-                                <p class="p-style">Forma de pago:</p>
-                                <p class="p-style">Ordinal de pago:</p>     
-                            </div>
-                            <div class="right">
-                                <div class="on-two">
+                                    ></textarea>
+                                </td>
+                                <td>
+                                    <p class="p-style">Forma de pago:</p>
+                                </td>
+                                <td>
                                     <textarea 
                                         class="textArea-style pagoSmallWidth" 
                                         [(ngModel)]="selectedFacturas.facfpg"
                                         disabled
                                     ></textarea>
-                                    <p class="p-style">Tipo de pago:</p>
+                                </td>
+                                <td>
+                                    <p class="p-style">Aplicado:</p>
+                                </td>
+                                <td>
+                                    <h1 class="h1-style">{{selectedFacturas.faciec | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</h1>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <p class="p-style">R.C.F:</p>
+                                </td>
+                                <td>
+                                    <div class="cell-content">
+                                        <h1 class="h1-style">{{ selectedFacturas.facfac }}-</h1>
+                                        <h1 class="h1-style">{{ selectedFacturas.facann }}-</h1>
+                                        <h1 class="h1-style">{{ selectedFacturas.factdc }}</h1>
+                                    </div>
+                                </td>
+                                <td>
+                                    <p class="p-style">Tipo de contrato:</p>
+                                </td>
+                                <td>
                                     <textarea 
-                                        class="textArea-style pagoSmallWidth pagoFix" 
-                                        [(ngModel)]="selectedFacturas.factpg"
-                                        disabled
+                                    class="textArea-style averageThird" 
+                                    [(ngModel)]="selectedFacturas.conctp"
+                                    disabled
                                     ></textarea>
-                                </div>
-                                <div class="on-two">
+                                </td>
+                                <td>
+                                    <p class="p-style">Ordinal de pago:</p>
+                                </td>
+                                <td>
                                     <textarea 
                                         class="textArea-style pagoSmallWidth" 
                                         [(ngModel)]="selectedFacturas.facopg"
                                         disabled
                                     ></textarea>
+                                </td>
+                                <td>
+                                    <p class="p-style">Apl.diferencias:</p>
+                                </td>
+                                <td>
+                                    <h1 class="h1-style">{{selectedFacturas.facidi | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</h1>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <p class="p-style">Fecha Factura:</p>
+                                </td>
+                                <td>
+                                    <h1 class="h1-style">{{selectedFacturas.facdat | date:'dd-MM-yyyy'}}</h1>
+                                </td>
+                                <td>
+                                    <p class="p-style">Criterio de puntuación:</p>
+                                </td>
+                                <td>
+                                    <textarea 
+                                    class="textArea-style averageThird" 
+                                    [(ngModel)]="selectedFacturas.concpr"
+                                    disabled
+                                    ></textarea>
+                                </td>
+                                <td>
+                                    <p class="p-style">Tipo de pago:</p>
+                                </td>
+                                <td>
+                                    <textarea 
+                                        class="textArea-style pagoSmallWidth pagoFix" 
+                                        [(ngModel)]="selectedFacturas.factpg"
+                                        disabled
+                                    ></textarea>
+                                </td>
+                                <td>
+                                    <p class="p-style">Pte.Aplicar:</p>
+                                </td>
+                                <td>
+                                    <h1 class="h1-style">{{getPendingApply(selectedFacturas) | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</h1>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <p class="p-style">F.Registro:</p>
+                                </td>
+                                <td>
+                                    <h1 class="h1-style">{{selectedFacturas.facfre | date:'dd-MM-yyyy'}}</h1>
+                                </td>
+                                <td>
+                                    <p class="p-style">Procedimiento de contacto:</p>
+                                </td>
+                                <td>
+                                    <textarea 
+                                    class="textArea-style averageThird" 
+                                    [(ngModel)]="selectedFacturas.conccr"
+                                    disabled
+                                    ></textarea>
+                                </td>
+                                <td>
                                     <p class="p-style">Cuenta Tercero:</p>
+                                </td>
+                                <td>
                                     <textarea 
                                         class="textArea-style pagoSmallWidth" 
                                         [(ngModel)]="selectedFacturas.facoct"
                                         disabled
                                     ></textarea>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="chunk-five">
-                            <div class="left gap">
-                                <p class="p-style">ADO:</p>
-                                <p class="p-style">Des.Fact/ADO:</p>
-                            </div>
-                            <div class="right">
-                                <textarea 
+                                </td>
+                                <td>
+                                    <p class="p-style">Descuentos:</p>
+                                </td>
+                                <td>
+                                    <h1 class="h1-style">{{selectedFacturas.facdto | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</h1>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <p class="p-style">C.Gestor:</p>
+                                </td>
+                                <td>
+                                    <h1 class="h1-style">{{selectedFacturas.cgecod}}</h1>
+                                </td>
+                                <td>
+                                    <p class="p-style">ADO:</p>
+                                </td>
+                                <td>
+                                    <textarea 
                                     class="textArea-style averageThird" 
                                     [(ngModel)]="selectedFacturas.facado"
                                     disabled
-                                ></textarea>
+                                    ></textarea>
+                                </td>
+                                <td>
+                                    <p class="p-style">F.Contable:</p>
+                                </td>
+                                <td>
+                                    <h1 class="h1-style">{{selectedFacturas.facfco | date:'dd-MM-yyyy'}}</h1>
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="wrapper">
+                            <div class="observ">
+                                <p class="p-style">Observaciones:</p>
                                 <textarea 
-                                    class="textArea-style averageThird" 
-                                    [(ngModel)]="selectedFacturas.factxt"
+                                    class="textArea-style"
+                                    [(ngModel)]="selectedFacturas.facobs"
                                     disabled
                                 ></textarea>
                             </div>
                         </div>
-                        <div class="chunk-six">
-                            <div class="left gap2">
-                                <p class="p-style">Total Factura:</p>
-                                <p class="p-style">Apl.diferencias:</p>
-                                <p class="p-style">Descuentos:</p>
-                            </div>
-                            <div class="right gap">
-                                <div class="on-two">
-                                    <h1 class="h1-style">{{selectedFacturas.facimp | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</h1>
-                                    <p class="p-style">Aplicado:</p>
-                                    <h1 class="h1-style">{{selectedFacturas.faciec | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</h1>
-                                </div>
-                                <div class="on-two">
-                                    <h1 class="h1-style">{{selectedFacturas.facidi | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</h1>
-                                    <p class="p-style">Pte.Apli:</p>
-                                    <h1 class="h1-style">{{getPendingApply(selectedFacturas) | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</h1>
-                                </div>
-                                <h1 class="h1-style">{{selectedFacturas.facdto | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</h1>
-                            </div>
-                        </div>
-                        <div class="observ">
-                            <p class="p-style">Observaciones:</p>
-                            <textarea 
-                                class="textArea-style"
-                                [(ngModel)]="selectedFacturas.facobs"
-                                disabled
-                            ></textarea>
-                        </div>
                     </div>
                     <div class="more-detail-container">
-                        <div class="tabs" role="tablist" aria-label="Detalle tabs">
-                            <button
+                        <div class="tabs" role="tablist" aria-label="Opciones de Albaranes">
+                            <!-- <button
                                 class="tab-btn"
                                 role="tab" 
                                 [attr.aria-selected]="detailView === 'Albaranes'"
@@ -384,13 +442,39 @@
                                 (click)="openContabilizacion()"
                             >
                                 Datos Contabilización
+                            </button> -->
+                            <button
+                                class="tab-btn"
+                                role="tab"
+                                [attr.aria-selected]="albaranesOptio === 'albaranes'"
+                                [class.active-tab]="albaranesOptio === 'albaranes'"
+                                (click)="setAlbaranesOptio('albaranes', selectedFacturas?.facnum)"
+                            >
+                                Albaranes
+                            </button>
+                            <button
+                                class="tab-btn"
+                                role="tab"
+                                [attr.aria-selected]="albaranesOptio === 'albaranes'"
+                                [class.active-tab]="albaranesOptio === 'aplicaciones'"
+                                (click)="setAlbaranesOptio('aplicaciones', selectedFacturas?.facnum)"
+                            >
+                                Aplicaciones
+                            </button>
+                            <button
+                                class="tab-btn"
+                                role="tab"
+                                [attr.aria-selected]="albaranesOptio === 'albaranes'"
+                                [class.active-tab]="albaranesOptio === 'descuentos'"
+                                (click)="setAlbaranesOptio('descuentos', selectedFacturas?.facnum)"
+                            >
+                                Descuentos
                             </button>
                         </div>
                     </div>
                     <div class="more-details">
                         <div class="detail-grid" *ngIf="AlbaranesGrid">
-                            <div class="more-detail-container">
-                                <div class="more-detail-container">
+                            <!-- <div class="more-detail-container">
                                 <div class="tabs" role="tablist" aria-label="Opciones de Albaranes">
                                     <button
                                         class="tab-btn"
@@ -420,8 +504,7 @@
                                         Descuentos
                                     </button>
                                 </div>
-                            </div>
-                            </div>
+                            </div> -->
                             <div class="detail-switch-second-content">
                                 <ng-container [ngSwitch]="albaranesOptio">
                                     <ng-container *ngSwitchCase="'albaranes'">

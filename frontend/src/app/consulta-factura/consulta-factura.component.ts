@@ -575,12 +575,12 @@ export class ConsultaFacturaComponent {
     this.setAlbaranesOptio('albaranes', this.selectedFacturas.facnum);
   }
 
-  openContabilizacion() {
-    this.limpiarMEssages();
-    this.AlbaranesGrid = false;
-    this.ContabilizacionGrid = true;
-    this.detailView = 'Contabilización';
-  }
+   // openContabilizacion() {
+  //   this.limpiarMEssages();
+  //   this.AlbaranesGrid = false;
+  //   this.ContabilizacionGrid = true;
+  //   this.detailView = 'Contabilización';
+  // }
 
   setAlbaranesOptio(option: 'albaranes' | 'aplicaciones' | 'descuentos', facnum: number): void {
     this.albaranesOptio = option;
