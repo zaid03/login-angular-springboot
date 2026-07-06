@@ -9,6 +9,8 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { environment } from '../../environments/environment';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-proveedorees',
@@ -333,72 +335,62 @@ export class FacturasComponent {
     doc.save('facturas.pdf');
   }
 
-  DownloadCSV() {
+  downloadExcel() {
     this.limpiarMEssages();
-    if(this.facturas.length === 0) {
-      this.filterFacturaMessage = 'He has no data to export.';
-      return
+    const rows = this.facturas;
+    if (!rows || rows.length === 0) {
+      this.filterFacturaMessage = 'No hay datos para exportar.';
+      return;
     }
-    
-    interface Column { header: string; dataKey: string; }
 
-    const columns: Column[] = [
-      { header: 'Número Registro', dataKey: 'facnum'},
-      { header: 'Código Prov', dataKey: 'tercod'},
-      { header: 'Nombre Proveedor', dataKey: 'ternom'},
-      { header: 'NIF Prov', dataKey: 'ternif'},
-      { header: 'F.Registro', dataKey: 'facfre'},
-      { header: 'Importe total', dataKey: 'facimp'},
-      { header: 'Núm. Factura', dataKey: 'facdoc'},
-      { header: 'Año', dataKey: 'facann'},
-      { header: 'R.C.F', dataKey: 'facfac'},
-      { header: 'F.Factura', dataKey: 'facdat'},
-      { header: 'ADO', dataKey: 'facado'},
-      { header: 'F. contable', dataKey: 'facfco'},
-      { header: 'Pte. Aplicar', dataKey: 'pendingApply'},
-      { header: 'C. Gestor', dataKey: 'cgecod'},
-      { header: 'Estado', dataKey: 'estado'}
-    ];
-
-    const rows = (this.facturas || []).map((p: any) => ({
-      facnum: p.facnum,
-      tercod: p.tercod,
-      ternom: p.ternom,
-      ternif: p.ternif,
-      facfre: this.formatDate(p.facfre),
-      facimp: this.formatCurrency(p.facimp),
-      facdoc: p.facdoc,
-      facann: p.facann,
-      facfac: p.facfac,
-      facdat: this.formatDate(p.facdat),
-      facado: p.facado,
-      facfco: this.formatDate(p.facfco),
-      pendingApply: this.formatCurrency(this.getPendingApply(p)),
-      cgecod: p.cgecod,
-      estado: this.getStaus(p.facado, p.facimp, p.faciec, p.facidi)
+    const exportRows = rows.map(row => ({
+      facnum: row.facnum ?? '',
+      tercod: row.tercod ?? '',
+      ternom: row.ter_TERNOM ?? '',
+      ternif: row.ter_TERNIF ?? '',
+      facfre: row.facfre ?? '',
+      facimp: row.facimp ?? '',
+      facdoc: row.facdoc ?? '',
+      facann: row.facann ?? '',
+      facfac: row.facfac ?? '',
+      facdat: row.facdat ?? '',
+      facado: row.facado ?? '',
+      facfco: row.facfco ?? '',
+      getPendingApply: this.getPendingApply(row) ?? '',
+      cgecod: row.cgecod ?? '',
+      getStaus: this.getStaus(row.facado, row.facimp, row.faciec, row.facidi) ?? ''
     }));
+  
+    const worksheet = XLSX.utils.aoa_to_sheet([]);
+    XLSX.utils.sheet_add_aoa(worksheet, [['Listado de facturas']], { origin: 'A1' });
+    worksheet['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 3 } }];
+    XLSX.utils.sheet_add_aoa(worksheet, [['N.Registro', 'Código Prov', 'Nombre Proveedor', 'NIF', 'F.Registro', 'Importe total', 'Num.Factura', 'Año', 'R.C.F', 'F.Factura', 'Ado', 'F.Contable', 'Pte. Aplicar', 'C.gestor', 'Estado']], { origin: 'A2' });
+    XLSX.utils.sheet_add_json(worksheet, exportRows, { origin: 'A3', skipHeader: true });
 
-    const escapeCsv = (val: any) => {
-      if (val === null || val === undefined) return '';
-      let s = String(val);
-      s = s.replace(/"/g, '""');
-      if (/[,"\r\n]/.test(s)) s = `"${s}"`;
-      return s;
-    };
-
-    const header = columns.map(c => escapeCsv(c.header)).join(';');
-    const bodyLines = rows.map(r => columns.map(c => escapeCsv((r as any)[c.dataKey])).join(';'));
-
-    const csvContent = '\uFEFF' + [header, ...bodyLines].join('\r\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'Facturas.csv';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    worksheet['!cols'] = [
+      { wch: 10 },
+      { wch: 12 },
+      { wch: 40 },
+      { wch: 20 },
+      { wch: 20 },
+      { wch: 10 },
+      { wch: 20 },
+      { wch: 15 },
+      { wch: 20 },
+      { wch: 20 },
+      { wch: 15 },
+      { wch: 15 },
+      { wch: 15 },
+      { wch: 30 }
+    ];
+  
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Facturas');
+    const buffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    saveAs(
+      new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }),
+      'Facturas.xlsx'
+    );
   }
 
   //detail grid functions

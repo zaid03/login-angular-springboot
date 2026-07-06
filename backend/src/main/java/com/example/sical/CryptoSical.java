@@ -6,14 +6,13 @@ import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Date;
-import java.util.TimeZone;
 
 public class CryptoSical {
     
     // helper for generating a hashed + encoded string
     public static String encodeSha1Base64(String input) throws Exception {
         MessageDigest md = MessageDigest.getInstance("SHA-1");
-        byte[] digest = md.digest(input.getBytes(StandardCharsets.UTF_8));
+        byte[] digest = md.digest(input.getBytes());
         return Base64.getEncoder().encodeToString(digest);
     }
 
@@ -51,7 +50,6 @@ public class CryptoSical {
     // Generate NONCE, TOKEN, CREATED (sent in header to sicalwin)
     public static SecurityFields calculateSecurityFields(String publicKey) throws Exception {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
         String created = sdf.format(new Date());
 
         SecureRandom random = new SecureRandom();

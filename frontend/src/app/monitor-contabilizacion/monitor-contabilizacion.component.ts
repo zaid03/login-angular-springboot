@@ -9,6 +9,8 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { environment } from '../../environments/environment';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-monitor-contabilizacion',
@@ -295,70 +297,61 @@ export class MonitorContabilizacionComponent {
     doc.save('Monitor_contabilización.pdf');
   }
 
-  DownloadCSV() {
+  downloadExcel() {
     this.limpiarMEssages();
-    if(this.facturas.length === 0) {
-      this.filterFacturaMessage = 'He has no data to export.';
-      return
+    const rows = this.facturas;
+    if (!rows || rows.length === 0) {
+      this.filterFacturaMessage = 'No hay datos para exportar.';
+      return;
     }
-    
-    interface Column { header: string; dataKey: string; }
 
-    const columns: Column[] = [
-      { header: 'Número Registro', dataKey: 'facnum' },
-      { header: 'Código Prov', dataKey: 'tercod' },
-      { header: 'Nombre Proveedor', dataKey: 'ternom' },
-      { header: 'NIF Prov', dataKey: 'ternif' },
-      { header: 'F.Registro', dataKey: 'facfre' },
-      { header: 'Importe', dataKey: 'facimp' },
-      { header: 'Descuentos', dataKey: 'facdto'},
-      { header: 'Núm. Factura', dataKey: 'facdoc' },
-      { header: 'Año', dataKey: 'facann' },
-      { header: 'R.C.F', dataKey: 'facfac' },
-      { header: 'F.Factura', dataKey: 'facdat' },
-      { header: 'Descripción', dataKey: 'factxt'},
-      { header: 'OP.Contable', dataKey: 'facado' },
-      { header: 'F.Contable', dataKey: 'facfco' }
-    ];
-
-    const rows = (this.facturas || []).map((p: any) => ({
-      facnum: p.facnum,
-      tercod: p.tercod,
-      ternom: p.ternom,
-      ternif: p.ternif,
-      facfre: this.formatDate(p.facfre),
-      facimp: this.formatCurrency(p.facimp),
-      facdto: p.facdto,
-      facdoc: p.facdoc,
-      facann: p.facann,
-      facfac: p.facfac,
-      facdat: this.formatDate(p.facdat),
-      factxt: p.factxt,
-      facado: p.facado,
-      facfco: this.formatDate(p.facfco)
+    const exportRows = rows.map(row => ({
+      facnum: row.facnum ?? '',
+      tercod: row.tercod ?? '',
+      ternom: row.ter.ternom ?? '',
+      ternif: row.ter.ternif ?? '',
+      facfre: row.facfre ?? '',
+      facimp: row.facimp ?? '',
+      facdto: row.facdto ?? '',
+      facdoc: row.facdoc ?? '',
+      facann: row.facann ?? '',
+      facfac: row.facfac ?? '',
+      facdat: row.facdat ?? '',
+      factxt: row.factxt ?? '',
+      facado: row.facado ?? '',
+      facfco: row.facfco ?? ''
     }));
+  
+    const worksheet = XLSX.utils.aoa_to_sheet([]);
+    XLSX.utils.sheet_add_aoa(worksheet, [['Listado de facturas']], { origin: 'A1' });
+    worksheet['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 3 } }];
+    XLSX.utils.sheet_add_aoa(worksheet, [['N.Registro', 'Código Prov', 'Nombre Proveedor', 'NIF', 'F.Registro', 'Importe', 'Descuentos', 'Núm. Factura', 'Año', 'R.C.F', 'F.Factura', 'Descripción', 'OP.Contable', 'F.Contable']], { origin: 'A2' });
+    XLSX.utils.sheet_add_json(worksheet, exportRows, { origin: 'A3', skipHeader: true });
 
-    const escapeCsv = (val: any) => {
-      if (val === null || val === undefined) return '';
-      let s = String(val);
-      s = s.replace(/"/g, '""');
-      if (/[,"\r\n]/.test(s)) s = `"${s}"`;
-      return s;
-    };
-
-    const header = columns.map(c => escapeCsv(c.header)).join(';');
-    const bodyLines = rows.map(r => columns.map(c => escapeCsv((r as any)[c.dataKey])).join(';'));
-
-    const csvContent = '\uFEFF' + [header, ...bodyLines].join('\r\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'Monitor_contabilización.csv';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    worksheet['!cols'] = [
+      { wch: 10 },
+      { wch: 12 },
+      { wch: 40 },
+      { wch: 20 },
+      { wch: 20 },
+      { wch: 10 },
+      { wch: 20 },
+      { wch: 22 },
+      { wch: 15 },
+      { wch: 15 },
+      { wch: 40 },
+      { wch: 30 },
+      { wch: 30 },
+      { wch: 30 }
+    ];
+  
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Facturas');
+    const buffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    saveAs(
+      new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }),
+      'MonitorContabilizacione.xlsx'
+    );
   }
 
   facturaSearch: string = '';
@@ -366,8 +359,10 @@ export class MonitorContabilizacionComponent {
   fechasType: 'registro' | 'factura' = 'factura';
   desde: string = '';
   hasta: string = '';
+  searchError: string = '';
   search() {
     this.limpiarMEssages();
+    this.caughtFacturas = [];
     this.isLoading = true;
 
     let params = `ent=${this.entcod}&eje=${this.eje}&cgecod=${this.centroGestor}`;
@@ -404,7 +399,10 @@ export class MonitorContabilizacionComponent {
       },
       error: (err) => {
         this.isLoading = false;
-        this.filterFacturaMessage = err.error.error ?? err.error;
+        this.searchError = err.error.error ?? err.error;
+        console.log(err.error)
+        console.log(err.error.error)
+        this.facturas = [];
       }
     });
   }
@@ -415,6 +413,8 @@ export class MonitorContabilizacionComponent {
     this.fechasType = 'factura';
     this.desde = '';
     this.hasta = '';
+    this.caughtFacturas = [];
+    this.facturas = [];
     this.fetchFacturas();
   }
 
@@ -616,13 +616,18 @@ export class MonitorContabilizacionComponent {
     return this.caughtFacturas.includes(a);
   }
 
-  fechaContable: string = '';
-  ESCONTRATO: boolean = false;
-  contabilizarResults: { facnum: number; success: boolean; message: string }[] = [];
-  async contabilizar() {
+  contaConfirm: boolean = false;
+  openContaConfirm() {
     this.limpiarMEssages();
-    this.contabilizarResults = [];
+    this.contaConfirm = true;
+  }
 
+  closeContaConfirm() {
+    this.limpiarMEssages();
+    this.contaConfirm = false;
+  }
+
+  contabilizarChecks() {
     if (this.fechaContable === '') {
       this.filterFacturaMessage = 'Falta fecha contable';
       return;
@@ -639,11 +644,42 @@ export class MonitorContabilizacionComponent {
       return;
     }
 
+    this.openContaConfirm();
+  }
+
+  fechaContable: string = '';
+  ESCONTRATO: boolean = false;
+  contaFac: number = 0;
+  totalContaFac: number = 0;
+  contabilizarResults: { facnum: number; success: boolean; message: string }[] = [];
+  async contabilizar() {
+    this.closeContaConfirm();
+    this.limpiarMEssages();
+    this.contabilizarResults = [];
+    if (this.fechaContable === '') {
+      this.filterFacturaMessage = 'Falta fecha contable';
+      return;
+    }
+
+    const year = this.fechaContable.split('-')[0];
+    if (Number(year) !== Number(this.eje)) {
+      this.filterFacturaMessage = 'La fecha contable debe pertenecer al ejercicio contable';
+      return;
+    }
+
+    if (this.caughtFacturas.length === 0) {
+      this.filterFacturaMessage = 'Debe seleccionar al menos una factura';
+      return;
+    }
+    
+    this.contaFac = 0;
+    this.totalContaFac = this.caughtFacturas.length;
     this.isContabilizando = true;
 
     // Process each factura one by one
     for (const factura of this.caughtFacturas) {
       await this.contabilizarFacturaAsync(factura);
+      this.contaFac++;
     }
 
     this.isContabilizando = false;
@@ -739,6 +775,8 @@ export class MonitorContabilizacionComponent {
     this.fetchFacturas();
   }
   updateFactura(facnum: number, facado: any, facfco: string) {
+    this.closeContaConfirm();
+    this.limpiarMEssages();
     return new Promise<void>((resolve, reject) => {
       const payload = {
         "ENT": this.entcod,
@@ -770,5 +808,6 @@ export class MonitorContabilizacionComponent {
     this.moreInfoMessageError = '';
     this.facturaDetailSuccess = '';
     this.facturaDetailError = '';
+    this.searchError = '';
   }
 }
