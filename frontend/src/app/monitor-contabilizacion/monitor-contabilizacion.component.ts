@@ -656,19 +656,20 @@ export class MonitorContabilizacionComponent {
     this.closeContaConfirm();
     this.limpiarMEssages();
     this.contabilizarResults = [];
+
     if (this.fechaContable === '') {
-      this.filterFacturaMessage = 'Falta fecha contable';
+      this.searchError = 'Falta fecha contable';
       return;
     }
 
     const year = this.fechaContable.split('-')[0];
     if (Number(year) !== Number(this.eje)) {
-      this.filterFacturaMessage = 'La fecha contable debe pertenecer al ejercicio contable';
+      this.searchError = 'La fecha contable debe pertenecer al ejercicio contable';
       return;
     }
 
     if (this.caughtFacturas.length === 0) {
-      this.filterFacturaMessage = 'Debe seleccionar al menos una factura';
+      this.searchError = 'Debe seleccionar al menos una factura';
       return;
     }
     
