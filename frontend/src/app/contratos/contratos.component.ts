@@ -1119,7 +1119,7 @@ export class ContratosComponent {
   cogimp: number = 0;
   cogopd: string = '';
   fetchD() {
-    let codigoOperacion = 230;
+    let codigoOperacion = 220;
     const oficina = 'AL';
     this.isLoadingD = true;
 
@@ -1127,7 +1127,7 @@ export class ContratosComponent {
       next: (res) => {
         this.isLoadingD = false;
         this.listaDeD = res;
-        if (res = []) {
+        if (res.lineaList[0] = []) {
           this.DErrorMessage = 'No hay operaciones D para los datos requeridos';
         }
       },
@@ -1146,7 +1146,7 @@ export class ContratosComponent {
     this.limpiarMessages();
     this.isAddingD = true;
 
-    this.cogimp = D.linea;
+    this.cogimp = D.lineaList[0].limporte;
     this.cogopd = D.numope;
     const concod = this.selectedContrato.concod;
 
@@ -1155,7 +1155,7 @@ export class ContratosComponent {
       "COGOPD": this.cogopd
     }
 
-    this.http.patch(`${environment.backendUrl}/cog/update-centro-D/${this.entcod}/${this.eje}/${concod}}/${this.cgecod}`, payload).subscribe({
+    this.http.patch(`${environment.backendUrl}/api/cog/update-centro-D/${this.entcod}/${this.eje}/${concod}/${this.cgecod}`, payload).subscribe({
       next: (res) => {
         this.isAddingD = false;
         this.closeAddD();

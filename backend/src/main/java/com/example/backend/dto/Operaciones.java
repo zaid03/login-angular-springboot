@@ -397,7 +397,7 @@ public class Operaciones {
         private String lincta;
         private Integer prya;
         private String pryt;
-        private Integer pryo;
+        private String pryo;
         private String pryn;
         private Integer pryx;
         private Integer lineje;
@@ -429,8 +429,8 @@ public class Operaciones {
         public String getPryt() { return pryt; }
         public void setPryt(String pryt) { this.pryt = pryt; }
 
-        public Integer getPryo() { return pryo; }
-        public void setPryo(Integer pryo) { this.pryo = pryo; }
+        public String getPryo() { return pryo; }
+        public void setPryo(String pryo) { this.pryo = pryo; }
 
         public String getPryn() { return pryn; }
         public void setPryn(String pryn) { this.pryn = pryn; }

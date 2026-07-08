@@ -45,29 +45,20 @@
 .art thead th:nth-child(6),
 .art thead th:nth-child(9) {width: 10%;}
 .art tbody td:last-child {display: flex; align-items: center; }
+.art tbody td:nth-child(6) {justify-items: right !important;}
 .art tbody td:nth-child(8),
 .art tbody td:last-child,
 .pct tbody td:last-child {text-align: center;}
 .pct,
 .pat { width: 100%; }
 .pat { margin-top: 10px; }
-.pct input[type="text"],
-.pct input[type="email"],
-.art input[type="number"],
-.art input[type="text"] { width: 100%; padding: 6px 8px; border: 1px solid #bfc9d1; border-radius: 4px; font-size: 14px; background: #fff; transition: border-color 0.2s; box-sizing: border-box; color: #162a3a; font-weight: bold;}
-.art input[type="checkbox"],
 .acuerdo input[type="checkbox"],
 .checkbox { margin: 0; accent-color: #25176b; width: 14px; height: 18px; vertical-align: middle; outline: none; box-shadow: none; }
-.pct input[type="text"]:focus,
-.pct input[type="email"]:focus,
-.art input[type="number"]:focus,
-.art input[type="text"]:focus { border-color: #38249b; outline: none; background: #f0f7ff; }
 .checkbox { outline: none; }
-.art h2{ text-align: left; font-size: 15px; color: #333; margin: 0; padding: 0; }
+.art h2,
+.pct h1 { text-align: left; font-size: 15px; color: #333; margin: 0; padding: 0; }
 .space { margin-top: 10px; }
 .save-btn-articulos {margin-top: 10px;}
-.pct .red-btn,
-.art .red-btn { margin-right: 10px;}
 /* sub tables and lists */
 @media (min-width: 1700px) { .chunk-one, .chunk-two, .chunk-three { width: 22%; }
 .save-btn-articulos {margin-left: 10px;}

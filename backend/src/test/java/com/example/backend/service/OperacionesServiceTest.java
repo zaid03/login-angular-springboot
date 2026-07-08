@@ -654,6 +654,19 @@ public class OperacionesServiceTest {
     }
 
     @Test
+    void parseOperaciones_withNamespacedAndCapitalizedTags_mapsFields() throws Exception {
+        String xml = "<root xmlns:s='urn:test'>" +
+            "<s:operacion><s:NumOpe>123</s:NumOpe><s:CodOpe>ABC</s:CodOpe></s:operacion>" +
+            "</root>";
+
+        List<Operaciones> result = invokeParseOperaciones(xml);
+
+        assertEquals(1, result.size());
+        assertEquals(123L, result.get(0).getNumope());
+        assertEquals("ABC", result.get(0).getCodope());
+    }
+
+    @Test
     void parseOperaciones_withXmlError_throwsSmlProcessingException() throws Exception {
         String xml = "<root><exito>0</exito><desc>Test error</desc></root>";
         try {

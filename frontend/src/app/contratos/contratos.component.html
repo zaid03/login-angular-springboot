@@ -309,7 +309,7 @@
                                     <td>
                                         <input
                                             type="text"
-                                            class="currenc"
+                                            class="textArea-style currenc"
                                             [value]="a.editingPrice ? a.editingValue : formatPrice(a.coapre)"
                                             (focus)="startEditingPrice(a, $event)"
                                             (blur)="stopEditingPrice(a, $event)"
@@ -752,7 +752,16 @@
                 *ngFor="let d of paginatedSearchResultsD"
                 (click)="updateDContrato(d)"
             >
-                <!-- later -->
+                <td>{{d.numope}}</td>
+                <td>{{d.lineaList[0].referencia}}</td>
+                <td>{{d.oficina}}</td>
+                <td>{{d.fecope}}</td>
+                <td>{{d.lineaList[0].linorg}}</td>
+                <td>{{d.lineaList[0].linfun}}</td>
+                <td>{{d.lineaList[0].lineco}}</td>
+                <td>{{d.lineaList[0].limporte}}</td>
+                <td>{{d.lineaList[0].saldo}}</td>
+                <td>{{d.texto}}</td>
             </tr>
         </tbody>
     </table>

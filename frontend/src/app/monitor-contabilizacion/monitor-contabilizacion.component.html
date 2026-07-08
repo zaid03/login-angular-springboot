@@ -699,7 +699,9 @@
 <div class="delete-confirm-modal toConta" *ngIf="contaConfirm">
     <div class="saved-details">
         <p class="p-style">¿Quiere contabilizar las facturas seleccionadas?</p>
-        <button class="purple-btn" (click)="contabilizar()">SÍ</button>
-        <button class="red-btn margin" (click)="closeContaConfirm()">NO</button>
+        <div class="btns btn-fix">
+            <button class="purple-btn" (click)="contabilizar()">SÍ</button>
+            <button class="red-btn margin" (click)="closeContaConfirm()">NO</button>
+        </div>
     </div>
 </div>

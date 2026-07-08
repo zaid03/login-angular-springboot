@@ -4,7 +4,6 @@
 .more-search-options { display: flex; align-items: center; gap: 10px; }
 .more-search-options select,
 .more-search-options input[type="date"],
-.right-search input[type="text"],
 .right-search input[type="date"],
 .search-chunk input[type="date"] { padding: 4px 6px; border-radius: 20px; border: 1px solid #bbb; color: #25176b; font-size: 15px; transition: border 0.2s, box-shadow 0.2s; outline: none; box-shadow: 0 1px 4px rgba(56,36,155,0.04); }
 .more-search-options select:focus,
@@ -60,7 +59,7 @@
 .search-option-container,
 .albaran-search-options {display: flex; width: 100%; gap: 10px; margin: 5px;}
 .chunk-one-search {width: 30%; display: flex;}
-.left-search {width: 30%; display: flex; flex-direction: column; gap: 15px;}
+.chunk-one-search .left-search {width: 30%; display: flex; flex-direction: column; gap: 12px;}
 .right-search {width: 70%; display: flex; flex-direction: column; gap: 10px;}
 .alignTitleSearch {justify-content: center;}
 .widthIput {width: 90% !important;}

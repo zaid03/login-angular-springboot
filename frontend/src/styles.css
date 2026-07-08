@@ -26,11 +26,11 @@ app-sidebar { flex-shrink: 0; z-index: 2000; }
 .h1-style {color: #162a3a; font-size: 16px;}
 .textArea-style,
 .select-style,
-.input-style {height: 20px; padding: 2px 4px; border-radius: 6px; min-width: 80px; max-width: 290px; font-weight: bold; color: #162a3a;}
+.input-style {height: 20px; padding: 2px 4px; border-radius: 4px; min-width: 80px; max-width: 290px; font-weight: bold; color: #162a3a; border: 1px solid #bfc9d1;}
 .input-style {border: 1px solid gray;}
 .textArea-style:focus,
 .select-style:focus,
-.input-style:focus {outline: none; border: 1px solid #1c5d8c;}
+.input-style:focus {border-color: #38249b; outline: none; background: #f0f7ff;}
 .right-add select {height: 25px;}
 /* buttons */
 .pagination-controls button,
@@ -88,7 +88,7 @@ app-sidebar { flex-shrink: 0; z-index: 2000; }
 .search-form { margin-top: 2px; width: 100%; display: flex; align-items: center; gap: 5px; }
 .search-bar { padding: 4px 6px; border-radius: 20px; border: 1px solid #bbb; font-size: 16px; width: 180px; }
 .smallWidth { width: 60px; }
-.search-bar:focus { border-color: #094fa3; outline: none; background: #fff; }
+.search-bar:focus {border-color: #38249b; outline: none; background: #f0f7ff;}
 /* 3 dots menu */
 .group-menu{ position: relative; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; }
 .dot { width: 5px; height: 5px; border-radius: 50%; background-color: #6c757d; margin-top: 4px; }
