@@ -3,14 +3,13 @@ package com.example.backend.controller;
 import com.example.backend.config.TestSecurityConfig;
 import com.example.backend.dto.Operaciones;
 import com.example.backend.service.OperacionesService;
-import com.example.backend.exception.SmlProcessingException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Collections;
@@ -26,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = OperacionesController.class)
 @ActiveProfiles("test")
 @Import(TestSecurityConfig.class)
-public class OperacionesControllerTest {
+class OperacionesControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -36,67 +35,82 @@ public class OperacionesControllerTest {
 
     @Test
     void shouldReturnOperacionesWithParams() throws Exception {
+
         Operaciones o = new Operaciones();
-        when(operacionesService.getOperaciones(any(OperacionesService.SearchCriteria.class)))
-            .thenReturn(List.of(o));
+
+        when(operacionesService.getOperaciones(
+                any(), any(), any(), any(), any(),
+                any(), any(), any(), any()))
+                .thenReturn(List.of(o));
 
         mockMvc.perform(get("/api/sical/operaciones")
-                .param("numeroOperDesde", "1")
-                .param("numeroOperHasta", "2")
-                .param("codigoOperacion", "cod")
-                .param("clorg", "org")
-                .param("clfun", "fun")
-                .param("cleco", "eco")
-                .param("expediente", "exp")
-                .param("grupoApunte", "grp")
-                .param("oficina", "ofi")
-                .accept(MediaType.APPLICATION_JSON))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$", hasSize(1)));
+                        .param("numeroOperDesde", "1")
+                        .param("numeroOperHasta", "2")
+                        .param("codigoOperacion", "cod")
+                        .param("clorg", "org")
+                        .param("clfun", "fun")
+                        .param("cleco", "eco")
+                        .param("expediente", "exp")
+                        .param("grupoApunte", "grp")
+                        .param("oficina", "ofi")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)));
 
-        verify(operacionesService).getOperaciones(any(OperacionesService.SearchCriteria.class));
+        verify(operacionesService).getOperaciones(
+                any(), any(), any(), any(), any(),
+                any(), any(), any(), any());
     }
 
     @Test
     void shouldReturnEmptyListWhenNoResults() throws Exception {
-        when(operacionesService.getOperaciones(any(OperacionesService.SearchCriteria.class)))
-            .thenReturn(Collections.emptyList());
+
+        when(operacionesService.getOperaciones(
+                any(), any(), any(), any(), any(),
+                any(), any(), any(), any()))
+                .thenReturn(Collections.emptyList());
 
         mockMvc.perform(get("/api/sical/operaciones")
-                .accept(MediaType.APPLICATION_JSON))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$", hasSize(0)));
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(0)));
 
-        verify(operacionesService).getOperaciones(any(OperacionesService.SearchCriteria.class));
+        verify(operacionesService).getOperaciones(
+                any(), any(), any(), any(), any(),
+                any(), any(), any(), any());
     }
 
     @Test
-    void shouldReturnSmlProcessingErrorWhenSmlException() throws Exception {
-        when(operacionesService.getOperaciones(any(OperacionesService.SearchCriteria.class)))
-            .thenThrow(new SmlProcessingException("SML processing failed"));
+    void shouldReturn500WhenServiceThrowsException() throws Exception {
+
+        when(operacionesService.getOperaciones(
+                any(), any(), any(), any(), any(),
+                any(), any(), any(), any()))
+                .thenThrow(new RuntimeException("sical fail"));
 
         mockMvc.perform(get("/api/sical/operaciones")
-                .accept(MediaType.APPLICATION_JSON))
-            .andDo(print())
-            .andExpect(status().isInternalServerError())
-            .andExpect(jsonPath("$.error").value("SML processing error: SML processing failed"));
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.error").value("sical fail"));
 
-        verify(operacionesService).getOperaciones(any(OperacionesService.SearchCriteria.class));
+        verify(operacionesService).getOperaciones(
+                any(), any(), any(), any(), any(),
+                any(), any(), any(), any());
     }
 
     @Test
-    void shouldReturn500WhenServiceThrows() throws Exception {
-        when(operacionesService.getOperaciones(any(OperacionesService.SearchCriteria.class)))
-            .thenThrow(new RuntimeException("sical fail"));
+    void shouldReturnExceptionMessage() throws Exception {
 
-        mockMvc.perform(get("/api/sical/operaciones")
-                .accept(MediaType.APPLICATION_JSON))
-            .andDo(print())
-            .andExpect(status().isInternalServerError())
-            .andExpect(jsonPath("$.error").value("sical fail"));
+        when(operacionesService.getOperaciones(
+                any(), any(), any(), any(), any(),
+                any(), any(), any(), any()))
+                .thenThrow(new Exception("boom"));
 
-        verify(operacionesService).getOperaciones(any(OperacionesService.SearchCriteria.class));
+        mockMvc.perform(get("/api/sical/operaciones"))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.error").value("boom"));
     }
 }

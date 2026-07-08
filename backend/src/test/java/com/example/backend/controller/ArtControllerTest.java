@@ -3,6 +3,7 @@ package com.example.backend.controller;
 import com.example.backend.config.TestSecurityConfig;
 import com.example.backend.config.TestExceptionHandler;
 import com.example.backend.dto.ArtAsuContratoProjection;
+import com.example.backend.dto.ArtNameProjection;
 import com.example.backend.sqlserver2.model.Art;
 import com.example.backend.sqlserver2.repository.AfaRepository;
 import com.example.backend.sqlserver2.repository.ArtRepository;
@@ -89,8 +90,20 @@ public class ArtControllerTest {
 
     @Test
     void getArtName_returnsListOr404() throws Exception {
-        Art a = new Art(); a.setARTCOD("A");
-        when(artRepository.findByENTAndAFACODAndASUCODAndARTCOD(1, "AF", "ASU", "ART")).thenReturn(List.of(a));
+     
+
+        ArtNameProjection projection = new ArtNameProjection() {
+    @Override
+    public String getARTDES() {
+        return "Test description";
+    }
+};
+
+
+
+       when(artRepository.findByENTAndAFACODAndASUCODAndARTCOD(
+        1, "AF", "ASU", "ART"))
+    .thenReturn(List.of(projection));
 
         mockMvc.perform(get("/api/art/art-name/1/AF/ASU/ART").accept(MediaType.APPLICATION_JSON))
             .andDo(print())
