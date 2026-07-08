@@ -113,7 +113,7 @@
                 <span>de {{ totalPages }}</span>
                 <button (click)="nextPage()" [disabled]="page + 1 >= totalPages">Siguiente</button>
             </div>
-            <div class="modal-backdrop" *ngIf="selectedPersona" (click)="closeDetailsSure()"></div>
+            <div class="modal-backdrop" *ngIf="selectedPersona"></div>
             <div class="display">
                 <div class="modal" *ngIf="selectedPersona">
                     <div class="btns">
@@ -287,7 +287,7 @@
     </div>
 </div>
 
-<div class="modal-backdrop" *ngIf="showAddConfirm" (click)="closeAddConfirm()"></div>
+<div class="modal-backdrop" *ngIf="showAddConfirm"></div>
 <div class="add-confirm-modal" *ngIf="showAddConfirm">
     <div class="btns">
         <div class="title">
@@ -327,7 +327,7 @@
     </div>
 </div>
 
-<div class="modal-backdrop" *ngIf="showDeleteGrid" (click)="closeDelete()"></div>
+<div class="modal-backdrop" *ngIf="showDeleteGrid"></div>
 <div class="delete-confirm-modal" *ngIf="showDeleteGrid">
     <div class="btns">
         <button class="purple-btn" (click)="closeDelete()">✖</button>
@@ -345,7 +345,7 @@
     <button class="red-btn" (click)="deleteService(serviceToDelete.depcod)">Confirmar</button>
 </div>
 
-<div class="modal-backdrop" *ngIf="addService" (click)="closeAddService()"></div>
+<div class="modal-backdrop" *ngIf="addService"></div>
 <div class="proveedor-grid-modal" *ngIf="addService">
     <div class="btns">
         <div class="title">
@@ -485,7 +485,7 @@
     </div>
 </div>
 
-<div class="modal-backdrop" *ngIf="compiarPersona" (click)="closeCopiar()"></div>
+<div class="modal-backdrop" *ngIf="compiarPersona"></div>
 <div class="add-confirm-modal placement" *ngIf="compiarPersona">
     <div>
         <p class="sure-msg">{{gridMessag}}</p>        
@@ -496,7 +496,7 @@
     </div>
 </div>
 
-<div class="modal-backdrop" *ngIf="compiarPersonaGrid" (click)="closeShowCopiarPersonas()"></div>
+<div class="modal-backdrop" *ngIf="compiarPersonaGrid"></div>
 <div class="proveedor-grid-modal placementCopy" *ngIf="compiarPersonaGrid">
     <div class="btns">
         <div class="title">
@@ -555,7 +555,7 @@
     </div>
 </div>
 
-<div class="modal-backdrop" *ngIf="continueAdCheckGrid" (click)="closecontinueAdCheckGrid()"></div>
+<div class="modal-backdrop" *ngIf="continueAdCheckGrid"></div>
 <div class="proveedor-grid-modal placementCopy" *ngIf="continueAdCheckGrid">
     <div>
         <p class="sure-msg">{{continueMessag}}</p>        

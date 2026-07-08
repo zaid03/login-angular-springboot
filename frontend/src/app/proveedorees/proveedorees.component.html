@@ -151,7 +151,7 @@
                 <span>de {{ totalPages }}</span>
                 <button class="pag-btn" (click)="nextPage()" [disabled]="page + 1 >= totalPages">Siguiente</button>
             </div>
-            <div class="modal-backdrop" *ngIf="selectedProveedor" (click)="closeDetailsSure()"></div>
+            <div class="modal-backdrop" *ngIf="selectedProveedor"></div>
             <div class="display" >
                 <div class="modal" *ngIf="selectedProveedor">
                     <div class="btns">
@@ -481,7 +481,7 @@
     </div>
 </div>
 
-<div class="modal-backdrop" *ngIf="showDeleteConfirm" (click)="closeDeleteConfirm()"></div>
+<div class="modal-backdrop" *ngIf="showDeleteConfirm"></div>
 <div class="delete-confirm-modal" *ngIf="showDeleteConfirm">
     <div class="btns">
         <button class="purple-btn" (click)="closeDeleteConfirm()">✖</button>
@@ -499,7 +499,7 @@
     <button class="red-btn" (click)="confirmDelete()">Borrar</button>
 </div>
 
-<div class="modal-backdrop" *ngIf="showDeletePersona" (click)="closeDeleteConfirm()"></div>
+<div class="modal-backdrop" *ngIf="showDeletePersona"></div>
 <div class="delete-confirm-modal" *ngIf="showDeletePersona">
     <div class="btns">
         <button class="purple-btn" (click)="closeDeletePersonas()">✖</button>
@@ -518,7 +518,7 @@
     <button class="red-btn" (click)="confirmDeletePersona()">Borrar</button>
 </div>
 
-<div class="modal-backdrop" *ngIf="showPersonasGrid" (click)="hidePersonas()"></div>
+<div class="modal-backdrop" *ngIf="showPersonasGrid"></div>
 <div class="personas-modal" *ngIf="showPersonasGrid">
     <div class="btns">
         <div class="title">
@@ -550,7 +550,7 @@
     </div>
 </div>
 
-<div class="modal-backdrop" *ngIf="showHelloGrid" (click)="hideHello()"></div>
+<div class="modal-backdrop" *ngIf="showHelloGrid"></div>
 <div class="hello-modal" *ngIf="showHelloGrid">
     <div class="btns">
         <div class="title">
@@ -607,7 +607,7 @@
     </form>
 </div>
 
-<div class="modal-backdrop" *ngIf="showProveedorModal" (click)="closeProveedorModal()"></div>
+<div class="modal-backdrop" *ngIf="showProveedorModal"></div>
 <div class="proveedor-grid-modal" *ngIf="showProveedorModal">
     <div class="btns">
         <div class="title">

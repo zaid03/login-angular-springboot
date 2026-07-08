@@ -102,7 +102,7 @@
                 <span>de {{ totalPages }}</span>
                 <button (click)="nextPage()" [disabled]="page + 1 >= totalPages">Siguiente</button>
             </div>
-            <div class="modal-backdrop" *ngIf="selectedCentroGestor" (click)="closeDetailsSure()"></div>
+            <div class="modal-backdrop" *ngIf="selectedCentroGestor"></div>
             <div class="display">
                 <div class="modal" *ngIf="selectedCentroGestor">
                     <div class="btns">
@@ -232,7 +232,7 @@
     </div>
 </div>
 
-<div class="modal-backdrop" *ngIf="showDeleteConfirm" (click)="closeDeleteConfirm()"></div>
+<div class="modal-backdrop" *ngIf="showDeleteConfirm"></div>
 <div class="delete-confirm-modal" *ngIf="showDeleteConfirm">
     <div class="btns">
         <button class="purple-btn" (click)="closeDeleteConfirm()">✖</button>
@@ -246,7 +246,7 @@
     <button class="red-btn" (click)="confirmDelete()">Confirmar</button>
 </div>
 
-<div class="modal-backdrop" *ngIf="showAddConfirm" (click)="closeAddConfirm()"></div>
+<div class="modal-backdrop" *ngIf="showAddConfirm"></div>
 <div class="add-confirm-modal" *ngIf="showAddConfirm">
     <div class="btns">
         <div class="title">

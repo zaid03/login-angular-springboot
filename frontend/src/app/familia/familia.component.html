@@ -83,7 +83,7 @@
                 <span>de {{ totalPages }}</span>
                 <button (click)="nextPage()" [disabled]="page + 1 >= totalPages">Siguiente</button>
             </div>
-            <div class="modal-backdrop" *ngIf="selectedFamilias" (click)="closeDetailsSure()"></div>
+            <div class="modal-backdrop" *ngIf="selectedFamilias"></div>
             <div class="display" >
                 <div class="modal" *ngIf="selectedFamilias">
                     <div class="btns">
@@ -243,7 +243,7 @@
     </div>
 </div>
 
-<div class="modal-backdrop" *ngIf="showDeleteConfirm" (click)="closeDeleteConfirm()"></div>
+<div class="modal-backdrop" *ngIf="showDeleteConfirm"></div>
 <div class="delete-confirm-modal" *ngIf="showDeleteConfirm">
     <h3>¿Seguro que quieres eliminar este Familia?</h3>
     <h1 class="errorBtn">{{delErr}}</h1>
@@ -255,7 +255,7 @@
     <button class="purple-btn" (click)="closeDeleteConfirm()">✖</button>
 </div>
 
-<div class="modal-backdrop" *ngIf="showAddConfirmSub" (click)="closeAddConfirmSub()"></div>
+<div class="modal-backdrop" *ngIf="showAddConfirmSub"></div>
 <div class="add-sub-modal" *ngIf="showAddConfirmSub">
     <div class="btns">
         <div class="title">
@@ -303,7 +303,7 @@
     </div>
 </div>
 
-<div class="modal-backdrop" *ngIf="showAddConfirm" (click)="closeAddConfirm()"></div>
+<div class="modal-backdrop" *ngIf="showAddConfirm"></div>
 <div class="add-confirm-modal" *ngIf="showAddConfirm">
     <div class="btns">
         <div class="title">

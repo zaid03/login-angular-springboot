@@ -209,7 +209,7 @@
                 <span>de {{ totalPages }}</span>
                 <button (click)="nextPage()" [disabled]="page + 1 >= totalPages">Siguiente</button>
             </div>
-            <div class="modal-backdrop" *ngIf="selectedFacturas" (click)="closeDetailsSure()"></div>
+            <div class="modal-backdrop" *ngIf="selectedFacturas"></div>
             <div class="display" >
                 <div class="modal" *ngIf="selectedFacturas">
                     <div class="btns">
@@ -728,7 +728,7 @@
     </div>
 </div>
 
-<div class="modal-backdrop" *ngIf="addFacturaGrid" (click)="closeFacturaAdd()"></div>
+<div class="modal-backdrop" *ngIf="addFacturaGrid"></div>
 <div class="factura-cargar" *ngIf="addFacturaGrid">
     <div class="btns">
         <div class="title">
@@ -865,7 +865,7 @@
     </div>
 </div>
 
-<div class="modal-backdrop" *ngIf="albaranesAddGrid" (click)="closeAlbaranesAdd()"></div>
+<div class="modal-backdrop" *ngIf="albaranesAddGrid"></div>
 <div class="factura-cargar albran-add" *ngIf="albaranesAddGrid">
     <div class="btns">
         <div class="title">
@@ -954,7 +954,7 @@
     </div>
 </div>
 
-<div class="modal-backdrop" *ngIf="deleteAlbaranGrid" (click)="closeDeleteAlbaran()"></div>
+<div class="modal-backdrop" *ngIf="deleteAlbaranGrid"></div>
 <div class="delete-confirm-modal" *ngIf="deleteAlbaranGrid">
     <div class="btns">
         <button class="purple-btn margin" (click)="closeDeleteAlbaran()">✖</button>
