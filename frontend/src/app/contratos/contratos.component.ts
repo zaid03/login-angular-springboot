@@ -1147,7 +1147,7 @@ export class ContratosComponent {
     this.isAddingD = true;
 
     this.cogimp = D.lineaList[0].limporte;
-    this.cogopd = D.numope;
+    this.cogopd = D.lineaList[0].referencia;
     const concod = this.selectedContrato.concod;
 
     const payload = {

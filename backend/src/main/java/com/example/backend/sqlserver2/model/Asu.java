@@ -34,7 +34,7 @@ public class Asu {
 
     private Integer MTACOD;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumns({
         @JoinColumn(name = "ENT", referencedColumnName = "ENT", insertable = false, updatable = false),
         @JoinColumn(name = "ASUECO", referencedColumnName = "CONLOT", insertable = false, updatable = false)

@@ -5,6 +5,7 @@ import com.example.backend.sqlserver2.repository.ArtRepository;
 import com.example.backend.sqlserver2.repository.AsuRepository;
 import com.example.backend.sqlserver2.repository.AfaRepository;
 import com.example.backend.dto.ArtAsuContratoProjection;
+import com.example.backend.dto.ArtNameProjection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -84,7 +85,7 @@ public class ArtController {
         @PathVariable String artcod
     ) {
         try {
-            List<Art> articulo = artRepository.findByENTAndAFACODAndASUCODAndARTCOD(ent, afacod, asucod, artcod);
+            List<ArtNameProjection> articulo = artRepository.findByENTAndAFACODAndASUCODAndARTCOD(ent, afacod, asucod, artcod);
             if(articulo.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(SIN_RESULTADO);

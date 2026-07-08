@@ -853,36 +853,30 @@ export class ProveedoreesComponent {
   getDescription(row: any, index: number, artcod: string, afacod: string, asucod: string){
     if (artcod === '*') {
       if (asucod === '*') {
-        this.http
-          .get<any[]>(`${environment.backendUrl}/api/afa/by-ent/${this.entcod}/${afacod}`)
-          .subscribe({
-            next: (response) => {
-              const respArray = Array.isArray(response) ? response : response ? [response] : [];
-              const afades = respArray[0]?.afades;
-              row.description = String(afades ?? '').trim();
-            },
-          });
-      } else {
-        this.http
-          .get<any[]>(`${environment.backendUrl}/api/asu/art-name/${this.entcod}/${afacod}/${asucod}`)
-          .subscribe({
-            next: (response) => {
-              const respArray = Array.isArray(response) ? response : response ? [response] : [];
-              const asudes = respArray[0]?.asudes;
-              row.description = String(asudes ?? '').trim();
-            },
-          });
-      }
-    } else {
-      this.http
-        .get<any[]>(`${environment.backendUrl}/api/art/art-name/${this.entcod}/${afacod}/${asucod}/${artcod}`)
-        .subscribe({
+        this.http.get<any[]>(`${environment.backendUrl}/api/afa/by-ent/${this.entcod}/${afacod}`).subscribe({
           next: (response) => {
             const respArray = Array.isArray(response) ? response : response ? [response] : [];
-            const artdes = respArray[0]?.artdes;
-            row.description = String(artdes ?? '').trim();
+            const afades = respArray[0]?.afades;
+            row.description = String(afades ?? '').trim();
           },
         });
+      } else {
+        this.http.get<any[]>(`${environment.backendUrl}/api/asu/art-name/${this.entcod}/${afacod}/${asucod}`).subscribe({
+          next: (response) => {
+            const respArray = Array.isArray(response) ? response : response ? [response] : [];
+            const asudes = respArray[0]?.asudes;
+            row.description = String(asudes ?? '').trim();
+          },
+        });
+      }
+    } else {
+      this.http.get<any[]>(`${environment.backendUrl}/api/art/art-name/${this.entcod}/${afacod}/${asucod}/${artcod}`).subscribe({
+        next: (response) => {
+          const respArray = Array.isArray(response) ? response : response ? [response] : [];
+          const artdes = respArray[0]?.artdes;
+          row.description = String(artdes ?? '').trim();
+        },
+      });
     }
   }
 

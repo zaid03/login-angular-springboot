@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import com.example.backend.sqlserver2.model.Art;
 import com.example.backend.sqlserver2.model.ArtId;
 import com.example.backend.dto.ArtAsuContratoProjection;
+import com.example.backend.dto.ArtNameProjection;
 
 @Repository
 public interface ArtRepository extends JpaRepository<Art, ArtId> {
@@ -20,7 +21,7 @@ public interface ArtRepository extends JpaRepository<Art, ArtId> {
     List<Art> findByENTAndARTDESContaining(int ent, String artdes);
 
     //find an art name
-    List<Art> findByENTAndAFACODAndASUCODAndARTCOD(int ent, String afacod, String asucod, String artcod);
+    List<ArtNameProjection> findByENTAndAFACODAndASUCODAndARTCOD(int ent, String afacod, String asucod, String artcod);
 
     //delete a familia check
     Long countByENTAndAFACOD(Integer ent, String afacod);
