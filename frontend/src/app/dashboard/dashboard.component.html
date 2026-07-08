@@ -190,6 +190,10 @@
     <button class="red-btn" (click)="closeShowServices()">✖</button>
   </div>
   <h1 class="errorBtn">{{servicesError}}</h1>
+  <div *ngIf="isLoading" class="loading-message">
+    <div class="spinner"></div>
+    <span>Cargando</span>
+  </div>
   <div class="main-list">
     <table class="main-table ust">
       <thead>

@@ -188,16 +188,19 @@ export class DashboardComponent implements OnInit {
 
   closeShowServices() {
     this.showServices = false;
+    this.services = [];
   }
 
   servicesError: string = '';
   services: any[] = [];
   page: number = 0;
   pageSize: number = 20;
+  isLoading: boolean = false;
   private fetchServices(): void {
     this.servicesError = '';
     if (this.entcod === null || this.eje === null) return;
 
+    this.isLoading = true;
     this.http.get<any[]>(`${environment.backendUrl}/api/dep/fetch-services-persona/${this.entcod}/${this.eje}/${this.usucod}`).subscribe({
       next: (res) => {
 
@@ -212,6 +215,7 @@ export class DashboardComponent implements OnInit {
           next: (servicesWithDescriptions) => {
             this.services = servicesWithDescriptions;
             this.page = 0;
+            this.isLoading = false;
           },
           error: (err) => {
             this.servicesError = 'Error al obtener descripciones de centros gestores';
@@ -221,6 +225,8 @@ export class DashboardComponent implements OnInit {
         this.page = 0;
       },
       error: (err) => {
+        this.services = [];
+        this.isLoading = false;
         this.servicesError = err.error.error ?? err.error;
       }
     });
