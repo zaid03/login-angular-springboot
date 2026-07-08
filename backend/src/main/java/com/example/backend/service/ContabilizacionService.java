@@ -1,8 +1,6 @@
 package com.example.backend.service;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,18 +8,16 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.example.backend.dto.ContabilizacionRequestDto;
 import com.example.backend.dto.ContabilizacionResponseDto;
-import com.example.backend.exception.XmlParsingException;
 import com.example.backend.exception.SmlBuildingException;
 import com.example.backend.sqlserver2.model.Fac;
-import com.example.backend.sqlserver2.model.FacId;
 import com.example.backend.sqlserver2.model.Fde;
 import com.example.backend.sqlserver2.model.Fdt;
-import com.example.backend.sqlserver2.model.Ter;
 import com.example.backend.sqlserver2.repository.FacRepository;
 import com.example.backend.sqlserver2.repository.FdeRepository;
 import com.example.backend.sqlserver2.repository.FdtRepository;
@@ -50,14 +46,14 @@ public class ContabilizacionService {
         try {
             CryptoSical.SecurityFields sec = CryptoSical.calculateSecurityFields(req.getPublicKey());
             String fechaContable = formatFechaContable(req.getFechaContable());
-            
+
             StringBuilder sb = new StringBuilder();
             sb.append("<e>");
             appendOperationHeader(sb);
             appendSecuritySection(sb, req, sec);
             appendParametersSection(sb, req, fac, fdeList, fdtList, terAyt, fechaContable);
             sb.append("</e>");
-            
+
             return sb.toString();
         } catch (SmlBuildingException ex) {
             throw ex;
@@ -119,7 +115,7 @@ public class ContabilizacionService {
 
     private void appendOperacionFields(StringBuilder sb, ContabilizacionRequestDto req, Fac fac, String terAyt, String fechaContable) {
         String numope = fac.getEJE() + "-" + fac.getFACNUM();
-        
+
         sb.append("<prevdef>").append(CryptoSical.encodeBase64("P")).append("</prevdef>");
         sb.append("<numope>").append(numope).append("</numope>");
         sb.append("<codope>").append(CryptoSical.encodeBase64("200")).append("</codope>");
@@ -191,7 +187,7 @@ public class ContabilizacionService {
                          (fde.getFDEDIF() != null ? fde.getFDEDIF() : 0.0);
             
             if (imp <= 0) continue;
-            
+
             sb.append("<linea>");
             sb.append("<lineje>").append(eje).append("</lineje>");
             if (fde.getFDEORG() != null) {
@@ -221,6 +217,7 @@ public class ContabilizacionService {
     }
 
     private void appendDtoElement(StringBuilder sb, Fdt fdt, String eje) {
+
         sb.append("<dto>");
         appendOptionalField(sb, "areaD", fdt.getFDTARE(), false);
         sb.append("<ejeD>").append(eje).append("</ejeD>");
@@ -250,8 +247,11 @@ public class ContabilizacionService {
     public String sendSmlRequest(String smlInput, String url) {
         String endpoint = (url != null && !url.isEmpty()) ? url : sicalWsUrl;
         
+        
         try {
-            RestTemplate restTemplate = new RestTemplate();
+            SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+
+            RestTemplate restTemplate = new RestTemplate(factory);
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.TEXT_XML);
             headers.add("SOAPAction", "");
@@ -266,10 +266,17 @@ public class ContabilizacionService {
                 "</soapenv:Envelope>";
 
             HttpEntity<String> entity = new HttpEntity<>(soapEnvelope, headers);
+            System.out.println("SOAP XML SENT:");
+            System.out.println(soapEnvelope);
+            System.out.println("BEFORE POST");
             ResponseEntity<String> response = restTemplate.postForEntity(endpoint, entity, String.class);
             
+            System.out.println("AFTER POST");
+            
             return response.getBody();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
@@ -277,6 +284,9 @@ public class ContabilizacionService {
     public ContabilizacionResponseDto parseResponse(String soapResponse) {
         ContabilizacionResponseDto dto = new ContabilizacionResponseDto();
         
+        System.out.println("Raw SOAP:");
+        System.out.println(soapResponse);
+
         try {
             String sml = extractSmlFromSoap(soapResponse);
             if (sml == null) {
@@ -287,7 +297,7 @@ public class ContabilizacionService {
 
             org.w3c.dom.Document doc = parseXmlDocument(sml);
             String exito = getTagValue(doc, "exito");
-            
+
             return "-1".equals(exito) ? parseSuccessResponse(doc, dto) : parseFailureResponse(doc, dto);
         } catch (com.example.backend.exception.XmlParsingException ex) {
             dto.setExito(false);

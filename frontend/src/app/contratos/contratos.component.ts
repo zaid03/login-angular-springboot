@@ -1127,10 +1127,13 @@ export class ContratosComponent {
       next: (res) => {
         this.isLoadingD = false;
         this.listaDeD = res;
+        if (res = []) {
+          this.DErrorMessage = 'No hay operaciones D para los datos requeridos';
+        }
       },
       error: (err) => {
         this.isLoadingD = false;
-        this.DErrorMessage = 'No hay operaciones D para los datos requeridos';
+        this.DErrorMessage = err.error.error ?? err.error;
       }
     })
   }
