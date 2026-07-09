@@ -1077,10 +1077,13 @@ export class ContratosComponent {
   economica: string = '';
   cgecod: string = '';
   DError: string = '';
+  referencia: string = '';
   checkBeforeAdd(centro: any) {
     this.limpiarMessages();
     
     this.cogaip = centro.cogaip;
+    this.referencia = centro.cogopd ?? '';
+    console.log(this.referencia)
     
     if (this.cogaip > 0) {
       this.DError = 'No se puede cambiar la D si ya hay pedidos'
@@ -1159,6 +1162,7 @@ export class ContratosComponent {
       next: (res) => {
         this.isAddingD = false;
         this.closeAddD();
+        this.closeUpdateSure();
         this.fetchCentroGestor(concod);
         this.cgeSuccess = 'D añadido con éxito';
       },
@@ -1168,6 +1172,26 @@ export class ContratosComponent {
       }
     })
 
+  }
+
+  updateSure: boolean = false;
+  toUpdate: any;
+  dMessageConfirm: string = '';
+  openUpdateSure(D: any){
+    this.updateSure = true;
+    this.toUpdate = D;
+    
+    if (this.referencia === '') {
+      this.dMessageConfirm = '¿Está seguro de añadir D a este centro gestor?';
+    } else {
+      this.dMessageConfirm = '¿Está seguro de cambiar D para este centro gestor?';
+    }
+  }
+
+  closeUpdateSure() {
+    this.updateSure = false;
+    this.toUpdate = [];
+    this.referencia = '';
   }
 
   //misc

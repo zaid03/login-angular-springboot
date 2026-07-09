@@ -345,10 +345,6 @@
                             <div class="spinner"></div>
                             <span>Cargando</span>
                         </div>
-                        <div *ngIf="isAddingD" class="loading-message">
-                            <div class="spinner"></div>
-                            <span>añadiendo</span>
-                        </div>
                         <table class="main-table cg">
                             <thead>
                                 <tr>
@@ -706,7 +702,6 @@
         <div class="title">
             <h1 class="art-title widthThird">Asignar D</h1>
         </div>
-        <button class="purple-btn">+</button>
         <button class="red-btn" (click)="closeAddD()">✖</button>
     </div>
     <h1 class="errorBtn">{{DErrorMessage}}</h1>
@@ -750,7 +745,8 @@
         <tbody>
             <tr 
                 *ngFor="let d of paginatedSearchResultsD"
-                (click)="updateDContrato(d)"
+                (click)="openUpdateSure(d)"
+                class="pointer"
             >
                 <td>{{d.lineaList[0].referencia}}</td>
                 <td>{{d.numope}}</td>
@@ -770,4 +766,15 @@
         <span> {{ searchPageD + 1 }} de {{ searchTotalPagesD }}</span>
         <button class="pag-btn" (click)="searchPageD = searchPageD + 1" [disabled]="searchPageD + 1 >= searchTotalPagesD">Siguiente</button>
     </div>
+</div>
+
+<div class="modal-backdrop force" *ngIf="updateSure"></div>
+<div class="delete-confirm-modal adj" *ngIf="updateSure">
+    <div *ngIf="isAddingD" class="loading-message">
+        <div class="spinner"></div>
+        <span>añadiendo</span>
+    </div>
+    <p class="p-style">{{dMessageConfirm}}</p>
+    <button class="purple-btn btn-space" (click)="updateDContrato(toUpdate)">Sí</button>
+    <button class="red-btn" (click)="closeUpdateSure()">No</button>
 </div>
