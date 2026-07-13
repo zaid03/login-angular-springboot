@@ -28,7 +28,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         "/scap/health",
         "/scap/api/sical",
         "/scap/api/rpc/call",
-        "/scap/login"
+        "/scap/login",
+        "/test",
+        "/scap/test"
     );
     
     // Extensions de fichiers statiques à ignorer
