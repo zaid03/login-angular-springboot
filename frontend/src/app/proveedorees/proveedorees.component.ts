@@ -928,7 +928,9 @@ export class ProveedoreesComponent {
   onProveedorSearch(){
     this.selectedProveediresFromResults = [];
     this.limpiarMessages();
-    const q = (this.searchProveedor || '').toString().trim();
+
+    const q = this.searchProveedor.toString().trim();
+    
     if (!this.searchAdd) {
       this.anadirProveedorErrorMessage = 'Selecciona tipo de búsqueda';
       return;
