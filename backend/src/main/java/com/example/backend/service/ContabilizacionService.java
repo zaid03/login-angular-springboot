@@ -10,6 +10,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -30,7 +31,7 @@ import com.example.sical.CryptoSical;
 @Service
 public class ContabilizacionService {
 
-    @Value("${sical.ws.url:http://desa-sical-ws:8080/services/Ci?wsdl}")
+    @Value("${sical.ws.url:http://desa-sical-ws:8080/services/Ci}")
     private String sicalWsUrl;
 
     @Autowired
@@ -237,14 +238,24 @@ public class ContabilizacionService {
         sb.append("</par>");
         sb.append("</e>");
 
-        return sb.toString();
+        String sml = sb.toString();
+
+        System.out.println("========== SML REQUEST ==========");
+        System.out.println(sml);
+        System.out.println("=================================");
+
+        return sml;
+        // return sb.toString();
     }
 
     public String sendSmlRequest(String smlInput, String url) {
         String endpoint = (url != null && !url.isEmpty()) ? url : sicalWsUrl;
         
         try {
-            RestTemplate restTemplate = new RestTemplate();
+            SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+factory.setConnectTimeout(10000); // 10 sec
+factory.setReadTimeout(10000);
+            RestTemplate restTemplate = new RestTemplate(factory);
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.TEXT_XML);
             headers.add("SOAPAction", "");
@@ -258,16 +269,39 @@ public class ContabilizacionService {
                 "</soapenv:Body>" +
                 "</soapenv:Envelope>";
 
+                System.out.println("========== SOAP ENVELOPE ==========");
+System.out.println(soapEnvelope);
+System.out.println("===================================");
+
             HttpEntity<String> entity = new HttpEntity<>(soapEnvelope, headers);
+            System.out.println("Sending to:");
+System.out.println(endpoint);
+
+System.out.println("Before POST...");
             ResponseEntity<String> response = restTemplate.postForEntity(endpoint, entity, String.class);
+
+            System.out.println("After POST...");
+
+            System.out.println("========== HTTP STATUS ==========");
+System.out.println(response.getStatusCode());
+
+System.out.println("========== SOAP RESPONSE ==========");
+System.out.println(response.getBody());
+System.out.println("==================================");
             
             return response.getBody();
         } catch (Exception e) {
+            System.out.println("========== REQUEST FAILED ==========");
+    e.printStackTrace();
             return null;
         }
     }
 
     public ContabilizacionResponseDto parseResponse(String soapResponse) {
+        System.out.println("========== RAW SOAP ==========");
+System.out.println(soapResponse);
+System.out.println("==============================");
+
         ContabilizacionResponseDto dto = new ContabilizacionResponseDto();
         
         try {
@@ -407,6 +441,8 @@ public class ContabilizacionService {
         try {
             return CryptoSical.decodeBase64(value);
         } catch (Exception e) {
+            System.out.println("========== REQUEST FAILED ==========");
+    e.printStackTrace();
             return value;
         }
     }
