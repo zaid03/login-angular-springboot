@@ -657,8 +657,8 @@
                     class="checkbox"
                     name="searchAdd"
                     [(ngModel)]="searchAdd" 
-                    [value]="'apell'" 
-                /> Apellido
+                    [value]="'codigo'" 
+                /> Código
             </div>
             <div class="search-btns-prov">
                 <button 
@@ -734,7 +734,7 @@
     </div>
     <div class="saved-details">
         <p class="p-style" *ngIf="cargarProveedoresError">{{cargarProveedoresError}}</p>
-        <p class="p-style" *ngIf="savedNames.length">Proveedores cargadas: <span class="message-text">{{savedNames}}</span></p>
+        <p class="p-style" *ngIf="savedNames.length">Proveedores cargados: <span class="message-text">{{savedNames}}</span></p>
         <p class="p-style" *ngIf="unsavedNames.length">Proveedores ya existentes: <span class="message-text">{{unsavedNames}}</span></p>
     </div>
 </div>

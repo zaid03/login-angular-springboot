@@ -890,6 +890,8 @@ export class ProveedoreesComponent {
   }
 
   closeProveedorModal(): void {
+    this.proveedoresSearchResults = [];
+    this.fullProveedoresSearchResults = [];
     this.showProveedorModal = false;
     this.limpiarMessages();
     this.resetProveedorModalState();
@@ -924,6 +926,7 @@ export class ProveedoreesComponent {
   fullProveedoresSearchResults: any[] = [];
   selectedProveediresFromResults: any[] = [];
   onProveedorSearch(){
+    this.selectedProveediresFromResults = [];
     this.limpiarMessages();
     const q = (this.searchProveedor || '').toString().trim();
     if (!this.searchAdd) {
@@ -945,14 +948,14 @@ export class ProveedoreesComponent {
   private callProveedorSearchApi(searchTerm: string): void {
     let nif: string | null = null;
     let nom: string | null = null;
-    let apell: string | null = null;
+    let codigo: string | null = null;
 
     if (this.searchAdd === 'nif') {
       nif = searchTerm;
     } else if (this.searchAdd === 'nom') {
       nom = searchTerm;
-    } else if (this.searchAdd === 'apell') {
-      apell = searchTerm;
+    } else if (this.searchAdd === 'codigo') {
+      codigo = searchTerm;
     }
 
     this.isSearching = true;
@@ -960,7 +963,7 @@ export class ProveedoreesComponent {
     const params: string[] = [];
     if (nif) params.push(`nif=${encodeURIComponent(nif)}`);
     if (nom) params.push(`nom=${encodeURIComponent(nom)}`);
-    if (apell) params.push(`apell=${encodeURIComponent(apell)}`);
+    if (codigo) params.push(`codigo=${encodeURIComponent(codigo)}`);
     apiUrl += params.join('&');
 
     this.http.get<any[]>(apiUrl).subscribe({

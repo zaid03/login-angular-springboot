@@ -48,7 +48,7 @@ public class SicalService {
     @Value("${sical.eje}")
     private String eje;
 
-    public List<Tercero> getTerceros(String nif, String nom, String apell) throws XmlParsingException {
+    public List<Tercero> getTerceros(String nif, String nom, String codigo) throws XmlParsingException {
       try {
             CryptoSical.SecurityFields sec = CryptoSical.calculateSecurityFields(publicKey);
 
@@ -77,18 +77,16 @@ public class SicalService {
               "<l_tercero>" +
                 "<tercero>" +
                   "<portal>S</portal>" + 
-                  "<idenTercero></idenTercero>" +
                   (nif   != null ? "<NIFtercero>"   + CryptoSical.encodeBase64(nif)   + "</NIFtercero>"   : "") +
                   (nom   != null ? "<nomTercero>"   + CryptoSical.encodeBase64("%" + nom + "%")   + "</nomTercero>"   : "") +
-                  (apell != null ? "<apellTercero>" + CryptoSical.encodeBase64("%" + apell + "%") + "</apellTercero>" : "") +
+                  (codigo != null ? "<idenTercero>" + codigo + "</idenTercero>" : "") +
                   "<indice>0</indice>" +
-                  "<NumRegDev>50</NumRegDev>" +
                 "</tercero>" +
               "</l_tercero>" +
             "</par>"+
           "</e>";
 
-      String soapEnvelope =
+        String soapEnvelope =
           "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
           "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:impl=\"http://desa-sical-ws:8080/services/Ci\">" +
             "<soapenv:Header/>" +

@@ -18,9 +18,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.example.backend.exception.XmlParsingException;
-
 import com.example.backend.dto.Partida;
+import com.example.backend.exception.XmlParsingException;
 import com.example.sical.CryptoSical;
 
 @Service
