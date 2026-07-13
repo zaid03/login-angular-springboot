@@ -153,8 +153,8 @@ public class OperacionesService {
 
             System.out.println("=== RAW responseXml ===");
 System.out.println(xml); 
-System.out.println("=== DECODED sml ===");
-System.out.println(sml);
+// System.out.println("=== DECODED sml ===");
+// System.out.println(sml);
 
             NodeList exitoNodes = findElementsByName(doc, "exito");
             if (exitoNodes.getLength() > 0) {

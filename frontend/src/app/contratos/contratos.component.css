@@ -90,6 +90,7 @@
 .info-D {display: flex; width: 100%; gap: 10px; justify-content: center; margin: 10px;}
 .info-content {display: flex; align-items: center; width: 30%; gap: 10px;}
 .pointer {cursor: pointer;}
+.d-table tbody td:nth-child(8) {text-align: right;}
 /* D grid for centro gestor */
 /* add contrato grid */
 .proveedor-grid-modal .search-holder {width: 99%;}
