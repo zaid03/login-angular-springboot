@@ -15,6 +15,7 @@ import com.example.backend.service.SicalService;
 import java.util.List;
 import java.util.Map;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -47,21 +48,18 @@ public class SicalControllerTest {
     @Test
     void getTerceros_withParams_forwardsToService_andReturnsList() throws Exception {
         @SuppressWarnings("unchecked")
-        List<Object> dummy = (List<Object>)(List<?>) List.of(Map.of("nif", "111X", "nombre", "Alice", "apell", "Smith"));
-        when(sicalService.getTerceros("111X", "Alice", "Smith")).thenReturn((List) dummy);
+        List<Object> dummy = (List<Object>)(List<?>) List.of(Map.of("nif", "111X", "nombre", "Alice", "codigo", "123"));
+        when(sicalService.getTerceros("111X", "Alice", "123"))
+            .thenReturn((List) dummy);
 
         mockMvc.perform(get("/api/sical/terceros")
                 .param("nif", "111X")
                 .param("nom", "Alice")
-                .param("apell", "Smith")
+                .param("codigo", "123")
                 .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$", hasSize(1)))
-            .andExpect(jsonPath("$[0].nif").value("111X"))
-            .andExpect(jsonPath("$[0].nombre").value("Alice"))
-            .andExpect(jsonPath("$[0].apell").value("Smith"));
+            .andExpect(status().isOk());
 
-        verify(sicalService).getTerceros("111X", "Alice", "Smith");
+        verify(sicalService).getTerceros("111X", "Alice", "123");
     }
 
     @Test

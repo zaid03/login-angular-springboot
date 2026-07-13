@@ -15,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.example.backend.dto.ContabilizacionRequestDto;
 import com.example.backend.dto.ContabilizacionResponseDto;
+import com.example.backend.exception.SmlBuildingException;
 import com.example.backend.sqlserver2.model.Fac;
 import com.example.backend.sqlserver2.model.FacId;
 import com.example.backend.sqlserver2.model.Fde;
@@ -45,6 +46,22 @@ public class ContabilizacionService {
     private TerRepository terRepository;
 
     public String buildSmlInput(ContabilizacionRequestDto req, Fac fac, List<Fde> fdeList, List<Fdt> fdtList, String terAyt) throws Exception {
+        if (req == null) {
+        throw new SmlBuildingException("Request cannot be null");
+        }
+
+        if (fac == null) {
+            throw new SmlBuildingException("Fac cannot be null");
+        }
+
+        if (fdeList == null) {
+            throw new SmlBuildingException("Fde list cannot be null");
+        }
+
+        if (fdtList == null) {
+            throw new SmlBuildingException("Fdt list cannot be null");
+        }
+
         String org = req.getOrg();
         String ent = req.getEnt();
         String eje = req.getEje();
