@@ -12,6 +12,7 @@ import org.mockito.ArgumentCaptor;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +33,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.example.backend.config.TestExceptionHandler;
 import com.example.backend.config.TestSecurityConfig;
+import com.example.backend.dto.ArticuloArticulo;
+import com.example.backend.dto.ArticuloFamilia;
+import com.example.backend.dto.ArticuloSubfamilia;
 import com.example.backend.sqlserver2.model.Afa;
 import com.example.backend.sqlserver2.model.AfaId;
 import com.example.backend.sqlserver2.repository.AfaRepository;
+import com.example.backend.sqlserver2.repository.ArtRepository;
+import com.example.backend.sqlserver2.repository.AsuRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @WebMvcTest(controllers = AfaController.class)
@@ -47,6 +53,12 @@ public class AfaControllerTest {
 
     @MockitoBean
     private AfaRepository afaRepository;
+
+    @MockitoBean
+    private AsuRepository asuRepository;
+
+    @MockitoBean
+    private ArtRepository artRepository;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -85,35 +97,6 @@ public class AfaControllerTest {
     }
 
     @Test
-    void getByEntAndAfadesLike_returnsListOr404() throws Exception {
-        Afa a = new Afa(); a.setAFACOD("AF"); a.setAFADES("Desc");
-        when(afaRepository.findByENTAndAFADESContaining(1, "Desc")).thenReturn(List.of(a));
-
-        mockMvc.perform(get("/api/afa/by-ent-like/1/Desc")
-                .accept(MediaType.APPLICATION_JSON))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$", hasSize(1)));
-
-        when(afaRepository.findByENTAndAFADESContaining(2, "X")).thenReturn(List.of());
-        mockMvc.perform(get("/api/afa/by-ent-like/2/X"))
-            .andDo(print())
-            .andExpect(status().isNotFound())
-            .andExpect(content().string("Sin resultado"));
-    }
-
-    @Test
-    void getByEntAndAfadesLike_returns400OnDataAccessException() throws Exception {
-        when(afaRepository.findByENTAndAFADESContaining(anyInt(), anyString()))
-            .thenThrow(new DataAccessResourceFailureException("DB down"));
-
-        mockMvc.perform(get("/api/afa/by-ent-like/1/Desc"))
-            .andDo(print())
-            .andExpect(status().isBadRequest())
-            .andExpect(content().string(containsString("Error")));
-    }
-
-    @Test
     void getAfaByEnt_returnsListOr404() throws Exception {
         Afa a = new Afa();
         when(afaRepository.findByENT(1)).thenReturn(List.of(a));
@@ -137,6 +120,140 @@ public class AfaControllerTest {
             .thenThrow(new DataAccessResourceFailureException("DB down"));
 
         mockMvc.perform(get("/api/afa/by-ent/1"))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Error")));
+    }
+
+    @Test
+    void proveedorFetch_familiaNumericTerm_usesCodeLookup() throws Exception {
+        ArticuloFamilia f = new ArticuloFamilia() {
+            @Override public String getAFACOD() { return "123"; }
+            @Override public String getAFADES() { return "Desc"; }
+        };
+        when(afaRepository.findAllByENTAndAFACOD(1, "123")).thenReturn(List.of(f));
+
+        mockMvc.perform(get("/api/afa/fetch-articulos-proveedor/1/familia/123")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(1)))
+            .andExpect(jsonPath("$[0].afacod").value("123"));
+    }
+
+    @Test
+    void proveedorFetch_familiaTextTerm_usesDescriptionLookup() throws Exception {
+        ArticuloFamilia f = new ArticuloFamilia() {
+            @Override public String getAFACOD() { return "AF1"; }
+            @Override public String getAFADES() { return "Desc"; }
+        };
+        when(afaRepository.findByENTAndAFADESContaining(1, "Desc")).thenReturn(List.of(f));
+
+        mockMvc.perform(get("/api/afa/fetch-articulos-proveedor/1/familia/Desc")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(1)))
+            .andExpect(jsonPath("$[0].afades").value("Desc"));
+    }
+
+    @Test
+    void proveedorFetch_subfamiliaNumericTerm_usesCodeLookup() throws Exception {
+        ArticuloSubfamilia s = new ArticuloSubfamilia() {
+            @Override public String getAFACOD() { return "AF1"; }
+            @Override public String getASUCOD() { return "123"; }
+            @Override public String getASUDES() { return "Desc"; }
+        };
+        when(asuRepository.findByENTAndAFACODOrENTAndASUCOD(1, "123", 1, "123"))
+            .thenReturn(List.of(s));
+
+        mockMvc.perform(get("/api/afa/fetch-articulos-proveedor/1/subfamilia/123")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(1)))
+            .andExpect(jsonPath("$[0].asucod").value("123"));
+    }
+
+    @Test
+    void proveedorFetch_subfamiliaTextTerm_usesDescriptionLookup() throws Exception {
+        ArticuloSubfamilia s = new ArticuloSubfamilia() {
+            @Override public String getAFACOD() { return "AF1"; }
+            @Override public String getASUCOD() { return "SU1"; }
+            @Override public String getASUDES() { return "Desc"; }
+        };
+        when(asuRepository.findByENTAndASUDESContaining(1, "Desc")).thenReturn(List.of(s));
+
+        mockMvc.perform(get("/api/afa/fetch-articulos-proveedor/1/subfamilia/Desc")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(1)))
+            .andExpect(jsonPath("$[0].asudes").value("Desc"));
+    }
+
+    @Test
+    void proveedorFetch_articuloNumericTerm_usesCodeLookup() throws Exception {
+        ArticuloArticulo art = new ArticuloArticulo() {
+            @Override public String getAFACOD() { return "AF1"; }
+            @Override public String getASUCOD() { return "SU1"; }
+            @Override public String getARTCOD() { return "123"; }
+            @Override public String getARTDES() { return "Desc"; }
+        };
+        when(artRepository.findByENTAndAFACODOrENTAndASUCODOrENTAndARTCOD(1, "123", 1, "123", 1, "123"))
+            .thenReturn(List.of(art));
+
+        mockMvc.perform(get("/api/afa/fetch-articulos-proveedor/1/articulo/123")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(1)))
+            .andExpect(jsonPath("$[0].artcod").value("123"));
+    }
+
+    @Test
+    void proveedorFetch_articuloTextTerm_usesDescriptionLookup() throws Exception {
+        ArticuloArticulo art = new ArticuloArticulo() {
+            @Override public String getAFACOD() { return "AF1"; }
+            @Override public String getASUCOD() { return "SU1"; }
+            @Override public String getARTCOD() { return "ART1"; }
+            @Override public String getARTDES() { return "Desc"; }
+        };
+        when(artRepository.findByENTAndARTDESContaining(1, "Desc")).thenReturn(List.of(art));
+
+        mockMvc.perform(get("/api/afa/fetch-articulos-proveedor/1/articulo/Desc")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(1)))
+            .andExpect(jsonPath("$[0].artdes").value("Desc"));
+    }
+
+    @Test
+    void proveedorFetch_returns200WithEmptyListWhenNoMatches() throws Exception {
+        when(afaRepository.findByENTAndAFADESContaining(1, "Nothing")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/afa/fetch-articulos-proveedor/1/familia/Nothing")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(0)));
+    }
+
+    @Test
+    void proveedorFetch_returns404ForUnknownSearchType() throws Exception {
+        mockMvc.perform(get("/api/afa/fetch-articulos-proveedor/1/unknown/Term"))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(content().string("Sin resultado"));
+    }
+
+    @Test
+    void proveedorFetch_returns400OnDataAccessException() throws Exception {
+        when(afaRepository.findByENTAndAFADESContaining(anyInt(), anyString()))
+            .thenThrow(new DataAccessResourceFailureException("DB down"));
+
+        mockMvc.perform(get("/api/afa/fetch-articulos-proveedor/1/familia/Desc"))
             .andDo(print())
             .andExpect(status().isBadRequest())
             .andExpect(content().string(containsString("Error")));

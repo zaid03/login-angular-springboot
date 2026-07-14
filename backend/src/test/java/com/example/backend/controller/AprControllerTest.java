@@ -195,30 +195,72 @@ public class AprControllerTest {
     }
 
     @Test
-    void addApr_returns201OnSuccess() throws Exception {
+    void addApr_savesNewArticulo_returnsInSavedList() throws Exception {
         Apr apr = new Apr();
-        apr.setAPRREF("ART_NEW");
-        apr.setAPRPRE(100.0);
+        apr.setENT(1);
+        apr.setTERCOD(100);
+        apr.setAFACOD("FAM");
+        apr.setASUCOD("SUB");
+        apr.setARTCOD("ART");
+
+        AprId id = new AprId(1, 100, "FAM", "SUB", "ART");
+        when(aprRepository.findById(id)).thenReturn(Optional.empty());
 
         mockMvc.perform(post("/api/more/add-apr")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(apr)))
+                .content(objectMapper.writeValueAsString(List.of(apr))))
             .andDo(print())
-            .andExpect(status().isCreated())
-            .andExpect(content().string(containsString("added successfully")));
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.savedArticulos", hasSize(1)))
+            .andExpect(jsonPath("$.savedArticulos[0].afacod").value("FAM"))
+            .andExpect(jsonPath("$.unsavedArticulos", hasSize(0)));
 
         verify(aprRepository).save(any(Apr.class));
     }
 
     @Test
-    void addApr_returns400OnDataAccessException() throws Exception {
+    void addApr_skipsExistingArticulo_returnsInUnsavedList() throws Exception {
         Apr apr = new Apr();
-        apr.setAPRREF("ART_NEW");
-        when(aprRepository.save(any())).thenThrow(new DataAccessResourceFailureException("DB error"));
+        apr.setENT(1);
+        apr.setTERCOD(100);
+        apr.setAFACOD("FAM");
+        apr.setASUCOD("SUB");
+        apr.setARTCOD("ART");
+
+        AprId id = new AprId(1, 100, "FAM", "SUB", "ART");
+        Apr existing = new Apr();
+        existing.setAFACOD("FAM");
+        existing.setASUCOD("SUB");
+        existing.setARTCOD("ART");
+        when(aprRepository.findById(id)).thenReturn(Optional.of(existing));
 
         mockMvc.perform(post("/api/more/add-apr")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(apr)))
+                .content(objectMapper.writeValueAsString(List.of(apr))))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.unsavedArticulos", hasSize(1)))
+            .andExpect(jsonPath("$.unsavedArticulos[0].artcod").value("ART"))
+            .andExpect(jsonPath("$.savedArticulos", hasSize(0)));
+
+        verify(aprRepository, org.mockito.Mockito.never()).save(any(Apr.class));
+    }
+
+    @Test
+    void addApr_returns400OnDataAccessException() throws Exception {
+        Apr apr = new Apr();
+        apr.setENT(1);
+        apr.setTERCOD(100);
+        apr.setAFACOD("FAM");
+        apr.setASUCOD("SUB");
+        apr.setARTCOD("ART");
+
+        when(aprRepository.findById(any(AprId.class)))
+            .thenThrow(new DataAccessResourceFailureException("DB error"));
+
+        mockMvc.perform(post("/api/more/add-apr")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(List.of(apr))))
             .andDo(print())
             .andExpect(status().isBadRequest())
             .andExpect(content().string(containsString("Error :")));
