@@ -9,16 +9,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.backend.sqlserver2.model.Asu;
 import com.example.backend.sqlserver2.model.AsuId;
+import com.example.backend.dto.ArticuloSubfamilia;
 
 @Repository
 public interface AsuRepository extends JpaRepository<Asu, AsuId> {
 
-    //fetching subfamilias and search them
-    List<Asu> findByENTAndAFACOD(int ent, String afacod);
-    List<Asu> findByENTAndASUCOD(int ent, String asucod);
-
-    // Method to find Asu records by ENT and ASUCOD like
-    List<Asu> findByENTAndASUDESContaining(int ent, String asudes);
+    //method to fetch articulos to add to proveedor
+    List<ArticuloSubfamilia> findByENTAndAFACODOrENTAndASUCOD(Integer ent, String afacod, Integer ent2, String asucod);
+    List<ArticuloSubfamilia> findByENTAndASUDESContaining(int ent, String asudes);
 
     //find an art name to add subs
     List<Asu> findByENTAndAFACODAndASUCOD(int ENT, String AFACOD, String ASUCOD);
@@ -32,4 +30,7 @@ public interface AsuRepository extends JpaRepository<Asu, AsuId> {
     @Modifying
     @Transactional
     int deleteByENTAndAFACODAndASUCOD(Integer ENT, String AFACOD, String ASUCOD);
+
+    //filtering subs by ent and afacod
+    List<Asu> findByENTAndAFACOD(Integer ent, String afacod);
 }

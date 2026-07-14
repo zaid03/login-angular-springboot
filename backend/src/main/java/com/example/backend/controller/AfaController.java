@@ -1,28 +1,42 @@
 package com.example.backend.controller;
 
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.backend.dto.ArticuloFamilia;
+import com.example.backend.dto.ArticuloSubfamilia;
+import com.example.backend.dto.ArticuloArticulo;
 import com.example.backend.sqlserver2.model.Afa;
 import com.example.backend.sqlserver2.model.AfaId;
 import com.example.backend.sqlserver2.repository.AfaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.HttpStatus;
-import org.springframework.dao.DataAccessException;
-
-
-import java.util.List;
-import java.util.Optional;
+import com.example.backend.sqlserver2.repository.AsuRepository;
+import com.example.backend.sqlserver2.repository.ArtRepository;
 
 @RestController
 @RequestMapping("/api/afa")
 public class AfaController {
-
     @Autowired
     private AfaRepository afaRepository;
+    @Autowired
+    private AsuRepository asuRepository;
+    @Autowired
+    private ArtRepository artRepository;
 
     private static final String SIN_RESULTADO = "Sin resultado";
     private static final String ERROR = "Error :";
-
+    
     @GetMapping("/by-ent/{ent}/{afacod}")
     public ResponseEntity<?> getByEntAndAfacod(
         @PathVariable int ent, 
@@ -41,23 +55,42 @@ public class AfaController {
         }
     }
 
-    @GetMapping("/by-ent-like/{ent}/{afades}")
-    public ResponseEntity<?> getByEntAndAfadesLike(
-        @PathVariable int ent, 
-        @PathVariable String afades
+    //method to fetch articulos to add to proveedor
+    private boolean isNumbersOnly(String text) {return text.matches("^[0-9]+$");}
+    @GetMapping("/fetch-articulos-proveedor/{ent}/{searchType}/{term}")
+    public ResponseEntity<?> proveedorArticulosFetch (
+        @PathVariable Integer ent,
+        @PathVariable String searchType,
+        @PathVariable String term
     ) {
         try {
-            List<Afa> familias = afaRepository.findByENTAndAFADESContaining(ent, afades);
-            if(familias.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(SIN_RESULTADO);
+            if (isNumbersOnly(term)) {
+                if (searchType.equals("familia")) {
+                    List<ArticuloFamilia> articulos = afaRepository.findAllByENTAndAFACOD(ent, term);
+                    return ResponseEntity.ok(articulos);
+                } else if (searchType.equals("subfamilia")) {
+                    List<ArticuloSubfamilia> articulos = asuRepository.findByENTAndAFACODOrENTAndASUCOD(ent, term, ent, term);
+                    return ResponseEntity.ok(articulos);
+                } else if (searchType.equals("articulo")) {
+                    List<ArticuloArticulo> articulos = artRepository.findByENTAndAFACODOrENTAndASUCODOrENTAndARTCOD(ent, term, ent, term, ent, term);
+                    return ResponseEntity.ok(articulos);
+                }
+            } else {
+                if (searchType.equals("familia")) {
+                    List<ArticuloFamilia> articulos = afaRepository.findByENTAndAFADESContaining(ent, term);
+                    return ResponseEntity.ok(articulos);
+                } else if (searchType.equals("subfamilia")) {
+                    List<ArticuloSubfamilia> articulos = asuRepository.findByENTAndASUDESContaining(ent, term);
+                    return ResponseEntity.ok(articulos);
+                } else if (searchType.equals("articulo")) {
+                    List<ArticuloArticulo> articulos = artRepository.findByENTAndARTDESContaining(ent, term);
+                    return ResponseEntity.ok(articulos);
+                }
             }
-
-            return ResponseEntity.ok(familias);
-        } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ERROR + ex.getMostSpecificCause().getMessage());
-        }
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sin resultado");
+        }catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ERROR + ex.getMostSpecificCause().getMessage());
+        } 
     }
 
     //find familias by ent

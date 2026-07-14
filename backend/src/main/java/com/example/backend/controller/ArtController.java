@@ -1,20 +1,22 @@
 package com.example.backend.controller;
 
-import com.example.backend.sqlserver2.model.Art;
-import com.example.backend.sqlserver2.repository.ArtRepository;
-import com.example.backend.sqlserver2.repository.AsuRepository;
-import com.example.backend.sqlserver2.repository.AfaRepository;
-import com.example.backend.dto.ArtAsuContratoProjection;
-import com.example.backend.dto.ArtNameProjection;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.stream.Stream;
+import com.example.backend.dto.ArtAsuContratoProjection;
+import com.example.backend.dto.ArtNameProjection;
+import com.example.backend.sqlserver2.repository.AfaRepository;
+import com.example.backend.sqlserver2.repository.ArtRepository;
+import com.example.backend.sqlserver2.repository.AsuRepository;
 
 @RestController
 @RequestMapping("/api/art")
@@ -29,52 +31,6 @@ public class ArtController {
     
     private static final String SIN_RESULTADO = "Sin resultado";
     private static final String ERROR = "Error :";
-
-    // Method to find Art records by ENT and AFACOD and artcod
-    @GetMapping("/by-ent/{ent}/{afacod}/{asucod}/{artcod}")
-    public ResponseEntity<?> getByEntAfacodAsucodArtcod(
-            @PathVariable int ent,
-            @PathVariable String afacod,
-            @PathVariable String asucod,
-            @PathVariable String artcod
-    ) {
-        try {
-            List<Art> byAfacod = artRepository.findByENTAndAFACOD(ent, afacod);
-            List<Art> byAsucod = artRepository.findByENTAndASUCOD(ent, asucod);
-            List<Art> byArtcod = artRepository.findByENTAndARTCOD(ent, artcod);
-            
-            List<Art> combined = Stream.concat(
-                Stream.concat(byAfacod.stream(), byAsucod.stream()),
-                byArtcod.stream()
-            )
-            .distinct()
-            .toList();
-
-            return ResponseEntity.ok(combined);
-        } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ERROR + ex.getMostSpecificCause().getMessage());
-        }
-    }
-
-    // Method to find art records by ent and artdes like
-    @GetMapping("/by-ent-like/{ent}/{artdes}")
-    public ResponseEntity<?> getByEntAndArtdesLike(
-            @PathVariable int ent,
-            @PathVariable String artdes
-    ) {
-        try {
-            List<Art> articulos = artRepository.findByENTAndARTDESContaining(ent, artdes);
-            if(articulos.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(SIN_RESULTADO);
-            }
-            return ResponseEntity.ok(articulos);
-        } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ERROR + ex.getMostSpecificCause().getMessage());
-        }
-    }
 
     //find an art name
     @GetMapping("/art-name/{ent}/{afacod}/{asucod}/{artcod}")

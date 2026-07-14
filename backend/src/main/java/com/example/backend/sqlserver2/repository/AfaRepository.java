@@ -10,14 +10,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.backend.sqlserver2.model.Afa;
 import com.example.backend.sqlserver2.model.AfaId;
 
+import com.example.backend.dto.ArticuloFamilia;
+
 @Repository
 public interface AfaRepository extends JpaRepository<Afa, AfaId> {
 
     // Method to find Afa records by ENT and AFACOD
-    List<Afa> findByENTAndAFACOD(int ent, String afacod);
-
-    // Method to find afa records by ent and afacod using like
-    List<Afa> findByENTAndAFADESContaining(int ent, String afades);
+    List<Afa> findByENTAndAFACOD(int ent, String afacod);    
 
     //find familias by ent
     List<Afa> findByENT(int ent);
@@ -26,4 +25,8 @@ public interface AfaRepository extends JpaRepository<Afa, AfaId> {
     @Modifying
     @Transactional
     int deleteByENTAndAFACOD(Integer ENT, String AFACOD);
+
+    //method to fetch articulos to add to proveedor
+    List<ArticuloFamilia> findAllByENTAndAFACOD(Integer ent, String afacod);
+    List<ArticuloFamilia> findByENTAndAFADESContaining(int ent, String afades);
 }

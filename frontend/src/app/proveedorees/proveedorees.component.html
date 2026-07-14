@@ -556,46 +556,55 @@
         <div class="title">
             <h1>Añadir articulo</h1>
         </div>
+        <p class="p-style">Seleccionados: {{selectedArticulosAdd.length}} Articulos</p>
+        <button class="purple-btn" (click)="addArticulo()">+</button>
         <button class="red-btn" (click)="hideHello()">✖</button>
     </div>
-    <h1 class="successBtn">{{ anadirmessage }}</h1>
     <h1 class="errorBtn">{{ anadirErrorMessage }}</h1>
     <div *ngIf="isAdding" class="loading-message">
         <div class="spinner"></div>
         <span>añadiendo</span>
     </div>
+    <div *ngIf="isLoadingArticulo" class="loading-message">
+        <div class="spinner"></div>
+        <span>Cargando</span>
+    </div>
+    <p class="errorBtn">{{articuloErrorFetch}}</p>
     <form class="anadir-articulo-form">
         <div class="search-anadir">
+            <input 
+                type="text" 
+                class="search-bar"
+                placeholder="Buscar" 
+                name="search"
+                [(ngModel)]="searchValue"
+            />
             <input type="radio" class="checkbox" [(ngModel)]="searchType" [value]="'familia'" value="familia" name="searchType" />Familia
             <input type="radio" class="checkbox" [(ngModel)]="searchType" [value]="'subfamilia'" value="subfamilia" name="searchType" />Subfamilia
             <input type="radio" class="checkbox" [(ngModel)]="searchType" [value]="'articulo'" value="articulo" name="searchType" />Artículo
+            <button class="purple-btn" (click)="onSearch()">Buscar</button>
+            <button class="purple-btn" (click)="limpiarSearchArticulo()">Limpiar</button>
         </div>   
-        <div class="search-anadir-input">
-            <input 
-            type="text" 
-            class="search-bar"
-            placeholder="Buscar familia, subfamilia o artículo" 
-            name="search"
-            [(ngModel)]="searchValue"
-            (keyup.enter)="onSearch()"
-            />
-        </div>
         <table class="main-table">
             <thead>
                 <th>Familia</th>
                 <th>Subfamilia</th>
                 <th>Artículo</th>
+                <th>Descripción</th>
             </thead>
             <tbody>
                 <tr *ngFor="let item of paginatedSearchResults"
-                    (click)="selectSearchRow(item); addArticulo()"
-                    [class.selected-row]="item === selectedSearchRow">
+                    (click)="selectArticulo(item)"
+                    [class.selected-row]="isArticuloSelected(item)">
                     <td>{{ item.afacod }}</td>
-                    <td>{{ item.asucod }}</td>
-                    <td>{{ item.artcod }}</td>
+                    <td>{{ item.asucod ?? '*' }}</td>
+                    <td>{{ item.artcod ?? '*' }}</td>
+                    <td>{{item.afades ?? item.asudes ?? item.artdes}}</td>
                 </tr>
                 <tr *ngIf="searchResults.length === 0">
-                    <td colspan="3" style="text-align:center;">No hay resultados</td>
+                    <td colspan="4" style="text-align:center;">
+                        <p class="errorBtn">No hay artículos</p>
+                    </td>
                 </tr>
             </tbody>
         </table>
@@ -605,6 +614,54 @@
             <button class="pag-btn" (click)="searchPage = searchPage + 1" [disabled]="searchPage + 1 >= searchTotalPages">Siguiente</button>
         </div>
     </form>
+</div>
+
+<div class="modal-backdrop force" *ngIf="articulosMessagesGrid"></div>
+<div class="delete-confirm-modal adj" *ngIf="articulosMessagesGrid">
+    <div class="btns">
+        <button class="red-btn margin" (click)="closeArtoculosMessages()">✖</button>
+    </div>
+    <div class="saved-details special">
+        <p class="p-style" *ngIf="messageGridError">{{messageGridError}}</p>
+        <div class="saved-table" *ngIf="savedNamesArticulo.length">
+            <p class="p-style adjs">Artículos cargados</p>
+            <table class="main-table">
+                <thead>
+                    <tr>
+                        <th>Familia</th>
+                        <th>Subfamilia</th>
+                        <th>C.Artículo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let s of savedNamesArticulo">
+                        <td>{{s.afacod}}</td>
+                        <td>{{s.asucod}}</td>
+                        <td>{{s.artcod}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="saved-table" *ngIf="unsavedNamesArticulo.length">
+            <p class="p-style adjs">Artículos ya existentes</p>
+            <table class="main-table">
+                <thead>
+                    <tr>
+                        <th>Familia</th>
+                        <th>Subfamilia</th>
+                        <th>C.Artículo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let s of unsavedNamesArticulo">
+                        <td>{{s.afacod}}</td>
+                        <td>{{s.asucod}}</td>
+                        <td>{{s.artcod}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 <div class="modal-backdrop" *ngIf="showProveedorModal"></div>

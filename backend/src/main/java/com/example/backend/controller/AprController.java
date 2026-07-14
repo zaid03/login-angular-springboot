@@ -9,8 +9,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 @RestController
 @RequestMapping("/api/more")
 public class AprController {
@@ -100,15 +102,59 @@ public class AprController {
     //adding data
     @PostMapping("/add-apr")
     public ResponseEntity<?> addApr(
-        @RequestBody Apr apr
+        @RequestBody List<Apr> requestPayload
     ) {
         try {
-            aprRepository.save(apr);
-            return ResponseEntity.status(HttpStatus.CREATED)
-                .body(apr.getAPRREF() + " added successfully");
+            List<ArticuloInfo> savedArticulos = new ArrayList<>();
+            List<ArticuloInfo> unsavedArticulos = new ArrayList<>();
+
+            for (Apr articulo: requestPayload) {
+
+                AprId id = new AprId(articulo.getENT(), articulo.getTERCOD(), articulo.getAFACOD(), articulo.getASUCOD(), articulo.getARTCOD());
+                Optional<Apr> articuloSearch = aprRepository.findById(id);
+                if (articuloSearch.isPresent()) {
+                    Apr ArticuloExists = articuloSearch.get();
+                    unsavedArticulos.add(
+                        new ArticuloInfo (
+                            ArticuloExists.getAFACOD(),
+                            ArticuloExists.getASUCOD(),
+                            ArticuloExists.getARTCOD()
+                        )
+                    );
+                } else {
+                    Apr aprAdd = new Apr();
+                    aprAdd.setENT(articulo.getENT());
+                    aprAdd.setAFACOD(articulo.getAFACOD());
+                    aprAdd.setASUCOD(articulo.getASUCOD());
+                    aprAdd.setARTCOD(articulo.getARTCOD());
+                    aprAdd.setTERCOD(articulo.getTERCOD());
+                    aprRepository.save(aprAdd);
+
+                    savedArticulos.add(
+                        new ArticuloInfo (
+                            articulo.getAFACOD(),
+                            articulo.getASUCOD(),
+                            articulo.getARTCOD()
+                        )
+                    );
+                }
+            }
+
+            NamesResponse result = new NamesResponse(savedArticulos, unsavedArticulos);
+            return ResponseEntity.ok(result);
         } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ERROR + ex.getMostSpecificCause().getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ERROR + ex.getMostSpecificCause().getMessage());
         }
     }
+
+    public record NamesResponse (
+        List<ArticuloInfo> savedArticulos,
+        List<ArticuloInfo> unsavedArticulos
+    ) {}
+
+    public record ArticuloInfo(
+        String afacod,
+        String asucod,
+        String artcod
+    ) {}
 }

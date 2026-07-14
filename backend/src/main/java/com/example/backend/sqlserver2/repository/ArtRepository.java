@@ -8,17 +8,14 @@ import com.example.backend.sqlserver2.model.Art;
 import com.example.backend.sqlserver2.model.ArtId;
 import com.example.backend.dto.ArtAsuContratoProjection;
 import com.example.backend.dto.ArtNameProjection;
+import com.example.backend.dto.ArticuloArticulo;
 
 @Repository
 public interface ArtRepository extends JpaRepository<Art, ArtId> {
 
-    //fetch to find articulos
-    List<Art> findByENTAndAFACOD(int ent, String afacod);
-    List<Art> findByENTAndASUCOD(int ent, String asucod);
-    List<Art> findByENTAndARTCOD(int ent, String artcod);
-
-    // Method to find Art records by ENT and artdes like
-    List<Art> findByENTAndARTDESContaining(int ent, String artdes);
+    //method to fetch articulos to add to proveedor
+    List<ArticuloArticulo> findByENTAndAFACODOrENTAndASUCODOrENTAndARTCOD(Integer ent, String afacod, Integer ent2, String asucod, Integer ent3, String artcod);
+    List<ArticuloArticulo> findByENTAndARTDESContaining(Integer ent, String artdes);
 
     //find an art name
     List<ArtNameProjection> findByENTAndAFACODAndASUCODAndARTCOD(int ent, String afacod, String asucod, String artcod);

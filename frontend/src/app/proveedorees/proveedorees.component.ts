@@ -613,6 +613,7 @@ export class ProveedoreesComponent {
     this.afas = [];
     this.asus = [];
     this.arts = [];
+    this.selectedArticulosAdd = [];
   }
 
   showArticulosGrid = false;
@@ -637,8 +638,6 @@ export class ProveedoreesComponent {
           const afacod = String(row?.afacod ?? '').trim();
           const asucod = String(row?.asucod?? '').trim();
           this.getDescription(row, index, artcod, afacod, asucod);
-          this.anadirmessage = '';
-          this.anadirErrorMessage = '';
         });
         this.isLoading = false;
         this.pageArticulo = 0;
@@ -736,123 +735,128 @@ export class ProveedoreesComponent {
   }
 
   anadirErrorMessage: string = '';
-  anadirmessage: string = '';
   addArticulo(){
-    this.isAdding = true;
     this.limpiarMessages();
-    const newArticulo = {
-      ent: this.entcod,
-      tercod: this.selectedProveedor.tercod,
-      afacod: this.selectedFamilia || '*',
-      asucod: this.selectedSubfamilia || '*',
-      artcod: this.selectedArticulo || '*',
-    };
 
+    const payload = this.selectedArticulosAdd.map((a: any) => {
+      return {
+        ent: this.entcod,
+        tercod: this.selectedProveedor.tercod,
+        afacod: a.afacod || '*',
+        asucod: a.asucod || '*',
+        artcod: a.artcod || '*'
+      }
+    });
     if ((this.articulos ?? []).some((a: any) =>
-      (a.afacod ?? '*') === newArticulo.afacod &&
-      (a.asucod ?? '*') === newArticulo.asucod &&
-      (a.artcod ?? '*') === newArticulo.artcod)) {
+      (a.afacod ?? '*') === payload.afacod &&
+      (a.asucod ?? '*') === payload.asucod &&
+      (a.artcod ?? '*') === payload.artcod)) {
       this.anadirErrorMessage = 'El artículo ya está en la lista.';
       this.isAdding = false;
       return;
     }
 
-    this.http.post(
-      `${environment.backendUrl}/api/more/add-apr`,newArticulo, { responseType: 'text' }).subscribe({
+    this.isAdding = true;
+    this.http.post<any>(`${environment.backendUrl}/api/more/add-apr`, payload).subscribe({
       next: (res) => {
-        this.anadirmessage = 'Artículo añadido correctamente';
-
-        if (this.showArticulosGrid) {
-          const newRow = {
-            afacod: this.selectedFamilia || '*',
-            asucod: this.selectedSubfamilia || '*',
-            artcod: this.selectedArticulo || '*',
-            ent: this.entcod,
-            tercod: this.selectedProveedor.tercod,
-            description: ''
-          };
-          if (!this.articulos) this.articulos = [];
-          this.articulos.push(newRow);
-
-          const artcod = String(newRow.artcod ?? '').trim();
-          const afacod = String(newRow.afacod ?? '').trim();
-          const asucod = String(newRow.asucod ?? '').trim();
-          const index = this.articulos.length - 1;
-
-          this.getDescription(newRow, index, artcod, afacod, asucod);
-          this.articuloSuccessMessage = '';
-          this.articuloError = '';
-        }
         this.isAdding = false;
+        this.savedNamesArticulo = res?.savedArticulos;
+        this.unsavedNamesArticulo = res?.unsavedArticulos;
+        this.openArticuloMessagesAdd();
       },
       error: (err) => {
-        this.anadirErrorMessage = err.error.error ?? err.error;
+        this.messageGridError = err.error.error ?? err.error;
         this.isAdding = false;
       }
     });
   }
 
-  selectedSearchRow: any = null;
-  selectSearchRow(item: any) {
-    this.selectedSearchRow = item;
-    this.selectedFamilia = item.afacod;
-    this.selectedSubfamilia = item.asucod;
-    this.selectedArticulo = item.artcod;
+  messageGridError: string = '';
+  savedNamesArticulo: any = [];
+  unsavedNamesArticulo: any = [];
+  articulosMessagesGrid: boolean = false;
+  openArticuloMessagesAdd() {
+    this.articulosMessagesGrid = true;
+    console.log(this.savedNames)
+    console.log(this.unsavedNames)
+
+  }
+
+  closeArtoculosMessages() {
+    this.limpiarMessages();
+    this.savedNamesArticulo = [];
+    this.unsavedNamesArticulo = [];
+    this.articulosMessagesGrid = false;
+    this.hideHello();
+  }
+
+  selectedArticulosAdd: any = [];
+  selectArticulo(articulo: any) {
+    if (this.selectedArticulosAdd.includes(articulo)) {
+      const index = this.selectedArticulosAdd.indexOf(articulo);
+      if (index !== -1) {
+        this.selectedArticulosAdd.splice(index, 1);
+      }
+    } else {
+      this.selectedArticulosAdd = [...this.selectedArticulosAdd, articulo];
+    }
+
+    console.log(this.selectedArticulosAdd)
+  }
+
+  isArticuloSelected(articulo: any) {
+    if (this.selectedArticulosAdd.includes(articulo)) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   searchType: string = 'familia';
   searchValue: string = '';
   searchResults: any[] = [];
+  isLoadingArticulo: boolean = false;
+  articuloErrorFetch: string = '';
   onSearch() {
     this.limpiarMessages();
-    this.searchPage = 0;
-    this.searchResults = [];
-    if (!this.searchValue || !this.searchType) return;
-    let url = '';
-    if (this.searchType === 'familia') {
-      if(/^\d+$/.test(this.searchValue)) {
-        url = `${environment.backendUrl}/api/afa/by-ent/${this.entcod}/${this.searchValue}`;
-      } else {
-        url = `${environment.backendUrl}/api/afa/by-ent-like/${this.entcod}/${this.searchValue}`;
-      }
-    } else if (this.searchType === 'subfamilia') {
-      if(/^\d+$/.test(this.searchValue)) {
-        url = `${environment.backendUrl}/api/asu/by-ent/${this.entcod}/${this.searchValue}/${this.searchValue}`;
-      } else {
-        url = `${environment.backendUrl}/api/asu/by-ent-like/${this.entcod}/${this.searchValue}`;
-      }
-    } else if (this.searchType === 'articulo') {
-      if(/^\d+$/.test(this.searchValue)) {
-        url = `${environment.backendUrl}/api/art/by-ent/${this.entcod}/${this.searchValue}/${this.searchValue}/${this.searchValue}`;
-      } else {
-        url = `${environment.backendUrl}/api/art/by-ent-like/${this.entcod}/${this.searchValue}`;
-      }
-      
-    }
-    this.http.get<any[]>(url, { withCredentials: true }).subscribe({
-    next: (data) => {
-      this.searchResults = data;
-    },error: (err) => {
-        console.error('Error fetching search results:', err);
+    this.selectedArticulosAdd = [];
+
+    if (!this.searchValue || !this.searchType) {
+      this.articuloErrorFetch = 'Introduce algo para buscar';
+      return;
+    };
+
+    this.isLoadingArticulo = true;
+    this.http.get<any[]>(`${environment.backendUrl}/api/afa/fetch-articulos-proveedor/${this.entcod}/${this.searchType}/${this.searchValue}`, { withCredentials: true }).subscribe({
+      next: (data) => {
+        this.searchResults = Array.isArray(data) ? data : (data ? [data] : []);
+        this.isLoadingArticulo = false;
+        this.isLoading = false;
+        this.searchPage = 0;
+      },
+      error: (err) => {
+        this.isLoadingArticulo = false;
         this.searchResults = [];
+        this.articuloErrorFetch = err.error.error ?? err.error;
       }
     });
   }
-
   searchPage: number = 0;
   searchPageSize: number = 5;
-  get paginatedSearchResults() {
-    const start = this.searchPage * this.searchPageSize;
-    return this.searchResults.slice(start, start + this.searchPageSize);
-  }
+  get paginatedSearchResults() {const start = this.searchPage * this.searchPageSize; return this.searchResults.slice(start, start + this.searchPageSize);}
+  get searchTotalPages() {return Math.ceil(this.searchResults.length / this.searchPageSize);}
 
-  get searchTotalPages() {
-    return Math.ceil(this.searchResults.length / this.searchPageSize);
+  limpiarSearchArticulo() {
+    this.limpiarMessages();
+    this.searchResults = [];
+    this.searchType = 'familia';
+    this.searchValue = '';
+    this.selectedArticulosAdd = [];
   }
 
   getDescription(row: any, index: number, artcod: string, afacod: string, asucod: string){
-    if (artcod === '*') {
-      if (asucod === '*') {
+    if (artcod === '*' || '') {
+      if (asucod === '*' || '') {
         this.http.get<any[]>(`${environment.backendUrl}/api/afa/by-ent/${this.entcod}/${afacod}`).subscribe({
           next: (response) => {
             const respArray = Array.isArray(response) ? response : response ? [response] : [];
@@ -1158,12 +1162,13 @@ export class ProveedoreesComponent {
     this.articuloError = '';
     this.articuloSuccessMessage = '';
     this.personaContactoaddError = '';
-    this.anadirmessage = '';
     this.anadirErrorMessage = '';
     this.guardarMessageProveedor = '';
     this.anadirProveedorErrorMessage = '';
     this.articulosShowError = '';
     this.personaError = '';
     this.cargarProveedoresError = '';
+    this.articuloErrorFetch = '';
+    this.messageGridError = '';
   }
 }
