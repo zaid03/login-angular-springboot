@@ -107,7 +107,7 @@ public class ContabilizacionService {
         sb.append("</sec>");
 
         sb.append("<par>");
-        sb.append("<gensinalmacenar>0</gensinalmacenar>");
+        sb.append("<gensinalmacenar>1</gensinalmacenar>");
 
         sb.append("<l_operacion>");
         sb.append("<operacion>");

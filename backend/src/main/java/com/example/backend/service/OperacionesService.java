@@ -112,6 +112,9 @@ public class OperacionesService {
             "</soapenv:Body>" +
             "</soapenv:Envelope>";
 
+            System.out.println("=== OUTGOING SML ===");
+            System.out.println(xml);
+
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_TYPE, "text/xml");
         headers.add(HttpHeaders.ACCEPT, "text/xml");

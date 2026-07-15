@@ -30,9 +30,9 @@ public class OperacionesController {
         @RequestParam(name = "numeroOperDesde", required = false) String numeroOperDesde,
         @RequestParam(name = "numeroOperHasta", required = false) String numeroOperHasta,
         @RequestParam(name = "codigoOperacion", required = false) String codigoOperacion,
-        @RequestParam(name = "clorg", required = false) String organica,
-        @RequestParam(name = "clfun", required = false) String funcional,
-        @RequestParam(name = "cleco", required = false) String economica,
+        @RequestParam(name = "organica", required = false) String organica,
+        @RequestParam(name = "funcional", required = false) String funcional,
+        @RequestParam(name = "economica", required = false) String economica,
         @RequestParam(name = "expediente", required = false) String expediente,
         @RequestParam(name = "grupoApunte", required = false) String grupoApunte,
         @RequestParam(name = "oficina", required = false) String oficina) {
