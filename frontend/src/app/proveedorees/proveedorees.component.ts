@@ -780,9 +780,6 @@ export class ProveedoreesComponent {
   articulosMessagesGrid: boolean = false;
   openArticuloMessagesAdd() {
     this.articulosMessagesGrid = true;
-    console.log(this.savedNames)
-    console.log(this.unsavedNames)
-
   }
 
   closeArtoculosMessages() {
@@ -803,8 +800,6 @@ export class ProveedoreesComponent {
     } else {
       this.selectedArticulosAdd = [...this.selectedArticulosAdd, articulo];
     }
-
-    console.log(this.selectedArticulosAdd)
   }
 
   isArticuloSelected(articulo: any) {

@@ -249,7 +249,9 @@ public class ContabilizacionService {
     }
 
     public String sendSmlRequest(String smlInput, String url) {
-        String endpoint = (url != null && !url.isEmpty()) ? url : sicalWsUrl;
+        String rawEndpoint = (url != null && !url.isEmpty()) ? url : sicalWsUrl;
+    String endpoint = rawEndpoint.contains("?") ? rawEndpoint.substring(0, rawEndpoint.indexOf("?")) : rawEndpoint;
+
         
         try {
             SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();

@@ -112,9 +112,6 @@ public class OperacionesService {
             "</soapenv:Body>" +
             "</soapenv:Envelope>";
 
-            System.out.println("=== OUTGOING SML ===");
-            System.out.println(xml);
-
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_TYPE, "text/xml");
         headers.add(HttpHeaders.ACCEPT, "text/xml");
@@ -153,11 +150,6 @@ public class OperacionesService {
             factory.setNamespaceAware(false);
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document doc = builder.parse(new ByteArrayInputStream(sml.getBytes(StandardCharsets.UTF_8)));
-
-            System.out.println("=== RAW responseXml ===");
-System.out.println(xml); 
-// System.out.println("=== DECODED sml ===");
-// System.out.println(sml);
 
             NodeList exitoNodes = findElementsByName(doc, "exito");
             if (exitoNodes.getLength() > 0) {

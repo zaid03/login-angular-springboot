@@ -1083,7 +1083,6 @@ export class ContratosComponent {
     
     this.cogaip = centro.cogaip;
     this.referencia = centro.cogopd ?? '';
-    console.log(this.referencia)
     
     if (this.cogaip > 0) {
       this.DError = 'No se puede cambiar la D si ya hay pedidos'

@@ -400,8 +400,6 @@ export class MonitorContabilizacionComponent {
       error: (err) => {
         this.isLoading = false;
         this.searchError = err.error.error ?? err.error;
-        console.log(err.error)
-        console.log(err.error.error)
         this.facturas = [];
       }
     });
