@@ -30,6 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -794,5 +795,177 @@ public class TerControllerTest {
             .andDo(print())
             .andExpect(status().isBadRequest())
             .andExpect(content().string(containsString("Server error")));
+    }
+
+    // ==================== proveedorActualizar Tests ====================
+
+    @Test
+    @DisplayName("proveedorActualizar: should update proveedor successfully")
+    void proveedorActualizar_shouldUpdateSuccessfully() throws Exception {
+
+        Ter existing = createTer(TEST_ENT, 1500, "Old Provider", "OLDNIF", 0);
+
+        when(terRepository.findById(new TerId(TEST_ENT, 1500)))
+                .thenReturn(Optional.of(existing));
+
+        when(terRepository.save(any(Ter.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        String json = """
+            {
+                "TERNOM":"New Provider",
+                "TERALI":"New Alias",
+                "TERNIF":"NEWNIF",
+                "TERDOM":"New Address",
+                "TERCPO":"28001",
+                "TERTEL":"600111222",
+                "TERFAX":"910111222",
+                "TERCOE":"test@test.com",
+                "PROCOD":"28",
+                "TERPOB":"Madrid",
+                "TERAYT":15
+            }
+            """;
+
+        mockMvc.perform(post("/api/ter/actualizar-proveedor/" + TEST_ENT + "/1500")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+            .andDo(print())
+            .andExpect(status().isNoContent());
+
+        verify(terRepository).findById(new TerId(TEST_ENT, 1500));
+        verify(terRepository).save(any(Ter.class));
+    }
+
+    @Test
+    @DisplayName("proveedorActualizar: should update every field correctly")
+    void proveedorActualizar_shouldUpdateEveryField() throws Exception {
+
+        Ter existing = createTer(TEST_ENT, 1500, "Old", "OldNif", 0);
+
+        when(terRepository.findById(new TerId(TEST_ENT, 1500)))
+                .thenReturn(Optional.of(existing));
+
+        when(terRepository.save(any(Ter.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        String json = """
+            {
+                "TERNOM":"Provider",
+                "TERALI":"Alias",
+                "TERNIF":"12345678A",
+                "TERDOM":"Street",
+                "TERCPO":"08001",
+                "TERTEL":"666666666",
+                "TERFAX":"999999999",
+                "TERCOE":"mail@test.com",
+                "PROCOD":"08",
+                "TERPOB":"Barcelona",
+                "TERAYT":99
+            }
+            """;
+
+        mockMvc.perform(post("/api/ter/actualizar-proveedor/" + TEST_ENT + "/1500")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+            .andDo(print())
+            .andExpect(status().isNoContent());
+
+        ArgumentCaptor<Ter> captor = ArgumentCaptor.forClass(Ter.class);
+
+        verify(terRepository).save(captor.capture());
+
+        Ter saved = captor.getValue();
+
+        assertEquals("Provider", saved.getTERNOM());
+        assertEquals("Alias", saved.getTERALI());
+        assertEquals("12345678A", saved.getTERNIF());
+        assertEquals("Street", saved.getTERDOM());
+        assertEquals("08001", saved.getTERCPO());
+        assertEquals("666666666", saved.getTERTEL());
+        assertEquals("999999999", saved.getTERFAX());
+        assertEquals("mail@test.com", saved.getTERCOE());
+        assertEquals("08", saved.getPROCOD());
+        assertEquals("Barcelona", saved.getTERPOB());
+        assertEquals(99, saved.getTERAYT());
+    }
+
+    @Test
+    @DisplayName("proveedorActualizar: should return 404 when proveedor does not exist")
+    void proveedorActualizar_shouldReturn404WhenNotFound() throws Exception {
+
+        when(terRepository.findById(new TerId(TEST_ENT, 99999)))
+                .thenReturn(Optional.empty());
+
+        mockMvc.perform(post("/api/ter/actualizar-proveedor/" + TEST_ENT + "/99999")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{}"))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(content().string(SIN_RESULTADO));
+
+        verify(terRepository, never()).save(any(Ter.class));
+    }
+
+    @Test
+    @DisplayName("proveedorActualizar: should handle DataAccessException on find")
+    void proveedorActualizar_shouldHandleDataAccessExceptionOnFind() throws Exception {
+
+        when(terRepository.findById(any()))
+                .thenThrow(new DataAccessResourceFailureException("DB down"));
+
+        mockMvc.perform(post("/api/ter/actualizar-proveedor/" + TEST_ENT + "/1500")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{}"))
+            .andDo(print())
+            .andExpect(status().isInternalServerError())
+            .andExpect(content().string(containsString(ERROR)));
+    }
+
+    @Test
+    @DisplayName("proveedorActualizar: should handle DataAccessException on save")
+    void proveedorActualizar_shouldHandleDataAccessExceptionOnSave() throws Exception {
+
+        Ter existing = createTer(TEST_ENT, 1500, "Old", "Old", 0);
+
+        when(terRepository.findById(new TerId(TEST_ENT, 1500)))
+                .thenReturn(Optional.of(existing));
+
+        when(terRepository.save(any(Ter.class)))
+                .thenThrow(new DataAccessResourceFailureException("DB save error"));
+
+        String json = """
+            {
+                "TERNOM":"Provider"
+            }
+            """;
+
+        mockMvc.perform(post("/api/ter/actualizar-proveedor/" + TEST_ENT + "/1500")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+            .andDo(print())
+            .andExpect(status().isInternalServerError())
+            .andExpect(content().string(containsString(ERROR)));
+    }
+
+    @Test
+    @DisplayName("proveedorActualizar: should work with different tercod")
+    void proveedorActualizar_shouldWorkWithDifferentTercod() throws Exception {
+
+        Ter existing = createTer(TEST_ENT, 2222, "Provider", "NIF", 0);
+
+        when(terRepository.findById(new TerId(TEST_ENT, 2222)))
+                .thenReturn(Optional.of(existing));
+
+        when(terRepository.save(any(Ter.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        mockMvc.perform(post("/api/ter/actualizar-proveedor/" + TEST_ENT + "/2222")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{}"))
+            .andDo(print())
+            .andExpect(status().isNoContent());
+
+        verify(terRepository).findById(new TerId(TEST_ENT, 2222));
     }
 }
