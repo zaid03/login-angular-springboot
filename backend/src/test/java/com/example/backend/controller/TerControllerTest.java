@@ -83,8 +83,6 @@ public class TerControllerTest {
         return dto;
     }
 
-    // ==================== getByEnt Tests ====================
-
     @Test
     @DisplayName("getByEnt: should return single result successfully")
     void getByEnt_shouldReturnSingleResult() throws Exception {
@@ -150,8 +148,6 @@ public class TerControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$[0].ent").value(differentEnt));
     }
-
-    // ==================== searchProveedores Tests ====================
 
     @Test
     @DisplayName("searchProveedores: should search todos mode successfully")
@@ -303,8 +299,6 @@ public class TerControllerTest {
         verify(proveedoresSearch).searchProveedoers(TEST_ENT, "Nobloqueado", "ABC");
     }
 
-    // ==================== updateTerFields Tests ====================
-
     @Test
     @DisplayName("updateTerFields: should update successfully with full payload")
     void updateTerFields_shouldUpdateSuccessfully() throws Exception {
@@ -442,8 +436,6 @@ public class TerControllerTest {
             .andDo(print())
             .andExpect(status().isNoContent());
     }
-
-    // ==================== createMultipleForEnt Tests ====================
 
     @Test
     @DisplayName("createMultipleForEnt: should create single provider successfully")
@@ -796,8 +788,6 @@ public class TerControllerTest {
             .andExpect(status().isBadRequest())
             .andExpect(content().string(containsString("Server error")));
     }
-
-    // ==================== proveedorActualizar Tests ====================
 
     @Test
     @DisplayName("proveedorActualizar: should update proveedor successfully")
