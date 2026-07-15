@@ -264,6 +264,12 @@
                         </div>
                     </div>
                     <div class="btns">
+                        <button
+                            class="purple-btn" 
+                            [disabled]="isUpdate" 
+                            [ngClass]="{ 'disabled-btn': isUpdate }" 
+                            (click)="openUpdateProveedor()"
+                        >Actualizar</button>
                         <button 
                             class="purple-btn" 
                             [disabled]="isUpdate" 
@@ -793,5 +799,19 @@
         <p class="p-style" *ngIf="cargarProveedoresError">{{cargarProveedoresError}}</p>
         <p class="p-style" *ngIf="savedNames.length">Proveedores cargados: <span class="message-text">{{savedNames}}</span></p>
         <p class="p-style" *ngIf="unsavedNames.length">Proveedores ya existentes: <span class="message-text">{{unsavedNames}}</span></p>
+    </div>
+</div>
+
+<div class="modal-backdrop force" *ngIf="updateProveedor"></div>
+<div class="delete-confirm-modal" *ngIf="updateProveedor">
+    <div>
+        <p class="p-style">¿Quiere actualizar los datos del proveedor desde Sicalwin?</p>
+        <div *ngIf="isUpdatingProveedor" class="loading-message">
+            <div class="spinner"></div>
+            <span>actualizando</span>
+        </div>
+        <p class="errorBtn">{{updateProveedorMessage}}</p>
+        <button class="purple-btn fix" (click)="getUpdatedInfo()">Sí</button>
+        <button class="red-btn" (click)="closeUpdateProvedor()">No</button>
     </div>
 </div>

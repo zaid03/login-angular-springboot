@@ -167,4 +167,39 @@ public class TerController {
         List<String> savedNames,
         List<String> unsavedNames
     ) {}
+
+    //to actualiazr a proveedor
+    public record proveedorUpdate(String TERNOM, String TERALI, String TERNIF, String TERDOM, String TERCPO, String TERTEL, String TERFAX, String TERCOE, String PROCOD, String TERPOB, Integer TERAYT) {}
+    @PostMapping("/actualizar-proveedor/{ent}/{tercod}")
+    public ResponseEntity<?> proveedorActualizar (
+        @PathVariable Integer ent,
+        @PathVariable Integer tercod,
+        @RequestBody proveedorUpdate payload
+    ) {
+        try {
+            TerId id = new TerId(ent, tercod);
+            Optional<Ter> proveedor = terRepository.findById(id);
+            if (proveedor.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
+            }
+
+            Ter proveedorUpdate = proveedor.get();
+            proveedorUpdate.setTERNOM(payload.TERNOM());
+            proveedorUpdate.setTERALI(payload.TERALI());
+            proveedorUpdate.setTERNIF(payload.TERNIF());
+            proveedorUpdate.setTERDOM(payload.TERDOM());
+            proveedorUpdate.setTERCPO(payload.TERCPO());
+            proveedorUpdate.setTERTEL(payload.TERTEL());
+            proveedorUpdate.setTERFAX(payload.TERFAX());
+            proveedorUpdate.setTERCOE(payload.TERCOE());
+            proveedorUpdate.setPROCOD(payload.PROCOD());
+            proveedorUpdate.setTERPOB(payload.TERPOB());
+            proveedorUpdate.setTERAYT(payload.TERAYT());
+            terRepository.save(proveedorUpdate);
+
+            return ResponseEntity.noContent().build();
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ERROR + ex.getMostSpecificCause().getMessage());
+        }
+    }
 }

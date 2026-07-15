@@ -41,7 +41,6 @@ export class ProveedoreesComponent {
   ngOnInit(): void {
     this.limpiarMessages();
     this.error = '';
-    this.isLoading = true;
     const entidad = sessionStorage.getItem('Entidad');
 
     if (entidad) {
@@ -56,26 +55,30 @@ export class ProveedoreesComponent {
       return;
     }
 
-    this.http.get<any>(`${environment.backendUrl}/api/ter/by-ent/${this.entcod}`)
-      .subscribe({
-        next: (response) => {
-          if (response.error) {
-            this.error = `Error:  ${response.error}`;
-          } else {
-            this.proveedores = response;
-            this.backupProveedores = Array.isArray(response) ? [...response] : [];
-            this.defaultProveedores = [...this.backupProveedores];
-            this.page = 0;
-            this.updatePaginatedProveedores();
-            this.isLoading = false;
-          }
-        },
-        error: (err) => {
-          this.proveedores = [];
-          this.error = err.error.error ?? err.error;
+    this.fetchProveedores()
+  }
+
+  fetchProveedores() {
+    this.isLoading = true;
+    this.http.get<any>(`${environment.backendUrl}/api/ter/by-ent/${this.entcod}`).subscribe({
+      next: (response) => {
+        if (response.error) {
+          this.error = `Error:  ${response.error}`;
+        } else {
+          this.proveedores = response;
+          this.backupProveedores = Array.isArray(response) ? [...response] : [];
+          this.defaultProveedores = [...this.backupProveedores];
+          this.page = 0;
+          this.updatePaginatedProveedores();
           this.isLoading = false;
         }
-      });
+      },
+      error: (err) => {
+        this.proveedores = [];
+        this.error = err.error.error ?? err.error;
+        this.isLoading = false;
+      }
+    });
   }
 
   //sorting main table related function
@@ -1151,6 +1154,70 @@ export class ProveedoreesComponent {
     document.removeEventListener('mouseup', this.stopResize);
     this.resizingColIndex = null;
   };
+
+  //updating a proveedor
+  updateProveedor: boolean = false;
+  updateProveedorMessage: string = '';
+  openUpdateProveedor() {
+    this.updateProveedor = true;
+  }
+
+  closeUpdateProvedor() {
+    this.updateProveedor = false;
+    this.proveedorInfo = [];
+  }
+
+  proveedorInfo: any = []
+  isUpdatingProveedor: boolean = false;
+  getUpdatedInfo() {
+    this.limpiarMessages();
+    const terayt = this.selectedProveedor.terayt;
+
+    this.isUpdatingProveedor = true;
+    this.http.get(`${environment.backendUrl}/api/sical/terceros?codigo=${terayt}`).subscribe({
+      next: (res) => {
+        this.proveedorInfo = res;
+        this.actualizarProveedor();
+        this.isUpdatingProveedor = false;
+      },
+      error: (err) => {
+        this.proveedorInfo = [];
+        this.isUpdatingProveedor = false;
+        this.updateProveedorMessage = err.error.error ?? err.error;
+      }
+    })
+  }
+
+  actualizarProveedor() {
+    const proveedor = this.selectedProveedor.tercod;
+    const procod = this.proveedorInfo[0].codigoPostal.slice(0, 2);
+    const payload = {
+      "TERNOM": this.proveedorInfo[0].nomTercero,
+      "TERALI": this.proveedorInfo[0].nombreCompleto,
+      "TERNIF":	this.proveedorInfo[0].niftercero,
+      "TERDOM": this.proveedorInfo[0].domicilio,
+      "TERCPO": this.proveedorInfo[0].codigoPostal,
+      "TERTEL": this.proveedorInfo[0].telefono,
+      "TERFAX": this .proveedorInfo[0].fax,
+      "TERCOE": this.proveedorInfo[0].email,
+      "PROCOD": procod,
+      "TERPOB": this.proveedorInfo[0].poblacion,
+      "TERAYT": Number(this.proveedorInfo[0].idenTercero)
+    }
+
+    this.http.post(`${environment.backendUrl}/api/ter/actualizar-proveedor/${this.entcod}/${proveedor}`, payload).subscribe({
+      next: (res) => {
+        this.proveedores = [];
+        this.closeUpdateProvedor();
+        this.closeDetails();
+        this.messageSuccess = 'Proveedor actualizado exitosamente'
+        this.fetchProveedores();
+      },
+      error: (err) => {
+        this.updateProveedorMessage = err.error.error ?? err.error;
+      }
+    })
+  }
 
   //mist
   limpiarMessages() {
