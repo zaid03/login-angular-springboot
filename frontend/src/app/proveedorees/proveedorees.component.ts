@@ -788,6 +788,7 @@ export class ProveedoreesComponent {
     this.unsavedNamesArticulo = [];
     this.articulosMessagesGrid = false;
     this.hideHello();
+    this.showArticulos(this.selectedProveedor);
   }
 
   selectedArticulosAdd: any = [];

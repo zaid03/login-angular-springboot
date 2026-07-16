@@ -275,7 +275,7 @@
                             [disabled]="isUpdate" 
                             [ngClass]="{ 'disabled-btn': isUpdate }" 
                             (click)="showHello()"
-                        >Añadir articulo</button>
+                        >Añadir artículo</button>
                         <button 
                             class="purple-btn" 
                             [disabled]="isUpdate" 
@@ -431,7 +431,7 @@
                                         <input type="text" [(ngModel)]="articulo.aprref"/>
                                     </td>
                                     <td>
-                                        <input type="number" [(ngModel)]="articulo.apruem"/>
+                                        <input class="right-text" type="number" [(ngModel)]="articulo.apruem"/>
                                     </td>
                                     <td>
                                         <input type="text" [(ngModel)]="articulo.aprobs"/>
@@ -560,10 +560,10 @@
 <div class="hello-modal" *ngIf="showHelloGrid">
     <div class="btns">
         <div class="title">
-            <h1>Añadir articulo</h1>
+            <h1>Añadir artículo</h1>
         </div>
-        <p class="p-style">Seleccionados: {{selectedArticulosAdd.length}} Articulos</p>
-        <button class="purple-btn" (click)="addArticulo()">+</button>
+        <p class="p-style">Seleccionados: {{selectedArticulosAdd.length}} Artículos</p>
+        <button class="purple-btn" (click)="addArticulo()">+ Cargar</button>
         <button class="red-btn" (click)="hideHello()">✖</button>
     </div>
     <h1 class="errorBtn">{{ anadirErrorMessage }}</h1>
@@ -696,7 +696,7 @@
                 <input 
                     type="text" 
                     class="search-bar"
-                    placeholder="Buscar NIF, NOM o APELL" 
+                    placeholder="Buscar" 
                     name="search"
                     [(ngModel)]="searchProveedor"
                     (input)="onProveedorSearchChange()"

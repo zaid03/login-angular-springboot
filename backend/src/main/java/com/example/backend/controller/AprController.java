@@ -128,6 +128,9 @@ public class AprController {
                     aprAdd.setASUCOD(articulo.getASUCOD());
                     aprAdd.setARTCOD(articulo.getARTCOD());
                     aprAdd.setTERCOD(articulo.getTERCOD());
+                    aprAdd.setAPRACU(0);
+                    aprAdd.setAPRPRE(0.00);
+                    aprAdd.setAPRUEM(0.00);
                     aprRepository.save(aprAdd);
 
                     savedArticulos.add(
