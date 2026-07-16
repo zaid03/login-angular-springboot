@@ -958,4 +958,92 @@ public class TerControllerTest {
 
         verify(terRepository).findById(new TerId(TEST_ENT, 2222));
     }
+
+    // ---------------------------------------------------------------------
+    // detailProveedor: GET /api/ter/proveedorDetail/{ent}/{tercod}
+    // ---------------------------------------------------------------------
+
+    @Test
+    @DisplayName("detailProveedor: should return proveedor successfully")
+    void detailProveedor_shouldReturnProveedorSuccessfully() throws Exception {
+        Ter ter = createTer(TEST_ENT, 1500, "Provider A", "111ABC", 0);
+        when(terRepository.findByENTAndTERCOD(TEST_ENT, 1500)).thenReturn(Optional.of(ter));
+
+        mockMvc.perform(get("/api/ter/proveedorDetail/" + TEST_ENT + "/1500"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.tercod").value(1500))
+            .andExpect(jsonPath("$.ternom").value("Provider A"))
+            .andExpect(jsonPath("$.ternif").value("111ABC"))
+            .andExpect(jsonPath("$.ent").value(TEST_ENT));
+
+        verify(terRepository).findByENTAndTERCOD(TEST_ENT, 1500);
+    }
+
+    @Test
+    @DisplayName("detailProveedor: should return all mapped fields")
+    void detailProveedor_shouldReturnAllFields() throws Exception {
+        Ter ter = createTer(TEST_ENT, 1500, "Provider A", "111ABC", 1);
+        when(terRepository.findByENTAndTERCOD(TEST_ENT, 1500)).thenReturn(Optional.of(ter));
+
+        mockMvc.perform(get("/api/ter/proveedorDetail/" + TEST_ENT + "/1500"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.terblo").value(1))
+            .andExpect(jsonPath("$.terali").value("Alias Provider A"))
+            .andExpect(jsonPath("$.terweb").value("www.example.com"))
+            .andExpect(jsonPath("$.terobs").value("Test observation"))
+            .andExpect(jsonPath("$.teracu").value(0));
+    }
+
+    @Test
+    @DisplayName("detailProveedor: should return 404 when proveedor does not exist")
+    void detailProveedor_shouldReturn404WhenNotFound() throws Exception {
+        when(terRepository.findByENTAndTERCOD(TEST_ENT, 99999)).thenReturn(Optional.empty());
+
+        mockMvc.perform(get("/api/ter/proveedorDetail/" + TEST_ENT + "/99999"))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(content().string(SIN_RESULTADO));
+
+        verify(terRepository).findByENTAndTERCOD(TEST_ENT, 99999);
+    }
+
+    @Test
+    @DisplayName("detailProveedor: should handle DataAccessException")
+    void detailProveedor_shouldHandleDataAccessException() throws Exception {
+        when(terRepository.findByENTAndTERCOD(anyInt(), anyInt()))
+            .thenThrow(new DataAccessResourceFailureException("Database connection failed"));
+
+        mockMvc.perform(get("/api/ter/proveedorDetail/" + TEST_ENT + "/1500"))
+            .andDo(print())
+            .andExpect(status().isInternalServerError())
+            .andExpect(content().string(containsString(ERROR)));
+    }
+
+    @Test
+    @DisplayName("detailProveedor: should work with different ent and tercod values")
+    void detailProveedor_shouldWorkWithDifferentEntAndTercod() throws Exception {
+        int differentEnt = 888888;
+        Ter ter = createTer(differentEnt, 200, "Provider X", "999", 0);
+        when(terRepository.findByENTAndTERCOD(differentEnt, 200)).thenReturn(Optional.of(ter));
+
+        mockMvc.perform(get("/api/ter/proveedorDetail/" + differentEnt + "/200"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.ent").value(differentEnt))
+            .andExpect(jsonPath("$.tercod").value(200));
+    }
+
+    @Test
+    @DisplayName("detailProveedor: should return 404 for mismatched ent/tercod combination")
+    void detailProveedor_shouldReturn404ForMismatchedCombination() throws Exception {
+        // A tercod that exists under a different ent should not resolve here
+        when(terRepository.findByENTAndTERCOD(TEST_ENT, 100)).thenReturn(Optional.empty());
+
+        mockMvc.perform(get("/api/ter/proveedorDetail/" + TEST_ENT + "/100"))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(content().string(SIN_RESULTADO));
+    }
 }
