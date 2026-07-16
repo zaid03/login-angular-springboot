@@ -959,10 +959,6 @@ public class TerControllerTest {
         verify(terRepository).findById(new TerId(TEST_ENT, 2222));
     }
 
-    // ---------------------------------------------------------------------
-    // detailProveedor: GET /api/ter/proveedorDetail/{ent}/{tercod}
-    // ---------------------------------------------------------------------
-
     @Test
     @DisplayName("detailProveedor: should return proveedor successfully")
     void detailProveedor_shouldReturnProveedorSuccessfully() throws Exception {
@@ -1038,7 +1034,6 @@ public class TerControllerTest {
     @Test
     @DisplayName("detailProveedor: should return 404 for mismatched ent/tercod combination")
     void detailProveedor_shouldReturn404ForMismatchedCombination() throws Exception {
-        // A tercod that exists under a different ent should not resolve here
         when(terRepository.findByENTAndTERCOD(TEST_ENT, 100)).thenReturn(Optional.empty());
 
         mockMvc.perform(get("/api/ter/proveedorDetail/" + TEST_ENT + "/100"))
