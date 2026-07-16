@@ -202,4 +202,22 @@ public class TerController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ERROR + ex.getMostSpecificCause().getMessage());
         }
     }
+
+    //selecting proveedor data after actualizar
+    @GetMapping("/proveedorDetail/{ent}/{tercod}")
+    public ResponseEntity<?> detailProveedor (
+        @PathVariable Integer ent,
+        @PathVariable Integer tercod
+    ) {
+        try {
+            Optional<Ter> proveedor = terRepository.findByENTAndTERCOD(ent, tercod);
+            if (proveedor.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
+            }
+
+            return ResponseEntity.ok(proveedor);
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ERROR + ex.getMostSpecificCause().getMessage());
+        }
+    }
 }

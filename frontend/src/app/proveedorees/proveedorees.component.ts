@@ -783,7 +783,6 @@ export class ProveedoreesComponent {
   }
 
   closeArtoculosMessages() {
-    this.limpiarMessages();
     this.savedNamesArticulo = [];
     this.unsavedNamesArticulo = [];
     this.articulosMessagesGrid = false;
@@ -1203,14 +1202,39 @@ export class ProveedoreesComponent {
 
     this.http.post(`${environment.backendUrl}/api/ter/actualizar-proveedor/${this.entcod}/${proveedor}`, payload).subscribe({
       next: (res) => {
-        this.proveedores = [];
         this.closeUpdateProvedor();
-        this.closeDetails();
-        this.messageSuccess = 'Proveedor actualizado exitosamente'
-        this.fetchProveedores();
+        // this.closeDetails();
+        // this.fetchProveedores();
+        this.updatingProveedorDetail();
       },
       error: (err) => {
         this.updateProveedorMessage = err.error.error ?? err.error;
+      }
+    })
+  }
+
+  newProveedorDetails: any = [];
+  updatingProveedorDetail() {
+    this.limpiarMessages();
+    const tercod = this.selectedProveedor.tercod;
+
+    this.http.get(`${environment.backendUrl}/api/ter/proveedorDetail/${this.entcod}/${tercod}`).subscribe({
+      next: (res) => {
+        this.messageSuccess = 'El proveedor actualizó correctamente';
+        this.newProveedorDetails = res;
+        const index = this.proveedores.findIndex(
+          p => p.tercod === this.newProveedorDetails.tercod
+        );
+
+        if (index !== -1) {
+          this.proveedores[index] = this.newProveedorDetails;
+        }
+        this.tempProveedor = res;
+        this.selectedProveedor = res;
+        this.paginatedProveedores;
+      },
+      error: (err) => {
+        this.messageError = err.error.error ?? err.error;
       }
     })
   }
