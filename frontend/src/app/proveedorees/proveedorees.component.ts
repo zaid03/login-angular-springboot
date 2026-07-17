@@ -386,7 +386,9 @@ export class ProveedoreesComponent {
       TERWEB : this.selectedProveedor.terweb,
       TEROBS : this.selectedProveedor.terobs,
       TERBLO : this.selectedProveedor.terblo,
-      TERACU : this.selectedProveedor.teracu
+      TERACU : this.selectedProveedor.teracu,
+      TERTEL : this.selectedProveedor.tertel,
+      TERCOE : this.selectedProveedor.tercoe
     }
 
     this.http.put(`${environment.backendUrl}/api/ter/updateFields/${this.entcod}/${this.selectedProveedor.tercod}`, payload, { responseType: 'text' }
@@ -435,6 +437,7 @@ export class ProveedoreesComponent {
   contactPersons: any = null;
   activeDetailTab: 'contact' | 'articulo' | null = null;
   personaError: string = '';
+  isLoadingPersonas: boolean = false;
   showContactPersons(proveedore: any){
     this.limpiarMessages();
     this.showContactPersonsGrid = true;
@@ -443,19 +446,18 @@ export class ProveedoreesComponent {
     this.selectedProveedor = proveedore;
     const tercod = proveedore.tercod;
 
-    this.isLoading = true;
+    this.isLoadingPersonas = true;
     this.http.get<any[]>(`${environment.backendUrl}/api/more/by-tpe/${this.entcod}/${tercod}`)
       .subscribe({ next: (response) => {
         this.contactPersons = response;
-        this.personaError = '';
-        this.isLoading = false;
+        this.isLoadingPersonas = false;
         this.pagePersona = 0;
       },
       error: (err) => {
         this.personaError = err.error.error ?? err.error;
         this.contactPersons = [];
         this.pagePersona = 0;
-        this.isLoading = false;
+        this.isLoadingPersonas = false;
       } 
     });
   }
@@ -623,6 +625,7 @@ export class ProveedoreesComponent {
   articulos: any = null;
   articuloError: string = '';
   articulosShowError: string = '';
+  isLoadingArticulosDetails: boolean = false;
   showArticulos(proveedore: any){
     this.limpiarMessages();
     this.showArticulosGrid = true;
@@ -631,7 +634,7 @@ export class ProveedoreesComponent {
     this.selectedProveedor = proveedore;
     const tercod = proveedore.tercod;
     
-    this.isLoading = true;
+    this.isLoadingArticulosDetails = true;
     this.http.get<any[]>(`${environment.backendUrl}/api/more/by-apr/${this.entcod}/${tercod}`)
       .subscribe({ next: (response) => {
         this.articulos = Array.isArray(response) ? response : (response ? [response] : []);
@@ -642,14 +645,14 @@ export class ProveedoreesComponent {
           const asucod = String(row?.asucod?? '').trim();
           this.getDescription(row, index, artcod, afacod, asucod);
         });
-        this.isLoading = false;
+        this.isLoadingArticulosDetails = false;
         this.pageArticulo = 0;
       },
       error: (err) => {
         this.articulos = [];
         this.pageArticulo = 0;
         this.articulosShowError = err.error.error ?? err.error;
-        this.isLoading = false;
+        this.isLoadingArticulosDetails = false;
       } 
     });
   }

@@ -171,71 +171,76 @@
                         <div class="spinner"></div>
                         <span>actualizando</span>
                     </div>
-
-
-                    
                     <div class="detail-container">
-                        <div class="chunk-one">
-                            <div class="left">
-                                <p class="p-style">Nombre</p>
-                                <p class="p-style">Alias</p>
-                                <p class="p-style">Dirección</p>
-                            </div>
-                            <div class="right">
-                                <h1 class="h1-style">{{tempProveedor.ternom || '#'}}</h1>
-                                <h1 class="h1-style">{{tempProveedor.terali || '#'}}</h1>
-                                <h1 class="h1-style">{{tempProveedor.terdom || '#'}}</h1>
-                            </div>
-                        </div>
-                        <div class="chunk-two">
-                            <div class="left">
-                                <p class="p-style">Código</p>
-                                <p class="p-style">Provincia</p>
-                                <p class="p-style">C.P</p>
-                            </div>
-                            <div class="right">
-                                <div class="on-three">
-                                    <h1 class="h1-style">{{tempProveedor.tercod || '#'}}</h1>
-                                    <p class="p-style">NIF</p>
-                                    <h1 class="h1-style">{{tempProveedor.ternif || '#'}}</h1>
-                                </div>
-                                <div class="on-two">
-                                    <h1 class="h1-style">{{tempProveedor.procod || '#'}}</h1>
-                                    <h1 class="h1-style">{{tempProveedor.terpob || '#'}}</h1>
-                                </div>
-                                <div class="on-three">
-                                    <h1 class="h1-style">{{tempProveedor.tercpo || '#'}}</h1>
-                                    <p class="p-style">C.contable</p>
-                                    <h1 class="h1-style">{{tempProveedor.terayt || '#'}}</h1>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="chunk-three">
-                            <div class="left">
-                                <p class="p-style">Fax</p>
-                                <p class="p-style">Teléfono</p>
-                                <p class="p-style">Correo electrónico</p>
-                            </div>
-                            <div class="right">
-                                <h1 class="h1-style">{{tempProveedor.terfax || '#'}}</h1>
-                                <h1 class="h1-style">{{tempProveedor.tertel || '#'}}</h1>
-                                <h1 class="h1-style">{{tempProveedor.tercoe || '#'}}</h1>
-                            </div>
-                        </div>
-                        <div class="chunk-four">
-                            <div class="left left-special">
-                                <p class="p-style">Web</p>
-                                <p class="p-style">Bloqueado</p>
-                                <p class="p-style">Tiene acuerdo marco</p>
-                            </div>
-                            <div class="right">
-                                <textarea 
-                                    class="textArea-style largeArea" 
-                                    [(ngModel)]="tempProveedor.terweb"
-                                    [disabled]="!isUpdate"
-                                    (input)="allowToUpdate = true"
-                                ></textarea>
-                                <div class="bloq">
+                        <table class="details-table">
+                            <tr>
+                                <td>
+                                    <p class="p-style">Nombre</p>
+                                </td>
+                                <td>
+                                    <h1 class="h1-style">{{tempProveedor.ternom || '#'}}</h1>
+                                </td>
+                                <td>
+                                    <p class="p-style">Dirección</p>
+                                </td>
+                                <td>
+                                    <h1 class="h1-style">{{tempProveedor.terdom || '#'}}</h1>
+                                </td>
+                                <td>
+                                    <p class="p-style">Teléfono</p>
+                                </td>
+                                <td>
+                                    <textarea
+                                        class="textArea-style averageThird" 
+                                        [(ngModel)]="tempProveedor.tertel"
+                                        [disabled]="!isUpdate"
+                                        (input)="allowToUpdate = true"
+                                    >
+                                    </textarea>
+                                </td>
+                                <td>
+                                    <p class="p-style">Web</p>
+                                </td>
+                                <td>
+                                    <textarea 
+                                        class="textArea-style averageThird" 
+                                        [(ngModel)]="tempProveedor.terweb"
+                                        [disabled]="!isUpdate"
+                                        (input)="allowToUpdate = true"
+                                    ></textarea>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <p class="p-style">Alias</p>
+                                </td>
+                                <td>
+                                    <h1 class="h1-style">{{tempProveedor.terali || '#'}}</h1>
+                                </td>
+                                <td>
+                                    <p class="p-style">Provincia</p>
+                                </td>
+                                <td>
+                                    <div class="cell-content">
+                                        <h1 class="h1-style">{{tempProveedor.procod || '#'}}</h1>
+                                        <h1 class="h1-style">{{tempProveedor.terpob || '#'}}</h1>
+                                    </div>
+                                </td>
+                                <td>
+                                    <p class="p-style">Correo electrónico</p>
+                                </td>
+                                <td>
+                                    <textarea
+                                        class="textArea-style averageThird" 
+                                        [(ngModel)]="tempProveedor.tercoe"
+                                        [disabled]="!isUpdate"
+                                        (input)="allowToUpdate = true"
+                                    ></textarea>
+                                </td>
+                                <td>
+                                    <p class="p-style">Bloqueado</p>
+                                </td>
+                                <td>
                                     <input type="checkbox"
                                         [checked]="tempProveedor.terblo == 1"
                                         (change)="onCheckboxGeneric($event, 'terblo')"
@@ -243,8 +248,43 @@
                                         (input)="allowToUpdate = true"
                                         class="checkbox" 
                                     />
-                                </div>
-                                <div class="bloq">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="cell-content">
+                                        <p class="p-style">Código</p>
+                                        <h1 class="h1-style">{{tempProveedor.tercod || '#'}}</h1>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="cell-content">
+                                        <p class="p-style">NIF</p>
+                                        <h1 class="h1-style">{{tempProveedor.ternif || '#'}}</h1>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="cell-content">
+                                        <p class="p-style">C.P</p>
+                                        <h1 class="h1-style">{{tempProveedor.tercpo || '#'}}</h1>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="cell-content">
+                                        <p class="p-style">C.contable</p>
+                                        <h1 class="h1-style">{{tempProveedor.terayt || '#'}}</h1>
+                                    </div>
+                                </td>
+                                <td>
+                                    <p class="p-style">Fax</p>
+                                </td>
+                                <td>
+                                    <h1 class="h1-style">{{tempProveedor.terfax || '#'}}</h1>
+                                </td>
+                                <td>
+                                    <p class="p-style">Tiene acuerdo marco</p>
+                                </td>
+                                <td>
                                     <input type="checkbox"
                                         [checked]="tempProveedor.teracu == 1"
                                         (change)="onCheckboxGeneric($event, 'teracu')"
@@ -252,24 +292,21 @@
                                         (input)="allowToUpdate = true"
                                         class="checkbox" 
                                     />
-                                        
-                                </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="wrapper">
+                            <div class="observ">
+                                <p class="p-style">Observaciones:</p>
+                                <textarea 
+                                    class="textArea-style"
+                                    [(ngModel)]="tempProveedor.terobs"
+                                    [disabled]="!isUpdate"
+                                    (input)="allowToUpdate = true"
+                                ></textarea>
                             </div>
                         </div>
-                        <div class="observ">
-                            <p class="p-style">Observaciones:</p>
-                            <textarea 
-                                class="textArea-style"
-                                [(ngModel)]="tempProveedor.terobs"
-                                [disabled]="!isUpdate"
-                                (input)="allowToUpdate = true"
-                            ></textarea>
-                        </div>
                     </div>
-
-
-
-
                     <div class="btns">
                         <button
                             class="purple-btn" 
@@ -332,7 +369,7 @@
                     <div class="custom-grid-modal" *ngIf="showContactPersonsGrid">
                         <h1 class="errorBtn">{{ personasContactoErrorMessage }}</h1>
                         <h1 class="successBtn">{{ personasContactoSuccessMessage }}</h1>
-                        <div *ngIf="isLoading" class="loading-message">
+                        <div *ngIf="isLoadingPersonas" class="loading-message">
                             <div class="spinner"></div>
                             <span>Cargando</span>
                         </div>
@@ -401,7 +438,7 @@
                     <div class="custom-grid-modal" *ngIf="showArticulosGrid">
                         <h1 class="errorBtn">{{ articuloError }}</h1>
                         <h1 class="successBtn">{{ articuloSuccessMessage }}</h1>
-                        <div *ngIf="isLoading" class="loading-message">
+                        <div *ngIf="isLoadingArticulosDetails" class="loading-message">
                             <div class="spinner"></div>
                             <span>Cargando</span>
                         </div>

@@ -162,89 +162,131 @@
                     </div>
                     <h1 class="errorBtn">{{ messageError }}</h1>
                     <div class="detail-container">
-                        <div class="chunk-one">
-                            <div class="left">
-                                <p class="p-style">Nombre</p>
-                                <p class="p-style">Alias</p>
-                                <p class="p-style">Dirección</p>
-                            </div>
-                            <div class="right">
-                                <h1 class="h1-style">{{selectedProveedor.ternom || '#'}}</h1>
-                                <h1 class="h1-style">{{selectedProveedor.terali || '#'}}</h1>
-                                <h1 class="h1-style">{{selectedProveedor.terdom || '#'}}</h1>
-                            </div>
-                        </div>
-                        <div class="chunk-two">
-                            <div class="left">
-                                <p class="p-style">Código</p>
-                                <p class="p-style">Provincia</p>
-                                <p class="p-style">C.P</p>
-                            </div>
-                            <div class="right">
-                                <div class="on-three">
-                                    <h1 class="h1-style">{{selectedProveedor.tercod || '#'}}</h1>
-                                    <p class="p-style">NIF</p>
-                                    <h1 class="h1-style">{{selectedProveedor.ternif || '#'}}</h1>
-                                </div>
-                                <div class="on-two">
-                                    <h1 class="h1-style">{{selectedProveedor.procod || '#'}}</h1>
-                                    <h1 class="h1-style">{{selectedProveedor.terpob || '#'}}</h1>
-                                </div>
-                                <div class="on-three">
-                                    <h1 class="h1-style">{{selectedProveedor.tercpo || '#'}}</h1>
-                                    <p class="p-style">C.contable</p>
-                                    <h1 class="h1-style">{{selectedProveedor.terayt || '#'}}</h1>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="chunk-three">
-                            <div class="left">
-                                <p class="p-style">Fax</p>
-                                <p class="p-style">Teléfono</p>
-                                <p class="p-style">Correo electrónico</p>
-                            </div>
-                            <div class="right">
-                                <h1 class="h1-style">{{selectedProveedor.terfax || '#'}}</h1>
-                                <h1 class="h1-style">{{selectedProveedor.tertel || '#'}}</h1>
-                                <h1 class="h1-style">{{selectedProveedor.tercoe || '#'}}</h1>
-                            </div>
-                        </div>
-                        <div class="chunk-four">
-                            <div class="left left-special">
-                                <p class="p-style">Web</p>
-                                <p class="p-style">Bloqueado</p>
-                                <p class="p-style">Tiene acuerdo marco</p>
-                            </div>
-                            <div class="right">
-                                <textarea 
-                                    class="textArea-style largeArea" 
-                                    [(ngModel)]="selectedProveedor.terweb"
-                                    disabled
-                                ></textarea>
-                                <div class="bloq">
+                        <table class="details-table">
+                            <tr>
+                                <td>
+                                    <p class="p-style">Nombre</p>
+                                </td>
+                                <td>
+                                    <h1 class="h1-style">{{selectedProveedor.ternom || '#'}}</h1>
+                                </td>
+                                <td>
+                                    <p class="p-style">Dirección</p>
+                                </td>
+                                <td>
+                                    <h1 class="h1-style">{{selectedProveedor.terdom || '#'}}</h1>
+                                </td>
+                                <td>
+                                    <p class="p-style">Teléfono</p>
+                                </td>
+                                <td>
+                                    <textarea
+                                        class="textArea-style averageThird" 
+                                        [(ngModel)]="selectedProveedor.tertel"
+                                        disabled
+                                    >
+                                    </textarea>
+                                </td>
+                                <td>
+                                    <p class="p-style">Web</p>
+                                </td>
+                                <td>
+                                    <textarea 
+                                        class="textArea-style averageThird" 
+                                        [(ngModel)]="selectedProveedor.terweb"
+                                        disabled
+                                    ></textarea>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <p class="p-style">Alias</p>
+                                </td>
+                                <td>
+                                    <h1 class="h1-style">{{selectedProveedor.terali || '#'}}</h1>
+                                </td>
+                                <td>
+                                    <p class="p-style">Provincia</p>
+                                </td>
+                                <td>
+                                    <div class="cell-content">
+                                        <h1 class="h1-style">{{selectedProveedor.procod || '#'}}</h1>
+                                        <h1 class="h1-style">{{selectedProveedor.terpob || '#'}}</h1>
+                                    </div>
+                                </td>
+                                <td>
+                                    <p class="p-style">Correo electrónico</p>
+                                </td>
+                                <td>
+                                    <textarea
+                                        class="textArea-style averageThird" 
+                                        [(ngModel)]="selectedProveedor.tercoe"
+                                        disabled
+                                    ></textarea>
+                                </td>
+                                <td>
+                                    <p class="p-style">Bloqueado</p>
+                                </td>
+                                <td>
                                     <input type="checkbox"
                                         [checked]="selectedProveedor.terblo == 1"
-                                        class="checkbox" 
                                         disabled
+                                        class="checkbox" 
                                     />
-                                </div>
-                                <div class="bloq">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="cell-content">
+                                        <p class="p-style">Código</p>
+                                        <h1 class="h1-style">{{selectedProveedor.tercod || '#'}}</h1>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="cell-content">
+                                        <p class="p-style">NIF</p>
+                                        <h1 class="h1-style">{{selectedProveedor.ternif || '#'}}</h1>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="cell-content">
+                                        <p class="p-style">C.P</p>
+                                        <h1 class="h1-style">{{selectedProveedor.tercpo || '#'}}</h1>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="cell-content">
+                                        <p class="p-style">C.contable</p>
+                                        <h1 class="h1-style">{{selectedProveedor.terayt || '#'}}</h1>
+                                    </div>
+                                </td>
+                                <td>
+                                    <p class="p-style">Fax</p>
+                                </td>
+                                <td>
+                                    <h1 class="h1-style">{{selectedProveedor.terfax || '#'}}</h1>
+                                </td>
+                                <td>
+                                    <p class="p-style">Tiene acuerdo marco</p>
+                                </td>
+                                <td>
                                     <input type="checkbox"
                                         [checked]="selectedProveedor.teracu == 1"
-                                        class="checkbox" 
                                         disabled
+                                        class="checkbox" 
                                     />
-                                        
-                                </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="wrapper">
+                            <div class="observ">
+                                <p class="p-style">Observaciones:</p>
+                                <textarea 
+                                    class="textArea-style"
+                                    [(ngModel)]="selectedProveedor.terobs"
+                                    disabled
+                                ></textarea>
                             </div>
-                        </div>
-                        <div class="observ">
-                            <p class="p-style">Observaciones:</p>
-                            <textarea 
-                                class="textArea-style"
-                                [(ngModel)]="selectedProveedor.terobs"
-                                disabled
-                            ></textarea>
                         </div>
                     </div>
                     <div class="more-detail-container">
