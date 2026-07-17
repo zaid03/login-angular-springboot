@@ -74,7 +74,7 @@ public class TerController {
     }
 
     //for modifying a Ter record
-    public record updateProveedor(String TERWEB, String TEROBS, Integer TERBLO, Integer TERACU) {};
+    public record updateProveedor(String TERWEB, String TEROBS, Integer TERBLO, Integer TERACU, String TERTEL, String  TERCOE) {};
     @PutMapping("/updateFields/{ent}/{tercod}")
     public ResponseEntity<?> updateTerFields(
         @PathVariable Integer ent,
@@ -93,7 +93,8 @@ public class TerController {
             updateProveedor.setTEROBS(payload.TEROBS());
             updateProveedor.setTERBLO(payload.TERBLO());
             updateProveedor.setTERACU(payload.TERACU());
-
+            updateProveedor.setTERTEL(payload.TERTEL());
+            updateProveedor.setTERCOE(payload.TERCOE());
             terRepository.save(updateProveedor);
             return ResponseEntity.noContent().build();
 
@@ -177,6 +178,10 @@ public class TerController {
         @RequestBody proveedorUpdate payload
     ) {
         try {
+            if (payload == null) {
+                return ResponseEntity.badRequest().body("Faltan datos obligatorios");
+            }
+
             TerId id = new TerId(ent, tercod);
             Optional<Ter> proveedor = terRepository.findById(id);
             if (proveedor.isEmpty()) {

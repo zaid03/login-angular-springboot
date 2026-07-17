@@ -1167,7 +1167,11 @@ export class ProveedoreesComponent {
   getUpdatedInfo() {
     this.limpiarMessages();
     const terayt = this.selectedProveedor.terayt;
-
+    if (terayt === null || terayt === '') {
+      this.updateProveedorMessage = 'Codigo Contable extraviado';
+      return;
+    }
+    
     this.isUpdatingProveedor = true;
     this.http.get(`${environment.backendUrl}/api/sical/terceros?codigo=${terayt}`).subscribe({
       next: (res) => {
@@ -1185,26 +1189,23 @@ export class ProveedoreesComponent {
 
   actualizarProveedor() {
     const proveedor = this.selectedProveedor.tercod;
-    const procod = this.proveedorInfo[0].codigoPostal.slice(0, 2);
+    const procod = this.proveedorInfo[0]?.codigoPostal?.slice(0, 2);
     const payload = {
       "TERNOM": this.proveedorInfo[0].nomTercero,
       "TERALI": this.proveedorInfo[0].nombreCompleto,
       "TERNIF":	this.proveedorInfo[0].niftercero,
       "TERDOM": this.proveedorInfo[0].domicilio,
       "TERCPO": this.proveedorInfo[0].codigoPostal,
-      "TERTEL": this.proveedorInfo[0].telefono,
       "TERFAX": this .proveedorInfo[0].fax,
-      "TERCOE": this.proveedorInfo[0].email,
       "PROCOD": procod,
       "TERPOB": this.proveedorInfo[0].poblacion,
       "TERAYT": Number(this.proveedorInfo[0].idenTercero)
     }
 
-    this.http.post(`${environment.backendUrl}/api/ter/actualizar-proveedor/${this.entcod}/${proveedor}`, payload).subscribe({
+    console.log("tercod found", proveedor)
+    this.http.post<any>(`${environment.backendUrl}/api/ter/actualizar-proveedor/${this.entcod}/${proveedor}`, payload).subscribe({
       next: (res) => {
         this.closeUpdateProvedor();
-        // this.closeDetails();
-        // this.fetchProveedores();
         this.updatingProveedorDetail();
       },
       error: (err) => {
