@@ -976,7 +976,7 @@ export class ProveedoreesComponent {
     this.http.get<any[]>(apiUrl).subscribe({
       next: (response) => {
         const mappedResults = (response || []).map(d => ({
-          ENT: d.idenTercero || this.entcod?.toString() || '',
+          ENT: this.entcod?.toString() || '',
           TERNOM: d.nomTercero ?? '',
           TERALI: d.apellTercero ?? '',
           NIF: d.niftercero ?? d.ternif ?? '',
@@ -989,7 +989,7 @@ export class ProveedoreesComponent {
           TEROBS: d.observaciones ?? '',
           PROCOD: d.provincia ?? '',
           TERPOB: d.poblacion ?? '',
-          // TERAYT: d. ?? '',
+          TERAYT: d.idenTercero ?? '',
           TERACU: 0,
           TERBLO: 0,
           __raw: d
