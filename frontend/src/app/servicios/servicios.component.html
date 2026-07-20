@@ -171,133 +171,159 @@
                         <span>actualizando</span>
                     </div> 
                     <div class="detail-container">
-                        <div class="chunk-one">
-                            <div class="left">
-                                <p class="p-style">Código</p>
-                                <p class="p-style">Descripción</p>
-                                <p class="p-style">Centro Gestor</p>
-                            </div>
-                            <div class="right">
-                                <div class="on-two">
+                        <table class="details-table">
+                            <tr>
+                                <td>
+                                    <p class="p-style">Código</p>
+                                </td>
+                                <td>
                                     <h1 class="h1-style">{{tempServicio.depcod || '#'}}</h1>
+                                </td>
+                                <td>
                                     <p class="p-style">Centro de coste</p>  
+                                </td>
+                                <td>
                                     <h1 class="h1-style">{{tempServicio.ccocod || '#'}}</h1>
-                                </div>
-                                <textarea 
-                                    class="textArea-style long" 
-                                    [(ngModel)]="tempServicio.depdes"
-                                    [disabled]="!isUpdate"
-                                    (input)="allowToUpdate = true"
-                                    #des
-                                ></textarea>
-                                <div class="on-two">
-                                    <h1 class="h1-style">{{tempServicio.cgecod || '#'}}</h1>
-                                    <h1 class="h1-style">{{tempServicio.cgedes || '#'}}</h1>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="chunk-two">
-                            <div class="left">
-                                <p class="p-style">Unidad tramitadora</p>
-                                <p class="p-style">Órgano gestor</p>
-                                <p class="p-style">Oficina contable</p>
-                            </div>
-                            <div class="right">
-                                <div class="on-two">
+                                </td>
+                                <td>
+                                    <p class="p-style">Centro Gestor</p>
+                                </td>
+                                <td>
+                                    <div class="cell-content">
+                                        <h1 class="h1-style">{{tempServicio.cgecod || '#'}}</h1>
+                                        <h1 class="h1-style">{{tempServicio.cgedes || '#'}}</h1>
+                                    </div>
+                                </td>
+                                <td>
+                                    <p class="p-style">Descripción</p>
+                                </td>
+                                <td>
                                     <textarea 
-                                        class="textArea-style short"
-                                        [(ngModel)]="tempServicio.depd1C"
+                                        class="textArea-style large" 
+                                        [(ngModel)]="tempServicio.depdes"
                                         [disabled]="!isUpdate"
                                         (input)="allowToUpdate = true"
-                                        #d1c
+                                        #des
                                     ></textarea>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <p class="p-style">Unidad tramitadora</p>
+                                </td>
+                                <td colspan="2">
+                                    <div class="cell-content">
+                                        <textarea 
+                                            class="textArea-style short"
+                                            [(ngModel)]="tempServicio.depd1C"
+                                            [disabled]="!isUpdate"
+                                            (input)="allowToUpdate = true"
+                                            #d1c
+                                        ></textarea>
+                                        <textarea 
+                                            [(ngModel)]="tempServicio.depd1D" 
+                                            [disabled]="!isUpdate"
+                                            (input)="allowToUpdate = true"
+                                            class="textArea-style average"
+                                            #d1d
+                                        ></textarea>
+                                    </div>
+                                </td>
+                                <td>
+                                    <p class="p-style">Órgano gestor</p>
+                                </td>
+                                <td colspan="2">
+                                    <div class="cell-content">
+                                        <textarea 
+                                            class="textArea-style short"
+                                            [(ngModel)]="tempServicio.depd2C"
+                                            [disabled]="!isUpdate"
+                                            (input)="allowToUpdate = true"
+                                            #d2c
+                                        ></textarea>
+                                        <textarea 
+                                            [(ngModel)]="tempServicio.depd2D" 
+                                            [disabled]="!isUpdate"
+                                            (input)="allowToUpdate = true"
+                                            class="textArea-style average"
+                                            #d2d
+                                        ></textarea>
+                                    </div>
+                                </td>
+                                <td>
+                                    <p class="p-style">Oficina contable</p>
+                                </td>
+                                <td>
+                                    <div class="cell-content">
+                                        <textarea 
+                                            class="textArea-style short"
+                                            [(ngModel)]="tempServicio.depd3C"
+                                            [disabled]="!isUpdate"
+                                            (input)="allowToUpdate = true"
+                                            #d3c
+                                        ></textarea>
+                                        <textarea 
+                                            [(ngModel)]="tempServicio.depd3D" 
+                                            [disabled]="!isUpdate"
+                                            (input)="allowToUpdate = true"
+                                            class="textArea-style average"
+                                            #d3d
+                                        ></textarea>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <p class="p-style">Datos de contacto</p>
+                                </td>
+                                <td colspan="2">
                                     <textarea 
-                                        [(ngModel)]="tempServicio.depd1D" 
+                                        class="textArea-style heighty large"
+                                        [(ngModel)]="tempServicio.depdco"
                                         [disabled]="!isUpdate"
                                         (input)="allowToUpdate = true"
-                                        class="textArea-style long"
-                                        #d1d
+                                        #dco
                                     ></textarea>
-                                </div>
-                                <div class="on-two">
+                                </td>
+                                <td>
+                                    <p class="p-style">Datos de entrega</p>
+                                </td>
+                                <td colspan="2">
                                     <textarea 
-                                        class="textArea-style short"
-                                        [(ngModel)]="tempServicio.depd2C"
+                                        class="textArea-style heighty large"
+                                        [(ngModel)]="tempServicio.depden"
                                         [disabled]="!isUpdate"
                                         (input)="allowToUpdate = true"
-                                        #d2c
+                                        #den
                                     ></textarea>
-                                    <textarea 
-                                        [(ngModel)]="tempServicio.depd2D" 
-                                        [disabled]="!isUpdate"
-                                        (input)="allowToUpdate = true"
-                                        class="textArea-style long"
-                                        #d2d
-                                    ></textarea>
-                                </div>
-                                <div class="on-two">
-                                    <textarea 
-                                        class="textArea-style short"
-                                        [(ngModel)]="tempServicio.depd3C"
-                                        [disabled]="!isUpdate"
-                                        (input)="allowToUpdate = true"
-                                        #d3c
-                                    ></textarea>
-                                    <textarea 
-                                        [(ngModel)]="tempServicio.depd3D" 
-                                        [disabled]="!isUpdate"
-                                        (input)="allowToUpdate = true"
-                                        class="textArea-style long"
-                                        #d3d
-                                    ></textarea>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="chunk-three">
-                            <input
-                                type="checkbox"
-                                [ngModel]="detailFlags.depalm"
-                                (ngModelChange)="toggleDetailFlag('depalm', $event)"
-                                [disabled]="!isUpdate"
-                                (input)="allowToUpdate = true"
-                            > <span class="name">Almacenar</span> <br>
-                            <input
-                                type="checkbox"
-                                [ngModel]="detailFlags.depcom"
-                                (ngModelChange)="toggleDetailFlag('depcom', $event)"
-                                [disabled]="!isUpdate"
-                                (input)="allowToUpdate = true"
-                            > <span class="name">Comprar</span> <br>
-                            <input
-                                type="checkbox"
-                                [ngModel]="detailFlags.depint"
-                                (ngModelChange)="toggleDetailFlag('depint', $event)"
-                                [disabled]="!isUpdate"
-                                (input)="allowToUpdate = true"
-                            > <span class="name">Contabilizar</span>
-                        </div>
-                    </div>
-                    <div class="chunk-four">
-                        <div class="first-det">
-                            <p class="p-style">Datos de contacto</p>
-                            <textarea 
-                                class="textArea-style heighty long"
-                                [(ngModel)]="tempServicio.depdco"
-                                [disabled]="!isUpdate"
-                                (input)="allowToUpdate = true"
-                                #dco
-                            ></textarea>
-                        </div>
-                        <div class="second-det">
-                            <p class="p-style">Datos de entrega</p>
-                            <textarea 
-                                class="textArea-style heighty long"
-                                [(ngModel)]="tempServicio.depden"
-                                [disabled]="!isUpdate"
-                                (input)="allowToUpdate = true"
-                                #den
-                            ></textarea>
-                        </div>
+                                </td>
+                                <td colspan="2">
+                                    <div class="checks">
+                                        <input
+                                            type="checkbox"
+                                            [ngModel]="detailFlags.depalm"
+                                            (ngModelChange)="toggleDetailFlag('depalm', $event)"
+                                            [disabled]="!isUpdate"
+                                            (input)="allowToUpdate = true"
+                                        > <span class="p-style">Almacenar</span> <br>
+                                        <input
+                                            type="checkbox"
+                                            [ngModel]="detailFlags.depcom"
+                                            (ngModelChange)="toggleDetailFlag('depcom', $event)"
+                                            [disabled]="!isUpdate"
+                                            (input)="allowToUpdate = true"
+                                        > <span class="p-style">Comprar</span> <br>
+                                        <input
+                                            type="checkbox"
+                                            [ngModel]="detailFlags.depint"
+                                            (ngModelChange)="toggleDetailFlag('depint', $event)"
+                                            [disabled]="!isUpdate"
+                                            (input)="allowToUpdate = true"
+                                        > <span class="p-style">Contabilizar</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
                     </div>
                     <div class="btns space">
                         <button 
@@ -353,7 +379,7 @@
                     <div class="custom-grid-modal" [ngSwitch]="option">
                         <ng-container *ngSwitchCase="'personas'">
                             <h1 class="successBtn">{{personasSuccess}}</h1>
-                            <div *ngIf="isLoading" class="loading-message">
+                            <div *ngIf="isLoadingPersonas" class="loading-message">
                                 <div class="spinner"></div>
                                 <span>Cargando</span>
                             </div>
@@ -396,7 +422,7 @@
                             </div>
                         </ng-container>
                         <ng-container *ngSwitchCase="'almacen'">
-                            <div *ngIf="isLoading" class="loading-message">
+                            <div *ngIf="isLoadingAlmacen" class="loading-message">
                                 <div class="spinner"></div>
                                 <span>Cargando</span>
                             </div>
@@ -449,7 +475,7 @@
         <div class="title">
             <h3>Añadir un servicio</h3>
         </div>
-        <button class="purple-btn" (click)="addService(codigo.value, description.value, centroCoste.value, centroGestor.value, d1c_add.value, d1d_add.value, d2c_add.value, d2d_add.value, d3c_add.value, d3d_add.value, den_add.value, dco_add.value)">+</button>
+        <button class="purple-btn" (click)="addService(codigo.value, description.value, centroCoste.value, centroGestor.value, d1c_add.value, d1d_add.value, d2c_add.value, d2d_add.value, d3c_add.value, d3d_add.value, den_add.value, dco_add.value)">+ Cargar</button>
         <button class="red-btn" (click)="closeAddConfirm()">✖</button>
     </div>
     <h1 class="errorBtn">{{ addServiceErrorMessage }}</h1>
@@ -457,41 +483,70 @@
         <div class="spinner"></div>
         <span>añadiendo</span>
     </div>
-    <div class="add-container">
-        <div class="first-content">
-            <div class="left-add">
+    <table class="details-table">
+        <tr>
+            <td>
                 <p class="p-style">Código*</p>
+            </td>
+            <td>
+                <textarea 
+                    class="textArea-style short-add" 
+                    (input)="setInputToLimit($event)" 
+                    #codigo 
+                ></textarea>
+            </td>
+            <td>
+                <p class="p-style">Centro de Coste*</p>
+            </td>
+            <td>
+                <textarea 
+                    (input)="setInputToUpper($event)"  
+                    class="textArea-style short-add" 
+                    #centroCoste 
+                ></textarea>
+            </td>
+            <td>
+                <p class="p-style">Centro Gestor*</p>
+            </td>
+            <td>
+                <textarea 
+                    (input)="setInputToUpper($event)" 
+                    class="textArea-style short-add" 
+                    #centroGestor
+                ></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>
                 <p class="p-style">Descripción*</p>
-            </div>
-            <div class="right-add">
-                <div class="on-three">
-                    <textarea class="textArea-style short-add" (input)="setInputToLimit($event)" #codigo ></textarea>
-                    <p class="p-style">Centro de Coste*</p>
-                    <textarea (input)="setInputToUpper($event)"  class="textArea-style short-add" #centroCoste ></textarea>
-                    <p class="p-style">Centro Gestor*</p>
-                    <textarea (input)="setInputToUpper($event)" class="textArea-style short-add" #centroGestor></textarea>
+            </td>
+            <td colspan="5">
+                <textarea 
+                    class="textArea-style long-add" 
+                    #description
+                ></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="6">
+                <div class="cell-content alignCheck">
+                    <div class="checkboxes">
+                        <input type="checkbox" [(ngModel)]="addDepalm">
+                        <span class="p-style">Almacén/Farmacia</span>
+                        <input type="checkbox" [(ngModel)]="addDepcom">
+                        <span class="p-style">Comprador</span>
+                        <input type="checkbox" [(ngModel)]="addDepint">
+                        <span class="p-style">Contabilidad</span>
+                    </div>
                 </div>
-                <textarea class="textArea-style long-add" #description></textarea>
-            </div>
-        </div>
-        <div class="second-content">
-            <div class="checkboxes">
-                <input type="checkbox" [(ngModel)]="addDepalm">
-                <span class="name">Almacén/Farmacia</span>
-                <input type="checkbox" [(ngModel)]="addDepcom">
-                <span class="name">Comprador</span>
-                <input type="checkbox" [(ngModel)]="addDepint">
-                <span class="name">Contabilidad</span>
-            </div>
-        </div>
-        <div class="third-content">
-            <div class="left-add">
+            </td>
+        </tr>
+        <tr>
+            <td>
                 <p class="p-style">Unidad tramitadora</p>
-                <p class="p-style">Órgano gestor</p>
-                <p class="p-style">Oficina contable</p>
-            </div>
-            <div class="right-add">
-                <div class="on-two">
+            </td>
+            <td colspan="5">
+                <div class="cell-content">
                     <textarea 
                         class="textArea-style short-add"
                         #d1c_add
@@ -501,7 +556,14 @@
                         #d1d_add
                     ></textarea>
                 </div>
-                <div class="on-two">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p class="p-style">Órgano gestor</p>
+            </td>
+            <td colspan="5">
+                <div class="cell-content">
                     <textarea 
                         class="textArea-style short-add"
                         #d2c_add
@@ -511,7 +573,14 @@
                         #d2d_add
                     ></textarea>
                 </div>
-                <div class="on-two">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p class="p-style">Oficina contable</p>
+            </td>
+            <td colspan="5">
+                <div class="cell-content">
                     <textarea 
                         class="textArea-style short-add"
                         #d3c_add
@@ -521,25 +590,31 @@
                         #d3d_add
                     ></textarea>
                 </div>
-            </div>
-        </div>
-        <div class="fourth-content">
-            <div class="left-special">
+            </td>
+        </tr>
+        <tr>
+            <td>
                 <p class="p-style">Datos de entrega</p>
-                <p class="p-style">Datos de contacto</p>
-            </div>
-            <div class="right-special">
+            </td>
+            <td colspan="5">
                 <textarea 
                     class="textArea-style long-add hei"
                     #den_add
                 ></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p class="p-style">Datos de contacto</p>
+            </td>
+            <td colspan="5">
                 <textarea 
                     class="textArea-style long-add hei"
                     #dco_add
                 ></textarea>
-            </div>
-        </div>
-    </div>
+            </td>
+        </tr>
+    </table>
 </div>
 
 <div class="modal-backdrop" *ngIf="showDeleteConfirm"></div>
@@ -564,7 +639,7 @@
 <div class="proveedor-grid-modal" *ngIf="addPersonas">
     <div class="btns">
         <div class="title">
-            <h3>Selecciona las personas que deseas agregar</h3>
+            <h3>seleccionar personas</h3>
         </div>
         <div class="count-selected">
             <p class="p-style">seleccionado {{count}} personas</p>
@@ -589,11 +664,10 @@
             </div>
             <div class="btns Widthy">
                 <button class="purple-btn" (click)="searchCopy()">Buscar</button>
-                <button class="red-btn" (click)="limpiarSearcCopy()">Limpiar</button>
+                <button class="purple-btn" (click)="limpiarSearcCopy()">Limpiar</button>
             </div>
         </div>
     </div>
-    <h1 class="errorBtn">{{errorCopy}}</h1>
     <div *ngIf="isAddingPersonnas" class="loading-message">
         <div class="spinner"></div>
         <span>añadiendo</span>
@@ -618,6 +692,7 @@
                 </tr>
             </tbody>
         </table>
+        <h1 class="errorBtn">{{errorCopy}}</h1>
         <div class="pag">
             <div class="pagination-controls">
                 <button (click)="prevPageCopy()" [disabled]="pageCopy === 0">Anterior</button>
@@ -638,7 +713,7 @@
 </div>
 
 <div class="modal-backdrop force" *ngIf="perosanasMessages"></div>
-<div class="delete-confirm-modal adj" *ngIf="perosanasMessages">
+<div class="add-confirm-modal adj" *ngIf="perosanasMessages">
     <div class="btns">
         <button class="red-btn" (click)="closePersonasMessages()">✖</button>
     </div>

@@ -16,20 +16,20 @@
 .tallText { width: 220px; max-width: 300px;}
 .margin { margin-top: 5px;}
 .on-two input[type="radio"],
-.estado-inputs input[type="radio"] { margin: 0 6px 0 0; accent-color: #25176b; width: 18px; height: 18px; vertical-align: middle; outline: none; box-shadow: none; }
+.cell-content input[type="radio"] { margin: 0 6px 0 0; accent-color: #25176b; width: 18px; height: 18px; vertical-align: middle; outline: none; box-shadow: none; }
 .on-two input[type="radio"]:focus,
-.estado-inputs input[type="radio"]:focus { outline: none; }
+.cell-content input[type="radio"]:focus { outline: none; }
 .long-text { width: 50%; display: flex; flex-direction: column; gap: 10px; }
 .long-text textarea { width: 80%; max-width: 95%; height: 80px;}
 .marginBtns {margin-top: 10px;}
 /* detail grid */
 /* add grid */
 .add-confirm-modal { top: 15%; width: 45%;}
-.more-chunk { width: 100%; border: 1px solid green;}
 .width {width: 30%; text-align: left;}
 .more { gap: 20px; width: 70%;}
-.estado-inputs {display: flex; gap: 10px;}
+.cell-content {display: flex; gap: 10px;}
 .title{width: 80%;}
+.cgeDetail {text-align: left;}
 /* add grid */
 @media (max-width: 1299px), (min-width: 1350px) {
     .delete-confirm-modal {top: 40%;}

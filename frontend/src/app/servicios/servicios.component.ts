@@ -496,9 +496,10 @@ export class ServiciosComponent {
   personas: any[] = [];
   personasPage = 0;
   personasPageSize = 10;
+  isLoadingPersonas: boolean = false;
   fetchPersonas(depcod: string): void {
     this.limpiarMessages();
-    this.isLoading = true;
+    this.isLoadingPersonas = true;
     if (!depcod) {
       this.personasError = 'codigo extraviado'
       return;
@@ -508,13 +509,13 @@ export class ServiciosComponent {
       next: (res) => {
         this.personas = res;
         this.personasPage = 0;
-        this.isLoading = false;
+        this.isLoadingPersonas = false;
       },
       error: (err) => {
         this.personasPage=0;
         this.personas = [];
         this.personasError = err.error.error ?? err.error;
-        this.isLoading = false;
+        this.isLoadingPersonas = false;
       }
     })
   }
@@ -533,9 +534,10 @@ export class ServiciosComponent {
   almacenSecondError: string = '';
   almacenArray: any = null;
   almacenDatosArray: any[] = [];
+  isLoadingAlmacen: boolean = false;
   almacenDatos(depcod: string) {
     this.limpiarMessages();
-    this.isLoading = true;
+    this.isLoadingAlmacen = true;
     if (!depcod) {
       this.almacenErro = 'codigo extraviato';
       return;
@@ -553,13 +555,13 @@ export class ServiciosComponent {
     this.http.get<any>(`${environment.backendUrl}/api/mat/fetch-almacenajes/${this.entcod}/${depcod}`).subscribe({
       next: (res) => {
         this.almacenDatosArray = res;
-        this.isLoading = false;
+        this.isLoadingAlmacen = false;
         this.almacenPage = 0;
       },
       error: (err) => {
         this.almacenDatosArray = [];
         this.almacenSecondError = err.error.error ?? err.error;
-        this.isLoading = false;
+        this.isLoadingAlmacen = false;
       }
     })
   }
@@ -718,34 +720,18 @@ export class ServiciosComponent {
   addPersonas: boolean = false;
   errorCopy: string = '';
   pesonasCopy: any = [];
-  backupPesonasCopy: any = [];
   showAddPersonas() {
     this.addPersonas = true;
-    this.fetchPersonasForCopy()
+    this.errorCopy = 'No hay personas';
   }
 
   closeAddPersonas() {
+    this.limpiarMessages();
+    this.limpiarSearcCopy();
     this.addPersonas = false;
-    this.linesSelected = [];
-    this.count = 0;
   }
 
   isAdding: boolean = false;
-  fetchPersonasForCopy() {
-    this.isAdding = true;
-    this.http.get<any>(`${environment.backendUrl}/api/Per/fetch-all`).subscribe({
-      next: (res) => {
-        this.pesonasCopy = res;
-        this.backupPesonasCopy = [...this.pesonasCopy]
-        this.pageCopy = 0;
-        this.isAdding = false;
-      },
-      error: (err) => {
-        this.errorCopy = err.error.error ?? err.error;
-        this.isAdding = false;
-      }
-    });
-  }
 
   pageCopy: number = 0;
   get paginatedPersonasCopy(): any[] {
@@ -781,7 +767,6 @@ export class ServiciosComponent {
       this.http.get<any>(`${environment.backendUrl}/api/Per/search-cod-nom/${this.searchPersonasCopy}`).subscribe({
         next: (res) => {
           this.pesonasCopy = res;
-          this.backupPesonasCopy = [...this.pesonasCopy]
           this.pageCopy = 0;
           if (!res.length) {
             this.errorCopy = 'No se encontraron servicios con los filtros dados.';
@@ -789,7 +774,6 @@ export class ServiciosComponent {
         },
         error: (err) => {
           this.pesonasCopy = [];
-          this.backupPesonasCopy = [];
           this.pageCopy = 0;
           this.errorCopy = err.error.error ?? err.error;
         }
@@ -798,12 +782,10 @@ export class ServiciosComponent {
       this.http.get<any>(`${environment.backendUrl}/api/Per/search-nom/{this.searchPersonasCopy}`).subscribe({
         next: (res) => {
           this.pesonasCopy = res;
-          this.backupPesonasCopy = [...this.pesonasCopy]
           this.pageCopy = 0;
         },
         error: (err) => {
           this.pesonasCopy = [];
-          this.backupPesonasCopy = [];
           this.pageCopy = 0;
           this.errorCopy = err.error.error ?? err.error;
         }
@@ -812,10 +794,12 @@ export class ServiciosComponent {
   }
 
   limpiarSearcCopy() {
+    this.limpiarMessages();
     this.searchPersonasCopy = '';
-    this.pesonasCopy = [...this.backupPesonasCopy]
+    this.pesonasCopy = [];
     this.linesSelected = [];
     this.count = 0;
+    this.errorCopy = 'No hay personas';
   }
   
   linesSelected: string[] = [];
@@ -890,5 +874,6 @@ export class ServiciosComponent {
     this.deleErr = '';
     this.almacenSecondError = '';
     this.cargarPersonasError = '';
+    this.errorCopy = '';
   }
 }

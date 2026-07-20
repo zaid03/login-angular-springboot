@@ -260,58 +260,91 @@
         <div class="spinner"></div>
         <span>añadiendo</span>
     </div>
-    <div class="chunk more-chunk">
-        <table class="details-table">
-
-        </table>
-        <div class="left width">
-            <p class="p-style">Código*</p>
-            <p class="p-style">Orgánica</p>
-            <p class="p-style">Programa</p>
-            <p class="p-style">Descripción*</p>
-            <p class="p-style">Dirección para pedido</p>
-            <p class="p-style">Estado contable</p>
-        </div>
-        <div class="right more">
-            <textarea
-                class="textArea-style smallText"
-                (input)="setCgeToUpper($event)"
-                #codigo
-            ></textarea>
-            <textarea 
-                (input)="allowOnlyDigits($event)"
-                class="textArea-style smallText" 
-                #organica></textarea>
-            <textarea
-                class="textArea-style smallText"
-                (input)="allowOnlyDigits($event)"
-                #programa
-            ></textarea>
-            <textarea #description class="textArea-style tallText"></textarea>
-            <textarea #direction class="textArea-style tallText"></textarea>
-            <div class="estado-inputs">
-                <input 
-                    type="radio" 
-                    name="cont-option" 
-                    [checked]="newCgecic === 0"
-                    (change)="setAddCgecic(0)"
-                >
-                <span class="radio-name">Abierto</span>
-                <input 
-                    type="radio" 
-                    name="cont-option" 
-                    [checked]="newCgecic === 2"
-                    (change)="setAddCgecic(2)"
-                >
-                <span class="radio-name">Cerrado Para Contabilizar</span>
-                <input 
-                    type="radio" 
-                    name="cont-option" 
-                    [checked]="newCgecic === 1"
-                    (change)="setAddCgecic(1)"
-                >
-                <span class="radio-name">Cerrado</span>
-            </div>
-        </div>
-    </div>
+    <table class="details-table cgeDetail">
+        <tr>
+            <td>
+                <p class="p-style">Código*</p>
+            </td>
+            <td>
+                <textarea
+                    class="textArea-style smallText"
+                    (input)="setCgeToUpper($event)"
+                    #codigo
+                ></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p class="p-style">Orgánica</p>
+            </td>
+            <td>
+                <textarea 
+                    (input)="allowOnlyDigits($event)"
+                    class="textArea-style smallText" 
+                    #organica>
+                </textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p class="p-style">Programa</p>
+            </td>
+            <td>
+                <textarea
+                    class="textArea-style smallText"
+                    (input)="allowOnlyDigits($event)"
+                    #programa
+                ></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p class="p-style">Descripción*</p>
+            </td>
+            <td>
+                <textarea 
+                    #description 
+                    class="textArea-style tallText"
+                ></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p class="p-style">Dirección para pedido</p>
+            </td>
+            <td>
+                <textarea #direction class="textArea-style tallText"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p class="p-style">Estado contable</p>
+            </td>
+            <td>
+                <div class="cell-content">
+                    <input 
+                        type="radio" 
+                        name="cont-option" 
+                        [checked]="newCgecic === 0"
+                        (change)="setAddCgecic(0)"
+                    >
+                    <span class="radio-name">Abierto</span>
+                    <input 
+                        type="radio" 
+                        name="cont-option" 
+                        [checked]="newCgecic === 2"
+                        (change)="setAddCgecic(2)"
+                    >
+                    <span class="radio-name">Cerrado Para Contabilizar</span>
+                    <input 
+                        type="radio" 
+                        name="cont-option" 
+                        [checked]="newCgecic === 1"
+                        (change)="setAddCgecic(1)"
+                    >
+                    <span class="radio-name">Cerrado</span>
+                </div>
+            </td>
+        </tr>
+    </table>
 </div>
