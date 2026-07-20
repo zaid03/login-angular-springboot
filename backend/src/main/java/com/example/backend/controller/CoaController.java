@@ -110,10 +110,22 @@ public class CoaController {
         @RequestBody List<CoaSaveDto> items
     ) {
         try {
+
+            List<ArticuloInfo> savedNames = new ArrayList<>();
+            List<ArticuloInfo> unsavedNames = new ArrayList<>();
+
             List<Coa> toSave = new ArrayList<>();
             for (CoaSaveDto dto : items) {
-                boolean exists = coaRepository.existsByENTAndCONCODAndAFACODAndASUCODAndARTCOD(dto.ent, dto.concod, dto.afacod, dto.asucod, dto.artcod);
-                if (!exists) {
+                List<Coa> articulo = coaRepository.findByENTAndCONCODAndAFACODAndASUCODAndARTCOD(dto.ent, dto.concod, dto.afacod, dto.asucod, dto.artcod);
+                if (!articulo.isEmpty()) {
+                    unsavedNames.add(
+                        new ArticuloInfo(
+                            articulo.get(0).getAFACOD(),
+                            articulo.get(0).getASUCOD(),
+                            articulo.get(0).getARTCOD()
+                        )
+                    );
+                } else {
                     Coa c = new Coa();
                     c.setENT(dto.ent);
                     c.setEJE(dto.eje);
@@ -127,13 +139,32 @@ public class CoaController {
                     c.setCOAPR4(dto.COAPR4);
                     c.setCOAPR5(dto.COAPR5);
                     toSave.add(c);
+
+                    savedNames.add(
+                        new ArticuloInfo(
+                            dto.afacod,
+                            dto.asucod,
+                            dto.artcod
+                        )
+                    );
                 }
             }
             coaRepository.saveAll(toSave);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.status(HttpStatus.CREATED).body(new NamesResponse(savedNames, unsavedNames));
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ERROR + ex.getMostSpecificCause().getMessage());
         }
     }
+
+    public record NamesResponse (
+        List<ArticuloInfo> savedNames,
+        List<ArticuloInfo> unsavedNames
+    ) {}
+
+    public record ArticuloInfo(
+        String afacod,
+        String asucod,
+        String artcod
+    ) {}
 }

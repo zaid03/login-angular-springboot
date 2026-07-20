@@ -792,6 +792,8 @@ export class ContratosComponent {
   }
 
   isAddingArticulo: boolean = false;
+  savedNames: any[] = [];
+  unSavedNames: any[] = [];
   saveArticulos() {
     this.limpiarMessages();
     this.isAddingArticulo = true;
@@ -812,19 +814,29 @@ export class ContratosComponent {
       COAPR5: 0
     }));
 
-    this.http.post(`${environment.backendUrl}/api/coa/save-articulos`, payload).subscribe({
+    this.http.post<any>(`${environment.backendUrl}/api/coa/save-articulos`, payload).subscribe({
       next: (res) => {
-        this.closeArticuloAddGrid();
-        this.fetchArticulos(concod);
+        this.savedNames = res.savedNames;
+        this.unSavedNames = res.unsavedNames;
         this.isAddingArticulo = false;
-        this.articulosSuccess = 'artículos añadidos con éxito';
-        this.showArticulos(concod);
+        this.openSavedArtculos()
       },
       error: (err) => {
         this.articulosAddError = err.error.error ?? err.error;
         this.isAddingArticulo = false;
       }
     })
+  }
+
+  openSavedMessagesGrid: boolean = false;
+  openSavedArtculos() {
+    this.openSavedMessagesGrid = true;
+  }
+
+  closeSavedArticulos() {
+    this.openSavedMessagesGrid = false;
+    this.closeArticuloAddGrid();    
+    this.showArticulos(this.selectedContrato.concod);
   }
 
   //sub detail's centro gestor's grid

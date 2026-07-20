@@ -611,6 +611,53 @@
     </form>
 </div>
 
+<div class="modal-backdrop force" *ngIf="openSavedMessagesGrid"></div>
+<div class="delete-confirm-modal adj" *ngIf="openSavedMessagesGrid">
+    <div class="btns">
+        <button class="red-btn margin" (click)="closeSavedArticulos()">✖</button>
+    </div>
+    <div class="saved-details special">
+        <div class="saved-table" *ngIf="savedNames.length">
+            <p class="p-style adjs">Artículos cargados</p>
+            <table class="main-table">
+                <thead>
+                    <tr>
+                        <th>Familia</th>
+                        <th>Subfamilia</th>
+                        <th>Artículo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let s of savedNames">
+                        <td>{{s.afacod}}</td>
+                        <td>{{s.asucod}}</td>
+                        <td>{{s.artcod}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="saved-table" *ngIf="unSavedNames.length">
+            <p class="p-style adjs">Artículos ya existentes</p>
+            <table class="main-table">
+                <thead>
+                    <tr>
+                        <th>Familia</th>
+                        <th>Subfamilia</th>
+                        <th>Artículo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let s of unSavedNames">
+                        <td>{{s.afacod}}</td>
+                        <td>{{s.asucod}}</td>
+                        <td>{{s.artcod}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
 <div class="modal-backdrop" *ngIf="centroGestorDelete"></div>
 <div class="delete-confirm-modal" *ngIf="centroGestorDelete">
     <div class="btns">

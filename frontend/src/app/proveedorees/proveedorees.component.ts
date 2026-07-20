@@ -1205,7 +1205,6 @@ export class ProveedoreesComponent {
       "TERAYT": Number(this.proveedorInfo[0].idenTercero)
     }
 
-    console.log("tercod found", proveedor)
     this.http.post<any>(`${environment.backendUrl}/api/ter/actualizar-proveedor/${this.entcod}/${proveedor}`, payload).subscribe({
       next: (res) => {
         this.closeUpdateProvedor();

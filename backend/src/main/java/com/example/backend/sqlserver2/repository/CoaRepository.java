@@ -12,5 +12,5 @@ public interface CoaRepository extends JpaRepository<Coa, CoaId> {
     List<CoaArtProjection> findAllByENTAndEJEAndConnCONCOD(Integer ent, String eje, Integer concod);
 
     // needed for saving articles for a contrato
-    boolean existsByENTAndCONCODAndAFACODAndASUCODAndARTCOD(Integer ent, Integer concod, String afacod, String asucod, String artcod);
+    List<Coa> findByENTAndCONCODAndAFACODAndASUCODAndARTCOD(Integer ent, Integer concod, String afacod, String asucod, String artcod);
 }
