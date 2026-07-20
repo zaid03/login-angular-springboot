@@ -450,7 +450,7 @@
     </div>
 </div>
 
-<div class="modal-backdrop" *ngIf="showProveedorGrid"></div>
+<div class="modal-backdrop force" *ngIf="showProveedorGrid"></div>
 <div class="proveedor-grid-modal" *ngIf="showProveedorGrid">
     <div class="btns">
         <div class="title">
@@ -461,14 +461,7 @@
     <div class="search-holder">
         <div class="search-container">
             <form class="search-form">
-                <input type="text" class="search-bar" placeholder="Buscar proveedor" name="search" [(ngModel)]="searchTerm" (keyup.enter)="search()"/>
-                <div class="search-options">
-                    <label>
-                        <input type="radio" name="optiones" value="todos" [(ngModel)]="filterOption" /> Todos
-                        <input type="radio" name="optiones" value="Nobloqueado" [(ngModel)]="filterOption" /> No Bloqueados
-                        <input type="radio" name="optiones" value="bloqueado" [(ngModel)]="filterOption"  /> Bloqueados
-                    </label>
-                </div>
+                <input type="text" class="search-bar bigger" placeholder="Buscar proveedor" name="search" [(ngModel)]="searchTerm" (keyup.enter)="search()"/>
                 <div class="search-btns">
                     <button type="button" class="purple-btn" (click)="searchProveedor()">Buscar</button>
                     <button type="button" class="purple-btn" (click)="clearSearch()">Limpiar</button>
@@ -476,7 +469,6 @@
             </form>
         </div> 
     </div>
-    <h1 class="errorBtn">{{error}}</h1>
     <div *ngIf="isLoadingPro" class="loading-message">
         <div class="spinner"></div>
         <span>Cargando</span>
@@ -498,8 +490,12 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let p of paginatedProveedores" [class.grey-row]="p.terblo == 1">
-                    <td style="cursor: pointer;" (click)="selectProveedor(p)">{{ p.tercod }}</td>
+                <tr 
+                    *ngFor="let p of paginatedProveedores" 
+                    [class.grey-row]="p.terblo == 1"
+                    (click)="selectProveedor(p)"
+                >
+                    <td style="cursor: pointer;">{{ p.tercod }}</td>
                     <td>{{ p.ternom }}</td>
                     <td>{{ p.ternif }}</td>
                     <td>{{ p.terali }}</td>
@@ -512,6 +508,7 @@
                 </tr>
             </tbody>
         </table>
+        <h1 class="errorBtn">{{error}}</h1>
     </div>
     
     <div class="container-pag-wrap">
@@ -551,11 +548,12 @@
 
 <div class="modal-backdrop" *ngIf="articulosAddGrid"></div>
 <div class="hello-modal" *ngIf="articulosAddGrid">
-    <div class="btns">
+    <div class="btns top-saerch">
         <div class="title">
-            <h1 class="art-title width">Añadir articulo</h1>
+            <h3 class="p-style width">Añadir artículo</h3>
         </div>
-        <button class="purple-btn" (click)="saveArticulos()">+</button>
+         <p class="p-style selected">seleccionado {{coughtArticulos.length}} artículos</p>
+        <button class="purple-btn" (click)="saveArticulos()">+ Cargar</button>
         <button class="red-btn" (click)="closeArticuloAddGrid()">✖</button>
     </div>
     <div *ngIf="isAddingArticulo" class="loading-message">
@@ -563,7 +561,6 @@
         <span>añadiendo</span>
     </div>
     <h1 class="successBtn">{{ArticuloAddSuccess}}</h1>
-    <h1 class="errorBtn">{{articulosAddError}}</h1>
     <div *ngIf="isLoadingArticulo" class="loading-message">
         <div class="spinner"></div>
         <span>Cargando</span>
@@ -578,7 +575,11 @@
                 [(ngModel)]="searchValue"
             />
             <div class="btns">
-                <button class="purple-btn" (click)="searchArticuloAdd()">Buscar</button>
+                <button 
+                    class="purple-btn" 
+                    (click)="searchArticuloAdd()"
+                    [ngClass]="{ 'disabled-btn': isSearchDisabled }" 
+                >Buscar</button>
                 <button class="purple-btn" (click)="limpiarArticulosAdd()">Limpiar</button>
             </div>
         </div>
@@ -601,7 +602,7 @@
                 </tr>
             </tbody>
         </table>
-        <p class="p-style selected" *ngIf="coughtArticulos.length > 0">{{coughtArticulos.length}} artículos seleccionados</p>
+        <h1 class="errorBtn">{{articulosAddError}}</h1>
         <div class="pagination-controls" *ngIf="articulosAdd.length > searchPageSize">
             <button class="pag-btn" (click)="searchPage = searchPage - 1" [disabled]="searchPage === 0">Anterior</button>
             <span> {{ searchPage + 1 }} de {{ searchTotalPages }}</span>

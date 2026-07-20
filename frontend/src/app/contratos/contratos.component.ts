@@ -33,7 +33,7 @@ export class ContratosComponent {
   closeMenu(): void {
     this.showMenu = false;
   }
-  
+
   constructor(private http: HttpClient, private router: Router, private currencyPipe: CurrencyPipe) {}
 
   //global variables
@@ -202,7 +202,7 @@ export class ContratosComponent {
       this.mainError = 'No hay datos para exportar.';
       return;
     }
-  
+
     const exportRows = rows.map((row, index) => ({
       '#': index + 1,
       Número: row.concod ?? '',
@@ -214,7 +214,7 @@ export class ContratosComponent {
       Cód_Proveedor: row.tercod ?? '',
       Proveedor: row.ternom ?? ''
     }));
-  
+
     const worksheet = XLSX.utils.aoa_to_sheet([]);
     XLSX.utils.sheet_add_aoa(worksheet, [['listas de contratos']], { origin: 'A1' });
     worksheet['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 3 } }];
@@ -232,7 +232,7 @@ export class ContratosComponent {
       { wch: 10 },
       { wch: 40 }
     ];
-  
+
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'contratos');
     const buffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
@@ -343,7 +343,7 @@ export class ContratosComponent {
     this.activeDetailTab = null;
   }
 
-  closeDetailsSure() {if (this.isUpdate) {return;} 
+  closeDetailsSure() {if (this.isUpdate) {return;}
     else {this.closeDetails();}
   }
 
@@ -423,7 +423,7 @@ export class ContratosComponent {
   openProveedores() {
     this.limpiarMessages();
     this.showProveedorGrid = true;
-    this.fetchProveedores();
+    this.error = 'No hay proveedores';
   }
 
   closeProveedores() {
@@ -435,22 +435,6 @@ export class ContratosComponent {
 
   proveedores: any = [];
   isLoadingPro: boolean = false;
-  fetchProveedores() {
-    this.isLoadingPro = true;
-    this.http.get<any>(`${environment.backendUrl}/api/ter/by-ent/${this.entcod}`).subscribe({
-      next: (response) => {
-        this.proveedores = response;
-        this.pagePro = 0;
-        this.isLoadingPro = false;
-        this.updatePaginationPro();
-      },
-      error: (err) => {
-        this.proveedores = [];
-        this.error = err.error.error ?? err.error;
-        this.isLoading = false;
-      }
-    });
-  }
   pagePro = 0;
   pageSizePro = 20;
   get totalPagesPro(): number {
@@ -504,7 +488,7 @@ export class ContratosComponent {
 
   clearSearch() {
     this.limpiarMessages();
-    this.fetchProveedores();
+    this.error = 'No hay proveedores';
     this.filterOption = 'Nobloqueado';
     this.page = 0;
     this.searchTerm = '';
@@ -517,12 +501,12 @@ export class ContratosComponent {
     this.proveedorTernom = codigo.ternom;
     this.closeProveedores();
   }
-  
+
   conblo: number = 0;
   addContrato(description: any, fecha_ini: any, fecha_final: any) {
     this.limpiarMessages();
 
-    if (this.economicaAdd === '' || description === '') {this.addContratoError = 'Economica y description no pueden estar vacías.'; return;}
+    if (this.economicaAdd === '' || description === '') {this.addContratoError = 'Económica y -	Descripción no pueden estar vacías.'; return;}
     if (this.proveedorTercod === null) {this.addContratoError = 'Seleccione una proveedor'; return;}
 
     const payload = {
@@ -718,9 +702,11 @@ export class ContratosComponent {
     this.searchValue = '';
     this.searchPage = 0;
     this.articulosAdd = [];
-    this.coughtArticulos = []
+    this.coughtArticulos = [];
+    this.isSearchDisabled = false;
   }
 
+  isSearchDisabled: boolean = false;
   fetchArticulosAdd(conlot: number) {
     this.limpiarMessages();
     this.isLoadingArticulo = true;
@@ -732,6 +718,10 @@ export class ContratosComponent {
       },
       error: (err) => {
         this.isLoadingArticulo = false;
+        if (err.status === 404) {
+          this.isSearchDisabled = true;
+          this.articulosAdd = [];
+        }
         this.articulosAddError = err.error.error ?? err.error;
       }
     })
@@ -739,6 +729,7 @@ export class ContratosComponent {
 
   searchArticuloAdd() {
     this.limpiarMessages();
+    this.coughtArticulos = []
     if (this.searchValue === '') {return;}
 
     const isOnlyNumbers = (value: string) => /^\d+$/.test(value);
@@ -793,7 +784,7 @@ export class ContratosComponent {
     } else {
       this.coughtArticulos = [...this.coughtArticulos, articulos];
     }
-    
+
   }
 
   isArticulosSelected(a: any): boolean {
@@ -1080,10 +1071,10 @@ export class ContratosComponent {
   referencia: string = '';
   checkBeforeAdd(centro: any) {
     this.limpiarMessages();
-    
+
     this.cogaip = centro.cogaip;
     this.referencia = centro.cogopd ?? '';
-    
+
     if (this.cogaip > 0) {
       this.DError = 'No se puede cambiar la D si ya hay pedidos'
     } else {
@@ -1179,7 +1170,7 @@ export class ContratosComponent {
   openUpdateSure(D: any){
     this.updateSure = true;
     this.toUpdate = D;
-    
+
     if (this.referencia === '') {
       this.dMessageConfirm = '¿Está seguro de añadir D a este centro gestor?';
     } else {

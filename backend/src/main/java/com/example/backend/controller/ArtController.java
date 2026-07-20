@@ -114,7 +114,7 @@ public class ArtController {
             List<ArtAsuContratoProjection> articulos = artRepository.findDistinctByENTAndAsuASUECO(ent, conlot);
             if(articulos.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(SIN_RESULTADO);
+                .body("No hay artículos para la económica indicada");
             }
 
             return ResponseEntity.ok(articulos);
@@ -134,14 +134,12 @@ public class ArtController {
         try {
             List<ArtAsuContratoProjection> articulos = artRepository.findDistinctByENTAndAsuASUECOAndAFACODOrENTAndAsuASUECOAndASUCOD(ent, conlot, term, ent, conlot, term);
             if(articulos.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(SIN_RESULTADO);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
             }
 
             return ResponseEntity.ok(articulos);
         } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ERROR + ex.getMostSpecificCause().getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ERROR + ex.getMostSpecificCause().getMessage());
         }
     }
 
@@ -155,14 +153,12 @@ public class ArtController {
         try {
             List<ArtAsuContratoProjection> articulos = artRepository.findDistinctByENTAndAsuASUECOAndARTDESContaining(ent, conlot, artdes);
             if(articulos.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(SIN_RESULTADO);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
             }
 
             return ResponseEntity.ok(articulos);
         } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ERROR + ex.getMostSpecificCause().getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ERROR + ex.getMostSpecificCause().getMessage());
         }
     }
 }

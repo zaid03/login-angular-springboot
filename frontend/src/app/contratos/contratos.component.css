@@ -62,9 +62,7 @@
 .anadir-articulo-form .search-bar:focus {border-color: #38249b; outline: none; background: #fff;}
 .anadir-articulo-form .search-anadir {display: flex; align-items: center; gap: 18px; margin-bottom: 0; margin-right: 0; padding: 0; justify-content: center;}
 .pagination-controls { justify-content: center;}
-.hello-modal .title {width: 55%;}
-.art-title {font-size: 22px; color: #38249b;}
-.width {width: 50%;}
+.hello-modal .title {width: 25%;}
 .widthSecond {width: 55%;}
 .widthThird {width: 20%;}
 .apt thead th:first-child,
@@ -97,4 +95,8 @@
 .proveedor-grid-modal .main-list {width: 100% !important;}
 .proveedor-grid-modal .main-table th,
 .proveedor-grid-modal .main-table td {word-break: break-word;}
+.bigger {width: 300px;}
 /* add contrato grid */
+@media (min-width: 1700px) {
+    .proveedor-grid-modal {top: 40%;}
+}
