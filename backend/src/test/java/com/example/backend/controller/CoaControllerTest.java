@@ -21,11 +21,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Collections;
 
-import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -169,9 +170,10 @@ public class CoaControllerTest {
     }
 
     @Test
-    void saveArticulos_returns204OnSuccess() throws Exception {
-        when(coaRepository.existsByENTAndCONCODAndAFACODAndASUCODAndARTCOD(1, 100, "FAM", "SUB", "ART"))
-            .thenReturn(false);
+    void saveArticulos_returns201OnSuccess() throws Exception {
+        when(coaRepository.findByENTAndCONCODAndAFACODAndASUCODAndARTCOD(
+                1, 100, "FAM", "SUB", "ART"))
+            .thenReturn(Collections.emptyList());
 
         CoaSaveDto dto = new CoaSaveDto();
         dto.ent = 1;
@@ -186,15 +188,25 @@ public class CoaControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(List.of(dto))))
             .andDo(print())
-            .andExpect(status().isNoContent());
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.savedNames").isArray())
+            .andExpect(jsonPath("$.unsavedNames").isArray())
+            .andExpect(jsonPath("$.savedNames.length()").value(1))
+            .andExpect(jsonPath("$.unsavedNames.length()").value(0));
 
         verify(coaRepository).saveAll(any());
     }
 
     @Test
     void saveArticulos_skipsExistingArticles() throws Exception {
-        when(coaRepository.existsByENTAndCONCODAndAFACODAndASUCODAndARTCOD(1, 100, "FAM", "SUB", "ART"))
-            .thenReturn(true);
+        Coa existing = new Coa();
+        existing.setAFACOD("FAM");
+        existing.setASUCOD("SUB");
+        existing.setARTCOD("ART");
+
+        when(coaRepository.findByENTAndCONCODAndAFACODAndASUCODAndARTCOD(
+                1, 100, "FAM", "SUB", "ART"))
+            .thenReturn(List.of(existing));
 
         CoaSaveDto dto = new CoaSaveDto();
         dto.ent = 1;
@@ -209,14 +221,19 @@ public class CoaControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(List.of(dto))))
             .andDo(print())
-            .andExpect(status().isNoContent());
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.savedNames").isArray())
+            .andExpect(jsonPath("$.unsavedNames").isArray())
+            .andExpect(jsonPath("$.savedNames.length()").value(0))
+            .andExpect(jsonPath("$.unsavedNames.length()").value(1));
 
         verify(coaRepository).saveAll(any());
     }
 
     @Test
     void saveArticulos_returns500OnDataAccessException() throws Exception {
-        when(coaRepository.existsByENTAndCONCODAndAFACODAndASUCODAndARTCOD(anyInt(), anyInt(), anyString(), anyString(), anyString()))
+        when(coaRepository.findByENTAndCONCODAndAFACODAndASUCODAndARTCOD(
+                anyInt(), anyInt(), anyString(), anyString(), anyString()))
             .thenThrow(new DataAccessResourceFailureException("DB error"));
 
         CoaSaveDto dto = new CoaSaveDto();
@@ -234,15 +251,21 @@ public class CoaControllerTest {
             .andDo(print())
             .andExpect(status().isInternalServerError())
             .andExpect(content().string(containsString("Error :")));
+
+        verify(coaRepository, never()).saveAll(any());
     }
 
     @Test
     void saveArticulos_handlesEmptyList() throws Exception {
         mockMvc.perform(post("/api/coa/save-articulos")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(List.of())))
+                .content(objectMapper.writeValueAsString(Collections.emptyList())))
             .andDo(print())
-            .andExpect(status().isNoContent());
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.savedNames").isArray())
+            .andExpect(jsonPath("$.unsavedNames").isArray())
+            .andExpect(jsonPath("$.savedNames.length()").value(0))
+            .andExpect(jsonPath("$.unsavedNames.length()").value(0));
 
         verify(coaRepository).saveAll(any());
     }

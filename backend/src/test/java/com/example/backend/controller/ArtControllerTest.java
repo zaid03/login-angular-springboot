@@ -177,7 +177,7 @@ public class ArtControllerTest {
         mockMvc.perform(get("/api/art/art-cont/1/C1"))
             .andDo(print())
             .andExpect(status().isNotFound())
-            .andExpect(content().string("Sin resultado"));
+            .andExpect(content().string("No hay artículos para la económica indicada"));
 
         verify(artRepository).findDistinctByENTAndAsuASUECO(1, "C1");
     }
