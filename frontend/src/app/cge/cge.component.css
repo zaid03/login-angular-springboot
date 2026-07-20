@@ -25,7 +25,7 @@
 /* detail grid */
 /* add grid */
 .add-confirm-modal { top: 15%; width: 45%;}
-.more-chunk { width: 100%;}
+.more-chunk { width: 100%; border: 1px solid green;}
 .width {width: 30%; text-align: left;}
 .more { gap: 20px; width: 70%;}
 .estado-inputs {display: flex; gap: 10px;}

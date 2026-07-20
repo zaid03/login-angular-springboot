@@ -252,7 +252,7 @@
         <div class="title">
             <h3>Añadir un Centro Gestor</h3>
         </div>
-        <button class="purple-btn" (click)="AddCentroGestor(codigo.value, organica.value, programa.value, description.value, direction.value)">+</button>
+        <button class="purple-btn" (click)="AddCentroGestor(codigo.value, organica.value, programa.value, description.value, direction.value)">+ Cargar</button>
         <button class="red-btn" (click)="closeAddConfirm()">✖</button>
     </div>
     <h1 class="errorBtn">{{ centroGestorAddError }}</h1>
@@ -261,6 +261,9 @@
         <span>añadiendo</span>
     </div>
     <div class="chunk more-chunk">
+        <table class="details-table">
+
+        </table>
         <div class="left width">
             <p class="p-style">Código*</p>
             <p class="p-style">Orgánica</p>

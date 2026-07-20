@@ -24,20 +24,16 @@
 /* table style */
 /* main-detail grid */
 .detail-container { display: flex; flex-wrap: wrap; justify-content: center; padding: 5px; gap: 10px;}
-.details-table {width: 100%;}
 .details-table td:nth-child(1) {min-width: 9%;}
 .details-table td:nth-child(2),
 .details-table td:nth-child(8) {min-width: 8%;}
-.cell-content {display: flex; gap: 5px;}
 .details-table td:nth-child(3),
 .details-table td:nth-child(4) {min-width: 12%;}
 .details-table td:nth-child(5),
 .details-table td:nth-child(6) {min-width: 11%;}
 .details-table td:nth-child(7) {min-width: 10%;}
 .averageThird {width: 220px; max-width: 260px;}
-.wrapper {width: 100%;}
-.observ { width: 50%; display: flex; gap: 5px; align-items: center; margin-top: 2px;}
-.observ textarea { width: 90%; max-width: 100%; height: 40px;}
+.cell-content {display: flex; gap: 5px;}
 /* main-detail grid */
 /* sub detail grids */
 .detail-grid { display: flex; flex-direction: column; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); padding: 16px; border: 1px solid #e5e7eb; border-radius: 10px; background: #f9fafb; }

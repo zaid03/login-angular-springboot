@@ -120,3 +120,10 @@ th.sortable { cursor: pointer; user-select: none; }
 /* misc */
 .force {z-index: 5000;}
 .selected-row { background: #e6f0ff; }
+/* new details grid */
+.details-table {width: 100%;}
+.cell-content {display: flex; gap: 5px;}
+.wrapper {width: 100%;}
+.observ { width: 50%; display: flex; gap: 5px; align-items: center; margin-top: 2px;}
+.observ textarea { width: 90%; max-width: 100%; height: 40px;}
+/* new details grid */
