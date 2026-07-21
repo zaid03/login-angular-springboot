@@ -871,7 +871,8 @@
         <div class="title">
             <h1 class="art-title">Añadir albaranes</h1>
         </div>
-        <button class="purple-btn" (click)="adingAlbaranes()">+</button>
+        <p class="p-style center">seleccionado {{caughtAlbranaes.length}} Albaranes</p>
+        <button class="purple-btn" (click)="adingAlbaranes()">+ Cargar</button>
         <button class="red-btn" (click)="closeAlbaranesAdd()">✖</button>
     </div>
     <div class="albaran-search-options">
@@ -912,7 +913,7 @@
     <table class="main-table">
         <thead>
             <tr>
-                <th>Referencia proveïdor</th>
+                <th>Referencia proveedor</th>
                 <th>Fecha</th>
                 <th>Importe</th>
                 <th>Reg. Entrada</th>
@@ -928,16 +929,15 @@
                 [class.selected-row]="isAlbaranesSelected(a)"
             >
                 <td>{{a.albref}}</td>
-                <td>{{a.albdat}}</td>
+                <td>{{a.albdat | date:'dd-MM-yyyy'}}</td>
                 <td>{{a.albbim}}</td>
                 <td>{{a.albnum}}</td>
-                <td>{{a.albfre}}</td>
+                <td>{{a.albfre | date:'dd-MM-yyyy'}}</td>
                 <td>{{a.depcod}}</td>
                 <td>{{a.albcom}}</td>
             </tr>
         </tbody>
     </table>
-    <p class="p-style center" *ngIf="caughtAlbranaes.length > 0">{{caughtAlbranaes.length}} Albaranes seleccionados</p>
     <div class="pagination-controls alignment">
         <button (click)="prevPageAlbaranesAdd()" [disabled]="pageAlbaranesAdd === 0">Anterior</button>
         <span>Página</span>

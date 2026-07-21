@@ -1,5 +1,6 @@
 /* search container and inputs */
 .margin-title {text-align: right; width: 100%;}
+.title-menu {width: 99%;}
 .title-area {width: 23%;}
 .search-container { gap: 20px; }
 .search-form { gap: 20px; }

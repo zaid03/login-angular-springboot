@@ -787,8 +787,7 @@ export class FacturasComponent {
 
   closeAlbaranesAdd() {
     this.albaranesAddGrid = false;
-    this.emptySearchAlbaranes();
-    this.albaranesAdd = [];
+    this.limpiarSearch();
   }
 
   fetchAlrabanes() {
@@ -869,6 +868,8 @@ export class FacturasComponent {
   emptySearchAlbaranes() {
     this.albaranesDesde = '';
     this.albaranesHasta = '';
+    this.albaranesAdd = []; 
+    this.caughtAlbranaes = [];
   }
 
   caughtAlbranaes: any[] = [];
