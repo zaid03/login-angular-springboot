@@ -66,7 +66,7 @@ app-sidebar { flex-shrink: 0; z-index: 2000; }
 .delete-confirm-modal,
 .delete-confirm-modal,
 .add-confirm-modal,
-.add-sub-modal { position: fixed;  left: 50%; border-radius: 10px; transform: translate(-50%, 0); background: #fff; border: 1px solid #aaa; padding: 24px; z-index: 5000; min-width: 300px; box-shadow: 0 2px 16px rgba(0,0,0,0.2); text-align: center; }
+.add-sub-modal { position: fixed; top: 30%; left: 50%; border-radius: 10px; transform: translate(-50%, 0); background: #fff; border: 1px solid #aaa; padding: 24px; z-index: 5000; min-width: 300px; box-shadow: 0 2px 16px rgba(0,0,0,0.2); text-align: center; }
 .delete-confirm-modal h3 { font-size: 1.3rem; font-weight: 700; color: rgb(117, 28, 28); margin-bottom: 18px; letter-spacing: 0.5px; }
 /* page-container and list */
 .main-container.blurred { filter: blur(1.2px); pointer-events: none; user-select: none; }

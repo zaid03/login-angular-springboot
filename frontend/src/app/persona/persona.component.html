@@ -134,22 +134,30 @@
                         <span>actualizando</span>
                     </div>
                     <div class="detail-cotainer">
-                        <div class="above">
-                            <div class="chunk-one">
-                                <div class="left">
+                        <table class="details-table">
+                            <tr>
+                                <td>
                                     <p class="p-style">Código</p>
-                                    <p class="p-style">Nombre</p>
-                                    <p class="p-style">Correo Electrónico</p>
-                                </div>
-                                <div class="right">
+                                </td>
+                                <td>
                                     <h1 class="h1-style">{{tempPersonas.percod || '#'}}</h1>
+                                </td>
+                                <td>
+                                    <p class="p-style">Nombre</p>
+                                </td>
+                                <td>
                                     <textarea 
                                         class="textArea-style long" 
                                         [(ngModel)]="tempPersonas.pernom" 
                                         [disabled]="!isUpdate"
                                         (input)="allowToUpdate = true"
                                         #pernom
-                                    ></textarea>    
+                                    ></textarea>  
+                                </td>
+                                <td>
+                                    <p class="p-style">Correo Electrónico</p>
+                                </td>
+                                <td>
                                     <textarea 
                                         class="textArea-style long" 
                                         [(ngModel)]="tempPersonas.percoe" 
@@ -157,32 +165,38 @@
                                         (input)="allowToUpdate = true"
                                         #percoe
                                     ></textarea>
-                                </div>
-                            </div>
-                            <div class="chunk-two">
-                                <div class="left">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
                                     <p class="p-style">Teléfono</p>
+                                </td>
+                                <td>
+                                    <textarea 
+                                        class="textArea-style long" 
+                                        [(ngModel)]="tempPersonas.pertel"
+                                        [disabled]="!isUpdate"
+                                        (input)="allowToUpdate = true"
+                                        #pertel
+                                    ></textarea>
+                                        
+                                </td>
+                                <td>
+                                    <p class="p-style">Móvil</p>
+                                </td>
+                                <td>
+                                    <textarea 
+                                        class="textArea-style long" 
+                                        [(ngModel)]="tempPersonas.pertmo" 
+                                        [disabled]="!isUpdate"
+                                        (input)="allowToUpdate = true"
+                                        #pertmo
+                                    ></textarea>
+                                </td>
+                                <td>
                                     <p class="p-style">Cargo</p>
-                                    <p class="p-style">Observaciones</p>
-                                </div>
-                                <div class="right">
-                                    <div class="on-two">
-                                        <textarea 
-                                            class="textArea-style average" 
-                                            [(ngModel)]="tempPersonas.pertel"
-                                            [disabled]="!isUpdate"
-                                            (input)="allowToUpdate = true"
-                                            #pertel
-                                        ></textarea>
-                                        <p class="p-style">Móvil</p>
-                                        <textarea 
-                                            class="textArea-style average" 
-                                            [(ngModel)]="tempPersonas.pertmo" 
-                                            [disabled]="!isUpdate"
-                                            (input)="allowToUpdate = true"
-                                            #pertmo
-                                        ></textarea>
-                                    </div>
+                                </td>
+                                <td>
                                     <textarea 
                                         class="textArea-style long" 
                                         [(ngModel)]="tempPersonas.percar"
@@ -190,14 +204,19 @@
                                         (input)="allowToUpdate = true"
                                         #percar
                                     ></textarea>
-                                    <textarea 
-                                        class="textArea-style long height" 
-                                        [(ngModel)]="tempPersonas.perobs"
-                                        [disabled]="!isUpdate"
-                                        (input)="allowToUpdate = true"
-                                        #perobs
-                                    ></textarea>
-                                </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="wrapper">
+                            <div class="observ">
+                                <p class="p-style">Observaciones</p>
+                                <textarea 
+                                    class="textArea-style obs" 
+                                    [(ngModel)]="tempPersonas.perobs"
+                                    [disabled]="!isUpdate"
+                                    (input)="allowToUpdate = true"
+                                    #perobs
+                                ></textarea>
                             </div>
                         </div>
                     </div> 
@@ -293,7 +312,7 @@
         <div class="title">
             <h3>Añadir un Persona</h3>
         </div>
-        <button class="purple-btn" (click)="addPersona(code.value, name.value, email.value, phone.value, movil.value, trans.value, obs.value)">+</button>
+        <button class="purple-btn" (click)="addPersona(code.value, name.value, email.value, phone.value, movil.value, trans.value, obs.value)">+ Cargar</button>
         <button class="red-btn" (click)="closeAddConfirm()">✖</button>
     </div>
     <h1 class="errorBtn">{{PersonaErrorMessage}}</h1>
@@ -301,30 +320,64 @@
         <div class="spinner"></div>
         <span>añadiendo</span>
     </div>
-    <div class="add-container">
-        <div class="left-add">
-            <p class="p-style">Código*</p>
-            <p class="p-style">Correo Electrónico</p>
-            <p class="p-style">Teléfono</p>
-            <p class="p-style">Cargo</p>
-            <p class="p-style">Observaciones</p>
-        </div>
-        <div class="right-add">
-            <div class="on-two-add">
+    <table class="details-table addAlign">
+        <tr>
+            <td>
+                <p class="p-style">Código*</p>
+            </td>
+            <td>
                 <textarea (input)="forceUppercase($event)" class="textArea-style average-add" #code></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>
                 <p class="p-style">Nombre*</p>
+            </td>
+            <td>
                 <textarea class="textArea-style average-add" #name></textarea>
-            </div>
-            <textarea class="textArea-style long-add" #email></textarea>
-            <div class="on-two-add">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p class="p-style">Teléfono</p>
+            </td>
+            <td>
                 <textarea class="textArea-style average-add-second" #phone></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>
                 <p class="p-style">Móvil</p>
+            </td>
+            <td>
                 <textarea class="textArea-style average-add-second" #movil></textarea>
-            </div>
-            <textarea class="textArea-style long-add" #trans></textarea>
-            <textarea class="textArea-style special-add-long" #obs></textarea>
-        </div>
-    </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p class="p-style">Correo Electrónico</p>
+            </td>
+            <td>
+                <textarea class="textArea-style long-add" #email></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p class="p-style">Cargo</p>
+            </td>
+            <td>
+                <textarea class="textArea-style long-add" #trans></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p class="p-style">Observaciones</p>
+            </td>
+            <td>
+                <textarea class="textArea-style special-add-long" #obs></textarea>
+            </td>
+        </tr>
+    </table>
 </div>
 
 <div class="modal-backdrop" *ngIf="showDeleteGrid"></div>
@@ -406,7 +459,6 @@
         <div class="spinner"></div>
         <span>Cargando</span>
     </div>
-    <h1 class="errorBtn">{{servicesAddError}}</h1>
     <table class="main-table">
         <thead>
             <tr>
@@ -455,6 +507,7 @@
             </tr>
         </tbody>
     </table>
+    <h1 class="errorBtn">{{servicesAddError}}</h1>
     <div class="fixing-pag">
         <div class="pagination-controls">
             <button (click)="prevPageAdd()" [disabled]="pageAdd === 0">Anterior</button>
@@ -499,7 +552,7 @@
 <div class="modal-backdrop" *ngIf="compiarPersonaGrid"></div>
 <div class="proveedor-grid-modal placementCopy" *ngIf="compiarPersonaGrid">
     <div class="btns">
-        <div class="title">
+        <div class="title perTitle">
             <h3>Seleccione una persona</h3>
         </div>
         <button class="red-btn" (click)="closeShowCopiarPersonas()">✖</button>
@@ -520,7 +573,10 @@
             </div>
         </div>
     </div>
-    <h1 class="errorBtn">{{errorCopy}}</h1>
+    <div *ngIf="isLoadingPersonasAdd" class="loading-message">
+        <div class="spinner"></div>
+        <span>Cargando</span>
+    </div>
     <table class="main-table">
         <thead>
             <tr>
@@ -537,6 +593,7 @@
             </tr>
         </tbody>
     </table>
+    <h1 class="errorBtn">{{errorCopy}}</h1>
     <div class="pag">
         <div class="pagination-controls">
             <button (click)="prevPageCopy()" [disabled]="pageCopy === 0">Anterior</button>

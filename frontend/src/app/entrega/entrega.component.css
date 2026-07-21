@@ -18,9 +18,9 @@
 .delete-confirm-modal {top: 220px;}
 /* add grid */
 .entrega-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 16px; box-shadow: 0 8px 32px rgba(44, 62, 80, 0.18), 0 1.5px 6px rgba(44,62,80,0.08); padding: 25px 30px; min-width: 500px; min-height: 120px; z-index: 3000; display: flex; flex-direction: column; align-items: center; }
-.add-container { display: flex; width: 100%;}
+/* .add-container { display: flex; width: 100%;}
 .left-add { width: 20%; display: flex; flex-direction: column; gap: 20px;}
-.right-add { display: flex; flex-direction: column; gap: 10px;}
+.right-add { display: flex; flex-direction: column; gap: 10px;} */
 .averageText {width: 220px; max-width: 350px;}
 .height {height: 100px !important;}
 .title {width: 70%;}

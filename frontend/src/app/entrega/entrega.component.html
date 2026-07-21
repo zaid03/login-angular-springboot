@@ -188,7 +188,7 @@
         <div class="title">
             <h3 class="specific">Añadir un lugare de entrega</h3>
         </div>
-        <button class="purple-btn" (click)="addEntrega(desc.value, texto.value)">✔</button>
+        <button class="purple-btn" (click)="addEntrega(desc.value, texto.value)">+ Cargar</button>
         <button class="red-btn" (click)="hideAdd()">✖</button>
     </div>
     <h1 class="errorBtn">{{errorAddEntrega}}</h1>
@@ -196,14 +196,22 @@
         <div class="spinner"></div>
         <span>añadiendo</span>
     </div>
-    <div class="add-container">
-        <div class="left-add">
-            <p class="p-style">Descripción*</p>
-            <p class="p-style">Texto</p>
-        </div>
-        <div class="right-add">
-            <textarea class="textArea-style averageText" #desc></textarea>
-            <textarea class="textArea-style averageText height" #texto></textarea>
-        </div>
-    </div>
+    <table class="details-table">
+        <tr>
+            <td>
+                <p class="p-style">Descripción*</p>
+            </td>
+            <td>
+                <textarea class="textArea-style averageText" #desc></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p class="p-style">Texto</p>
+            </td>
+            <td>
+                <textarea class="textArea-style averageText height" #texto></textarea>
+            </td>
+        </tr>
+    </table>
 </div>

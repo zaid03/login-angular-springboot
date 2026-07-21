@@ -8,17 +8,8 @@
 /* search */
 /* detail grid */
 .detail-cotainer {display: flex; flex-direction: column; flex-wrap: wrap; gap: 10px;}
-.above {display: flex;}
-.chunk-one,
-.chunk-two {width: 49%; display: flex;}
-.left,
-.right {display: flex; flex-direction: column; }
-.left {width: 25%; gap: 20px;}
-.right {width: 75%; gap: 20px;}
-.on-two {display: flex; align-items: center; gap: 10px;}
-.average {width: 165px; max-width: 180px;}
-.long { width: 400px; max-width: 430px;}
-.height {height: 50px !important;}
+.long { width: 290px; max-width: 430px;}
+.obs {max-height: 100px;}
 /* detail grid */
 /* services grid in detail */
 .custom-grid-modal .main-table { width: 90%;}
@@ -29,15 +20,13 @@
 /* add persona grid */  
 .add-confirm-modal { width: 45%; top: 20%;}
 .title {width: 80%;}
-.add-container {display: flex; width: 99%;}
-.left-add {width: 25%; display: flex; flex-direction: column; gap: 20px; text-align: left;}
-.right-add {width: 75%; gap: 10px; display: flex; flex-direction: column; align-items: flex-start;}
-.on-two-add {display: flex; gap: 10px; align-items: center;}
+.addAlign {text-align: left;}
 .average-add {width: 165px; max-width: 178px;}
 .average-add-second {width: 180px; max-width: 190px;}
 .long-add,
 .special-add-long {width: 430px; max-width: 99%;}
 .special-add-long {height: 50px !important;}
+.wrapper {justify-items: center;}
 /* add persona grid */
 /* delete grid */
 .delete-confirm-modal {top: 35%;}
@@ -45,7 +34,7 @@
 /* delete grid */
 /* add service grid */
 .proveedor-grid-modal{ position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 95%; max-height: 80vh; overflow: auto; background: #ffffff; border-radius: 12px; padding: 18px; box-shadow: 0 12px 36px rgba(0,0,0,0.18); z-index: 4000; display: flex; flex-direction: column; gap: 12px;}
-.proveedor-grid-modal .title {width: 70%;}
+.proveedor-grid-modal .title {width: 55%;}
 .proveedor-grid-modal .search-holder,
 .placement .search-holder {width: 100%;}
 .proveedor-grid-modal .search-container,
@@ -65,7 +54,8 @@
 .sure-msg {font-size: 15px; font-weight: bold; margin-top: 10px;}
 .Width {width: 100%;}
 .alignment { justify-content: center;}
-.placementCopy {width: 45%; }
+.placementCopy {width: 45%;}
+.perTitle {width: 80% !important;}
 .placement {top: 35%;}
 .placementCopy .search-form {width: 50% !important;}
 .placementCopy .main-table {margin-top: 10px;}

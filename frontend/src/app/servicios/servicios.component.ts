@@ -756,6 +756,7 @@ export class ServiciosComponent {
   }
 
   searchPersonasCopy: string = '';
+  isLoadingPersonasAdd: boolean = false;
   searchCopy() {
     this.limpiarMessages();
     if(this.searchPersonasCopy === '') {
@@ -764,27 +765,30 @@ export class ServiciosComponent {
     }
 
     if(this.searchPersonasCopy.length <= 20) {
+      this.isLoadingPersonasAdd = true;
       this.http.get<any>(`${environment.backendUrl}/api/Per/search-cod-nom/${this.searchPersonasCopy}`).subscribe({
         next: (res) => {
           this.pesonasCopy = res;
           this.pageCopy = 0;
-          if (!res.length) {
-            this.errorCopy = 'No se encontraron servicios con los filtros dados.';
-          }
+          this.isLoadingPersonasAdd = false;
         },
         error: (err) => {
+          this.isLoadingPersonasAdd = false;
           this.pesonasCopy = [];
           this.pageCopy = 0;
           this.errorCopy = err.error.error ?? err.error;
         }
       });
     } else {
+      this.isLoadingPersonasAdd = true;
       this.http.get<any>(`${environment.backendUrl}/api/Per/search-nom/{this.searchPersonasCopy}`).subscribe({
         next: (res) => {
           this.pesonasCopy = res;
           this.pageCopy = 0;
+          this.isLoadingPersonasAdd = false;
         },
         error: (err) => {
+          this.isLoadingPersonasAdd = false;
           this.pesonasCopy = [];
           this.pageCopy = 0;
           this.errorCopy = err.error.error ?? err.error;

@@ -353,7 +353,6 @@ export class PersonaComponent {
   closeDetails() {
     this.selectedPersona = null
     this.personServicesOrigin = [];
-    this.backupServices = [];
     this.showSerivcesGrid = false;
   }
 
@@ -422,7 +421,6 @@ export class PersonaComponent {
   //services grid functions
   showSerivcesGrid = false;
   personServicesOrigin: any = [];
-  backupServices: any = [];
   serviceErrorMessage: string = '';
   serviceSuccessMessage: string = '';
   showServices(persona: any) {
@@ -438,13 +436,11 @@ export class PersonaComponent {
     this.http.get<any>(`${environment.backendUrl}/api/depe/fetch-persona-service/${this.entcod}/${this.eje}/${percod}`).subscribe({
       next: (res) => {
         this.personServicesOrigin = res;
-        this.backupServices = Array.isArray(res) ? [...res] : [];
         this.pageServices = 0;
         this.isLoading = false;
       },
       error: (err) => {
         this.personServicesOrigin = [];     
-        this.backupServices = [];          
         this.pageServices = 0;              
         this.serviceErrorMessage = err.error.error ?? err.error;
         this.isLoading = false;
@@ -511,36 +507,17 @@ export class PersonaComponent {
   showAddService() {
     this.limpiarMessages();
     this.addService = true;
-    this.fetchServicesAdd();
+    this.servicesAddError = 'No hay servicios'
   }
 
   closeAddService() {
     this.addService = false;
-    this.linesSelected = [];
-    this.count = 0;
+    this.clearSearch();
   }
 
   services: any = [];
-  backupServicesAdd: any = [];
   servicesAddError: string = '';
   isLoadingServices: boolean = false;
-  fetchServicesAdd() {
-    if (this.entcod === null || this.eje === null) return;
-    this.isLoadingServices = true;
-    this.http.get<any>(`${environment.backendUrl}/api/dep/fetch-services/${this.entcod}/${this.eje}`).subscribe({
-      next: (res) => {
-        this.isLoadingServices = false;
-        this.services = res;
-        this.backupServices = Array.isArray(res) ? [...res] : [];
-        this.backupServicesAdd = [...this.backupServices];
-        this.pageAdd = 0;
-      },
-      error: (err) => {
-        this.isLoadingServices = false;
-        this.servicesAddError = err.error.error ?? err.error;
-      }
-    });
-  }
 
   pageAdd: number = 0;
   get paginatedServicesAdd(): any[] {
@@ -590,19 +567,20 @@ export class PersonaComponent {
       params.perfil = this.searchPerfil;
     }
 
+    this.isLoadingServices = true;
     this.http.get<any>(`${environment.backendUrl}/api/dep/search`, { params }).subscribe({
       next: (res) => {
         this.services = res;
-        this.backupServices = Array.isArray(res) ? [...res] : [];
         this.page = 0;
+        this.isLoadingServices = false;
         this.updatePagination();
         if (!res.length) {
           this.servicesAddError = 'No se encontraron servicios con los filtros dados.';
         }
       },
       error: (err) => {
+        this.isLoadingServices = false;
         this.services = [];
-        this.backupServices = [];
         this.pageAdd = 0;
         this.servicesAddError = err.error.error ?? err.error;
       }
@@ -614,9 +592,10 @@ export class PersonaComponent {
     this.searchCentroGestor = '';
     this.searchPerfil = 'todos';
     this.limpiarMessages();
-    this.fetchServicesAdd();
+    this.services = []
     this.linesSelected = [];
     this.count = 0;
+     this.servicesAddError = 'No hay servicios'
   }
 
   linesSelected: string[] = [];
@@ -743,30 +722,18 @@ export class PersonaComponent {
   compiarPersonaGrid: boolean = false;
   showCopiarPersonas() {
     this.limpiarMessages();
-    this.fetchPersonasForCopy();
     this.compiarPersonaGrid = true;
-    this.closeCopiar()
+    this.closeCopiar();
+    this.errorCopy = 'No hay personas';
   }
   closeShowCopiarPersonas() {
     this.compiarPersonaGrid = false;
+    this.limpiarSearcCopy();
   }
 
   pageCopy: number = 0;
   pesonasCopy: any[] = [];
-  backupPesonasCopy: any[] = [];
   errorCopy: string = '';
-  fetchPersonasForCopy() {
-    this.http.get<any>(`${environment.backendUrl}/api/Per/fetch-all`).subscribe({
-      next: (res) => {
-        this.pesonasCopy = res;
-        this.backupPesonasCopy = [...this.pesonasCopy]
-        this.pageCopy = 0;
-      },
-      error: (err) => {
-        this.errorCopy = err.error.error ?? err.error;
-      }
-    });
-  }
 
   get paginatedPersonasCopy(): any[] {
     if (!this.pesonasCopy || this.pesonasCopy.length === 0) return [];
@@ -790,43 +757,37 @@ export class PersonaComponent {
   }
 
   searchPersonasCopy: string = '';
+  isLoadingPersonasAdd: boolean = false;
   searchCopy() {
     this.limpiarMessages();
-    if(this.searchPersonasCopy === '') {
-      this.fetchPersonasForCopy();
-      return 
-    }
+    if(this.searchPersonasCopy === '') {return}
 
     if(this.searchPersonasCopy.length <= 20) {
+      this.isLoadingPersonasAdd = true;
       this.http.get<any>(`${environment.backendUrl}/api/Per/search-cod-nom/${this.searchPersonasCopy}`).subscribe({
         next: (res) => {
+          this.isLoadingPersonasAdd = false;
           this.pesonasCopy = res;
-          this.backupPesonasCopy = [...this.pesonasCopy]
           this.pageCopy = 0;
-          if (!res.length) {
-            this.errorCopy = 'No se encontraron servicios con los filtros dados.';
-          }
         },
         error: (err) => {
+          this.isLoadingPersonasAdd = false;
           this.pesonasCopy = [];
-          this.backupPesonasCopy = [];
           this.pageCopy = 0;
           this.errorCopy = err.error.error ?? err.error;
         }
       });
     } else {
+      this.isLoadingPersonasAdd = true;
       this.http.get<any>(`${environment.backendUrl}/api/Per/search-nom/{this.searchPersonasCopy}`).subscribe({
         next: (res) => {
+          this.isLoadingPersonasAdd = false;
           this.pesonasCopy = res;
-          this.backupPesonasCopy = [...this.pesonasCopy]
           this.pageCopy = 0;
-          if (!res.length) {
-            this.errorCopy = 'No se encontraron servicios con los filtros dados.';
-          }
         },
         error: (err) => {
+          this.isLoadingPersonasAdd = false;
           this.pesonasCopy = [];
-          this.backupPesonasCopy = [];
           this.pageCopy = 0;
           this.errorCopy = err.error.error ?? err.error;
         }
@@ -836,7 +797,8 @@ export class PersonaComponent {
 
   limpiarSearcCopy() {
     this.searchPersonasCopy = '';
-    this.pesonasCopy = [...this.backupPesonasCopy]
+    this.pesonasCopy = [];
+    this.errorCopy = 'No hay personas';
   }
 
   continueAdCheckGrid: boolean = false;
@@ -851,7 +813,7 @@ export class PersonaComponent {
 
     this.percodCopyTo = info.percod;
     this.percodOrigin = this.selectedPersona.percod;
-    if(this.percodCopyTo === this.percodOrigin) {
+    if (this.percodCopyTo === this.percodOrigin) {
       this.isAvailable = true;
       this.continueMessag = 'Ha seleccionado la misma persona que está editando'
       return;
