@@ -574,7 +574,7 @@
         <div class="title">
             <h3>Añadir persona</h3>
         </div>
-        <button class="purple-btn" (click)="addPersonas(nombreadd.value, telefonoadd.value, moviladd.value, correoadd.value, observacionesadd.value)">✔</button>
+        <button class="purple-btn" (click)="addPersonas(nombreadd.value, telefonoadd.value, moviladd.value, correoadd.value, observacionesadd.value)">+ Cargar</button>
         <button class="red-btn" (click)="hidePersonas()">✖</button>
     </div>
     <h1 class="errorBtn">{{personaContactoaddError}}</h1>
@@ -582,22 +582,48 @@
         <div class="spinner"></div>
         <span>añadiendo</span>
     </div>
-    <div class="personas-add-container">
-        <div class="left-persona">
-            <p class="p-style">Nombre*</p>
-            <p class="p-style">Télefono</p>
-            <p class="p-style">Movil</p>
-            <p class="p-style">Correo electrónico</p>
-            <p class="p-style">Observaciones</p>
-        </div>
-        <div class="right-persona">
-            <textarea class="textArea-style" #nombreadd></textarea>
-            <textarea class="textArea-style" #telefonoadd></textarea>
-            <textarea class="textArea-style" #moviladd></textarea>
-            <textarea class="textArea-style" #correoadd></textarea>
-            <textarea class="textArea-style" #observacionesadd></textarea>
-        </div>
-    </div>
+    <table class="details-table perAdd">
+        <tr>
+            <td>
+                <p class="p-style">Nombre*</p>
+            </td>
+            <td>
+                <textarea class="textArea-style sieText" #nombreadd></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p class="p-style">Télefono</p>
+            </td>
+            <td>
+                <textarea class="textArea-style sieText" #telefonoadd></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p class="p-style">Movil</p>
+            </td>
+            <td>
+                <textarea class="textArea-style sieText" #moviladd></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td class="sizeTd">
+                <p class="p-style">Correo electrónico</p>
+            </td>
+            <td>
+                <textarea class="textArea-style sieText" #correoadd></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p class="p-style">Observaciones</p>
+            </td>
+            <td class="test">
+                <textarea class="textArea-style sieText" #observacionesadd></textarea>
+            </td>
+        </tr>
+    </table>
 </div>
 
 <div class="modal-backdrop" *ngIf="showHelloGrid"></div>

@@ -163,38 +163,33 @@
                         <span>actualizando</span>
                     </div> 
                     <div class="detail-container">
-                        <div class="chunk-one">
-                            <div class="content">
-                                <p class="p-style">Número</p>
-                                <h1 class="h1-style">{{tempContrato.concod || '#'}}</h1>
-                            </div>
-                            <div class="content">
-                                <p class="p-style">Económica</p>
-                                <h1 class="h1-style">{{tempContrato.conlot || '#'}}</h1>
-                            </div>
-                            <div class="content">
-                                <p class="p-style">Proveedor</p>
-                                <h1 class="h1-style">{{tempContrato.tercod || '#'}}</h1>
-                                <h1 class="h1-style">{{tempContrato.ternom || '#'}}</h1>
-                            </div>
-                            <div class="content">
-                                <input 
-                                    type="checkbox"
-                                    class="check"
-                                    [checked]="tempContrato.conblo === 1" 
-                                    (change)="tempContrato.conblo = $any($event.target).checked ? 1 : 0"
-                                    [disabled]="!isUpdate"
-                                    (input)="allowToUpdate = true"
-                                /><span class="bloq">Bloqueado</span>
-                            </div>
-                        </div>
-                        <div class="chunk-two">
-                            <div class="left">
-                                <div class="left-left">
+                        <table class="details-table">
+                            <tr>
+                                <td>
+                                    <p class="p-style">Número</p>
+                                </td>
+                                <td>
+                                    <h1 class="h1-style">{{tempContrato.concod || '#'}}</h1>
+                                </td>
+                                <td>
+                                    <p class="p-style">Económica</p>
+                                </td>
+                                <td>
+                                    <h1 class="h1-style">{{tempContrato.conlot || '#'}}</h1>
+                                </td>
+                                <td>
+                                    <p class="p-style">Proveedor</p>
+                                </td>
+                                <td>
+                                    <div class="cell-content">
+                                        <h1 class="h1-style">{{tempContrato.tercod || '#'}}</h1>
+                                        <h1 class="h1-style">{{tempContrato.ternom || '#'}}</h1>
+                                    </div>
+                                </td>
+                                <td>
                                     <p class="p-style">Fecha inicio</p>
-                                    <p class="p-style">Fecha fin</p>
-                                </div>
-                                <div class="left-right">
+                                </td>
+                                <td>
                                     <input
                                         type="date" 
                                         class="input-style average" 
@@ -204,6 +199,11 @@
                                         (input)="allowToUpdate = true"
                                         #confin
                                     >
+                                </td>
+                                <td>
+                                    <p class="p-style">Fecha fin</p>
+                                </td>
+                                <td>
                                     <input
                                         type="date" 
                                         class="input-style average" 
@@ -213,11 +213,13 @@
                                         (input)="allowToUpdate = true"
                                         #conffi
                                     >
-                                </div>
-                            </div>
-                            <div class="right">
-                                <div class="content">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
                                     <p class="p-style">Descripción</p>
+                                </td>
+                                <td colspan="6">
                                     <textarea 
                                         class="textArea-style long" 
                                         [(ngModel)]="tempContrato.condes" 
@@ -225,9 +227,19 @@
                                         (input)="allowToUpdate = true"
                                         #desc
                                     ></textarea>
-                                </div>
-                            </div>  
-                        </div>
+                                </td>
+                                <td>
+                                    <input 
+                                        type="checkbox"
+                                        class="check"
+                                        [checked]="tempContrato.conblo === 1" 
+                                        (change)="tempContrato.conblo = $any($event.target).checked ? 1 : 0"
+                                        [disabled]="!isUpdate"
+                                        (input)="allowToUpdate = true"
+                                    /><span class="bloq">Bloqueado</span>
+                                </td>
+                            </tr>
+                        </table>
                     </div>
                     <div class="btns space">
                         <button 
@@ -401,10 +413,10 @@
 <div class="modal-backdrop" *ngIf="showAddGrid"></div>
 <div class="add-confirm-modal" *ngIf="showAddGrid">
     <div class="btns">
-        <div class="title">
+        <div class="title sizeTitle">
             <h3>Añadir un contrato</h3>
         </div>
-        <button class="purple-btn" (click)="addContrato(description.value, fechaIni.value, fechaFin.value)">+</button>
+        <button class="purple-btn" (click)="addContrato(description.value, fechaIni.value, fechaFin.value)">+ Cargar</button>
         <button class="red-btn" (click)="closeAdd()">✖</button>
     </div>
     <h1 class="errorBtn">{{addContratoError}}</h1>
@@ -687,10 +699,10 @@
 <div class="modal-backdrop" *ngIf="addCentroGestor"></div>
 <div class="hello-modal" *ngIf="addCentroGestor">
     <div class="btns">
-        <div class="title">
-            <h1 class="art-title widthSecond">Añadir centro Gestor</h1>
+        <div class="title fixTitle">
+            <h3 class="art-title widthSecond">Añadir centro Gestor</h3>
         </div>
-        <button class="purple-btn" (click)="saveCentroGestores()">+</button>
+        <button class="purple-btn" (click)="saveCentroGestores()">+ Cargar</button>
         <button class="red-btn" (click)="closeAddCentro()">✖</button>
     </div>
     <div *ngIf="isAddingCentro" class="loading-message">
@@ -748,7 +760,7 @@
 <div class="D-modal" *ngIf="DGridShow">
     <div class="btns">
         <div class="title">
-            <h1 class="art-title widthThird">Asignar D</h1>
+            <h3 class="art-title widthThird">Asignar D</h3>
         </div>
         <button class="red-btn" (click)="closeAddD()">✖</button>
     </div>
@@ -809,7 +821,6 @@
             </tr>
         </tbody>
     </table>
-    <p>hi</p>
     <div class="pagination-controls">
         <button class="pag-btn" (click)="searchPageD = searchPageD - 1" [disabled]="searchPageD === 0">Anterior</button>
         <span> {{ searchPageD + 1 }} de {{ searchTotalPagesD }}</span>

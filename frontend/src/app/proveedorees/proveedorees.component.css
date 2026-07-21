@@ -71,10 +71,10 @@
 /* add articulo modal */
 /* add personas modal */
 .personas-modal {width: 45%;}
-.personas-add-container { width: 100%; display: flex; margin: 5px;}
-.left-persona { width: 30%; display: flex; flex-direction: column; gap: 20px;}
-.right-persona { display: flex; flex-direction: column; width: 70%; gap: 18px;}
-.personas-modal .title {width: 80%;}
+.personas-modal .title {width: 65%;}
+.perAdd {text-align: left;}
+.sizeTd {width: 30%;}
+.sieText {width: 380px !important; max-width: 400px;}
 /* add personas modal */
 /* delete persona modal */
 .detailPersonnaDelete { display: flex; width: 90%; align-items: center; justify-content: center; gap: 10px;}
