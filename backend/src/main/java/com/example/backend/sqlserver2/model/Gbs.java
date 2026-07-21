@@ -50,22 +50,22 @@ public class Gbs {
     private LocalDateTime GBSFOP;
 
     @Column(nullable = true)
-    private double GBSIMP;
+    private Double GBSIMP;
 
     @Column(nullable = true)
-    private double GBSIUS;
+    private Double GBSIUS;
 
     @Column(nullable = true)
-    private double GBSICO;
+    private Double GBSICO;
 
     @Column(nullable = true)
-    private double GBSIUT;
+    private Double GBSIUT;
 
     @Column(nullable = true)
-    private double GBSICT;
+    private Double GBSICT;
 
     @Column(nullable = true)
-    private double GBSIBG;
+    private Double GBSIBG;
 
     @Column(nullable = true)
     private Double GBS413;
@@ -100,23 +100,23 @@ public class Gbs {
     public LocalDateTime getGBSFOP() { return GBSFOP; }
     public void setGBSFOP(LocalDateTime GBSFOP) { this.GBSFOP = GBSFOP; }
 
-    public double getGBSIMP() { return GBSIMP; }
-    public void setGBSIMP(double GBSIMP) { this.GBSIMP = GBSIMP; }
+    public Double getGBSIMP() { return GBSIMP; }
+    public void setGBSIMP(Double GBSIMP) { this.GBSIMP = GBSIMP; }
 
-    public double getGBSIUS() { return GBSIUS; }
-    public void setGBSIUS(double GBSIUS) { this.GBSIUS = GBSIUS; }
+    public Double getGBSIUS() { return GBSIUS; }
+    public void setGBSIUS(Double GBSIUS) { this.GBSIUS = GBSIUS; }
 
-    public double getGBSICO() { return GBSICO; }
-    public void setGBSICO(double GBSICO) { this.GBSICO = GBSICO; }
+    public Double getGBSICO() { return GBSICO; }
+    public void setGBSICO(Double GBSICO) { this.GBSICO = GBSICO; }
 
-    public double getGBSIUT() { return GBSIUT; }
-    public void setGBSIUT(double GBSIUT) { this.GBSIUT = GBSIUT; }
+    public Double getGBSIUT() { return GBSIUT; }
+    public void setGBSIUT(Double GBSIUT) { this.GBSIUT = GBSIUT; }
 
-    public double getGBSICT() { return GBSICT; }
-    public void setGBSICT(double GBSICT) { this.GBSICT = GBSICT; }
+    public Double getGBSICT() { return GBSICT; }
+    public void setGBSICT(Double GBSICT) { this.GBSICT = GBSICT; }
 
-    public double getGBSIBG() { return GBSIBG; }
-    public void setGBSIBG(double GBSIBG) { this.GBSIBG = GBSIBG; }
+    public Double getGBSIBG() { return GBSIBG; }
+    public void setGBSIBG(Double GBSIBG) { this.GBSIBG = GBSIBG; }
     
     public Double getGBS413() { return GBS413; }
     public void setGBS413(Double GBS413) { this.GBS413 = GBS413; }

@@ -1,26 +1,33 @@
 package com.example.backend.controller;
 
-import com.example.backend.sqlserver2.model.Cge;
-import com.example.backend.sqlserver2.model.CgeId;
-import com.example.backend.sqlserver2.model.Gbs;
-import com.example.backend.sqlserver2.model.GbsId;
-import com.example.backend.sqlserver2.repository.CgeRepository;
-import com.example.backend.dto.GbsWithCgeDto;
-import com.example.backend.dto.bolsaSaveDto;
-import com.example.backend.sqlserver2.repository.GbsRepository;
-
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.backend.dto.GbsWithCgeDto;
+import com.example.backend.dto.bolsaSaveDto;
+import com.example.backend.service.FacturaInsertService.FacturaInfo;
+import com.example.backend.sqlserver2.model.Cge;
+import com.example.backend.sqlserver2.model.CgeId;
+import com.example.backend.sqlserver2.model.Gbs;
+import com.example.backend.sqlserver2.model.GbsId;
+import com.example.backend.sqlserver2.repository.CgeRepository;
+import com.example.backend.sqlserver2.repository.GbsRepository;
 
 @RestController
 @RequestMapping("/api/gbs")
@@ -189,40 +196,49 @@ public class GbsController {
         @RequestBody List<bolsaSaveDto> items
     ) {
         try {
+            List<String> savedBolsas = new ArrayList<>();
+            List<String> unSavedBolsas = new ArrayList<>();
+
             List<Gbs> toSave = new ArrayList<>();
             for (bolsaSaveDto dto: items) {
-                GbsId id = new GbsId(dto.ENT, dto.EJE, dto.CGECOD, dto.GBSREF);
-                boolean exists = gbsRepository.existsById(id);
-                if (!exists) {
-                    Optional<Gbs> check = gbsRepository.findByENTAndEJEAndCGECODAndGBSECO(dto.ENT, dto.EJE, dto.CGECOD, dto.GBSECO);
-                    if (check.isEmpty()) {
-                        Gbs addBolsa = new Gbs();
-                        addBolsa.setENT(dto.ENT);
-                        addBolsa.setEJE(dto.EJE);
-                        addBolsa.setCGECOD(dto.CGECOD);
-                        addBolsa.setGBSREF(dto.GBSREF);
-                        addBolsa.setGBSOPE(dto.GBSOPE);
-                        addBolsa.setGBSORG(dto.GBSORG);
-                        addBolsa.setGBSFUN(dto.GBSFUN);
-                        addBolsa.setGBSECO(dto.GBSECO);
-                        addBolsa.setGBSIMP(dto.GBSIMP);
-                        addBolsa.setGBSIBG(dto.GBSIBG);
-                        addBolsa.setGBSIUS(dto.GBSIUS);
-                        addBolsa.setGBSICO(dto.GBSICO);
-                        addBolsa.setGBSIUT(dto.GBSIUT);
-                        addBolsa.setGBSICT(dto.GBSICT);
-                        addBolsa.setGBS413(dto.GBS413);
-                        toSave.add(addBolsa);
-                    }
+                Optional<Gbs> bolsa = gbsRepository.findByENTAndEJEAndCGECODAndGBSREFAndGBSORGAndGBSFUNAndGBSECO(dto.ENT, dto.EJE, dto.CGECOD, dto.GBSREF, dto.GBSORG, dto.GBSFUN, dto.GBSECO);
+
+                if (!bolsa.isEmpty()) {
+                    unSavedBolsas.add(bolsa.get().getGBSREF());
+                } else {
+                    Gbs addBolsa = new Gbs();
+                    addBolsa.setENT(dto.ENT);
+                    addBolsa.setEJE(dto.EJE);
+                    addBolsa.setCGECOD(dto.CGECOD);
+                    addBolsa.setGBSREF(dto.GBSREF);
+                    addBolsa.setGBSOPE(dto.GBSOPE);
+                    addBolsa.setGBSORG(dto.GBSORG);
+                    addBolsa.setGBSFUN(dto.GBSFUN);
+                    addBolsa.setGBSECO(dto.GBSECO);
+                    addBolsa.setGBSIMP(0.00);
+                    addBolsa.setGBSIBG(0.00);
+                    addBolsa.setGBSIUS(0.00);
+                    addBolsa.setGBSICO(0.00);
+                    addBolsa.setGBSIUT(0.00);
+                    addBolsa.setGBSICT(0.00);
+                    addBolsa.setGBS413(0.00);
+                    toSave.add(addBolsa);
+
+                    savedBolsas.add(dto.GBSREF);
                 }
             }
-        
             gbsRepository.saveAll(toSave);
-            return ResponseEntity.noContent().build();
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(new NamesResponse(savedBolsas, unSavedBolsas));
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ERROR + ex.getMostSpecificCause().getMessage());
         }
     }
+
+    public record NamesResponse (
+        List<String> savedBolsas,
+        List<String> unSavedBolsas
+    ) {}
 
     //deleting a bolsa
     @DeleteMapping("/delete-bolsa/{ent}/{eje}/{cgecod}/{gbsref}")

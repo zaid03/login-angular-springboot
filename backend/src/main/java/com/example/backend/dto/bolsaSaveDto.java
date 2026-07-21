@@ -9,11 +9,4 @@ public class bolsaSaveDto {
     public String GBSORG;
     public String GBSFUN;
     public String GBSECO;
-    public double GBSIMP;
-    public double GBSIBG;
-    public double GBSIUS;
-    public double GBSICO;
-    public double GBSIUT;
-    public double GBSICT;
-    public Double GBS413;
 }

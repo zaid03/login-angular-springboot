@@ -92,7 +92,7 @@
                 <div class="spinner"></div>
                 <span>Cargando</span>
             </div>
-            <table class="main-table">
+            <table class="main-table bolsa-table">
                 <thead>
                     <tr>
                         <th 
@@ -407,7 +407,8 @@
         <div class="title">
             <h1 class="art-title">Añadir RC</h1>
         </div>
-        <button class="purple-btn" (click)="addingBolsas()">+</button>
+        <p class="p-style">seleccionado {{caughtD.length}} Bolsas</p>
+        <button class="purple-btn" (click)="addingBolsas()">+ Cargar</button>
         <button class="red-btn" (click)="closeAddD()">✖</button>
     </div>
     <h1 class="errorBtn">{{DErrorMessage}}</h1>
@@ -452,24 +453,35 @@
             <tr 
                 *ngFor="let d of paginatedSearchResultsD"
                 (click)="selectDAdd(d)"
+                [class.selected-row]="isDSelected(d)"
             >
                 <td>{{d.numope}}</td>
-                <td>{{d.lineaList.referencia}}</td>
+                <td>{{d.lineaList[0].referencia}}</td>
                 <td>{{d.oficina}}</td>
                 <td>{{d.fecope}}</td>
-                <td>{{d.lineaList.linorg}}</td>
-                <td>{{d.lineaList.linfun}}</td>
-                <td>{{d.lineaList.lineco}}</td>
-                <td>{{d.lineaList.limporte}}</td>
-                <td>{{d.lineaList.limporte}}</td>
+                <td>{{d.lineaList[0].linorg}}</td>
+                <td>{{d.lineaList[0].linfun}}</td>
+                <td>{{d.lineaList[0].lineco}}</td>
+                <td>{{d.lineaList[0].limporte}}</td>
+                <td>{{d.lineaList[0].saldo}}</td>
                 <td>{{d.texto}}</td>
             </tr>
         </tbody>
     </table>
-    <p class="p-style" *ngIf="caughtD.length > 0">{{caughtD.length}} Bolsas seleccionados</p>
     <div class="pagination-controls" *ngIf="listaDeD.length > searchPageSizeD">
         <button class="pag-btn" (click)="searchPageD = searchPageD - 1" [disabled]="searchPageD === 0">Anterior</button>
         <span> {{ searchPageD + 1 }} de {{ searchTotalPagesD }}</span>
         <button class="pag-btn" (click)="searchPageD = searchPageD + 1" [disabled]="searchPageD + 1 >= searchTotalPagesD">Siguiente</button>
+    </div>
+</div>
+
+<div class="modal-backdrop force" *ngIf="addBolsaMessages"></div>
+<div class="delete-confirm-modal adj" *ngIf="addBolsaMessages">
+    <div class="btns">
+        <button class="red-btn" (click)="closeAddBolsaMessages()">✖</button>
+    </div>
+    <div class="saved-details">
+        <p class="p-style" *ngIf="savedBolsas.length">Operaciones cargadas: <span class="message-text">{{savedBolsas}}</span></p>
+        <p class="p-style" *ngIf="unSavedBolsas.length">Operaciones ya existentes: <span class="message-text">{{unSavedBolsas}}</span></p>
     </div>
 </div>

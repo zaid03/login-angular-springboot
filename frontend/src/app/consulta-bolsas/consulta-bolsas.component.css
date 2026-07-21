@@ -13,10 +13,10 @@
 .rad input[type="radio"] {margin: 0 6px 0 0; accent-color: #25176b; width: 18px; height: 18px; vertical-align: middle; outline: none; box-shadow: none;}
 /* centro gestor info */
 /* main-table */
-.credito-container td:nth-child(8),
-.credito-container td:nth-child(7),
-.credito-container td:nth-child(6),
-.credito-container td:nth-child(5) { text-align: right; }
+.bolsa-table td:nth-child(8),
+.bolsa-table td:nth-child(7),
+.bolsa-table td:nth-child(6),
+.bolsa-table td:nth-child(5) { text-align: right; }
 /* main-table */
 /* main grid detail */
 .detail-container,

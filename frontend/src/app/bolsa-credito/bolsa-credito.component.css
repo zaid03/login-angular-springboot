@@ -13,10 +13,10 @@
 .rad input[type="radio"] {margin: 0 6px 0 0; accent-color: #25176b; width: 18px; height: 18px; vertical-align: middle; outline: none; box-shadow: none;}
 /* centro gestor info */
 /* main-table */
-.credito-container td:nth-child(8),
-.credito-container td:nth-child(7),
-.credito-container td:nth-child(6),
-.credito-container td:nth-child(5) { text-align: right; }
+.bolsa-table td:nth-child(8),
+.bolsa-table td:nth-child(7),
+.bolsa-table td:nth-child(6),
+.bolsa-table td:nth-child(5) { text-align: right; }
 /* main-table */
 /* main grid detail */
 .detail-container,
@@ -47,7 +47,7 @@
 /* main grid detail */
 /* D grid for centro gestor */
 .D-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 16px; box-shadow: 0 8px 32px rgba(44, 62, 80, 0.18), 0 1.5px 6px rgba(44,62,80,0.08); padding: 25px 30px; min-width: 85%; min-height: 120px; max-height: 80vh; z-index: 3000; display: flex; flex-direction: column; align-items: center;}
-.D-modal .title {width: 50%;}
+.D-modal .title {width: 35%;}
 .info-D {display: flex; width: 100%; gap: 10px; justify-content: center; margin: 10px;}
 .info-content {display: flex; align-items: center; width: 30%; gap: 10px;}
 .art-title {width: 25%; font-size: 23px;}

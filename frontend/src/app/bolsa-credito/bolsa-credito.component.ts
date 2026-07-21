@@ -761,10 +761,11 @@ export class BolsaCreditoComponent {
     const oficina = 'AL';
     this.isLoadingD = true;
 
-    this.http.get<any>(`${environment.backendUrl}/api/sical/operaciones?codigoOperacion=${codigoOperacion}&clorg=${this.organigrama}&clfun=${this.programa}&oficina=${oficina}`).subscribe({
+    this.http.get<any>(`${environment.backendUrl}/api/sical/operaciones?codigoOperacion=${codigoOperacion}&organica=${this.organigrama}&funcional=${this.programa}&oficina=${oficina}`).subscribe({
       next: (res) => {
         this.isLoadingD = false;
         this.listaDeD = res;
+        console.log(this.listaDeD[0]);
       },
       error: (err) => {
         this.isLoadingD = false;
@@ -774,9 +775,9 @@ export class BolsaCreditoComponent {
   }
   searchPageD: number = 0;
   searchPageSizeD: number = 5;
-  get paginatedSearchResultsD() {const start = this.searchPageD * this.searchPageSizeD; return this.listaDeD.slice(start, start + this.searchPageSizeD);}
+  get paginatedSearchResultsD() {const start = this.searchPageD * this.searchPageSizeD; console.log(this.listaDeD); return this.listaDeD.slice(start, start + this.searchPageSizeD);  }
   get searchTotalPagesD() {return Math.ceil(this.listaDeD.length / this.searchPageSizeD);}
-
+ 
   caughtD: any[] = [];
   selectDAdd(D: any) {
     if (this.caughtD.includes(D)) {
@@ -795,6 +796,8 @@ export class BolsaCreditoComponent {
 
   isAddingBolsa: boolean = false; 
   tablesuccessMessage: string = '';
+  savedBolsas: any[] = [];
+  unSavedBolsas: any[] = [];
   addingBolsas() {
     this.limpiarMessages();
     this.isAddingBolsa = true;
@@ -803,11 +806,11 @@ export class BolsaCreditoComponent {
       "ENT": this.entcod,
       "EJE": this.eje,
       "CGECOD": this.cge,
-      "GBSREF": obj.lineaList.referencia,
+      "GBSREF": obj.lineaList[0]?.referencia,
       "GBSOPE": obj.numope,
-      "GBSORG": obj.lineaList.linorg,
-      "GBSFUN": obj.lineaList.linfun,
-      "GBSECO": obj.lineaList.lineco,
+      "GBSORG": obj.lineaList[0]?.linorg,
+      "GBSFUN": obj.lineaList[0]?.linfun,
+      "GBSECO": obj.lineaList[0]?.lineco,
       "GBSIMP": 0,
       "GBSIBG": 0,
       "GBSIUS": 0,
@@ -817,18 +820,32 @@ export class BolsaCreditoComponent {
       "GBS413": 0
     }));
 
-    this.http.post(`${environment.backendUrl}api/gbs/add-Bolsa`, payload).subscribe({
+    this.http.post<any>(`${environment.backendUrl}/api/gbs/add-Bolsa`, payload).subscribe({
       next: (res) => {
         this.isAddingBolsa = false;
-        this.closeAddD();
-        this.fetchBolsas();
-        this.tablesuccessMessage = 'bolsas añadidas con éxito';
+        this.savedBolsas = res.savedBolsas.join(' ,');
+        this.unSavedBolsas = res.unSavedBolsas.join(' ,');
+        this.openAddBolsaMessages();
       },
       error: (err) => {
         this.isAddingBolsa = false;
         this.DErrorMessage = err.error.error ?? err.error;
       }
     })
+  }
+
+  addBolsaMessages: boolean = false;
+  openAddBolsaMessages() {
+    this.addBolsaMessages = true;
+  }
+
+  closeAddBolsaMessages() {
+    this.limpiarMessages();
+    this.addBolsaMessages = false;
+    this.closeAddD();
+    this.fetchBolsas();
+    this.listaDeD = [];
+    this.caughtD = [];
   }
 
   //misc
