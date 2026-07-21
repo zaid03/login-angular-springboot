@@ -88,6 +88,7 @@ export class BolsaCreditoComponent {
   fetchCentroGestorInfo() {
     this.http.get<any>(`${environment.backendUrl}/api/cge/search-centros-codigo/${this.entcod}/${this.eje}/${this.cge}`).subscribe({
       next: (res) => {
+        this.cge = res[0].cgecod;
         this.organigrama = res[0].cgeorg;
         this.programa = res[0].cgefun;
         this.description = res[0].cgedes
@@ -422,11 +423,9 @@ export class BolsaCreditoComponent {
 
   cgeSearch: string = '';
   searchBolsas() {
-    this.isLoading = true;
     this.fetchCancel$.next();
     this.fetchCentroGestorInfo();
     this.fetchBolsas();
-    this.isLoading = false;
   }
 
   setInputToUpper(event: Event): void {
@@ -440,10 +439,11 @@ export class BolsaCreditoComponent {
   }
 
   limpiarSearch() {
+    this.fetchCancel$.next();
     this.limpiarMessages();
     this.fetchBolsas();
     this.cgeSearch = '';
-    this.cge = this.backUpCge;
+    this.fetchCentroGestorInfo();
   }
 
   //main detail grid functions

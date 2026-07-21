@@ -230,141 +230,190 @@
                         <span>borrando</span>
                     </div>
                     <div class="detail-container">
-                        <div class="chunk-one">
-                            <div class="detail-title">
-                                <p class="p-style">Contabilidad</p>
-                            </div>
-                            <div class="detail-chunk-container">
-                                <div class="left">
-                                    <p class="p-style">Centro Gestor</p>
-                                    <p class="p-style">Applicación</p>
-                                    <p class="p-style">Operación</p>
-                                    <p class="p-style">Referencia</p>
-                                    <p class="p-style">Importe Op</p>
-                                </div>
-                                <div class="right">
-                                    <div class="on-two">
-                                        <h1 class="h1-style">{{selectedBolsas.cgecod || '#'}}</h1>
-                                        <h1 class="h1-style">{{selectedBolsas.cgedes || '#'}}</h1>
-                                    </div>
-                                    <div class="on-two">
-                                        <h1 class="h1-style">{{bolsaCombo || '#'}}</h1>
-                                        <h1 class="h1-style">{{selectedBolsas?.partidas?.[0]?.desc || '#'}}</h1>
-                                    </div>
-                                    <h1 class="h1-style">{{selectedBolsas.gbsope || '#'}}</h1>
-                                    <h1 class="h1-style">{{selectedBolsas.gbsref || '#'}}</h1>
-                                    <h1 class="h1-style">{{selectedBolsas?.limporte || '#'}}</h1>
-                                </div>
-                            </div>  
+                        <div class="left">
+                            <table class="details-table first-table">
+                                <tr>
+                                    <td>
+                                        <p class="p-style">Centro Gestor</p>
+                                    </td>
+                                    <td>
+                                        <h1 class="h1-style">{{selectedBolsas.cgecod}}</h1>
+                                    </td>
+                                    <td colspan="3">
+                                        <h1 class="h1-style">{{selectedBolsas.cgedes}}</h1>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="5">
+                                        <p class="p-style">Contabilidad</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p class="p-style">Applicación</p>
+                                    </td>
+                                    <td colspan="2">
+                                        <h1 class="h1-style">{{bolsaCombo}}</h1>
+                                    </td>
+                                    <td colspan="2">
+                                        <h1 class="h1-style">{{selectedBolsas?.partidas?.[0]?.desc}}</h1>
+                                    </td>
+                                </tr>
+                            </table>
+                            <table class="details-table second-table">
+                                <tr>
+                                    <td>
+                                        <p class="p-style margin">Operación</p>
+                                        <h1 class="h1-style">{{selectedBolsas.gbsope}}</h1>
+                                    </td>
+                                    <td>
+                                        <p class="p-style margin">Referencia</p>
+                                        <h1 class="h1-style">{{selectedBolsas.gbsref}}</h1>
+                                    </td>
+                                    <td>
+                                        <p class="p-style margin">Importe Op</p>
+                                        <h1 class="h1-style">{{selectedBolsas?.limporte}}</h1>
+                                    </td>
+                                </tr>
+                            </table>
+                            <table class="details-table third-table">
+                                <tr class="border">
+                                    <td class="borderLeft">
+                                        <p class="p-style margin">Saldo op.</p>
+                                        <h1 class="h1-style">{{selectedBolsas?.saldo | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</h1>
+                                    </td>
+                                    <td>
+                                        <div class="signPlacement">
+                                            <span class="sign">-</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <p class="p-style margin">Pte. conta SCAP</p>
+                                        <h1 class="h1-style">{{getkAcPeCo(selectedBolsas.gbsiut, selectedBolsas.gbsict) | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</h1>
+                                    </td>
+                                    <td>
+                                        <div class="signPlacement">
+                                            <span class="sign">=</span>
+                                        </div>
+                                    </td>
+                                    <td class="borderRight">
+                                         <p class="p-style margin">Disponible</p>
+                                        <h1 class="h1-style">{{getkdispon(selectedBolsas.saldo, getkAcPeCo(selectedBolsas?.gbsiut, selectedBolsas?.gbsict)) | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</h1>
+                                    </td>
+                                </tr>
+                            </table>
                         </div>
-                        <div class="chunk-two">
-                            <div class="detail-title">
-                                <p class="p-style">Bolsa</p>
-                                <span class="p-style">{{ getkCGECIC(selectedBolsas.cgecic) || '#'}}</span>
-                            </div>
-                            <div class="detail-chunk-container">
-                                <div class="left special">
-                                    <p class="p-style">Fecha bolsa</p>
-                                </div>
-                                <div class="right">
-                                    <div class="on-two">
-                                        <h1 class="h1-style">{{selectedBolsas?.gbsfop ? (selectedBolsas.gbsfop | date:'dd/MM/yyyy') : '#'}}</h1>
-                                        <p class="p-style">Suplemento 413</p>
-                                        <h1 class="h1-style">{{selectedBolsas?.gbs413? (selectedBolsas.gbs413) : '#'}}</h1>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="conta-first">
-                                <div class="conta-one">
-                                    <p class="p-style">Importe bolsa</p>
-                                    <textarea 
-                                        class="textArea-style smallTextarea" 
-                                        [(ngModel)]="tempBolsa.gbsimp" 
-                                        [disabled]="!isUpdate"
-                                        (input)="allowToUpdate = true"
-                                        (blur)="formatGbsimp()"
-                                        (click)="gbsImp()"
-                                        #gbsimp
-                                    ></textarea>
-                                </div>
-                                <div class="conta-sign">
-                                    <span class="plus">+</span>
-                                </div>
-                                <div class="conta-two">
-                                    <p class="p-style">Importe bolsa gestion</p>
-                                    <textarea 
-                                        class="textArea-style smallTextarea" 
-                                        [(ngModel)]="tempBolsa.gbsibg" 
-                                        [disabled]="!isUpdate"
-                                        (input)="allowToUpdate = true"
-                                        (blur)="formateGbsibg()"
-                                        (click)="gbsIbg()"
-                                        #gbsibg
-                                    ></textarea>
-                                </div>
-                                <div class="conta-sign">
-                                    <span class="minus">-</span>
-                                </div>
-                                <div class="conta-three">
-                                    <p class="p-style">Usado bolsa</p>
-                                    <h1 class="h1-style fix">{{selectedBolsas.gbsius | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</h1>
-                                </div>
-                                <div class="conta-sign">
-                                    <span class="equal">=</span>
-                                </div>
-                                <div class="conta-four">
-                                    <p class="p-style">Disponible bolsa</p>
-                                    <h1 class="h1-style fix">{{getKBoldis(selectedBolsas.gbsimp, selectedBolsas.gbsibg, selectedBolsas.gbsius) | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</h1>
-                                </div>
-                            </div>
-                            <div class="conta-second">
-                                <div class="conta-one">
-                                    <p class="p-style">Saldo op.</p>
-                                    <h1 class="h1-style">{{selectedBolsas?.saldo | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</h1>
-                                </div>
-                                <div class="conta-sign">
-                                    <span class="minus">-</span>
-                                </div>
-                                <div class="conta-two">
-                                    <p class="p-style">Pte. conta SCAP</p>
-                                    <h1 class="h1-style">{{getkAcPeCo(selectedBolsas.gbsiut, selectedBolsas.gbsict) | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</h1>
-                                </div>
-                                <div class="conta-sign">
-                                    <span class="equal">=</span>
-                                </div>
-                                <div class="conta-three">
-                                    <p class="p-style">Disponible</p>
-                                    <h1 class="h1-style">{{getkdispon(selectedBolsas.saldo, getkAcPeCo(selectedBolsas?.gbsiut, selectedBolsas?.gbsict)) | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</h1>
-                                </div>
-                            </div>
+                        <div class="right">
+                            <table class="details-table first-table">
+                                <tr>
+                                    <td>
+                                        <p class="p-style">Cerrado</p>
+                                    </td>
+                                    <td>
+                                        <span class="p-style">{{getkCGECIC(selectedBolsas.cgecic)}}</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <p class="p-style">Bolsa</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p class="p-style margin">Fecha bolsa</p>
+                                        <h1 class="h1-style">{{selectedBolsas.gbsfop | date:'dd/MM/yyyy'}}</h1>
+                                    </td>
+                                    <td>
+                                        <p class="p-style margin">Suplemento 413</p>
+                                        <h1 class="h1-style">{{selectedBolsas?.gbs413}}</h1>
+                                    </td>
+                                </tr>
+                            </table>
+                            <table class="details-table second-table">
+                                <tr class="border">
+                                    <td class="borderLeft">
+                                        <p class="p-style margin">Importe bolsa</p>
+                                        <textarea 
+                                            class="textArea-style smallTextarea" 
+                                            [(ngModel)]="tempBolsa.gbsimp" 
+                                            [disabled]="!isUpdate"
+                                            (input)="allowToUpdate = true"
+                                            (blur)="formatGbsimp()"
+                                            (click)="gbsImp()"
+                                            #gbsimp
+                                        ></textarea>
+                                    </td>
+                                    <td>
+                                        <div class="signPlacement3">
+                                            <span class="sign">+</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <p class="p-style margin">Importe bolsa gestion</p>
+                                        <textarea 
+                                            class="textArea-style smallTextarea" 
+                                            [(ngModel)]="tempBolsa.gbsibg" 
+                                            [disabled]="!isUpdate"
+                                            (input)="allowToUpdate = true"
+                                            (blur)="formateGbsibg()"
+                                            (click)="gbsIbg()"
+                                            #gbsibg
+                                        ></textarea>
+                                    </td>
+                                    <td>
+                                        <div class="signPlacement3">
+                                            <span class="sign">-</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <p class="p-style margin">Usado bolsa</p>
+                                        <h1 class="h1-style fix">{{selectedBolsas.gbsius | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</h1>
+                                    </td>
+                                    <td>
+                                        <div class="signPlacement3">
+                                            <span class="sign">=</span>
+                                        </div>
+                                    </td>
+                                    <td class="borderRight">
+                                        <p class="p-style margin">Disponible bolsa</p>
+                                        <h1 class="h1-style fix">{{getKBoldis(selectedBolsas.gbsimp, selectedBolsas.gbsibg, selectedBolsas.gbsius) | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</h1>
+                                    </td>
+                                </tr>
+                            </table>
+                            <table class="details-table third-table">
+                                <tr>
+                                    <td class="borderRight borderLeft borderTop" colspan="5">
+                                        <p class="p-style">Acumulados</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="borderLeft borderBottom">
+                                        <p class="p-style margin">Gastado Total</p>
+                                        <h1 class="h1-style">{{selectedBolsas.gbsiut | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</h1>
+                                    </td>
+                                    <td class="borderBottom">
+                                        <div class="signPlacement2">
+                                            <span class="sign">-</span>
+                                        </div>
+                                    </td>
+                                    <td class="borderBottom">
+                                        <p class="p-style margin">Contabilizaado Total</p>
+                                        <h1 class="h1-style">{{selectedBolsas.gbsict | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</h1>
+                                    </td>
+                                    <td class="borderBottom">
+                                        <div class="signPlacement2">
+                                            <span class="sign">=</span>
+                                        </div>
+                                    </td>
+                                    <td class="borderRight borderBottom">
+                                        <p class="p-style margin">Pte. Contabilizar SCAP</p>
+                                        <h1 class="h1-style">{{getkAcPeCo(selectedBolsas.gbsiut, selectedBolsas.gbsict) | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</h1>
+                                    </td>
+                                </tr>
+                            </table>
                         </div>
                     </div>
-                    <div class="acumolados">
-                        <div class="detail-title">
-                            <p class="p-style">Acumulados</p>
-                        </div>
-                        <div class="detail-acumolados-container">
-                            <div class="conta-one">
-                                <p class="p-style">Gastado Total</p>
-                                <h1 class="h1-style">{{selectedBolsas.gbsiut | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</h1>
-                            </div>
-                            <div class="conta-sign">
-                                <span class="minus">-</span>
-                            </div>
-                            <div class="conta-two">
-                                <p class="p-style">Contabilizaado Total</p>
-                                <h1 class="h1-style">{{selectedBolsas.gbsict | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</h1>
-                            </div>
-                            <div class="conta-sign">
-                                <span class="equal">=</span>
-                            </div>
-                            <div class="conta-three">
-                                <p class="p-style">Pte. Contabilizar SCAP</p>
-                                <h1 class="h1-style">{{getkAcPeCo(selectedBolsas.gbsiut, selectedBolsas.gbsict) | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</h1>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="btns">
+                    <div class="btns margintop">
                         <button 
                             class="red-btn" 
                             *ngIf="isUpdate" 
