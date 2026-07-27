@@ -30,7 +30,7 @@ public class CryptoSical {
 
     // Base64 decode (reverse the above one)
     public static String decodeBase64(String input) {
-        return new String(Base64.getDecoder().decode(input), StandardCharsets.UTF_8);
+        return new String(Base64.getDecoder().decode(input), StandardCharsets.ISO_8859_1);
     }
 
     // Pad with zeros from the left to match a specific length
