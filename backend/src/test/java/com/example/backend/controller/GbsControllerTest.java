@@ -327,108 +327,6 @@ public class GbsControllerTest {
     }
 
     @Test
-    void addBolsa_returnsNoContentOnSuccess() throws Exception {
-        GbsId id = new GbsId(1, "E1", "C1", "REF1");
-        when(gbsRepository.existsById(id)).thenReturn(false);
-        when(gbsRepository.findByENTAndEJEAndCGECODAndGBSECO(1, "E1", "C1", "ECO1")).thenReturn(Optional.empty());
-
-        List<Map<String, Object>> payload = List.of(
-            new HashMap<String, Object>() {{
-                put("ENT", 1);
-                put("EJE", "E1");
-                put("CGECOD", "C1");
-                put("GBSREF", "REF1");
-                put("GBSOPE", "OPE1");
-                put("GBSORG", "ORG1");
-                put("GBSFUN", "FUN1");
-                put("GBSECO", "ECO1");
-                put("GBSIMP", 100.0);
-                put("GBSIBG", 25.0);
-                put("GBSIUS", 5.0);
-                put("GBSICO", 10.0);
-                put("GBSIUT", 0.0);
-                put("GBSICT", 0.0);
-                put("GBS413", 0.0);
-            }}
-        );
-
-        mockMvc.perform(post("/api/gbs/add-Bolsa")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(payload)))
-            .andDo(print())
-            .andExpect(status().isNoContent());
-
-        verify(gbsRepository).saveAll(any());
-    }
-
-    @Test
-    void addBolsa_skipsExistingByRef() throws Exception {
-        GbsId id = new GbsId(1, "E1", "C1", "REF1");
-        when(gbsRepository.existsById(id)).thenReturn(true);
-
-        List<Map<String, Object>> payload = List.of(
-            new HashMap<String, Object>() {{
-                put("ENT", 1);
-                put("EJE", "E1");
-                put("CGECOD", "C1");
-                put("GBSREF", "REF1");
-                put("GBSOPE", "OPE1");
-                put("GBSORG", "ORG1");
-                put("GBSFUN", "FUN1");
-                put("GBSECO", "ECO1");
-                put("GBSIMP", 100.0);
-                put("GBSIBG", 25.0);
-                put("GBSIUS", 5.0);
-                put("GBSICO", 10.0);
-                put("GBSIUT", 0.0);
-                put("GBSICT", 0.0);
-                put("GBS413", 0.0);
-            }}
-        );
-
-        mockMvc.perform(post("/api/gbs/add-Bolsa")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(payload)))
-            .andDo(print())
-            .andExpect(status().isNoContent());
-
-        verify(gbsRepository).saveAll(argThat(list -> ((ArrayList<?>) list).isEmpty()));
-    }
-
-    @Test
-    void addBolsa_returnsBadRequestOnDataAccessException() throws Exception {
-        when(gbsRepository.existsById(any(GbsId.class)))
-            .thenThrow(new DataAccessResourceFailureException("DB error"));
-
-        List<Map<String, Object>> payload = List.of(
-            new HashMap<String, Object>() {{
-                put("ENT", 1);
-                put("EJE", "E1");
-                put("CGECOD", "C1");
-                put("GBSREF", "REF1");
-                put("GBSOPE", "OPE1");
-                put("GBSORG", "ORG1");
-                put("GBSFUN", "FUN1");
-                put("GBSECO", "ECO1");
-                put("GBSIMP", 100.0);
-                put("GBSIBG", 25.0);
-                put("GBSIUS", 5.0);
-                put("GBSICO", 10.0);
-                put("GBSIUT", 0.0);
-                put("GBSICT", 0.0);
-                put("GBS413", 0.0);
-            }}
-        );
-
-        mockMvc.perform(post("/api/gbs/add-Bolsa")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(payload)))
-            .andDo(print())
-            .andExpect(status().isBadRequest())
-            .andExpect(content().string(containsString("Error :")));
-    }
-
-    @Test
     void deleteBolsa_returnsNoContentOnSuccess() throws Exception {
         GbsId id = new GbsId(1, "E1", "C1", "REF1");
         Gbs bolsa = new Gbs();
@@ -477,4 +375,95 @@ public class GbsControllerTest {
             .andExpect(status().isBadRequest())
             .andExpect(content().string(containsString("Error :")));
     }
+
+    @Test
+void addBolsa_returnsCreatedOnSuccess() throws Exception {
+    when(gbsRepository.findByENTAndEJEAndCGECODAndGBSREFAndGBSORGAndGBSFUNAndGBSECO(
+            1, "E1", "C1", "REF1", "ORG1", "FUN1", "ECO1"))
+        .thenReturn(Optional.empty());
+
+    List<Map<String, Object>> payload = List.of(
+        new HashMap<String, Object>() {{
+            put("ENT", 1);
+            put("EJE", "E1");
+            put("CGECOD", "C1");
+            put("GBSREF", "REF1");
+            put("GBSOPE", "OPE1");
+            put("GBSORG", "ORG1");
+            put("GBSFUN", "FUN1");
+            put("GBSECO", "ECO1");
+        }}
+    );
+
+    mockMvc.perform(post("/api/gbs/add-Bolsa")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(payload)))
+        .andDo(print())
+        .andExpect(status().isCreated())
+        .andExpect(jsonPath("$.savedBolsas", hasSize(1)))
+        .andExpect(jsonPath("$.savedBolsas[0]").value("REF1"))
+        .andExpect(jsonPath("$.unSavedBolsas", hasSize(0)));
+
+    verify(gbsRepository).saveAll(argThat(list -> ((List<?>) list).size() == 1));
+}
+
+@Test
+void addBolsa_skipsExistingByRef() throws Exception {
+    Gbs existing = new Gbs();
+    existing.setGBSREF("REF1");
+    when(gbsRepository.findByENTAndEJEAndCGECODAndGBSREFAndGBSORGAndGBSFUNAndGBSECO(
+            1, "E1", "C1", "REF1", "ORG1", "FUN1", "ECO1"))
+        .thenReturn(Optional.of(existing));
+
+    List<Map<String, Object>> payload = List.of(
+        new HashMap<String, Object>() {{
+            put("ENT", 1);
+            put("EJE", "E1");
+            put("CGECOD", "C1");
+            put("GBSREF", "REF1");
+            put("GBSOPE", "OPE1");
+            put("GBSORG", "ORG1");
+            put("GBSFUN", "FUN1");
+            put("GBSECO", "ECO1");
+        }}
+    );
+
+    mockMvc.perform(post("/api/gbs/add-Bolsa")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(payload)))
+        .andDo(print())
+        .andExpect(status().isCreated())
+        .andExpect(jsonPath("$.savedBolsas", hasSize(0)))
+        .andExpect(jsonPath("$.unSavedBolsas", hasSize(1)))
+        .andExpect(jsonPath("$.unSavedBolsas[0]").value("REF1"));
+
+    verify(gbsRepository).saveAll(argThat(list -> ((List<?>) list).isEmpty()));
+}
+
+@Test
+void addBolsa_returnsBadRequestOnDataAccessException() throws Exception {
+    when(gbsRepository.findByENTAndEJEAndCGECODAndGBSREFAndGBSORGAndGBSFUNAndGBSECO(
+            anyInt(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString()))
+        .thenThrow(new DataAccessResourceFailureException("DB error"));
+
+    List<Map<String, Object>> payload = List.of(
+        new HashMap<String, Object>() {{
+            put("ENT", 1);
+            put("EJE", "E1");
+            put("CGECOD", "C1");
+            put("GBSREF", "REF1");
+            put("GBSOPE", "OPE1");
+            put("GBSORG", "ORG1");
+            put("GBSFUN", "FUN1");
+            put("GBSECO", "ECO1");
+        }}
+    );
+
+    mockMvc.perform(post("/api/gbs/add-Bolsa")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(payload)))
+        .andDo(print())
+        .andExpect(status().isBadRequest())
+        .andExpect(content().string(containsString("Error :")));
+}
 }

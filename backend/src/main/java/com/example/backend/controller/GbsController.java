@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.backend.dto.GbsWithCgeDto;
 import com.example.backend.dto.bolsaSaveDto;
-import com.example.backend.service.FacturaInsertService.FacturaInfo;
 import com.example.backend.sqlserver2.model.Cge;
 import com.example.backend.sqlserver2.model.CgeId;
 import com.example.backend.sqlserver2.model.Gbs;
