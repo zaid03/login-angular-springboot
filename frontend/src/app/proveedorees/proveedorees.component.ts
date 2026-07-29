@@ -1171,13 +1171,20 @@ export class ProveedoreesComponent {
     this.limpiarMessages();
     const terayt = this.selectedProveedor.terayt;
     if (terayt === null || terayt === '') {
-      this.updateProveedorMessage = 'Codigo Contable extraviado';
+      this.messageError = 'Falta código de contabilidad';
+      this.closeUpdateProvedor();
       return;
     }
     
     this.isUpdatingProveedor = true;
     this.http.get(`${environment.backendUrl}/api/sical/terceros?codigo=${terayt}`).subscribe({
       next: (res) => {
+        if (res = []) {
+          this.messageError = 'No se encuentra el código en Sicalwin';
+          this.closeUpdateProvedor();
+          this.isUpdatingProveedor = false;
+          return;
+        }
         this.proveedorInfo = res;
         this.actualizarProveedor();
         this.isUpdatingProveedor = false;
