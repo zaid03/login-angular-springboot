@@ -808,8 +808,8 @@
                 (click)="openUpdateSure(d)"
                 class="pointer"
             >
-                <td>{{d.lineaList[0].referencia}}</td>
                 <td>{{d.numope}}</td>
+                <td>{{d.lineaList[0].referencia}}</td>
                 <td>{{d.oficina}}</td>
                 <td>{{d.fecope}}</td>
                 <td>{{d.lineaList[0].linorg}}</td>
@@ -829,12 +829,12 @@
 </div>
 
 <div class="modal-backdrop force" *ngIf="updateSure"></div>
-<div class="delete-confirm-modal adj" *ngIf="updateSure">
+<div class="delete-confirm-modal adj update-D" *ngIf="updateSure">
+    <p class="p-style">{{dMessageConfirm}}</p>
     <div *ngIf="isAddingD" class="loading-message">
         <div class="spinner"></div>
         <span>añadiendo</span>
     </div>
-    <p class="p-style">{{dMessageConfirm}}</p>
     <button class="purple-btn btn-space" (click)="updateDContrato(toUpdate)">Sí</button>
     <button class="red-btn" (click)="closeUpdateSure()">No</button>
 </div>

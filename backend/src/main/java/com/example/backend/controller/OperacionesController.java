@@ -27,6 +27,8 @@ public class OperacionesController {
 
     @GetMapping("/operaciones")
     public ResponseEntity<?> getOperaciones(
+        @RequestParam(name = "orgCode")String orgCode,
+        @RequestParam(name = "entidad") String entidad,
         @RequestParam(name = "numeroOperDesde", required = false) String numeroOperDesde,
         @RequestParam(name = "numeroOperHasta", required = false) String numeroOperHasta,
         @RequestParam(name = "codigoOperacion", required = false) String codigoOperacion,
@@ -35,9 +37,13 @@ public class OperacionesController {
         @RequestParam(name = "economica", required = false) String economica,
         @RequestParam(name = "expediente", required = false) String expediente,
         @RequestParam(name = "grupoApunte", required = false) String grupoApunte,
-        @RequestParam(name = "oficina", required = false) String oficina) {
+        @RequestParam(name = "oficina", required = false) String oficina,
+        @RequestParam(name = "eje") String eje
+    ) {
         try {
             List<Operaciones> operaciones = operacionesService.getOperaciones(
+                    orgCode,
+                    entidad,
                     numeroOperDesde,
                     numeroOperHasta,
                     codigoOperacion,
@@ -46,7 +52,8 @@ public class OperacionesController {
                     economica,
                     expediente,
                     grupoApunte,
-                    oficina);
+                    oficina,
+                    eje);
             return ResponseEntity.ok(operaciones);
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("error", ex.getMessage()));

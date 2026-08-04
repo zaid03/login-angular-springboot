@@ -40,16 +40,19 @@ class OperacionesControllerTest {
 
         when(operacionesService.getOperaciones(
                 any(), any(), any(), any(), any(),
-                any(), any(), any(), any()))
+                any(), any(), any(), any(), any(), any(), any()))
                 .thenReturn(List.of(o));
 
         mockMvc.perform(get("/api/sical/operaciones")
+                        .param("orgCode", "0000000000")
+                        .param("entidad", "0000000001")
+                        .param("eje", "2026")
                         .param("numeroOperDesde", "1")
                         .param("numeroOperHasta", "2")
                         .param("codigoOperacion", "cod")
-                        .param("clorg", "org")
-                        .param("clfun", "fun")
-                        .param("cleco", "eco")
+                        .param("organica", "org")
+                        .param("funcional", "fun")
+                        .param("economica", "eco")
                         .param("expediente", "exp")
                         .param("grupoApunte", "grp")
                         .param("oficina", "ofi")
@@ -60,7 +63,7 @@ class OperacionesControllerTest {
 
         verify(operacionesService).getOperaciones(
                 any(), any(), any(), any(), any(),
-                any(), any(), any(), any());
+                any(), any(), any(), any(), any(), any(), any());
     }
 
     @Test
@@ -68,10 +71,13 @@ class OperacionesControllerTest {
 
         when(operacionesService.getOperaciones(
                 any(), any(), any(), any(), any(),
-                any(), any(), any(), any()))
+                any(), any(), any(), any(), any(), any(), any()))
                 .thenReturn(Collections.emptyList());
 
         mockMvc.perform(get("/api/sical/operaciones")
+                        .param("orgCode", "0000000000")
+                        .param("entidad", "0000000001")
+                        .param("eje", "2026")
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -79,7 +85,7 @@ class OperacionesControllerTest {
 
         verify(operacionesService).getOperaciones(
                 any(), any(), any(), any(), any(),
-                any(), any(), any(), any());
+                any(), any(), any(), any(), any(), any(), any());
     }
 
     @Test
@@ -87,10 +93,13 @@ class OperacionesControllerTest {
 
         when(operacionesService.getOperaciones(
                 any(), any(), any(), any(), any(),
-                any(), any(), any(), any()))
+                any(), any(), any(), any(), any(), any(), any()))
                 .thenThrow(new RuntimeException("sical fail"));
 
         mockMvc.perform(get("/api/sical/operaciones")
+                        .param("orgCode", "0000000000")
+                        .param("entidad", "0000000001")
+                        .param("eje", "2026")
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isInternalServerError())
@@ -98,7 +107,7 @@ class OperacionesControllerTest {
 
         verify(operacionesService).getOperaciones(
                 any(), any(), any(), any(), any(),
-                any(), any(), any(), any());
+                any(), any(), any(), any(), any(), any(), any());
     }
 
     @Test
@@ -106,10 +115,13 @@ class OperacionesControllerTest {
 
         when(operacionesService.getOperaciones(
                 any(), any(), any(), any(), any(),
-                any(), any(), any(), any()))
+                any(), any(), any(), any(), any(), any(), any()))
                 .thenThrow(new Exception("boom"));
 
-        mockMvc.perform(get("/api/sical/operaciones"))
+        mockMvc.perform(get("/api/sical/operaciones")
+                        .param("orgCode", "0000000000")
+                        .param("entidad", "0000000001")
+                        .param("eje", "2026"))
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.error").value("boom"));
     }

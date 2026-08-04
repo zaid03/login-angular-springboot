@@ -41,16 +41,9 @@ public class OperacionesService {
     @Value("${sical.public.key}")
     private String publicKey;
 
-    @Value("${sical.org.code}")
-    private String orgCode;
-
-    @Value("${sical.entidad}")
-    private String entidad;
-
-    @Value("${sical.eje}")
-    private String eje;
-
     public List<Operaciones> getOperaciones(
+        String orgCode,
+        String entidad,
         String numeroOperDesde,
         String numeroOperHasta,
         String codigoOperacion,
@@ -59,7 +52,11 @@ public class OperacionesService {
         String economica,
         String expediente,
         String grupoApunte,
-        String oficina) throws Exception {
+        String oficina,
+        String eje ) throws Exception {
+            if (eje == null || eje.isBlank()) {
+                throw new IllegalArgumentException("eje is required");
+            }
 
         CryptoSical.SecurityFields sec = CryptoSical.calculateSecurityFields(publicKey);
         String fecha = sec.created;
@@ -119,7 +116,9 @@ public class OperacionesService {
 
         RestTemplate restTemplate = new RestTemplate();
         String endpoint = (wsUrl != null && wsUrl.contains("?")) ? wsUrl.substring(0, wsUrl.indexOf("?")) : wsUrl;
-        String responseXml = restTemplate.postForObject(endpoint, new HttpEntity<>(soapEnvelope, headers), String.class);
+        System.out.println("REQUEST XML: " + soapEnvelope);
+String responseXml = restTemplate.postForObject(endpoint, new HttpEntity<>(soapEnvelope, headers), String.class);
+System.out.println("RESPONSE XML: " + responseXml);
 
         return parseOperaciones(responseXml);
     }
@@ -150,17 +149,6 @@ public class OperacionesService {
             factory.setNamespaceAware(false);
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document doc = builder.parse(new ByteArrayInputStream(sml.getBytes(StandardCharsets.UTF_8)));
-
-            NodeList exitoNodes = findElementsByName(doc, "exito");
-            if (exitoNodes.getLength() > 0) {
-                String exito = exitoNodes.item(0).getTextContent();
-                if (!"-1".equals(exito) && !"1".equals(exito)) {
-                    String desc = "";
-                    NodeList descNodes = findElementsByName(doc, "desc");
-                    if (descNodes.getLength() > 0) desc = descNodes.item(0).getTextContent();
-                    throw new Exception("SICAL error: " + desc);
-                }
-            }
 
             NodeList operNodes = findElementsByName(doc, "operacion");
             for (int i = 0; i < operNodes.getLength(); i++) {
@@ -209,6 +197,20 @@ public class OperacionesService {
                 op.setIvaList(parseIvaList(opEl));
                 op.setRelacionList(parseRelacionList(opEl));
                 op.setLineaList(parseLineaList(opEl));
+
+                // SICAL doesn't always return <numope> as its own tag on the <operacion>
+                // element (seen with ConOpeGastos filtered list queries) — but the first
+                // delimited field of each <linea> record is the numope, so fall back to that.
+                if (op.getNumope() == null) {
+                    NodeList lineaNodes = findElementsByName(opEl, "linea");
+                    if (lineaNodes.getLength() > 0) {
+                        String raw = lineaNodes.item(0).getTextContent();
+                        if (raw != null && !raw.isBlank()) {
+                            String[] p = raw.split(java.util.regex.Pattern.quote(SICAL_DELIM), -1);
+                            op.setNumope(toLong(get(p, 0)));
+                        }
+                    }
+                }
 
                 result.add(op);
             }

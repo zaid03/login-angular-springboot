@@ -39,6 +39,8 @@ export class ContratosComponent {
   //global variables
   entcod: string | null = null;
   eje: number | null = null;
+  orgCode: string | null = null;
+  entidad: string | null = null;
   isLoading: boolean = false;
   contratos: any[] = [];
   backupContratos: any[] = [];
@@ -52,9 +54,13 @@ export class ContratosComponent {
     this.limpiarMessages();
     const ent = sessionStorage.getItem('Entidad');
     const session = sessionStorage.getItem('EJERCICIO');
-
+    const orgnizacion = sessionStorage.getItem('WSORG');
+    const entcod = sessionStorage.getItem('WSENT');
+   
     if (ent) { const parsed = JSON.parse(ent); this.entcod = parsed.ENTCOD;}
     if (session) { const parsed = JSON.parse(session); this.eje = parsed.eje;}
+    if (orgnizacion) {const parsed = JSON.parse(orgnizacion); this.orgCode = parsed.WSORG;}
+    if (entcod) {const parsed = JSON.parse(entcod); this.entidad = parsed.WSENT};
 
     if (this.entcod == null || !this.eje) {
       alert('Missing session data. reiniciar el flujo.');
@@ -1128,13 +1134,16 @@ export class ContratosComponent {
     const oficina = 'AL';
     this.isLoadingD = true;
 
-    this.http.get<any>(`${environment.backendUrl}/api/sical/operaciones?codigoOperacion=${codigoOperacion}&organica=${this.organica}&funcional=${this.programa}&economica=${this.economica}&oficina=${oficina}`).subscribe({
+    this.http.get<any>(`${environment.backendUrl}/api/sical/operaciones?orgCode=${this.orgCode}&entidad=${this.entidad}&codigoOperacion=${codigoOperacion}&organica=${this.organica}&funcional=${this.programa}&economica=${this.economica}&oficina=${oficina}&eje=${this.eje}`).subscribe({
       next: (res) => {
         this.isLoadingD = false;
-        this.listaDeD = res;
-        if (res.lineaList[0] = []) {
+        if (!Array.isArray(res) || res.length === 0) {
+          this.listaDeD = [];
           this.DErrorMessage = 'No hay operaciones D para los datos requeridos';
+          return;
         }
+
+        this.listaDeD = res;
       },
       error: (err) => {
         this.isLoadingD = false;
