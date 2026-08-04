@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 import com.example.backend.service.SicalService;
 
@@ -33,40 +34,51 @@ public class SicalControllerTest {
     private SicalService sicalService;
 
     @Test
-    void getTerceros_noParams_returnsEmptyList() throws Exception {
-        when(sicalService.getTerceros(null, null, null)).thenReturn(List.of());
+    void getTerceros_onlyRequiredParams_returnsEmptyList() throws Exception {
+        when(sicalService.getTerceros(null, null, null, "ORG1", "ENT1", "2024"))
+            .thenReturn(List.of());
 
         mockMvc.perform(get("/api/sical/terceros")
+                .param("orgCode", "ORG1")
+                .param("entidad", "ENT1")
+                .param("eje", "2024")
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$", hasSize(0)));
 
-        verify(sicalService).getTerceros(null, null, null);
+        verify(sicalService).getTerceros(null, null, null, "ORG1", "ENT1", "2024");
     }
 
     @Test
-    void getTerceros_withParams_forwardsToService_andReturnsList() throws Exception {
+    void getTerceros_allParams_forwardsToService_andReturnsList() throws Exception {
         @SuppressWarnings("unchecked")
         List<Object> dummy = (List<Object>)(List<?>) List.of(Map.of("nif", "111X", "nombre", "Alice", "codigo", "123"));
-        when(sicalService.getTerceros("111X", "Alice", "123"))
+        when(sicalService.getTerceros("111X", "Alice", "123", "ORG1", "ENT1", "2024"))
             .thenReturn((List) dummy);
 
         mockMvc.perform(get("/api/sical/terceros")
                 .param("nif", "111X")
                 .param("nom", "Alice")
                 .param("codigo", "123")
+                .param("orgCode", "ORG1")
+                .param("entidad", "ENT1")
+                .param("eje", "2024")
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk());
 
-        verify(sicalService).getTerceros("111X", "Alice", "123");
+        verify(sicalService).getTerceros("111X", "Alice", "123", "ORG1", "ENT1", "2024");
     }
 
     @Test
     void getTerceros_serviceThrows_returns500() throws Exception {
-        when(sicalService.getTerceros(any(), any(), any())).thenThrow(new RuntimeException("SICAL down"));
+        when(sicalService.getTerceros(any(), any(), any(), any(), any(), any()))
+            .thenThrow(new RuntimeException("SICAL down"));
 
         mockMvc.perform(get("/api/sical/terceros")
+                .param("orgCode", "ORG1")
+                .param("entidad", "ENT1")
+                .param("eje", "2024")
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isInternalServerError())
             .andExpect(content().string(containsString("Error:")));

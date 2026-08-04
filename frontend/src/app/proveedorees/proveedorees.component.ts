@@ -20,6 +20,9 @@ import { saveAs } from 'file-saver';
 })
 export class ProveedoreesComponent {
   private entcod: number | null = null;
+  eje: number | null = null;
+  orgCode: string | null = null;
+  entidad: string | null = null;
 
   showMenu = false;
   toggleMenu(event: MouseEvent): void {
@@ -42,13 +45,16 @@ export class ProveedoreesComponent {
     this.limpiarMessages();
     this.error = '';
     const entidad = sessionStorage.getItem('Entidad');
+    const session = sessionStorage.getItem('EJERCICIO');
+    const orgnizacion = sessionStorage.getItem('WSORG');
+    const entcod = sessionStorage.getItem('WSENT');
 
-    if (entidad) {
-      const parsed = JSON.parse(entidad);
-      this.entcod = parsed.ENTCOD || parsed.entcod;
-    }
+    if (entidad) {const parsed = JSON.parse(entidad); this.entcod = parsed.ENTCOD;}
+    if (session) { const parsed = JSON.parse(session); this.eje = parsed.eje;}
+    if (orgnizacion) {const parsed = JSON.parse(orgnizacion); this.orgCode = parsed.WSORG;}
+    if (entcod) {const parsed = JSON.parse(entcod); this.entidad = parsed.WSENT};
 
-    if (!entidad || this.entcod === null) {
+    if (!entidad || this.entcod === null || this.eje == null || this.orgCode === '' || this.entidad === '') {
       sessionStorage.clear();
       alert('Debes iniciar sesión para acceder a esta página.');
       this.router.navigate(['/login']);
@@ -971,6 +977,9 @@ export class ProveedoreesComponent {
     if (nif) params.push(`nif=${encodeURIComponent(nif)}`);
     if (nom) params.push(`nom=${encodeURIComponent(nom)}`);
     if (codigo) params.push(`codigo=${encodeURIComponent(codigo)}`);
+    params.push(`orgCode=${this.orgCode}`);
+    params.push(`entidad=${this.entidad}`);
+    params.push(`eje=${this.eje}`);
     apiUrl += params.join('&');
 
     this.http.get<any[]>(apiUrl).subscribe({

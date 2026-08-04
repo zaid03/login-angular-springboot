@@ -16,12 +16,15 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.fail;
 
 @ExtendWith(MockitoExtension.class)
 public class SicalServiceTest {
 
     private SicalService service;
+
+    private static final String ORG_CODE = "ORG001";
+    private static final String ENTIDAD = "1";
+    private static final String EJE = "2024";
 
     @BeforeEach
     void setUp() {
@@ -30,9 +33,6 @@ public class SicalServiceTest {
         ReflectionTestUtils.setField(service, "username", "testuser");
         ReflectionTestUtils.setField(service, "password", "testpass");
         ReflectionTestUtils.setField(service, "publicKey", "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA...");
-        ReflectionTestUtils.setField(service, "orgCode", "ORG001");
-        ReflectionTestUtils.setField(service, "entidad", "1");
-        ReflectionTestUtils.setField(service, "eje", "E1");
     }
 
     @Test
@@ -41,25 +41,16 @@ public class SicalServiceTest {
         String username = (String) ReflectionTestUtils.getField(service, "username");
         String password = (String) ReflectionTestUtils.getField(service, "password");
         String publicKey = (String) ReflectionTestUtils.getField(service, "publicKey");
-        String orgCode = (String) ReflectionTestUtils.getField(service, "orgCode");
-        String entidad = (String) ReflectionTestUtils.getField(service, "entidad");
-        String eje = (String) ReflectionTestUtils.getField(service, "eje");
 
         assertNotNull(wsUrl);
         assertNotNull(username);
         assertNotNull(password);
         assertNotNull(publicKey);
-        assertNotNull(orgCode);
-        assertNotNull(entidad);
-        assertNotNull(eje);
 
         assertEquals("http://test-sical-ws:8080/services/Ci?wsdl", wsUrl);
         assertEquals("testuser", username);
         assertEquals("testpass", password);
         assertTrue(publicKey.startsWith("-----BEGIN PUBLIC KEY-----"));
-        assertEquals("ORG001", orgCode);
-        assertEquals("1", entidad);
-        assertEquals("E1", eje);
     }
 
     @Test
@@ -83,7 +74,7 @@ public class SicalServiceTest {
     @Test
     void getTerceros_acceptsNifParameter() throws Exception {
         try {
-            service.getTerceros("12345678A", null, null);
+            service.getTerceros("12345678A", null, null, ORG_CODE, ENTIDAD, EJE);
         } catch (Exception e) {
             assertNotNull(e);
         }
@@ -92,34 +83,34 @@ public class SicalServiceTest {
     @Test
     void getTerceros_acceptsNombreParameter() throws Exception {
         try {
-            service.getTerceros(null, "Juan", null);
+            service.getTerceros(null, "Juan", null, ORG_CODE, ENTIDAD, EJE);
         } catch (Exception e) {
             assertNotNull(e);
         }
     }
 
     @Test
-    void getTerceros_acceptsApellidoParameter() throws Exception {
+    void getTerceros_acceptsCodigoParameter() throws Exception {
         try {
-            service.getTerceros(null, null, "García");
+            service.getTerceros(null, null, "García", ORG_CODE, ENTIDAD, EJE);
         } catch (Exception e) {
             assertNotNull(e);
         }
     }
 
     @Test
-    void getTerceros_acceptsAllParameters() throws Exception {
+    void getTerceros_acceptsAllSearchParameters() throws Exception {
         try {
-            service.getTerceros("12345678A", "Juan", "García");
+            service.getTerceros("12345678A", "Juan", "García", ORG_CODE, ENTIDAD, EJE);
         } catch (Exception e) {
             assertNotNull(e);
         }
     }
 
     @Test
-    void getTerceros_acceptsNullParameters() throws Exception {
+    void getTerceros_acceptsNullSearchParameters() throws Exception {
         try {
-            service.getTerceros(null, null, null);
+            service.getTerceros(null, null, null, ORG_CODE, ENTIDAD, EJE);
         } catch (Exception e) {
             assertNotNull(e);
         }
@@ -127,14 +118,15 @@ public class SicalServiceTest {
 
     @Test
     void getTerceros_withNullXmlResponse_throwsXmlParsingException() {
-        assertThrows(XmlParsingException.class, () -> service.getTerceros(null, null, null));
+        assertThrows(XmlParsingException.class,
+            () -> service.getTerceros(null, null, null, ORG_CODE, ENTIDAD, EJE));
     }
 
     @Test
     void service_buildsCorrectSoapRequestStructure() {
         assertDoesNotThrow(() -> {
             try {
-                service.getTerceros("TEST", null, null);
+                service.getTerceros("TEST", null, null, ORG_CODE, ENTIDAD, EJE);
             } catch (XmlParsingException e) {
             }
         });
@@ -145,7 +137,7 @@ public class SicalServiceTest {
         String[] docTypes = {"NIF", "NIE", "CIF", "PASAPORTE"};
         for (String docType : docTypes) {
             try {
-                service.getTerceros(docType + "123456", null, null);
+                service.getTerceros(docType + "123456", null, null, ORG_CODE, ENTIDAD, EJE);
             } catch (XmlParsingException e) {
                 assertNotNull(e);
             }
@@ -155,7 +147,7 @@ public class SicalServiceTest {
     @Test
     void service_handlesTerceroWithoutApellido() throws Exception {
         try {
-            service.getTerceros(null, "SoleNameNoApellido", null);
+            service.getTerceros(null, "SoleNameNoApellido", null, ORG_CODE, ENTIDAD, EJE);
         } catch (XmlParsingException e) {
             assertNotNull(e);
         }
@@ -164,7 +156,7 @@ public class SicalServiceTest {
     @Test
     void service_handlesTerceroWithSpecialCharacters() throws Exception {
         try {
-            service.getTerceros("12345678X", "José María", "García-López");
+            service.getTerceros("12345678X", "José María", "García-López", ORG_CODE, ENTIDAD, EJE);
         } catch (XmlParsingException e) {
             assertNotNull(e);
         }
@@ -174,7 +166,7 @@ public class SicalServiceTest {
     void service_usesBase64Encoding() {
         assertDoesNotThrow(() -> {
             try {
-                service.getTerceros("encoded", null, null);
+                service.getTerceros("encoded", null, null, ORG_CODE, ENTIDAD, EJE);
             } catch (XmlParsingException e) {
             }
         });
@@ -184,7 +176,7 @@ public class SicalServiceTest {
     void service_buildsSoapEnvelopeCorrectly() {
         assertDoesNotThrow(() -> {
             try {
-                service.getTerceros(null, null, null);
+                service.getTerceros(null, null, null, ORG_CODE, ENTIDAD, EJE);
             } catch (XmlParsingException e) {
                 assertTrue(e.getMessage().contains("Error") || e.getCause() != null);
             }
@@ -194,7 +186,7 @@ public class SicalServiceTest {
     @Test
     void getTerceros_returnsListType() {
         try {
-            service.getTerceros("test", null, null);
+            service.getTerceros("test", null, null, ORG_CODE, ENTIDAD, EJE);
         } catch (XmlParsingException e) {
             assertNotNull(e);
         }
@@ -204,7 +196,7 @@ public class SicalServiceTest {
     void service_includesSecurityHeaders() {
         assertDoesNotThrow(() -> {
             try {
-                service.getTerceros(null, null, null);
+                service.getTerceros(null, null, null, ORG_CODE, ENTIDAD, EJE);
             } catch (XmlParsingException e) {
                 assertNotNull(e);
             }
@@ -214,7 +206,7 @@ public class SicalServiceTest {
     @Test
     void service_handlesXmlEncodedContent() throws Exception {
         try {
-            service.getTerceros("&lt;encoded&gt;", null, null);
+            service.getTerceros("&lt;encoded&gt;", null, null, ORG_CODE, ENTIDAD, EJE);
         } catch (XmlParsingException e) {
             assertNotNull(e);
         }
@@ -223,7 +215,7 @@ public class SicalServiceTest {
     @Test
     void service_handlesApostropheEncoding() throws Exception {
         try {
-            service.getTerceros("O&apos;Brien", null, null);
+            service.getTerceros("O&apos;Brien", null, null, ORG_CODE, ENTIDAD, EJE);
         } catch (XmlParsingException e) {
             assertNotNull(e);
         }
@@ -232,7 +224,7 @@ public class SicalServiceTest {
     @Test
     void service_handlesQuoteEncoding() throws Exception {
         try {
-            service.getTerceros("Name&quot;with&quot;quotes", null, null);
+            service.getTerceros("Name&quot;with&quot;quotes", null, null, ORG_CODE, ENTIDAD, EJE);
         } catch (XmlParsingException e) {
             assertNotNull(e);
         }
@@ -241,7 +233,7 @@ public class SicalServiceTest {
     @Test
     void getTerceros_withOnlyNif_isValid() throws Exception {
         try {
-            service.getTerceros("12345678A", null, null);
+            service.getTerceros("12345678A", null, null, ORG_CODE, ENTIDAD, EJE);
         } catch (XmlParsingException e) {
             assertNotNull(e);
         }
@@ -250,16 +242,16 @@ public class SicalServiceTest {
     @Test
     void getTerceros_withOnlyNombre_isValid() throws Exception {
         try {
-            service.getTerceros(null, "Juan", null);
+            service.getTerceros(null, "Juan", null, ORG_CODE, ENTIDAD, EJE);
         } catch (XmlParsingException e) {
             assertNotNull(e);
         }
     }
 
     @Test
-    void getTerceros_withOnlyApellido_isValid() throws Exception {
+    void getTerceros_withOnlyCodigo_isValid() throws Exception {
         try {
-            service.getTerceros(null, null, "García");
+            service.getTerceros(null, null, "García", ORG_CODE, ENTIDAD, EJE);
         } catch (XmlParsingException e) {
             assertNotNull(e);
         }
@@ -268,25 +260,34 @@ public class SicalServiceTest {
     @Test
     void getTerceros_withNifAndNombre_isValid() throws Exception {
         try {
-            service.getTerceros("12345678A", "Juan", null);
+            service.getTerceros("12345678A", "Juan", null, ORG_CODE, ENTIDAD, EJE);
         } catch (XmlParsingException e) {
             assertNotNull(e);
         }
     }
 
     @Test
-    void getTerceros_withNifAndApellido_isValid() throws Exception {
+    void getTerceros_withNifAndCodigo_isValid() throws Exception {
         try {
-            service.getTerceros("12345678A", null, "García");
+            service.getTerceros("12345678A", null, "García", ORG_CODE, ENTIDAD, EJE);
         } catch (XmlParsingException e) {
             assertNotNull(e);
         }
     }
 
     @Test
-    void getTerceros_withNombreAndApellido_isValid() throws Exception {
+    void getTerceros_withNombreAndCodigo_isValid() throws Exception {
         try {
-            service.getTerceros(null, "Juan", "García");
+            service.getTerceros(null, "Juan", "García", ORG_CODE, ENTIDAD, EJE);
+        } catch (XmlParsingException e) {
+            assertNotNull(e);
+        }
+    }
+
+    @Test
+    void getTerceros_withDifferentOrgEntidadEje_isValid() throws Exception {
+        try {
+            service.getTerceros("12345678A", null, null, "ORG2", "2", "2023");
         } catch (XmlParsingException e) {
             assertNotNull(e);
         }
@@ -297,7 +298,6 @@ public class SicalServiceTest {
         assertNotNull(service);
         assertNotNull(ReflectionTestUtils.getField(service, "wsUrl"));
         assertNotNull(ReflectionTestUtils.getField(service, "username"));
-        assertNotNull(ReflectionTestUtils.getField(service, "orgCode"));
     }
 
     @Test
@@ -523,7 +523,7 @@ public class SicalServiceTest {
         t.setApellTercero("Existing");
         t.setApellido1("First");
         t.setApellido2("Second");
-        
+
         invokDeriveMissingApellido(t);
         assertEquals("Existing", t.getApellTercero());
     }
@@ -533,7 +533,7 @@ public class SicalServiceTest {
         Tercero t = new Tercero();
         t.setApellido1("García");
         t.setApellido2("López");
-        
+
         invokDeriveMissingApellido(t);
         assertEquals("García López", t.getApellTercero());
     }
@@ -542,7 +542,7 @@ public class SicalServiceTest {
     void deriveMissingApellido_usesOnlyApellido1() throws Exception {
         Tercero t = new Tercero();
         t.setApellido1("García");
-        
+
         invokDeriveMissingApellido(t);
         assertEquals("García", t.getApellTercero());
     }
@@ -551,7 +551,7 @@ public class SicalServiceTest {
     void deriveMissingApellido_usesOnlyApellido2() throws Exception {
         Tercero t = new Tercero();
         t.setApellido2("López");
-        
+
         invokDeriveMissingApellido(t);
         assertEquals("López", t.getApellTercero());
     }
@@ -560,7 +560,7 @@ public class SicalServiceTest {
     void deriveMissingApellido_parsesNombreCompletoWhenNoApellidos() throws Exception {
         Tercero t = new Tercero();
         t.setNombreCompleto("John García López");
-        
+
         invokDeriveMissingApellido(t);
         assertEquals("López", t.getApellTercero());
         assertEquals("John García", t.getNomTercero());
@@ -578,7 +578,7 @@ public class SicalServiceTest {
         Tercero t = new Tercero();
         t.setApellTercero("");
         t.setApellido1("García");
-        
+
         invokDeriveMissingApellido(t);
         assertEquals("García", t.getApellTercero());
     }
@@ -587,7 +587,7 @@ public class SicalServiceTest {
     void parseNombreCompleto_parsesMultiwordName() throws Exception {
         Tercero t = new Tercero();
         t.setNombreCompleto("Juan María García López");
-        
+
         invokeParseNombreCompleto(t);
         assertEquals("Juan María García", t.getNomTercero());
         assertEquals("López", t.getApellTercero());
@@ -597,7 +597,7 @@ public class SicalServiceTest {
     void parseNombreCompleto_handlesTwoWordName() throws Exception {
         Tercero t = new Tercero();
         t.setNombreCompleto("Juan García");
-        
+
         invokeParseNombreCompleto(t);
         assertEquals("Juan", t.getNomTercero());
         assertEquals("García", t.getApellTercero());
@@ -607,7 +607,7 @@ public class SicalServiceTest {
     void parseNombreCompleto_handlesSingleWord() throws Exception {
         Tercero t = new Tercero();
         t.setNombreCompleto("Juan");
-        
+
         invokeParseNombreCompleto(t);
         assertEquals("Juan", t.getNomTercero());
         assertNull(t.getApellTercero());
@@ -617,7 +617,7 @@ public class SicalServiceTest {
     void parseNombreCompleto_handlesExtraSpaces() throws Exception {
         Tercero t = new Tercero();
         t.setNombreCompleto("  Juan   María   García  ");
-        
+
         invokeParseNombreCompleto(t);
         assertTrue(t.getNomTercero().contains("Juan"));
         assertTrue(t.getApellTercero().contains("García"));
@@ -627,7 +627,7 @@ public class SicalServiceTest {
     void parseNombreCompleto_handlesHyphenatedNames() throws Exception {
         Tercero t = new Tercero();
         t.setNombreCompleto("Juan María García-López");
-        
+
         invokeParseNombreCompleto(t);
         assertTrue(t.getNomTercero().contains("Juan"));
         assertEquals("García-López", t.getApellTercero());
@@ -637,7 +637,7 @@ public class SicalServiceTest {
     void parseNombreCompleto_handlesFourPartName() throws Exception {
         Tercero t = new Tercero();
         t.setNombreCompleto("José María García-López");
-        
+
         invokeParseNombreCompleto(t);
         assertTrue(t.getNomTercero().contains("José"));
         assertEquals("García-López", t.getApellTercero());
@@ -647,9 +647,9 @@ public class SicalServiceTest {
     void populateTerceroFromDetter_parsesDumberFields() throws Exception {
         String detter = "ID123-@-12345678A-@-NIF-@-ALIAS1-@-Juan-@-Main St-@-Madrid-@-28001-@-Madrid-@-123456789-@-987654321-@-EMPRESA-@-DESC2-@-DESC3-@-DESC4-@-DESC5-@-DESC6-@-DESC7-@-DESC8-@-Some obs-@-NO-@-juan@email.com-@-Juan García López-@-García-@-López";
         Tercero t = new Tercero();
-        
+
         invokePopulateTerceroFromDetter(t, detter);
-        
+
         assertEquals("ID123", t.getIdenTercero());
         assertEquals("12345678A", t.getNIFtercero());
         assertEquals("NIF", t.getTipoDocumento());
@@ -663,9 +663,9 @@ public class SicalServiceTest {
     void populateTerceroFromDetter_handlesMinimalDetter() throws Exception {
         String detter = "ID1-@--@--@--@--@--@--@--@--@--@--@--@--@--@--@--@--@--@--@--@--@--@-";
         Tercero t = new Tercero();
-        
+
         invokePopulateTerceroFromDetter(t, detter);
-        
+
         assertEquals("ID1", t.getIdenTercero());
         assertEquals("", t.getNIFtercero());
         assertEquals("", t.getAlias());
@@ -675,9 +675,9 @@ public class SicalServiceTest {
     void populateTerceroFromDetter_unescapesXmlEntities() throws Exception {
         String detter = "ID1-@-NIF&lt;1-@--@--@-Juan&apos;s-@--@--@--@--@--@--@--@--@--@--@--@--@--@--@--@--@-";
         Tercero t = new Tercero();
-        
+
         invokePopulateTerceroFromDetter(t, detter);
-        
+
         assertEquals("NIF<1", t.getNIFtercero());
         assertEquals("Juan's", t.getNomTercero());
     }
@@ -686,9 +686,9 @@ public class SicalServiceTest {
     void populateTerceroFromDetter_trimsAllParts() throws Exception {
         String detter = "  ID1  -@-  NIF123  -@-  TYPE  -@-  ALIAS  -@-  NAME  -@--@--@--@--@--@--@--@--@--@--@--@--@--@--@--@--@-";
         Tercero t = new Tercero();
-        
+
         invokePopulateTerceroFromDetter(t, detter);
-        
+
         assertEquals("ID1", t.getIdenTercero());
         assertEquals("NIF123", t.getNIFtercero());
         assertEquals("TYPE", t.getTipoDocumento());
@@ -700,9 +700,9 @@ public class SicalServiceTest {
         Document doc = parseXmlDom(xml);
         Element element = doc.getDocumentElement();
         Tercero t = new Tercero();
-        
+
         invokePopulateTerceroFromTags(t, element);
-        
+
         assertEquals("ID001", t.getIdenTercero());
         assertEquals("12345678A", t.getNIFtercero());
         assertEquals("Juan", t.getNomTercero());
@@ -715,9 +715,9 @@ public class SicalServiceTest {
         Document doc = parseXmlDom(xml);
         Element element = doc.getDocumentElement();
         Tercero t = new Tercero();
-        
+
         invokePopulateTerceroFromTags(t, element);
-        
+
         assertEquals("ID001", t.getIdenTercero());
         assertEquals("Juan", t.getNomTercero());
         assertNull(t.getNIFtercero());
@@ -745,11 +745,11 @@ public class SicalServiceTest {
         String xml = "<tercero><detter>ID1-@-NIF1-@-TYPE-@-ALIAS-@-NAME-@--@--@--@--@--@--@--@--@--@--@--@--@--@--@--@--@--@--@-OBS-@-NO-@-email@test.com-@-Full Name-@-First-@-Last</detter></tercero>";
         Document doc = parseXmlDom(xml);
         Element element = (Element) doc.getElementsByTagName("tercero").item(0);
-        
+
         Method method = SicalService.class.getDeclaredMethod("parseTerceroFromElement", Element.class);
         method.setAccessible(true);
         Tercero result = (Tercero) method.invoke(service, element);
-        
+
         assertNotNull(result);
         assertEquals("ID1", result.getIdenTercero());
         assertEquals("NIF1", result.getNIFtercero());
@@ -760,11 +760,11 @@ public class SicalServiceTest {
         String xml = "<tercero><idenTercero>ID1</idenTercero><NIFtercero>NIF1</NIFtercero><nomTercero>Juan</nomTercero><apellTercero>García</apellTercero></tercero>";
         Document doc = parseXmlDom(xml);
         Element element = (Element) doc.getElementsByTagName("tercero").item(0);
-        
+
         Method method = SicalService.class.getDeclaredMethod("parseTerceroFromElement", Element.class);
         method.setAccessible(true);
         Tercero result = (Tercero) method.invoke(service, element);
-        
+
         assertNotNull(result);
         assertEquals("Juan", result.getNomTercero());
     }
@@ -866,7 +866,7 @@ public class SicalServiceTest {
         t.setApellTercero("");
         t.setApellido1("García");
         t.setApellido2("López");
-        
+
         invokDeriveMissingApellido(t);
         assertEquals("García López", t.getApellTercero());
     }
@@ -878,7 +878,7 @@ public class SicalServiceTest {
         t.setApellido1("");
         t.setApellido2("");
         t.setNombreCompleto("John Smith");
-        
+
         invokDeriveMissingApellido(t);
         assertEquals("Smith", t.getApellTercero());
     }
@@ -890,7 +890,7 @@ public class SicalServiceTest {
         t.setApellido1("");
         t.setApellido2(null);
         t.setNombreCompleto("John Doe");
-        
+
         invokDeriveMissingApellido(t);
         assertEquals("Doe", t.getApellTercero());
     }
@@ -902,7 +902,7 @@ public class SicalServiceTest {
         t.setApellido1(null);
         t.setApellido2("");
         t.setNombreCompleto("Jane Brown");
-        
+
         invokDeriveMissingApellido(t);
         assertEquals("Brown", t.getApellTercero());
     }
@@ -914,7 +914,7 @@ public class SicalServiceTest {
         t.setApellido1(null);
         t.setApellido2(null);
         t.setNombreCompleto("");
-        
+
         invokDeriveMissingApellido(t);
         assertNull(t.getApellTercero());
     }
@@ -926,7 +926,7 @@ public class SicalServiceTest {
         t.setApellido1(null);
         t.setApellido2(null);
         t.setNombreCompleto("   ");
-        
+
         invokDeriveMissingApellido(t);
         assertNull(t.getApellTercero());
     }
@@ -935,7 +935,7 @@ public class SicalServiceTest {
     void parseNombreCompleto_withEmptyNombreCompleto() throws Exception {
         Tercero t = new Tercero();
         t.setNombreCompleto("");
-        
+
         invokeParseNombreCompleto(t);
         assertEquals("", t.getNomTercero());
     }
@@ -944,7 +944,7 @@ public class SicalServiceTest {
     void parseNombreCompleto_withNullNombreCompleto() throws Exception {
         Tercero t = new Tercero();
         t.setNombreCompleto(null);
-        
+
         assertThrows(InvocationTargetException.class, () -> invokeParseNombreCompleto(t));
     }
 
@@ -952,7 +952,7 @@ public class SicalServiceTest {
     void parseNombreCompleto_withWhitespaceOnlyNombreCompleto() throws Exception {
         Tercero t = new Tercero();
         t.setNombreCompleto("     ");
-        
+
         invokeParseNombreCompleto(t);
         assertEquals("     ", t.getNomTercero());
     }
@@ -961,7 +961,7 @@ public class SicalServiceTest {
     void parseNombreCompleto_withThreeWordName() throws Exception {
         Tercero t = new Tercero();
         t.setNombreCompleto("Juan Carlos García");
-        
+
         invokeParseNombreCompleto(t);
         assertEquals("Juan Carlos", t.getNomTercero());
         assertEquals("García", t.getApellTercero());
@@ -971,7 +971,7 @@ public class SicalServiceTest {
     void parseNombreCompleto_withHighlyMultiwordName() throws Exception {
         Tercero t = new Tercero();
         t.setNombreCompleto("José María José García López");
-        
+
         invokeParseNombreCompleto(t);
         assertEquals("José María José García", t.getNomTercero());
         assertEquals("López", t.getApellTercero());
@@ -981,7 +981,7 @@ public class SicalServiceTest {
     void parseNombreCompleto_preservesLeadingAndTrailingSpaces() throws Exception {
         Tercero t = new Tercero();
         t.setNombreCompleto("  Juan  García  ");
-        
+
         invokeParseNombreCompleto(t);
         assertEquals("Juan", t.getNomTercero());
         assertEquals("García", t.getApellTercero());
@@ -1009,7 +1009,7 @@ public class SicalServiceTest {
         t.setApellTercero(null);
         t.setApellido1("Martínez");
         t.setApellido2(null);
-        
+
         invokDeriveMissingApellido(t);
         assertEquals("Martínez", t.getApellTercero());
     }
@@ -1020,7 +1020,7 @@ public class SicalServiceTest {
         t.setApellTercero(null);
         t.setApellido1("  García");
         t.setApellido2("López  ");
-        
+
         invokDeriveMissingApellido(t);
         assertTrue(t.getApellTercero().contains("García"));
         assertTrue(t.getApellTercero().contains("López"));
@@ -1066,7 +1066,7 @@ public class SicalServiceTest {
     void populateTerceroFromDetter_withOnlyFirstField() throws Exception {
         String detter = "ID001-@--@--@--@--@--@--@--@--@--@--@--@--@--@--@--@--@--@--@--@--@--@-";
         Tercero t = new Tercero();
-        
+
         invokePopulateTerceroFromDetter(t, detter);
         assertEquals("ID001", t.getIdenTercero());
     }
@@ -1075,7 +1075,7 @@ public class SicalServiceTest {
     void populateTerceroFromDetter_withSpecialCharactersInVariousFields() throws Exception {
         String detter = "ID&lt;001&gt;-@-NIF&quot;123&quot;-@-&apos;TYPE&apos;-@--@-Juan&lt;Name&gt;-@--@--@--@--@--@--@--@--@--@--@--@--@--@--@--@--@--@--@-";
         Tercero t = new Tercero();
-        
+
         invokePopulateTerceroFromDetter(t, detter);
         assertEquals("ID<001>", t.getIdenTercero());
         assertEquals("NIF\"123\"", t.getNIFtercero());
@@ -1106,7 +1106,7 @@ public class SicalServiceTest {
         t.setApellido1(null);
         t.setApellido2(null);
         t.setNombreCompleto("FirstName LastName");
-        
+
         invokDeriveMissingApellido(t);
         assertNotNull(t.getApellTercero());
         assertEquals("LastName", t.getApellTercero());
@@ -1116,7 +1116,7 @@ public class SicalServiceTest {
     void parseNombreCompleto_singleWordReturnsOnlyNomTercero() throws Exception {
         Tercero t = new Tercero();
         t.setNombreCompleto("SingleName");
-        
+
         invokeParseNombreCompleto(t);
         assertEquals("SingleName", t.getNomTercero());
         assertNull(t.getApellTercero());

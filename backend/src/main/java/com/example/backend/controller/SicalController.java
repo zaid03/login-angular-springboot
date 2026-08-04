@@ -28,10 +28,13 @@ public class SicalController {
     public ResponseEntity<?> getTerceros(
             @RequestParam(required = false) String nif,
             @RequestParam(required = false) String nom,
-            @RequestParam(required = false) String codigo
+            @RequestParam(required = false) String codigo,
+            @RequestParam String orgCode, 
+            @RequestParam String entidad, 
+            @RequestParam String eje
     ) {
         try {
-            List<Tercero> result = sicalService.getTerceros(nif, nom, codigo);
+            List<Tercero> result = sicalService.getTerceros(nif, nom, codigo, orgCode, entidad, eje);
             return ResponseEntity.ok(result);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

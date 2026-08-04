@@ -38,82 +38,73 @@ public class SicalService {
     
     @Value("${sical.public.key}")
     private String publicKey;
-    
-    @Value("${sical.org.code}")
-    private String orgCode;
 
-    @Value("${sical.entidad}")
-    private String entidad;
-
-    @Value("${sical.eje}")
-    private String eje;
-
-    public List<Tercero> getTerceros(String nif, String nom, String codigo) throws XmlParsingException {
+    public List<Tercero> getTerceros(String nif, String nom, String codigo, String orgCode, String entidad, String eje) throws XmlParsingException {
       try {
-            CryptoSical.SecurityFields sec = CryptoSical.calculateSecurityFields(publicKey);
+        CryptoSical.SecurityFields sec = CryptoSical.calculateSecurityFields(publicKey);
 
-      String fecha = sec.created;
-      String nonce = sec.nonce;
-      String token = sec.token;
-      String tokenSha1 = CryptoSical.encodeSha1Base64(sec.origin);
+        String fecha = sec.created;
+        String nonce = sec.nonce;
+        String token = sec.token;
+        String tokenSha1 = CryptoSical.encodeSha1Base64(sec.origin);
 
-      String xml =
-          "<e>" +
-            "<ope><apl>SNP</apl><tobj>TercerosyCuentas</tobj><cmd>LST</cmd><ver>2.0</ver></ope>" +
-            "<sec>" +
-              "<cli>SAGE-AYTOS</cli>" +
-              "<org>" + orgCode + "</org>" +
-              "<ent>" + entidad + "</ent>" +
-              "<eje>" + eje + "</eje>" +
-              "<usu>" + username + "</usu>" +
-              "<pwd>" + CryptoSical.encodeSha1Base64(password) + "</pwd>" +
-              "<fecha>" + fecha + "</fecha>" +
-              "<nonce>" + nonce + "</nonce>" +
-              "<token>" + token + "</token>" +
-              "<tokenSha1>" + tokenSha1 + "</tokenSha1>" +
-            "</sec>" +
-            "<par>" +
-              "<ruta></ruta>" +                                      
-              "<l_tercero>" +
-                "<tercero>" +
-                  "<portal>S</portal>" + 
-                  (nif   != null ? "<NIFtercero>"   + CryptoSical.encodeBase64(nif)   + "</NIFtercero>"   : "") +
-                  (nom   != null ? "<nomTercero>"   + CryptoSical.encodeBase64("%" + nom + "%")   + "</nomTercero>"   : "") +
-                  (codigo != null ? "<idenTercero>" + codigo + "</idenTercero>" : "") +
-                  "<indice>0</indice>" +
-                "</tercero>" +
-              "</l_tercero>" +
-            "</par>"+
-          "</e>";
+        String xml =
+            "<e>" +
+                "<ope><apl>SNP</apl><tobj>TercerosyCuentas</tobj><cmd>LST</cmd><ver>2.0</ver></ope>" +
+                "<sec>" +
+                "<cli>SAGE-AYTOS</cli>" +
+                "<org>" + orgCode + "</org>" +
+                "<ent>" + entidad + "</ent>" +
+                "<eje>" + eje + "</eje>" +
+                "<usu>" + username + "</usu>" +
+                "<pwd>" + CryptoSical.encodeSha1Base64(password) + "</pwd>" +
+                "<fecha>" + fecha + "</fecha>" +
+                "<nonce>" + nonce + "</nonce>" +
+                "<token>" + token + "</token>" +
+                "<tokenSha1>" + tokenSha1 + "</tokenSha1>" +
+                "</sec>" +
+                "<par>" +
+                "<ruta></ruta>" +                                      
+                "<l_tercero>" +
+                    "<tercero>" +
+                    "<portal>S</portal>" + 
+                    (nif   != null ? "<NIFtercero>"   + CryptoSical.encodeBase64(nif)   + "</NIFtercero>"   : "") +
+                    (nom   != null ? "<nomTercero>"   + CryptoSical.encodeBase64("%" + nom + "%")   + "</nomTercero>"   : "") +
+                    (codigo != null ? "<idenTercero>" + codigo + "</idenTercero>" : "") +
+                    "<indice>0</indice>" +
+                    "</tercero>" +
+                "</l_tercero>" +
+                "</par>"+
+            "</e>";
 
-        String soapEnvelope =
-          "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-          "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:impl=\"http://desa-sical-ws:8080/services/Ci\">" +
-            "<soapenv:Header/>" +
-            "<soapenv:Body>" +
-              "<impl:servicio>" +
-                "<impl:in0><![CDATA[" + xml + "]]></impl:in0>" +
-              "</impl:servicio>" +
-            "</soapenv:Body>" +
-          "</soapenv:Envelope>";
+            String soapEnvelope =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+            "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:impl=\"http://desa-sical-ws:8080/services/Ci\">" +
+                "<soapenv:Header/>" +
+                "<soapenv:Body>" +
+                "<impl:servicio>" +
+                    "<impl:in0><![CDATA[" + xml + "]]></impl:in0>" +
+                "</impl:servicio>" +
+                "</soapenv:Body>" +
+            "</soapenv:Envelope>";
 
-      HttpHeaders headers = new HttpHeaders();
-      headers.add(HttpHeaders.CONTENT_TYPE, "text/xml");
-      headers.add(HttpHeaders.ACCEPT, "text/xml");
-      headers.add("SOAPAction", "");
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_TYPE, "text/xml");
+        headers.add(HttpHeaders.ACCEPT, "text/xml");
+        headers.add("SOAPAction", "");
 
-      HttpEntity<String> request = new HttpEntity<>(soapEnvelope, headers);
+        HttpEntity<String> request = new HttpEntity<>(soapEnvelope, headers);
 
-      RestTemplate restTemplate = new RestTemplate();
-      String responseXml = restTemplate.postForObject(wsUrl, request, String.class);
+        RestTemplate restTemplate = new RestTemplate();
+        String responseXml = restTemplate.postForObject(wsUrl, request, String.class);
 
-      return parseTerceros(responseXml);
-      } catch (XmlParsingException ex) {
+        return parseTerceros(responseXml);
+        } catch (XmlParsingException ex) {
             throw ex;
-      } catch (Exception ex) {
+        } catch (Exception ex) {
             throw new XmlParsingException("Error retrieving terceros: " + ex.getMessage(), ex);
-      }
-  }
+        }
+    }
 
     private List<Tercero> parseTerceros(String xml) throws XmlParsingException {
         List<Tercero> result = new ArrayList<>();
