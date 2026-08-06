@@ -35,15 +35,6 @@ public class PartidasService {
     
     @Value("${sical.public.key}")
     private String publicKey;
-    
-    @Value("${sical.org.code}")
-    private String orgCode;
-
-    @Value("${sical.entidad}")
-    private String entidad;
-
-    @Value("${sical.eje}")
-    private String eje;
 
     public static class SearchCriteria {
         public final String cenges;
@@ -54,6 +45,9 @@ public class PartidasService {
         public final String clcte;
         public final String clpam;
         public final String usucenges;
+        public final String orgCode;
+        public final String entidad;
+        public final String eje;
 
         private SearchCriteria(Builder builder) {
             this.cenges = builder.cenges;
@@ -64,6 +58,9 @@ public class PartidasService {
             this.clcte = builder.clcte;
             this.clpam = builder.clpam;
             this.usucenges = builder.usucenges;
+            this.orgCode = builder.orgCode;
+            this.entidad = builder.entidad;
+            this.eje = builder.eje;
         }
 
         public static class Builder {
@@ -75,6 +72,9 @@ public class PartidasService {
             private String clcte;
             private String clpam;
             private String usucenges;
+            public String orgCode;
+            public String entidad;
+            public String eje;
 
             public Builder cenges(String cenges) {
                 this.cenges = cenges;
@@ -116,6 +116,21 @@ public class PartidasService {
                 return this;
             }
 
+            public Builder orgCode(String orgCode) {
+                this.orgCode = orgCode;
+                return this;
+            }
+
+            public Builder entidad(String entidad) {
+                this.entidad = entidad;
+                return this;
+            }
+
+            public Builder eje(String eje) {
+                this.eje = eje;
+                return this;
+            }
+
             public SearchCriteria build() {
                 return new SearchCriteria(this);
             }
@@ -135,9 +150,9 @@ public class PartidasService {
           "<ope><apl>SNP</apl><tobj>conPartidaGastos</tobj><cmd>LST</cmd><ver>2.0</ver></ope>" +
           "<sec>" +
             "<cli>SAGE-AYTOS</cli>" +
-            "<org>" + orgCode + "</org>" +
-            "<ent>" + entidad + "</ent>" +
-            "<eje>" + eje + "</eje>" +
+            "<org>" + criteria.orgCode + "</org>" +
+            "<ent>" + criteria.entidad + "</ent>" +
+            "<eje>" + criteria.eje + "</eje>" +
             "<usu>" + username + "</usu>" +
             "<pwd>" + CryptoSical.encodeSha1Base64(password) + "</pwd>" +
             "<fecha>" + fecha + "</fecha>" +

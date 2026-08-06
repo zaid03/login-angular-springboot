@@ -37,6 +37,8 @@ export class BolsaCreditoComponent {
 
   //global variables
   entcod: string | null = null;
+  orgCode: string | null = null;
+  entidad: string | null = null;
   eje: number | null = null;
   cge: string = '';
   backUpCge: string = '';
@@ -64,11 +66,15 @@ export class BolsaCreditoComponent {
     const ent = sessionStorage.getItem('Entidad');
     const session = sessionStorage.getItem('EJERCICIO');
     const centroGestor = sessionStorage.getItem('CENTROGESTOR');
+    const orgnizacion = sessionStorage.getItem('WSORG');
+    const entcod = sessionStorage.getItem('WSENT');
     if (ent) { const parsed = JSON.parse(ent); this.entcod = parsed.ENTCOD;}
     if (session) { const parsed = JSON.parse(session); this.eje = parsed.eje;}
     if (centroGestor) { const parsed = JSON.parse(centroGestor); this.cge = parsed.value; this.backUpCge = this.cge;}
+    if (orgnizacion) {const parsed = JSON.parse(orgnizacion); this.orgCode = parsed.WSORG;}
+    if (entcod) {const parsed = JSON.parse(entcod); this.entidad = parsed.WSENT};
 
-    if (!this.entcod ||  !this.eje || !this.cge) {
+    if (!this.entcod ||  !this.eje || !this.cge || this.orgCode === '' || this.entidad === '') {
       sessionStorage.clear();
       alert('Debes iniciar sesión para acceder a esta página.');
       this.router.navigate(['/login']);
@@ -113,7 +119,7 @@ export class BolsaCreditoComponent {
           const org = item?.gbsorg ?? '';
           const fun = item?.gbsfun ?? '';
           const eco = item?.gbseco ?? '';
-          this.http.get<any>(`${environment.backendUrl}/api/sical/partidas?clorg=${org}&clfun=${fun}&cleco=${eco}`).pipe(takeUntil(this.fetchCancel$)).subscribe({
+          this.http.get<any>(`${environment.backendUrl}/api/sical/partidas?clorg=${org}&clfun=${fun}&cleco=${eco}&orgCode=${this.orgCode}&entidad=${this.entidad}&eje=${this.eje}`).pipe(takeUntil(this.fetchCancel$)).subscribe({
               next: (partidas) => {
                 const partidasArr = Array.isArray(partidas) ? partidas : [];
                 this.creditos[idx].partidas = partidasArr;

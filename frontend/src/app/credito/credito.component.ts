@@ -32,6 +32,8 @@ export class CreditoComponent {
   //global variables
   entcod: string | null = null;
   eje: number | null = null;
+  orgCode: string | null = null;
+  entidad: string | null = null;
   cge: string = '';
   creditos: any[] = [];
   private backupCreditos: any[] = [];
@@ -54,12 +56,16 @@ export class CreditoComponent {
     const ent = sessionStorage.getItem('Entidad');
     const session = sessionStorage.getItem('EJERCICIO');
     const centroGestor = sessionStorage.getItem('CENTROGESTOR');
+    const orgnizacion = sessionStorage.getItem('WSORG');
+    const entcod = sessionStorage.getItem('WSENT');
 
     if (ent) { const parsed = JSON.parse(ent); this.entcod = parsed.ENTCOD;}
     if (session) { const parsed = JSON.parse(session); this.eje = parsed.eje;}
     if (centroGestor) { const parsed = JSON.parse(centroGestor); this.cge = parsed.value;}
+    if (orgnizacion) {const parsed = JSON.parse(orgnizacion); this.orgCode = parsed.WSORG;}
+    if (entcod) {const parsed = JSON.parse(entcod); this.entidad = parsed.WSENT};
 
-    if (this.entcod == null || this.eje === null || this.cge === null) {
+    if (this.entcod == null || this.eje === null || this.cge === null || this.orgCode === '' || this.entidad === '') {
       sessionStorage.clear();
       alert('Debes iniciar sesión para acceder a esta página.');
       this.router.navigate(['/login']);
@@ -81,7 +87,7 @@ export class CreditoComponent {
           const fun = item?.gbsfun ?? '';
           const eco = item?.gbseco ?? '';
           this.http
-            .get<any>(`${environment.backendUrl}/api/sical/partidas?clorg=${org}&clfun=${fun}&cleco=${eco}`)
+            .get<any>(`${environment.backendUrl}/api/sical/partidas?clorg=${org}&clfun=${fun}&cleco=${eco}&orgCode=${this.orgCode}&entidad=${this.entidad}&eje=${this.eje}`)
             .subscribe({
               next: (partidas) => {
                 const partidasArr = Array.isArray(partidas) ? partidas : [];

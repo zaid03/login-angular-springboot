@@ -33,24 +33,17 @@ public class PartidasController {
         @RequestParam(required = false) String cleco,
         @RequestParam(required = false) String clcte,
         @RequestParam(required = false) String clpam,
-        @RequestParam(required = false) String usucenges
+        @RequestParam(required = false) String usucenges,
+        @RequestParam String orgCode,
+        @RequestParam String entidad,
+        @RequestParam String eje
     ) {
         try {
-            PartidasService.SearchCriteria criteria = new PartidasService.SearchCriteria.Builder()
-                    .cenges(cenges)
-                    .alias(alias)
-                    .clorg(clorg)
-                    .clfun(clfun)
-                    .cleco(cleco)
-                    .clcte(clcte)
-                    .clpam(clpam)
-                    .usucenges(usucenges)
-                    .build();
+            PartidasService.SearchCriteria criteria = new PartidasService.SearchCriteria.Builder().cenges(cenges).alias(alias).clorg(clorg).clfun(clfun).cleco(cleco).clcte(clcte).clpam(clpam).usucenges(usucenges).orgCode(orgCode).entidad(entidad).eje(eje).build();
             List<Partida> partidas = partidasService.getPartidas(criteria);
             return ResponseEntity.ok(partidas);
         } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                 .body(Collections.emptyList());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList());
         }
     }
 }

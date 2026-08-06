@@ -62,7 +62,7 @@ export class ContratosComponent {
     if (orgnizacion) {const parsed = JSON.parse(orgnizacion); this.orgCode = parsed.WSORG;}
     if (entcod) {const parsed = JSON.parse(entcod); this.entidad = parsed.WSENT};
 
-    if (this.entcod == null || !this.eje) {
+    if (this.entcod == null || !this.eje || this.orgCode === '' || this.entidad === '') {
       alert('Missing session data. reiniciar el flujo.');
       this.router.navigate(['/login']);
       return;

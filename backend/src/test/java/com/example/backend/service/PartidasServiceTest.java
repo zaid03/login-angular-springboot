@@ -34,9 +34,6 @@ public class PartidasServiceTest {
         ReflectionTestUtils.setField(service, "username", "testuser");
         ReflectionTestUtils.setField(service, "password", "testpass");
         ReflectionTestUtils.setField(service, "publicKey", "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA...");
-        ReflectionTestUtils.setField(service, "orgCode", "ORG001");
-        ReflectionTestUtils.setField(service, "entidad", "1");
-        ReflectionTestUtils.setField(service, "eje", "E1");
     }
 
     @Test
@@ -109,29 +106,23 @@ public class PartidasServiceTest {
     void service_configuresPropertiesCorrectly() {
         String wsUrl = (String) ReflectionTestUtils.getField(service, "wsUrl");
         String username = (String) ReflectionTestUtils.getField(service, "username");
-        String orgCode = (String) ReflectionTestUtils.getField(service, "orgCode");
 
         assertEquals("http://test-sical-ws:8080/services/Ci?wsdl", wsUrl);
         assertEquals("testuser", username);
-        assertEquals("ORG001", orgCode);
     }
 
     @Test
     void service_configuresSecurityFieldsCorrectly() {
         String password = (String) ReflectionTestUtils.getField(service, "password");
         String publicKey = (String) ReflectionTestUtils.getField(service, "publicKey");
-        String entidad = (String) ReflectionTestUtils.getField(service, "entidad");
-        String eje = (String) ReflectionTestUtils.getField(service, "eje");
 
         assertEquals("testpass", password);
         assertTrue(publicKey.startsWith("-----BEGIN PUBLIC KEY-----"));
-        assertEquals("1", entidad);
-        assertEquals("E1", eje);
     }
 
     private int countNonNullFields(PartidasService.SearchCriteria criteria) {
         int count = 0;
-        if (criteria.cenges != null) count++;
+        if (criteria.cenges  != null) count++;
         if (criteria.alias != null) count++;
         if (criteria.clorg != null) count++;
         if (criteria.clfun != null) count++;
@@ -1328,5 +1319,29 @@ public class PartidasServiceTest {
         List<Partida> result = (List<Partida>) parseMethod.invoke(service, xml);
         
         assertNotNull(result);
+    }
+
+    @Test
+    void searchCriteria_builder_setsOrgCodeEntidadEje_correctly() {
+        PartidasService.SearchCriteria criteria = new PartidasService.SearchCriteria.Builder()
+            .orgCode("0000000000")
+            .entidad("0000000001")
+            .eje("2026")
+            .build();
+
+        assertEquals("0000000000", criteria.orgCode);
+        assertEquals("0000000001", criteria.entidad);
+        assertEquals("2026", criteria.eje);
+    }
+
+    @Test
+    void searchCriteria_builder_withoutOrgCodeEntidadEje_defaultsToNull() {
+        PartidasService.SearchCriteria criteria = new PartidasService.SearchCriteria.Builder()
+            .cenges("CG001")
+            .build();
+
+        assertNull(criteria.orgCode);
+        assertNull(criteria.entidad);
+        assertNull(criteria.eje);
     }
 }
