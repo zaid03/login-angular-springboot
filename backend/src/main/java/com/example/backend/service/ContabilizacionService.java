@@ -80,7 +80,7 @@ public class ContabilizacionService {
 
         String fechaContable = formatFechaContable(req.getFechaContable());
 
-        String codope = "200";
+        String codope = Boolean.TRUE.equals(req.getEsContrato()) ? "400" : "250";
 
         String numope = fac.getEJE() + "-" + fac.getFACNUM();
 
@@ -171,6 +171,15 @@ public class ContabilizacionService {
         sb.append("<criContrato>").append(CryptoSical.encodeBase64(criContrato)).append("</criContrato>");
 
         sb.append("<l_factura>");
+        sb.append("<factura>");
+        if (fac.getFACTDC() != null) {
+            sb.append("<tipoF>").append(CryptoSical.encodeBase64(fac.getFACTDC())).append("</tipoF>");
+        }
+        sb.append("<ejeF>").append(fac.getFACANN()).append("</ejeF>");
+        if (fac.getFACFAC() != null) {
+            sb.append("<numeF>").append(fac.getFACFAC()).append("</numeF>");
+        }
+        sb.append("</factura>");
         sb.append("</l_factura>");
 
         sb.append("<l_linea>");
@@ -195,6 +204,9 @@ public class ContabilizacionService {
             }
             if (fde.getFDEREF() != null) {
                 sb.append("<refe>").append(fde.getFDEREF()).append("</refe>");
+            }
+            if (fde.getFDEOPE() != null) {
+                sb.append("<oan>").append(fde.getFDEOPE()).append("</oan>");
             }
             sb.append("<imp>").append(imp).append("</imp>");
             sb.append("</linea>");
