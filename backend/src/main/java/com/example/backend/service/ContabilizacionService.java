@@ -16,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.example.backend.dto.ContabilizacionRequestDto;
 import com.example.backend.dto.ContabilizacionResponseDto;
+import com.example.backend.dto.Operaciones;
 import com.example.backend.exception.SmlBuildingException;
 import com.example.backend.sqlserver2.model.Fac;
 import com.example.backend.sqlserver2.model.FacId;
@@ -26,25 +27,24 @@ import com.example.backend.sqlserver2.repository.FacRepository;
 import com.example.backend.sqlserver2.repository.FdeRepository;
 import com.example.backend.sqlserver2.repository.FdtRepository;
 import com.example.backend.sqlserver2.repository.TerRepository;
+import com.example.backend.service.OperacionesService;
 import com.example.sical.CryptoSical;
 
 @Service
 public class ContabilizacionService {
-
     @Value("${sical.ws.url:http://desa-sical-ws:8080/services/Ci}")
     private String sicalWsUrl;
 
     @Autowired
     private FacRepository facRepository;
-
     @Autowired
     private FdeRepository fdeRepository;
-
     @Autowired
     private FdtRepository fdtRepository;
-
     @Autowired
     private TerRepository terRepository;
+    @Autowired
+    private OperacionesService operacionesService;
 
     public String buildSmlInput(ContabilizacionRequestDto req, Fac fac, List<Fde> fdeList, List<Fdt> fdtList, String terAyt) throws Exception {
         if (req == null) {
@@ -107,6 +107,7 @@ public class ContabilizacionService {
         sb.append("</sec>");
 
         sb.append("<par>");
+        sb.append("<portal>S</portal>");  
         sb.append("<gensinalmacenar>0</gensinalmacenar>");
 
         sb.append("<l_operacion>");
@@ -184,13 +185,15 @@ public class ContabilizacionService {
 
         sb.append("<l_linea>");
         for (Fde fde : fdeList) {
-            Double imp = (fde.getFDEIMP() != null ? fde.getFDEIMP() : 0.0) + 
-                         (fde.getFDEDIF() != null ? fde.getFDEDIF() : 0.0);
-            
+            Double imp = (fde.getFDEIMP() != null ? fde.getFDEIMP() : 0.0) +
+                        (fde.getFDEDIF() != null ? fde.getFDEDIF() : 0.0);
+
             if (imp <= 0) {
                 continue;
             }
-            
+
+            LineaGastoDefinitivo datosWs = consultarOperacionGastoDefinitivo(fde, org, ent, eje);
+
             sb.append("<linea>");
             sb.append("<lineje>").append(eje).append("</lineje>");
             if (fde.getFDEORG() != null) {
@@ -202,11 +205,21 @@ public class ContabilizacionService {
             if (fde.getFDEECO() != null) {
                 sb.append("<eco>").append(CryptoSical.encodeBase64(fde.getFDEECO())).append("</eco>");
             }
+            if (fde.getFDEOPE() != null) {
+                sb.append("<oan>").append(fde.getFDEOPE()).append("</oan>");
+            }
+            if (datosWs != null && datosWs.nlinea() != null) {
+                sb.append("<naa>").append(datosWs.nlinea()).append("</naa>");
+            }
             if (fde.getFDEREF() != null) {
                 sb.append("<refe>").append(fde.getFDEREF()).append("</refe>");
             }
-            if (fde.getFDEOPE() != null) {
-                sb.append("<oan>").append(fde.getFDEOPE()).append("</oan>");
+            if (datosWs != null) {
+                if (datosWs.prya() != null) sb.append("<prya>").append(datosWs.prya()).append("</prya>");
+                if (datosWs.pryt() != null) sb.append("<pryt>").append(datosWs.pryt()).append("</pryt>");
+                if (datosWs.pryo() != null) sb.append("<pryo>").append(datosWs.pryo()).append("</pryo>");
+                if (datosWs.pryn() != null) sb.append("<pryn>").append(datosWs.pryn()).append("</pryn>");
+                if (datosWs.pryx() != null) sb.append("<pryx>").append(datosWs.pryx()).append("</pryx>");
             }
             sb.append("<imp>").append(imp).append("</imp>");
             sb.append("</linea>");
@@ -257,7 +270,6 @@ public class ContabilizacionService {
         System.out.println("=================================");
 
         return sml;
-        // return sb.toString();
     }
 
     public String sendSmlRequest(String smlInput, String url) {
@@ -267,8 +279,8 @@ public class ContabilizacionService {
         
         try {
             SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
-factory.setConnectTimeout(10000); // 10 sec
-factory.setReadTimeout(10000);
+            factory.setConnectTimeout(10000);
+            factory.setReadTimeout(60000);
             RestTemplate restTemplate = new RestTemplate(factory);
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.TEXT_XML);
@@ -284,37 +296,37 @@ factory.setReadTimeout(10000);
                 "</soapenv:Envelope>";
 
                 System.out.println("========== SOAP ENVELOPE ==========");
-System.out.println(soapEnvelope);
-System.out.println("===================================");
+                System.out.println(soapEnvelope);
+                System.out.println("===================================");
 
             HttpEntity<String> entity = new HttpEntity<>(soapEnvelope, headers);
             System.out.println("Sending to:");
-System.out.println(endpoint);
+            System.out.println(endpoint);
 
-System.out.println("Before POST...");
+            System.out.println("Before POST...");
             ResponseEntity<String> response = restTemplate.postForEntity(endpoint, entity, String.class);
 
             System.out.println("After POST...");
 
             System.out.println("========== HTTP STATUS ==========");
-System.out.println(response.getStatusCode());
+            System.out.println(response.getStatusCode());
 
-System.out.println("========== SOAP RESPONSE ==========");
-System.out.println(response.getBody());
-System.out.println("==================================");
+            System.out.println("========== SOAP RESPONSE ==========");
+            System.out.println(response.getBody());
+            System.out.println("==================================");
             
             return response.getBody();
         } catch (Exception e) {
             System.out.println("========== REQUEST FAILED ==========");
-    e.printStackTrace();
+            e.printStackTrace();
             return null;
         }
     }
 
     public ContabilizacionResponseDto parseResponse(String soapResponse) {
         System.out.println("========== RAW SOAP ==========");
-System.out.println(soapResponse);
-System.out.println("==============================");
+        System.out.println(soapResponse);
+        System.out.println("==============================");
 
         ContabilizacionResponseDto dto = new ContabilizacionResponseDto();
         
@@ -458,6 +470,46 @@ System.out.println("==============================");
             System.out.println("========== REQUEST FAILED ==========");
     e.printStackTrace();
             return value;
+        }
+    }
+
+    private record LineaGastoDefinitivo(String nlinea, String prya, String pryt,
+                                     String pryo, String pryn, String pryx) {}
+
+    private LineaGastoDefinitivo consultarOperacionGastoDefinitivo(Fde fde, String orgCode, String entidad, String eje) {
+        try {
+            String numope = fde.getFDEOPE() != null ? String.valueOf(fde.getFDEOPE()) : null;
+            String referencia = fde.getFDEREF() != null ? String.valueOf(fde.getFDEREF()) : null;
+
+            List<Operaciones> resultado = operacionesService.getOperaciones(orgCode, entidad, numope, numope, null, fde.getFDEORG(), fde.getFDEFUN(), fde.getFDEECO(), referencia, null, null, null, eje);
+
+            if (resultado.isEmpty()) {
+                System.out.println("WS 2.49: sin resultado para FDEOPE=" + numope + " refe=" + referencia);
+                return null;
+            }
+
+            List<Operaciones.Linea> lineas = resultado.get(0).getLineaList();
+            if (lineas == null || lineas.isEmpty()) {
+                System.out.println("WS 2.49: operacion sin lineas para FDEOPE=" + numope);
+                return null;
+            }
+            if (lineas.size() > 1) {
+                System.out.println("WS 2.49: se esperaba 1 linea, llegaron " + lineas.size() + " — usando la primera");
+            }
+
+            Operaciones.Linea l = lineas.get(0);
+            return new LineaGastoDefinitivo(
+                    l.getNlinea() != null ? String.valueOf(l.getNlinea()) : null,
+                    l.getPrya() != null ? String.valueOf(l.getPrya()) : null,
+                    l.getPryt(),
+                    l.getPryo(),
+                    l.getPryn(),
+                    l.getPryx() != null ? String.valueOf(l.getPryx()) : null
+            );
+        } catch (Exception e) {
+            System.out.println("========== WS 2.49 CONSULTA FALLIDA ==========");
+            e.printStackTrace();
+            return null;
         }
     }
 }

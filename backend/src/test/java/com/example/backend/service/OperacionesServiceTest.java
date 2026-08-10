@@ -380,18 +380,19 @@ class OperacionesServiceTest {
         IllegalArgumentException ex = assertThrows(
                 IllegalArgumentException.class,
                 () -> service.getOperaciones(
-                        "ORG",
-                        "ENT",
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null));
+                    "ORG",
+                    "ENT",
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null));
 
         assertEquals("eje is required", ex.getMessage());
     }
@@ -401,18 +402,19 @@ class OperacionesServiceTest {
         assertThrows(
                 IllegalArgumentException.class,
                 () -> service.getOperaciones(
-                        "ORG",
-                        "ENT",
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        ""));
+                    "ORG",
+                    "ENT",
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    ""));
     }
 
     @Test
@@ -443,6 +445,7 @@ class OperacionesServiceTest {
                     "20",
                     "CODIGO",
                     "ORG-1",
+                    null,
                     null,
                     null,
                     null,

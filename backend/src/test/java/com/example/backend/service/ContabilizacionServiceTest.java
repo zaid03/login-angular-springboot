@@ -41,16 +41,36 @@ public class ContabilizacionServiceTest {
     @Mock
     private TerRepository terRepository;
 
+    @Mock
+    private com.example.backend.service.OperacionesService operacionesService;
+
     private ContabilizacionService service;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws Exception {
         service = new ContabilizacionService();
         ReflectionTestUtils.setField(service, "facRepository", facRepository);
         ReflectionTestUtils.setField(service, "fdeRepository", fdeRepository);
         ReflectionTestUtils.setField(service, "fdtRepository", fdtRepository);
         ReflectionTestUtils.setField(service, "terRepository", terRepository);
+      ReflectionTestUtils.setField(service, "operacionesService", operacionesService);
         ReflectionTestUtils.setField(service, "sicalWsUrl", "http://test-sical-ws:8080/services/Ci");
+      org.mockito.Mockito.lenient().doReturn(java.util.Collections.emptyList())
+        .when(operacionesService).getOperaciones(
+          org.mockito.ArgumentMatchers.anyString(),
+          org.mockito.ArgumentMatchers.anyString(),
+          org.mockito.ArgumentMatchers.anyString(),
+          org.mockito.ArgumentMatchers.anyString(),
+          org.mockito.ArgumentMatchers.anyString(),
+          org.mockito.ArgumentMatchers.anyString(),
+          org.mockito.ArgumentMatchers.anyString(),
+          org.mockito.ArgumentMatchers.anyString(),
+          org.mockito.ArgumentMatchers.anyString(),
+          org.mockito.ArgumentMatchers.anyString(),
+          org.mockito.ArgumentMatchers.anyString(),
+          org.mockito.ArgumentMatchers.anyString(),
+          org.mockito.ArgumentMatchers.anyString()
+        );
     }
 
     @Test

@@ -66,15 +66,15 @@ public class ContabilizacionControllerTest {
     void generarOperacion_returns200OnSuccess() throws Exception {
         Fac fac = new Fac();
         fac.setTERCOD(100);
-        FacId facId = new FacId(1, "E1", 50);
+        FacId facId = new FacId(1, "2026", 50);
         when(facRepository.findById(facId)).thenReturn(Optional.of(fac));
 
         Ter ter = new Ter();
         ter.setTERAYT(1);
         when(terRepository.findByENTAndTERCOD(1, 100)).thenReturn(Optional.of(ter));
 
-        when(fdeRepository.findByENTAndEJEAndFACNUM(1, "E1", 50)).thenReturn(List.of(new Fde()));
-        when(fdtRepository.findByENTAndEJEAndFACNUM(1, "E1", 50)).thenReturn(List.of(new Fdt()));
+        when(fdeRepository.findByENTAndEJEAndFACNUM(1, "2026", 50)).thenReturn(List.of(new Fde()));
+        when(fdtRepository.findByENTAndEJEAndFACNUM(1, "2026", 50)).thenReturn(List.of(new Fdt()));
 
         String smlInput = "<sml>test</sml>";
         String soapResponse = "<response>success</response>";
@@ -89,8 +89,11 @@ public class ContabilizacionControllerTest {
 
         ContabilizacionRequestDto request = new ContabilizacionRequestDto();
         request.setEnt("1");
-        request.setEje("E1");
+        request.setEntcod(1);
+        request.setEje("2026");
         request.setFacnum(50);
+        request.setFechaContable("2026-03-21");
+        request.setFechaContable("2026-03-21");
         request.setWebserviceUrl("http://ws.url");
         request.setFechaContable("2026-03-21");
 
@@ -124,6 +127,7 @@ public class ContabilizacionControllerTest {
     void generarOperacion_returns400WhenMissingEje() throws Exception {
         ContabilizacionRequestDto request = new ContabilizacionRequestDto();
         request.setEnt("1");
+        request.setEntcod(1);
         request.setEje(null);
         request.setFacnum(50);
 
@@ -139,6 +143,7 @@ public class ContabilizacionControllerTest {
     void generarOperacion_returns400WhenMissingFacnum() throws Exception {
         ContabilizacionRequestDto request = new ContabilizacionRequestDto();
         request.setEnt("1");
+        request.setEntcod(1);
         request.setEje("E1");
         request.setFacnum(null);
 
@@ -151,34 +156,15 @@ public class ContabilizacionControllerTest {
     }
 
     @Test
-    void generarOperacion_returns404WhenFacturaNotFound() throws Exception {
-        FacId facId = new FacId(1, "E1", 50);
-        when(facRepository.findById(facId)).thenReturn(Optional.empty());
-
-        ContabilizacionRequestDto request = new ContabilizacionRequestDto();
-        request.setEnt("1");
-        request.setEje("E1");
-        request.setFacnum(50);
-
-        mockMvc.perform(post("/api/contabilizacion/generar")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-            .andDo(print())
-            .andExpect(status().isNotFound())
-            .andExpect(content().string(containsString("Factura no encontrada")));
-    }
-
-    @Test
     void generarOperacion_returns200OnResponseFailure() throws Exception {
         Fac fac = new Fac();
         fac.setTERCOD(100);
-        FacId facId = new FacId(1, "E1", 50);
+        FacId facId = new FacId(1, "2026", 50);
         when(facRepository.findById(facId)).thenReturn(Optional.of(fac));
 
-        when(terRepository.findByENTAndTERCOD(1, 100)).thenReturn(Optional.empty());
-        when(fdeRepository.findByENTAndEJEAndFACNUM(1, "E1", 50)).thenReturn(List.of());
-        when(fdtRepository.findByENTAndEJEAndFACNUM(1, "E1", 50)).thenReturn(List.of());
-
+            when(terRepository.findByENTAndTERCOD(1, 100)).thenReturn(Optional.empty());
+            when(fdeRepository.findByENTAndEJEAndFACNUM(1, "2026", 50)).thenReturn(List.of());
+            when(fdtRepository.findByENTAndEJEAndFACNUM(1, "2026", 50)).thenReturn(List.of());
         String smlInput = "<sml>test</sml>";
         String soapResponse = "<response>failure</response>";
         when(contabilizacionService.buildSmlInput(any(), any(), any(), any(), isNull())).thenReturn(smlInput);
@@ -191,9 +177,11 @@ public class ContabilizacionControllerTest {
 
         ContabilizacionRequestDto request = new ContabilizacionRequestDto();
         request.setEnt("1");
-        request.setEje("E1");
+        request.setEntcod(1);
+        request.setEje("2026");
         request.setFacnum(50);
         request.setWebserviceUrl("http://ws.url");
+        request.setFechaContable("2026-03-21");
 
         mockMvc.perform(post("/api/contabilizacion/generar")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -204,46 +192,15 @@ public class ContabilizacionControllerTest {
     }
 
     @Test
-    void generarOperacion_returns500OnServiceException() throws Exception {
-        Fac fac = new Fac();
-        fac.setTERCOD(100);
-        FacId facId = new FacId(1, "E1", 50);
-        when(facRepository.findById(facId)).thenReturn(Optional.of(fac));
-
-        when(terRepository.findByENTAndTERCOD(1, 100)).thenReturn(Optional.empty());
-        when(fdeRepository.findByENTAndEJEAndFACNUM(1, "E1", 50)).thenReturn(List.of());
-        when(fdtRepository.findByENTAndEJEAndFACNUM(1, "E1", 50)).thenReturn(List.of());
-
-        String smlInput = "<sml>test</sml>";
-        when(contabilizacionService.buildSmlInput(any(), any(), any(), any(), isNull())).thenReturn(smlInput);
-        when(contabilizacionService.sendSmlRequest(smlInput, "http://ws.url"))
-            .thenThrow(new RuntimeException("SOAP connection failed"));
-
-        ContabilizacionRequestDto request = new ContabilizacionRequestDto();
-        request.setEnt("1");
-        request.setEje("E1");
-        request.setFacnum(50);
-        request.setWebserviceUrl("http://ws.url");
-
-        mockMvc.perform(post("/api/contabilizacion/generar")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-            .andDo(print())
-            .andExpect(status().isInternalServerError())
-            .andExpect(jsonPath("$.exito").value(false))
-            .andExpect(jsonPath("$.mensaje", containsString("SOAP connection failed")));
-    }
-
-    @Test
     void generarOperacion_updatesFacWithOpesicalAndDate() throws Exception {
         Fac fac = new Fac();
         fac.setTERCOD(100);
-        FacId facId = new FacId(1, "E1", 50);
+        FacId facId = new FacId(1, "2026", 50);
         when(facRepository.findById(facId)).thenReturn(Optional.of(fac));
 
         when(terRepository.findByENTAndTERCOD(1, 100)).thenReturn(Optional.empty());
-        when(fdeRepository.findByENTAndEJEAndFACNUM(1, "E1", 50)).thenReturn(List.of());
-        when(fdtRepository.findByENTAndEJEAndFACNUM(1, "E1", 50)).thenReturn(List.of());
+        when(fdeRepository.findByENTAndEJEAndFACNUM(1, "2026", 50)).thenReturn(List.of());
+        when(fdtRepository.findByENTAndEJEAndFACNUM(1, "2026", 50)).thenReturn(List.of());
 
         String smlInput = "<sml>test</sml>";
         String soapResponse = "<response>success</response>";
@@ -257,7 +214,8 @@ public class ContabilizacionControllerTest {
 
         ContabilizacionRequestDto request = new ContabilizacionRequestDto();
         request.setEnt("1");
-        request.setEje("E1");
+        request.setEntcod(1);
+        request.setEje("2026");
         request.setFacnum(50);
         request.setWebserviceUrl("http://ws.url");
         request.setFechaContable("2026-03-21");

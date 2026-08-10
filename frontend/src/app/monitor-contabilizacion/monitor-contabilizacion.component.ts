@@ -65,6 +65,8 @@ export class MonitorContabilizacionComponent {
     if (entSession) {const parsed = JSON.parse(entSession); this.WSent = parsed.WSENT;}
     if (orgSession) {const parsed = JSON.parse(orgSession); this.WSorg = parsed.WSORG;}
 
+    console.log(this.WSorg)
+    console.log(this.WSent)
     if (!entidad || this.entcod === null || !eje || this.eje === null) {
       sessionStorage.clear();
       alert('Debes iniciar sesión para acceder a esta página.');
@@ -367,25 +369,16 @@ export class MonitorContabilizacionComponent {
 
     let params = `ent=${this.entcod}&eje=${this.eje}&cgecod=${this.centroGestor}`;
 
-    // fechaType
     params += `&fechaType=${this.fechasType}`;
-
-    // desde
     if (this.desde && this.desde.trim() !== '') {
       params += `&desde=${this.desde}T00:00:00`;
     }
-
-    // hasta
     if (this.hasta && this.hasta.trim() !== '') {
       params += `&hasta=${this.hasta}T23:59:59`;
     }
-
-    // facann (ejerSearch)
     if (this.ejerSearch && this.ejerSearch.trim() !== '') {
       params += `&facann=${this.ejerSearch}`;
     }
-
-    // search (facturaSearch)
     if (this.facturaSearch && this.facturaSearch.trim() !== '') {
       params += `&search=${encodeURIComponent(this.facturaSearch)}`;
     }
@@ -414,6 +407,7 @@ export class MonitorContabilizacionComponent {
     this.caughtFacturas = [];
     this.facturas = [];
     this.fetchFacturas();
+    this.fechaContable = '';
   }
 
   //detail grid functions
@@ -675,7 +669,6 @@ export class MonitorContabilizacionComponent {
     this.totalContaFac = this.caughtFacturas.length;
     this.isContabilizando = true;
 
-    // Process each factura one by one
     for (const factura of this.caughtFacturas) {
       await this.contabilizarFacturaAsync(factura);
       this.contaFac++;
@@ -683,7 +676,6 @@ export class MonitorContabilizacionComponent {
 
     this.isContabilizando = false;
 
-    // Summary message
     const exitosas = this.contabilizarResults.filter(r => r.success).length;
     const fallidas = this.contabilizarResults.filter(r => !r.success).length;
     
@@ -710,7 +702,8 @@ export class MonitorContabilizacionComponent {
         pwd: ".",
         publicKey: "llave1",
         org: this.WSorg,
-        ent: this.WSent,
+        ent: this.WSent,       
+        entcod: this.entcod,
         eje: String(this.eje),
         usu: "SICALWIN",
         facnum: factura.facnum,
@@ -725,7 +718,6 @@ export class MonitorContabilizacionComponent {
             this.newFacado = response.opesical;
             
             try {
-              // Update FAC and GBS in database
               await this.updateFactura(factura.facnum, this.newFacado, this.fechaContable);
               
               this.contabilizarResults.push({
@@ -772,6 +764,7 @@ export class MonitorContabilizacionComponent {
     this.caughtFacturas = [];
     this.monitoresMessage = false;
     this.fetchFacturas();
+    this.limpiarSearch();
   }
   updateFactura(facnum: number, facado: any, facfco: string) {
     this.closeContaConfirm();

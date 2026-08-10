@@ -50,6 +50,7 @@ public class OperacionesService {
         String organica,
         String funcional,
         String economica,
+        String referencia,
         String expediente,
         String grupoApunte,
         String oficina,
@@ -72,6 +73,7 @@ public class OperacionesService {
             (organica != null ? "<organica>" + CryptoSical.encodeBase64(organica) + "</organica>" : "") +
             (funcional != null ? "<funcional>" + CryptoSical.encodeBase64(funcional) + "</funcional>" : "") +
             (economica != null ? "<economica>" + CryptoSical.encodeBase64(economica) + "</economica>" : "") +
+            (referencia != null ? "<referencia>" + referencia + "</referencia>" : "") +
             (expediente != null ? "<expediente>" + CryptoSical.encodeBase64(expediente) + "</expediente>" : "") +
             (grupoApunte != null ? "<grupoApunte>" + CryptoSical.encodeBase64(grupoApunte) + "</grupoApunte>" : "") +
             (oficina != null ? "<oficina>" + CryptoSical.encodeBase64(oficina) + "</oficina>" : "") +
@@ -117,8 +119,8 @@ public class OperacionesService {
         RestTemplate restTemplate = new RestTemplate();
         String endpoint = (wsUrl != null && wsUrl.contains("?")) ? wsUrl.substring(0, wsUrl.indexOf("?")) : wsUrl;
         System.out.println("REQUEST XML: " + soapEnvelope);
-String responseXml = restTemplate.postForObject(endpoint, new HttpEntity<>(soapEnvelope, headers), String.class);
-System.out.println("RESPONSE XML: " + responseXml);
+        String responseXml = restTemplate.postForObject(endpoint, new HttpEntity<>(soapEnvelope, headers), String.class);
+        System.out.println("RESPONSE XML: " + responseXml);
 
         return parseOperaciones(responseXml);
     }
@@ -198,9 +200,6 @@ System.out.println("RESPONSE XML: " + responseXml);
                 op.setRelacionList(parseRelacionList(opEl));
                 op.setLineaList(parseLineaList(opEl));
 
-                // SICAL doesn't always return <numope> as its own tag on the <operacion>
-                // element (seen with ConOpeGastos filtered list queries) — but the first
-                // delimited field of each <linea> record is the numope, so fall back to that.
                 if (op.getNumope() == null) {
                     NodeList lineaNodes = findElementsByName(opEl, "linea");
                     if (lineaNodes.getLength() > 0) {

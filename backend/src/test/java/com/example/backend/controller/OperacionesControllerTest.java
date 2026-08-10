@@ -17,6 +17,7 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -40,7 +41,7 @@ class OperacionesControllerTest {
 
         when(operacionesService.getOperaciones(
                 any(), any(), any(), any(), any(),
-                any(), any(), any(), any(), any(), any(), any()))
+                any(), any(), any(), any(), any(), any(), any(), any()))
                 .thenReturn(List.of(o));
 
         mockMvc.perform(get("/api/sical/operaciones")
@@ -63,7 +64,7 @@ class OperacionesControllerTest {
 
         verify(operacionesService).getOperaciones(
                 any(), any(), any(), any(), any(),
-                any(), any(), any(), any(), any(), any(), any());
+                any(), any(), any(), any(), any(), any(), any(), any());
     }
 
     @Test
@@ -71,7 +72,7 @@ class OperacionesControllerTest {
 
         when(operacionesService.getOperaciones(
                 any(), any(), any(), any(), any(),
-                any(), any(), any(), any(), any(), any(), any()))
+                any(), any(), any(), any(), any(), any(), any(), any()))
                 .thenReturn(Collections.emptyList());
 
         mockMvc.perform(get("/api/sical/operaciones")
@@ -85,7 +86,7 @@ class OperacionesControllerTest {
 
         verify(operacionesService).getOperaciones(
                 any(), any(), any(), any(), any(),
-                any(), any(), any(), any(), any(), any(), any());
+                any(), any(), any(), any(), any(), any(), any(), any());
     }
 
     @Test
@@ -93,7 +94,7 @@ class OperacionesControllerTest {
 
         when(operacionesService.getOperaciones(
                 any(), any(), any(), any(), any(),
-                any(), any(), any(), any(), any(), any(), any()))
+                any(), any(), any(), any(), any(), any(), any(), any()))
                 .thenThrow(new RuntimeException("sical fail"));
 
         mockMvc.perform(get("/api/sical/operaciones")
@@ -107,7 +108,7 @@ class OperacionesControllerTest {
 
         verify(operacionesService).getOperaciones(
                 any(), any(), any(), any(), any(),
-                any(), any(), any(), any(), any(), any(), any());
+                any(), any(), any(), any(), any(), any(), any(), any());
     }
 
     @Test
@@ -115,7 +116,7 @@ class OperacionesControllerTest {
 
         when(operacionesService.getOperaciones(
                 any(), any(), any(), any(), any(),
-                any(), any(), any(), any(), any(), any(), any()))
+                any(), any(), any(), any(), any(), any(), any(), any()))
                 .thenThrow(new Exception("boom"));
 
         mockMvc.perform(get("/api/sical/operaciones")

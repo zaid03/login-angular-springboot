@@ -1,6 +1,7 @@
 package com.example.backend.dto;
 
 public class ContabilizacionRequestDto {
+    private Integer entcod;
     private String pwd;
     private String publicKey;
     private String org;
@@ -14,6 +15,8 @@ public class ContabilizacionRequestDto {
     private String fechaContable;  
     private Boolean esContrato;    
     
+    public Integer getEntcod() { return entcod; }
+    public void setEntcod(Integer entcod) { this.entcod = entcod; }     
     public String getPwd() { return pwd; }
     public void setPwd(String pwd) { this.pwd = pwd; }
 
