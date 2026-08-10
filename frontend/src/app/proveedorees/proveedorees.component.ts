@@ -1186,7 +1186,7 @@ export class ProveedoreesComponent {
     }
     
     this.isUpdatingProveedor = true;
-    this.http.get(`${environment.backendUrl}/api/sical/terceros?codigo=${terayt}`).subscribe({
+    this.http.get(`${environment.backendUrl}/api/sical/terceros?codigo=${terayt}&orgCode=${this.orgCode}&entidad=${this.entidad}&eje=${this.eje}`).subscribe({
       next: (res) => {
         if (res = []) {
           this.messageError = 'No se encuentra el código en Sicalwin';
