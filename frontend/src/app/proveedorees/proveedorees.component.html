@@ -178,13 +178,13 @@
                                     <p class="p-style">Nombre</p>
                                 </td>
                                 <td>
-                                    <h1 class="h1-style">{{tempProveedor.ternom || '#'}}</h1>
+                                    <h1 class="h1-style">{{tempProveedor.ternom}}</h1>
                                 </td>
                                 <td>
                                     <p class="p-style">Dirección</p>
                                 </td>
                                 <td>
-                                    <h1 class="h1-style">{{tempProveedor.terdom || '#'}}</h1>
+                                    <h1 class="h1-style">{{tempProveedor.terdom}}</h1>
                                 </td>
                                 <td>
                                     <p class="p-style">Teléfono</p>
@@ -215,15 +215,15 @@
                                     <p class="p-style">Alias</p>
                                 </td>
                                 <td>
-                                    <h1 class="h1-style">{{tempProveedor.terali || '#'}}</h1>
+                                    <h1 class="h1-style">{{tempProveedor.terali}}</h1>
                                 </td>
                                 <td>
                                     <p class="p-style">Provincia</p>
                                 </td>
                                 <td>
                                     <div class="cell-content">
-                                        <h1 class="h1-style">{{tempProveedor.procod || '#'}}</h1>
-                                        <h1 class="h1-style">{{tempProveedor.terpob || '#'}}</h1>
+                                        <h1 class="h1-style">{{tempProveedor.procod}}</h1>
+                                        <h1 class="h1-style">{{tempProveedor.terpob}}</h1>
                                     </div>
                                 </td>
                                 <td>
@@ -254,32 +254,32 @@
                                 <td>
                                     <div class="cell-content">
                                         <p class="p-style">Código</p>
-                                        <h1 class="h1-style">{{tempProveedor.tercod || '#'}}</h1>
+                                        <h1 class="h1-style">{{tempProveedor.tercod}}</h1>
                                     </div>
                                 </td>
                                 <td>
                                     <div class="cell-content">
                                         <p class="p-style">NIF</p>
-                                        <h1 class="h1-style">{{tempProveedor.ternif || '#'}}</h1>
+                                        <h1 class="h1-style">{{tempProveedor.ternif}}</h1>
                                     </div>
                                 </td>
                                 <td>
                                     <div class="cell-content">
                                         <p class="p-style">C.P</p>
-                                        <h1 class="h1-style">{{tempProveedor.tercpo || '#'}}</h1>
+                                        <h1 class="h1-style">{{tempProveedor.tercpo}}</h1>
                                     </div>
                                 </td>
                                 <td>
                                     <div class="cell-content">
                                         <p class="p-style">C.contable</p>
-                                        <h1 class="h1-style">{{tempProveedor.terayt || '#'}}</h1>
+                                        <h1 class="h1-style">{{tempProveedor.terayt}}</h1>
                                     </div>
                                 </td>
                                 <td>
                                     <p class="p-style">Fax</p>
                                 </td>
                                 <td>
-                                    <h1 class="h1-style">{{tempProveedor.terfax || '#'}}</h1>
+                                    <h1 class="h1-style">{{tempProveedor.terfax}}</h1>
                                 </td>
                                 <td>
                                     <p class="p-style">Tiene acuerdo marco</p>
@@ -876,12 +876,19 @@
 <div class="delete-confirm-modal" *ngIf="updateProveedor">
     <div>
         <p class="p-style">¿Quiere actualizar los datos del proveedor desde Sicalwin?</p>
+        <p class="errorBtn">{{updateProveedorMessage}}</p>
+        <button class="purple-btn fix" (click)="getUpdatedInfo()">Sí</button>
+        <button class="red-btn" (click)="closeUpdateProvedor()">No</button>
+    </div>
+</div>
+
+
+<div class="modal-backdrop force" *ngIf="updatingAnimation"></div>
+<div class="delete-confirm-modal" *ngIf="updatingAnimation">
+    <div>
         <div *ngIf="isUpdatingProveedor" class="loading-message">
             <div class="spinner"></div>
             <span>actualizando</span>
         </div>
-        <p class="errorBtn">{{updateProveedorMessage}}</p>
-        <button class="purple-btn fix" (click)="getUpdatedInfo()">Sí</button>
-        <button class="red-btn" (click)="closeUpdateProvedor()">No</button>
     </div>
 </div>

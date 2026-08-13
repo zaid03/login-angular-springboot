@@ -1180,27 +1180,27 @@ export class ProveedoreesComponent {
     this.limpiarMessages();
     const terayt = this.selectedProveedor.terayt;
     if (terayt === null || terayt === '') {
-      this.messageError = 'Falta código de contabilidad';
-      this.closeUpdateProvedor();
+      this.updateProveedorMessage = 'Falta código de contabilidad';
       return;
     }
     
     this.isUpdatingProveedor = true;
-    this.http.get(`${environment.backendUrl}/api/sical/terceros?codigo=${terayt}&orgCode=${this.orgCode}&entidad=${this.entidad}&eje=${this.eje}`).subscribe({
+    this.updatingAnimation = true;
+    this.http.get<any>(`${environment.backendUrl}/api/sical/terceros?codigo=${terayt}&orgCode=${this.orgCode}&entidad=${this.entidad}&eje=${this.eje}`).subscribe({
       next: (res) => {
-        if (res = []) {
-          this.messageError = 'No se encuentra el código en Sicalwin';
-          this.closeUpdateProvedor();
+        if (res.length === 0) {
+          this.updateProveedorMessage = 'No se encuentra el código en de contabilidad';
+          this.updatingAnimation = false;
           this.isUpdatingProveedor = false;
           return;
         }
         this.proveedorInfo = res;
         this.actualizarProveedor();
-        this.isUpdatingProveedor = false;
       },
       error: (err) => {
         this.proveedorInfo = [];
         this.isUpdatingProveedor = false;
+        this.updatingAnimation = false;
         this.updateProveedorMessage = err.error.error ?? err.error;
       }
     })
@@ -1225,13 +1225,17 @@ export class ProveedoreesComponent {
       next: (res) => {
         this.closeUpdateProvedor();
         this.updatingProveedorDetail();
+        this.updatingAnimation = false;
+        this.isUpdatingProveedor = false;
       },
       error: (err) => {
         this.updateProveedorMessage = err.error.error ?? err.error;
+        this.isUpdatingProveedor = false;
       }
     })
   }
 
+  updatingAnimation: boolean = false;
   newProveedorDetails: any = [];
   updatingProveedorDetail() {
     this.limpiarMessages();
@@ -1276,5 +1280,6 @@ export class ProveedoreesComponent {
     this.cargarProveedoresError = '';
     this.articuloErrorFetch = '';
     this.messageGridError = '';
+    this.updateProveedorMessage = '';
   }
 }
