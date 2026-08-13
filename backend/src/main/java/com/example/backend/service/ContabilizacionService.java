@@ -80,7 +80,12 @@ public class ContabilizacionService {
 
         String fechaContable = formatFechaContable(req.getFechaContable());
 
-        String codope = Boolean.TRUE.equals(req.getEsContrato()) ? "400" : "250";
+        String codope;
+        if (Boolean.TRUE.equals(req.getEsContrato())) {
+            codope = "400";
+        } else {
+            codope = "240";
+        }
 
         String numope = fac.getEJE() + "-" + fac.getFACNUM();
 
