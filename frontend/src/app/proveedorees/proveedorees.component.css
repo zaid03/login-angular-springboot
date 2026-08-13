@@ -19,6 +19,7 @@
 .grey-row {background-color: #f2f2f2;}
 /* main table */
 /* detail grid */
+.h1-style {font-size: 18px;}
 .detail-container { display: flex; flex-wrap: wrap; justify-content: center; padding: 5px; gap: 10px;}
 .cell-content {display: flex; gap: 5px;}
 .averageThird {width: 200px; max-width: 260px;}
