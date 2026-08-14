@@ -977,14 +977,15 @@ export class FacturasComponent {
     this.limpiarMEssages();
     const albnum = this.albaranToDelete.albnun;
     const facnum = this.selectedFacturas.facnum;
+    const albbim = this.albaranToDelete.albbim;
     this.isDeletingAlbaranes = true;
 
     const payload = {
       "ENT": this.entcod,
-      "EJE": null,
+      "EJE": this.eje,
       "ALBNUM": albnum,
       "FACNUM": facnum,
-      "FACIEC": null
+      "ALBBIM": albbim
     }
 
     this.http.patch(`${environment.backendUrl}/api/alb/quitar-albaranes`, payload).subscribe({

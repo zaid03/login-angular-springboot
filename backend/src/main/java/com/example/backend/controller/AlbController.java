@@ -195,7 +195,7 @@ public class AlbController {
     }
 
     //quitar albaranes
-    public record Quitar(Integer ENT, String EJE, Integer ALBNUM, Integer FACNUM, Double FACIEC) {}
+    public record Quitar(Integer ENT, String EJE, Integer ALBNUM, Integer FACNUM, Double ALBBIM) {}
     @PatchMapping("/quitar-albaranes")
     public ResponseEntity<?> quitarAlbaranes(
         @RequestBody Quitar payload
@@ -209,7 +209,7 @@ public class AlbController {
             Optional<Alb> albaranOpt = albRepository.findById(id);
             if (albaranOpt.isPresent()) {
                 Alb albaran = albaranOpt.get();
-                albaran.setEJE(payload.EJE());
+                albaran.setEJE(null);
                 albaran.setFACNUM(0);
                 albRepository.save(albaran);
             }
@@ -218,12 +218,12 @@ public class AlbController {
             Optional<Fac> facturaOpt = facRepository.findById(facId);
             if (facturaOpt.isPresent()) {
                 Fac factura = facturaOpt.get();
-                factura.setFACIEC(payload.FACIEC());
+                Double newFACIEC = factura.getFACIEC() - payload.ALBBIM();
+                factura.setFACIEC(newFACIEC);
                 facRepository.save(factura);
             }
 
             Optional<AsuEcoImpProjection> resultOpt = adeRepository.findSumByEntAndAlbnum(payload.ENT() , payload.ALBNUM());
-
             if (resultOpt.isPresent()) {
                 AsuEcoImpProjection result = resultOpt.get();
                 Optional<Fde> applicacionOptio = fdeRepository.findByENTAndEJEAndFACNUMAndFDEECO(

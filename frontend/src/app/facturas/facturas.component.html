@@ -962,13 +962,13 @@
     </div>
     <h3>¿Quiere quitar el albarán de la factura?</h3>
     <div *ngIf="albaranToDelete">
-        <div *ngIf="isDeletingAlbaranes" class="loading-message">
-            <div class="spinner"></div>
-            <span>borrando</span>
-        </div>
         <p class="p-style">Número albarán: {{albaranToDelete.albnun}}</p>
     </div>
     <h1 class="errorBtn">{{dalbaranesDeleteMessage}}</h1>
+    <div *ngIf="isDeletingAlbaranes" class="loading-message">
+        <div class="spinner"></div>
+        <span>borrando</span>
+    </div>
     <button class="red-btn" (click)="quitarAlbaran()">Confirmar</button>
 </div>
 
