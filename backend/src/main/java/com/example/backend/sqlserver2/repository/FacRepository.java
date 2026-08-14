@@ -1,6 +1,7 @@
 package com.example.backend.sqlserver2.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -23,4 +24,7 @@ public interface FacRepository extends JpaRepository<Fac, FacId>, JpaSpecificati
     Integer findMaxFACNUMByENTAndEJE(@Param("ent") Integer ent, @Param("eje") String eje);
 
     List<Fac> findByFACTDCAndFACANNAndFACFAC(String FACTDC, Integer FACANN, Integer FACFAC);
+
+    //selecting a factura for info updates upon a crud op done on facturas
+    Optional<FacWithTerProjection> findByENTAndEJEAndFACNUM(Integer ent, String eje, Integer facnum);
 }

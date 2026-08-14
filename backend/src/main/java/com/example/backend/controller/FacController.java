@@ -209,6 +209,26 @@ public class FacController {
         }
     }
 
+    //selecting a factura for info updates upon a crud op done on facturas
+    @GetMapping("/factura/{ent}/{eje}/{facnum}")
+    public ResponseEntity<?> getFactura(
+        @PathVariable Integer ent,
+        @PathVariable String eje,
+        @PathVariable Integer facnum
+    ) {
+        try {
+            Optional<FacWithTerProjection> factura = facRepository.findByENTAndEJEAndFACNUM(ent, eje, facnum);
+            if (factura.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
+            }
+
+            return ResponseEntity.ok(factura);
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ERROR + ex.getMostSpecificCause().getMessage());
+        }
+    }
+
     //contabilizar a factura
     public record Contabilizar(Integer ENT, String EJE, Integer FACNUM, String FACADO, LocalDateTime FACFCO, String CGECOD, Boolean ESCONTRATO) {}
 

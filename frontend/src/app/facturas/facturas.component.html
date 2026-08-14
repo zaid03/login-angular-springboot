@@ -926,6 +926,7 @@
                 *ngFor="let a of paginatedAlbaranesAdd"
                 (click)="selectAlbaranesAdd(a)"
                 [class.selected-row]="isAlbaranesSelected(a)"
+                style="cursor: pointer;"
             >
                 <td>{{a.albref}}</td>
                 <td>{{a.albdat | date:'dd-MM-yyyy'}}</td>

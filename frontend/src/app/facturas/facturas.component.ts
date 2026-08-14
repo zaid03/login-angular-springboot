@@ -909,6 +909,7 @@ export class FacturasComponent {
 
     this.http.patch(`${environment.backendUrl}/api/alb/add-albaranes`, payload).subscribe({
       next: (res) => {
+        this.updateFacturaInfo();
         this.isAddingAlbaranes = false;
         this.fetchAlbaranesDEtail(facnum);
         this.closeAlbaranesAdd();
@@ -918,6 +919,37 @@ export class FacturasComponent {
       error: (err) => {
         this.isAddingAlbaranes = false;
         this.albaranesError = err.error.error ?? err.error;
+      }
+    })
+  }
+
+  updateFacturaInfo() {
+    const facnum = this.selectedFacturas.facnum;
+    if (!facnum) return;
+    this.http.get(`${environment.backendUrl}/api/fac/factura/${this.entcod}/${this.eje}/${facnum}`).subscribe({
+      next: (res) => {
+        const updatedFactura = Array.isArray(res) ? res[0] : res;
+
+        const index = this.facturas.findIndex((f: any) => Number(f.facnum) === Number(facnum));
+
+        if (index !== -1) {
+          this.facturas[index] = {
+            ...this.facturas[index],
+            ...updatedFactura
+          };
+        }
+
+        this.selectedFacturas = {
+          ...this.selectedFacturas,
+          ...updatedFactura
+        };
+
+        if (this.tempFactura) {
+          this.tempFactura = { ...this.selectedFacturas };
+        }
+      },
+      error: (err) => {
+        console.warn(err.error.error ?? err.error);
       }
     })
   }
@@ -957,6 +989,7 @@ export class FacturasComponent {
 
     this.http.patch(`${environment.backendUrl}/api/alb/quitar-albaranes`, payload).subscribe({
       next: (res) => {
+        this.updateFacturaInfo();
         this.isDeletingAlbaranes = false;
         this.closeDeleteAlbaran();
         this.fetchAlbaranesDEtail(facnum);
@@ -984,6 +1017,7 @@ export class FacturasComponent {
     this.isUpdatingApplicaciones = true;
     this.http.patch(`${environment.backendUrl}/api/fde/update-diferencias/${this.entcod}/${this.eje}/${numero}/${referencia}`, payload).subscribe({
       next: (res) => {
+        this.updateFacturaInfo();
         this.isUpdatingApplicaciones = false;
         this.moreInfoMessageSuccess = 'aplicación actualizada exitosamente';
         this.selectedFacturas.facidi = this.totalFDEDIF;
