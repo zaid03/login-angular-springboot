@@ -819,6 +819,9 @@ export class FacturasComponent {
 
   searchAlbaranes() {
     this.limpiarMEssages();
+    if (this.albaranesDesde === '' && this.albaranesHasta === '') {
+      this.albaranesError = 'Falta un fecha';
+    }
     
     if (this.albaranesDesde && !this.albaranesHasta) {
       const backendDate = this.toBackendDate(this.albaranesDesde);

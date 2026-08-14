@@ -901,7 +901,6 @@
             <button class="purple-btn" (click)="limpiarSearch()">Limpiar</button>
         </div>
     </div>
-    <h1 class="errorBtn">{{albaranesError}}</h1>
     <div *ngIf="isLoadingAlbaranes" class="loading-message">
         <div class="spinner"></div>
         <span>Cargando</span>
@@ -930,7 +929,7 @@
             >
                 <td>{{a.albref}}</td>
                 <td>{{a.albdat | date:'dd-MM-yyyy'}}</td>
-                <td>{{a.albbim}}</td>
+                <td>{{a.albbim | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</td>
                 <td>{{a.albnum}}</td>
                 <td>{{a.albfre | date:'dd-MM-yyyy'}}</td>
                 <td>{{a.depcod}}</td>
@@ -938,6 +937,7 @@
             </tr>
         </tbody>
     </table>
+    <h1 class="errorBtn">{{albaranesError}}</h1>
     <div class="pagination-controls alignment">
         <button (click)="prevPageAlbaranesAdd()" [disabled]="pageAlbaranesAdd === 0">Anterior</button>
         <span>Página</span>

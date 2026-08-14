@@ -1175,7 +1175,6 @@ export class ContratosComponent {
         this.closeAddD();
         this.closeUpdateSure();
         this.fetchCentroGestor(concod);
-        this.cgeSuccess = 'D añadido con éxito';
       },
       error: (err) => {
         this.isAddingD = false;

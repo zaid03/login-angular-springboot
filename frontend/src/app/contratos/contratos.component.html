@@ -228,15 +228,17 @@
                                         #desc
                                     ></textarea>
                                 </td>
-                                <td>
-                                    <input 
-                                        type="checkbox"
-                                        class="check"
-                                        [checked]="tempContrato.conblo === 1" 
-                                        (change)="tempContrato.conblo = $any($event.target).checked ? 1 : 0"
-                                        [disabled]="!isUpdate"
-                                        (input)="allowToUpdate = true"
-                                    /><span class="bloq">Bloqueado</span>
+                                <td class="">
+                                    <div class="cell-content tdAlign">
+                                        <input 
+                                            type="checkbox"
+                                            class="check"
+                                            [checked]="tempContrato.conblo === 1" 
+                                            (change)="tempContrato.conblo = $any($event.target).checked ? 1 : 0"
+                                            [disabled]="!isUpdate"
+                                            (input)="allowToUpdate = true"
+                                        /><span class="p-style">Bloqueado</span>
+                                    </div>
                                 </td>
                             </tr>
                         </table>
@@ -378,9 +380,10 @@
                                     <td>{{c.cge.cgeorg}}</td>
                                     <td>{{c.cge.cgefun}}</td>
                                     <td>{{c.cogopd}}</td>
-                                    <td>{{c.cogimp}}</td>
-                                    <td>{{c.cogaip}}</td>
-                                    <td>{{getKdisponible(c.COGIMP, c.COGIAP)}}</td>
+
+                                    <td>{{c.cogimp | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</td>
+                                    <td>{{c.cogaip | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</td>
+                                    <td>{{getKdisponible(c.COGIMP, c.COGIAP) | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</td>
                                     <td class="borderI">
                                         <button class="red-btn" (click)="showDeleteCentro(c)">-</button>
                                         <button class="purple-btn" (click)="checkBeforeAdd(c)">D</button>
