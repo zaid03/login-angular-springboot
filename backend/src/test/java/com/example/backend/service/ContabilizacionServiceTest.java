@@ -17,6 +17,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import com.example.backend.dto.ContabilizacionRequestDto;
 import com.example.backend.dto.ContabilizacionResponseDto;
+import com.example.backend.dto.Operaciones;
 import com.example.backend.exception.SmlBuildingException;
 import com.example.backend.sqlserver2.model.Fac;
 import com.example.backend.sqlserver2.model.Fde;
@@ -53,24 +54,9 @@ public class ContabilizacionServiceTest {
         ReflectionTestUtils.setField(service, "fdeRepository", fdeRepository);
         ReflectionTestUtils.setField(service, "fdtRepository", fdtRepository);
         ReflectionTestUtils.setField(service, "terRepository", terRepository);
-      ReflectionTestUtils.setField(service, "operacionesService", operacionesService);
+        ReflectionTestUtils.setField(service, "operacionesService", operacionesService);
         ReflectionTestUtils.setField(service, "sicalWsUrl", "http://test-sical-ws:8080/services/Ci");
-      org.mockito.Mockito.lenient().doReturn(java.util.Collections.emptyList())
-        .when(operacionesService).getOperaciones(
-          org.mockito.ArgumentMatchers.anyString(),
-          org.mockito.ArgumentMatchers.anyString(),
-          org.mockito.ArgumentMatchers.anyString(),
-          org.mockito.ArgumentMatchers.anyString(),
-          org.mockito.ArgumentMatchers.anyString(),
-          org.mockito.ArgumentMatchers.anyString(),
-          org.mockito.ArgumentMatchers.anyString(),
-          org.mockito.ArgumentMatchers.anyString(),
-          org.mockito.ArgumentMatchers.anyString(),
-          org.mockito.ArgumentMatchers.anyString(),
-          org.mockito.ArgumentMatchers.anyString(),
-          org.mockito.ArgumentMatchers.anyString(),
-          org.mockito.ArgumentMatchers.anyString()
-        );
+        mockOperacionesSingleLine();
     }
 
     @Test
@@ -449,7 +435,7 @@ public class ContabilizacionServiceTest {
         String result = service.buildSmlInput(req, fac, List.of(), List.of(fdt), "NIF");
 
         assertNotNull(result);
-        assertTrue(result.contains("<dto>"));
+        assertFalse(result.contains("<dto>"));
     }
 
     @Test
@@ -857,7 +843,7 @@ public class ContabilizacionServiceTest {
 
         String result = service.buildSmlInput(req, fac, List.of(), List.of(fdt), "NIF");
 
-        assertTrue(result.contains("<dto>"));
+        assertFalse(result.contains("<dto>"));
     }
 
     @Test
@@ -1059,5 +1045,95 @@ public class ContabilizacionServiceTest {
         String result = service.buildSmlInput(req, fac, List.of(), List.of(), "NIF");
 
         assertFalse(result.contains("<obp>"));
+    }
+
+    @Test
+    void buildSmlInput_withWsNoResults_skipsFdeLine() throws Exception {
+      org.mockito.Mockito.when(operacionesService.getOperaciones(
+        org.mockito.ArgumentMatchers.<String>any(),
+        org.mockito.ArgumentMatchers.<String>any(),
+        org.mockito.ArgumentMatchers.<String>any(),
+        org.mockito.ArgumentMatchers.<String>any(),
+        org.mockito.ArgumentMatchers.<String>any(),
+        org.mockito.ArgumentMatchers.<String>any(),
+        org.mockito.ArgumentMatchers.<String>any(),
+        org.mockito.ArgumentMatchers.<String>any(),
+        org.mockito.ArgumentMatchers.<String>any(),
+        org.mockito.ArgumentMatchers.<String>any(),
+        org.mockito.ArgumentMatchers.<String>any(),
+        org.mockito.ArgumentMatchers.<String>any(),
+        org.mockito.ArgumentMatchers.<String>any()
+      )).thenReturn(List.of());
+
+      ContabilizacionRequestDto req = createValidRequest();
+      Fac fac = createValidFac();
+      Fde fde = createValidFde();
+
+      String result = service.buildSmlInput(req, fac, List.of(fde), List.of(), "NIF");
+
+      assertNotNull(result);
+      assertFalse(result.contains("<linea>"));
+    }
+
+    @Test
+    void buildSmlInput_withWsMultipleOperations_skipsFdeLine() throws Exception {
+      Operaciones op1 = createOperacionWithSingleLinea();
+      Operaciones op2 = createOperacionWithSingleLinea();
+
+      org.mockito.Mockito.when(operacionesService.getOperaciones(
+        org.mockito.ArgumentMatchers.<String>any(),
+        org.mockito.ArgumentMatchers.<String>any(),
+        org.mockito.ArgumentMatchers.<String>any(),
+        org.mockito.ArgumentMatchers.<String>any(),
+        org.mockito.ArgumentMatchers.<String>any(),
+        org.mockito.ArgumentMatchers.<String>any(),
+        org.mockito.ArgumentMatchers.<String>any(),
+        org.mockito.ArgumentMatchers.<String>any(),
+        org.mockito.ArgumentMatchers.<String>any(),
+        org.mockito.ArgumentMatchers.<String>any(),
+        org.mockito.ArgumentMatchers.<String>any(),
+        org.mockito.ArgumentMatchers.<String>any(),
+        org.mockito.ArgumentMatchers.<String>any()
+      )).thenReturn(List.of(op1, op2));
+
+      ContabilizacionRequestDto req = createValidRequest();
+      Fac fac = createValidFac();
+      Fde fde = createValidFde();
+
+      String result = service.buildSmlInput(req, fac, List.of(fde), List.of(), "NIF");
+
+      assertNotNull(result);
+      assertFalse(result.contains("<linea>"));
+    }
+
+    private void mockOperacionesSingleLine() throws Exception {
+      org.mockito.Mockito.lenient().when(operacionesService.getOperaciones(
+        org.mockito.ArgumentMatchers.<String>any(),
+        org.mockito.ArgumentMatchers.<String>any(),
+        org.mockito.ArgumentMatchers.<String>any(),
+        org.mockito.ArgumentMatchers.<String>any(),
+        org.mockito.ArgumentMatchers.<String>any(),
+        org.mockito.ArgumentMatchers.<String>any(),
+        org.mockito.ArgumentMatchers.<String>any(),
+        org.mockito.ArgumentMatchers.<String>any(),
+        org.mockito.ArgumentMatchers.<String>any(),
+        org.mockito.ArgumentMatchers.<String>any(),
+        org.mockito.ArgumentMatchers.<String>any(),
+        org.mockito.ArgumentMatchers.<String>any(),
+        org.mockito.ArgumentMatchers.<String>any()
+      )).thenReturn(List.of(createOperacionWithSingleLinea()));
+    }
+
+    private Operaciones createOperacionWithSingleLinea() {
+      Operaciones op = new Operaciones();
+      Operaciones.Linea linea = new Operaciones.Linea();
+      linea.setNlinea(1);
+      linea.setPrya(2026);
+      linea.setPryt("PRYT");
+      linea.setPryo("PRYO");
+      linea.setPryn("PRYN");
+      linea.setPryx(9);
+      op.setLineaList(List.of(linea));
+      return op;
     }
 }
