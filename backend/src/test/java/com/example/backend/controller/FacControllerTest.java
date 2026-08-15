@@ -1,50 +1,53 @@
 package com.example.backend.controller;
 
-import com.example.backend.config.TestSecurityConfig;
-import com.example.backend.dto.FacWithTerProjection;
-import com.example.backend.config.TestExceptionHandler;
-import com.example.backend.service.FacturaInsertService;
-import com.example.backend.sqlserver2.model.Fac;
-import com.example.backend.sqlserver2.model.FacId;
-import com.example.backend.sqlserver2.model.Fde;
-import com.example.backend.sqlserver2.model.Gbs;
-import com.example.backend.sqlserver2.model.GbsId;
-import com.example.backend.sqlserver2.model.Ter;
-import com.example.backend.sqlserver2.repository.FacRepository;
-import com.example.backend.sqlserver2.repository.TerRepository;
-import com.example.backend.sqlserver2.repository.FdeRepository;
-import com.example.backend.sqlserver2.repository.GbsRepository;
-import com.example.backend.service.FacturaSearch;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.context.annotation.Import;
-import org.springframework.dao.DataAccessResourceFailureException;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.data.jpa.domain.Specification;
-
 import java.time.LocalDateTime;
-import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.isNull;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.dao.DataAccessResourceFailureException;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import com.example.backend.config.TestExceptionHandler;
+import com.example.backend.config.TestSecurityConfig;
+import com.example.backend.dto.FacWithTerProjection;
+import com.example.backend.service.FacturaInsertService;
+import com.example.backend.service.FacturaSearch;
+import com.example.backend.sqlserver2.model.Fac;
+import com.example.backend.sqlserver2.model.FacId;
+import com.example.backend.sqlserver2.model.Fde;
+import com.example.backend.sqlserver2.model.Gbs;
+import com.example.backend.sqlserver2.model.GbsId;
+import com.example.backend.sqlserver2.repository.FacRepository;
+import com.example.backend.sqlserver2.repository.FdeRepository;
+import com.example.backend.sqlserver2.repository.GbsRepository;
+import com.example.backend.sqlserver2.repository.TerRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @WebMvcTest(controllers = FacController.class)
 @ActiveProfiles("test")
@@ -907,6 +910,50 @@ public class FacControllerTest {
             .thenThrow(new DataAccessResourceFailureException("DB down"));
 
         mockMvc.perform(get("/api/fac/noCont/1/E1/C1")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Error :")));
+    }
+
+    @Test
+    void getFactura_returnsOkWhenFound() throws Exception {
+        FacWithTerProjectionImpl projection = new FacWithTerProjectionImpl();
+        projection.ent = 1;
+        projection.eje = "E1";
+        projection.facnum = 555;
+        projection.terNom = "Proveedor Test";
+
+        when(facRepository.findByENTAndEJEAndFACNUM(1, "E1", 555))
+            .thenReturn(Optional.of(projection));
+
+        mockMvc.perform(get("/api/fac/factura/1/E1/555")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("555")));
+
+        verify(facRepository).findByENTAndEJEAndFACNUM(1, "E1", 555);
+    }
+
+    @Test
+    void getFactura_returnsNotFoundWhenMissing() throws Exception {
+        when(facRepository.findByENTAndEJEAndFACNUM(1, "E1", 999))
+            .thenReturn(Optional.empty());
+
+        mockMvc.perform(get("/api/fac/factura/1/E1/999")
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(content().string("Sin resultado"));
+    }
+
+    @Test
+    void getFactura_returnsBadRequestOnDataAccessException() throws Exception {
+        when(facRepository.findByENTAndEJEAndFACNUM(anyInt(), anyString(), anyInt()))
+            .thenThrow(new DataAccessResourceFailureException("DB down"));
+
+        mockMvc.perform(get("/api/fac/factura/1/E1/555")
                 .accept(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isBadRequest())

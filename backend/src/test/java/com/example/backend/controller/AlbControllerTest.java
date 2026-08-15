@@ -1,43 +1,46 @@
 package com.example.backend.controller;
 
-import com.example.backend.config.TestSecurityConfig;
-import com.example.backend.config.TestExceptionHandler;
-import com.example.backend.dto.albFacturaDto;
-import com.example.backend.sqlserver2.model.Alb;
-import com.example.backend.sqlserver2.model.AlbId;
-import com.example.backend.sqlserver2.model.Fac;
-import com.example.backend.sqlserver2.model.FacId;
-import com.example.backend.sqlserver2.model.Fde;
-import com.example.backend.sqlserver2.repository.AlbRepository;
-import com.example.backend.sqlserver2.repository.FacRepository;
-import com.example.backend.sqlserver2.repository.AdeRepository;
-import com.example.backend.sqlserver2.repository.FdeRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.context.annotation.Import;
-import org.springframework.dao.DataAccessResourceFailureException;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
-
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.time.LocalDateTime;
 
-import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.containsString;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.verify;
+import static org.hamcrest.Matchers.hasSize;
+import org.junit.jupiter.api.Test;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.dao.DataAccessResourceFailureException;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import com.example.backend.config.TestExceptionHandler;
+import com.example.backend.config.TestSecurityConfig;
+import com.example.backend.dto.albFacturaDto;
+import com.example.backend.sqlserver2.model.Alb;
+import com.example.backend.sqlserver2.model.Fac;
+import com.example.backend.sqlserver2.model.Fde;
+import com.example.backend.sqlserver2.repository.AdeRepository;
+import com.example.backend.sqlserver2.repository.AlbRepository;
+import com.example.backend.sqlserver2.repository.FacRepository;
+import com.example.backend.sqlserver2.repository.FdeRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @WebMvcTest(controllers = AlbController.class)
 @ActiveProfiles("test")
@@ -181,15 +184,17 @@ public class AlbControllerTest {
     @Test
     void quitarAlbaranes_returnsNoContentOnSuccess() throws Exception {
         Alb alb = new Alb();
+        Fac fac = new Fac();
+        fac.setFACIEC(100.0);
         when(albRepository.findById(any())).thenReturn(Optional.of(alb));
-        when(facRepository.findById(any())).thenReturn(Optional.of(new Fac()));
+        when(facRepository.findById(any())).thenReturn(Optional.of(fac));
 
         Map<String, Object> payload = Map.of(
             "ENT", 1,
             "EJE", "E1",
             "ALBNUM", 100,
             "FACNUM", 200,
-            "FACIEC", 0.0
+            "ALBBIM", 0.0
         );
 
         mockMvc.perform(patch("/api/alb/quitar-albaranes")
@@ -388,6 +393,7 @@ public class AlbControllerTest {
     void quitarAlbaranes_withAsuEcoImpProjection_subtractsFromFde() throws Exception {
         Alb alb = new Alb();
         Fac fac = new Fac();
+        fac.setFACIEC(100.0);
         Fde fde = new Fde();
         fde.setFDEIMP(100.0);
 
@@ -404,7 +410,7 @@ public class AlbControllerTest {
             "EJE", "E1",
             "ALBNUM", 100,
             "FACNUM", 200,
-            "FACIEC", 50.0
+            "ALBBIM", 50.0
         );
 
         mockMvc.perform(patch("/api/alb/quitar-albaranes")

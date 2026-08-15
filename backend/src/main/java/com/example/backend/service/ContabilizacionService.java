@@ -1,8 +1,6 @@
 package com.example.backend.service;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,15 +17,12 @@ import com.example.backend.dto.ContabilizacionResponseDto;
 import com.example.backend.dto.Operaciones;
 import com.example.backend.exception.SmlBuildingException;
 import com.example.backend.sqlserver2.model.Fac;
-import com.example.backend.sqlserver2.model.FacId;
 import com.example.backend.sqlserver2.model.Fde;
 import com.example.backend.sqlserver2.model.Fdt;
-import com.example.backend.sqlserver2.model.Ter;
 import com.example.backend.sqlserver2.repository.FacRepository;
 import com.example.backend.sqlserver2.repository.FdeRepository;
 import com.example.backend.sqlserver2.repository.FdtRepository;
 import com.example.backend.sqlserver2.repository.TerRepository;
-import com.example.backend.service.OperacionesService;
 import com.example.sical.CryptoSical;
 
 @Service
@@ -198,6 +193,10 @@ public class ContabilizacionService {
             }
 
             LineaGastoDefinitivo datosWs = consultarOperacionGastoDefinitivo(fde, org, ent, eje);
+            if (datosWs == null) {
+                System.out.println("WS 2.49: se omite linea por no poder resolver datos de operacion para FDEOPE=" + fde.getFDEOPE());
+                continue;
+            }
 
             sb.append("<linea>");
             sb.append("<lineje>").append(eje).append("</lineje>");
@@ -213,19 +212,17 @@ public class ContabilizacionService {
             if (fde.getFDEOPE() != null) {
                 sb.append("<oan>").append(fde.getFDEOPE()).append("</oan>");
             }
-            if (datosWs != null && datosWs.nlinea() != null) {
+            if (datosWs.nlinea() != null) {
                 sb.append("<naa>").append(datosWs.nlinea()).append("</naa>");
             }
             if (fde.getFDEREF() != null) {
                 sb.append("<refe>").append(fde.getFDEREF()).append("</refe>");
             }
-            if (datosWs != null) {
-                if (datosWs.prya() != null) sb.append("<prya>").append(datosWs.prya()).append("</prya>");
-                if (datosWs.pryt() != null) sb.append("<pryt>").append(datosWs.pryt()).append("</pryt>");
-                if (datosWs.pryo() != null) sb.append("<pryo>").append(datosWs.pryo()).append("</pryo>");
-                if (datosWs.pryn() != null) sb.append("<pryn>").append(datosWs.pryn()).append("</pryn>");
-                if (datosWs.pryx() != null) sb.append("<pryx>").append(datosWs.pryx()).append("</pryx>");
-            }
+            if (datosWs.prya() != null) sb.append("<prya>").append(datosWs.prya()).append("</prya>");
+            if (datosWs.pryt() != null) sb.append("<pryt>").append(datosWs.pryt()).append("</pryt>");
+            if (datosWs.pryo() != null) sb.append("<pryo>").append(datosWs.pryo()).append("</pryo>");
+            if (datosWs.pryn() != null) sb.append("<pryn>").append(datosWs.pryn()).append("</pryn>");
+            if (datosWs.pryx() != null) sb.append("<pryx>").append(datosWs.pryx()).append("</pryx>");
             sb.append("<imp>").append(imp).append("</imp>");
             sb.append("</linea>");
         }
@@ -233,6 +230,11 @@ public class ContabilizacionService {
 
         sb.append("<l_dto>");
         for (Fdt fdt : fdtList) {
+            Double impDto = fdt.getFDTDTO() != null ? fdt.getFDTDTO() : 0.0;
+            if (impDto <= 0) {
+                continue;
+            }
+
             sb.append("<dto>");
             if (fdt.getFDTARE() != null) {
                 sb.append("<areaD>").append(fdt.getFDTARE()).append("</areaD>");
@@ -247,9 +249,7 @@ public class ContabilizacionService {
             if (fdt.getFDTECO() != null) {
                 sb.append("<ecoD>").append(CryptoSical.encodeBase64(fdt.getFDTECO())).append("</ecoD>");
             }
-            if (fdt.getFDTDTO() != null) {
-                sb.append("<impD>").append(fdt.getFDTDTO()).append("</impD>");
-            }
+            sb.append("<impD>").append(impDto).append("</impD>");
             if (fdt.getFDTBSE() != null) {
                 sb.append("<baseRet>").append(fdt.getFDTBSE()).append("</baseRet>");
             }
@@ -483,13 +483,18 @@ public class ContabilizacionService {
 
     private LineaGastoDefinitivo consultarOperacionGastoDefinitivo(Fde fde, String orgCode, String entidad, String eje) {
         try {
+            String numeroOperDesde = fde.getFDEOPE() != null ? String.valueOf(fde.getFDEOPE()) : null;
             String numope = fde.getFDEOPE() != null ? String.valueOf(fde.getFDEOPE()) : null;
             String referencia = fde.getFDEREF() != null ? String.valueOf(fde.getFDEREF()) : null;
+            String oficina = "AL";
 
-            List<Operaciones> resultado = operacionesService.getOperaciones(orgCode, entidad, numope, numope, null, fde.getFDEORG(), fde.getFDEFUN(), fde.getFDEECO(), referencia, null, null, null, eje);
-
+            List<Operaciones> resultado = operacionesService.getOperaciones(orgCode, entidad, numeroOperDesde, numeroOperDesde, numope, fde.getFDEORG(), fde.getFDEFUN(), fde.getFDEECO(), referencia, null, null, oficina, eje);
             if (resultado.isEmpty()) {
                 System.out.println("WS 2.49: sin resultado para FDEOPE=" + numope + " refe=" + referencia);
+                return null;
+            }
+            if (resultado.size() != 1) {
+                System.out.println("WS 2.49: se esperaba 1 operacion, llegaron " + resultado.size() + " para FDEOPE=" + numope);
                 return null;
             }
 
@@ -498,8 +503,9 @@ public class ContabilizacionService {
                 System.out.println("WS 2.49: operacion sin lineas para FDEOPE=" + numope);
                 return null;
             }
-            if (lineas.size() > 1) {
-                System.out.println("WS 2.49: se esperaba 1 linea, llegaron " + lineas.size() + " — usando la primera");
+            if (lineas.size() != 1) {
+                System.out.println("WS 2.49: se esperaba 1 linea, llegaron " + lineas.size() + " para FDEOPE=" + numope);
+                return null;
             }
 
             Operaciones.Linea l = lineas.get(0);
