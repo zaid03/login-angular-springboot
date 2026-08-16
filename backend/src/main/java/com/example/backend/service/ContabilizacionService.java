@@ -488,7 +488,7 @@ public class ContabilizacionService {
             String referencia = fde.getFDEREF() != null ? String.valueOf(fde.getFDEREF()) : null;
             String oficina = "AL";
 
-            List<Operaciones> resultado = operacionesService.getOperaciones(orgCode, entidad, numeroOperDesde, numeroOperDesde, numope, fde.getFDEORG(), fde.getFDEFUN(), fde.getFDEECO(), referencia, null, null, oficina, eje);
+            List<Operaciones> resultado = operacionesService.getOperaciones(orgCode, entidad, numeroOperDesde, numeroOperDesde, null, fde.getFDEORG(), fde.getFDEFUN(), fde.getFDEECO(), referencia, null, null, null, eje);
             if (resultado.isEmpty()) {
                 System.out.println("WS 2.49: sin resultado para FDEOPE=" + numope + " refe=" + referencia);
                 return null;
