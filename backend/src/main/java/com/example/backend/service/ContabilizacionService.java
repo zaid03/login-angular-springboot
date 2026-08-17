@@ -19,10 +19,6 @@ import com.example.backend.exception.SmlBuildingException;
 import com.example.backend.sqlserver2.model.Fac;
 import com.example.backend.sqlserver2.model.Fde;
 import com.example.backend.sqlserver2.model.Fdt;
-import com.example.backend.sqlserver2.repository.FacRepository;
-import com.example.backend.sqlserver2.repository.FdeRepository;
-import com.example.backend.sqlserver2.repository.FdtRepository;
-import com.example.backend.sqlserver2.repository.TerRepository;
 import com.example.sical.CryptoSical;
 
 @Service
@@ -30,14 +26,6 @@ public class ContabilizacionService {
     @Value("${sical.ws.url:http://desa-sical-ws:8080/services/Ci}")
     private String sicalWsUrl;
 
-    @Autowired
-    private FacRepository facRepository;
-    @Autowired
-    private FdeRepository fdeRepository;
-    @Autowired
-    private FdtRepository fdtRepository;
-    @Autowired
-    private TerRepository terRepository;
     @Autowired
     private OperacionesService operacionesService;
 
@@ -79,7 +67,7 @@ public class ContabilizacionService {
         if (Boolean.TRUE.equals(req.getEsContrato())) {
             codope = "400";
         } else {
-            codope = "240";
+            codope = "250";
         }
 
         String numope = fac.getEJE() + "-" + fac.getFACNUM();
@@ -184,11 +172,19 @@ public class ContabilizacionService {
         sb.append("</l_factura>");
 
         sb.append("<l_linea>");
+        java.util.Set<String> lineasIncluidas = new java.util.HashSet<>();
         for (Fde fde : fdeList) {
             Double imp = (fde.getFDEIMP() != null ? fde.getFDEIMP() : 0.0) +
                         (fde.getFDEDIF() != null ? fde.getFDEDIF() : 0.0);
 
+        System.out.println("FDE candidate: org=" + fde.getFDEORG()
+        + " fun=" + fde.getFDEFUN()
+        + " eco=" + fde.getFDEECO()
+        + " ope=" + fde.getFDEOPE()
+        + " imp=" + imp);
+
             if (imp <= 0) {
+                System.out.println("  -> SKIPPED (imp<=0) eco=" + fde.getFDEECO());
                 continue;
             }
 
@@ -197,6 +193,9 @@ public class ContabilizacionService {
                 System.out.println("WS 2.49: se omite linea por no poder resolver datos de operacion para FDEOPE=" + fde.getFDEOPE());
                 continue;
             }
+
+            lineasIncluidas.add(claveLinea(fde.getFDEORG(), fde.getFDEFUN(), fde.getFDEECO()));
+
 
             sb.append("<linea>");
             sb.append("<lineje>").append(eje).append("</lineje>");
@@ -232,9 +231,19 @@ public class ContabilizacionService {
         for (Fdt fdt : fdtList) {
             Double impDto = fdt.getFDTDTO() != null ? fdt.getFDTDTO() : 0.0;
             if (impDto <= 0) {
+                System.out.println("fdtdto that shant pass ");
+                System.out.println(impDto);
                 continue;
             }
 
+            String claveDto = claveLinea(fdt.getFDTORG(), fdt.getFDTFUN(), fdt.getFDTECO());
+            if (!lineasIncluidas.contains(claveDto)) {
+                System.out.println("Se omite dto por no existir la linea correspondiente (" + claveDto + ") en la operacion, FDTECO=" + fdt.getFDTECO());
+                continue;
+            }
+
+            System.out.println("fdtdto that should pass ");
+            System.out.println(impDto);
             sb.append("<dto>");
             if (fdt.getFDTARE() != null) {
                 sb.append("<areaD>").append(fdt.getFDTARE()).append("</areaD>");
@@ -277,9 +286,13 @@ public class ContabilizacionService {
         return sml;
     }
 
+    private String claveLinea(String org, String fun, String eco) {
+        return (org != null ? org : "") + "|" + (fun != null ? fun : "") + "|" + (eco != null ? eco : "");
+    }
+
     public String sendSmlRequest(String smlInput, String url) {
         String rawEndpoint = (url != null && !url.isEmpty()) ? url : sicalWsUrl;
-    String endpoint = rawEndpoint.contains("?") ? rawEndpoint.substring(0, rawEndpoint.indexOf("?")) : rawEndpoint;
+        String endpoint = rawEndpoint.contains("?") ? rawEndpoint.substring(0, rawEndpoint.indexOf("?")) : rawEndpoint;
 
         
         try {
@@ -489,6 +502,15 @@ public class ContabilizacionService {
             String oficina = "AL";
 
             List<Operaciones> resultado = operacionesService.getOperaciones(orgCode, entidad, numeroOperDesde, numeroOperDesde, null, fde.getFDEORG(), fde.getFDEFUN(), fde.getFDEECO(), referencia, null, null, null, eje);
+
+            if (!resultado.isEmpty()) {
+    Operaciones op = resultado.get(0);
+    System.out.println("Operacion " + op.getNumope() + " eco=" + fde.getFDEECO()
+        + " codope=" + op.getCodope()
+        + " fase=" + op.getFase()
+        + " signo=" + op.getSigno());
+}
+
             if (resultado.isEmpty()) {
                 System.out.println("WS 2.49: sin resultado para FDEOPE=" + numope + " refe=" + referencia);
                 return null;
