@@ -634,11 +634,13 @@
                                                         <td>{{ a.FDEECO }}</td>
                                                         <td>{{ a.FDEIMP | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</td>
                                                         <td>
-                                                            <textarea 
+                                                            <input
                                                                 class="textArea-style applicacionesTextarea" 
                                                                 [(ngModel)]="a.FDEDIF"
-                                                                (blur)="formatapplicaciones(a)"
-                                                            ></textarea>
+                                                                (focus)="startEditingPrice(a, $event)"
+                                                                (blur)="stopEditingPrice(a, $event)"
+                                                                (input)="onPriceTyping($event, a)"
+                                                            />
                                                         </td>
                                                         <td>
                                                             <button class="purple-btn" (click)="updateApplicaciones(a)">✔</button>

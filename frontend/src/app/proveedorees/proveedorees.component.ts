@@ -1174,13 +1174,15 @@ export class ProveedoreesComponent {
     this.proveedorInfo = [];
   }
 
+  updateProveedorMessageSuccess: string = '';
   proveedorInfo: any = []
   isUpdatingProveedor: boolean = false;
   getUpdatedInfo() {
     this.limpiarMessages();
     const terayt = this.selectedProveedor.terayt;
-    if (terayt === null || terayt === '') {
+    if (terayt === null || terayt === '' || terayt == 0) {
       this.updateProveedorMessage = 'Falta código de contabilidad';
+      this.updatingAnimation = true;
       return;
     }
     
@@ -1190,7 +1192,6 @@ export class ProveedoreesComponent {
       next: (res) => {
         if (res.length === 0) {
           this.updateProveedorMessage = 'No se encuentra el código en de contabilidad';
-          this.updatingAnimation = false;
           this.isUpdatingProveedor = false;
           return;
         }
@@ -1200,7 +1201,6 @@ export class ProveedoreesComponent {
       error: (err) => {
         this.proveedorInfo = [];
         this.isUpdatingProveedor = false;
-        this.updatingAnimation = false;
         this.updateProveedorMessage = err.error.error ?? err.error;
       }
     })
@@ -1225,7 +1225,6 @@ export class ProveedoreesComponent {
       next: (res) => {
         this.closeUpdateProvedor();
         this.updatingProveedorDetail();
-        this.updatingAnimation = false;
         this.isUpdatingProveedor = false;
       },
       error: (err) => {
@@ -1243,7 +1242,7 @@ export class ProveedoreesComponent {
 
     this.http.get(`${environment.backendUrl}/api/ter/proveedorDetail/${this.entcod}/${tercod}`).subscribe({
       next: (res) => {
-        this.messageSuccess = 'El proveedor actualizó correctamente';
+        this.updateProveedorMessageSuccess = 'El proveedor actualizó correctamente';
         this.newProveedorDetails = res;
         const index = this.proveedores.findIndex(
           p => p.tercod === this.newProveedorDetails.tercod
@@ -1260,6 +1259,12 @@ export class ProveedoreesComponent {
         this.messageError = err.error.error ?? err.error;
       }
     })
+  }
+
+  cerrarMessageActualizar() {
+    this.limpiarMessages();
+    this.closeUpdateProvedor()
+    this.updatingAnimation = false;
   }
 
   //mist
@@ -1281,5 +1286,6 @@ export class ProveedoreesComponent {
     this.articuloErrorFetch = '';
     this.messageGridError = '';
     this.updateProveedorMessage = '';
+    this.updateProveedorMessageSuccess = '';
   }
 }

@@ -91,6 +91,7 @@
 .search {display: flex; gap: 10px; align-items: center;}
 .search-btns-prov {width: 12%; display: flex; gap: 10px;}
 /* adding proveedor grid style */
+.larger {font-size: 18px;}
 .fix {margin-right: 10px;}
 @media (min-width: 1700px) { .chunk-one, .chunk-two, .chunk-three { width: 22%; }
 .save-btn-articulos {margin-left: 10px;}

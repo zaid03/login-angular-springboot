@@ -876,7 +876,6 @@
 <div class="delete-confirm-modal" *ngIf="updateProveedor">
     <div>
         <p class="p-style">¿Quiere actualizar los datos del proveedor desde Sicalwin?</p>
-        <p class="errorBtn">{{updateProveedorMessage}}</p>
         <button class="purple-btn fix" (click)="getUpdatedInfo()">Sí</button>
         <button class="red-btn" (click)="closeUpdateProvedor()">No</button>
     </div>
@@ -890,4 +889,11 @@
             <span>actualizando</span>
         </div>
     </div>
+    <p class="successBtn larger">{{updateProveedorMessageSuccess}}</p>
+    <p class="errorBtn">{{updateProveedorMessage}}</p>
+    <button 
+        class="purple-btn" 
+        (click)="cerrarMessageActualizar()"
+        *ngIf="isUpdatingProveedor === false"
+    >Cerrar</button>
 </div>

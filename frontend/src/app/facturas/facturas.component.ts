@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule, JsonPipe } from '@angular/common';
 import { DatePipe } from '@angular/common';
 import { SidebarComponent } from '../sidebar/sidebar.component';
+import { CurrencyPipe } from '@angular/common';
 
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -16,7 +17,7 @@ import { saveAs } from 'file-saver';
   selector: 'app-proveedorees',
   standalone: true,
   imports: [ CommonModule ,FormsModule, SidebarComponent],
-  providers: [DatePipe],
+  providers: [DatePipe, CurrencyPipe],
   templateUrl: './facturas.component.html',
   styleUrls: ['./facturas.component.css']
 })
@@ -52,7 +53,7 @@ export class FacturasComponent {
   isEstadoMessage: boolean = false;
   public Math = Math;
 
-  constructor(private http: HttpClient, private router: Router, private datePipe: DatePipe ) {}
+  constructor(private http: HttpClient, private router: Router, private datePipe: DatePipe, private currencyPipe: CurrencyPipe ) {}
 
   private defaultFacturas: any[] = [];
   isLoading: boolean = false;
@@ -454,21 +455,26 @@ export class FacturasComponent {
     return '';
   }
 
-  formatapplicaciones(a: any) {
-    if (!a || a.FDEDIF === undefined || a.FDEDIF === null) return;
-    let value = String(a.FDEDIF)
-      .replace(/[^\d,.-]/g, '')
-      .replace(/\s/g, '');     
+  onPriceTyping(event: Event, item: any) {
+    const input = event.target as HTMLInputElement;
+    const raw = input.value.replace(/[^0-9.,-]/g, '').replace(',', '.');
+    item.editingValue = raw;
+    item.coapre = raw ? Number(raw) : 0;
+  }
 
-    if (value.indexOf('.') > -1 && value.indexOf(',') > -1) {
-      value = value.replace(/\./g, ''); 
-    }
-    value = value.replace(',', '.');
+  formatPrice(value: number | null): string {
+    return this.currencyPipe.transform(value ?? 0, 'EUR', 'symbol', '1.2-2', 'es-ES') ?? '';
+  }
 
-    let num = parseFloat(value);
-    if (!isNaN(num)) {
-      a.FDEDIF = num.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
-    }
+  startEditingPrice(item: any, event: FocusEvent) {
+    item.editingPrice = true;
+    item.editingValue = item.coapre != null ? item.coapre.toFixed(2) : '';
+    (event.target as HTMLInputElement).value = item.editingValue;
+  }
+
+  stopEditingPrice(item: any, event: FocusEvent) {
+    item.editingPrice = false;
+    (event.target as HTMLInputElement).value = this.formatPrice(item.coapre);
   }
 
   //search functions
