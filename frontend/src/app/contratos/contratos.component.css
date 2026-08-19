@@ -47,7 +47,7 @@
 .cg tbody td:nth-child(7),
 .cg tbody td:nth-child(8) {text-align: right;}
 .borderI {border-bottom: none;}
-.currenc {height: 20px; width: 95%;}
+.currenc {height: 20px; width: 95%; text-align: right;}
 .fix {text-align: center;}
 .adj {top: 20%}
 .adjs {text-align: center;}
