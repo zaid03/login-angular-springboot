@@ -22,25 +22,9 @@ import com.example.backend.exception.SmlBuildingException;
 import com.example.backend.sqlserver2.model.Fac;
 import com.example.backend.sqlserver2.model.Fde;
 import com.example.backend.sqlserver2.model.Fdt;
-import com.example.backend.sqlserver2.repository.FacRepository;
-import com.example.backend.sqlserver2.repository.FdeRepository;
-import com.example.backend.sqlserver2.repository.FdtRepository;
-import com.example.backend.sqlserver2.repository.TerRepository;
 
 @ExtendWith(MockitoExtension.class)
 public class ContabilizacionServiceTest {
-
-    @Mock
-    private FacRepository facRepository;
-
-    @Mock
-    private FdeRepository fdeRepository;
-
-    @Mock
-    private FdtRepository fdtRepository;
-
-    @Mock
-    private TerRepository terRepository;
 
     @Mock
     private com.example.backend.service.OperacionesService operacionesService;
@@ -50,10 +34,6 @@ public class ContabilizacionServiceTest {
     @BeforeEach
     void setUp() throws Exception {
         service = new ContabilizacionService();
-        ReflectionTestUtils.setField(service, "facRepository", facRepository);
-        ReflectionTestUtils.setField(service, "fdeRepository", fdeRepository);
-        ReflectionTestUtils.setField(service, "fdtRepository", fdtRepository);
-        ReflectionTestUtils.setField(service, "terRepository", terRepository);
         ReflectionTestUtils.setField(service, "operacionesService", operacionesService);
         ReflectionTestUtils.setField(service, "sicalWsUrl", "http://test-sical-ws:8080/services/Ci");
         mockOperacionesSingleLine();
@@ -224,7 +204,6 @@ public class ContabilizacionServiceTest {
     @Test
     void sendSmlRequest_withValidSml_returnsSoapResponse() {
         String smlInput = "<e><test>data</test></e>";
-        String expectedResponse = "<soap:Envelope>...</soap:Envelope>";
         String result = service.sendSmlRequest(smlInput, "http://test-url");
         assertTrue(result == null || result instanceof String);
     }
@@ -816,17 +795,23 @@ public class ContabilizacionServiceTest {
         assertTrue(result.contains("<imp>"));
     }
 
+    // NOTE: dto lines are only emitted when a matching Fde line (same org/fun/eco)
+    // was actually included in <l_linea>. This test now supplies that matching Fde.
     @Test
     void buildSmlInput_withFdtAllFieldsPopulated_includesAllInOutput() throws Exception {
         ContabilizacionRequestDto req = createValidRequest();
         Fac fac = createValidFac();
+        Fde fde = createValidFde();
+        fde.setFDEORG("O1");
+        fde.setFDEFUN("F1");
+        fde.setFDEECO("E1");
         Fdt fdt = createValidFdt();
         fdt.setFDTARE("A1");
         fdt.setFDTORG("O1");
         fdt.setFDTFUN("F1");
         fdt.setFDTECO("E1");
 
-        String result = service.buildSmlInput(req, fac, List.of(), List.of(fdt), "NIF");
+        String result = service.buildSmlInput(req, fac, List.of(fde), List.of(fdt), "NIF");
 
         assertTrue(result.contains("<dto>"));
         assertTrue(result.contains("</dto>"));
@@ -951,6 +936,8 @@ public class ContabilizacionServiceTest {
         assertTrue(result.contains("<linea>"));
     }
 
+    // NOTE: needs a matching Fde line included so the dto entries (all sharing the
+    // same org/fun/eco clave) are not filtered out by the new "orphan dto" guard.
     @Test
     void buildSmlInput_withFdtMultipleEntries_includesAllDtos() throws Exception {
         ContabilizacionRequestDto req = createValidRequest();
@@ -961,7 +948,7 @@ public class ContabilizacionServiceTest {
             createValidFdt()
         );
 
-        String result = service.buildSmlInput(req, fac, List.of(), fdtList, "NIF");
+        String result = service.buildSmlInput(req, fac, List.of(createValidFde()), fdtList, "NIF");
 
         int count = result.split("<dto>").length - 1;
         assertEquals(3, count);
