@@ -219,7 +219,7 @@ public class ContabilizacionService {
             }
             if (datosWs.prya() != null) sb.append("<prya>").append(datosWs.prya()).append("</prya>");
             if (datosWs.pryt() != null) sb.append("<pryt>").append(datosWs.pryt()).append("</pryt>");
-            if (datosWs.pryo() != null) sb.append("<pryo>").append(datosWs.pryo()).append("</pryo>");
+            if (datosWs.pryo() != null) sb.append("<pryo>").append(CryptoSical.encodeSha1Base64(datosWs.pryo())).append("</pryo>");
             if (datosWs.pryn() != null) sb.append("<pryn>").append(datosWs.pryn()).append("</pryn>");
             if (datosWs.pryx() != null) sb.append("<pryx>").append(datosWs.pryx()).append("</pryx>");
             sb.append("<imp>").append(imp).append("</imp>");
