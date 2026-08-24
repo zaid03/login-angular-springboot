@@ -455,26 +455,38 @@ export class FacturasComponent {
     return '';
   }
 
+  formatPrice(value: number | null): string {
+    return this.currencyPipe.transform(
+      value ?? 0,
+      'EUR',
+      'symbol',
+      '1.2-2',
+      'es-ES'
+    ) ?? '';
+  }
+
+  startEditingPrice(item: any) {
+    item.editingPrice = true;
+    item.editingValue = item.FDEDIF === 0
+      ? ''
+      : item.FDEDIF.toString().replace('.', ',');
+  }
+
   onPriceTyping(event: Event, item: any) {
     const input = event.target as HTMLInputElement;
-    const raw = input.value.replace(/[^0-9.,-]/g, '').replace(',', '.');
-    item.editingValue = raw;
-    item.coapre = raw ? Number(raw) : 0;
+
+    item.editingValue = input.value;
   }
 
-  formatPrice(value: number | null): string {
-    return this.currencyPipe.transform(value ?? 0, 'EUR', 'symbol', '1.2-2', 'es-ES') ?? '';
-  }
-
-  startEditingPrice(item: any, event: FocusEvent) {
-    item.editingPrice = true;
-    item.editingValue = item.coapre != null ? item.coapre.toFixed(2) : '';
-    (event.target as HTMLInputElement).value = item.editingValue;
-  }
-
-  stopEditingPrice(item: any, event: FocusEvent) {
+  stopEditingPrice(item: any) {
     item.editingPrice = false;
-    (event.target as HTMLInputElement).value = this.formatPrice(item.coapre);
+
+    const value = item.editingValue
+      ?.replace(',', '.');
+
+    item.FDEDIF = value === '' || value == null
+      ? 0
+      : Number(value);
   }
 
   //search functions
@@ -709,30 +721,34 @@ export class FacturasComponent {
 
   fetchApplicacionesDetails(facnum: number) {
     this.limpiarMEssages();
-    this.http.get<any>(`${environment.backendUrl}/api/fde/${this.entcod}/${this.eje}/${facnum}`).subscribe({
+
+    this.http.get<any>(
+      `${environment.backendUrl}/api/fde/${this.entcod}/${this.eje}/${facnum}`
+    ).subscribe({
       next: (response) => {
+
         this.apalicaciones = response.map((item: any) => {
-        if (item.FDEDIF !== undefined && item.FDEDIF !== null && item.FDEDIF !== '') {
-          let value = String(item.FDEDIF)
-            .replace(/[^\d,.-]/g, '') 
-            .replace(/\s/g, '');      
 
-          if (value.indexOf(',') > -1) {
-            value = value.replace(/\./g, '');
-          }
-          value = value.replace(',', '.');
+          if (item.FDEDIF !== undefined && item.FDEDIF !== null && item.FDEDIF !== '') {
+            let value = String(item.FDEDIF)
+              .replace(/[^\d,.-]/g, '')
+              .replace(',', '.');
 
-          let num = parseFloat(value);
-          if (!isNaN(num)) {
-            item.FDEDIF = num.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
+            const num = parseFloat(value);
+
+            item.FDEDIF = isNaN(num) ? 0 : num;
+          } else {
+            item.FDEDIF = 0;
           }
-        }
-        return item;
-      });
-      this.backupAplicaciones = Array.isArray(response) ? [...this.apalicaciones] : [];
-      this.isLoading = false;
-      this.pageAplicaiones = 0;
-      }, 
+
+          return item;
+        });
+
+        this.backupAplicaciones = [...this.apalicaciones];
+        this.isLoading = false;
+        this.pageAplicaiones = 0;
+      },
+
       error: (err) => {
         this.apalicaciones = [];
         this.isLoading = false;
@@ -1026,7 +1042,6 @@ export class FacturasComponent {
       next: (res) => {
         this.updateFacturaInfo();
         this.isUpdatingApplicaciones = false;
-        this.moreInfoMessageSuccess = 'aplicación actualizada exitosamente';
         this.selectedFacturas.facidi = this.totalFDEDIF;
       },
       error: (err) => {
@@ -1044,12 +1059,19 @@ export class FacturasComponent {
 
   private parseCurrency(value: any): number {
     if (value === undefined || value === null || value === '') return 0;
+
+    if (typeof value === 'number') {
+      return value;
+    }
+
     const cleaned = String(value)
       .replace(/\s/g, '')
+      .replace(/[€$]/g, '')
       .replace(/\./g, '')
-      .replace(',', '.')
-      .replace(/[^\d.-]/g, '');
+      .replace(',', '.');
+
     const num = parseFloat(cleaned);
+
     return isNaN(num) ? 0 : num;
   }
 

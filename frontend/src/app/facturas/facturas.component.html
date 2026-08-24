@@ -621,25 +621,26 @@
                                             <table class="main-table app">
                                                 <thead>
                                                     <tr>
-                                                        <th><strong>Referencia</strong></th>
+                                                        <th>Referencia</th>
                                                         <th>Económica</th>
                                                         <th>Importe</th>
-                                                        <th>diferencias</th>
+                                                        <th>Diferencias</th>
                                                         <th>acción</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <tr *ngFor="let a of paginatedApiciones">
                                                         <td>{{ a.FDEREF }}</td>
-                                                        <td>{{ a.FDEECO }}</td>
+                                                        <td>{{ a?.FDEECO }}</td>
                                                         <td>{{ a.FDEIMP | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</td>
                                                         <td>
                                                             <input
-                                                                class="textArea-style applicacionesTextarea" 
-                                                                [(ngModel)]="a.FDEDIF"
-                                                                (focus)="startEditingPrice(a, $event)"
-                                                                (blur)="stopEditingPrice(a, $event)"
-                                                                (input)="onPriceTyping($event, a)"
+                                                            type="text"
+                                                            class="textArea-style applicacionesTextarea"
+                                                            [value]="a.editingPrice ? a.editingValue : formatPrice(a.FDEDIF)"
+                                                            (focus)="startEditingPrice(a)"
+                                                            (blur)="stopEditingPrice(a)"
+                                                            (input)="onPriceTyping($event, a)"
                                                             />
                                                         </td>
                                                         <td>
