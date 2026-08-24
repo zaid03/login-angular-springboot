@@ -55,12 +55,16 @@ public class ConControllerTest {
     private ObjectMapper objectMapper;
 
     private CotContratoProjection createMockProjection() {
+        return createMockProjection(100, 200);
+    }
+
+    private CotContratoProjection createMockProjection(Integer concod, Integer tercod) {
         CotContratoProjection projection = new CotContratoProjection() {
             @Override
             public ConnInfo getConn() {
                 return new ConnInfo() {
                     @Override
-                    public Integer getCONCOD() { return 100; }
+                    public Integer getCONCOD() { return concod; }
                     @Override
                     public String getCONLOT() { return "LOT001"; }
                     @Override
@@ -78,7 +82,7 @@ public class ConControllerTest {
             public TerInfo getTer() {
                 return new TerInfo() {
                     @Override
-                    public Integer getTERCOD() { return 200; }
+                    public Integer getTERCOD() { return tercod; }
                     @Override
                     public String getTERNOM() { return "Supplier Name"; }
                 };
@@ -184,8 +188,6 @@ public class ConControllerTest {
 
     @Test
     void updateContrato_returns400OnMissingCondes() throws Exception {
-        ConId id = new ConId(1, "E1", 100);
-
         String payload = objectMapper.writeValueAsString(Map.of(
             "CONBLO", 1,
             "CONFIN", "2026-03-21T10:00:00",
@@ -242,13 +244,19 @@ public class ConControllerTest {
             .andExpect(content().string(org.hamcrest.Matchers.containsString("Error :")));
     }
 
+    // ---- addContrato ----
+    // NOTE: addContrato no longer returns 204. After saving Conn/Cot it re-reads the
+    // new contract via cotRepository.findProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCOD
+    // and returns 200 OK with the built ContratoDto list, or 404 if that lookup is empty.
+
     @Test
-    void addContrato_returns204OnSuccess() throws Exception {
-        Conn conn = new Conn();
+    void addContrato_returns200OnSuccess() throws Exception {
         when(conRepository.findFirstByENTAndEJEOrderByCONCODDesc(1, "E1"))
             .thenReturn(Optional.empty());
-        when(conRepository.save(any(Conn.class))).thenReturn(conn);
+        when(conRepository.save(any(Conn.class))).thenReturn(new Conn());
         when(cotRepository.save(any(Cot.class))).thenReturn(new Cot());
+        when(cotRepository.findProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCOD(3, 1, "E1", 1))
+            .thenReturn(Optional.of(createMockProjection(1, 200)));
 
         String payload = objectMapper.writeValueAsString(Map.of(
             "ENT", 1,
@@ -265,7 +273,40 @@ public class ConControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(payload))
             .andDo(print())
-            .andExpect(status().isNoContent());
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0].concod").value(1))
+            .andExpect(jsonPath("$[0].ternom").value("Supplier Name"));
+
+        verify(conRepository).save(any(Conn.class));
+        verify(cotRepository).save(any(Cot.class));
+    }
+
+    @Test
+    void addContrato_returns404WhenProjectionNotFoundAfterSave() throws Exception {
+        when(conRepository.findFirstByENTAndEJEOrderByCONCODDesc(1, "E1"))
+            .thenReturn(Optional.empty());
+        when(conRepository.save(any(Conn.class))).thenReturn(new Conn());
+        when(cotRepository.save(any(Cot.class))).thenReturn(new Cot());
+        when(cotRepository.findProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCOD(3, 1, "E1", 1))
+            .thenReturn(Optional.empty());
+
+        String payload = objectMapper.writeValueAsString(Map.of(
+            "ENT", 1,
+            "EJE", "E1",
+            "CONLOT", "LOT001",
+            "CONBLO", 0,
+            "CONFIN", "2026-03-21T10:00:00",
+            "CONFFI", "2026-03-21T10:00:00",
+            "CONDES", "New Contract",
+            "TERCOD", 200
+        ));
+
+        mockMvc.perform(post("/api/con/add-contrato")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payload))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(content().string("Error añadir contrato"));
 
         verify(conRepository).save(any(Conn.class));
         verify(cotRepository).save(any(Cot.class));
@@ -381,9 +422,13 @@ public class ConControllerTest {
     }
 
     @Test
-    void addContrato_nexConcodWithNullConcod() throws Exception {
+    void addContrato_nextConcodWithNullConcod() throws Exception {
         when(conRepository.findFirstByENTAndEJEOrderByCONCODDesc(1, "E1"))
             .thenReturn(Optional.of(new Conn() {{ setCONCOD(null); }}));
+        when(conRepository.save(any(Conn.class))).thenReturn(new Conn());
+        when(cotRepository.save(any(Cot.class))).thenReturn(new Cot());
+        when(cotRepository.findProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCOD(3, 1, "E1", 1))
+            .thenReturn(Optional.of(createMockProjection(1, 200)));
 
         String payload = objectMapper.writeValueAsString(Map.of(
             "ENT", 1,
@@ -400,7 +445,8 @@ public class ConControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(payload))
             .andDo(print())
-            .andExpect(status().isNoContent());
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0].concod").value(1));
 
         verify(conRepository).save(any(Conn.class));
         verify(cotRepository).save(any(Cot.class));
@@ -546,6 +592,8 @@ public class ConControllerTest {
             .thenReturn(Optional.of(existingConn));
         when(conRepository.save(any(Conn.class))).thenReturn(new Conn());
         when(cotRepository.save(any(Cot.class))).thenReturn(new Cot());
+        when(cotRepository.findProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCOD(3, 1, "E1", 51))
+            .thenReturn(Optional.of(createMockProjection(51, 200)));
 
         String payload = objectMapper.writeValueAsString(Map.of(
             "ENT", 1,
@@ -562,7 +610,8 @@ public class ConControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(payload))
             .andDo(print())
-            .andExpect(status().isNoContent());
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0].concod").value(51));
 
         verify(conRepository).save(any(Conn.class));
     }
@@ -573,6 +622,8 @@ public class ConControllerTest {
             .thenReturn(Optional.empty());
         when(conRepository.save(any(Conn.class))).thenReturn(new Conn());
         when(cotRepository.save(any(Cot.class))).thenReturn(new Cot());
+        when(cotRepository.findProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCOD(3, 5, "E5", 1))
+            .thenReturn(Optional.of(createMockProjection(1, 500)));
 
         String payload = objectMapper.writeValueAsString(Map.of(
             "ENT", 5,
@@ -589,7 +640,8 @@ public class ConControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(payload))
             .andDo(print())
-            .andExpect(status().isNoContent());
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0].tercod").value(500));
 
         verify(conRepository).save(any(Conn.class));
         verify(cotRepository).save(any(Cot.class));
@@ -604,6 +656,8 @@ public class ConControllerTest {
             .thenReturn(Optional.empty());
         when(conRepository.save(any(Conn.class))).thenReturn(connArg);
         when(cotRepository.save(any(Cot.class))).thenReturn(cotArg);
+        when(cotRepository.findProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCOD(3, 1, "E1", 1))
+            .thenReturn(Optional.of(createMockProjection(1, 100)));
 
         String payload = objectMapper.writeValueAsString(Map.of(
             "ENT", 1,
@@ -620,7 +674,7 @@ public class ConControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(payload))
             .andDo(print())
-            .andExpect(status().isNoContent());
+            .andExpect(status().isOk());
 
         verify(conRepository).save(any(Conn.class));
         verify(cotRepository).save(any(Cot.class));
@@ -644,6 +698,8 @@ public class ConControllerTest {
             .thenReturn(Optional.of(existingConn));
         when(conRepository.save(any(Conn.class))).thenReturn(new Conn());
         when(cotRepository.save(any(Cot.class))).thenReturn(new Cot());
+        when(cotRepository.findProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCOD(3, 1, "E1", 10000))
+            .thenReturn(Optional.of(createMockProjection(10000, 200)));
 
         String payload = objectMapper.writeValueAsString(Map.of(
             "ENT", 1,
@@ -660,7 +716,8 @@ public class ConControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(payload))
             .andDo(print())
-            .andExpect(status().isNoContent());
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0].concod").value(10000));
     }
 
     @Test
@@ -722,6 +779,8 @@ public class ConControllerTest {
             .thenReturn(Optional.empty());
         when(conRepository.save(any(Conn.class))).thenReturn(new Conn());
         when(cotRepository.save(any(Cot.class))).thenReturn(new Cot());
+        when(cotRepository.findProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCOD(3, 1, "E1", 1))
+            .thenReturn(Optional.of(createMockProjection(1, 200)));
 
         String payload = objectMapper.writeValueAsString(Map.of(
             "ENT", 1,
@@ -738,11 +797,12 @@ public class ConControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(payload))
             .andDo(print())
-            .andExpect(status().isNoContent());
+            .andExpect(status().isOk());
 
         verify(conRepository).findFirstByENTAndEJEOrderByCONCODDesc(1, "E1");
         verify(conRepository).save(any(Conn.class));
         verify(cotRepository).save(any(Cot.class));
+        verify(cotRepository).findProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCOD(3, 1, "E1", 1);
     }
 
     private ContratoDto createMockDto() {
