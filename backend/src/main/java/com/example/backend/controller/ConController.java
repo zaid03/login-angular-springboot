@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.backend.controller.ConController.CUpdate;
 import com.example.backend.dto.ContratoDto;
 import com.example.backend.service.CotContratoProjection;
 import com.example.backend.service.ContratosSearch;
@@ -70,7 +69,7 @@ public class ConController {
         }
     }
 
-    //search by concod bloqueado
+    //search by in contratos
     @GetMapping("/searchByCodigoBloque/{ent}/{eje}/{searchMode}")
     public ResponseEntity<?> searchContratosCodigoBloqueado(
         @PathVariable Integer ent,
@@ -164,7 +163,15 @@ public class ConController {
             cotAdd.setCOTLIN(1);
             cotRepository.save(cotAdd);
 
-            return ResponseEntity.noContent().build();
+            Optional<CotContratoProjection> newContrato = cotRepository.findProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCOD(3, payload.ENT(), payload.EJE(), concod);
+            if (newContrato.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error añadir contrato");
+            }
+            List<ContratoDto> dto = newContrato.stream()
+                .map(p -> buildContratoDto(p.getConn(), p.getTer()))
+                .collect(Collectors.toList());
+
+            return ResponseEntity.ok(dto);
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ERROR + ex.getMostSpecificCause().getMessage());
         }

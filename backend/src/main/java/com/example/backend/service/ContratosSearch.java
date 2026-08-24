@@ -1,14 +1,13 @@
 package com.example.backend.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-import com.example.backend.service.CotContratoProjection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
-import java.util.stream.Collectors;
-import com.example.backend.dto.ContratoDto;
 
+import com.example.backend.dto.ContratoDto;
 import com.example.backend.sqlserver2.repository.CotRepository;
 
 @Service
@@ -32,7 +31,8 @@ public class ContratosSearch {
                 contratos = cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCOD(3, ent, eje, Integer.parseInt(term));
             }
             else {
-                contratos = cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDES(3, ent, eje, term);
+                contratos = cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDESContaining(3, ent, eje, term);
+                System.out.println("contratos size = " + contratos.size());
             }
         }
         else if (searchMode.equals("bloque")) {
@@ -43,7 +43,7 @@ public class ContratosSearch {
                 contratos = cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCODAndConnCONBLONot(3, ent, eje, Integer.parseInt(term), 0);
             }
             else {
-                contratos = cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDESAndConnCONBLONot(3, ent, eje, term, 0);
+                contratos = cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDESContainingAndConnCONBLONot(3, ent, eje, term, 0);
             }
         }
         else if (searchMode.equals("noBloque")) {
@@ -54,7 +54,7 @@ public class ContratosSearch {
                 contratos = cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONCODAndConnCONBLO(3, ent, eje, Integer.parseInt(term), 0);
             }
             else {
-                contratos = cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDESAndConnCONBLO(3, ent, eje, term, 0);
+                contratos = cotRepository.findAllProjectedByConnCONTIPAndConnENTAndConnEJEAndConnCONDESContainingAndConnCONBLO(3, ent, eje, term, 0);
             }
         }
 

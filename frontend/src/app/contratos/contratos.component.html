@@ -419,7 +419,7 @@
         <div class="title sizeTitle">
             <h3>Añadir un contrato</h3>
         </div>
-        <button class="purple-btn" (click)="addContrato(description.value, fechaIni.value, fechaFin.value)">+ Cargar</button>
+        <button class="purple-btn" (click)="addContrato()">+ Cargar</button>
         <button class="red-btn" (click)="closeAdd()">✖</button>
     </div>
     <h1 class="errorBtn">{{addContratoError}}</h1>
@@ -435,9 +435,15 @@
             </div>
             <div class="right-add">
                 <div class="on-two">
-                    <input type="date" class="input-style long-add" #fechaIni />
+                    <input 
+                        type="date" 
+                        class="input-style long-add" 
+                        [(ngModel)]="fecha_ini" />
                     <p class="p-style patch">Fecha fin</p>
-                    <input type="date" class="input-style long-add" #fechaFin />
+                    <input 
+                        type="date" 
+                        class="input-style long-add"
+                        [(ngModel)]="fecha_final" />
                 </div>
                 <div class="on-two">
                     <textarea 
@@ -446,7 +452,10 @@
                         (input)="onEconomicaInput($event)"
                     ></textarea>
                     <p class="p-style">Descripción*</p>
-                    <textarea class="textArea-style long-add height" #description></textarea>
+                    <textarea 
+                        class="textArea-style long-add height" 
+                        [(ngModel)]="description"
+                    ></textarea>
                     <div class="bloq-add">
                         <input 
                             type="checkbox" 
@@ -463,6 +472,14 @@
         <h1 class="p-style" *ngIf="proveedorTernom">El proveedor {{proveedorTernom}} ha sido seleccionado</h1>
         <button class="purple-btn" (click)="openProveedores()">Seleccione un proveedor</button>
     </div>
+</div>
+
+<div class="modal-backdrop force" *ngIf="cntrtsAddCnfrm"></div>
+<div class="delete-confirm-modal adj update-D" *ngIf="cntrtsAddCnfrm">
+    <p class="p-style">Añadido el Contrato número {{numeroContrato}}</p>
+    <p class="p-style">¿Quiere ir a la vista detalle?</p>
+    <button class="purple-btn btn-space" (click)="openNewCntrtDetails()">Sí</button>
+    <button class="red-btn" (click)="contratosAddConfirmationClose()">No</button>
 </div>
 
 <div class="modal-backdrop force" *ngIf="showProveedorGrid"></div>
@@ -509,6 +526,7 @@
                     *ngFor="let p of paginatedProveedores" 
                     [class.grey-row]="p.terblo == 1"
                     (click)="selectProveedor(p)"
+                    style="cursor: pointer;"
                 >
                     <td style="cursor: pointer;">{{ p.tercod }}</td>
                     <td>{{ p.ternom }}</td>

@@ -1,6 +1,6 @@
 import { Component, HostListener } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { Router, TitleStrategy } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { SidebarComponent } from '../sidebar/sidebar.component';
@@ -422,6 +422,9 @@ export class ContratosComponent {
     this.proveedorTercod = null;
     this.proveedorTernom = null;
     this.economicaAdd = '';
+    this.description = '';
+    this.fecha_ini = '';
+    this.fecha_final = '';
   }
 
   showProveedorGrid: boolean = false;
@@ -508,31 +511,44 @@ export class ContratosComponent {
     this.closeProveedores();
   }
 
+  onEconomicaInput(event: any): void {
+    let value = event.target.value;
+    let formatted = value.replace(/\D/g, '');
+    formatted = formatted.substring(0, 5);
+    event.target.value = formatted;
+    this.economicaAdd = formatted;
+  }
+
   conblo: number = 0;
-  addContrato(description: any, fecha_ini: any, fecha_final: any) {
+  economicaAdd: string = '';
+  description: string = '';
+  fecha_ini: string = '';
+  fecha_final: string = '';
+  addContrato() {
     this.limpiarMessages();
 
-    if (this.economicaAdd === '' || description === '') {this.addContratoError = 'Económica y -	Descripción no pueden estar vacías.'; return;}
+    if (this.economicaAdd === '' || this.description === '') {this.addContratoError = 'Económica y -	Descripción no pueden estar vacías.'; return;}
     if (this.proveedorTercod === null) {this.addContratoError = 'Seleccione una proveedor'; return;}
 
     const payload = {
       "ENT": this.entcod,
       "EJE": this.eje,
       "CONLOT": this.economicaAdd,
-      "CONDES": description,
-      "CONFIN": fecha_ini ? new Date(fecha_ini).toISOString() : null,
-      "CONFFI": fecha_final ? new Date(fecha_final).toISOString() : null,
+      "CONDES": this.description,
+      "CONFIN": this.fecha_ini ? new Date(this.fecha_ini).toISOString() : null,
+      "CONFFI": this.fecha_final ? new Date(this.fecha_final).toISOString() : null,
       "CONBLO": this.conblo,
       "TERCOD": this.proveedorTercod
     }
 
     this.isAdding = true;
-    this.http.post(`${environment.backendUrl}/api/con/add-contrato`, payload).subscribe({
+    this.http.post<any>(`${environment.backendUrl}/api/con/add-contrato`, payload).subscribe({
       next: (res) => {
         this.isAdding = false;
-        this.mainSuccess = 'contrato añadido exitosamente';
-        this.fetchContratos();
-        this.closeAdd();
+        this.numeroContrato = res[0].concod;
+        this.contratos = [...this.contratos, res[0]];
+        console.log(" new cntns", this.contratos)
+        this.contratosAddConfirmationOpen();
       },
       error: (err) => {
         this.addContratoError = err.error.error ?? err.error;
@@ -541,13 +557,25 @@ export class ContratosComponent {
     })
   }
 
-  economicaAdd: string = '';
-  onEconomicaInput(event: any): void {
-    let value = event.target.value;
-    let formatted = value.replace(/\D/g, '');
-    formatted = formatted.substring(0, 5);
-    event.target.value = formatted;
-    this.economicaAdd = formatted;
+  cntrtsAddCnfrm: boolean = false;
+  numeroContrato?: number;
+  contratosAddConfirmationOpen() {
+    this.limpiarMessages();
+    this.cntrtsAddCnfrm = true;
+  }
+
+  contratosAddConfirmationClose() {
+    this.cntrtsAddCnfrm = false;
+    this.numeroContrato = undefined;
+    this.fetchContratos();
+    this.closeAdd();
+  }
+
+  openNewCntrtDetails() {
+    this.limpiarMessages();
+    this.openDetails(this.contratos.at(-1));
+    this.cntrtsAddCnfrm = false;
+    this.closeAdd();
   }
 
   //sub detail's articulo's grids

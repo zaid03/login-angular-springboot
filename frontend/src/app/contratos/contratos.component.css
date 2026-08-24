@@ -19,7 +19,7 @@
 /* add grid */
 .title {width: 90%;}
 .add-confirm-modal {width: 70% !important;}
-.add-container {display: flex; flex-direction: column; gap: 10px;}
+.add-container {display: flex; flex-direction: column; gap: 10px; align-items: center;}
 .container-wrap {display: flex; gap: 10px;}
 .left-add {text-align: left; display: flex; flex-direction: column; gap: 10px;}
 .right-add {display: flex; flex-direction: column; gap: 5px;}
@@ -100,8 +100,10 @@
 .sizeTitle {width: 80%;}
 .update-D {top: 30%;}
 /* add contrato grid */
-@media (min-width: 1700px) {
+@media (min-width: 1800px) {
     .proveedor-grid-modal {top: 40%;}
     .adj {top: 35%}
+}
+@media (min-width: 2200px) {
     .update-D {top: 40%;}
 }
