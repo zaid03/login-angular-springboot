@@ -187,6 +187,7 @@
                         *ngFor="let f of paginatedFacturas"
                         (click)="selectFacturas(f)"
                         [class.selected-row]="isFacturaSelected(f)"
+                        style="cursor: pointer;"
                     >
                         <td (click)="showDetails(f)" style="cursor: pointer;">{{f.facnum}}</td>
                         <td>{{f.tercod}}</td>
