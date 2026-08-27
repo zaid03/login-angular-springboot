@@ -92,6 +92,7 @@ export class BolsaCreditoComponent {
   description: string = '';
   estado: number = 0;
   fetchCentroGestorInfo() {
+    this.fetchCancel$.next();
     this.http.get<any>(`${environment.backendUrl}/api/cge/search-centros-codigo/${this.entcod}/${this.eje}/${this.cge}`).subscribe({
       next: (res) => {
         this.cge = res[0].cgecod;
@@ -101,6 +102,10 @@ export class BolsaCreditoComponent {
         this.estado = res[0].cgecic;
       },
       error: (err) => {
+        this.organigrama = '';
+        this.programa ='';
+        this.description = '';
+        this.estado = 0;
         console.warn(err.error.error ?? err.error);
       }
     })
@@ -108,7 +113,6 @@ export class BolsaCreditoComponent {
 
   fetchBolsas() {
     this.fetchCancel$.next();
-
     this.isLoading = true;
     this.http.get<any>(`${environment.backendUrl}/api/gbs/fetch-all/${this.entcod}/${this.eje}/${this.cge}`).subscribe({
       next: (response) => {
@@ -152,8 +156,8 @@ export class BolsaCreditoComponent {
       },
       error: (err) => {
         this.creditos = [];
-        this.tableIsError = true;
-        this.tableMessage = err.error.error ?? err.error;
+        console.warn = err.error.error ?? err.error;
+        this.tableMessage = 'Centro Gestor no existe';
         this.isLoading = false;
       }
     });
@@ -201,10 +205,38 @@ export class BolsaCreditoComponent {
         return this.sortDirection === 'asc' ? aVal - bVal : bVal - aVal;
       }
 
-      if (['limporte', 'saldo', 'gbsiut', 'gbsict'].includes(field)) {
+      if (field === 'limporte' || field === 'saldo') {
         aVal = this.parseMoney(a?.[field]);
         bVal = this.parseMoney(b?.[field]);
-        return this.sortDirection === 'asc' ? aVal - bVal : bVal - aVal;
+
+        return this.sortDirection === 'asc'
+          ? aVal - bVal
+          : bVal - aVal;
+      }
+
+      if (field === 'gbsiut') {
+        aVal = this.getkAcPeCo(a?.gbsiut, a?.gbsict);
+        bVal = this.getkAcPeCo(b?.gbsiut, b?.gbsict);
+
+        return this.sortDirection === 'asc'
+          ? aVal - bVal
+          : bVal - aVal;
+      }
+
+      if (field === 'gbsict') {
+        aVal = this.getkdispon(
+          a?.saldo,
+          this.getkAcPeCo(a?.gbsiut, a?.gbsict)
+        );
+
+        bVal = this.getkdispon(
+          b?.saldo,
+          this.getkAcPeCo(b?.gbsiut, b?.gbsict)
+        );
+
+        return this.sortDirection === 'asc'
+          ? aVal - bVal
+          : bVal - aVal;
       }
 
       if (field === 'acpeco') {
@@ -429,6 +461,10 @@ export class BolsaCreditoComponent {
 
   cgeSearch: string = '';
   searchBolsas() {
+    if (this.cgeSearch === '') {
+      this.tableMessage = 'Falta Centro Gestor';
+      return;
+    }
     this.fetchCancel$.next();
     this.fetchCentroGestorInfo();
     this.fetchBolsas();
@@ -445,6 +481,7 @@ export class BolsaCreditoComponent {
   }
 
   limpiarSearch() {
+    this.cge = this.backUpCge;
     this.fetchCancel$.next();
     this.limpiarMessages();
     this.fetchBolsas();

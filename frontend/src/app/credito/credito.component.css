@@ -4,12 +4,13 @@
 .search-holder { width: 69%;}
 /* search */
 /* main-table */
-.credito-container td:nth-child(8),
-.credito-container td:nth-child(7),
-.credito-container td:nth-child(6),
-.credito-container td:nth-child(5) { text-align: right; }
+.bolsa-table td:nth-child(8),
+.bolsa-table td:nth-child(7),
+.bolsa-table td:nth-child(6),
+.bolsa-table td:nth-child(5) { text-align: right; }
 /* main-table */
 /* main grid detail */
+.above {display: flex; gap: 20px; align-items: center; padding-left: 1%;}
 .detail-container {width: 99%; padding: 1px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;}
 .left,
 .right {width: 49%;}
@@ -18,7 +19,8 @@
 .third-table {height: 95px;}
 .sign {font-weight: bold; font-size: 22px;}
 .margin {margin-bottom: 10px;}
-.border td {border-top: 1px solid gray; border-bottom: 1px solid gray;}
+.border td {border-top: 1px solid gray;}
+.border-second td {border-bottom: 1px solid gray; padding: 5px;}
 .borderLeft {border-left: 1px solid gray;}
 .borderRight{border-right: 1px solid gray;}
 .borderTop {border-top: 1px solid gray;}
@@ -26,7 +28,14 @@
 .signPlacement {height: 70%; display: flex; align-items: end;}
 .signPlacement2 {height: 100%; align-content: end;}
 .signPlacement3 {height: 85%; align-content: end;}
+.bottom {border-bottom: 1px solid gray;}
 .margintop {margin-top: 10px;}
+.alignment {text-align: right;}
+.mix {width: 80%;}
+.padding {padding: 5px;}
+.contabilidad {text-align: center; height: 10%;}
+.contabilidad p {font-size: 22px !important;}
+.top {margin-top: 2%;}
 /* main grid detail */
 @media (max-width: 1299px) {
     .detail-chunk-container .left {width: 10%;}

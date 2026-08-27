@@ -17,8 +17,10 @@
 .bolsa-table td:nth-child(7),
 .bolsa-table td:nth-child(6),
 .bolsa-table td:nth-child(5) { text-align: right; }
+.tableMessage {width: 10% !important;}
 /* main-table */
 /* main grid detail */
+.above {display: flex; gap: 20px; align-items: center; padding-left: 1%;}
 .detail-container {width: 99%; padding: 1px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;}
 .left,
 .right {width: 49%;}
@@ -27,7 +29,8 @@
 .third-table {height: 95px;}
 .sign {font-weight: bold; font-size: 22px;}
 .margin {margin-bottom: 10px;}
-.border td {border-top: 1px solid gray; border-bottom: 1px solid gray;}
+.border td {border-top: 1px solid gray;}
+.border-second td {border-bottom: 1px solid gray; padding: 5px;}
 .borderLeft {border-left: 1px solid gray;}
 .borderRight{border-right: 1px solid gray;}
 .borderTop {border-top: 1px solid gray;}
@@ -35,7 +38,14 @@
 .signPlacement {height: 70%; display: flex; align-items: end;}
 .signPlacement2 {height: 100%; align-content: end;}
 .signPlacement3 {height: 85%; align-content: end;}
+.bottom {border-bottom: 1px solid gray;}
 .margintop {margin-top: 10px;}
+.alignment {text-align: right;}
+.mix {width: 80%;}
+.padding {padding: 5px;}
+.contabilidad {text-align: center; height: 10%;}
+.contabilidad p {font-size: 22px !important;}
+.top {margin-top: 2%;}
 /* main grid detail */
 /* D grid for centro gestor */
 .D-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 16px; box-shadow: 0 8px 32px rgba(44, 62, 80, 0.18), 0 1.5px 6px rgba(44,62,80,0.08); padding: 25px 30px; min-width: 85%; min-height: 120px; max-height: 80vh; z-index: 3000; display: flex; flex-direction: column; align-items: center;}

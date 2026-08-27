@@ -140,10 +140,10 @@ export class CreditoComponent {
     this.applySort();
   }
 
-  //still need fixing
   applySort() {
     if (!this.sortField) return;
     const field = this.sortField;
+
     this.creditos = [...this.creditos].sort((a, b) => {
       let aVal: any;
       let bVal: any;
@@ -170,28 +170,51 @@ export class CreditoComponent {
         return this.sortDirection === 'asc' ? aVal - bVal : bVal - aVal;
       }
 
-      if (['limporte', 'saldo', 'gbsiut', 'gbsict'].includes(field)) {
-        const parseMoney = (val: any) => {
-          if (typeof val === 'number') return val;
-          if (!val) return 0;
-          return parseFloat(String(val).replace(/[€\s]/g, '').replace('.', '').replace(',', '.')) || 0;
-        };
-        aVal = parseMoney(a?.[field]);
-        bVal = parseMoney(b?.[field]);
-        return this.sortDirection === 'asc' ? aVal - bVal : bVal - aVal;
+      if (field === 'limporte' || field === 'saldo') {
+        aVal = this.parseMoney(a?.[field]);
+        bVal = this.parseMoney(b?.[field]);
+
+        return this.sortDirection === 'asc'
+          ? aVal - bVal
+          : bVal - aVal;
+      }
+
+      if (field === 'gbsiut') {
+        aVal = this.getkAcPeCo(a?.gbsiut, a?.gbsict);
+        bVal = this.getkAcPeCo(b?.gbsiut, b?.gbsict);
+
+        return this.sortDirection === 'asc'
+          ? aVal - bVal
+          : bVal - aVal;
+      }
+
+      if (field === 'gbsict') {
+        aVal = this.getkdispon(
+          a?.saldo,
+          this.getkAcPeCo(a?.gbsiut, a?.gbsict)
+        );
+
+        bVal = this.getkdispon(
+          b?.saldo,
+          this.getkAcPeCo(b?.gbsiut, b?.gbsict)
+        );
+
+        return this.sortDirection === 'asc'
+          ? aVal - bVal
+          : bVal - aVal;
       }
 
       if (field === 'acpeco') {
-        aVal = Number(this.getkAcPeCo(a.gbsiut, a.gbsict));
-        bVal = Number(this.getkAcPeCo(b.gbsiut, b.gbsict));
-        return this.sortDirection === 'asc' ? aVal - bVal : bVal - aVal;
-      }
+        aVal = this.getkAcPeCo(a.gbsiut, a.gbsict);
+        bVal = this.getkAcPeCo(b.gbsiut, b.gbsict);
+         return this.sortDirection === 'asc' ? aVal - bVal : bVal - aVal;
+       }
 
       if (field === 'disponible') {
-        aVal = Number(this.getkdispon(a.saldo, this.getkAcPeCo(a.gbsiut, a.gbsict)));
-        bVal = Number(this.getkdispon(b.saldo, this.getkAcPeCo(b.gbsiut, b.gbsict)));
+        aVal = this.getkdispon(a.saldo, this.getkAcPeCo(a.gbsiut, a.gbsict));
+        bVal = this.getkdispon(b.saldo, this.getkAcPeCo(b.gbsiut, b.gbsict));
         return this.sortDirection === 'asc' ? aVal - bVal : bVal - aVal;
-      }
+       }
 
       aVal = a?.[field] ?? '';
       bVal = b?.[field] ?? '';
@@ -496,6 +519,23 @@ export class CreditoComponent {
     return (a - b).toFixed();
   }
 
+  private parseMoney(val: any): number {
+    if (val === null || val === undefined || val === '') return 0;
+    if (typeof val === 'number') return val;
+    let s = String(val).trim();
+    const isParenNeg = /^\(.*\)$/.test(s);
+    if (isParenNeg) s = s.replace(/[()]/g, '');
+    s = s.replace(/\u00A0/g, ' ').replace(/[^\d.,\-]/g, '');
+
+    if (s.includes(',')) {
+      s = s.replace(/\./g, '').replace(',', '.');
+    }
+
+    const n = parseFloat(s);
+    if (isNaN(n)) return 0;
+    return isParenNeg ? -n : n;
+  }
+  
   formatGbsimp() {
     if (!this.tempBolsa || this.tempBolsa.gbsimp === undefined || this.tempBolsa.gbsimp === null) return;
     let value = String(this.tempBolsa.gbsimp)
