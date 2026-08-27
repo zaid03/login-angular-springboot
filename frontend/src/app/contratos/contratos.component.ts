@@ -439,7 +439,7 @@ export class ContratosComponent {
     this.showProveedorGrid = false;
     this.proveedores = null;
     this.searchTerm = '';
-    this.filterOption = 'noBloqueados';
+    this.filterOption = 'Nobloqueado';
   }
 
   proveedores: any = [];
