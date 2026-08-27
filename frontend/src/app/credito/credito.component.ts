@@ -101,7 +101,7 @@ export class CreditoComponent {
             });
             this.creditos[idx].saldo = 0;
             this.creditos[idx].limporte = 0;
-            this.http.get<any>(`${environment.backendUrl}/api/sical/operaciones?clorg=${org}&clfun=${fun}&cleco=${eco}`)
+            this.http.get<any>(`${environment.backendUrl}/api/sical/operaciones?orgCode=${this.orgCode}&entidad=${this.entidad}&organica=${org}&funcional=${fun}&economica=${eco}&eje=${this.eje}`)
             .subscribe({
               next: (operaciones) => {
                 const operacionesArr = Array.isArray(operaciones) ? operaciones : [];
