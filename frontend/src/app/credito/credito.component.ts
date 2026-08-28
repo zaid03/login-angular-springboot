@@ -576,6 +576,7 @@ export class CreditoComponent {
     }
   }
 
+  gridMessages: boolean = false;
   isUpdating: boolean = false;
   updateBolsa(gbsimp: any, getkAcPeCo:any, gbsref: any) {
     this.isUpdating = true;
@@ -587,6 +588,7 @@ export class CreditoComponent {
     Object.assign(this.selectedBolsas, this.tempBolsa);
 
     if ( parsedValue > getkAcPeCo) {
+      this.gridMessages = true;
       this.guardarMesage = 'HA SOBREPASADO EL DISPONIBLE DE LA REFERENCIA';
       this.isUpdating = false;
       return;
@@ -603,15 +605,22 @@ export class CreditoComponent {
     this.http.patch<void>(`${environment.backendUrl}/api/gbs/${this.entcod}/${this.eje}/${this.cge}/${gbsref}`, payload)
     .subscribe({
       next: () => {
+        this.gridMessages = true;
         this.updateSuccess();
         this.guardarMesageSuccess = 'Bolsa actualizada correctamente';
         this.isUpdating = false;
       },
       error: (err) => {
+        this.gridMessages = true;
         this.guardarMesage = err.error.error ?? err.error;
         this.isUpdating = false;
       }
     });
+  }
+
+  closeMessagesGrid() {
+    this.limpiarMessages();
+    this.gridMessages = false;
   }
 
   //misc

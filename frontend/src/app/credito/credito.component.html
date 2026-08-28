@@ -151,8 +151,6 @@
                             (click)="closeDetails()"
                         >✖</button>
                     </div>
-                    <h1 class="successBtn">{{ guardarMesageSuccess }}</h1>
-                    <h1 class="errorBtn">{{ guardarMesage }}</h1>
                     <div *ngIf="isUpdating" class="loading-message">
                         <div class="spinner"></div>
                         <span>actualizando</span>
@@ -391,5 +389,20 @@
                 </div>
             </div>
         </div>
+    </div>
+</div>
+
+<div class="modal-backdrop force" *ngIf="gridMessages"></div>
+<div class="delete-confirm-modal adj" *ngIf="gridMessages">
+    <div class="btns">
+        <button class="red-btn" (click)="closeMessagesGrid()">✖</button>
+    </div>
+    <div class="saved-details">
+        <h1 class="successBtn" *ngIf="guardarMesageSuccess">{{ guardarMesageSuccess }}</h1>
+        <h1 class="errorBtn" *ngIf="guardarMesage">{{ guardarMesage }}</h1>
+        <!-- <h1 class="successBtn" *ngIf="importeGestionSuccess">{{importeGestionSuccess}}</h1>
+        <h1 class="successBtn" *ngIf="importeSuccess">{{importeSuccess}}</h1>
+        <h1 class="errorBtn" *ngIf="importeGestionError">{{importeGestionError}}</h1>
+        <h1 class="errorBtn" *ngIf="importeError">{{importeError}}</h1> -->
     </div>
 </div>

@@ -587,29 +587,35 @@ export class BolsaCreditoComponent {
     return isParenNeg ? -n : n;
   }
 
-  formatGbsimp() {
-    if (!this.tempBolsa || this.tempBolsa.gbsimp === undefined || this.tempBolsa.gbsimp === null) return;
-    let valueB = String(this.tempBolsa.gbsimp)
-      .replace(/\s/g, '')
-      .replace(/\./g, '')     
-      .replace(',', '.')       
-      .replace(/[^\d.-]/g, '');
-    let numB = parseFloat(valueB);
-    if (!isNaN(numB)) {
-      this.tempBolsa.gbsimp = numB.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
-    }
+  gbsimpTouched: boolean = false;
+  gbsImp() {
+    const value = this.parseMoney(this.tempBolsa.gbsimp);
+
+    this.tempBolsa.gbsimp = value === 0 ? '' : value.toString();
   }
+  formatGbsimp() {
+    const value = this.parseMoney(this.tempBolsa.gbsimp);
+
+    this.tempBolsa.gbsimp = value.toLocaleString('es-ES', {
+      style: 'currency',
+      currency: 'EUR'
+    });
+  }
+  
+  gbsibgTouched: boolean = false;
+  gbsIbg() {
+    const value = this.parseMoney(this.tempBolsa.gbsibg);
+
+    this.tempBolsa.gbsibg = value === 0 ? '' : value.toString();
+  }
+
   formateGbsibg() {
-    if (!this.tempBolsa || this.tempBolsa.gbsibg === undefined || this.tempBolsa.gbsibg === null) return;
-    let valueB = String(this.tempBolsa.gbsibg)
-      .replace(/\s/g, '')
-      .replace(/\./g, '')     
-      .replace(',', '.')       
-      .replace(/[^\d.-]/g, '');
-    let numB = parseFloat(valueB);
-    if (!isNaN(numB)) {
-      this.tempBolsa.gbsibg = numB.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
-    }
+    const value = this.parseMoney(this.tempBolsa.gbsibg);
+
+    this.tempBolsa.gbsibg = value.toLocaleString('es-ES', {
+      style: 'currency',
+      currency: 'EUR'
+    });
   }
 
   cleaningCurrency(value: any) {
@@ -637,63 +643,26 @@ export class BolsaCreditoComponent {
   allowToUpdate: boolean = false;
   isUpdateAllowed(gbsimp: any, getkAcPeCo:any, gbsref: any, gbsibg: string) {
     this.limpiarMessages();
-    if (this.allowToUpdate) {
-      this.updateGbsimp(gbsimp, getkAcPeCo, gbsref);
-      this.updateGbsibg(gbsibg);
-    } else {
+    if (!this.allowToUpdate) {
+      console.log('stopped');
       return;
     }
+
+    console.log('here');
+
+    this.updateGbsimp(gbsimp, getkAcPeCo, gbsref, gbsibg);
   }
 
+  gridMessages: boolean = false;
   isUpdating: boolean = false;
-  gbsimpTouched: boolean = false;
-  gbsImp() {
-    this.gbsimpTouched = true;
-  }
-  updateGbsimp(gbsimp: any, getkAcPeCo:any, gbsref: any) {
-    if(this.gbsimpTouched) {
-      this.isUpdating = true;
-      Object.assign(this.selectedBolsas, this.tempBolsa);
-
-      const parsedValue = this.cleaningCurrency(gbsimp);
-      if ( parsedValue > getkAcPeCo) {
-        this.guardarMesage = 'HA SOBREPASADO EL DISPONIBLE DE LA REFERENCIA';
-        this.isUpdating = false;
-        return;
-      }
-
-    
-      const today = new Date();
-      const payload = {
-        GBSIMP: parsedValue,
-        GBSIUS: 0,
-        GBSICO: 0,
-        GBSFOP: today.toISOString().slice(0, 19)
-      };
-
-      this.http.patch<void>(`${environment.backendUrl}/api/gbs/${this.entcod}/${this.eje}/${this.cge}/${gbsref}`, payload)
-      .subscribe({
-        next: () => {
-          this.updateSuccess();
-          this.guardarMesageSuccess = 'Bolsa actualizada correctamente';
-          this.isUpdating = false;
-        },
-        error: (err) => {
-          this.guardarMesage = err.error.error ?? err.error;
-          this.isUpdating = false;
-        }
-      });
-    } else {
-      return;
-    }
-  }
-
-  gbsibgTouched: boolean = false;
-  gbsIbg() {
-    this.gbsibgTouched = true;
-  }
-  updateGbsibg(gbsibg: string) {
-    if(this.gbsibgTouched) {
+  importeGestionSuccess: string = '';
+  importeSuccess: string = '';
+  importeGestionError: string = '';
+  importeError: string = '';
+  updateGbsimp(gbsimp: any, getkAcPeCo:any, gbsref: any, gbsibg: string) {
+    console.log(this.gbsibgTouched)
+    if (this.gbsibgTouched) {
+      console.log("will update")
       this.isUpdating = true;
 
       Object.assign(this.selectedBolsas, this.tempBolsa);
@@ -708,17 +677,51 @@ export class BolsaCreditoComponent {
       this.http.patch(`${environment.backendUrl}/api/gbs/update-gbsibg/${this.entcod}/${this.eje}/${this.cge}/${referencia}`, payload).subscribe({
         next: (res) => {
           this.updateSuccess();
-          this.guardarMesageSuccess = 'Bolsa actualizada correctamente';
+          this.importeGestionSuccess = 'Importe bolsa gestión actualizado correctamente';
           this.isUpdating = false;
         },
         error: (err) => {
-          this.guardarMesage = err.error.error ?? err.error;
+          this.importeGestionError = err.error.error ?? err.error;
           this.isUpdating = false;
         }
       })
-    } else {
-      return;
+    } 
+
+    if (this.gbsimpTouched) {
+      Object.assign(this.selectedBolsas, this.tempBolsa);
+
+      const parsedValue = this.cleaningCurrency(gbsimp);
+      if ( parsedValue > getkAcPeCo) {
+        this.gridMessages = true;
+        this.importeError = 'Importe bolsa: HA SOBREPASADO EL DISPONIBLE DE LA REFERENCIA';
+        console.log(this.importeError)
+        return;
+      }
+    
+      this.isUpdating = true;
+      const today = new Date();
+      const payload = {
+        GBSIMP: parsedValue,
+        GBSIUS: 0,
+        GBSICO: 0,
+        GBSFOP: today.toISOString().slice(0, 19)
+      };
+
+      this.http.patch<void>(`${environment.backendUrl}/api/gbs/${this.entcod}/${this.eje}/${this.cge}/${gbsref}`, payload)
+      .subscribe({
+        next: () => {
+          this.updateSuccess();
+          this.importeSuccess = 'Importe bolsa actualizado correctamente';
+          this.isUpdating = false;
+        },
+        error: (err) => {
+          this.importeError = err.error.error ?? err.error;
+          this.isUpdating = false;
+        }
+      });
     }
+
+    this.gridMessages = true;
   }
 
   isDeleting: boolean = false;
@@ -733,10 +736,11 @@ export class BolsaCreditoComponent {
         this.isDeleting = false;
         this.closeDetails();
         this.fetchBolsas();
-        this.tablesuccessMessage = 'Bolsa eliminada exitosamente';
+        this.tableMessage = 'Bolsa eliminada exitosamente';
       },
       error: (err) => {
         this.isDeleting = false;
+        this.gridMessages = true;
         this.guardarMesage = err.error.error ?? err.error;
       }
     })
@@ -752,7 +756,9 @@ export class BolsaCreditoComponent {
     let sum = gbsimp + gbsibg;
 
     if (sum > Number(disponible)) {
+      this.gridMessages = true;
       this.guardarMesage = 'No hay disponible suficiente en la Referencia';
+      return;
     } else {
 
       this.isUpdating = true;
@@ -769,14 +775,21 @@ export class BolsaCreditoComponent {
       this.http.patch(`${environment.backendUrl}/api/gbs/transpasar-bolsa/${this.entcod}/${this.eje}/${this.cge}/${referncia}`, payload).subscribe({
         next: (res) => {
           this.isUpdating = false;
+          this.gridMessages = true;
           this.guardarMesageSuccess = 'Traspaso realizado con éxito';
         },
         error: (err) => {
+          this.gridMessages = true;
           this.guardarMesage = err.error.error ?? err.error;
           this.isUpdating = false;
         }
       })
     }
+  }
+
+  closeMessagesGrid() {
+    this.limpiarMessages();
+    this.gridMessages = false;
   }
 
   //adding RC (adding a bolsa)
@@ -804,11 +817,11 @@ export class BolsaCreditoComponent {
     const oficina = 'AL';
     this.isLoadingD = true;
 
-    this.http.get<any>(`${environment.backendUrl}/api/sical/operaciones?codigoOperacion=${codigoOperacion}&organica=${this.organigrama}&funcional=${this.programa}&oficina=${oficina}`).subscribe({
+    this.http.get<any>(`${environment.backendUrl}/api/sical/operaciones?orgCode=${this.orgCode}&entidad=${this.entidad}&codigoOperacion=${codigoOperacion}&organica=${this.organigrama}&funcional=${this.programa}&oficina=${oficina}&eje=${this.eje}`).subscribe({
       next: (res) => {
         this.isLoadingD = false;
         this.listaDeD = res;
-        console.log(this.listaDeD[0]);
+        this.searchPageD = 0;
       },
       error: (err) => {
         this.isLoadingD = false;
@@ -898,5 +911,9 @@ export class BolsaCreditoComponent {
     this.guardarMesage = '';
     this.DErrorMessage = '';
     this.tablesuccessMessage = '';
+    this.importeGestionSuccess = '';
+    this.importeSuccess = '';
+    this.importeGestionError = '';
+    this.importeError = '';
   }
 }
