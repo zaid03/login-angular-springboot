@@ -260,11 +260,10 @@ export class ConsultaFacturaComponent {
     }
 
     const rows = source.map((row: any, index: number) => ({
-      index: index + 1,
       facnum: row.facnum ?? '',
       tercod: row.tercod ?? '',
-      ternom: row.ternom ?? '',
-      ternif: row.ternif ?? '',
+      ternom: row.ter_TERNOM ?? '',
+      ternif: row.ter_TERNIF ?? '',
       facfre: this.formatDate(row.facfre),
       facimp: this.formatCurrency(row.facimp),
       facdoc: row.facdoc ?? '',
@@ -279,7 +278,6 @@ export class ConsultaFacturaComponent {
     }));
 
     const columns = [
-      { header: '#', dataKey: 'index' },
       { header: 'Número Registro', dataKey: 'facnum' },
       { header: 'Código Prov', dataKey: 'tercod' },
       { header: 'Nombre Proveedor', dataKey: 'ternom' },
@@ -299,40 +297,40 @@ export class ConsultaFacturaComponent {
 
     const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
     doc.setFont('helvetica', 'normal');
-    doc.setFontSize(14);
-    doc.text('Listado de facturas', 10, 20);
+    doc.setFontSize(12);
 
     autoTable(doc, {
-      startY: 30,
-      theme: 'plain',
-      head: [columns.map(c => c.header)],
+      startY: 20,
+      columns,
       body: rows.map(row => columns.map(c => row[c.dataKey as keyof typeof row] ?? '')),
-      styles: { font: 'helvetica', fontSize: 8, cellPadding: 4 },
+      styles: { fontSize: 8 },
+      tableWidth: 'wrap',
       headStyles: {
         fillColor: [240, 240, 240],
         textColor: [33, 53, 71],
         fontStyle: 'bold',
         halign: 'left'
       },
-      tableLineColor: [200, 200, 200],
-      tableLineWidth: 0.5,
       columnStyles: {
-        index: { cellWidth: 8 },
-        facnum: { cellWidth: 18 },
-        tercod: { cellWidth: 18 },
-        ternom: { cellWidth: 36 },
-        ternif: { cellWidth: 20 },
-        facfre: { cellWidth: 20 },
-        facimp: { cellWidth: 22 },
+        facnum: { cellWidth: 15 },
+        tercod: { cellWidth: 15 },
+        ternom: { cellWidth: 28 },
+        ternif: { cellWidth: 18 },
+        facfre: { cellWidth: 18 },
+        facimp: { cellWidth: 15 },
         facdoc: { cellWidth: 20 },
         facann: { cellWidth: 15 },
-        facfac: { cellWidth: 18 },
-        facdat: { cellWidth: 20 },
+        facfac: { cellWidth: 15 },
+        facdat: { cellWidth: 28 },
         facado: { cellWidth: 15 },
-        facfco: { cellWidth: 20 },
-        pendingApply: { cellWidth: 22 },
-        cgecod: { cellWidth: 15 },
-        estado: { cellWidth: 24 }
+        facfco: { cellWidth: 15 },
+        pendingApply: { cellWidth: 15 },
+        cgecod: { cellWidth: 14 },
+        estado: { cellWidth: 20 }
+      },
+      didDrawPage: (dataArg) => {
+        doc.setFontSize(10);
+        doc.text('Lista de facturas', 14, 10);
       }
     });
 

@@ -161,10 +161,11 @@ public class AlbController {
                 Optional<Fac> facturaOpt = facRepository.findById(facId);
                 if (facturaOpt.isPresent()) {
                     Fac factura = facturaOpt.get();
+                    Double newFaciec = factura.getFACIEC() + albData.ALBBIM();
                     factura.setCONCTP(albData.CONCTP());
                     factura.setCONCPR(albData.CONCPR());
                     factura.setCONCCR(albData.CONCCR());
-                    factura.setFACIEC(albData.ALBBIM());
+                    factura.setFACIEC(newFaciec);
                     facRepository.save(factura);
                 }
 
