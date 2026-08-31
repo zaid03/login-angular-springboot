@@ -87,7 +87,7 @@ public class FacController {
     public ResponseEntity<?> searchFacturas (
         @RequestParam Integer ent,
         @RequestParam String eje,
-        @RequestParam String cgecod,
+        @RequestParam(required = false) String cgecod,
         @RequestParam(required = false) String main_filter,
         @RequestParam(required = false) Integer ej_factura,
         @RequestParam(required = false) String estado,

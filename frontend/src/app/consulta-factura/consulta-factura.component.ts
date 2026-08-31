@@ -55,7 +55,6 @@ export class ConsultaFacturaComponent {
   isLoading: boolean = false;
   ngOnInit(): void{
     this.limpiarMEssages();
-    this.isLoading = true;
     const entidad = sessionStorage.getItem('Entidad');
     const eje = sessionStorage.getItem('EJERCICIO');
     const cge = sessionStorage.getItem('CENTROGESTOR');
@@ -101,6 +100,7 @@ export class ConsultaFacturaComponent {
   }
 
   fetchFacturas() {
+    this.isLoading = true;
     this.http.get<any>(`${environment.backendUrl}/api/fac/${this.entcod}/${this.eje}/${this.centroGestor}`).subscribe({
       next: (response) => {
         if (!Array.isArray(response) || response.length === 0) {
@@ -421,27 +421,21 @@ export class ConsultaFacturaComponent {
   }
 
   public getStaus(facado: any, facimp: any, faciec: any, facidi:any ){
-    const toNum = (v: any) => {
-      if (v === null || v === undefined || v === '') return 0;
-      const n = Number(v);
-      return isNaN(n) ? 0 : n;
-    };
-
-    const FACADO = toNum(facado);
-    const FACIEC = toNum(faciec);
-    const FACIMP = toNum(facimp);
-    const FACIDI = toNum(facidi);
-
-    if (FACADO != 0){
-      return 'contabilizadas';
+    if (facado !== null && facado !== undefined && facado !== '') {
+      return 'contabilizada';
     }
-    if (facado === '' && (this.Math.round((FACIMP * 100) / 100) === this.Math.round((FACIEC + FACIDI) * 100) / 100)) {
+
+    const FACIEC = Number(faciec);
+    const FACIMP = Number(facimp);
+    const FACIDI = Number(facidi);
+    const imp = Math.round(FACIMP * 100) / 100;
+    const applied = Math.round((FACIEC + FACIDI) * 100) / 100;
+
+    if ((facado === null || facado === undefined || facado === '') && imp === applied) {
       return 'Pte. Aplicada';
     }
-    if (facado === '' && (this.Math.round((FACIMP * 100) / 100) != this.Math.round((FACIEC + FACIDI) * 100) / 100)) {
-      return 'Pte. Sin aplicar';
-    }
-    return '';
+
+    return 'Pte. Sin aplicar';
   }
 
    //search functions
@@ -465,7 +459,7 @@ export class ConsultaFacturaComponent {
     this.limpiarMEssages();
 
     this.isLoading = true;
-    if (this.entcod == null || this.eje == null || !this.centroGestor) {
+    if (this.entcod == null || this.eje == null) {
       this.filterFacturaMessage = 'Faltan datos de sesión.';
       this.isLoading = false;
       return;
@@ -531,7 +525,7 @@ export class ConsultaFacturaComponent {
     this.facturaSearchTouched = false;
     this.searchQueryTouched = false;
     this.fechaTipo = '';
-    this.estadoTipo = 'noContabilizadas';
+    this.estadoTipo = '';
     this.fromDate = '';
     this.toDate = '';
     this.page = 0;

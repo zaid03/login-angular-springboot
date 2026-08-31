@@ -432,27 +432,21 @@ export class FacturasComponent {
   }
 
   public getStaus(facado: any, facimp: any, faciec: any, facidi:any ){
-    const toNum = (v: any) => {
-      if (v === null || v === undefined || v === '') return 0;
-      const n = Number(v);
-      return isNaN(n) ? 0 : n;
-    };
-
-    const FACADO = toNum(facado);
-    const FACIEC = toNum(faciec);
-    const FACIMP = toNum(facimp);
-    const FACIDI = toNum(facidi);
-
-    if (FACADO != 0){
+    if (facado !== null && facado !== undefined && facado !== '') {
       return 'contabilizada';
     }
-    if (facado === '' && (this.Math.round((FACIMP * 100) / 100) === this.Math.round((FACIEC + FACIDI) * 100) / 100)) {
+
+    const FACIEC = Number(faciec);
+    const FACIMP = Number(facimp);
+    const FACIDI = Number(facidi);
+    const imp = Math.round(FACIMP * 100) / 100;
+    const applied = Math.round((FACIEC + FACIDI) * 100) / 100;
+
+    if ((facado === null || facado === undefined || facado === '') && imp === applied) {
       return 'Pte. Aplicada';
     }
-    if (facado === '' && (this.Math.round((FACIMP * 100) / 100) != this.Math.round((FACIEC + FACIDI) * 100) / 100)) {
-      return 'Pte. Sin aplicar';
-    }
-    return '';
+
+    return 'Pte. Sin aplicar';
   }
 
   formatPrice(value: number | null): string {

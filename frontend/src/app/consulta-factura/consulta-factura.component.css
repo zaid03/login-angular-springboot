@@ -28,6 +28,7 @@
 .details-table td:nth-child(5),
 .details-table td:nth-child(6) {min-width: 11%;}
 .details-table td:nth-child(7) {min-width: 10%;}
+.details-table td:nth-child(8) {text-align: right;}
 .averageThird {width: 220px; max-width: 260px;}
 .cell-content {display: flex; gap: 5px;}
 /* main-detail grid */

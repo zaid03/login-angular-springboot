@@ -2,6 +2,7 @@ package com.example.backend.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +70,12 @@ public class FacturaSearch {
         LocalDateTime fromDateTime = criteria.fromDate != null ? criteria.fromDate.atStartOfDay() : null;
         LocalDateTime toDateTime = criteria.toDate != null ? criteria.toDate.atTime(23, 59, 59) : null;
 
-        List<FacWithTerProjection> facturas = facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(criteria.ent, criteria.eje, criteria.cgecod);
+        List<FacWithTerProjection> facturas = new ArrayList<>();
+        if (criteria.cgecod == null || criteria.cgecod.isEmpty()) {
+            facturas = facRepository.findByENTAndEJEOrderByFACFREAsc(criteria.ent, criteria.eje);
+        } else {
+            facturas = facRepository.findByENTAndEJEAndCGECODOrderByFACFREAsc(criteria.ent, criteria.eje, criteria.cgecod);
+        }
         
         if (facturas != null && !facturas.isEmpty()) {
             if (criteria.mainFilter != null && !criteria.mainFilter.isEmpty()) {

@@ -17,6 +17,7 @@ import com.example.backend.sqlserver2.model.FacId;
 public interface FacRepository extends JpaRepository<Fac, FacId>, JpaSpecificationExecutor<Fac>{
     //for the main list
     List<FacWithTerProjection> findByENTAndEJEAndCGECODOrderByFACFREAsc(Integer ent, String eje, String cgecod);
+    List<FacWithTerProjection> findByENTAndEJEOrderByFACFREAsc(Integer ent, String eje);
     List<FacWithTerProjection> findByENTAndEJEAndCGECODAndFACADOIsNullOrderByFACFREAsc(Integer ent, String eje, String cgecod);
 
     //needed for adding a factura
