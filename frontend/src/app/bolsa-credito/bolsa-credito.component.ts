@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { finalize } from 'rxjs';
 
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -58,7 +59,6 @@ export class BolsaCreditoComponent {
 
   constructor(private http: HttpClient, private router: Router, private currency: CurrencyPipe) {}
 
-  isLoading: boolean = false;
   ngOnInit(): void {
     this.limpiarMessages();
     this.tableIsError = false;
@@ -83,7 +83,6 @@ export class BolsaCreditoComponent {
 
     this.fetchCentroGestorInfo();
     this.fetchBolsas();
-    
   }
 
   //main table functions`
@@ -111,6 +110,8 @@ export class BolsaCreditoComponent {
     })
   }
 
+  isLoading: boolean = false;
+  swLoading: boolean = false;
   fetchBolsas() {
     this.fetchCancel$.next();
     this.isLoading = true;
@@ -119,35 +120,37 @@ export class BolsaCreditoComponent {
         this.creditos = Array.isArray(response) ? [...response] : [];
         this.backupCreditos = [...this.creditos];
         this.defaultCreditos = [...this.creditos];
+        this.swLoading = true;
+        let pendingRequests = this.creditos.length * 2;
         this.creditos.forEach((item, idx) => {
           const org = item?.gbsorg ?? '';
           const fun = item?.gbsfun ?? '';
           const eco = item?.gbseco ?? '';
-          this.http.get<any>(`${environment.backendUrl}/api/sical/partidas?clorg=${org}&clfun=${fun}&cleco=${eco}&orgCode=${this.orgCode}&entidad=${this.entidad}&eje=${this.eje}`).pipe(takeUntil(this.fetchCancel$)).subscribe({
-              next: (partidas) => {
-                const partidasArr = Array.isArray(partidas) ? partidas : [];
-                this.creditos[idx].partidas = partidasArr;
-                const des = partidasArr[0]?.desc ?? '';
-                this.creditos[idx].partidaDesc = des;
-              },
-              error: () => {
-                this.creditos[idx].partidas = [];
-              },
-            });
-            this.creditos[idx].saldo = 0;
-            this.creditos[idx].limporte = 0;
-            this.http.get<any>(`${environment.backendUrl}/api/sical/operaciones?orgCode=${this.orgCode}&entidad=${this.entidad}&organica=${org}&funcional=${fun}&economica=${eco}&eje=${this.eje}`).pipe(takeUntil(this.fetchCancel$)).subscribe({
-              next: (operaciones) => {
-                const operacionesArr = Array.isArray(operaciones) ? operaciones : [];
-                this.creditos[idx].operaciones = operacionesArr;
-                const firstLinea = operacionesArr[0]?.lineaList?.[0] ?? {};
-                const saldo = this.creditos[idx].saldo = firstLinea?.saldo ?? 0;
-                const limporte = this.creditos[idx].limporte = firstLinea?.limporte ?? 0;
-              },
-              error: () => {
-                this.creditos[idx].operaciones = [];
-              },
-            });
+          this.http.get<any>(`${environment.backendUrl}/api/sical/partidas?clorg=${org}&clfun=${fun}&cleco=${eco}&orgCode=${this.orgCode}&entidad=${this.entidad}&eje=${this.eje}`).pipe(takeUntil(this.fetchCancel$), finalize(() => { pendingRequests--; if (pendingRequests === 0) {this.swLoading = false;}})).subscribe({
+            next: (partidas) => {
+              const partidasArr = Array.isArray(partidas) ? partidas : [];
+              this.creditos[idx].partidas = partidasArr;
+              const des = partidasArr[0]?.desc ?? '';
+              this.creditos[idx].partidaDesc = des;
+            },
+            error: () => {
+              this.creditos[idx].partidas = [];
+            },
+          });
+          this.creditos[idx].saldo = 0;
+          this.creditos[idx].limporte = 0;
+          this.http.get<any>(`${environment.backendUrl}/api/sical/operaciones?orgCode=${this.orgCode}&entidad=${this.entidad}&organica=${org}&funcional=${fun}&economica=${eco}&eje=${this.eje}`).pipe(takeUntil(this.fetchCancel$), finalize(() => {pendingRequests--;if (pendingRequests === 0) {this.swLoading = false;}})).subscribe({
+            next: (operaciones) => {
+              const operacionesArr = Array.isArray(operaciones) ? operaciones : [];
+              this.creditos[idx].operaciones = operacionesArr;
+              const firstLinea = operacionesArr[0]?.lineaList?.[0] ?? {};
+              const saldo = this.creditos[idx].saldo = firstLinea?.saldo ?? 0;
+              const limporte = this.creditos[idx].limporte = firstLinea?.limporte ?? 0;
+            },
+            error: () => {
+              this.creditos[idx].operaciones = [];
+            },
+          });
         });
         this.sortDirection = 'asc';
         this.page = 0;
@@ -159,6 +162,7 @@ export class BolsaCreditoComponent {
         console.warn = err.error.error ?? err.error;
         this.tableMessage = 'Centro Gestor no existe';
         this.isLoading = false;
+        this.swLoading = false;
       }
     });
   }

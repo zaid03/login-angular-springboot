@@ -28,6 +28,7 @@
         </div>
         <div class="main-list">
             <h1 class="errorBtn">{{ tableMessage }}</h1>
+             <h1 class="p-style" *ngIf="swLoading">Los datos de Sicalwin se están cargando<span class="dots"></span></h1>
             <div *ngIf="isLoading" class="loading-message">
                 <div class="spinner"></div>
                 <span>Cargando</span>
@@ -400,9 +401,5 @@
     <div class="saved-details">
         <h1 class="successBtn" *ngIf="guardarMesageSuccess">{{ guardarMesageSuccess }}</h1>
         <h1 class="errorBtn" *ngIf="guardarMesage">{{ guardarMesage }}</h1>
-        <!-- <h1 class="successBtn" *ngIf="importeGestionSuccess">{{importeGestionSuccess}}</h1>
-        <h1 class="successBtn" *ngIf="importeSuccess">{{importeSuccess}}</h1>
-        <h1 class="errorBtn" *ngIf="importeGestionError">{{importeGestionError}}</h1>
-        <h1 class="errorBtn" *ngIf="importeError">{{importeError}}</h1> -->
     </div>
 </div>

@@ -85,6 +85,7 @@
             </div>
         </div>
         <div class="main-list bolsa-table">
+            <h1 class="p-style" *ngIf="swLoading">Los datos de Sicalwin se están cargando<span class="dots"></span></h1>
             <div *ngIf="isLoading" class="loading-message">
                 <div class="spinner"></div>
                 <span>Cargando</span>

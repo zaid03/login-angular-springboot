@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { SidebarComponent } from '../sidebar/sidebar.component';
+import { finalize } from 'rxjs';
 
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -49,7 +50,6 @@ export class CreditoComponent {
 
   constructor(private http: HttpClient, private router: Router, private currency: CurrencyPipe) {}
 
-  isLoading: boolean = false;
   ngOnInit(): void {
     this.limpiarMessages();
     this.isLoading = true;
@@ -76,19 +76,22 @@ export class CreditoComponent {
   }
 
   //main table functions
+  isLoading: boolean = false;
+  swLoading: boolean = false;
   getBolsas(){
     this.http.get<any>(`${environment.backendUrl}/api/gbs/fetch-all/${this.entcod}/${this.eje}/${this.cge}`).subscribe({
       next: (response) => {
         this.creditos = Array.isArray(response) ? [...response] : [];
         this.backupCreditos = [...this.creditos];
         this.defaultCreditos = [...this.creditos];
+        this.swLoading = true;
+        let pendingRequests = this.creditos.length * 2;
         this.creditos.forEach((item, idx) => {
           const org = item?.gbsorg ?? '';
           const fun = item?.gbsfun ?? '';
           const eco = item?.gbseco ?? '';
           this.http
-            .get<any>(`${environment.backendUrl}/api/sical/partidas?clorg=${org}&clfun=${fun}&cleco=${eco}&orgCode=${this.orgCode}&entidad=${this.entidad}&eje=${this.eje}`)
-            .subscribe({
+            .get<any>(`${environment.backendUrl}/api/sical/partidas?clorg=${org}&clfun=${fun}&cleco=${eco}&orgCode=${this.orgCode}&entidad=${this.entidad}&eje=${this.eje}`).pipe(finalize(() => {pendingRequests--; if (pendingRequests === 0) {this.swLoading = false;}})).subscribe({
               next: (partidas) => {
                 const partidasArr = Array.isArray(partidas) ? partidas : [];
                 this.creditos[idx].partidas = partidasArr;
@@ -101,8 +104,7 @@ export class CreditoComponent {
             });
             this.creditos[idx].saldo = 0;
             this.creditos[idx].limporte = 0;
-            this.http.get<any>(`${environment.backendUrl}/api/sical/operaciones?orgCode=${this.orgCode}&entidad=${this.entidad}&organica=${org}&funcional=${fun}&economica=${eco}&eje=${this.eje}`)
-            .subscribe({
+            this.http.get<any>(`${environment.backendUrl}/api/sical/operaciones?orgCode=${this.orgCode}&entidad=${this.entidad}&organica=${org}&funcional=${fun}&economica=${eco}&eje=${this.eje}`).pipe(finalize(() => {pendingRequests--; if (pendingRequests === 0) {this.swLoading = false;}})).subscribe({
               next: (operaciones) => {
                 const operacionesArr = Array.isArray(operaciones) ? operaciones : [];
                 this.creditos[idx].operaciones = operacionesArr;
