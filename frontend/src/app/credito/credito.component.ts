@@ -422,15 +422,13 @@ export class CreditoComponent {
     URL.revokeObjectURL(url);
   }
 
-  public getkAcPeCo(gbsiut: any, gbsict: any): string {
-    const toNum = (v: any) => {
-      if (v === null || v === undefined || v === '') return 0;
-      const n = Number(v);
-      return isNaN(n) ? 0 : n;
-    };
-    const a = toNum(gbsiut);
-    const b = toNum(gbsict);
-    return (a - b).toFixed();
+  public getkAcPeCo(gbsiut: any, gbsict: any): number {
+    let a = gbsiut;
+    let b = gbsict;
+
+    let value = a - b;
+
+    return value;
   }
 
   get paginatedBolsas(): any[] {
@@ -522,28 +520,20 @@ export class CreditoComponent {
     return '';
   }
 
-  public getKBoldis(gbsimp: any, gbsibg: any, gbsius: any): string {
-    const toNum = (v: any) => {
-      if (v === null || v === undefined || v === '') return 0;
-      const n = Number(v);
-      return isNaN(n) ? 0 : n;
-    };
-    const a = toNum(gbsimp)
-    const b = toNum(gbsibg);
-    const c = toNum(gbsius);
-    return (a + b -c).toFixed();
+  public getKBoldis(gbsimp: any, gbsibg: any, gbsius: any): number {
+    let a = this.parseMoney(gbsimp)
+    let b = this.parseMoney(gbsibg);
+    let c = Number(gbsius);
+    let sum = a + b - c;
+
+    return sum;
   }
 
-  public getkdispon(saldo: any, getkAcPeCo: any): string {
-    const toNum = (v:any) => {
-      if (v === null || v === undefined || v === '') return 0;
-      const n = Number(v);
-      return isNaN(n) ? 0 : n;
-    };
-
-    const a = toNum(saldo);
-    const b = toNum(getkAcPeCo);
-    return (a - b).toFixed();
+  public getkdispon(saldo: any, getkAcPeCo: any): number {
+    let a = this.parseMoney(saldo);
+    let b = this.parseMoney(getkAcPeCo);
+    let value = a - b;
+    return value;
   }
 
   private parseMoney(val: any): number {

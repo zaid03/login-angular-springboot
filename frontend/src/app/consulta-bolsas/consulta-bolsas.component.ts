@@ -437,10 +437,13 @@ export class ConsultaBolsasComponent {
     URL.revokeObjectURL(url);
   }
 
-  public getkAcPeCo(gbsiut: any, gbsict: any): string {
-    const a = this.parseMoney(gbsiut);
-    const b = this.parseMoney(gbsict);
-    return Math.round(a - b).toString();
+  public getkAcPeCo(gbsiut: any, gbsict: any): number {
+    let a = gbsiut;
+    let b = gbsict;
+
+    let value = a - b;
+
+    return value;
   }
 
   get paginatedBolsas(): any[] {
@@ -533,22 +536,20 @@ export class ConsultaBolsasComponent {
     return '';
   }
 
-  public getKBoldis(gbsimp: any, gbsibg: any, gbsius: any): string {
-    const toNum = (v: any) => {
-      if (v === null || v === undefined || v === '') return 0;
-      const n = Number(v);
-      return isNaN(n) ? 0 : n;
-    };
-    const a = toNum(gbsimp)
-    const b = toNum(gbsibg);
-    const c = toNum(gbsius);
-    return (a + b -c).toFixed();
+  public getKBoldis(gbsimp: any, gbsibg: any, gbsius: any): number {
+    let a = this.cleaningCurrency(gbsimp)
+    let b = this.cleaningCurrency(gbsibg);
+    let c = Number(gbsius);
+    let sum = a + b - c;
+
+    return sum;
   }
 
-  public getkdispon(saldo: any, getkAcPeCo: any): string {
-    const a = this.parseMoney(saldo);
-    const b = this.parseMoney(getkAcPeCo);
-    return Math.round(a - b).toString();
+  public getkdispon(saldo: any, getkAcPeCo: any): number {
+    let a = this.parseMoney(saldo);
+    let b = this.parseMoney(getkAcPeCo);
+    let value = a - b;
+    return value;
   }
 
   private parseMoney(val: any): number {
