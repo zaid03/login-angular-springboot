@@ -32,12 +32,11 @@
 .detail-container {width: 99%; padding: 1px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;}
 .left,
 .right {width: 49%;}
-.zero-table {height: 120px;}
+.zero-table {height: 50px;}
 .first-table {height: 91px;}
 .second-table {height: 80px;}
 .third-table {height: 95px;}
 .sign {font-weight: bold; font-size: 22px;}
-/* .margin {margin-bottom: 10px;} */
 .border td {border-top: 1px solid gray;}
 .border-second td {border-bottom: 1px solid gray; padding: 5px;}
 .borderLeft {border-left: 1px solid gray;}
@@ -45,7 +44,7 @@
 .borderTop {border-top: 1px solid gray;}
 .borderBottom {border-bottom: 1px solid gray;}
 .alignment {text-align: right;}
-.mix {width: 80%;}
+.mix {max-width: 80%;}
 .padding {padding: 5px;}
 .contabilidad {text-align: center; height: 10%;}
 .contabilidad p {font-size: 22px !important;}
@@ -53,4 +52,9 @@
 .signFix {height: 100%; display: flex; align-items: flex-end; justify-content: center;}
 .top {margin-top: 2%;}
 .width {width: 60%;}
+.space {margin-top: 41px;}
+.widthColumn {width: 18%;}
 /* main grid detail */
+@media (max-width: 1500px) {
+  .widthColumn {width: 24%;}
+}
