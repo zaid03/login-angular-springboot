@@ -32,28 +32,33 @@
 .detail-container {width: 99%; padding: 1px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;}
 .left,
 .right {width: 49%;}
-.first-table {height: 120px;}
+.zero-table {height: 120px;}
+.first-table {height: 91px;}
 .second-table {height: 80px;}
 .third-table {height: 95px;}
 .sign {font-weight: bold; font-size: 22px;}
-.margin {margin-bottom: 10px;}
+/* .margin {margin-bottom: 10px;} */
 .border td {border-top: 1px solid gray;}
 .border-second td {border-bottom: 1px solid gray; padding: 5px;}
 .borderLeft {border-left: 1px solid gray;}
 .borderRight{border-right: 1px solid gray;}
 .borderTop {border-top: 1px solid gray;}
 .borderBottom {border-bottom: 1px solid gray;}
-.signPlacement {height: 70%; display: flex; align-items: end;}
+/* .signPlacement {height: 70%; display: flex; align-items: end;}
 .signPlacement2 {height: 100%; align-content: end;}
 .signPlacement3 {height: 85%; align-content: end;}
-.bottom {border-bottom: 1px solid gray;}
-.margintop {margin-top: 10px;}
+.bottom {border-bottom: 1px solid gray;} */
+/* .margintop {margin-top: 10px;} */
 .alignment {text-align: right;}
 .mix {width: 80%;}
 .padding {padding: 5px;}
 .contabilidad {text-align: center; height: 10%;}
 .contabilidad p {font-size: 22px !important;}
+/* .secAdj {width: 80%;} */
+.moreSpace {width: 8%;}
+.signFix {height: 100%; display: flex; align-items: flex-end; justify-content: center;}
 .top {margin-top: 2%;}
+.width {width: 60%;}
 /* main grid detail */
 /* D grid for centro gestor */
 .D-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 16px; box-shadow: 0 8px 32px rgba(44, 62, 80, 0.18), 0 1.5px 6px rgba(44,62,80,0.08); padding: 25px 30px; min-width: 85%; min-height: 120px; max-height: 80vh; z-index: 3000; display: flex; flex-direction: column; align-items: center;}
