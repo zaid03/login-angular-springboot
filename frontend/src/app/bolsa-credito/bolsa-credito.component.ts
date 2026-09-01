@@ -649,11 +649,8 @@ export class BolsaCreditoComponent {
   isUpdateAllowed(gbsimp: any, getkAcPeCo:any, gbsref: any, gbsibg: string) {
     this.limpiarMessages();
     if (!this.allowToUpdate) {
-      console.log('stopped');
       return;
     }
-
-    console.log('here');
 
     this.updateGbsimp(gbsimp, getkAcPeCo, gbsref, gbsibg);
   }
@@ -681,13 +678,23 @@ export class BolsaCreditoComponent {
 
       this.http.patch(`${environment.backendUrl}/api/gbs/update-gbsibg/${this.entcod}/${this.eje}/${this.cge}/${referencia}`, payload).subscribe({
         next: (res) => {
+          const formattedValue = this.formatCurrency(parsedValue);
+          this.selectedBolsas.gbsibg = formattedValue;
+          this.tempBolsa.gbsibg = formattedValue;
+          const credito = this.creditos.find(c => c.gbsref === referencia);
+          if (credito) {
+            credito.gbsibg = formattedValue;
+          }
           this.updateSuccess();
+          this.gridMessages = true;
           this.importeGestionSuccess = 'Importe bolsa gestión actualizado correctamente';
           this.isUpdating = false;
+          this.gbsibgTouched = false;
         },
         error: (err) => {
           this.importeGestionError = err.error.error ?? err.error;
           this.isUpdating = false;
+          this.gbsibgTouched = false;
         }
       })
     } 
@@ -697,9 +704,11 @@ export class BolsaCreditoComponent {
 
       const parsedValue = this.cleaningCurrency(gbsimp);
       if ( parsedValue > getkAcPeCo) {
+        console.log(getkAcPeCo)
         this.gridMessages = true;
         this.importeError = 'Importe bolsa: HA SOBREPASADO EL DISPONIBLE DE LA REFERENCIA';
         console.log(this.importeError)
+        this.gbsimpTouched = false;
         return;
       }
     
@@ -715,18 +724,26 @@ export class BolsaCreditoComponent {
       this.http.patch<void>(`${environment.backendUrl}/api/gbs/${this.entcod}/${this.eje}/${this.cge}/${gbsref}`, payload)
       .subscribe({
         next: () => {
+          const formattedValue = this.formatCurrency(parsedValue);
+          this.selectedBolsas.gbsimp = formattedValue;
+          this.tempBolsa.gbsimp = formattedValue;
+          const credito = this.creditos.find(c => c.gbsref === gbsref);
+          if (credito) {
+            credito.gbsimp = formattedValue;
+          }
           this.updateSuccess();
+          this.gridMessages = true;
           this.importeSuccess = 'Importe bolsa actualizado correctamente';
           this.isUpdating = false;
+          this.gbsimpTouched = false;
         },
         error: (err) => {
           this.importeError = err.error.error ?? err.error;
           this.isUpdating = false;
+          this.gbsimpTouched = false;
         }
       });
     }
-
-    this.gridMessages = true;
   }
 
   isDeleting: boolean = false;
@@ -779,6 +796,16 @@ export class BolsaCreditoComponent {
 
       this.http.patch(`${environment.backendUrl}/api/gbs/transpasar-bolsa/${this.entcod}/${this.eje}/${this.cge}/${referncia}`, payload).subscribe({
         next: (res) => {
+          // Update the source data in creditos array
+          const credito = this.creditos.find(c => c.gbsref === referncia);
+          if (credito) {
+            credito.gbsimp = this.formatCurrency(sum);
+            credito.gbsibg = this.formatCurrency(0);
+            credito.gbsius = 0;
+            credito.gbsico = 0;
+          }
+          this.selectedBolsas = { ...credito };
+          this.tempBolsa = { ...credito };
           this.isUpdating = false;
           this.gridMessages = true;
           this.guardarMesageSuccess = 'Traspaso realizado con éxito';

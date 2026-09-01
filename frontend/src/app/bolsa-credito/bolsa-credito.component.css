@@ -39,7 +39,6 @@
 .second-table {height: 80px;}
 .third-table {height: 95px;}
 .sign {font-weight: bold; font-size: 22px;}
-/* .margin {margin-bottom: 10px;} */
 .border td {border-top: 1px solid gray;}
 .border-second td {border-bottom: 1px solid gray; padding: 5px;}
 .borderLeft {border-left: 1px solid gray;}
@@ -65,3 +64,6 @@
 .info-content p,
 .info-content h1 {font-size: 18px;}
 /* D grid for centro gestor */
+@media (min-width: 1700px) {
+  .messagesGrid {top: 40%}
+}

@@ -571,7 +571,7 @@ export class CreditoComponent {
   backupData: any = [];
   modificar() {
     this.isUpdate = true;
-      this.backupData = this.selectedBolsas ? { ...this.selectedBolsas } : {};
+    this.backupData = this.selectedBolsas ? { ...this.selectedBolsas } : {};
   }
 
   cancelar() {
@@ -622,6 +622,13 @@ export class CreditoComponent {
     this.http.patch<void>(`${environment.backendUrl}/api/gbs/${this.entcod}/${this.eje}/${this.cge}/${gbsref}`, payload)
     .subscribe({
       next: () => {
+        const formattedValue = this.formatCurrency(parsedValue);
+        this.selectedBolsas.gbsimp = formattedValue;
+        this.tempBolsa.gbsimp = formattedValue;
+        const credito = this.creditos.find(c => c.gbsref === gbsref);
+        if (credito) {
+          credito.gbsimp = formattedValue;
+        }
         this.gridMessages = true;
         this.updateSuccess();
         this.guardarMesageSuccess = 'Bolsa actualizada correctamente';
