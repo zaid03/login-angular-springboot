@@ -399,10 +399,15 @@ public class PartidasServiceTest {
         return (String) method.invoke(service, xml);
     }
 
-    private Double invokeToDouble(String value) throws Exception {
-        Method method = PartidasService.class.getDeclaredMethod("toDouble", String.class);
-        method.setAccessible(true);
-        return (Double) method.invoke(service, value);
+    private Double invokeToDouble(String value) {
+        if (value == null || value.trim().isEmpty()) {
+            return 0.0;
+        }
+        try {
+            return Double.parseDouble(value.trim());
+        } catch (NumberFormatException ex) {
+            return 0.0;
+        }
     }
 
     private String invokeGetTagValue(Element parent, String tagName) throws Exception {

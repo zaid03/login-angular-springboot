@@ -117,10 +117,11 @@ public class GbsControllerTest {
             "GBSIMP", 200.5,
             "GBSIUS", 5.0,
             "GBSICO", 10,
-            "GBSFOP", "2026-01-22T12:00:00"
+            "GBSFOP", "2026-01-22T12:00:00",
+            "GBSIBG", 0.0
         );
 
-        mockMvc.perform(patch("/api/gbs/1/E1/C1/REF1")
+        mockMvc.perform(patch("/api/gbs/updateBolsa/1/E1/C1/REF1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(payload)))
             .andDo(print())
@@ -138,10 +139,11 @@ public class GbsControllerTest {
             "GBSIMP", 1.0,
             "GBSIUS", 1.0,
             "GBSICO", 1.0,
-            "GBSFOP", "2026-01-22T12:00:00"
+            "GBSFOP", "2026-01-22T12:00:00",
+            "GBSIBG", 0.0
         );
 
-        mockMvc.perform(patch("/api/gbs/9/X/Y/Z")
+        mockMvc.perform(patch("/api/gbs/updateBolsa/9/X/Y/Z")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(payload)))
             .andDo(print())
@@ -156,8 +158,9 @@ public class GbsControllerTest {
         payload.put("GBSIUS", null);
         payload.put("GBSICO", 1.0);
         payload.put("GBSFOP", "2026-01-22T12:00:00");
+        payload.put("GBSIBG", 0.0);
 
-        mockMvc.perform(patch("/api/gbs/1/E1/C1/REF1")
+        mockMvc.perform(patch("/api/gbs/updateBolsa/1/E1/C1/REF1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(payload)))
             .andDo(print())
@@ -174,10 +177,11 @@ public class GbsControllerTest {
             "GBSIMP", 1.0,
             "GBSIUS", 1.0,
             "GBSICO", 1.0,
-            "GBSFOP", "2026-01-22T12:00:00"
+            "GBSFOP", "2026-01-22T12:00:00",
+            "GBSIBG", 0.0
         );
 
-        mockMvc.perform(patch("/api/gbs/1/E1/C1/REF1")
+        mockMvc.perform(patch("/api/gbs/updateBolsa/1/E1/C1/REF1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(payload)))
             .andDo(print())
@@ -189,12 +193,17 @@ public class GbsControllerTest {
     void updateGbsibg_returnsNoContentOnSuccess() throws Exception {
         GbsId id = new GbsId(1, "E1", "C1", "REF1");
         Gbs existing = new Gbs();
-        existing.setGBSIBG(0.0);
+        existing.setGBSIMP(0.0);
         when(gbsRepository.findById(id)).thenReturn(Optional.of(existing));
 
-        Map<String, Object> payload = Map.of("GBSIBG", 50.75);
+        Map<String, Object> payload = Map.of(
+            "GBSIMP", 50.75,
+            "GBSIUS", 1.0,
+            "GBSICO", 1.0,
+            "GBSFOP", "2026-01-22T12:00:00"
+        );
 
-        mockMvc.perform(patch("/api/gbs/update-gbsibg/1/E1/C1/REF1")
+        mockMvc.perform(patch("/api/gbs/update-Importe/1/E1/C1/REF1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(payload)))
             .andDo(print())
@@ -206,9 +215,12 @@ public class GbsControllerTest {
     @Test
     void updateGbsibg_returnsBadRequestWhenPayloadNull() throws Exception {
         Map<String, Object> payload = new HashMap<>();
-        payload.put("GBSIBG", null);
+        payload.put("GBSIMP", null);
+        payload.put("GBSIUS", 1.0);
+        payload.put("GBSICO", 1.0);
+        payload.put("GBSFOP", "2026-01-22T12:00:00");
 
-        mockMvc.perform(patch("/api/gbs/update-gbsibg/1/E1/C1/REF1")
+        mockMvc.perform(patch("/api/gbs/update-Importe/1/E1/C1/REF1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(payload)))
             .andDo(print())
@@ -220,9 +232,14 @@ public class GbsControllerTest {
     void updateGbsibg_returnsNotFoundWhenBolsaMissing() throws Exception {
         when(gbsRepository.findById(any(GbsId.class))).thenReturn(Optional.empty());
 
-        Map<String, Object> payload = Map.of("GBSIBG", 25.0);
+        Map<String, Object> payload = Map.of(
+            "GBSIMP", 25.0,
+            "GBSIUS", 1.0,
+            "GBSICO", 1.0,
+            "GBSFOP", "2026-01-22T12:00:00"
+        );
 
-        mockMvc.perform(patch("/api/gbs/update-gbsibg/1/E1/C1/REF1")
+        mockMvc.perform(patch("/api/gbs/update-Importe/1/E1/C1/REF1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(payload)))
             .andDo(print())
@@ -235,9 +252,14 @@ public class GbsControllerTest {
         when(gbsRepository.findById(any(GbsId.class)))
             .thenThrow(new DataAccessResourceFailureException("DB error"));
 
-        Map<String, Object> payload = Map.of("GBSIBG", 25.0);
+        Map<String, Object> payload = Map.of(
+            "GBSIMP", 25.0,
+            "GBSIUS", 1.0,
+            "GBSICO", 1.0,
+            "GBSFOP", "2026-01-22T12:00:00"
+        );
 
-        mockMvc.perform(patch("/api/gbs/update-gbsibg/1/E1/C1/REF1")
+        mockMvc.perform(patch("/api/gbs/update-Importe/1/E1/C1/REF1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(payload)))
             .andDo(print())
