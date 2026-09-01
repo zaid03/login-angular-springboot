@@ -84,15 +84,50 @@ public class GbsController {
         }
     }
 
-    //modifying a gbsimp
-    public record updateBolsa(Double GBSIMP, Double GBSIUS, Double GBSICO, LocalDateTime GBSFOP) {}
-    @PatchMapping("/{ent}/{eje}/{cgecod}/{gbsref}")
+    //modifying a bolsa
+    public record updateBolsa(Double GBSIMP, Double GBSIUS, Double GBSICO, LocalDateTime GBSFOP, Double GBSIBG) {}
+    @PatchMapping("updateBolsa/{ent}/{eje}/{cgecod}/{gbsref}")
     public ResponseEntity<?> updateBolsa(
             @PathVariable Integer ent,
             @PathVariable String eje,
             @PathVariable String cgecod,
             @PathVariable String gbsref,
             @RequestBody updateBolsa payload
+    ) {
+        try {
+            if (payload == null || payload.GBSIMP() == null || payload.GBSIUS() == null || payload.GBSICO() == null || payload.GBSFOP() == null || payload.GBSIBG() == null) {
+                return ResponseEntity.badRequest().body(FALTAN);
+            }
+
+            GbsId id = new GbsId(ent, eje, cgecod, gbsref);
+            Optional<Gbs> bolsa = gbsRepository.findById(id);
+            if (bolsa.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
+            }
+
+            Gbs bolsaUpdate = bolsa.get();
+            bolsaUpdate.setGBSIMP(payload.GBSIMP());
+            bolsaUpdate.setGBSIUS(payload.GBSIUS());
+            bolsaUpdate.setGBSICO(payload.GBSICO());
+            bolsaUpdate.setGBSFOP(payload.GBSFOP());
+            bolsaUpdate.setGBSIBG(payload.GBSIBG());
+            gbsRepository.save(bolsaUpdate);
+
+            return ResponseEntity.noContent().build();
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ERROR + ex.getMostSpecificCause().getMessage());
+        }
+    }
+
+    //modifying gbsibg only
+    public record updateGbsimp(Double GBSIMP, Double GBSIUS, Double GBSICO, LocalDateTime GBSFOP) {}
+    @PatchMapping("update-Importe/{ent}/{eje}/{cgecod}/{gbsref}")
+    public ResponseEntity<?> updateGbsimp(
+        @PathVariable Integer ent,
+        @PathVariable String eje,
+        @PathVariable String cgecod,
+        @PathVariable String gbsref,
+        @RequestBody updateGbsimp payload
     ) {
         try {
             if (payload == null || payload.GBSIMP() == null || payload.GBSIUS() == null || payload.GBSICO() == null || payload.GBSFOP() == null) {
@@ -102,8 +137,7 @@ public class GbsController {
             GbsId id = new GbsId(ent, eje, cgecod, gbsref);
             Optional<Gbs> bolsa = gbsRepository.findById(id);
             if (bolsa.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(SIN_RESULTADO);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
             }
 
             Gbs bolsaUpdate = bolsa.get();
@@ -111,45 +145,11 @@ public class GbsController {
             bolsaUpdate.setGBSIUS(payload.GBSIUS());
             bolsaUpdate.setGBSICO(payload.GBSICO());
             bolsaUpdate.setGBSFOP(payload.GBSFOP());
-
             gbsRepository.save(bolsaUpdate);
+
             return ResponseEntity.noContent().build();
         } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ERROR + ex.getMostSpecificCause().getMessage());
-        }
-    }
-
-    //modifying gbsibg
-    public record updateGbsibg(Double GBSIBG) {}
-    @PatchMapping("update-gbsibg/{ent}/{eje}/{cgecod}/{gbsref}")
-    public ResponseEntity<?> updateGbsibg(
-            @PathVariable Integer ent,
-            @PathVariable String eje,
-            @PathVariable String cgecod,
-            @PathVariable String gbsref,
-            @RequestBody updateGbsibg payload
-    ) {
-        try {
-            if (payload == null || payload.GBSIBG() == null) {
-                return ResponseEntity.badRequest().body(FALTAN);
-            }
-
-            GbsId id = new GbsId(ent, eje, cgecod, gbsref);
-            Optional<Gbs> bolsa = gbsRepository.findById(id);
-            if (bolsa.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(SIN_RESULTADO);
-            }
-
-            Gbs bolsaUpdate = bolsa.get();
-            bolsaUpdate.setGBSIBG(payload.GBSIBG());
-
-            gbsRepository.save(bolsaUpdate);
-            return ResponseEntity.noContent().build();
-        } catch (DataAccessException ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ERROR + ex.getMostSpecificCause().getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ERROR + ex.getMostSpecificCause().getMessage());
         }
     }
 

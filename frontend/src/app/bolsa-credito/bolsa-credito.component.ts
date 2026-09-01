@@ -505,22 +505,9 @@ export class BolsaCreditoComponent {
     this.selectedBolsas = { ...bolsa };
     this.tempBolsa = { ...bolsa };
 
-    if ((this.selectedBolsas.gbsimp !== undefined && this.selectedBolsas.gbsimp !== null) || (this.tempBolsa.gbsimp !== undefined && this.tempBolsa.gbsimp !== null)) {
-      let num = this.parseMoney(this.selectedBolsas.gbsimp);
-      let numB = this.parseMoney(this.tempBolsa.gbsimp);
-      if ((!isNaN(num)) || (!isNaN(numB))) {
-        this.selectedBolsas.gbsimp = num.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
-        this.tempBolsa.gbsimp = num.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
-      }
-    }
-    if ((this.selectedBolsas.gbsibg !== undefined && this.selectedBolsas.gbsibg !== null) || (this.tempBolsa.gbsibg !== undefined && this.tempBolsa.gbsibg !== null)) {
-      let num = this.parseMoney(this.selectedBolsas.gbsibg);
-      let numB = this.parseMoney(this.tempBolsa.gbsibg);
-      if ((!isNaN(num)) || (!isNaN(numB))) {
-        this.selectedBolsas.gbsibg = num.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
-        this.tempBolsa.gbsibg = num.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
-      }
-    }
+    this.tempBolsa.gbsimp = this.formatCurrency(this.parseMoney(this.selectedBolsas.gbsimp));
+    this.tempBolsa.gbsibg = this.formatCurrency(this.parseMoney(this.selectedBolsas.gbsibg));
+
     const org = bolsa?.gbsorg ?? '';
     const fun = bolsa?.gbsfun ?? '';
     const eco = bolsa?.gbseco ?? '';
@@ -592,7 +579,6 @@ export class BolsaCreditoComponent {
     return isParenNeg ? -n : n;
   }
 
-  gbsimpTouched: boolean = false;
   gbsImp() {
     const value = this.parseMoney(this.tempBolsa.gbsimp);
 
@@ -607,7 +593,6 @@ export class BolsaCreditoComponent {
     });
   }
   
-  gbsibgTouched: boolean = false;
   gbsIbg() {
     const value = this.parseMoney(this.tempBolsa.gbsibg);
 
@@ -652,98 +637,59 @@ export class BolsaCreditoComponent {
       return;
     }
 
-    this.updateGbsimp(gbsimp, getkAcPeCo, gbsref, gbsibg);
+    this.updateBolsa(gbsimp, getkAcPeCo, gbsref, gbsibg);
   }
 
   gridMessages: boolean = false;
   isUpdating: boolean = false;
-  importeGestionSuccess: string = '';
   importeSuccess: string = '';
-  importeGestionError: string = '';
   importeError: string = '';
-  updateGbsimp(gbsimp: any, getkAcPeCo:any, gbsref: any, gbsibg: string) {
-    console.log(this.gbsibgTouched)
-    if (this.gbsibgTouched) {
-      console.log("will update")
-      this.isUpdating = true;
+  updateBolsa(gbsimp: any, getkAcPeCo:any, gbsref: any, gbsibg: string) {
+    this.limpiarMessages();
+    Object.assign(this.selectedBolsas, this.tempBolsa);
 
-      Object.assign(this.selectedBolsas, this.tempBolsa);
-
-      const parsedValue = this.cleaningCurrency(gbsibg);
-      const referencia = this.selectedBolsas.gbsref;
-
-      const payload = {
-        "GBSIBG": parsedValue
-      }
-
-      this.http.patch(`${environment.backendUrl}/api/gbs/update-gbsibg/${this.entcod}/${this.eje}/${this.cge}/${referencia}`, payload).subscribe({
-        next: (res) => {
-          const formattedValue = this.formatCurrency(parsedValue);
-          this.selectedBolsas.gbsibg = formattedValue;
-          this.tempBolsa.gbsibg = formattedValue;
-          const credito = this.creditos.find(c => c.gbsref === referencia);
-          if (credito) {
-            credito.gbsibg = formattedValue;
-          }
-          this.updateSuccess();
-          this.gridMessages = true;
-          this.importeGestionSuccess = 'Importe bolsa gestión actualizado correctamente';
-          this.isUpdating = false;
-          this.gbsibgTouched = false;
-        },
-        error: (err) => {
-          this.importeGestionError = err.error.error ?? err.error;
-          this.isUpdating = false;
-          this.gbsibgTouched = false;
-        }
-      })
-    } 
-
-    if (this.gbsimpTouched) {
-      Object.assign(this.selectedBolsas, this.tempBolsa);
-
-      const parsedValue = this.cleaningCurrency(gbsimp);
-      if ( parsedValue > getkAcPeCo) {
-        console.log(getkAcPeCo)
-        this.gridMessages = true;
-        this.importeError = 'Importe bolsa: HA SOBREPASADO EL DISPONIBLE DE LA REFERENCIA';
-        console.log(this.importeError)
-        this.gbsimpTouched = false;
-        return;
-      }
-    
-      this.isUpdating = true;
-      const today = new Date();
-      const payload = {
-        GBSIMP: parsedValue,
-        GBSIUS: 0,
-        GBSICO: 0,
-        GBSFOP: today.toISOString().slice(0, 19)
-      };
-
-      this.http.patch<void>(`${environment.backendUrl}/api/gbs/${this.entcod}/${this.eje}/${this.cge}/${gbsref}`, payload)
-      .subscribe({
-        next: () => {
-          const formattedValue = this.formatCurrency(parsedValue);
-          this.selectedBolsas.gbsimp = formattedValue;
-          this.tempBolsa.gbsimp = formattedValue;
-          const credito = this.creditos.find(c => c.gbsref === gbsref);
-          if (credito) {
-            credito.gbsimp = formattedValue;
-          }
-          this.updateSuccess();
-          this.gridMessages = true;
-          this.importeSuccess = 'Importe bolsa actualizado correctamente';
-          this.isUpdating = false;
-          this.gbsimpTouched = false;
-        },
-        error: (err) => {
-          this.importeError = err.error.error ?? err.error;
-          this.isUpdating = false;
-          this.gbsimpTouched = false;
-        }
-      });
+    const cleanGbsimp = this.cleaningCurrency(gbsimp);
+    const cleanGbsibg = this.cleaningCurrency(gbsibg);
+    const referencia = this.selectedBolsas.gbsref;
+    if (cleanGbsimp > getkAcPeCo) {
+      console.log(getkAcPeCo)
+      this.gridMessages = true;
+      this.importeError = 'Importe bolsa: HA SOBREPASADO EL DISPONIBLE DE LA REFERENCIA';
+      return;
     }
+
+    const today = new Date();
+    const payload = {
+      GBSIMP: cleanGbsimp,
+      GBSIUS: 0,
+      GBSICO: 0,
+      GBSFOP: today.toISOString().slice(0, 19),
+      GBSIBG: cleanGbsibg
+    };
+
+    this.isUpdating = true;
+    this.http.patch(`${environment.backendUrl}/api/gbs/updateBolsa/${this.entcod}/${this.eje}/${this.cge}/${referencia}`, payload).subscribe({
+      next: (res) => {
+        this.selectedBolsas.gbsimp = cleanGbsimp;
+        this.selectedBolsas.gbsibg = cleanGbsibg;
+        this.tempBolsa.gbsimp = this.formatCurrency(cleanGbsimp);
+        this.tempBolsa.gbsibg = this.formatCurrency(cleanGbsibg);
+
+        const ibgUpdate = this.creditos.find(c => c.gbsref === referencia);
+        if (ibgUpdate) {
+          ibgUpdate.gbsimp = cleanGbsimp;
+          ibgUpdate.gbsibg = cleanGbsibg;
+        }
+        this.updateSuccess();
+        this.gridMessages = true;
+        this.importeSuccess = 'Bolsa actualizada correctamente';
+        this.isUpdating = false;
+      },
+      error: (err) => {
+        this.importeError = err.error.error ?? err.error;
+        this.isUpdating = false;
+      }
+    })
   }
 
   isDeleting: boolean = false;
@@ -799,13 +745,15 @@ export class BolsaCreditoComponent {
           // Update the source data in creditos array
           const credito = this.creditos.find(c => c.gbsref === referncia);
           if (credito) {
-            credito.gbsimp = this.formatCurrency(sum);
-            credito.gbsibg = this.formatCurrency(0);
+            credito.gbsimp = sum;
+            credito.gbsibg = 0;
             credito.gbsius = 0;
             credito.gbsico = 0;
           }
           this.selectedBolsas = { ...credito };
           this.tempBolsa = { ...credito };
+          this.tempBolsa.gbsimp = this.formatCurrency(this.selectedBolsas.gbsimp);
+          this.tempBolsa.gbsibg = this.formatCurrency(this.selectedBolsas.gbsibg);
           this.isUpdating = false;
           this.gridMessages = true;
           this.guardarMesageSuccess = 'Traspaso realizado con éxito';
@@ -943,9 +891,7 @@ export class BolsaCreditoComponent {
     this.guardarMesage = '';
     this.DErrorMessage = '';
     this.tablesuccessMessage = '';
-    this.importeGestionSuccess = '';
     this.importeSuccess = '';
-    this.importeGestionError = '';
     this.importeError = '';
   }
 }

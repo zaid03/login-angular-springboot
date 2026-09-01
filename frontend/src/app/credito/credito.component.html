@@ -348,25 +348,21 @@
                                         <input 
                                             class="textArea-style smallTextarea alignment" 
                                             [(ngModel)]="tempBolsa.gbsimp" 
-                                            (blur)="formatGbsimp()"
                                             [disabled]="!isUpdate"
                                             (input)="allowToUpdate = true"
+                                            (focus)="gbsImp()"
+                                            (blur)="formatGbsimp()"
                                             #gbsimp
                                         />
                                     </td>
                                     <td class="alignment">
-                                        <input 
-                                            class="textArea-style smallTextarea alignment" 
-                                            [(ngModel)]="tempBolsa.gbsibg" 
-                                            disabled
-                                            #gbsibg
-                                        />
+                                        <h1 class="h1-style fix">{{tempBolsa.gbsibg | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</h1>
                                     </td>
                                     <td  class="alignment">
-                                        <h1 class="h1-style fix">{{selectedBolsas.gbsius | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</h1>
+                                        <h1 class="h1-style fix">{{tempBolsa.gbsius | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</h1>
                                     </td>
                                     <td class="borderRight alignment padding">
-                                        <h1 class="h1-style fix">{{getKBoldis(selectedBolsas.gbsimp, selectedBolsas.gbsibg, selectedBolsas.gbsius) | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</h1>
+                                        <h1 class="h1-style fix">{{getKBoldis(tempBolsa.gbsimp, tempBolsa.gbsibg, tempBolsa.gbsius) | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</h1>
                                     </td>
                                 </tr>
                             </table>
@@ -427,7 +423,7 @@
                             class="purple-btn" 
                             [disabled]="!isUpdate" 
 	                        *ngIf="isUpdate"
-                            (click)="isUpdateAllowed(gbsimp.value, getkdispon(selectedBolsas.saldo, getkAcPeCo(selectedBolsas.gbsiut, selectedBolsas.gbsict)), selectedBolsas.gbsref)"
+                            (click)="isUpdateAllowed(gbsimp.value, getkdispon(tempBolsa.saldo, getkAcPeCo(tempBolsa.gbsiut, tempBolsa.gbsict)), tempBolsa.gbsref)"
                         >Guardar</button>
                     </div>
                 </div>

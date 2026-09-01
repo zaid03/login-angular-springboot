@@ -553,17 +553,19 @@ export class CreditoComponent {
     return isParenNeg ? -n : n;
   }
   
+  gbsImp() {
+    const value = this.parseMoney(this.tempBolsa.gbsimp);
+
+    this.tempBolsa.gbsimp = value === 0 ? '' : value.toString();
+  }
+
   formatGbsimp() {
-    if (!this.tempBolsa || this.tempBolsa.gbsimp === undefined || this.tempBolsa.gbsimp === null) return;
-    let value = String(this.tempBolsa.gbsimp)
-      .replace(/\s/g, '')
-      .replace(/\./g, '')     
-      .replace(',', '.')       
-      .replace(/[^\d.-]/g, '');
-    let num = parseFloat(value);
-    if (!isNaN(num)) {
-      this.tempBolsa.gbsimp = num.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
-    }
+    const value = this.parseMoney(this.tempBolsa.gbsimp);
+
+    this.tempBolsa.gbsimp = value.toLocaleString('es-ES', {
+      style: 'currency',
+      currency: 'EUR'
+    });
   }
 
   tempBolsa: any = {};
@@ -596,33 +598,29 @@ export class CreditoComponent {
   gridMessages: boolean = false;
   isUpdating: boolean = false;
   updateBolsa(gbsimp: any, getkAcPeCo:any, gbsref: any) {
-    this.isUpdating = true;
     this.limpiarMessages();
-
-    let cleanValue = gbsimp.replace(/\./g, '').replace(',', '.').replace(/[^\d.-]/g, '');
-    let parsedValue = parseFloat(cleanValue);
-
     Object.assign(this.selectedBolsas, this.tempBolsa);
+    const cleanGbsimp = this.parseMoney(gbsimp);
 
-    if ( parsedValue > getkAcPeCo) {
+    if ( cleanGbsimp > getkAcPeCo) {
       this.gridMessages = true;
       this.guardarMesage = 'HA SOBREPASADO EL DISPONIBLE DE LA REFERENCIA';
-      this.isUpdating = false;
       return;
     }
 
     const today = new Date();
     const payload = {
-      GBSIMP: parsedValue,
+      GBSIMP: cleanGbsimp,
       GBSIUS: 0,
       GBSICO: 0,
       GBSFOP: today.toISOString().slice(0, 19)
     };
 
-    this.http.patch<void>(`${environment.backendUrl}/api/gbs/${this.entcod}/${this.eje}/${this.cge}/${gbsref}`, payload)
+    this.isUpdating = true;
+    this.http.patch<void>(`${environment.backendUrl}/api/gbs/update-Importe/${this.entcod}/${this.eje}/${this.cge}/${gbsref}`, payload)
     .subscribe({
       next: () => {
-        const formattedValue = this.formatCurrency(parsedValue);
+        const formattedValue = this.formatCurrency(cleanGbsimp);
         this.selectedBolsas.gbsimp = formattedValue;
         this.tempBolsa.gbsimp = formattedValue;
         const credito = this.creditos.find(c => c.gbsref === gbsref);

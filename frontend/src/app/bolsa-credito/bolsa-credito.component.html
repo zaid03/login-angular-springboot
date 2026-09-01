@@ -366,7 +366,6 @@
                                             [(ngModel)]="tempBolsa.gbsimp"
                                             [disabled]="!isUpdate"
                                             (input)="allowToUpdate = true"
-                                            (click)="gbsimpTouched = true"
                                             (focus)="gbsImp()"
                                             (blur)="formatGbsimp()"
                                             #gbsimp
@@ -378,7 +377,6 @@
                                             [(ngModel)]="tempBolsa.gbsibg"
                                             [disabled]="!isUpdate"
                                             (input)="allowToUpdate = true"
-                                            (click)="gbsibgTouched = true"
                                             (focus)="gbsIbg()"
                                             (blur)="formateGbsibg()"
                                             #gbsibg
@@ -388,7 +386,7 @@
                                         <h1 class="h1-style fix">{{selectedBolsas.gbsius | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</h1>
                                     </td>
                                     <td class="borderRight alignment padding">
-                                        <h1 class="h1-style fix">{{getKBoldis(selectedBolsas.gbsimp, selectedBolsas.gbsibg, selectedBolsas.gbsius) | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</h1>
+                                        <h1 class="h1-style fix">{{getKBoldis(tempBolsa.gbsimp, tempBolsa.gbsibg, tempBolsa.gbsius) | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</h1>
                                     </td>
                                 </tr>
                             </table>
@@ -573,9 +571,7 @@
     <div class="saved-details">
         <h1 class="successBtn" *ngIf="guardarMesageSuccess">{{ guardarMesageSuccess }}</h1>
         <h1 class="errorBtn" *ngIf="guardarMesage">{{ guardarMesage }}</h1>
-        <h1 class="successBtn" *ngIf="importeGestionSuccess">{{importeGestionSuccess}}</h1>
         <h1 class="successBtn" *ngIf="importeSuccess">{{importeSuccess}}</h1>
-        <h1 class="errorBtn" *ngIf="importeGestionError">{{importeGestionError}}</h1>
         <h1 class="errorBtn" *ngIf="importeError">{{importeError}}</h1>
     </div>
 </div>
