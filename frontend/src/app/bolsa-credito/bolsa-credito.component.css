@@ -16,7 +16,9 @@
 .bolsa-table td:nth-child(8),
 .bolsa-table td:nth-child(7),
 .bolsa-table td:nth-child(6),
-.bolsa-table td:nth-child(5) { text-align: right; }
+.bolsa-table td:nth-child(5),
+.rcTable td:nth-child(8),
+.rcTable td:nth-child(9) { text-align: right; }
 .tableMessage {width: 10% !important;}
 .dots::after {content: ''; animation: dots 1.5s steps(4, end) infinite;}
 @keyframes dots {
@@ -44,17 +46,11 @@
 .borderRight{border-right: 1px solid gray;}
 .borderTop {border-top: 1px solid gray;}
 .borderBottom {border-bottom: 1px solid gray;}
-/* .signPlacement {height: 70%; display: flex; align-items: end;}
-.signPlacement2 {height: 100%; align-content: end;}
-.signPlacement3 {height: 85%; align-content: end;}
-.bottom {border-bottom: 1px solid gray;} */
-/* .margintop {margin-top: 10px;} */
 .alignment {text-align: right;}
 .mix {width: 80%;}
 .padding {padding: 5px;}
 .contabilidad {text-align: center; height: 10%;}
 .contabilidad p {font-size: 22px !important;}
-/* .secAdj {width: 80%;} */
 .moreSpace {width: 8%;}
 .signFix {height: 100%; display: flex; align-items: flex-end; justify-content: center;}
 .top {margin-top: 2%;}

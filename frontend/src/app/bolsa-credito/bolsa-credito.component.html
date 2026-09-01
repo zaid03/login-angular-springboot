@@ -505,7 +505,7 @@
             <h1 class="h1-style">{{programa}}</h1>
         </div>
     </div>
-    <table class="main-table">
+    <table class="main-table rcTable">
         <thead>
             <tr>
                 <th>Número</th>
@@ -533,8 +533,8 @@
                 <td>{{d.lineaList[0].linorg}}</td>
                 <td>{{d.lineaList[0].linfun}}</td>
                 <td>{{d.lineaList[0].lineco}}</td>
-                <td>{{d.lineaList[0].limporte}}</td>
-                <td>{{d.lineaList[0].saldo}}</td>
+                <td>{{d.lineaList[0].limporte | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</td>
+                <td>{{d.lineaList[0].saldo | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</td>
                 <td>{{d.texto}}</td>
             </tr>
         </tbody>
