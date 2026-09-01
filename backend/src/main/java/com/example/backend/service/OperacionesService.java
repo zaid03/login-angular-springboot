@@ -55,6 +55,40 @@ public class OperacionesService {
         String grupoApunte,
         String oficina,
         String eje ) throws Exception {
+        return getOperaciones(
+                orgCode,
+                entidad,
+                numeroOperDesde,
+                numeroOperHasta,
+                codigoOperacion,
+                organica,
+                funcional,
+                economica,
+                referencia,
+                expediente,
+                grupoApunte,
+                oficina,
+                null,
+                null,
+                eje);
+    }
+
+    public List<Operaciones> getOperaciones(
+        String orgCode,
+        String entidad,
+        String numeroOperDesde,
+        String numeroOperHasta,
+        String codigoOperacion,
+        String organica,
+        String funcional,
+        String economica,
+        String referencia,
+        String expediente,
+        String grupoApunte,
+        String oficina,
+        String indice,
+        String numRegDev,
+        String eje ) throws Exception {
             if (eje == null || eje.isBlank()) {
                 throw new IllegalArgumentException("eje is required");
             }
@@ -77,6 +111,8 @@ public class OperacionesService {
             (expediente != null ? "<expediente>" + CryptoSical.encodeBase64(expediente) + "</expediente>" : "") +
             (grupoApunte != null ? "<grupoApunte>" + CryptoSical.encodeBase64(grupoApunte) + "</grupoApunte>" : "") +
             (oficina != null ? "<oficina>" + CryptoSical.encodeBase64(oficina) + "</oficina>" : "") +
+            (indice != null ? "<indice>" + indice + "</indice>" : "") +
+            (numRegDev != null ? "<NumRegDev>" + numRegDev + "</NumRegDev>" : "") +
             "</filtro>";
 
         String xml =

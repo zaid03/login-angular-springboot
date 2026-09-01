@@ -39,6 +39,8 @@ public class OperacionesController {
         @RequestParam(name = "expediente", required = false) String expediente,
         @RequestParam(name = "grupoApunte", required = false) String grupoApunte,
         @RequestParam(name = "oficina", required = false) String oficina,
+        @RequestParam(name = "indice", required = false) String indice,
+        @RequestParam(name = "numRegDev", required = false) String numRegDev,
         @RequestParam(name = "eje") String eje
     ) {
         try {
@@ -55,6 +57,8 @@ public class OperacionesController {
                     expediente,
                     grupoApunte,
                     oficina,
+                    indice,
+                    numRegDev,
                     eje);
             return ResponseEntity.ok(operaciones);
         } catch (Exception ex) {
