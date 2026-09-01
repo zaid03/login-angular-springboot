@@ -73,9 +73,34 @@ export class CreditoComponent {
     }
 
     this.getBolsas();
+    this.fetchCentroGestorInfo();
   }
 
   //main table functions
+  organigrama: string = '';
+  programa: string = '';
+  description: string = '';
+  estado: number = 0;
+  fetchCentroGestorInfo() {
+    this.limpiarMessages();
+    this.http.get<any>(`${environment.backendUrl}/api/cge/search-centros-codigo/${this.entcod}/${this.eje}/${this.cge}`).subscribe({
+      next: (res) => {
+        this.cge = res[0].cgecod;
+        this.organigrama = res[0].cgeorg;
+        this.programa = res[0].cgefun;
+        this.description = res[0].cgedes
+        this.estado = res[0].cgecic;
+      },
+      error: (err) => {
+        this.organigrama = '';
+        this.programa ='';
+        this.description = '';
+        this.estado = 0;
+        console.warn(err.error.error ?? err.error);
+      }
+    })
+  }
+
   isLoading: boolean = false;
   swLoading: boolean = false;
   getBolsas(){

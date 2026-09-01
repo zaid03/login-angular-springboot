@@ -26,9 +26,56 @@
                 </div>
             </div>
         </div>
+        <div class="centro-info">
+            <div class="centro-content widthSmall">
+                <p class="p-style">C.Gestor</p>
+                <h1 class="h1-style">{{cge}}</h1>
+            </div>
+            <div class="centro-content widthSmall">
+                <p class="p-style">Orgánica</p>
+                <h1 class="h1-style">{{organigrama}}</h1>
+            </div>
+            <div class="centro-content widthSmall">
+                <p class="p-style">Programa</p>
+                <h1 class="h1-style">{{programa}}</h1>
+            </div>
+            <div class="centro-content bigWidth">
+                <p class="p-style">Descripción</p>
+                <h1 class="h1-style">{{description}}</h1>
+            </div>
+            <div class="centro-content bigWidth">
+                <p class="p-style">Estado contable</p>
+                <div class="rad-content">
+                    <div class="rad">
+                        <input 
+                            type="radio"
+                            [checked]="estado === 0"
+                            (click)="$event.preventDefault()"
+                        /> 
+                        <span class="rad-name">Abierto</span>
+                    </div>
+                    <div class="rad">
+                        <input 
+                            type="radio"
+                            [checked]="estado === 2"
+                            (click)="$event.preventDefault()"
+                        /> 
+                        <span class="rad-name">Cerrado para contabilizar</span>
+                    </div>
+                    <div class="rad">
+                        <input 
+                            type="radio"
+                            [checked]="estado === 1"
+                            (click)="$event.preventDefault()"
+                        /> 
+                        <span class="rad-name">Cerrado</span>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="main-list">
             <h1 class="errorBtn">{{ tableMessage }}</h1>
-             <h1 class="p-style" *ngIf="swLoading">Los datos de Sicalwin se están cargando<span class="dots"></span></h1>
+            <h1 class="errorBtn" *ngIf="swLoading">Cargando datos desde Sicalwin<span class="dots"></span></h1>
             <div *ngIf="isLoading" class="loading-message">
                 <div class="spinner"></div>
                 <span>Cargando</span>

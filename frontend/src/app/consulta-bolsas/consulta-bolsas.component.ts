@@ -464,9 +464,8 @@ export class ConsultaBolsasComponent {
     }
   }
 
-  cgeSearch: string = '';
   searchBolsas() {
-    if (this.cgeSearch === '') {
+    if (this.cge === '') {
       this.tableMessage = 'Falta Centro Gestor';
       return;
     }
@@ -490,7 +489,6 @@ export class ConsultaBolsasComponent {
     this.fetchCancel$.next();
     this.limpiarMessages();
     this.fetchBolsas();
-    this.cge = '';
     this.fetchCentroGestorInfo();
   }
   
