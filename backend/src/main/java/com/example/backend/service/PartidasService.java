@@ -293,39 +293,9 @@ public class PartidasService {
     
     private Partida createPartidaFromElement(Element e) {
         Partida p = new Partida();
-        
-        p.setAlias(getTagValue(e, "alias"));
-        p.setEjeapl(getTagValue(e, "ejeapl"));
-        p.setOrgapl(decodeOrNull(getTagValue(e, "orgapl")));
-        p.setFunapl(decodeOrNull(getTagValue(e, "funapl")));
-        p.setEcoapl(decodeOrNull(getTagValue(e, "ecoapl")));
-        p.setPamapl(decodeOrNull(getTagValue(e, "pamapl")));
-        p.setCteapl(decodeOrNull(getTagValue(e, "cteapl")));
-        p.setDesc(decodeOrNull(getTagValue(e, "desc")));
-        
-        p.setCipocin(toDouble(getTagValue(e, "cipocin")));
-        p.setModcred(toDouble(getTagValue(e, "modcred")));
-        p.setCredextra(toDouble(getTagValue(e, "credextra")));
-        p.setSupcred(toDouble(getTagValue(e, "supcred")));
-        p.setAmpcred(toDouble(getTagValue(e, "ampcred")));
-        p.setTranpos(toDouble(getTagValue(e, "tranpos")));
-        p.setTranneg(toDouble(getTagValue(e, "tranneg")));
-        p.setReminc(toDouble(getTagValue(e, "reminc")));
-        p.setCreging(toDouble(getTagValue(e, "creging")));
-        p.setBajanu(toDouble(getTagValue(e, "bajanu")));
-        p.setCretot(toDouble(getTagValue(e, "cretot")));
-        p.setCreret(toDouble(getTagValue(e, "creret")));
-        p.setCrepend(toDouble(getTagValue(e, "crepend")));
-        p.setGasauto(toDouble(getTagValue(e, "gasauto")));
-        p.setAutdisp(toDouble(getTagValue(e, "autdisp")));
-        p.setGascomp(toDouble(getTagValue(e, "gascomp")));
-        p.setOblrec(toDouble(getTagValue(e, "oblrec")));
-        p.setPagord(toDouble(getTagValue(e, "pagord")));
-        p.setPagefe(toDouble(getTagValue(e, "pagefe")));
-        p.setReinpag(toDouble(getTagValue(e, "reinpag")));
-        p.setSdisp(toDouble(getTagValue(e, "sdisp")));
-        p.setSvin(toDouble(getTagValue(e, "svin")));
-        p.setSvinpre(toDouble(getTagValue(e, "svinpre")));
+        String rawDesc = getTagValue(e, "desc");
+        String decodedDesc = decodeOrNull(rawDesc);
+        p.setDesc(decodedDesc);
         
         return p;
     }
@@ -339,27 +309,18 @@ public class PartidasService {
         return node != null ? node.getTextContent() : null;
     }
 
-    private Double toDouble(String s) {
-      if (s == null || s.trim().isEmpty()) return 0.0;
-      try { return Double.parseDouble(s); } catch (NumberFormatException ex) { return 0.0; }
-    }
-
     private String decodeOrNull(String value) {
       if (value == null || value.isBlank()) return null;
       try {
-        return CryptoSical.decodeBase64(value);
+        String decoded = CryptoSical.decodeBase64(value);
+        return decoded;
       } catch (IllegalArgumentException ex) {
         return value;
       }
     }
 
   public static class SicalParseException extends Exception {
-    public SicalParseException(String message) {
-      super(message);
-    }
-    
-    public SicalParseException(String message, Throwable cause) {
-      super(message, cause);
-    }
+    public SicalParseException(String message) {super(message);}
+    public SicalParseException(String message, Throwable cause) {super(message, cause);}
   }
 }
