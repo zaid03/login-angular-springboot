@@ -33,7 +33,7 @@
                 <div class="dot"></div>
                 <div class="menu-panel" *ngIf="showMenu">
                     <button class="purple-btn" (click)="DownloadPDF()">Exportar a PDF</button>
-                    <button class="purple-btn" (click)="DownloadCSV()">Exportar a CSV</button>
+                    <button class="purple-btn" (click)="excelDownload()">Exportar a Excel</button>
                     <button class="purple-btn" (click)="openAddD()">Añadir RC</button>
                 </div>
             </div>
@@ -141,6 +141,42 @@
                             <div class="resizer" (mousedown)="startResize($event, 4)"></div>
                         </th>
                         <th 
+                            (click)="setSort('gbsimp')"
+                            class="sortable resizable"
+                        >   Importe bolsa
+                            <span *ngIf="sortField === 'gbsimp'">
+                                {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                            </span>
+                            <div class="resizer" (mousedown)="startResize($event, 4)"></div>
+                        </th>
+                        <th 
+                            (click)="setSort('gbsibg')"
+                            class="sortable resizable"
+                        >   Importe bolsa gestión
+                            <span *ngIf="sortField === 'gbsibg'">
+                                {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                            </span>
+                            <div class="resizer" (mousedown)="startResize($event, 4)"></div>
+                        </th>
+                        <th 
+                            (click)="setSort('gbsius')"
+                            class="sortable resizable"
+                        >   Usado bolsa
+                            <span *ngIf="sortField === 'gbsius'">
+                                {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                            </span>
+                            <div class="resizer" (mousedown)="startResize($event, 4)"></div>
+                        </th>
+                        <th 
+                            (click)="setSort('getKBoldis')"
+                            class="sortable resizable"
+                        >   Disponible bolsa
+                            <span *ngIf="sortField === 'getKBoldis'">
+                                {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                            </span>
+                            <div class="resizer" (mousedown)="startResize($event, 4)"></div>
+                        </th>
+                        <th 
                             (click)="setSort('saldo')"
                             class="sortable resizable"
                         >   Saldo Operación
@@ -176,6 +212,10 @@
                         <td>{{ p.gbsope }}</td>
                         <td>{{ p.gbsref }}</td>
                         <td>{{ p.limporte | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</td>
+                        <td>{{ p.gbsimp | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</td>
+                        <td>{{ p.gbsibg | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</td>
+                        <td>{{ p.gbsius | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</td>
+                        <td>{{ getKBoldis(p.gbsimp, p.gbsibg, p.gbsius) | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</td>
                         <td>{{ p.saldo | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</td>
                         <td>{{ getkAcPeCo(p.gbsiut, p.gbsict) | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</td>
                         <td> {{ getkdispon(p.saldo, getkAcPeCo(p?.gbsiut, p?.gbsict)) | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</td>

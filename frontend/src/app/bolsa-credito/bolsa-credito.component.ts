@@ -7,7 +7,8 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { finalize } from 'rxjs';
-
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { environment } from '../../environments/environment';
@@ -303,77 +304,70 @@ export class BolsaCreditoComponent {
 
   DownloadPDF() {
     this.limpiarMessages();
-
     const source = this.creditos;
+
     if (!source?.length) {
-      this.tableIsError = true;
       this.tableMessage = 'No hay datos para exportar.';
       return;
     }
 
-    const rows = source.map((row: any, index: number) => {
-      const aplicacion = `${row.gbsorg ?? ''} - ${row.gbsfun ?? ''} - ${row.gbseco ?? ''}`;
-      const acpeco = Number(this.getkAcPeCo(row.gbsiut, row.gbsict) ?? 0);
-      const disponible = Number(this.getkdispon(row.saldo, this.getkAcPeCo(row.gbsiut, row.gbsict)) ?? 0);
+    const rows = source.map((row: any, index: number) => ({
+      combined: row.gbsorg + '-' + row.gbsfun + '-' + row.gbseco || '',
+      partidas: row.partidas?.[0]?.desc ?? '',
+      gbsope: row.gbsope ?? '',
+      gbsref: row.gbsref ?? '',
+      limporte: this.formatCurrency(row.limporte) ?? '',
+      gbsimp: this.formatCurrency(row.gbsimp) ?? '',
+      gbsibg: this.formatCurrency(row.gbsibg) ?? '',
+      gbsius: this.formatCurrency(row.gbsius) ?? '',
+      getKBoldis: this.formatCurrency(this.getKBoldis(row.gbsimp, row.gbsibg, row.gbsius)) ?? '',
+      saldo: this.formatCurrency(row.saldo) ?? '',
+      getkAcPeCo: this.formatCurrency(this.getkAcPeCo(row.gbsiut, row.gbsict)) ?? '',
+      getkdispon: this.formatCurrency(this.getkdispon(row.saldo, this.getkAcPeCo(row?.gbsiut, row?.gbsict))) ?? ''
+    }));
 
-      return {
-        index: index + 1,
-        aplicacion,
-        desc: row.partidas?.[0]?.desc ?? '',
-        gbsope: row.gbsope ?? '',
-        gbsref: row.gbsref ?? '',
-        limporte: this.formatCurrency(row.limporte),
-        saldo: this.formatCurrency(row.saldo),
-        acpeco: this.formatCurrency(acpeco),
-        disponible: this.formatCurrency(disponible)
-      };
-    });
-
-    const columns = [
-      { header: '#', dataKey: 'index' },
-      { header: 'Aplicación', dataKey: 'aplicacion' },
-      { header: 'Desc. Aplicación', dataKey: 'desc' },
-      { header: 'Operación contable', dataKey: 'gbsope' },
-      { header: 'Ref. contable', dataKey: 'gbsref' },
-      { header: 'Imp. Operación', dataKey: 'limporte' },
-      { header: 'Saldo Operación', dataKey: 'saldo' },
-      { header: 'Pte. Contabilizar SCAP', dataKey: 'acpeco' },
-      { header: 'Disponible', dataKey: 'disponible' }
-    ];
-
-    const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+    const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(14);
-    doc.text('Listado de bolsas', 10, 20);
+    doc.text('Listado de bolsas', 40, 40);
+    const columns = [
+      { header: 'Aplicación', dataKey: 'combined' },
+      { header: 'Desc.Aplicación', dataKey: 'partidas' },
+      { header: 'Operación contable', dataKey: 'gbsope' },
+      { header: 'Ref.contable', dataKey: 'gbsref' },
+      { header: 'Imp.Operación', dataKey: 'limporte' },
+      { header: 'Importe bolsa', dataKey: 'gbsimp' },
+      { header: 'Importe bolsa gestión', dataKey: 'gbsibg' },
+      { header: 'Usado bolsa', dataKey: 'gbsius' },
+      { header: 'Disponible bolsa', dataKey: 'getKBoldis' },
+      { header: 'Saldo Operación', dataKey: 'saldo' },
+      { header: 'Pte.Contabilizar SCAP', dataKey: 'getkAcPeCo' },
+      { header: 'Disponible', dataKey: 'getkdispon' },
+    ];
 
     autoTable(doc, {
-      startY: 30,
-      theme: 'plain',
-      head: [columns.map(c => c.header)],
-      body: rows.map(row => columns.map(c => row[c.dataKey as keyof typeof row] ?? '')),
-      styles: { font: 'helvetica', fontSize: 8, cellPadding: 4 },
-      headStyles: {
-        fillColor: [240, 240, 240],
-        textColor: [33, 53, 71],
-        fontStyle: 'bold',
-        halign: 'left'
-      },
-      tableLineColor: [200, 200, 200],
-      tableLineWidth: 0.5,
+      startY: 60,
+      head: [columns.map(col => col.header)],
+      body: rows.map(row => columns.map(col => (row as any)[col.dataKey] ?? '')),
+      styles: {fontSize: 8},
+      headStyles: { fillColor: [240, 240, 240], textColor: 33, fontStyle: 'bold' },
       columnStyles: {
-        index: { cellWidth: 8 },
-        aplicacion: { cellWidth: 32 },
-        desc: { cellWidth: 40 },
-        gbsope: { cellWidth: 24 },
-        gbsref: { cellWidth: 26 },
-        limporte: { cellWidth: 24 },
-        saldo: { cellWidth: 24 },
-        acpeco: { cellWidth: 28 },
-        disponible: { cellWidth: 28 }
+        combined: { cellWidth: 25 },
+        partidas: { cellWidth: 30 },
+        gbsope: { cellWidth: 20 },
+        gbsref: { cellWidth: 20 },
+        limporte: { cellWidth: 20 },
+        gbsimp: { cellWidth: 20 },
+        gbsibg: { cellWidth: 20 },
+        gbsius: { cellWidth: 20 },
+        getKBoldis: { cellWidth: 20 },
+        saldo: { cellWidth: 20 },
+        acpeco: { cellWidth: 20 },
+        disponible: { cellWidth: 20 }
       }
     });
 
-    doc.save('bolsas.pdf');
+    doc.save('Bolsas.pdf');
   }
 
   private formatCurrency(value: any): string {
@@ -388,52 +382,57 @@ export class BolsaCreditoComponent {
     return formatted;
   }
 
-  DownloadCSV() {
+  excelDownload() {
     this.limpiarMessages();
-    interface Column { header: string; dataKey: string; }
-    const columns: Column[] = [
-      { header: 'Aplicación', dataKey: 'aplicacion'},
-      { header: 'Desc. Aplicación', dataKey: 'desc'},
-      { header: 'Operación contable', dataKey: 'gbsope'},
-      { header: 'Ref. contable', dataKey: 'gbsref'},
-      { header: 'Imp. Operación', dataKey: 'limporte'},
-      { header: 'Saldo Operación', dataKey: 'saldo'},
-      { header: 'Pte. Contabilizar SCAP', dataKey: 'getkAcPeCo'},
-      { header: 'Disponible', dataKey: 'getkdispon'}
-    ];
+    const rows = this.creditos;
+    if (!rows || rows.length === 0) {
+      this.tableMessage = 'No hay datos para exportar.';
+      return;
+    }
 
-    const rows = (this.creditos || []).map((f: any) => ({
-      aplicacion: `${f.gbsorg ?? ''} - ${f.gbsfun ?? ''} - ${f.gbseco ?? ''}`,
-      desc: f.partidas[0]?.desc,
-      gbsope: f.gbsope,
-      gbsref: f.gbsref,
-      limporte: this.formatCurrency(f.limporte),
-      saldo: this.formatCurrency(f.saldo),
-      acpeco: this.formatCurrency(this.getkAcPeCo),
-      disponible: this.formatCurrency(this.getkdispon)
+    const exportRows = rows.map((row, index) => ({
+      Aplicación: row.gbsorg + '-' + row.gbsfun + '-' + row.gbseco || '',
+      Desc_Aplicación: row.partidas?.[0]?.desc ?? '',
+      Operación_contable: row.gbsope ?? '',
+      Ref_contable: row.gbsref ?? '',
+      Imp_Operación: this.formatCurrency(row.limporte) ?? '',
+      Importe_bolsa: this.formatCurrency(row.gbsimp) ?? '',
+      Importe_bolsa_gestión: this.formatCurrency(row.gbsibg) ?? '',
+      Usado_bolsa: this.formatCurrency(row.gbsius) ?? '',
+      Disponible_bolsa: this.formatCurrency(this.getKBoldis(row.gbsimp, row.gbsibg, row.gbsius)) ?? '',
+      Saldo_Operación: this.formatCurrency(row.saldo) ?? '',
+      Pte_Contabilizar_SCAP: this.formatCurrency(this.getkAcPeCo(row.gbsiut, row.gbsict)) ?? '',
+      Disponible: this.formatCurrency(this.getkdispon(row.saldo, this.getkAcPeCo(row?.gbsiut, row?.gbsict))) ?? ''
     }));
 
-    const escapeCsv = (val: any) => {
-      if (val === null || val === undefined) return '';
-      let s = String(val);
-      s = s.replace(/"/g, '""');
-      if (/[,"\r\n]/.test(s)) s = `"${s}"`;
-      return s;
-    };
+    const worksheet = XLSX.utils.aoa_to_sheet([]);
+    XLSX.utils.sheet_add_aoa(worksheet, [['listado de bolsas']], { origin: 'A1' });
+    worksheet['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 3 } }];
+    XLSX.utils.sheet_add_aoa(worksheet, [['Aplicación', 'Desc.Aplicación', 'Operación contable', 'Ref.contable', 'Imp.Operación', 'Importe bolsa', 'Importe bolsa Disponible', 'Usado bolsa', 'Disponible bolsa', 'Saldo Operación', 'Pte Contabilizar SCAP', 'Disponible']], { origin: 'A2' });
+    XLSX.utils.sheet_add_json(worksheet, exportRows, { origin: 'A3', skipHeader: true });
 
-    const header = columns.map(c => escapeCsv(c.header)).join(';');
-    const bodyLines = rows.map(r => columns.map(c => escapeCsv((r as any)[c.dataKey])).join(';'));
+    worksheet['!cols'] = [
+      { wch: 32 },
+      { wch: 40 },
+      { wch: 24 },
+      { wch: 26 },
+      { wch: 24 },
+      { wch: 24 },
+      { wch: 24 },
+      { wch: 24 },
+      { wch: 24 },
+      { wch: 24 },
+      { wch: 28 },
+      { wch: 28 }
+    ];
 
-    const csvContent = '\uFEFF' + [header, ...bodyLines].join('\r\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'Bolsas.csv';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'bolsas');
+    const buffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    saveAs(
+      new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }),
+      'Bolsas.xlsx'
+    );
   }
 
   public getkAcPeCo(gbsiut: any, gbsict: any): number {

@@ -14,6 +14,10 @@
 .rad input[type="radio"] {margin: 0 6px 0 0; accent-color: #25176b; width: 18px; height: 18px; vertical-align: middle; outline: none; box-shadow: none;}
 /* centro gestor info */
 /* main-table */
+.bolsa-table td:nth-child(12),
+.bolsa-table td:nth-child(11),
+.bolsa-table td:nth-child(10),
+.bolsa-table td:nth-child(9),
 .bolsa-table td:nth-child(8),
 .bolsa-table td:nth-child(7),
 .bolsa-table td:nth-child(6),
