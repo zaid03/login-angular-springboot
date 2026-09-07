@@ -94,7 +94,6 @@
                 <thead>
                     <tr>
                         <th 
-                            class="sortable" 
                             (click)="setSort('gbseco')"
                             class="sortable resizable"
                         >   Aplicación
@@ -104,7 +103,6 @@
                             <div class="resizer" (mousedown)="startResize($event, 0)"></div>
                         </th>
                         <th 
-                            class="sortable" 
                             (click)="setSort('partidaDesc')"
                             class="sortable resizable"
                         >   Desc.Aplicación
@@ -114,7 +112,6 @@
                             <div class="resizer" (mousedown)="startResize($event, 1)"></div>
                         </th>
                         <th 
-                            class="sortable" 
                             (click)="setSort('gbsope')"
                             class="sortable resizable"
                         >   Operación contable
@@ -124,7 +121,6 @@
                             <div class="resizer" (mousedown)="startResize($event, 2)"></div>
                         </th>
                         <th 
-                            class="sortable" 
                             (click)="setSort('gbsref')"
                             class="sortable resizable"
                         >   Ref.contable
@@ -134,7 +130,6 @@
                             <div class="resizer" (mousedown)="startResize($event, 3)"></div>
                         </th>
                         <th 
-                            class="sortable" 
                             (click)="setSort('limporte')"
                             class="sortable resizable"
                         >   Imp.Operación
@@ -143,6 +138,34 @@
                             </span>
                             <div class="resizer" (mousedown)="startResize($event, 4)"></div>
                         </th>
+                        <th 
+                            (click)="setSort('saldo')"
+                            class="sortable resizable"
+                        >   Saldo Operación
+                            <span *ngIf="sortField === 'saldo'">
+                                {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                            </span>
+                            <div class="resizer" (mousedown)="startResize($event, 5)"></div>
+                        </th>
+                        <th 
+                            (click)="setSort('gbsiut')"
+                            class="sortable resizable"
+                        >   Pte.Contabilizar SCAP
+                            <span *ngIf="sortField === 'gbsiut'">
+                                {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                            </span>
+                            <div class="resizer" (mousedown)="startResize($event, 6)"></div>
+                        </th>
+                        <th 
+                            (click)="setSort('gbsict')"
+                            class="sortable resizable"
+                        >   Disponible
+                            <span *ngIf="sortField === 'gbsict'">
+                                {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                            </span>
+                            <div class="resizer" (mousedown)="startResize($event, 7)"></div>
+                        </th>
+
                         <th 
                             (click)="setSort('gbsimp')"
                             class="sortable resizable"
@@ -179,36 +202,6 @@
                             </span>
                             <div class="resizer" (mousedown)="startResize($event, 4)"></div>
                         </th>
-                        <th 
-                            class="sortable" 
-                            (click)="setSort('saldo')"
-                            class="sortable resizable"
-                        >   Saldo Operación
-                            <span *ngIf="sortField === 'saldo'">
-                                {{ sortDirection === 'asc' ? '▲' : '▼' }}
-                            </span>
-                            <div class="resizer" (mousedown)="startResize($event, 5)"></div>
-                        </th>
-                        <th 
-                            class="sortable" 
-                            (click)="setSort('gbsiut')"
-                            class="sortable resizable"
-                        >   Pte.Contabilizar SCAP
-                            <span *ngIf="sortField === 'gbsiut'">
-                                {{ sortDirection === 'asc' ? '▲' : '▼' }}
-                            </span>
-                            <div class="resizer" (mousedown)="startResize($event, 6)"></div>
-                        </th>
-                        <th 
-                            class="sortable" 
-                            (click)="setSort('gbsict')"
-                            class="sortable resizable"
-                        >   Disponible
-                            <span *ngIf="sortField === 'gbsict'">
-                                {{ sortDirection === 'asc' ? '▲' : '▼' }}
-                            </span>
-                            <div class="resizer" (mousedown)="startResize($event, 7)"></div>
-                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -218,13 +211,13 @@
                         <td>{{ p.gbsope }}</td>
                         <td>{{ p.gbsref }}</td>
                         <td>{{ p.limporte | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</td>
+                        <td>{{ p.saldo | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</td>
+                        <td>{{ getkAcPeCo(p.gbsiut, p.gbsict) | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</td>
+                        <td> {{ getkdispon(p.saldo, getkAcPeCo(p?.gbsiut, p?.gbsict)) | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</td>
                         <td>{{ p.gbsimp | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</td>
                         <td>{{ p.gbsibg | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</td>
                         <td>{{ p.gbsius | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</td>
                         <td>{{ getKBoldis(p.gbsimp, p.gbsibg, p.gbsius) | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</td>
-                        <td>{{ p.saldo | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</td>
-                        <td>{{ getkAcPeCo(p.gbsiut, p.gbsict) | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</td>
-                        <td> {{ getkdispon(p.saldo, getkAcPeCo(p?.gbsiut, p?.gbsict)) | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -259,7 +252,7 @@
                         <h1 class="h1-style">{{selectedBolsas.cgecod}}</h1>
                         <h1 class="h1-style">{{selectedBolsas.cgedes}}</h1>
                         <p class="p-style">Cerrado</p>
-                        <span class="p-style">{{getkCGECIC(selectedBolsas.cgecic)}}</span>
+                        <span class="h1-style">{{getkCGECIC(selectedBolsas.cgecic)}}</span>
                     </div>
                     <div class="detail-container">
                         <div class="left">
