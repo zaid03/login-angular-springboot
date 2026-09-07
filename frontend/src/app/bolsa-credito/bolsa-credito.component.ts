@@ -351,6 +351,11 @@ export class BolsaCreditoComponent {
       body: rows.map(row => columns.map(col => (row as any)[col.dataKey] ?? '')),
       styles: {fontSize: 8},
       headStyles: { fillColor: [240, 240, 240], textColor: 33, fontStyle: 'bold' },
+      didParseCell: (data) => {
+        if (data.section === 'body' && data.column.index >= 4) {
+          data.cell.styles.halign = 'right';
+        }
+      },
       columnStyles: {
         combined: { cellWidth: 25 },
         partidas: { cellWidth: 30 },
@@ -363,7 +368,7 @@ export class BolsaCreditoComponent {
         gbsimp: { cellWidth: 20 },
         gbsibg: { cellWidth: 20 },
         gbsius: { cellWidth: 20 },
-        getKBoldis: { cellWidth: 20 }
+        getKBoldis: { cellWidth: 20, halign: 'right' }
       }
     });
 
@@ -382,34 +387,105 @@ export class BolsaCreditoComponent {
     return formatted;
   }
 
+  private applyExcelCurrencyFormat(
+    worksheet: XLSX.WorkSheet,
+    rowCount: number
+  ): void {
+    const currencyFormat = '[$€-es-ES] #,##0.00';
+
+    for (let rowIndex = 2; rowIndex < rowCount + 2; rowIndex++) {
+      for (let columnIndex = 4; columnIndex <= 11; columnIndex++) {
+        const cellAddress = XLSX.utils.encode_cell({
+          r: rowIndex,
+          c: columnIndex
+        });
+
+        const cell = worksheet[cellAddress];
+
+        if (!cell) {
+          continue;
+        }
+
+        cell.v = this.parseMoney(cell.v);
+        cell.t = 'n';
+
+        cell.z = currencyFormat;
+      }
+    }
+  }
+
   excelDownload() {
     this.limpiarMessages();
+
     const rows = this.creditos;
+
     if (!rows || rows.length === 0) {
       this.tableMessage = 'No hay datos para exportar.';
       return;
     }
 
-    const exportRows = rows.map((row, index) => ({
-      Aplicación: row.gbsorg + '-' + row.gbsfun + '-' + row.gbseco || '',
+    const exportRows = rows.map((row: any) => ({
+      Aplicación: `${row.gbsorg}-${row.gbsfun}-${row.gbseco}`,
       Desc_Aplicación: row.partidas?.[0]?.desc ?? '',
       Operación_contable: row.gbsope ?? '',
       Ref_contable: row.gbsref ?? '',
-      Imp_Operación: this.formatCurrency(row.limporte) ?? '',
-      Saldo_Operación: this.formatCurrency(row.saldo) ?? '',
-      Pte_Contabilizar_SCAP: this.formatCurrency(this.getkAcPeCo(row.gbsiut, row.gbsict)) ?? '',
-      Disponible: this.formatCurrency(this.getkdispon(row.saldo, this.getkAcPeCo(row?.gbsiut, row?.gbsict))) ?? '',
-      Importe_bolsa: this.formatCurrency(row.gbsimp) ?? '',
-      Importe_bolsa_gestión: this.formatCurrency(row.gbsibg) ?? '',
-      Usado_bolsa: this.formatCurrency(row.gbsius) ?? '',
-      Disponible_bolsa: this.formatCurrency(this.getKBoldis(row.gbsimp, row.gbsibg, row.gbsius)) ?? ''
+      Imp_Operación: this.parseMoney(row.limporte),
+      Saldo_Operación: this.parseMoney(row.saldo),
+      Pte_Contabilizar_SCAP: this.parseMoney(this.getkAcPeCo(row.gbsiut, row.gbsict)),
+      Disponible: this.parseMoney(this.getkdispon(row.saldo, this.getkAcPeCo(row.gbsiut, row.gbsict))),
+      Importe_bolsa: this.parseMoney(row.gbsimp),
+      Importe_bolsa_gestión: this.parseMoney(row.gbsibg),
+      Usado_bolsa: this.parseMoney(row.gbsius),
+      Disponible_bolsa: this.parseMoney(this.getKBoldis(row.gbsimp, row.gbsibg, row.gbsius))
     }));
 
     const worksheet = XLSX.utils.aoa_to_sheet([]);
-    XLSX.utils.sheet_add_aoa(worksheet, [['listado de bolsas']], { origin: 'A1' });
-    worksheet['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 3 } }];
-    XLSX.utils.sheet_add_aoa(worksheet, [['Aplicación', 'Desc.Aplicación', 'Operación contable', 'Ref.contable', 'Imp.Operación', 'Saldo Operación', 'Pte Contabilizar SCAP', 'Disponible', 'Importe bolsa', 'Importe bolsa Disponible', 'Usado bolsa', 'Disponible bolsa']], { origin: 'A2' });
-    XLSX.utils.sheet_add_json(worksheet, exportRows, { origin: 'A3', skipHeader: true });
+
+    XLSX.utils.sheet_add_aoa(
+      worksheet,
+      [['Listado de bolsas']],
+      { origin: 'A1' }
+    );
+
+    worksheet['!merges'] = [
+      {
+        s: { r: 0, c: 0 },
+        e: { r: 0, c: 3 }
+      }
+    ];
+
+    XLSX.utils.sheet_add_aoa(
+      worksheet,
+      [[
+        'Aplicación',
+        'Desc.Aplicación',
+        'Operación contable',
+        'Ref.contable',
+        'Imp.Operación',
+        'Saldo Operación',
+        'Pte Contabilizar SCAP',
+        'Disponible',
+        'Importe bolsa',
+        'Importe bolsa gestión',
+        'Usado bolsa',
+        'Disponible bolsa'
+      ]],
+      { origin: 'A2' }
+    );
+
+    XLSX.utils.sheet_add_json(
+      worksheet,
+      exportRows,
+      {
+        origin: 'A3',
+        skipHeader: true
+      }
+    );
+
+    this.applyExcelCurrencyFormat(
+      worksheet,
+      exportRows.length
+    );
 
     worksheet['!cols'] = [
       { wch: 32 },
@@ -427,10 +503,23 @@ export class BolsaCreditoComponent {
     ];
 
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'bolsas');
-    const buffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+
+    XLSX.utils.book_append_sheet(
+      workbook,
+      worksheet,
+      'bolsas'
+    );
+
+    const buffer = XLSX.write(workbook, {
+      bookType: 'xlsx',
+      type: 'array',
+      cellStyles: true
+    });
+
     saveAs(
-      new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }),
+      new Blob([buffer], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      }),
       'Bolsas.xlsx'
     );
   }
