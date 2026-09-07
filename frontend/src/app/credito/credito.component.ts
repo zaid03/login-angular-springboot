@@ -315,13 +315,13 @@ export class CreditoComponent {
       gbsope: row.gbsope ?? '',
       gbsref: row.gbsref ?? '',
       limporte: this.formatCurrency(row.limporte) ?? '',
+      saldo: this.formatCurrency(row.saldo) ?? '',
+      getkAcPeCo: this.formatCurrency(this.getkAcPeCo(row.gbsiut, row.gbsict)) ?? '',
+      getkdispon: this.formatCurrency(this.getkdispon(row.saldo, this.getkAcPeCo(row?.gbsiut, row?.gbsict))) ?? '',
       gbsimp: this.formatCurrency(row.gbsimp) ?? '',
       gbsibg: this.formatCurrency(row.gbsibg) ?? '',
       gbsius: this.formatCurrency(row.gbsius) ?? '',
-      getKBoldis: this.formatCurrency(this.getKBoldis(row.gbsimp, row.gbsibg, row.gbsius)) ?? '',
-      saldo: this.formatCurrency(row.saldo) ?? '',
-      getkAcPeCo: this.formatCurrency(this.getkAcPeCo(row.gbsiut, row.gbsict)) ?? '',
-      getkdispon: this.formatCurrency(this.getkdispon(row.saldo, this.getkAcPeCo(row?.gbsiut, row?.gbsict))) ?? ''
+      getKBoldis: this.formatCurrency(this.getKBoldis(row.gbsimp, row.gbsibg, row.gbsius)) ?? ''
     }));
 
     const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
@@ -334,13 +334,13 @@ export class CreditoComponent {
       { header: 'Operación contable', dataKey: 'gbsope' },
       { header: 'Ref.contable', dataKey: 'gbsref' },
       { header: 'Imp.Operación', dataKey: 'limporte' },
-      { header: 'Importe bolsa', dataKey: 'gbsimp' },
-      { header: 'Importe bolsa gestión', dataKey: 'gbsibg' },
-      { header: 'Usado bolsa', dataKey: 'gbsius' },
-      { header: 'Disponible bolsa', dataKey: 'getKBoldis' },
       { header: 'Saldo Operación', dataKey: 'saldo' },
       { header: 'Pte.Contabilizar SCAP', dataKey: 'getkAcPeCo' },
       { header: 'Disponible', dataKey: 'getkdispon' },
+      { header: 'Importe bolsa', dataKey: 'gbsimp' },
+      { header: 'Importe bolsa gestión', dataKey: 'gbsibg' },
+      { header: 'Usado bolsa', dataKey: 'gbsius' },
+      { header: 'Disponible bolsa', dataKey: 'getKBoldis' }
     ];
 
     autoTable(doc, {
@@ -355,13 +355,13 @@ export class CreditoComponent {
         gbsope: { cellWidth: 20 },
         gbsref: { cellWidth: 20 },
         limporte: { cellWidth: 20 },
+        saldo: { cellWidth: 20 },
+        acpeco: { cellWidth: 20 },
+        disponible: { cellWidth: 20 },
         gbsimp: { cellWidth: 20 },
         gbsibg: { cellWidth: 20 },
         gbsius: { cellWidth: 20 },
-        getKBoldis: { cellWidth: 20 },
-        saldo: { cellWidth: 20 },
-        acpeco: { cellWidth: 20 },
-        disponible: { cellWidth: 20 }
+        getKBoldis: { cellWidth: 20 }
       }
     });
 
@@ -393,19 +393,19 @@ export class CreditoComponent {
       Operación_contable: row.gbsope ?? '',
       Ref_contable: row.gbsref ?? '',
       Imp_Operación: this.formatCurrency(row.limporte) ?? '',
+      Saldo_Operación: this.formatCurrency(row.saldo) ?? '',
+      Pte_Contabilizar_SCAP: this.formatCurrency(this.getkAcPeCo(row.gbsiut, row.gbsict)) ?? '',
+      Disponible: this.formatCurrency(this.getkdispon(row.saldo, this.getkAcPeCo(row?.gbsiut, row?.gbsict))) ?? '',
       Importe_bolsa: this.formatCurrency(row.gbsimp) ?? '',
       Importe_bolsa_gestión: this.formatCurrency(row.gbsibg) ?? '',
       Usado_bolsa: this.formatCurrency(row.gbsius) ?? '',
-      Disponible_bolsa: this.formatCurrency(this.getKBoldis(row.gbsimp, row.gbsibg, row.gbsius)) ?? '',
-      Saldo_Operación: this.formatCurrency(row.saldo) ?? '',
-      Pte_Contabilizar_SCAP: this.formatCurrency(this.getkAcPeCo(row.gbsiut, row.gbsict)) ?? '',
-      Disponible: this.formatCurrency(this.getkdispon(row.saldo, this.getkAcPeCo(row?.gbsiut, row?.gbsict))) ?? ''
+      Disponible_bolsa: this.formatCurrency(this.getKBoldis(row.gbsimp, row.gbsibg, row.gbsius)) ?? ''
     }));
 
     const worksheet = XLSX.utils.aoa_to_sheet([]);
     XLSX.utils.sheet_add_aoa(worksheet, [['listado de bolsas']], { origin: 'A1' });
     worksheet['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 3 } }];
-    XLSX.utils.sheet_add_aoa(worksheet, [['Aplicación', 'Desc.Aplicación', 'Operación contable', 'Ref.contable', 'Imp.Operación', 'Importe bolsa', 'Importe bolsa Disponible', 'Usado bolsa', 'Disponible bolsa', 'Saldo Operación', 'Pte Contabilizar SCAP', 'Disponible']], { origin: 'A2' });
+    XLSX.utils.sheet_add_aoa(worksheet, [['Aplicación', 'Desc.Aplicación', 'Operación contable', 'Ref.contable', 'Imp.Operación', 'Saldo Operación', 'Pte Contabilizar SCAP', 'Disponible', 'Importe bolsa', 'Importe bolsa Disponible', 'Usado bolsa', 'Disponible bolsa']], { origin: 'A2' });
     XLSX.utils.sheet_add_json(worksheet, exportRows, { origin: 'A3', skipHeader: true });
 
     worksheet['!cols'] = [
@@ -415,12 +415,12 @@ export class CreditoComponent {
       { wch: 26 },
       { wch: 24 },
       { wch: 24 },
-      { wch: 24 },
-      { wch: 24 },
-      { wch: 24 },
-      { wch: 24 },
       { wch: 28 },
-      { wch: 28 }
+      { wch: 28 },
+      { wch: 24 },
+      { wch: 24 },
+      { wch: 24 },
+      { wch: 24 }
     ];
 
     const workbook = XLSX.utils.book_new();
@@ -431,6 +431,7 @@ export class CreditoComponent {
       'Bolsas.xlsx'
     );
   }
+  
 
   public getkAcPeCo(gbsiut: any, gbsict: any): number {
     let a = gbsiut;
