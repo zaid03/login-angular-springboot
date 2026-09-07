@@ -114,6 +114,8 @@ export class CreditoComponent {
         this.swLoading = true;
         let pendingRequests = this.creditos.length * 2;
         this.creditos.forEach((item, idx) => {
+          const numeroOper = item?.gbsope ?? '';
+          const referencia = item?.gbsref ?? '';
           const org = item?.gbsorg ?? '';
           const fun = item?.gbsfun ?? '';
           const eco = item?.gbseco ?? '';
@@ -131,7 +133,7 @@ export class CreditoComponent {
             });
             this.creditos[idx].saldo = 0;
             this.creditos[idx].limporte = 0;
-            this.http.get<any>(`${environment.backendUrl}/api/sical/operaciones?orgCode=${this.orgCode}&entidad=${this.entidad}&organica=${org}&funcional=${fun}&economica=${eco}&eje=${this.eje}&numRegDev=${1}`).pipe(finalize(() => {pendingRequests--; if (pendingRequests === 0) {this.swLoading = false;}})).subscribe({
+            this.http.get<any>(`${environment.backendUrl}/api/sical/operaciones?orgCode=${this.orgCode}&entidad=${this.entidad}&numeroOperDesde=${numeroOper}&numeroOperHasta=${numeroOper}&referencia=${referencia}&organica=${org}&funcional=${fun}&economica=${eco}&eje=${this.eje}&numRegDev=${1}`).pipe(finalize(() => {pendingRequests--; if (pendingRequests === 0) {this.swLoading = false;}})).subscribe({
               next: (operaciones) => {
                 const operacionesArr = Array.isArray(operaciones) ? operaciones : [];
                 this.creditos[idx].operaciones = operacionesArr;
