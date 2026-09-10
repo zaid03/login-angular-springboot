@@ -1145,18 +1145,21 @@ export class ContratosComponent {
   closeAddD() {
     this.DGridShow = false;
     this.listaDeD = [];
-     this.COGOPD = '';
+    this.COGOPD = '';
     this.COGOP2 = '';
     this.organica = '';
     this.programa = '';
     this.economica = '';
-    this.cogimp = 0;
+    this.cogimp = null;
     this.cogopd = '';
     this.cgecod = '';
   }
 
-  cogimp: number = 0;
+  cogimp: number | null = null;
   cogopd: string = '';
+  cogim2: number | null = null;
+  cogop2: string = '';
+  cogrf2: string = '';
   fetchD() {
     let codigoOperacion = 220;
     const oficina = 'AL';
@@ -1184,9 +1187,15 @@ export class ContratosComponent {
   get paginatedSearchResultsD() {const start = this.searchPageD * this.searchPageSizeD; return this.listaDeD.slice(start, start + this.searchPageSizeD);}
   get searchTotalPagesD() {return Math.ceil(this.listaDeD.length / this.searchPageSizeD);}
 
-  updateDContrato(D: any) {
+  updateDForContrato(D: any) {
+    if (this.COGOPD.trim() === '') {
+      this.updateD(D);
+    } else if (this.COGOP2.trim() === '') {
+      this.updateD2(D);
+    }
+  }
+  updateD(D: any) {
     this.limpiarMessages();
-    this.isAddingD = true;
 
     this.cogimp = D.lineaList[0].limporte;
     this.cogopd = D.lineaList[0].referencia;
@@ -1197,6 +1206,7 @@ export class ContratosComponent {
       "COGOPD": this.cogopd
     }
 
+    this.isAddingD = true;
     this.http.patch(`${environment.backendUrl}/api/cog/update-centro-D/${this.entcod}/${this.eje}/${concod}/${this.cgecod}`, payload).subscribe({
       next: (res) => {
         this.isAddingD = false;
@@ -1209,7 +1219,35 @@ export class ContratosComponent {
         this.DErrorMessage = err.error.error ?? err.error;
       }
     })
+  }
 
+  updateD2(D: any) {
+    this.limpiarMessages();
+
+    this.cogim2 = D.lineaList[0].limporte;
+    this.cogop2 = D.numope;
+    this.cogrf2 = D.lineaList[0].referencia;
+    const concod = this.selectedContrato.concod;
+
+    const payload = {
+      "COGIM2": this.cogim2,
+      "COGOP2": this.cogop2,
+      "COGRF2": this.cogrf2
+    }
+
+    this.isAddingD = true;
+    this.http.patch(`${environment.backendUrl}/api/cog/update-centro-D2/${this.entcod}/${this.eje}/${concod}/${this.cgecod}`, payload).subscribe({
+      next: (res) => {
+        this.isAddingD = false;
+        this.closeAddD();
+        this.closeUpdateSure();
+        this.fetchCentroGestor(concod);
+      },
+      error: (err) => {
+        this.isAddingD = false;
+        this.DErrorMessage = err.error.error ?? err.error;
+      }
+    })
   }
 
   updateSure: boolean = false;

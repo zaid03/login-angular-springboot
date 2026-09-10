@@ -113,7 +113,7 @@ public class CogController {
         }
     }
 
-    //adding D to a contrato's centro gestor
+    //adding first D to a contrato's centro gestor
     public record AddD(Double COGIMP, String COGOPD) {}
 
     @PatchMapping("/update-centro-D/{ent}/{eje}/{concod}/{cgecod}")
@@ -138,6 +138,41 @@ public class CogController {
             Cog updateCentro = centro.get();
             updateCentro.setCOGIMP(payload.COGIMP());
             updateCentro.setCOGOPD(payload.COGOPD());
+            cogRepository.save(updateCentro);
+
+            return ResponseEntity.noContent().build();
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ERROR + ex.getMostSpecificCause().getMessage());
+        }
+    }
+
+    //adding second D to a contrato's centro gestor
+    public record AddD2(Double COGIM2, String COGOP2, String COGRF2) {}
+
+    @PatchMapping("/update-centro-D2/{ent}/{eje}/{concod}/{cgecod}")
+    public ResponseEntity<?> addDCentro(
+        @PathVariable Integer ent,
+        @PathVariable String eje,
+        @PathVariable Integer concod,
+        @PathVariable String cgecod,
+        @RequestBody AddD2 payload
+    ) {
+        try {
+            if (payload == null || payload.COGIM2() == null || payload.COGOP2() == null || payload.COGRF2() == null) {
+                return ResponseEntity.badRequest().body("Faltan datos obligatorios.");
+            }
+
+            CogId id = new CogId(ent, eje, concod, cgecod);
+            Optional<Cog> centro = cogRepository.findById(id);
+            if (centro.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
+            }
+
+            Cog updateCentro = centro.get();
+            updateCentro.setCOGIM2(payload.COGIM2());
+            updateCentro.setCOGOP2(payload.COGOP2());
+            updateCentro.setCOGRF2(payload.COGRF2());
             cogRepository.save(updateCentro);
 
             return ResponseEntity.noContent().build();
