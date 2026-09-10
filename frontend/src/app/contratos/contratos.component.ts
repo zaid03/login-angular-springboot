@@ -928,11 +928,8 @@ export class ContratosComponent {
     }
   }
 
-  getKdisponible(COGIMP: number | null, COGIAP: number | null) {
-    if (COGIMP == null || COGIAP == null) {
-      return '0';
-    }
-    return COGIMP - COGIAP;
+  getKdisponible(COGIMP: number, COGIM2: number, COGAIP: number) {
+    return (COGIMP + COGIM2) - COGAIP;
   }
 
   centroGestorDelete: boolean = false;
