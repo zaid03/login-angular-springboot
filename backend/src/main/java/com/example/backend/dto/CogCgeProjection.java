@@ -4,7 +4,11 @@ public interface CogCgeProjection {
     String getCGECOD();
     CogCge getCge();
     String getCOGOPD();
+    String getCOGRFD();
     Double getCOGIMP();
+    String getCOGOP2();
+    String getCOGRF2();
+    Double getCOGIM2();
     Double getCOGAIP();
 
     interface CogCge {

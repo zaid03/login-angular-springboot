@@ -30,6 +30,14 @@ public class Cog {
 
     private Double COGAIP;
 
+    private String COGRFD;
+
+    private String COGOP2;
+
+    private String COGRF2;
+
+    private Double COGIM2;
+
     @ManyToOne
     @JoinColumns({
         @JoinColumn(name = "ENT", referencedColumnName = "ENT", insertable = false, updatable = false),
@@ -60,4 +68,16 @@ public class Cog {
 
     public Double getCOGAIP() {return COGAIP;}
     public void setCOGAIP(Double COGAIP) {this.COGAIP = COGAIP;}
+
+    public String getCOGRFD() {return COGRFD;}
+    public void setCOGRFD(String COGRFD) {this.COGRFD = COGRFD;}
+
+    public String getCOGOP2() {return COGOP2;}
+    public void setCOGOP2(String COGOP2) {this.COGOP2 = COGOP2;}
+
+    public String getCOGRF2() {return COGRF2;}
+    public void setCOGRF2(String COGRF2) {this.COGRF2 = COGRF2;}
+
+    public Double getCOGIM2() {return COGIM2;}
+    public void setCOGIM2(Double COGIM2) {this.COGIM2 = COGIM2;}
 }
