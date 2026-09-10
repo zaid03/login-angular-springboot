@@ -1105,7 +1105,8 @@ export class ContratosComponent {
   }
 
   //adding D grid
-  cogaip: number = 0;
+  COGOPD: string = '';
+  COGOP2: string = '';
   organica: string = '';
   programa: string = '';
   economica: string = '';
@@ -1115,11 +1116,12 @@ export class ContratosComponent {
   checkBeforeAdd(centro: any) {
     this.limpiarMessages();
 
-    this.cogaip = centro.cogaip;
+    this.COGOPD = centro.cogopd ?? '';
+    this.COGOP2 = centro.cogop2 ?? '';
     this.referencia = centro.cogopd ?? '';
 
-    if (this.cogaip > 0) {
-      this.DError = 'No se puede cambiar la D si ya hay pedidos'
+    if (this.COGOPD.trim() != '' && this.COGOP2.trim() != '') {
+      this.DError = 'Ya tiene dos “D” para este Centro Gestor'
     } else {
       this.cgecod = centro.cgecod;
       this.organica = centro.cge.cgeorg;
@@ -1143,7 +1145,8 @@ export class ContratosComponent {
   closeAddD() {
     this.DGridShow = false;
     this.listaDeD = [];
-    this.cogaip = 0;
+     this.COGOPD = '';
+    this.COGOP2 = '';
     this.organica = '';
     this.programa = '';
     this.economica = '';
