@@ -73,7 +73,7 @@ public class CogControllerTest {
     void deleteCentroGestore_returns204OnSuccess() throws Exception {
         COGAIPOnlyDto centro = new COGAIPOnlyDto() {
             @Override
-            public Double getCOGAIP() {
+            public Double getCOGIAP() {
                 return 0.0;
             }
         };
@@ -91,7 +91,7 @@ public class CogControllerTest {
     void deleteCentroGestore_returns400WhenCogaipGreaterThanZero() throws Exception {
         COGAIPOnlyDto centro = new COGAIPOnlyDto() {
             @Override
-            public Double getCOGAIP() {
+            public Double getCOGIAP() {
                 return 5.0;
             }
         };
@@ -119,7 +119,7 @@ public class CogControllerTest {
     void deleteCentroGestore_returns404WhenCogaipIsNull() throws Exception {
         COGAIPOnlyDto centro = new COGAIPOnlyDto() {
             @Override
-            public Double getCOGAIP() {
+            public Double getCOGIAP() {
                 return null;
             }
         };
@@ -307,5 +307,126 @@ public class CogControllerTest {
             .andDo(print())
             .andExpect(status().isInternalServerError())
             .andExpect(content().string(containsString("Error :")));
+    }
+
+    @Test
+    void addDCentro2_returns204OnSuccess() throws Exception {
+        CogId id = new CogId(1, "E1", 100, "C1");
+        when(cogRepository.findById(id)).thenReturn(Optional.of(new Cog()));
+
+        Map<String, Object> payload = Map.of(
+            "COGIM2", 250.0,
+            "COGOP2", "D2",
+            "COGRF2", "REF2"
+        );
+
+        mockMvc.perform(patch("/api/cog/update-centro-D2/1/E1/100/C1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload)))
+            .andExpect(status().isNoContent());
+
+        verify(cogRepository).save(any(Cog.class));
+    }
+
+    @Test
+    void addDCentro2_returns400WhenRequiredFieldIsMissing() throws Exception {
+        Map<String, Object> payload = Map.of(
+            "COGIM2", 250.0,
+            "COGOP2", "D2"
+        );
+
+        mockMvc.perform(patch("/api/cog/update-centro-D2/1/E1/100/C1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload)))
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("Faltan datos obligatorios")));
+    }
+
+    @Test
+    void addDCentro2_returns404WhenNotFound() throws Exception {
+        CogId id = new CogId(1, "E1", 100, "C1");
+        when(cogRepository.findById(id)).thenReturn(Optional.empty());
+
+        Map<String, Object> payload = Map.of(
+            "COGIM2", 250.0,
+            "COGOP2", "D2",
+            "COGRF2", "REF2"
+        );
+
+        mockMvc.perform(patch("/api/cog/update-centro-D2/1/E1/100/C1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload)))
+            .andExpect(status().isNotFound())
+            .andExpect(content().string("Sin resultado"));
+    }
+
+    @Test
+    void deleteD_returns204AndSavesClearedFirstD() throws Exception {
+        Cog cog = new Cog();
+        CogId id = new CogId(1, "E1", 100, "C1");
+        when(cogRepository.findById(id)).thenReturn(Optional.of(cog));
+
+        mockMvc.perform(delete("/api/cog/delete-D/1/E1/100/C1"))
+            .andExpect(status().isNoContent());
+
+        verify(cogRepository).save(cog);
+    }
+
+    @Test
+    void deleteD2_returns204AndSavesClearedSecondD() throws Exception {
+        Cog cog = new Cog();
+        CogId id = new CogId(1, "E1", 100, "C1");
+        when(cogRepository.findById(id)).thenReturn(Optional.of(cog));
+
+        mockMvc.perform(delete("/api/cog/delete-D2/1/E1/100/C1"))
+            .andExpect(status().isNoContent());
+
+        verify(cogRepository).save(cog);
+    }
+
+    @Test
+    void updateD1_returns204AndSavesBalance() throws Exception {
+        CogId id = new CogId(1, "E1", 100, "C1");
+        Cog cog = new Cog();
+        when(cogRepository.findById(id)).thenReturn(Optional.of(cog));
+
+        mockMvc.perform(patch("/api/cog/updateD1/1/E1/100/C1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"COGIMP\":123.45}"))
+            .andExpect(status().isNoContent());
+
+        verify(cogRepository).save(cog);
+    }
+
+    @Test
+    void updateD1_returns400WhenBalanceIsMissing() throws Exception {
+        mockMvc.perform(patch("/api/cog/updateD1/1/E1/100/C1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{}"))
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string("COGIMP is required."));
+    }
+
+    @Test
+    void updateD2_returns204AndSavesBalance() throws Exception {
+        CogId id = new CogId(1, "E1", 100, "C1");
+        Cog cog = new Cog();
+        when(cogRepository.findById(id)).thenReturn(Optional.of(cog));
+
+        mockMvc.perform(patch("/api/cog/updateD2/1/E1/100/C1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"COGIM2\":456.78}"))
+            .andExpect(status().isNoContent());
+
+        verify(cogRepository).save(cog);
+    }
+
+    @Test
+    void updateD2_returns400WhenBalanceIsMissing() throws Exception {
+        mockMvc.perform(patch("/api/cog/updateD2/1/E1/100/C1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{}"))
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string("COGIM2 is required."));
     }
 }
