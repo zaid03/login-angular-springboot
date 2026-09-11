@@ -9,7 +9,7 @@ public interface CogCgeProjection {
     String getCOGOP2();
     String getCOGRF2();
     Double getCOGIM2();
-    Double getCOGAIP();
+    Double getCOGIAP();
 
     interface CogCge {
         String getCGEDES();

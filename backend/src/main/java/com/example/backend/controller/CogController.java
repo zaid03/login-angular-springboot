@@ -65,10 +65,10 @@ public class CogController {
             Optional<COGAIPOnlyDto> centro =  cogRepository.findByENTAndEJEAndCONCODAndCGECOD(ent, eje, concod, cgecod);
 
             if (centro.isPresent()) {
-                Double cogaip = centro.get().getCOGAIP();
-                if (cogaip != null && cogaip > 0) {
+                Double cogiap = centro.get().getCOGIAP();
+                if (cogiap != null && cogiap > 0) {
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No se puede quitar un centro gestor donde ya hay pedidos");
-                } else if (cogaip != null && cogaip == 0) {
+                } else if (cogiap != null && cogiap == 0) {
                     CogId id = new CogId(ent, eje, concod, cgecod);
                     cogRepository.deleteById(id);
 
@@ -101,7 +101,7 @@ public class CogController {
                     c.setCONCOD(dto.concod);
                     c.setCGECOD(dto.cgecod);
                     c.setCOGIMP(dto.cogimp);
-                    c.setCOGAIP(dto.cogaip);
+                    c.setCOGIAP(dto.cogiap);
                     toSave.add(c);
                 }
             }
@@ -179,6 +179,60 @@ public class CogController {
         } catch (DataAccessException ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ERROR + ex.getMostSpecificCause().getMessage());
+        }
+    }
+
+    //deleting first D
+    @DeleteMapping("/delete-D/{ent}/{eje}/{concod}/{cgecod}")
+    public ResponseEntity<?> deleteD(
+        @PathVariable Integer ent,
+        @PathVariable String eje,
+        @PathVariable Integer concod,
+        @PathVariable String cgecod
+    ) {
+        try {
+            CogId id = new CogId(ent, eje, concod, cgecod);
+            Optional<Cog> cog = cogRepository.findById(id);
+            if (cog.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
+            }
+
+            Cog DToDelete = cog.get();
+            DToDelete.setCOGIMP(0.00);
+            DToDelete.setCOGOPD("");
+            DToDelete.setCOGRFD("");
+            cogRepository.save(DToDelete);
+
+            return ResponseEntity.noContent().build();
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ERROR + ex.getMostSpecificCause().getMessage());
+        }
+    }
+
+    //deleting second D
+    @DeleteMapping("/delete-D2/{ent}/{eje}/{concod}/{cgecod}")
+    public ResponseEntity<?> deleteD2(
+        @PathVariable Integer ent,
+        @PathVariable String eje,
+        @PathVariable Integer concod,
+        @PathVariable String cgecod
+    ) {
+        try {
+            CogId id = new CogId(ent, eje, concod, cgecod);
+            Optional<Cog> cog = cogRepository.findById(id);
+            if (cog.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SIN_RESULTADO);
+            }
+
+            Cog DToDelete = cog.get();
+            DToDelete.setCOGIM2(0.00);
+            DToDelete.setCOGOP2("");
+            DToDelete.setCOGRF2("");
+            cogRepository.save(DToDelete);
+
+            return ResponseEntity.noContent().build();
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ERROR + ex.getMostSpecificCause().getMessage());
         }
     }
 }

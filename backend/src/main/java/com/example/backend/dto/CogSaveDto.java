@@ -6,5 +6,5 @@ public class CogSaveDto {
     public Integer concod;
     public String cgecod;
     public Double cogimp;
-    public Double cogaip;
+    public Double cogiap;
 }

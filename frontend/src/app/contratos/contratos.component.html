@@ -389,11 +389,12 @@
                                     <td>{{c.cogop2}}</td>
                                     <td>{{c.cogrf2}}</td>
                                     <td>{{c.cogim2 | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</td>
-                                    <td>{{c.cogaip | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</td>
+                                    <td>{{c.cogiap | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</td>
                                     <td>{{getKdisponible(c.cogimp, c.cogim2, c.cogaip) | currency:'EUR':'symbol':'1.2-2':'es-ES'}}</td>
                                     <td class="borderI">
                                         <button class="red-btn" (click)="showDeleteCentro(c)">-</button>
                                         <button class="purple-btn" (click)="checkBeforeAdd(c)">D</button>
+                                        <button class="red-btn" (click)="openDeleteD(c)">D</button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -865,4 +866,24 @@
     </div>
     <button class="purple-btn btn-space" (click)="updateDForContrato(toUpdate)">Sí</button>
     <button class="red-btn" (click)="closeUpdateSure()">No</button>
+</div>
+
+<div class="modal-backdrop force" *ngIf="deleteDSureGrid"></div>
+<div class="delete-confirm-modal adj update-D" *ngIf="deleteDSureGrid">
+    <p class="p-style" *ngIf="deleteDGridMessage">{{deleteDGridMessage}}</p>
+    <button class="purple-btn btn-space" (click)="whichDDelete()">Sí</button>
+    <button class="red-btn" (click)="closeDeleteDSureGrid()">No</button>
+</div>
+
+<div class="modal-backdrop force" *ngIf="deleteDGridMessages"></div>
+<div class="delete-confirm-modal adj update-D" *ngIf="deleteDGridMessages">
+    <div class="btns">
+        <button class="red-btn" (click)="closeDeleteDGridMessages()">✖</button>
+    </div>
+    <p class="successBtn" *ngIf="deletingDCgeSuccess">{{deletingDCgeSuccess}}</p>
+    <p class="errorBtn" *ngIf="deletingDCgeError">{{deletingDCgeError}}</p>
+    <div *ngIf="idDeletingDCge" class="loading-message">
+        <div class="spinner"></div>
+        <span>Borrando</span>
+    </div>
 </div>

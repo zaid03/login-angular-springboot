@@ -28,7 +28,7 @@ public class Cog {
 
     private String COGOPD;
 
-    private Double COGAIP;
+    private Double COGIAP;
 
     private String COGRFD;
 
@@ -66,8 +66,8 @@ public class Cog {
     public String getCOGOPD() {return COGOPD;}
     public void setCOGOPD(String COGOPD) {this.COGOPD = COGOPD;}
 
-    public Double getCOGAIP() {return COGAIP;}
-    public void setCOGAIP(Double COGAIP) {this.COGAIP = COGAIP;}
+    public Double getCOGIAP() {return COGIAP;}
+    public void setCOGIAP(Double COGIAP) {this.COGIAP = COGIAP;}
 
     public String getCOGRFD() {return COGRFD;}
     public void setCOGRFD(String COGRFD) {this.COGRFD = COGRFD;}

@@ -928,8 +928,8 @@ export class ContratosComponent {
     }
   }
 
-  getKdisponible(COGIMP: number, COGIM2: number, COGAIP: number) {
-    return (COGIMP + COGIM2) - COGAIP;
+  getKdisponible(COGIMP: number, COGIM2: number, COGIAP: number) {
+    return (COGIMP + COGIM2) - COGIAP;
   }
 
   centroGestorDelete: boolean = false;
@@ -1086,7 +1086,7 @@ export class ContratosComponent {
       concod: concod,
       cgecod: obj.cgecod,
       cogimp: 0,
-      cogaip: 0
+      cogiap: 0
     }));
 
     this.http.post(`${environment.backendUrl}/api/cog/save-centroGestores`, payload).subscribe({
@@ -1104,7 +1104,7 @@ export class ContratosComponent {
     })
   }
 
-  //adding D grid
+  //D related functions
   COGOPD: string = '';
   COGOP2: string = '';
   organica: string = '';
@@ -1270,6 +1270,134 @@ export class ContratosComponent {
     this.referencia = '';
   }
 
+  deleteDSureGrid: boolean = false;
+  openDeleteDSureGrid() {
+    this.limpiarMessages();
+    this.deleteDSureGrid = true;
+  }
+
+  closeDeleteDSureGrid() {
+    this.limpiarMessages();
+    this.deleteDSureGrid = false;
+  }
+
+  whichD: number = 0;
+  concod: string = '';
+  cgecodDelete: string = '';
+  openDeleteD(D: any) {
+    console.log(D)
+    this.limpiarMessages();
+    this.cgecodDelete = D.cgecod ?? '';
+    this.concod = this.selectedContrato.concod ?? '';
+    let cogopd = D.cogopd ?? '';
+    let cogop2 = D.cogop2 ?? '';
+    let cogiap = D.cogiap ?? '';
+    let cogimp = D.cogimp ?? '';
+
+    console.log("cgecod",this.cgecodDelete)
+    console.log("concod", this.concod);
+    console.log("cogopd", cogopd);
+    console.log("cogop2", cogop2);
+    console.log("cogiap", cogiap);
+    console.log("cogimp", cogimp);
+
+    if (cogopd.trim() === '' && cogop2.trim() === '') {
+      console.log("nothing case");
+      return;
+    }
+
+    if (cogopd.trim() != '' && cogop2.trim() === '') {
+      if (cogimp < cogiap) {
+        this.openDeleteDSureGrid();
+        this.deleteDGridMessage = 'No tendrá Disponible para contabilizar los pedidos pendientes. ¿Quiere seguir?';
+        this.whichD = 1;
+        console.log(this.whichD);
+        return;
+      }
+      this.deleteFirstD();
+    } else {
+      if (cogiap > 0) {
+        this.openDeleteDSureGrid();
+        this.deleteDGridMessage = 'No tendrá Disponible para contabilizar los pedidos pendientes. ¿Quiere seguir?';
+        this.whichD = 2;
+        console.log(this.whichD);
+        return;
+      }
+      this.deleteSecondD();
+    }
+  }
+
+  closeDeleteD() {
+    this.whichD = 0;
+    this.concod = '';
+    this.cgecodDelete = '';
+  }
+
+  whichDDelete() {
+    if (this.whichD === 1) {
+      console.log("here");
+      this.deleteFirstD();
+      this.closeDeleteDSureGrid();
+    } else if (this.whichD === 2) {
+      console.log("here 2");
+      this.deleteSecondD();
+      this.closeDeleteDSureGrid();
+    }
+  }
+
+  deleteDGridMessages: boolean = false;
+  deleteDGridMessage: string = '';
+  openDeleteDGridMessages() {
+    console.log("finito");
+    this.deleteDGridMessages = true;
+  }
+
+  closeDeleteDGridMessages() {
+    console.log("closed finito");
+    this.limpiarMessages();
+    this.fetchCentroGestor(this.selectedContrato.concod);
+    this.deleteDGridMessages = false;
+  }
+
+  idDeletingDCge: boolean = false;
+  deletingDCgeError: string = '';
+  deletingDCgeSuccess = '';
+  deleteFirstD() {
+    this.idDeletingDCge = true;
+    this.openDeleteDGridMessages();
+    this.http.delete(`${environment.backendUrl}/api/cog/delete-D/${this.entcod}/${this.eje}/${this.concod}/${this.cgecodDelete}`).subscribe({
+      next: (res) => {
+        this.idDeletingDCge = false;
+        this.closeDeleteD();
+        this.closeDeleteDSureGrid();
+        this.openDeleteDGridMessages();
+        this.deletingDCgeSuccess = 'Se eliminó la primera D';
+      },
+      error: (err) => {
+        this.idDeletingDCge = false;
+        this.deletingDCgeError = err.error.error || err.error;
+      }
+    })
+  }
+
+  deleteSecondD() {
+    this.idDeletingDCge = true;
+    this.openDeleteDGridMessages();
+    this.http.delete(`${environment.backendUrl}/api/cog/delete-D2/${this.entcod}/${this.eje}/${this.concod}/${this.cgecodDelete}`).subscribe({
+      next: (res) => {
+        this.idDeletingDCge = false;
+        this.closeDeleteD();
+        this.closeDeleteDSureGrid();
+        this.openDeleteDGridMessages();
+        this.deletingDCgeSuccess = 'Segunda D eliminado';
+      },
+      error: (err) => {
+        this.idDeletingDCge = false;
+        this.deletingDCgeError = err.error.error || err.error;;
+      }
+    })
+  }
+
   //misc
   limpiarMessages() {
     this.mainError = '';
@@ -1290,5 +1418,8 @@ export class ContratosComponent {
     this.DErrorMessage = '';
     this.articuloError = '';
     this.DError = '';
+    this.deleteDGridMessage = '';
+    this.deletingDCgeError = '';
+    this.deletingDCgeSuccess = '';
   }
 }
