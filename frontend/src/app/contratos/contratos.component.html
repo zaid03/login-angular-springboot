@@ -248,6 +248,12 @@
                             class="purple-btn" 
                             [disabled]="isUpdate" 
 	                        [ngClass]="{ 'disabled-btn': isUpdate }" 
+                            (click)="openActualizar()"
+                        >Actualizar</button>
+                        <button 
+                            class="purple-btn" 
+                            [disabled]="isUpdate" 
+	                        [ngClass]="{ 'disabled-btn': isUpdate }" 
                             (click)="showArticulosAddGrid(selectedContrato.conlot)"
                         >Añadir Artículos</button>
                         <button 
@@ -886,4 +892,15 @@
         <div class="spinner"></div>
         <span>Borrando</span>
     </div>
+</div>
+
+<div class="modal-backdrop force" *ngIf="actualizarGrid"></div>
+<div class="delete-confirm-modal adj update-D" *ngIf="actualizarGrid">
+    <p class="p-style">{{actualizarMessage}}</p>
+    <div *ngIf="isActualizar" class="loading-message">
+        <div class="spinner"></div>
+        <span>Actualizando</span>
+    </div>
+    <button class="purple-btn btn-space" (click)="update()">Sí</button>
+    <button class="red-btn" (click)="closeActualizar()">No</button>
 </div>

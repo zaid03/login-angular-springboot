@@ -6,6 +6,8 @@ import { CommonModule } from '@angular/common';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { environment } from '../../environments/environment';
 import { CurrencyPipe } from '@angular/common';
+import { forkJoin, of } from 'rxjs';
+import { catchError, finalize, switchMap, tap } from 'rxjs/operators';
 
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
@@ -1396,6 +1398,131 @@ export class ContratosComponent {
         this.deletingDCgeError = err.error.error || err.error;;
       }
     })
+  }
+
+  //actualizar saldo
+  actualizarGrid: boolean = false;
+  actualizarMessage: string = '';
+  isActualizar: boolean = false;
+  openActualizar() {
+    this.limpiarMessages();
+    this.actualizarMessage = '¿Quiere actualizar el saldo de todas las AD?';
+    this.actualizarGrid = true;
+  }
+
+  closeActualizar() {
+    if (this.isActualizar) {
+      return;
+    }
+
+    this.actualizarGrid = false;
+  }
+
+  update() {
+    this.isActualizar = true;
+
+    const requests = this.centroGestor.flatMap(item => {
+      const requests = [];
+
+      const cogopd = (item?.cogopd ?? '').trim();
+      const cogop2 = (item?.cogop2 ?? '').trim();
+      if (cogopd === '' && cogop2 === '') {
+        this.isActualizar = false;
+        this.actualizarGrid = false;
+        this.DError = 'Todas las operaciones están vacías';
+        return;
+      }
+
+      if (cogopd !== '') {
+        requests.push(
+          this.http.get<any>(`${environment.backendUrl}/api/sical/operaciones`, {
+            params: {
+              orgCode: this.orgCode ?? '',
+              entidad: this.entidad ?? '',
+              numeroOperDesde: item.cogopd,
+              numeroOperHasta: item.cogopd,
+              referencia: item.cogrfd ?? '',
+              organica: item?.cge?.cgeorg ?? '',
+              funcional: item?.cge?.cgefun ?? '',
+              economica: this.selectedContrato?.conlot ?? '',
+              eje: this.eje ?? '',
+              numRegDev: 1
+            }
+          }).pipe(
+            switchMap(res => {
+              const operation = Array.isArray(res) ? res[0] : res;
+              const line = Array.isArray(operation?.l_linea)
+                ? operation.l_linea[0]
+                : operation?.l_linea;
+
+              if (line?.saldo == null) {
+                return of(null);
+              }
+
+              item.cogimp = Number(line.saldo);
+
+              return this.http.patch(
+                `${environment.backendUrl}/api/cog/updateD1/${this.entcod}/${this.eje}/${this.selectedContrato.concod}/${item.cgecod}`,
+                { COGIMP: item.cogimp }
+              );
+            })
+          )
+        );
+      }
+
+      if (cogop2 !== '') {
+        requests.push(
+          this.http.get<any>(`${environment.backendUrl}/api/sical/operaciones`, {
+            params: {
+              orgCode: this.orgCode ?? '',
+              entidad: this.entidad ?? '',
+              numeroOperDesde: item.cogop2,
+              numeroOperHasta: item.cogop2,
+              referencia: item.cogrf2 ?? '',
+              organica: item?.cge?.cgeorg ?? '',
+              funcional: item?.cge?.cgefun ?? '',
+              economica: this.selectedContrato?.conlot ?? '',
+              eje: this.eje ?? '',
+              numRegDev: 1
+            }
+          }).pipe(
+            switchMap(res => {
+              const operation = Array.isArray(res) ? res[0] : res;
+              const line = Array.isArray(operation?.l_linea)
+                ? operation.l_linea[0]
+                : operation?.l_linea;
+
+              if (line?.saldo == null) {
+                return of(null);
+              }
+
+              item.cogim2 = Number(line.saldo);
+
+              return this.http.patch(
+                `${environment.backendUrl}/api/cog/updateD2/${this.entcod}/${this.eje}/${this.selectedContrato.concod}/${item.cgecod}`,
+                { COGIM2: item.cogim2 }
+              );
+            })
+          )
+        );
+      }
+
+      return requests;
+    });
+
+    forkJoin(requests).pipe(
+      finalize(() => {
+        this.isActualizar = false;
+        this.actualizarGrid = false;
+      })
+    ).subscribe({
+      next: () => {
+        this.fetchCentroGestor(this.selectedContrato.concod);
+      },
+      error: err => {
+        console.error('Error updating balances:', err);
+      }
+    });
   }
 
   //misc

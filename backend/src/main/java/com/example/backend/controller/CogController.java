@@ -235,4 +235,68 @@ public class CogController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ERROR + ex.getMostSpecificCause().getMessage());
         }
     }
+
+    //update cogimp
+    public record UpdateImp(Double COGIMP) {}
+    @PatchMapping("/updateD1/{ent}/{eje}/{concod}/{cgecod}")
+    public ResponseEntity<?> updateD1(
+        @PathVariable Integer ent,
+        @PathVariable String eje,
+        @PathVariable Integer concod,
+        @PathVariable String cgecod,
+        @RequestBody UpdateImp payload
+    ) {
+        try {
+            if (payload == null || payload.COGIMP() == null) {
+                return ResponseEntity.badRequest().body("COGIMP is required.");
+            }
+
+            CogId id = new CogId(ent, eje, concod, cgecod);
+            Optional<Cog> result = cogRepository.findById(id);
+
+            if (result.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+
+            Cog cog = result.get();
+            cog.setCOGIMP(payload.COGIMP());
+            cogRepository.save(cog);
+
+            return ResponseEntity.noContent().build();
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ERROR + ex.getMostSpecificCause().getMessage());
+        }
+    }
+
+    //update cogim2
+    public record UpdateIm2(Double COGIM2) {}
+    @PatchMapping("/updateD2/{ent}/{eje}/{concod}/{cgecod}")
+    public ResponseEntity<?> updateD2(
+        @PathVariable Integer ent,
+        @PathVariable String eje,
+        @PathVariable Integer concod,
+        @PathVariable String cgecod,
+        @RequestBody UpdateIm2 payload
+    ) {
+        try {
+            if (payload == null || payload.COGIM2() == null) {
+                return ResponseEntity.badRequest().body("COGIM2 is required.");
+            }
+
+            CogId id = new CogId(ent, eje, concod, cgecod);
+            Optional<Cog> result = cogRepository.findById(id);
+
+            if (result.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+
+            Cog cog = result.get();
+            cog.setCOGIM2(payload.COGIM2());
+            cogRepository.save(cog);
+
+            return ResponseEntity.noContent().build();
+        } catch (DataAccessException ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ERROR + ex.getMostSpecificCause().getMessage());
+        }
+    }
 }
