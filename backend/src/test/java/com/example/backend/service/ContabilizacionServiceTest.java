@@ -267,14 +267,7 @@ public class ContabilizacionServiceTest {
                 <servicioReturn>
                   &lt;response&gt;
                     &lt;exito&gt;-1&lt;/exito&gt;
-                    &lt;operacion&gt;
-                      &lt;opeext&gt;EXT123&lt;/opeext&gt;
-                      &lt;opesical&gt;SIC456&lt;/opesical&gt;
-                      &lt;nap&gt;NAP789&lt;/nap&gt;
-                      &lt;referencia&gt;REF001&lt;/referencia&gt;
-                      &lt;importe&gt;1000.50&lt;/importe&gt;
-                      &lt;ejercicio&gt;2026&lt;/ejercicio&gt;
-                    &lt;/operacion&gt;
+                    &lt;operacion&gt;EXT123-@-SIC456-@-NAP789-@-REF001-@-1000.50-@-2026&lt;/operacion&gt;
                   &lt;/response&gt;
                 </servicioReturn>
               </soap:Body>
@@ -623,75 +616,6 @@ public class ContabilizacionServiceTest {
         String result = service.buildSmlInput(req, fac, List.of(fde), List.of(), "NIF");
 
         assertFalse(result.contains("<linea>"));
-    }
-
-    @Test
-    void parseResponse_withOperacionFieldOrganica_decodesBase64() {
-        String soapResponse = """
-            <soap:Envelope>
-              <soap:Body>
-                <servicioReturn>
-                  &lt;response&gt;
-                    &lt;exito&gt;-1&lt;/exito&gt;
-                    &lt;operacion&gt;
-                      &lt;organica&gt;Q29kZWQgVmFsdWU=&lt;/organica&gt;
-                    &lt;/operacion&gt;
-                  &lt;/response&gt;
-                </servicioReturn>
-              </soap:Body>
-            </soap:Envelope>
-            """;
-
-        ContabilizacionResponseDto result = service.parseResponse(soapResponse);
-
-        assertTrue(result.isExito());
-        assertNotNull(result.getOrganica());
-    }
-
-    @Test
-    void parseResponse_withOperacionFieldFuncional_decodesBase64() {
-        String soapResponse = """
-            <soap:Envelope>
-              <soap:Body>
-                <servicioReturn>
-                  &lt;response&gt;
-                    &lt;exito&gt;-1&lt;/exito&gt;
-                    &lt;operacion&gt;
-                      &lt;funcional&gt;Q29kZWQgVmFsdWU=&lt;/funcional&gt;
-                    &lt;/operacion&gt;
-                  &lt;/response&gt;
-                </servicioReturn>
-              </soap:Body>
-            </soap:Envelope>
-            """;
-
-        ContabilizacionResponseDto result = service.parseResponse(soapResponse);
-
-        assertTrue(result.isExito());
-        assertNotNull(result.getFuncional());
-    }
-
-    @Test
-    void parseResponse_withOperacionFieldEconomica_decodesBase64() {
-        String soapResponse = """
-            <soap:Envelope>
-              <soap:Body>
-                <servicioReturn>
-                  &lt;response&gt;
-                    &lt;exito&gt;-1&lt;/exito&gt;
-                    &lt;operacion&gt;
-                      &lt;economica&gt;Q29kZWQgVmFsdWU=&lt;/economica&gt;
-                    &lt;/operacion&gt;
-                  &lt;/response&gt;
-                </servicioReturn>
-              </soap:Body>
-            </soap:Envelope>
-            """;
-
-        ContabilizacionResponseDto result = service.parseResponse(soapResponse);
-
-        assertTrue(result.isExito());
-        assertNotNull(result.getEconomica());
     }
 
     @Test
