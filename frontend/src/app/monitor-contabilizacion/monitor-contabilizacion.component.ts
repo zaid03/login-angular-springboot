@@ -775,17 +775,17 @@ export class MonitorContabilizacionComponent {
         "EJE": this.eje,
         "FACNUM": facnum,
         "FACADO": facado,
-        "FACFCO": facfco,
+        "FACFCO": `${facfco}T00:00:00`,
         "CGECOD": this.centroGestor,
         "ESCONTRATO": this.ESCONTRATO
       };
 
-      this.http.patch<any>(`${environment.backendUrl}/api/facturas/contabilizar-facturas`, payload).subscribe({
+      this.http.patch<any>(`${environment.backendUrl}/api/fac/contabilizar-facturas`, payload).subscribe({
         next: () => {
           resolve();
         },
         error: (err) => {
-          reject(err.error || err.message || 'Error al actualizar factura');
+          reject(err.error.error || err.error);
         }
       });
     });
