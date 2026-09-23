@@ -501,6 +501,8 @@ public class ContabilizacionServiceTest {
         fde.setFDEORG("ORG001");
         fde.setFDEFUN("FUN001");
         fde.setFDEECO("ECO001");
+        fde.setFDEOPE("220260000034");
+        fde.setFDEOPE("220260000034");
         fde.setFDEREF("REF001");
         return fde;
     }
