@@ -643,6 +643,7 @@ export class MonitorContabilizacionComponent {
   ESCONTRATO: boolean = false;
   contaFac: number = 0;
   totalContaFac: number = 0;
+  filterFacturaMessageSuccess: string = '';
   contabilizarResults: { facnum: number; success: boolean; message: string }[] = [];
   async contabilizar() {
     this.closeContaConfirm();
@@ -680,9 +681,9 @@ export class MonitorContabilizacionComponent {
     const fallidas = this.contabilizarResults.filter(r => !r.success).length;
     
     if (exitosas > 0 && fallidas === 0) {
-      this.filterfacturaSuccess = `${exitosas} factura(s) contabilizada(s) correctamente`;
+      this.filterFacturaMessageSuccess = `${exitosas} factura(s) contabilizada(s) correctamente`;
     } else if (exitosas > 0 && fallidas > 0) {
-      this.filterfacturaSuccess = `${exitosas} factura(s) contabilizada(s)`;
+      this.filterFacturaMessageSuccess = `${exitosas} factura(s) contabilizada(s)`;
       this.filterFacturaMessage = `${fallidas} factura(s) con errores`;
     } else if (fallidas > 0) {
       this.filterFacturaMessage = `${fallidas} factura(s) con errores`;
@@ -801,5 +802,6 @@ export class MonitorContabilizacionComponent {
     this.facturaDetailSuccess = '';
     this.facturaDetailError = '';
     this.searchError = '';
+    this.filterFacturaMessageSuccess = '';
   }
 }

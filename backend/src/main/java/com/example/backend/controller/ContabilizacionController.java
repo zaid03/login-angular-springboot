@@ -107,7 +107,9 @@ public class ContabilizacionController {
                     int day = Integer.parseInt(fcNormalizada.substring(6, 8));
                     fac.setFACFCO(LocalDateTime.of(year, month, day, 0, 0));
                 }
-                facRepository.save(fac);
+                System.out.println("Before save, FACADO=" + fac.getFACADO());
+                Fac saved = facRepository.save(fac);
+                System.out.println("After save, FACADO=" + saved.getFACADO());
                 return ResponseEntity.ok(response);
             } else {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);

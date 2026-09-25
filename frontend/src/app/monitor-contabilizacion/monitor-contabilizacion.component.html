@@ -687,6 +687,7 @@
     <div class="saved-details special">
         <div *ngIf="contabilizarResults.length > 0" class="results-container">
             <h1 class="errorBtn">{{filterFacturaMessage}}</h1>
+            <h1 class="successBtn">{{filterFacturaMessageSuccess}}</h1>
             <div *ngFor="let result of contabilizarResults" 
                 [class.successBtn]="result.success" 
                 [class.errorBtn]="!result.success">
