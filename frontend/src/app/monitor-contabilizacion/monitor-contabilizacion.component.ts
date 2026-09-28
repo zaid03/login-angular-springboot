@@ -65,8 +65,8 @@ export class MonitorContabilizacionComponent {
     if (entSession) {const parsed = JSON.parse(entSession); this.WSent = parsed.WSENT;}
     if (orgSession) {const parsed = JSON.parse(orgSession); this.WSorg = parsed.WSORG;}
 
-    console.log(this.WSorg)
-    console.log(this.WSent)
+    console.log("org is: ", this.WSorg)
+    console.log("ent is: ", this.WSent)
     if (!entidad || this.entcod === null || !eje || this.eje === null) {
       sessionStorage.clear();
       alert('Debes iniciar sesión para acceder a esta página.');

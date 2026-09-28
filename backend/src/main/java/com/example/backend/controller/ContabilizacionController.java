@@ -47,7 +47,7 @@ public class ContabilizacionController {
     @PostMapping("/generar")
     public ResponseEntity<?> generarOperacion(@RequestBody ContabilizacionRequestDto request) {
         try {
-            if (request.getEnt() == null || request.getEntcod() == null || request.getEje() == null || request.getFacnum() == null) {
+            if (isBlank(request.getOrg()) || request.getEnt() == null || request.getEntcod() == null || isBlank(request.getEje()) || request.getFacnum() == null) {
                 return ResponseEntity.badRequest().body("Faltan datos obligatorios: ent, entcod, eje, facnum");
             }
 
@@ -121,5 +121,9 @@ public class ContabilizacionController {
             error.setMensaje("Error: " + ex.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
         }
+    }
+
+    private static boolean isBlank(String s) {
+        return s == null || s.isBlank();
     }
 }

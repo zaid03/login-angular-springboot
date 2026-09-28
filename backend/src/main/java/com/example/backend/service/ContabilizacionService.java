@@ -230,6 +230,9 @@ public class ContabilizacionService {
             sb.append("<imp>").append(imp).append("</imp>");
             sb.append("</linea>");
         }
+        if (lineasIncluidas.isEmpty()) {
+            throw new SmlBuildingException("Ninguna línea con importe > 0 pudo resolverse en SICAL");
+        }
         sb.append("</l_linea>");
 
         sb.append("<l_dto>");
